@@ -1,0 +1,92 @@
+plugins {
+	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'maven-publish'
+}
+
+group = project.maven_group
+version = project.mod_version
+archivesBaseName = project.archives_base_name
+
+repositories {
+	jcenter()
+	maven {
+		url "https://maven.falseresync.ru"
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// StopModReposts
+	include "org.stopmodreposts:Splash-Screen-Mod-Fabric:1.0.1"
+
+	// Cloth API
+	include "me.shedaniel.cloth:config-2:4.8.3"
+	modApi("me.shedaniel.cloth:config-2:4.8.3") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	// Auto Config
+	include "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
+	modApi("me.sargunvohra.mcmods:autoconfig1u:3.3.1") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	// Mod Menu
+	modImplementation "io.github.prospector:modmenu:1.14.13+build.19"
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		expand "version": project.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(jar) {
+				builtBy remapJar
+			}
+			artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar"){
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
+
+	repositories {
+
+	}
+}

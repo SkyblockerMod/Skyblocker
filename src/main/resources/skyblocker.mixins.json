@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "me.xmrvizzy.skyblocker.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "InGameHudMixin",
+    "ChatHudListenerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

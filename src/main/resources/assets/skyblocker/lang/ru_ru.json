@@ -1,0 +1,19 @@
+{
+  "text.autoconfig.skyblocker.title": "Настройки Skyblocker",
+
+  "text.autoconfig.skyblocker.category.general": "Основные",
+  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API-ключ",
+
+  "text.autoconfig.skyblocker.category.bars": "Бары",
+  "text.autoconfig.skyblocker.option.bars.enableBars": "Включить бары здоровья и маны",
+  "text.autoconfig.skyblocker.option.bars.enableAbsorption": "Включить поглощенное здоровье",
+  "text.autoconfig.skyblocker.option.bars.absorbedHealthColor": "Цвет поглощенного здоровья",
+  "text.autoconfig.skyblocker.option.bars.healthColor": "Цвет здоровья",
+  "text.autoconfig.skyblocker.option.bars.manaColor": "Цвет маны",
+
+  "text.autoconfig.skyblocker.category.messages": "Сообщения",
+  "text.autoconfig.skyblocker.option.messages.hideAbility": "Скрыть откат способностей",
+  "text.autoconfig.skyblocker.option.messages.hideHeal": "Скрыть сообщения об исцелении",
+  "text.autoconfig.skyblocker.option.messages.hideAOTE": "Скрыть сообщения от \"AOTE\"",
+  "text.autoconfig.skyblocker.option.messages.hideMidasStaff": "Скрыть сообщения от \"Midas Staff\""
+}

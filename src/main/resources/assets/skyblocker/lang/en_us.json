@@ -1,0 +1,19 @@
+{
+  "text.autoconfig.skyblocker.title": "Skyblocker Settings",
+
+  "text.autoconfig.skyblocker.category.general": "General",
+  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Key",
+
+  "text.autoconfig.skyblocker.category.bars": "Bars",
+  "text.autoconfig.skyblocker.option.bars.enableBars": "Enable Health & Mana Bars",
+  "text.autoconfig.skyblocker.option.bars.enableAbsorption": "Enable Absorbed Health",
+  "text.autoconfig.skyblocker.option.bars.absorbedHealthColor": "Absorbed Health Color",
+  "text.autoconfig.skyblocker.option.bars.healthColor": "Health Color",
+  "text.autoconfig.skyblocker.option.bars.manaColor": "Mana Color",
+
+  "text.autoconfig.skyblocker.category.messages": "Messages",
+  "text.autoconfig.skyblocker.option.messages.hideAbility": "Hide Ability Cooldown",
+  "text.autoconfig.skyblocker.option.messages.hideHeal": "Hide Heal Messages",
+  "text.autoconfig.skyblocker.option.messages.hideAOTE": "Hide AOTE Messages",
+  "text.autoconfig.skyblocker.option.messages.hideMidasStaff": "Hide Midas Staff Messages"
+}
