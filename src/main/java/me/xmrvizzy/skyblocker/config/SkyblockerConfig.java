@@ -17,6 +17,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public Bars bars = new Bars();
 
+    @ConfigEntry.Category("dungeons")
+    @ConfigEntry.Gui.TransitiveObject
+    public Dungeons dungeons = new Dungeons();
+
     @ConfigEntry.Category("messages")
     @ConfigEntry.Gui.TransitiveObject
     public Messages messages = new Messages();
@@ -36,11 +40,17 @@ public class SkyblockerConfig implements ConfigData {
         public int manaColor = 0x55ffff;
     }
 
+    public static class Dungeons {
+        public boolean enableMap = false;
+        public boolean solveThreeWeirdos = false;
+    }
+
     public static class Messages {
         public boolean hideAbility = false;
         public boolean hideHeal = false;
         public boolean hideAOTE = false;
-        public boolean hideMidasStaff = false;
+        public boolean hideImplosion = false;
+        public boolean hideMoltenWave = false;
     }
 
     public static void init() {

@@ -27,8 +27,6 @@
     "fabric": "*"
   },
   "custom": {
-    "modmenu:clientsideOnly": true,
-    "stopmodreposts:showToast": true,
-    "stopmodreposts:showButton": true
+    "modmenu:clientsideOnly": true
   }
 }

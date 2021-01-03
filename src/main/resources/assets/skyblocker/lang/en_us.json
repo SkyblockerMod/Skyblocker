@@ -2,7 +2,7 @@
   "text.autoconfig.skyblocker.title": "Skyblocker Settings",
 
   "text.autoconfig.skyblocker.category.general": "General",
-  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Key",
+  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Key (WIP)",
 
   "text.autoconfig.skyblocker.category.bars": "Bars",
   "text.autoconfig.skyblocker.option.bars.enableBars": "Enable Health & Mana Bars",
@@ -11,9 +11,14 @@
   "text.autoconfig.skyblocker.option.bars.healthColor": "Health Color",
   "text.autoconfig.skyblocker.option.bars.manaColor": "Mana Color",
 
+  "text.autoconfig.skyblocker.category.dungeons": "Dungeons",
+  "text.autoconfig.skyblocker.option.dungeons.enableMap": "Enable Map",
+  "text.autoconfig.skyblocker.option.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
+
   "text.autoconfig.skyblocker.category.messages": "Messages",
   "text.autoconfig.skyblocker.option.messages.hideAbility": "Hide Ability Cooldown",
   "text.autoconfig.skyblocker.option.messages.hideHeal": "Hide Heal Messages",
   "text.autoconfig.skyblocker.option.messages.hideAOTE": "Hide AOTE Messages",
-  "text.autoconfig.skyblocker.option.messages.hideMidasStaff": "Hide Midas Staff Messages"
+  "text.autoconfig.skyblocker.option.messages.hideImplosion": "Hide Implosion Message",
+  "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Hide Molten Wave Message"
 }

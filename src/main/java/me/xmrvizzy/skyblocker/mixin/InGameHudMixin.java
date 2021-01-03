@@ -1,13 +1,22 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.MapRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.map.MapState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
@@ -17,9 +26,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.Utils;
 
 import java.awt.*;
 
@@ -76,41 +82,15 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
     private void renderStatusBars(MatrixStack matrices, CallbackInfo ci) {
-        if (Utils.isSkyblock() && SkyblockerConfig.get().bars.enableBars) {
-            ci.cancel();
-
-            this.client.getTextureManager().bindTexture(ICONS);
-            this.client.getProfiler().push("skyblockBars");
-            {
-                int left = this.scaledWidth / 2 - 91;
-                int hpWidth = getWidth(hpCurrent, hpMax);
-                int manaWidth = getWidth(manaCurrent, manaMax);
-
-                if (hpColor.equals("§6") && SkyblockerConfig.get().bars.enableAbsorption) {
-                    renderBar(matrices, left, hpWidth, SkyblockerConfig.get().bars.absorbedHealthColor);
-                } else {
-                    renderBar(matrices, left, hpWidth, SkyblockerConfig.get().bars.healthColor);
-                }
-                renderBar(matrices, left + 71 + 40, manaWidth, SkyblockerConfig.get().bars.manaColor);
+        if (Utils.isSkyblock()) {
+            if (SkyblockerConfig.get().dungeons.enableMap) {
+                renderDungeonMap(matrices);
             }
-            this.client.getProfiler().pop();
 
-            this.client.getProfiler().push("skyblockTexts");
-            {
-                int left = this.scaledWidth / 2 - 90;
-                String hpText = hpCurrent + "/" + hpMax;
-                String manaText = manaCurrent + "/" + manaMax;
-                int hpOffset = (71 - this.getFontRenderer().getWidth(hpText)) / 2;
-                int manaOffset = (71 - this.getFontRenderer().getWidth(manaText)) / 2;
-
-                if (hpColor.equals("§6") && SkyblockerConfig.get().bars.enableAbsorption) {
-                    renderText(matrices, hpText, left + hpOffset, SkyblockerConfig.get().bars.absorbedHealthColor);
-                } else {
-                    renderText(matrices, hpText, left + hpOffset, SkyblockerConfig.get().bars.healthColor);
-                }
-                renderText(matrices, manaText, left + 71 + 40 + manaOffset, SkyblockerConfig.get().bars.manaColor);
+            if (SkyblockerConfig.get().bars.enableBars) {
+                ci.cancel();
+                renderBars(matrices);
             }
-            this.client.getProfiler().pop();
 
             this.client.getTextureManager().bindTexture(DrawableHelper.GUI_ICONS_TEXTURE);
         }
@@ -123,18 +103,59 @@ public abstract class InGameHudMixin extends DrawableHelper {
         }
     }
 
-    private int getWidth(int current, int max) {
-        int width = 0;
-        if (current != 0) {
-            if (current > max) {
-                width = 71;
-            } else {
-                width = current * 71 / max;
-            }
-        } else {
-            width = 0;
+
+    private void renderDungeonMap(MatrixStack matrices) {
+        ItemStack item = this.client.player.inventory.main.get(8);
+        CompoundTag tag = item.getTag();
+
+        if (tag != null && tag.contains("map")) {
+            VertexConsumerProvider.Immediate vertices = this.client.getBufferBuilders().getEffectVertexConsumers();
+            MapRenderer map = this.client.gameRenderer.getMapRenderer();
+            MapState state = FilledMapItem.getMapState(item, this.client.world);
+
+            if (state == null) return;
+            matrices.push();
+            matrices.translate(2, 2, 0);
+            matrices.scale(1, 1, 0);
+            map.draw(matrices, vertices, state, false, 15728880);
+            vertices.draw();
+            matrices.pop();
         }
-        return width;
+    }
+
+    private void renderBars(MatrixStack matrices) {
+        this.client.getTextureManager().bindTexture(ICONS);
+        this.client.getProfiler().push("skyblockBars");
+        {
+            int left = this.scaledWidth / 2 - 91;
+            int hpWidth = getWidth(hpCurrent, hpMax);
+            int manaWidth = getWidth(manaCurrent, manaMax);
+
+            if (hpColor.equals("§6") && SkyblockerConfig.get().bars.enableAbsorption) {
+                renderBar(matrices, left, hpWidth, SkyblockerConfig.get().bars.absorbedHealthColor);
+            } else {
+                renderBar(matrices, left, hpWidth, SkyblockerConfig.get().bars.healthColor);
+            }
+            renderBar(matrices, left + 71 + 40, manaWidth, SkyblockerConfig.get().bars.manaColor);
+        }
+        this.client.getProfiler().pop();
+
+        this.client.getProfiler().push("skyblockTexts");
+        {
+            int left = this.scaledWidth / 2 - 90;
+            String hpText = hpCurrent + "/" + hpMax;
+            String manaText = manaCurrent + "/" + manaMax;
+            int hpOffset = (71 - this.getFontRenderer().getWidth(hpText)) / 2;
+            int manaOffset = (71 - this.getFontRenderer().getWidth(manaText)) / 2;
+
+            if (hpColor.equals("§6") && SkyblockerConfig.get().bars.enableAbsorption) {
+                renderText(matrices, hpText, left + hpOffset, SkyblockerConfig.get().bars.absorbedHealthColor);
+            } else {
+                renderText(matrices, hpText, left + hpOffset, SkyblockerConfig.get().bars.healthColor);
+            }
+            renderText(matrices, manaText, left + 71 + 40 + manaOffset, SkyblockerConfig.get().bars.manaColor);
+        }
+        this.client.getProfiler().pop();
     }
 
     private void renderBar(MatrixStack matrices, int left, int filled, int color) {
@@ -163,4 +184,17 @@ public abstract class InGameHudMixin extends DrawableHelper {
         this.getFontRenderer().draw(matrices, str, (float) left, (float) top, color);
     }
 
+    private int getWidth(int current, int max) {
+        int width = 0;
+        if (current != 0) {
+            if (current > max) {
+                width = 71;
+            } else {
+                width = current * 71 / max;
+            }
+        } else {
+            width = 0;
+        }
+        return width;
+    }
 }

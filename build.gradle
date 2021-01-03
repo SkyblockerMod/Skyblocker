@@ -22,9 +22,6 @@ dependencies {
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// StopModReposts
-	include "org.stopmodreposts:Splash-Screen-Mod-Fabric:1.0.1"
-
 	// Cloth API
 	include "me.shedaniel.cloth:config-2:4.8.3"
 	modApi("me.shedaniel.cloth:config-2:4.8.3") {

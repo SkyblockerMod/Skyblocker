@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker;
 
-import net.fabricmc.api.ClientModInitializer;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import net.fabricmc.api.ClientModInitializer;
 
 public class SkyblockerMod implements ClientModInitializer {
 	public static final String NAMESPACE = "skyblocker";
