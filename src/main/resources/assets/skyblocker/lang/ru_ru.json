@@ -3,17 +3,18 @@
 
   "text.autoconfig.skyblocker.category.general": "Основные",
   "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API-ключ (В РАЗРАБОТКЕ)",
+  "text.autoconfig.skyblocker.option.general.bars": "Бары здоровья и маны",
+  "text.autoconfig.skyblocker.option.general.bars.enableBars": "Включить бары",
+  "text.autoconfig.skyblocker.option.general.bars.healthColor": "Цвет здоровья",
+  "text.autoconfig.skyblocker.option.general.bars.manaColor": "Цвет маны",
 
-  "text.autoconfig.skyblocker.category.bars": "Бары",
-  "text.autoconfig.skyblocker.option.bars.enableBars": "Включить бары здоровья и маны",
-  "text.autoconfig.skyblocker.option.bars.enableAbsorption": "Включить поглощенное здоровье",
-  "text.autoconfig.skyblocker.option.bars.absorbedHealthColor": "Цвет поглощенного здоровья",
-  "text.autoconfig.skyblocker.option.bars.healthColor": "Цвет здоровья",
-  "text.autoconfig.skyblocker.option.bars.manaColor": "Цвет маны",
-
-  "text.autoconfig.skyblocker.category.dungeons": "Подземелья",
-  "text.autoconfig.skyblocker.option.dungeons.enableMap": "Включить карту",
-  "text.autoconfig.skyblocker.option.dungeons.solveThreeWeirdos": "Решить загадку \"Три чудака\"",
+  "text.autoconfig.skyblocker.category.locations": "Локации",
+  "text.autoconfig.skyblocker.option.locations.dungeons": "Подземелья",
+  "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Включить карту",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Решить загадку \"Три чудака\"",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Гномьи шахты",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Включить топливо дрели",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Решить загадку \"Puzzler\"",
 
   "text.autoconfig.skyblocker.category.messages": "Сообщения",
   "text.autoconfig.skyblocker.option.messages.hideAbility": "Скрыть откат способностей",

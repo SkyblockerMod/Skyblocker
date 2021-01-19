@@ -3,8 +3,10 @@
   "package": "me.xmrvizzy.skyblocker.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "ChatHudListenerMixin",
     "InGameHudMixin",
-    "ChatHudListenerMixin"
+    "ItemRendererMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

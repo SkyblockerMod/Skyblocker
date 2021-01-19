@@ -13,13 +13,9 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public General general = new General();
 
-    @ConfigEntry.Category("bars")
+    @ConfigEntry.Category("locations")
     @ConfigEntry.Gui.TransitiveObject
-    public Bars bars = new Bars();
-
-    @ConfigEntry.Category("dungeons")
-    @ConfigEntry.Gui.TransitiveObject
-    public Dungeons dungeons = new Dungeons();
+    public Locations locations = new Locations();
 
     @ConfigEntry.Category("messages")
     @ConfigEntry.Gui.TransitiveObject
@@ -27,22 +23,38 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class General {
         public String apiKey;
+
+        @ConfigEntry.Category("bars")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public Bars bars = new Bars();
     }
 
     public static class Bars {
         public boolean enableBars = true;
-        public boolean enableAbsorption = true;
-        @ConfigEntry.ColorPicker()
-        public int absorbedHealthColor = 0xffaa00;
         @ConfigEntry.ColorPicker()
         public int healthColor = 0xff5555;
         @ConfigEntry.ColorPicker()
         public int manaColor = 0x55ffff;
     }
 
+    public static class Locations {
+        @ConfigEntry.Category("dungeons")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public Dungeons dungeons = new Dungeons();
+
+        @ConfigEntry.Category("dwarvenmines")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public DwarvenMines dwarvenMines = new DwarvenMines();
+    }
+
     public static class Dungeons {
-        public boolean enableMap = false;
-        public boolean solveThreeWeirdos = false;
+        public boolean enableMap = true;
+        public boolean solveThreeWeirdos = true;
+    }
+
+    public static class DwarvenMines {
+        public boolean enableDrillFuel = true;
+        public boolean solvePuzzler = true;
     }
 
     public static class Messages {

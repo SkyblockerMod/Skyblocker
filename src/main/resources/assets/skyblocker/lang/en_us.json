@@ -3,17 +3,18 @@
 
   "text.autoconfig.skyblocker.category.general": "General",
   "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Key (WIP)",
+  "text.autoconfig.skyblocker.option.general.bars": "Health & Mana Bars",
+  "text.autoconfig.skyblocker.option.general.bars.enableBars": "Enable Bars",
+  "text.autoconfig.skyblocker.option.general.bars.healthColor": "Health Color",
+  "text.autoconfig.skyblocker.option.general.bars.manaColor": "Mana Color",
 
-  "text.autoconfig.skyblocker.category.bars": "Bars",
-  "text.autoconfig.skyblocker.option.bars.enableBars": "Enable Health & Mana Bars",
-  "text.autoconfig.skyblocker.option.bars.enableAbsorption": "Enable Absorbed Health",
-  "text.autoconfig.skyblocker.option.bars.absorbedHealthColor": "Absorbed Health Color",
-  "text.autoconfig.skyblocker.option.bars.healthColor": "Health Color",
-  "text.autoconfig.skyblocker.option.bars.manaColor": "Mana Color",
-
-  "text.autoconfig.skyblocker.category.dungeons": "Dungeons",
-  "text.autoconfig.skyblocker.option.dungeons.enableMap": "Enable Map",
-  "text.autoconfig.skyblocker.option.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
+  "text.autoconfig.skyblocker.category.locations": "Locations",
+  "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
+  "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Enable Map",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Dwarven Mines",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Enable Drill Fuel",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
 
   "text.autoconfig.skyblocker.category.messages": "Messages",
   "text.autoconfig.skyblocker.option.messages.hideAbility": "Hide Ability Cooldown",
