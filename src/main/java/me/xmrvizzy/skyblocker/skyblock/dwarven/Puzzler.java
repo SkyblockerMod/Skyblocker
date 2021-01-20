@@ -15,7 +15,7 @@ public class Puzzler {
         int z = 135;
 
         String path = Formatting.strip(message);
-        path = path.substring(path.indexOf(":") + 1);
+        path = path.substring(path.indexOf(":") + 2);
         String check = path
                 .replaceAll("▲", "").replaceAll("▶", "")
                 .replaceAll("▼", "").replaceAll("◀", "");
