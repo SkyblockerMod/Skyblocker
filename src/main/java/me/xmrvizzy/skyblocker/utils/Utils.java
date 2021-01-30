@@ -9,6 +9,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
+import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,10 @@ public class Utils {
         String[] sections = msg.split(" {3,}");
         List<String> unused = new ArrayList<String>();
 
+        if (msg.contains("❤") && !msg.contains("❈") && sections.length == 2) {
+            Attribute.DEFENCE.set(0);
+        }
+
         for (String section : sections) {
             String clear = Pattern.compile("[^0-9 /]").matcher(section).replaceAll("").trim();
             String[] split = clear.split("/");
@@ -35,7 +40,6 @@ public class Utils {
                 Attribute.MAX_HEALTH.set(Integer.parseInt(split[1]));
             } else if (section.contains("❈")) {
                 Attribute.DEFENCE.set(Integer.parseInt(clear));
-                unused.add(section);
             } else if (section.contains("✎")) {
                 Attribute.MANA.set(Integer.parseInt(split[0]));
                 Attribute.MAX_MANA.set(Integer.parseInt(split[1]));
@@ -54,11 +58,14 @@ public class Utils {
 
         if (sidebar.isEmpty()) return;
         if (sidebar.get(sidebar.size() - 1).equals("www.hypixel.net")) {
-            if (sidebar.get(0).equals("SKYBLOCK")) isSkyblock = true;
+            if (sidebar.get(0).contains("SKYBLOCK")) isSkyblock = true;
             else isSkyblock = false;
 
             if (isSkyblock && string.contains("The Catacombs")) isDungeons = true;
             else isDungeons = false;
+        } else {
+            isSkyblock = false;
+            isDungeons = false;
         }
     }
 

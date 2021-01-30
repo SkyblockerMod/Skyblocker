@@ -27,22 +27,31 @@ public class ChatHudListenerMixin {
         }
 
         if (Utils.isSkyblock) {
-            if (SkyblockerConfig.get().locations.dwarvenMines.solvePuzzler && msg.contains("[NPC]") && msg.contains("Puzzler"))
+            if (SkyblockerConfig.get().locations.dwarvenMines.solvePuzzler &&
+                    msg.contains("[NPC]") && msg.contains("Puzzler"))
                 Puzzler.puzzler(msg);
 
-            if (SkyblockerConfig.get().messages.hideAbility && msg.contains("This ability is currently on cooldown for ") || msg.contains("No more charges, next one in "))
+            if (SkyblockerConfig.get().messages.hideAbility &&
+                    msg.contains("This ability is currently on cooldown for ") ||
+                    msg.contains("No more charges, next one in ") ||
+                    msg.contains("This ability is on cooldown for "))
                 ci.cancel();
 
-            if (SkyblockerConfig.get().messages.hideHeal && msg.contains("You healed ") && msg.contains(" health!") || msg.contains(" healed you for "))
+            if (SkyblockerConfig.get().messages.hideHeal &&
+                    msg.contains("You healed ") &&
+                    msg.contains(" health!") || msg.contains(" healed you for "))
                 ci.cancel();
 
-            if (SkyblockerConfig.get().messages.hideAOTE && msg.contains("There are blocks in the way!"))
+            if (SkyblockerConfig.get().messages.hideAOTE &&
+                    msg.contains("There are blocks in the way!"))
                 ci.cancel();
 
-            if (SkyblockerConfig.get().messages.hideImplosion && msg.contains("Your Implosion hit "))
+            if (SkyblockerConfig.get().messages.hideImplosion &&
+                    msg.contains("Your Implosion hit "))
                 ci.cancel();
 
-            if (SkyblockerConfig.get().messages.hideMoltenWave && msg.contains("Your Molten Wave hit "))
+            if (SkyblockerConfig.get().messages.hideMoltenWave &&
+                    msg.contains("Your Molten Wave hit "))
                 ci.cancel();
         }
     }

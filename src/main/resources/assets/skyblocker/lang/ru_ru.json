@@ -1,12 +1,13 @@
 {
+  "key.categories.skyblocker": "Skyblocker",
+  "key.hotbarSlotLock": "Блокировка слота (хотбар)",
+
   "text.autoconfig.skyblocker.title": "Настройки Skyblocker",
 
   "text.autoconfig.skyblocker.category.general": "Основные",
   "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API-ключ (В РАЗРАБОТКЕ)",
-  "text.autoconfig.skyblocker.option.general.bars": "Бары здоровья и маны",
+  "text.autoconfig.skyblocker.option.general.bars": "Бары здоровья, маны, защиты, опыта",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Включить бары",
-  "text.autoconfig.skyblocker.option.general.bars.healthColor": "Цвет здоровья",
-  "text.autoconfig.skyblocker.option.general.bars.manaColor": "Цвет маны",
 
   "text.autoconfig.skyblocker.category.locations": "Локации",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Подземелья",

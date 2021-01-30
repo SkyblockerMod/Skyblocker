@@ -4,6 +4,9 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "ChatHudListenerMixin",
+    "ChatScreenMixin",
+    "ClientPlayerEntityMixin",
+    "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
     "MinecraftClientMixin"

@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
@@ -11,6 +12,7 @@ public class SkyblockerMod implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		HotbarSlotLock.init();
 		SkyblockerConfig.init();
 	}
 

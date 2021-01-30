@@ -1,12 +1,13 @@
 {
+  "key.categories.skyblocker": "Skyblocker",
+  "key.hotbarSlotLock": "Slot Lock (Hotbar)",
+
   "text.autoconfig.skyblocker.title": "Skyblocker Settings",
 
   "text.autoconfig.skyblocker.category.general": "General",
   "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Key (WIP)",
-  "text.autoconfig.skyblocker.option.general.bars": "Health & Mana Bars",
+  "text.autoconfig.skyblocker.option.general.bars": "Health, Mana, Defence & XP Bars",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Enable Bars",
-  "text.autoconfig.skyblocker.option.general.bars.healthColor": "Health Color",
-  "text.autoconfig.skyblocker.option.general.bars.manaColor": "Mana Color",
 
   "text.autoconfig.skyblocker.category.locations": "Locations",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",

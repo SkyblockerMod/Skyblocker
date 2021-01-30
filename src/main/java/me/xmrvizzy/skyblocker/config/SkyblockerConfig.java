@@ -6,6 +6,9 @@ import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Config(name = "skyblocker")
 public class SkyblockerConfig implements ConfigData {
 
@@ -27,14 +30,13 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("bars")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Bars bars = new Bars();
+
+        @ConfigEntry.Gui.Excluded
+        public List<Integer> lockedSlots = new ArrayList<>();
     }
 
     public static class Bars {
         public boolean enableBars = true;
-        @ConfigEntry.ColorPicker()
-        public int healthColor = 0xff5555;
-        @ConfigEntry.ColorPicker()
-        public int manaColor = 0x55ffff;
     }
 
     public static class Locations {
