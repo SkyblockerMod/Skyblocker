@@ -6,7 +6,8 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 public class Puzzler {
-    public static void puzzler(String message) {
+
+    public static void solve(String message) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null && client.world == null) return;
 

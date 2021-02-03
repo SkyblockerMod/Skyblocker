@@ -9,7 +9,6 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
-import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.Collection;

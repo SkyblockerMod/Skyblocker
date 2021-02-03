@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.utils;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -11,30 +11,23 @@ import java.util.List;
 
 public class ItemUtils {
 
-    public static List<String> getLore(ItemStack item) {
-        if (item.hasTag() && item.getTag().contains("display", 10)) {
-            CompoundTag tag = item.getTag().getCompound("display");
+    public static List<Text> getTooltip(ItemStack item) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && item != null)
+            return item.getTooltip(client.player, TooltipContext.Default.NORMAL);
+        return Collections.emptyList();
+    }
 
-            if (tag.contains("Lore", 9)) {
-                ListTag lore = tag.getList("Lore", 8);
+    public static List<String> getTooltipStrings(ItemStack item) {
+        List<Text> lines = getTooltip(item);
+        List<String> list = new ArrayList<>();
 
-                List<String> list = new ArrayList<>();
-                for (int line = 0; line < lore.size(); line++) {
-                    String string = lore.getString(line);
-                    try {
-                        Text text = Text.Serializer.fromJson(string);
-                        if (text != null) {
-                            string = text.getString();
-                            if (!string.replaceAll("\\s+","").isEmpty())
-                                list.add(string);
-                        }
-                    } catch (Exception e) {}
-                }
-
-                return list;
-            }
+        for (Text line : lines) {
+            String string = line.getString();
+            if (!string.replaceAll("\\s+","").isEmpty())
+                list.add(string);
         }
 
-        return Collections.emptyList();
+        return list;
     }
 }

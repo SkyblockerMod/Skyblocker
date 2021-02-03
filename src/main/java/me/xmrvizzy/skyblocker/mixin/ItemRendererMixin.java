@@ -35,12 +35,13 @@ public abstract class ItemRendererMixin {
                         float current = 3000.0F;
                         float max = 3000.0F;
 
-                        for (String line : ItemUtils.getLore(stack)) {
+                        for (String line : ItemUtils.getTooltipStrings(stack)) {
                             if (line.contains("Fuel: ")) {
                                 String clear = Pattern.compile("[^0-9 /]").matcher(line).replaceAll("").trim();
                                 String[] split = clear.split("/");
                                 current = Integer.parseInt(split[0]);
                                 max = Integer.parseInt(split[1]) * 1000;
+                                break;
                             }
                         }
 

@@ -56,6 +56,7 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class DwarvenMines {
         public boolean enableDrillFuel = true;
+        public boolean solveFetchur = true;
         public boolean solvePuzzler = true;
     }
 

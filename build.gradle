@@ -23,19 +23,19 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Cloth API
-	include "me.shedaniel.cloth:config-2:4.8.3"
-	modApi("me.shedaniel.cloth:config-2:4.8.3") {
+	include "me.shedaniel.cloth:config-2:${project.cloth_api_version}"
+	modApi("me.shedaniel.cloth:config-2:${project.cloth_api_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
 	// Auto Config
-	include "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
-	modApi("me.sargunvohra.mcmods:autoconfig1u:3.3.1") {
+	include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
+	modApi("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
 	// Mod Menu
-	modImplementation "io.github.prospector:modmenu:1.14.13+build.19"
+	modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
 }
 
 tasks.withType(JavaCompile) {
