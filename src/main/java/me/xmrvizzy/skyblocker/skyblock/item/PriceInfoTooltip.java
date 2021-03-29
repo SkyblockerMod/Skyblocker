@@ -38,9 +38,9 @@ public class PriceInfoTooltip {
         String name = getInternalNameForItem(stack);
         
         try {
-
-            if(SkyblockerMod.prices != null && SkyblockerMod.prices.containsKey(name)){
-                if(!list.toString().contains("Lowest BIN Price")){
+            if(!list.toString().contains("Lowest BIN Price")){
+                if(SkyblockerMod.prices != null && SkyblockerMod.prices.containsKey(name)){
+                
                     Double price = round((Double)SkyblockerMod.prices.get(name), 2);
                    
                     list.add(new LiteralText("Lowest BIN Price: " + price).formatted(Formatting.GOLD));
