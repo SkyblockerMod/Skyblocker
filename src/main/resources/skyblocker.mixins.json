@@ -9,7 +9,8 @@
     "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+
   ],
   "injectors": {
     "defaultRequire": 1

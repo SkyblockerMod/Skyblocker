@@ -4,12 +4,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,6 +29,7 @@ public abstract class ItemRendererMixin {
 
     @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
     public void renderItemBar(TextRenderer renderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
+
         if (Utils.isSkyblock && SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel) {
             if (!stack.isEmpty()) {
                 CompoundTag tag = stack.getTag();
@@ -34,7 +37,7 @@ public abstract class ItemRendererMixin {
                     if (tag.getCompound("ExtraAttributes").contains("drill_fuel")) {
                         float current = 3000.0F;
                         float max = 3000.0F;
-
+                        
                         for (String line : ItemUtils.getTooltipStrings(stack)) {
                             if (line.contains("Fuel: ")) {
                                 String clear = Pattern.compile("[^0-9 /]").matcher(line).replaceAll("").trim();

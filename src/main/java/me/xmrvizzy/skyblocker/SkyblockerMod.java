@@ -1,20 +1,26 @@
 package me.xmrvizzy.skyblocker;
 
+import java.util.Map;
+
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
-
+import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 public class SkyblockerMod implements ClientModInitializer {
 	public static final String NAMESPACE = "skyblocker";
 	private static int TICKS = 0;
-
+	public static Map prices = PriceInfoTooltip.downloadPrices();
 	@Override
 	public void onInitializeClient() {
 		HotbarSlotLock.init();
 		SkyblockerConfig.init();
+		
+		
 	}
+
 
 	public static void onTick() {
 		MinecraftClient client = MinecraftClient.getInstance();
