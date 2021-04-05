@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class Utils {
     public static boolean isSkyblock = false;
     public static boolean isDungeons = false;
-
+    public static boolean isInjected = false;
     public static String parseActionBar(String msg) {
         String[] sections = msg.split(" {3,}");
         List<String> unused = new ArrayList<String>();
@@ -60,7 +60,10 @@ public class Utils {
         if (sidebar.isEmpty()) return;
         if (sidebar.get(sidebar.size() - 1).equals("www.hypixel.net")) {
             if (sidebar.get(0).contains("SKYBLOCK")){
-                ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+                if(isInjected == false){
+                    isInjected = true;
+                    ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+                }
                 isSkyblock = true;
             }
             else isSkyblock = false;

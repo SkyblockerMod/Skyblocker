@@ -33,21 +33,23 @@ import com.google.gson.JsonPrimitive;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 
 public class PriceInfoTooltip {
-    
+    private JsonObject auctionPricesJson = null;
+    public static JsonObject prices = PriceInfoTooltip.downloadPrices();
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalNameForItem(stack);
-        
+
         try {
-            if(!list.toString().contains("Lowest BIN Price")){
-                if(SkyblockerMod.prices != null && SkyblockerMod.prices.containsKey(name)){
+            if(!list.toString().contains("Avg. BIN Price") && prices.has(name) ){
+                if(prices != null){
                 
-                    Double price = round((Double)SkyblockerMod.prices.get(name), 2);
+                    JsonElement getPrice = prices.get(name);
+                    Double price = round(getPrice.getAsDouble(), 2);
                    
-                    list.add(new LiteralText("Lowest BIN Price: " + price).formatted(Formatting.GOLD));
+                    list.add(new LiteralText("Avg. BIN Price: ").formatted(Formatting.GOLD).append(new LiteralText(price.toString() + " Coins").formatted(Formatting.DARK_AQUA)));
                 }
             }
         }catch(Exception e) {
-
+            MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.toString()), false);
         }
     
 	}
@@ -89,14 +91,14 @@ public class PriceInfoTooltip {
         return internalname;
     }
 
-    public static Map downloadPrices() {
+    public static JsonObject downloadPrices() {
         try {
-            downloadUsingStream("https://moulberry.codes/auction_averages_lbin/1day.json.gz", "1day.json.gz");
-            decompressGzipFile("1day.json.gz", "1day.json");
+            downloadUsingStream("https://moulberry.codes/auction_averages_lbin/3day.json.gz", "3day.json.gz");
+            decompressGzipFile("3day.json.gz", "3day.json");
             Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("1day.json"));
+            Reader reader = Files.newBufferedReader(Paths.get("3day.json"));
               // convert JSON file to map
-            Map<?, ?> map = gson.fromJson(reader, Map.class);
+            JsonObject  map = gson.fromJson(reader, JsonObject.class);
             return map;
         } catch (IOException e) {
             e.printStackTrace();
