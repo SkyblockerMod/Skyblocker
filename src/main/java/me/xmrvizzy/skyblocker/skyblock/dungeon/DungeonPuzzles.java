@@ -64,7 +64,7 @@ public class DungeonPuzzles {
             solutions.put("What is the status of Storm?", new String[]{"Elementalist"});
             solutions.put("What is the status of Necron?", new String[]{"Wither Lord"});
             solutions.put("How many total Fairy Souls are there?", new String[]{"220 Fairy Souls"});
-            solutions.put("How many Fairy Souls are there in Spider's Den?", new String[]{"17 Fairy Souls"});
+            solutions.put("How many Fairy Souls are there in Spider's Den?", new String[]{"19 Fairy Souls"});
             solutions.put("How many Fairy Souls are there in The End?", new String[]{"12 Fairy Souls"});
             solutions.put("How many Fairy Souls are there in The Barn?", new String[]{"7 Fairy Souls"});
             solutions.put("How many Fairy Souls are there in Mushroom Desert?", new String[]{"8 Fairy Souls"});
