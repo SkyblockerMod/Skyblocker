@@ -31,6 +31,8 @@ public class ChatHudListenerMixin {
         if (Utils.isDungeons) {
             if (SkyblockerConfig.get().locations.dungeons.solveThreeWeirdos && msg.contains("[NPC]"))
                 DungeonPuzzles.threeWeirdos(msg);
+            
+            DungeonPuzzles.trivia(msg, ci);
         }
 
         if (Utils.isSkyblock) {

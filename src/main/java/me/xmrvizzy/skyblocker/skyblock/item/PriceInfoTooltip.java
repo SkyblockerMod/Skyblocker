@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -34,6 +35,7 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 
 public class PriceInfoTooltip {
     private JsonObject auctionPricesJson = null;
+    private JsonObject bazaarPricesJson = null;
     public static JsonObject prices = PriceInfoTooltip.downloadPrices();
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalNameForItem(stack);
@@ -43,9 +45,9 @@ public class PriceInfoTooltip {
                 if(prices != null){
                 
                     JsonElement getPrice = prices.get(name);
-                    Double price = round(getPrice.getAsDouble(), 2);
+                    String price = round(getPrice.getAsDouble(), 2);
                    
-                    list.add(new LiteralText("Avg. BIN Price: ").formatted(Formatting.GOLD).append(new LiteralText(price.toString() + " Coins").formatted(Formatting.DARK_AQUA)));
+                    list.add(new LiteralText("Avg. BIN Price: ").formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
                 }
             }
         }catch(Exception e) {
@@ -53,12 +55,13 @@ public class PriceInfoTooltip {
         }
     
 	}
-    public static double round(double value, int places) {
+    public static String round(double value, int places) {
+        DecimalFormat df = new DecimalFormat("#,##0.00");
         if (places < 0) throw new IllegalArgumentException();
     
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+        return df.format(bd);
     }
     public static String getInternalNameForItem(ItemStack stack) {
         if(stack == null) return null;
