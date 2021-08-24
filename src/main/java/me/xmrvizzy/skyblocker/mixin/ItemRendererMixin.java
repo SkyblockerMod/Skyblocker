@@ -10,7 +10,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +32,7 @@ public abstract class ItemRendererMixin {
 
         if (Utils.isSkyblock && SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel) {
             if (!stack.isEmpty()) {
-                CompoundTag tag = stack.getTag();
+                NbtCompound tag = stack.getNbt();
                 if (tag != null && tag.contains("ExtraAttributes")) {
                     if (tag.getCompound("ExtraAttributes").contains("drill_fuel")) {
                         float current = 3000.0F;
@@ -50,7 +50,7 @@ public abstract class ItemRendererMixin {
 
                         RenderSystem.disableDepthTest();
                         RenderSystem.disableTexture();
-                        RenderSystem.disableAlphaTest();
+//                        RenderSystem.disableAlphaTest();
                         RenderSystem.disableBlend();
                         Tessellator tessellator = Tessellator.getInstance();
                         BufferBuilder buffer = tessellator.getBuffer();
@@ -60,7 +60,7 @@ public abstract class ItemRendererMixin {
                         this.renderGuiQuad(buffer, x + 2, y + 13, 13, 2, 0,0,0,255);
                         this.renderGuiQuad(buffer, x + 2, y + 13, width, 1, rgb >> 16 & 255, rgb >> 8 & 255, rgb & 255, 255);
                         RenderSystem.enableBlend();
-                        RenderSystem.enableAlphaTest();
+//                        RenderSystem.enableAlphaTest();
                         RenderSystem.enableTexture();
                         RenderSystem.enableDepthTest();
                     }

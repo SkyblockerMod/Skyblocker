@@ -38,7 +38,7 @@ import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.render.debug.DebugRenderer.Renderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.text.LiteralText;

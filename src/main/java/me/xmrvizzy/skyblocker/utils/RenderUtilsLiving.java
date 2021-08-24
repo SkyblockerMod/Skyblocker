@@ -22,6 +22,7 @@ package me.xmrvizzy.skyblocker.utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.resource.language.I18n;
@@ -54,7 +55,11 @@ public class RenderUtilsLiving {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, VertexFormats.POSITION_COLOR);
+
+        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
+        bufferbuilder.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        bufferbuilder.begin(7, VertexFormats.POSITION_COLOR);
         float f = mc.options.getTextBackgroundOpacity(0.25F);
         bufferbuilder.vertex(-i - 1, -1, 0.0D).color(red, green, blue, f).next();
         bufferbuilder.vertex(-i - 1, 8, 0.0D).color(red, green, blue, f).next();
@@ -76,8 +81,7 @@ public class RenderUtilsLiving {
 
         GL11.glTranslated(offX, offY, 0);
         if (item.getItem() instanceof BlockItem) GL11.glRotatef(180F, 1F, 180F, 10F);
-        mc.getItemRenderer().renderItem(new ItemStack(
-                item.getItem()), Mode.GUI, 0, 0, new MatrixStack(), mc.getBufferBuilders().getEntityVertexConsumers());
+        mc.getItemRenderer().renderItem(new ItemStack(item.getItem()), Mode.GUI, 0, 0, new MatrixStack(), mc.getBufferBuilders().getEntityVertexConsumers(),42);
         if (item.getItem() instanceof BlockItem) GL11.glRotatef(-180F, -1F, -180F, -10F);
         GL11.glDisable(GL11.GL_LIGHTING);
 
@@ -118,8 +122,8 @@ public class RenderUtilsLiving {
         RenderUtils.offsetRender();
         GL11.glTranslated(x, y, z);
         GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-mc.player.yaw, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(mc.player.pitch, 1.0F, 0.0F, 0.0F);
+        GL11.glRotatef(-mc.player.getYaw(), 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(mc.player.getPitch(), 1.0F, 0.0F, 0.0F);
         //GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 

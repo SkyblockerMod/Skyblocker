@@ -1,15 +1,14 @@
 {
   "required": true,
   "package": "me.xmrvizzy.skyblocker.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "client": [
     "ChatHudListenerMixin",
-    "ChatScreenMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
-    "MinecraftClientMixin",
+    "MinecraftClientMixin"
 
   ],
   "injectors": {

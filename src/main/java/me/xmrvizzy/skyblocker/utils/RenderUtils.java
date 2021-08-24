@@ -26,14 +26,20 @@ public class RenderUtils {
         // Fill
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(5, VertexFormats.POSITION_COLOR);
+
+        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
+        buffer.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        buffer.begin(5, VertexFormats.POSITION_COLOR);
         WorldRenderer.drawBox(buffer,
                 box.minX, box.minY, box.minZ,
                 box.maxX, box.maxY, box.maxZ, r, g, b, a / 2f);
         tessellator.draw();
 
         // Outline
-        buffer.begin(3, VertexFormats.POSITION_COLOR);
+        buffer.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        buffer.begin(3, VertexFormats.POSITION_COLOR);
         buffer.vertex(box.minX, box.minY, box.minZ).color(r, g, b, a).next();
         buffer.vertex(box.minX, box.minY, box.maxZ).color(r, g, b, a).next();
         buffer.vertex(box.maxX, box.minY, box.maxZ).color(r, g, b, a).next();
@@ -70,7 +76,11 @@ public class RenderUtils {
         float float_8 = (color2 & 255) / 255.0F;
         Tessellator tessellator_1 = Tessellator.getInstance();
         BufferBuilder bufferBuilder_1 = tessellator_1.getBuffer();
-        bufferBuilder_1.begin(7, VertexFormats.POSITION_COLOR);
+
+        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
+        bufferBuilder_1.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        bufferBuilder_1.begin(7, VertexFormats.POSITION_COLOR);
         bufferBuilder_1.vertex(x1, y1, 0).color(float_2, float_3, float_4, float_1).next();
         bufferBuilder_1.vertex(x1, y2, 0).color(float_2, float_3, float_4, float_1).next();
         bufferBuilder_1.vertex(x2, y2, 0).color(float_6, float_7, float_8, float_5).next();
@@ -86,7 +96,10 @@ public class RenderUtils {
         BufferBuilder buffer = tessellator.getBuffer();
 
         // Outline
-        buffer.begin(3, VertexFormats.POSITION_COLOR);
+        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
+        buffer.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        buffer.begin(3, VertexFormats.POSITION_COLOR);
         buffer.vertex(box.minX, box.minY, box.minZ).color(r, g, b, a).next();
         buffer.vertex(box.minX, box.minY, box.maxZ).color(r, g, b, a).next();
         buffer.vertex(box.maxX, box.minY, box.maxZ).color(r, g, b, a).next();
@@ -114,7 +127,11 @@ public class RenderUtils {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(3, VertexFormats.POSITION_COLOR);
+
+        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
+        buffer.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        buffer.begin(3, VertexFormats.POSITION_COLOR);
         buffer.vertex(x1, y1, z1).color(r, g, b, 0.0F).next();
         buffer.vertex(x1, y1, z1).color(r, g, b, 1.0F).next();
         buffer.vertex(x2, y2, z2).color(r, g, b, 1.0F).next();
@@ -130,21 +147,26 @@ public class RenderUtils {
         float blue = (float) (color & 255) / 255.0F;
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture();
-        GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-        bufferbuilder.begin(7, VertexFormats.POSITION_COLOR);
+        GlStateManager._enableBlend();
+        GlStateManager._disableTexture();
+        GlStateManager._blendFuncSeparate(770, 771, 1, 0);
+
+        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
+        bufferbuilder.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        bufferbuilder.begin(7, VertexFormats.POSITION_COLOR);
         bufferbuilder.vertex(x, h, 0.0D).color(red, green, blue, alpha).next();
         bufferbuilder.vertex(w, h, 0.0D).color(red, green, blue, alpha).next();
         bufferbuilder.vertex(w, y, 0.0D).color(red, green, blue, alpha).next();
         bufferbuilder.vertex(x, y, 0.0D).color(red, green, blue, alpha).next();
         tessellator.draw();
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
+        GlStateManager._enableTexture();
+        GlStateManager._disableBlend();
     }
 
     public static void offsetRender() {
-        Camera camera = BlockEntityRenderDispatcher.INSTANCE.camera;
+        //debg
+        Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
         Vec3d camPos = camera.getPos();
         GL11.glRotated(MathHelper.wrapDegrees(camera.getPitch()), 1, 0, 0);
         GL11.glRotated(MathHelper.wrapDegrees(camera.getYaw() + 180.0), 0, 1, 0);
@@ -177,7 +199,10 @@ public class RenderUtils {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-        bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, VertexFormats.POSITION);
+        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.TRIANGLE_FAN;
+        bufferbuilder.begin(drawMode, VertexFormats.POSITION_COLOR);
+
+//        bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, VertexFormats.POSITION);
 
         float alpha = (float) (color >> 24 & 255) / 255.0F;
         float red = (float) (color >> 16 & 255) / 255.0F;

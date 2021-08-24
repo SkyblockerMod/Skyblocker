@@ -1,10 +1,10 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -32,8 +32,8 @@ public class HotbarSlotLock {
     public static void handleInputEvents(ClientPlayerEntity player) {
         while (hotbarSlotLock.wasPressed()) {
             List<Integer> lockedSlots = SkyblockerConfig.get().general.lockedSlots;
-            int selected = player.inventory.selectedSlot;
-            if (!isLocked(player.inventory.selectedSlot)) lockedSlots.add(selected);
+            int selected = player.getInventory().selectedSlot;
+            if (!isLocked(player.getInventory().selectedSlot)) lockedSlots.add(selected);
             else lockedSlots.remove(Integer.valueOf(selected));
             AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
         }

@@ -2,11 +2,13 @@
   "schemaVersion": 1,
   "id": "skyblocker",
   "version": "${version}",
-  "name": "Skyblocker",
+  "name": "Skyblocker LIAP",
   "description": "Hypixel Skyblock Mod",
-  "authors": ["xMrVizzy"],
+  "authors": ["xMrVizzy, d3dx9, LifeIsAParadox"],
   "contact": {
-    "homepage": "https://modrinth.com/mod/skyblocker"
+    "homepage": "https://modrinth.com/mod/skyblocker",
+    "sources": "https://github.com/LifeIsAParadox/Skyblocker",
+    "issues": "https://github.com/LifeIsAParadox/Skyblocker/issues"
   },
   "license": "CC0-1.0",
   "icon": "assets/skyblocker/icon.png",
@@ -23,10 +25,12 @@
     "skyblocker.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.7.4",
-    "fabric": "*"
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+	"cloth-config2": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
   },
   "custom": {
-    "modmenu:clientsideOnly": true
   }
 }

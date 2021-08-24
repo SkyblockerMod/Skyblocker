@@ -15,6 +15,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Dwarven Mines",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Enable Drill Fuel",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Solve Fetchur",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
 
   "text.autoconfig.skyblocker.category.messages": "Messages",

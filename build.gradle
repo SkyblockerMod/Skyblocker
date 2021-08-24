@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.9-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -19,29 +19,31 @@ repositories {
 	flatDir {
 		dirs 'libs'
 	}
+	maven { url "https://maven.terraformersmc.com/releases" }
+	maven { url "https://maven.shedaniel.me/" }
+    maven {
+        url 'https://repo.maven.apache.org/maven2'
+        name 'Maven Central'
+    }
+
 }
 
 dependencies {
-	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'com.google.code.gson:gson:2.8.7'
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Cloth API
-	include "me.shedaniel.cloth:config-2:${project.cloth_api_version}"
-	modApi("me.shedaniel.cloth:config-2:${project.cloth_api_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
+	// Cloth config
+	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}") {
+		exclude group: "net.fabricmc.fabric-api"
+		exclude module: "modmenu"
 	}
-
-	// Auto Config
-	include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
-	modApi("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+	include "me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}"
 
 	// Mod Menu
-	modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -65,13 +67,8 @@ tasks.withType(JavaCompile).configureEach {
 	// If Javadoc is generated, this must be specified in that task too.
 	it.options.encoding = "UTF-8"
 
-	// The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
-	// JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
-	// We'll use that if it's available, but otherwise we'll use the older option.
-	def targetVersion = 8
-	if (JavaVersion.current().isJava9Compatible()) {
-		 it.options.release = targetVersion
-	}
+	// Minecraft 1.17 (21w19a) upwards uses Java 16.
+	it.options.release = 16
 }
 
 java {

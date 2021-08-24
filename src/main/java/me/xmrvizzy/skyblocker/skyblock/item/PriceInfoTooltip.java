@@ -19,7 +19,7 @@ import java.util.zip.GZIPInputStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -65,14 +65,14 @@ public class PriceInfoTooltip {
     }
     public static String getInternalNameForItem(ItemStack stack) {
         if(stack == null) return null;
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         return getInternalnameFromNBT(tag);
     }
 
-    public static String getInternalnameFromNBT(CompoundTag tag) {
+    public static String getInternalnameFromNBT(NbtCompound tag) {
         String internalname = null;
         if(tag != null && tag.contains("ExtraAttributes", 10)) {
-            CompoundTag  ea = tag.getCompound("ExtraAttributes");
+            NbtCompound  ea = tag.getCompound("ExtraAttributes");
 
             if(ea.contains("id", 8)) {
                 internalname = ea.getString("id").replaceAll(":", "-");
@@ -82,7 +82,7 @@ public class PriceInfoTooltip {
 
 
             if("ENCHANTED_BOOK".equals(internalname)) {
-                CompoundTag enchants = ea.getCompound("enchantments");
+                NbtCompound enchants = ea.getCompound("enchantments");
 
                 for(String enchname : enchants.getKeys()) {
                     internalname = enchname.toUpperCase() + ";" + enchants.getInt(enchname);
