@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ItemUtils {
 
@@ -18,13 +19,15 @@ public class ItemUtils {
         return Collections.emptyList();
     }
 
+    private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
+
     public static List<String> getTooltipStrings(ItemStack item) {
         List<Text> lines = getTooltip(item);
         List<String> list = new ArrayList<>();
 
         for (Text line : lines) {
             String string = line.getString();
-            if (!string.replaceAll("\\s+","").isEmpty())
+            if (!WHITESPACES.matcher(string).matches())
                 list.add(string);
         }
 
