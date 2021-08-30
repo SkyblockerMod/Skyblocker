@@ -92,10 +92,13 @@ public class PriceInfoTooltip {
         JsonObject result = null;
         try {
             URL apiAddr = new URL("https://moulberry.codes/auction_averages_lbin/3day.json.gz");
-            InputStream src = apiAddr.openStream();
-            GZIPInputStream gzipOutput = new GZIPInputStream(src);
-            InputStreamReader reader = new InputStreamReader(gzipOutput);
-            result = new Gson().fromJson(reader, JsonObject.class);
+            try (InputStream src = apiAddr.openStream()) {
+                try (GZIPInputStream gzipOutput = new GZIPInputStream(src)) {
+                    try (InputStreamReader reader = new InputStreamReader(gzipOutput)) {
+                        result = new Gson().fromJson(reader, JsonObject.class);
+                    }
+                }
+            }
         }
         catch(IOException e) {
             e.printStackTrace();
