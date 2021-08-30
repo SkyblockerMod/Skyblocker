@@ -1,16 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +21,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
@@ -95,49 +89,17 @@ public class PriceInfoTooltip {
     }
 
     public static JsonObject downloadPrices() {
+        JsonObject result = null;
         try {
-            downloadUsingStream("https://moulberry.codes/auction_averages_lbin/3day.json.gz", "3day.json.gz");
-            decompressGzipFile("3day.json.gz", "3day.json");
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("3day.json"));
-              // convert JSON file to map
-            JsonObject  map = gson.fromJson(reader, JsonObject.class);
-            return map;
-        } catch (IOException e) {
+            URL apiAddr = new URL("https://moulberry.codes/auction_averages_lbin/3day.json.gz");
+            InputStream src = apiAddr.openStream();
+            GZIPInputStream gzipOutput = new GZIPInputStream(src);
+            InputStreamReader reader = new InputStreamReader(gzipOutput);
+            result = new Gson().fromJson(reader, JsonObject.class);
+        }
+        catch(IOException e) {
             e.printStackTrace();
         }
-        return null;
-    }
-    private static void decompressGzipFile(String gzipFile, String newFile) {
-        try {
-            FileInputStream fis = new FileInputStream(gzipFile);
-            GZIPInputStream gis = new GZIPInputStream(fis);
-            FileOutputStream fos = new FileOutputStream(newFile);
-            byte[] buffer = new byte[1024];
-            int len;
-            while((len = gis.read(buffer)) != -1){
-                fos.write(buffer, 0, len);
-            }
-            //close resources
-            fos.close();
-            gis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-    }
-    
-    private static void downloadUsingStream(String urlStr, String file) throws IOException{
-        URL url = new URL(urlStr);
-        BufferedInputStream bis = new BufferedInputStream(url.openStream());
-        FileOutputStream fis = new FileOutputStream(file);
-        byte[] buffer = new byte[1024];
-        int count=0;
-        while((count = bis.read(buffer,0,1024)) != -1)
-        {
-            fis.write(buffer, 0, count);
-        }
-        fis.close();
-        bis.close();
+        return result;
     }
 }
