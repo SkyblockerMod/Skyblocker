@@ -36,7 +36,7 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 public class PriceInfoTooltip {
     private JsonObject auctionPricesJson = null;
     private JsonObject bazaarPricesJson = null;
-    public static JsonObject prices = PriceInfoTooltip.downloadPrices();
+    public static JsonObject prices = downloadPrices();
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalNameForItem(stack);
 
@@ -91,7 +91,7 @@ public class PriceInfoTooltip {
         return internalname;
     }
 
-    public static JsonObject downloadPrices() {
+    private static JsonObject downloadPrices() {
         try {
             downloadUsingStream("https://moulberry.codes/auction_averages_lbin/3day.json.gz", "3day.json.gz");
             decompressGzipFile("3day.json.gz", "3day.json");
