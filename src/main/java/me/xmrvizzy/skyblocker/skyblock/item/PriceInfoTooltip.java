@@ -41,14 +41,11 @@ public class PriceInfoTooltip {
         String name = getInternalNameForItem(stack);
 
         try {
-            if(!list.toString().contains("Avg. BIN Price") && prices.has(name) ){
-                if(prices != null){
-                
-                    JsonElement getPrice = prices.get(name);
-                    String price = round(getPrice.getAsDouble(), 2);
-                   
-                    list.add(new LiteralText("Avg. BIN Price: ").formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
-                }
+            if(!list.toString().contains("Avg. BIN Price") && prices != null && prices.has(name) ){
+                JsonElement getPrice = prices.get(name);
+                String price = round(getPrice.getAsDouble(), 2);
+
+                list.add(new LiteralText("Avg. BIN Price: ").formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
             }
         }catch(Exception e) {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.toString()), false);
