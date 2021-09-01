@@ -56,15 +56,15 @@ public class ChatHudListenerMixin {
                     Puzzler.solve(msg);
             }
 
-            if (SkyblockerConfig.get().messages.hideAbility &&
+            if (SkyblockerConfig.get().messages.hideAbility && (
                     msg.contains("This ability is currently on cooldown for ") ||
                     msg.contains("No more charges, next one in ") ||
-                    msg.contains("This ability is on cooldown for "))
+                    msg.contains("This ability is on cooldown for ")))
                 ci.cancel();
 
-            if (SkyblockerConfig.get().messages.hideHeal &&
+            if (SkyblockerConfig.get().messages.hideHeal && (
                     msg.contains("You healed ") &&
-                    msg.contains(" health!") || msg.contains(" healed you for "))
+                    msg.contains(" health!") || msg.contains(" healed you for ")))
                 ci.cancel();
 
             if (SkyblockerConfig.get().messages.hideAOTE &&
