@@ -3,14 +3,13 @@ package me.xmrvizzy.skyblocker.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.Attribute;
+import me.xmrvizzy.skyblocker.skyblock.FancyStatusBars;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,15 +22,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
     private static final Identifier SLOT_LOCK = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png");
-    private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/bars.png");
 
+    private final FancyStatusBars statusBars = new FancyStatusBars();
     private MatrixStack hotbarMatrices;
     private int hotbarSlotIndex;
 
@@ -42,15 +40,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private int scaledHeight;
     @Shadow
     private int scaledWidth;
-    @Shadow
-    public abstract TextRenderer getTextRenderer();
 
-    @ModifyVariable(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"))
-    private Text setOverlayMessage(Text message) {
+    @Inject(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
+    private void onSetOverlayMessage(Text message, boolean tinted, CallbackInfo ci) {
+        if(!Utils.isSkyblock)
+            return;
         String msg = message.getString();
-        if (msg != null && Utils.isSkyblock && SkyblockerConfig.get().general.bars.enableBars)
-            msg = Utils.parseActionBar(msg);
-        return Text.of(msg);
+        if(statusBars.update(msg))
+            ci.cancel();
     }
 
     @Inject(method = "renderHotbar", at = @At("HEAD"))
@@ -80,16 +77,15 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
     private void renderStatusBars(MatrixStack matrices, CallbackInfo ci) {
+        if(!Utils.isSkyblock)
+            return;
+        if(statusBars.render(matrices, scaledWidth, scaledHeight))
+            ci.cancel();
+
         if (Utils.isDungeons && SkyblockerConfig.get().locations.dungeons.enableMap)
             DungeonMap.render(matrices);
 
-        if (Utils.isSkyblock) {
-            if (SkyblockerConfig.get().general.bars.enableBars) {
-                ci.cancel();
-                renderBars(matrices);
-            }
-            this.client.getTextureManager().bindTexture(DrawableHelper.GUI_ICONS_TEXTURE);
-        }
+        this.client.getTextureManager().bindTexture(DrawableHelper.GUI_ICONS_TEXTURE);
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
@@ -97,56 +93,4 @@ public abstract class InGameHudMixin extends DrawableHelper {
         if (Utils.isSkyblock && SkyblockerConfig.get().general.bars.enableBars)
             ci.cancel();
     }
-
-    private void renderBars(MatrixStack matrices) {
-        int left = this.scaledWidth / 2 - 91;
-        int top = this.scaledHeight - 35;
-
-        int health = (int) ((float)Attribute.HEALTH.get()/(float)Attribute.MAX_HEALTH.get() * 33.0F);
-        if (health > 33) health = 33;
-        int mana = (int) ((float)Attribute.MANA.get()/(float)Attribute.MAX_MANA.get() * 33.0F);
-        if (mana > 33) mana = 33;
-        int xp = (int) (this.client.player.experienceProgress * 33.0F);
-
-        // Icons
-//        this.client.getTextureManager().bindTexture(BARS);
-        RenderSystem.setShaderTexture(0,InGameHudMixin.BARS);
-        this.drawTexture(matrices, left, top, 0, 0, 9, 9);
-        this.drawTexture(matrices, left + 47, top, 9, 0, 7, 9);
-        this.drawTexture(matrices, left + 92, top, 16, 0, 9, 9);
-        this.drawTexture(matrices, left + 139, top, 25, 0, 9, 9);
-
-        // Empty Bars
-        this.drawTexture(matrices, left + 10, top + 1, 0, 9, 33, 7);
-        this.drawTexture(matrices, left + 55, top + 1, 0, 9, 33, 7);
-        this.drawTexture(matrices, left + 102, top + 1, 0, 9, 33, 7);
-        this.drawTexture(matrices, left + 149, top + 1, 0, 9, 33, 7);
-
-        // Progress Bars
-        this.drawTexture(matrices, left + 10, top + 1, 0, 16, health, 7);
-        this.drawTexture(matrices, left + 55, top + 1, 0, 23, mana, 7);
-        this.drawTexture(matrices, left + 102, top + 1, 0, 30, 33, 7);
-        this.drawTexture(matrices, left + 149, top + 1, 0, 37, xp, 7);
-
-        // Progress Texts
-        renderText(matrices, Attribute.HEALTH.get(), left + 11, top, 16733525);
-        renderText(matrices, Attribute.MANA.get(), left + 56, top, 5636095);
-        renderText(matrices, Attribute.DEFENCE.get(), left + 103, top, 12106180);
-        renderText(matrices, this.client.player.experienceLevel, left + 150, top, 8453920);
-
-    }
-
-    private void renderText(MatrixStack matrices, int value, int left, int top, int color) {
-        String text = Integer.toString(value);
-        int x = left + (33 - this.getTextRenderer().getWidth(text)) / 2;
-        int y = top - 3;
-
-        this.getTextRenderer().draw(matrices, text, (float) (x + 1), (float) y, 0);
-        this.getTextRenderer().draw(matrices, text, (float) (x - 1), (float) y, 0);
-        this.getTextRenderer().draw(matrices, text, (float) x, (float) (y + 1), 0);
-        this.getTextRenderer().draw(matrices, text, (float) x, (float) (y - 1), 0);
-        this.getTextRenderer().draw(matrices, text, (float) x, (float) y, color);
-    }
-
-
 }
