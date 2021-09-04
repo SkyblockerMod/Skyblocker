@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class FancyStatusBars extends DrawableHelper {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/bars.png");
-    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("§[6c]([0-9]+)/([0-9])+❤ +§(a([0-9]+)§a❈ Defense|b-[0-9]+ Mana \\(§6[a-zA-Z ]+§b\\)) +§((b([0-9]+)/([0-9]+)✎ Mana)|[0-9,]+/[0-9,]+k? Drill Fuel)$");
+    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9])+❤ +§(?:a([0-9]+)§a❈ Defense|b-[0-9]+ Mana \\(§6[a-zA-Z ]+§b\\)) +§(?:b([0-9]+)/([0-9]+)✎ Mana|[0-9,]+/[0-9,]+k? Drill Fuel)$");
     private final Resource health;
     private final Resource mana;
     private int defense;
@@ -34,10 +34,10 @@ public class FancyStatusBars extends DrawableHelper {
             return false;
         }
         health.set(matcher.group(1), matcher.group(2));
+        if(matcher.group(3) != null)
+            defense = Integer.parseInt(matcher.group(3));
         if(matcher.group(4) != null)
-            defense = Integer.parseInt(matcher.group(4));
-        if(matcher.group(6) != null)
-            mana.set(matcher.group(7), matcher.group(8));
+            mana.set(matcher.group(4), matcher.group(5));
         return true;
     }
 
@@ -47,10 +47,10 @@ public class FancyStatusBars extends DrawableHelper {
         int left = scaledWidth / 2 - 91;
         int top = scaledHeight - 35;
 
-        int hpBarWidth = (int) (health.getFillLevel() * 33.0F);
-        if (hpBarWidth > 33) hpBarWidth = 33;
-        int manaBarWidth = (int) (mana.getFillLevel() * 33.0F);
-        if (manaBarWidth > 33) manaBarWidth = 33;
+        int hpFillWidth = (int) (health.getFillLevel() * 33.0F);
+        if (hpFillWidth > 33) hpFillWidth = 33;
+        int manaFillWidth = (int) (mana.getFillLevel() * 33.0F);
+        if (manaFillWidth > 33) manaFillWidth = 33;
         int xp = (int) (client.player.experienceProgress * 33.0F);
 
         // Icons
@@ -68,16 +68,16 @@ public class FancyStatusBars extends DrawableHelper {
         this.drawTexture(matrices, left + 149, top + 1, 0, 9, 33, 7);
 
         // Progress Bars
-        this.drawTexture(matrices, left + 10, top + 1, 0, 16, hpBarWidth, 7);
-        this.drawTexture(matrices, left + 55, top + 1, 0, 23, manaBarWidth, 7);
+        this.drawTexture(matrices, left + 10, top + 1, 0, 16, hpFillWidth, 7);
+        this.drawTexture(matrices, left + 55, top + 1, 0, 23, manaFillWidth, 7);
         this.drawTexture(matrices, left + 102, top + 1, 0, 30, 33, 7);
         this.drawTexture(matrices, left + 149, top + 1, 0, 37, xp, 7);
 
         // Progress Texts
-        renderText(matrices, this.health.getValue(), left + 11, top, 16733525);
-        renderText(matrices, this.mana.getValue(), left + 56, top, 5636095);
-        renderText(matrices, this.defense, left + 103, top, 12106180);
-        renderText(matrices, this.client.player.experienceLevel, left + 150, top, 8453920);
+        renderText(matrices, health.getValue(), left + 11, top, 16733525);
+        renderText(matrices, mana.getValue(), left + 56, top, 5636095);
+        renderText(matrices, defense, left + 103, top, 12106180);
+        renderText(matrices, client.player.experienceLevel, left + 150, top, 8453920);
         return true;
     }
 
