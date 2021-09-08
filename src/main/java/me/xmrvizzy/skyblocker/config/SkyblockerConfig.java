@@ -66,6 +66,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideAOTE = false;
         public boolean hideImplosion = false;
         public boolean hideMoltenWave = false;
+        public boolean hideAds = false;
     }
 
     public static void init() {
