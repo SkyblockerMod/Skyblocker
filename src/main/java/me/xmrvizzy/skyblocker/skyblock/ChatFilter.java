@@ -34,10 +34,8 @@ public class ChatFilter {
 
         if (settings.hideAds) {
             Matcher m = playerMessage.matcher(message);
-            if(m.matches() && adverts.matcher(m.group(2)).find()) {
-                System.out.println(m.group(2));
+            if(m.matches() && adverts.matcher(m.group(2)).find())
                 return true;
-            }
         }
         return false;
     }
