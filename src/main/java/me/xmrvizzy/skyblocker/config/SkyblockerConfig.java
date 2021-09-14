@@ -52,6 +52,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class Dungeons {
         public boolean enableMap = true;
         public boolean solveThreeWeirdos = true;
+        public boolean blazesolver = true;
     }
 
     public static class DwarvenMines {

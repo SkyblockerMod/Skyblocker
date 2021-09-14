@@ -8,6 +8,7 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
+import org.apache.commons.lang3.StringUtils;
 
 public class DungeonMap {
 
@@ -19,17 +20,17 @@ public class DungeonMap {
 
         if (tag != null && tag.contains("map")) {
             String tag2 = tag.asString();
-            tag2 = tag2.substring(tag2.indexOf(":") + 1, tag2.indexOf("}"));
-            int tagid = Integer.parseInt(tag2);
+            tag2 = StringUtils.substringBetween(tag2, "map:", "}");
+            int mapid = Integer.parseInt(tag2);
             VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
             MapRenderer map = client.gameRenderer.getMapRenderer();
-            MapState state = FilledMapItem.getMapState(tagid, client.world);
+            MapState state = FilledMapItem.getMapState(mapid, client.world);
 
             if (state == null) return;
             matrices.push();
             matrices.translate(2, 2, 0);
             matrices.scale(1, 1, 0);
-            map.draw(matrices, vertices, 15728880,state, false,15728880);
+            map.draw( matrices, vertices, mapid, state, false, 15728880);
             vertices.draw();
             matrices.pop();
         }

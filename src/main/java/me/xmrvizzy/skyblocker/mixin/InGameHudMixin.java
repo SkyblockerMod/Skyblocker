@@ -85,7 +85,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         if (Utils.isDungeons && SkyblockerConfig.get().locations.dungeons.enableMap)
             DungeonMap.render(matrices);
 
-        this.client.getTextureManager().bindTexture(DrawableHelper.GUI_ICONS_TEXTURE);
+        RenderSystem.setShaderTexture(0, GUI_ICONS_TEXTURE);
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)

@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
+import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
@@ -27,10 +28,12 @@ public class SkyblockerMod implements ClientModInitializer {
 		if (TICKS % 4 == 0) 
 			try {
 				if(Utils.isDungeons){
-					DungeonBlaze.DungeonBlaze();
+					if (SkyblockerConfig.get().locations.dungeons.blazesolver) {
+						DungeonBlaze.DungeonBlaze();
+					}
 				}
 			}catch(Exception e) {
-				// do nothing :))
+				//System.out.println("Blazesolver: " + e);
 			}
 		if (TICKS % 20 == 0) {
 			if (client.world != null && !client.isInSingleplayer())
