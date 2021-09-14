@@ -23,5 +23,6 @@
   "text.autoconfig.skyblocker.option.messages.hideHeal": "Hide Heal Messages",
   "text.autoconfig.skyblocker.option.messages.hideAOTE": "Hide AOTE Messages",
   "text.autoconfig.skyblocker.option.messages.hideImplosion": "Hide Implosion Message",
-  "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Hide Molten Wave Message"
+  "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Hide Molten Wave Message",
+  "text.autoconfig.skyblocker.option.messages.hideAds": "Hide Ads From Public Chat"
 }
