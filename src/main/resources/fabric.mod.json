@@ -2,17 +2,18 @@
   "schemaVersion": 1,
   "id": "skyblocker",
   "version": "${version}",
-  "name": "Skyblocker LIAP",
+  "name": "Skyblocker",
   "description": "Hypixel Skyblock Mod",
-  "authors": ["xMrVizzy, d3dx9, LifeIsAParadox"],
+  "authors": ["xMrVizzy", "d3dx9", "LifeIsAParadox"],
+  "contributors": ["ExternalTime"],
   "contact": {
-    "homepage": "https://modrinth.com/mod/skyblocker",
+    "homepage": "https://hysky.de",
     "sources": "https://github.com/LifeIsAParadox/Skyblocker",
     "issues": "https://github.com/LifeIsAParadox/Skyblocker/issues"
   },
-  "license": "CC0-1.0",
+  "license": "GNU GPLv3",
   "icon": "assets/skyblocker/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "client": [
       "me.xmrvizzy.skyblocker.SkyblockerMod"
@@ -32,5 +33,10 @@
     "java": ">=16"
   },
   "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.com/invite/aNNJHQykck"
+      }
+    }
   }
 }

@@ -19,124 +19,127 @@ package me.xmrvizzy.skyblocker.utils;
  */
 
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.model.json.ModelTransformation.Mode;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
+import java.lang.reflect.Field;
 
-import java.awt.*;
-import java.util.Map.Entry;
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3f;
 
 public class RenderUtilsLiving {
 
-    private static MinecraftClient mc = MinecraftClient.getInstance();
-    public static void drawText(String str, double x, double y, double z, double scale)
-    {
-        drawText(str, x, y, z, scale, 0.0F, 0.0F, 0.0F);
-    }
-    public static void drawText(String str, double x, double y, double z, double scale, float red, float green, float blue) {
-        glSetup(x, y, z);
+    private static final MinecraftClient mc = MinecraftClient.getInstance();
+    private static Field shaderLightField;
 
-        GL11.glScaled(-0.025 * scale, -0.025 * scale, 0.025 * scale);
-
-        int i = mc.textRenderer.getWidth(str) / 2;
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-
-        VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
-        bufferbuilder.begin(drawMode, VertexFormats.POSITION_COLOR);
-
-//        bufferbuilder.begin(7, VertexFormats.POSITION_COLOR);
-        float f = mc.options.getTextBackgroundOpacity(0.25F);
-        bufferbuilder.vertex(-i - 1, -1, 0.0D).color(red, green, blue, f).next();
-        bufferbuilder.vertex(-i - 1, 8, 0.0D).color(red, green, blue, f).next();
-        bufferbuilder.vertex(i + 1, 8, 0.0D).color(red, green, blue, f).next();
-        bufferbuilder.vertex(i + 1, -1, 0.0D).color(red, green, blue, f).next();
-        tessellator.draw();
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-
-        mc.textRenderer.draw(new MatrixStack(), str, -i, 0, 553648127);
-        mc.textRenderer.draw(new MatrixStack(), str, -i, 0, -1);
-
-        glCleanup();
+    /** Draws text in the world. **/
+    public static void drawText(Text text, double x, double y, double z, double scale, boolean shadow) {
+        drawText(text, x, y, z, 0, 0, scale, shadow);
     }
 
-    public static void drawItem(double x, double y, double z, double offX, double offY, double scale, ItemStack item) {
-        glSetup(x, y, z);
+    /** Draws text in the world. **/
+    public static void drawText(Text text, double x, double y, double z, double offX, double offY, double scale, boolean fill) {
+        MatrixStack matrices = matrixFrom(x, y, z);
 
-        GL11.glScaled(0.4 * scale, 0.4 * scale, 0);
+        Camera camera = mc.gameRenderer.getCamera();
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-camera.getYaw()));
+        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
 
-        GL11.glTranslated(offX, offY, 0);
-        if (item.getItem() instanceof BlockItem) GL11.glRotatef(180F, 1F, 180F, 10F);
-        mc.getItemRenderer().renderItem(new ItemStack(item.getItem()), Mode.GUI, 0, 0, new MatrixStack(), mc.getBufferBuilders().getEntityVertexConsumers(),42);
-        if (item.getItem() instanceof BlockItem) GL11.glRotatef(-180F, -1F, -180F, -10F);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
 
-        GL11.glScalef(-0.05F, -0.05F, 0);
+        matrices.translate(offX, offY, 0);
+        matrices.scale(-0.025f * (float) scale, -0.025f * (float) scale, 1);
 
-        if (item.getCount() > 0) {
-            int w = mc.textRenderer.getWidth("x" + item.getCount()) / 2;
-            mc.textRenderer.drawWithShadow(new MatrixStack(), "x" + item.getCount(), 7 - w, 5, 0xffffff);
+        int halfWidth = mc.textRenderer.getWidth(text) / 2;
+
+        VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+
+        if (fill) {
+            int opacity = (int) (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F) * 255.0F) << 24;
+            mc.textRenderer.draw(text, -halfWidth, 0f, 553648127, false, matrices.peek().getModel(), immediate, true, opacity, 0xf000f0);
+            immediate.draw();
+        } else {
+            matrices.push();
+            matrices.translate(1, 1, 0);
+            mc.textRenderer.draw(text.copy(), -halfWidth, 0f, 0x202020, false, matrices.peek().getModel(), immediate, true, 0, 0xf000f0);
+            immediate.draw();
+            matrices.pop();
         }
 
-        GL11.glScalef(0.85F, 0.85F, 0.85F);
+        mc.textRenderer.draw(text, -halfWidth, 0f, -1, false, matrices.peek().getModel(), immediate, true, 0, 0xf000f0);
+        immediate.draw();
 
-        int c = 0;
-        for (Entry<Enchantment, Integer> m : EnchantmentHelper.get(item).entrySet()) {
-            int w1 = mc.textRenderer.getWidth(I18n.translate(m.getKey().getName(2).asString()).substring(0, 2) + m.getValue()) / 2;
-            mc.textRenderer.drawWithShadow(new MatrixStack(),
-                    I18n.translate(m.getKey().getName(2).asString()).substring(0, 2) + m.getValue(), -4 - w1, c * 10 - 1,
-                    m.getKey() == Enchantments.VANISHING_CURSE || m.getKey() == Enchantments.BINDING_CURSE
-                            ? 0xff5050 : 0xffb0e0);
-            c--;
+        RenderSystem.disableBlend();
+    }
+
+    /** Draws a 2D gui items somewhere in the world. **/
+    public static void drawGuiItem(double x, double y, double z, double offX, double offY, double scale, ItemStack item) {
+        if (item.isEmpty()) {
+            return;
         }
 
-        GL11.glScalef(0.6F, 0.6F, 0.6F);
-        String dur = item.getMaxDamage() - item.getDamage() + "";
-        int color = 0x000000;
+        MatrixStack matrices = matrixFrom(x, y, z);
+
+        Camera camera = mc.gameRenderer.getCamera();
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-camera.getYaw()));
+        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
+
+        matrices.translate(offX, offY, 0);
+        matrices.scale((float) scale, (float) scale, 0.001f);
+
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f));
+
+        //mc.getBufferBuilders().getEntityVertexConsumers().draw();
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+
+        Vec3f[] currentLight = getCurrentLight();
+        DiffuseLighting.disableGuiDepthLighting();
+
+        mc.getBufferBuilders().getEntityVertexConsumers().draw();
+
+        mc.getItemRenderer().renderItem(item, ModelTransformation.Mode.GUI, 0xF000F0,
+                OverlayTexture.DEFAULT_UV, matrices, mc.getBufferBuilders().getEntityVertexConsumers(), 0);
+
+        mc.getBufferBuilders().getEntityVertexConsumers().draw();
+
+        RenderSystem.setShaderLights(currentLight[0], currentLight[1]);
+        RenderSystem.disableBlend();
+    }
+
+    public static MatrixStack matrixFrom(double x, double y, double z) {
+        MatrixStack matrices = new MatrixStack();
+
+        Camera camera = mc.gameRenderer.getCamera();
+        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(camera.getYaw() + 180.0F));
+
+        matrices.translate(x - camera.getPos().x, y - camera.getPos().y, z - camera.getPos().z);
+
+        return matrices;
+    }
+
+    public static Vec3f[] getCurrentLight() {
+        if (shaderLightField == null) {
+            shaderLightField = FieldUtils.getField(RenderSystem.class, "shaderLightDirections", true);
+        }
+
         try {
-            color = MathHelper.hsvToRgb(((float) (item.getMaxDamage() - item.getDamage()) / item.getMaxDamage()) / 3.0F, 1.0F, 1.0F);
+            return (Vec3f[]) shaderLightField.get(null);
         } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        if (item.isDamageable()) mc.textRenderer.drawWithShadow(new MatrixStack(), dur, -8 - dur.length() * 3, 15,
-                new Color(color >> 16 & 255, color >> 8 & 255, color & 255).getRGB());
-
-        glCleanup();
-    }
-
-    public static void glSetup(double x, double y, double z) {
-        GL11.glPushMatrix();
-        RenderUtils.offsetRender();
-        GL11.glTranslated(x, y, z);
-        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-mc.player.getYaw(), 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(mc.player.getPitch(), 1.0F, 0.0F, 0.0F);
-        //GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL14.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-
-    }
-
-    public static void glCleanup() {
-        //GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glPopMatrix();
     }
 }

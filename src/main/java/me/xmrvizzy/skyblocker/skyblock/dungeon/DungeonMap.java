@@ -18,9 +18,12 @@ public class DungeonMap {
         NbtCompound tag = item.getNbt();
 
         if (tag != null && tag.contains("map")) {
+            String tag2 = tag.asString();
+            tag2 = tag2.substring(tag2.indexOf(":") + 1, tag2.indexOf("}"));
+            int tagid = Integer.parseInt(tag2);
             VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
             MapRenderer map = client.gameRenderer.getMapRenderer();
-            MapState state = FilledMapItem.getOrCreateMapState(item, client.world);
+            MapState state = FilledMapItem.getMapState(tagid, client.world);
 
             if (state == null) return;
             matrices.push();

@@ -1,17 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPInputStream;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -20,12 +12,15 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-
-import me.xmrvizzy.skyblocker.SkyblockerMod;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
     private JsonObject auctionPricesJson = null;

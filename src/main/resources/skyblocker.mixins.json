@@ -8,7 +8,8 @@
     "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "AccessorWorldRenderer"
 
   ],
   "injectors": {

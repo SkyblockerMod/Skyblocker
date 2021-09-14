@@ -60,7 +60,7 @@ public class Utils {
         if (sidebar.isEmpty()) return;
         if (sidebar.get(sidebar.size() - 1).equals("www.hypixel.net")) {
             if (sidebar.get(0).contains("SKYBLOCK")){
-                if(isInjected == false){
+                if(!isInjected){
                     isInjected = true;
                     ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
                 }
@@ -68,8 +68,8 @@ public class Utils {
             }
             else isSkyblock = false;
 
-            if (isSkyblock && string.contains("The Catacombs")) isDungeons = true;
-            else isDungeons = false;
+            isDungeons = isSkyblock && string.contains("The Catacombs");
+
         } else {
             isSkyblock = false;
             isDungeons = false;
