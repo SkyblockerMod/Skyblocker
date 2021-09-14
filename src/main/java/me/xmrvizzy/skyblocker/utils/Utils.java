@@ -2,8 +2,6 @@ package me.xmrvizzy.skyblocker.utils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.Attribute;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
@@ -16,42 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Utils {
     public static boolean isSkyblock = false;
     public static boolean isDungeons = false;
     public static boolean isInjected = false;
-    public static String parseActionBar(String msg) {
-        String[] sections = msg.split(" {3,}");
-        List<String> unused = new ArrayList<String>();
-
-        if (msg.contains("❤") && !msg.contains("❈") && sections.length == 2) {
-            Attribute.DEFENCE.set(0);
-        }
-
-        for (String section : sections) {
-            String clear = Pattern.compile("[^0-9 /]").matcher(section).replaceAll("").trim();
-            String[] split = clear.split("/");
-
-            if (section.contains("❤")) {
-                if (section.startsWith("§6")) split[0] = split[0].substring(1);
-                Attribute.HEALTH.set(Integer.parseInt(split[0]));
-                Attribute.MAX_HEALTH.set(Integer.parseInt(split[1]));
-            } else if (section.contains("❈")) {
-                Attribute.DEFENCE.set(Integer.parseInt(clear));
-            } else if (section.contains("✎")) {
-                Attribute.MANA.set(Integer.parseInt(split[0]));
-                Attribute.MAX_MANA.set(Integer.parseInt(split[1]));
-            } else {
-                if (section.contains("Drill Fuel") && SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel) continue;
-                unused.add(section);
-            }
-        }
-
-        return String.join("   ", unused);
-    }
 
     public static void sbChecker() {
         List<String> sidebar = getSidebar();
