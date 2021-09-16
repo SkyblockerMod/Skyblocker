@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class FancyStatusBars extends DrawableHelper {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/bars.png");
-    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9])+❤ +§(?:a([0-9]+)§a❈ Defense|b-[0-9]+ Mana \\(§6[a-zA-Z ]+§b\\)) +§(?:b([0-9]+)/([0-9]+)✎ Mana|[0-9,]+/[0-9,]+k? Drill Fuel)$");
+    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9]+)❤ +§(?:a([0-9]+)§a❈ Defense|b-[0-9]+ Mana \\(§6[a-zA-Z ]+§b\\)) +§(?:b([0-9]+)/([0-9]+)✎ Mana|[0-9,]+/[0-9,]+k? Drill Fuel)$");
     private final Resource health;
     private final Resource mana;
     private int defense;
