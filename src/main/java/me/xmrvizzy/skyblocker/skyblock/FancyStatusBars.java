@@ -48,9 +48,8 @@ public class FancyStatusBars extends DrawableHelper {
         int top = scaledHeight - 35;
 
         int hpFillWidth = (int) (health.getFillLevel() * 33.0F);
-        if (hpFillWidth > 33) hpFillWidth = 33;
+        int hpOverflowWidth = (int) (health.getOverflow() * 33.0F);
         int manaFillWidth = (int) (mana.getFillLevel() * 33.0F);
-        if (manaFillWidth > 33) manaFillWidth = 33;
         int xp = (int) (client.player.experienceProgress * 33.0F);
 
         // Icons
@@ -69,6 +68,7 @@ public class FancyStatusBars extends DrawableHelper {
 
         // Progress Bars
         this.drawTexture(matrices, left + 10, top + 1, 0, 16, hpFillWidth, 7);
+        this.drawTexture(matrices, left + 10, top + 1, 0, 44, hpOverflowWidth, 7);
         this.drawTexture(matrices, left + 55, top + 1, 0, 23, manaFillWidth, 7);
         this.drawTexture(matrices, left + 102, top + 1, 0, 30, 33, 7);
         this.drawTexture(matrices, left + 149, top + 1, 0, 37, xp, 7);
@@ -109,7 +109,10 @@ public class FancyStatusBars extends DrawableHelper {
             return value;
         }
         public double getFillLevel() {
-            return ((double)value)/((double)max);
+            return Math.min(((double)value)/((double)max),  1);
+        }
+        public double getOverflow() {
+            return Math.max(((double)value)/((double)max) - 1,  0);
         }
     }
 }
