@@ -26,6 +26,7 @@ public class ChatHudListenerMixin {
 
     @Shadow @Final private MinecraftClient client;
     private final ChatFilter filter = new ChatFilter();
+    private final Trivia triviaSolver = new Trivia();
 
     @Inject(method = "onChatMessage", at = @At("HEAD"), cancellable = true)
     public void onMessage(MessageType messageType, Text message, UUID senderUuid, CallbackInfo ci) {
@@ -35,7 +36,7 @@ public class ChatHudListenerMixin {
             if (SkyblockerConfig.get().locations.dungeons.solveThreeWeirdos && msg.contains("[NPC]"))
                 ThreeWeirdos.process(msg);
 
-            Trivia.process(msg, ci);
+            triviaSolver.process(msg, ci);
         }
 
         if (Utils.isSkyblock) {
