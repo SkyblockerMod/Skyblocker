@@ -2,7 +2,8 @@ package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.ChatFilter;
-import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonPuzzles;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.Trivia;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Fetchur;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Puzzler;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -32,9 +33,9 @@ public class ChatHudListenerMixin {
 
         if (Utils.isDungeons) {
             if (SkyblockerConfig.get().locations.dungeons.solveThreeWeirdos && msg.contains("[NPC]"))
-                DungeonPuzzles.threeWeirdos(msg);
-            
-            DungeonPuzzles.trivia(msg, ci);
+                ThreeWeirdos.process(msg);
+
+            Trivia.process(msg, ci);
         }
 
         if (Utils.isSkyblock) {
