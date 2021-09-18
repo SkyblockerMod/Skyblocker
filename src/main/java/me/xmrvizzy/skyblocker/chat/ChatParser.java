@@ -1,9 +1,12 @@
 package me.xmrvizzy.skyblocker.chat;
 
+import me.xmrvizzy.skyblocker.skyblock.dwarven.Fetchur;
+
 import java.util.regex.Matcher;
 
 public class ChatParser {
     private final ChatListener[] listeners = new ChatListener[] {
+        new Fetchur(),
     };
 
     public boolean shouldFilter(String message) {
