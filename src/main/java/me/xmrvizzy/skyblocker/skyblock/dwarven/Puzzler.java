@@ -1,35 +1,57 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import net.minecraft.block.Blocks;
+import me.xmrvizzy.skyblocker.chat.ChatListener;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.text.Text;
 
-public class Puzzler {
+public class Puzzler extends ChatListener {
+    public Puzzler() {
+        super("^§e\\[NPC] §dPuzzler§f: ((?:§d▲|§5▶|§b◀|§a▼){10})$");
+    }
 
-    public static void solve(String message) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null && client.world == null) return;
+    @Override
+    public boolean isEnabled() {
+        return SkyblockerConfig.get().locations.dwarvenMines.solvePuzzler;
+    }
 
-        int x = 181;
-        int y = 195;
-        int z = 135;
-
-        String path = Formatting.strip(message);
-        path = path.substring(path.indexOf(":") + 2);
-        String check = path
-                .replaceAll("▲", "").replaceAll("▶", "")
-                .replaceAll("▼", "").replaceAll("◀", "");
-
-        if (check.isEmpty()) {
-            for (char c : path.toCharArray()) {
-                if (c == '▲') z += 1;
-                if (c == '▶') x -= 1;
-                if (c == '▼') z -= 1;
-                if (c == '◀') x += 1;
+    @Override
+    public boolean onMessage(String[] groups) {
+        int x = 0;
+        int z = 0;
+        for (char c : groups[1].toCharArray()) {
+            switch (c) {
+                case '▲': z += 1;
+                case '▶': x -= 1;
+                case '▼': z -= 1;
+                case '◀': x += 1;
             }
-
-            client.world.setBlockState(new BlockPos(x, y, z), Blocks.EMERALD_BLOCK.getDefaultState());
         }
+        StringBuilder message = new StringBuilder("§e[NPC] §dPuzzler§f: ");
+        if(z > 0) {
+            message.append("§d");
+            message.append(z);
+            message.append("▲");
+        }
+        else if (z < 0) {
+            message.append("§a▼");
+            message.append(-z);
+            message.append("▼");
+        }
+        if(x > 0) {
+            message.append("§b");
+            message.append(x);
+            message.append("◀");
+        }
+        else if (x < 0) {
+            message.append("§5▶");
+            message.append(-x);
+            message.append("▶");
+        }
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        assert client.player != null;
+        client.player.sendMessage(Text.of(message.toString()), false);
+        return true;
     }
 }
