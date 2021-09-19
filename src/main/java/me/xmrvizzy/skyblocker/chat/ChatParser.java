@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.chat;
 
 import me.xmrvizzy.skyblocker.chat.filters.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.Trivia;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Fetchur;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Puzzler;
 
@@ -18,6 +19,7 @@ public class ChatParser {
             new AdFilter(),
             new Fetchur(),
             new Puzzler(),
+            new Trivia(),
     };
 
     public boolean shouldFilter(String message) {
