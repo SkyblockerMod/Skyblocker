@@ -1,47 +1,53 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
+import me.xmrvizzy.skyblocker.chat.ChatListener;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class Fetchur {
+public class Fetchur extends ChatListener {
+    private static Map<String, String> answers;
 
-    public static Map<String, List<String>> getAnswers() {
-        Map<String, List<String>> answers = new HashMap<>();
-        answers.put("yellow, see-through", Arrays.asList(new TranslatableText("block.minecraft.yellow_stained_glass").getString()));
-        answers.put("circular and sometimes moves", Arrays.asList(new TranslatableText("item.minecraft.compass").getString()));
-        answers.put("circlular and sometimes moves", Arrays.asList(new TranslatableText("item.minecraft.compass").getString()));
-        answers.put("expensive minerals", Arrays.asList("Mithril"));
-        answers.put("useful during celebrations", Arrays.asList(new TranslatableText("item.minecraft.firework_rocket").getString()));
-        answers.put("hot, gives energy", Arrays.asList("Cheap Coffee", "Decent Coffee"));
-        answers.put("tall, can be opened", Arrays.asList(new TranslatableText("block.minecraft.oak_door").getString()));
-        answers.put("explosive, more than usual", Arrays.asList("Superboom TNT"));
-        answers.put("wearable, grows", Arrays.asList(new TranslatableText("block.minecraft.pumpkin").getString()));
-        answers.put("shiny, makes sparks", Arrays.asList(new TranslatableText("item.minecraft.flint_and_steel").getString()));
-        answers.put("red and white and you can mine it", Arrays.asList(new TranslatableText("block.minecraft.nether_quartz_ore").getString()));
-        answers.put("round and green, or purple", Arrays.asList(new TranslatableText("item.minecraft.ender_pearl").getString()));
-        answers.put("red and Soft", Arrays.asList(new TranslatableText("block.minecraft.red_wool").getString()));
-        return answers;
+    public Fetchur() {
+        super("^§e\\[NPC] Fetchur§f: (?:its|theyre) ([a-zA-Z, \\-]*)$");
     }
 
-    public static void solve(String message, CallbackInfo ci) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) return;
+    @Override
+    public boolean isEnabled() {
+        return SkyblockerConfig.get().locations.dwarvenMines.solveFetchur;
+    }
 
-        for (String key : getAnswers().keySet()) {
-            if (message.contains(key)) {
-                Text text = Text.of(message + " " + Formatting.GREEN + getAnswers().get(key).toString());
-                client.player.sendMessage(text, false);
-                ci.cancel();
-                break;
-            }
-        }
+    @Override
+    public boolean onMessage(String[] groups) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        assert client.player != null;
+        String answer = answers.getOrDefault(groups[1], groups[1]);
+        client.player.sendMessage(Text.of("§e[NPC] Fetchur§f: " + answer), false);
+        return true;
+    }
+
+    static {
+        //It seems that hints on wiki aren't up to date.
+        //I will assume doors weren't the only ones changed
+        //and that admins did it to make hints more consistent.
+        //Will need to verify if this true.
+        //Changed most commas into "and"s.
+        answers = new HashMap<>();
+        answers.put("yellow and see-through", new TranslatableText("block.minecraft.yellow_stained_glass").getString());
+        answers.put("circular and sometimes moves", new TranslatableText("item.minecraft.compass").getString());
+        answers.put("expensive minerals", "Mithril");
+        answers.put("useful during celebrations", new TranslatableText("item.minecraft.firework_rocket").getString());
+        answers.put("hot and gives energy", "Cheap / Decent Coffee");
+        answers.put("tall and can be opened", new TranslatableText("block.minecraft.oak_door").getString());
+        answers.put("explosive, more than usual", "Superboom TNT");
+        answers.put("wearable and grows", new TranslatableText("block.minecraft.pumpkin").getString());
+        answers.put("shiny and makes sparks", new TranslatableText("item.minecraft.flint_and_steel").getString());
+        answers.put("red and white and you can mine it", new TranslatableText("block.minecraft.nether_quartz_ore").getString());
+        answers.put("round and green, or purple", new TranslatableText("item.minecraft.ender_pearl").getString());
+        answers.put("red and Soft", new TranslatableText("block.minecraft.red_wool").getString());
     }
 }
