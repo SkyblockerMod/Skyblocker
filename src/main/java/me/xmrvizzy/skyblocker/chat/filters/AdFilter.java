@@ -26,7 +26,7 @@ public class AdFilter extends ChatListener {
         String[] exact = new String[]{
                 "(?:i(?:m|'m| am)? |(?:is )?any(?: ?one|1) )?(?:buy|sell|lowball|trade?)(?:ing)?(?:\\W.*|).*",
         };
-        sb.append("(?:.*(?:");
+        sb.append("(?i:.*(?:");
         sb.append(inexact[0]);
         for(int i = 1; i < inexact.length; i++) {
             sb.append("|");
