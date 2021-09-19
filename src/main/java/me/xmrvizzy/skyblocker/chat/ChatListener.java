@@ -3,7 +3,8 @@ package me.xmrvizzy.skyblocker.chat;
 import java.util.regex.Pattern;
 
 public abstract class ChatListener {
-    Pattern pattern;
+    protected static final String NUMBER = "-?[0-9]{1,3}(?>,[0-9]{3})*(?:\\.[1-9])?";
+    private Pattern pattern;
     public ChatListener(String pattern) {
         this.pattern = Pattern.compile(pattern);
     }
@@ -13,5 +14,7 @@ public abstract class ChatListener {
 
     public abstract boolean isEnabled();
     //Returns whether message should get filtered
-    public abstract boolean onMessage(String[] groups);
+    public boolean onMessage(String[] groups) {
+        return true;
+    }
 }
