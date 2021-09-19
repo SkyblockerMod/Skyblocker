@@ -28,19 +28,6 @@ public class ChatHudListenerMixin {
             return;
         if (parser.shouldFilter(message.getString()))
             ci.cancel();
-
-        if(SkyblockerConfig.get().general.autoOpenSlayer) {
-            List<Text> siblings = message.getSiblings();
-            if (siblings.size() == 3) {
-                Text sibling = siblings.get(2);
-                ClickEvent clickEvent = sibling.getStyle().getClickEvent();
-                if(sibling.asString().equals("§2§l[OPEN MENU]") && clickEvent != null) {
-                    ClientPlayerEntity clientPlayerEntity = MinecraftClient.getInstance().player;
-                    assert clientPlayerEntity != null;
-                    MinecraftClient.getInstance().player.sendChatMessage(clickEvent.getValue());
-                }
-            }
-        }
     }
 
 }
