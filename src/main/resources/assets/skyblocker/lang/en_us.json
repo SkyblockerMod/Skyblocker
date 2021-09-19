@@ -8,6 +8,7 @@
   "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Key (WIP)",
   "text.autoconfig.skyblocker.option.general.bars": "Health, Mana, Defence & XP Bars",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Enable Bars",
+  "text.autoconfig.skyblocker.option.general.autoOpenSlayer": "Automatically Open Slayer Menu After Calling",
 
   "text.autoconfig.skyblocker.category.locations": "Locations",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",

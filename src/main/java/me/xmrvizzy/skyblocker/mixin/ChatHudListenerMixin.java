@@ -1,15 +1,20 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.chat.ChatParser;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudListener;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.MessageType;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 import java.util.UUID;
 
 @Mixin(ChatHudListener.class)
@@ -19,44 +24,23 @@ public class ChatHudListenerMixin {
 
     @Inject(method = "onChatMessage", at = @At("HEAD"), cancellable = true)
     public void onMessage(MessageType messageType, Text message, UUID senderUuid, CallbackInfo ci) {
-        if (Utils.isSkyblock && parser.shouldFilter(message.getString()))
+        if (!Utils.isSkyblock)
+            return;
+        if (parser.shouldFilter(message.getString()))
             ci.cancel();
 
-        /*
-        String msg = message.getString();
-
-        if (Utils.isDungeons) {
-            if (SkyblockerConfig.get().locations.dungeons.solveThreeWeirdos && msg.contains("[NPC]"))
-                DungeonPuzzles.threeWeirdos(msg);
-            
-            DungeonPuzzles.trivia(msg, ci);
-        }
-
-        if (Utils.isSkyblock) {
-            if (msg.contains("[OPEN MENU]")) {
-                List<Text> siblings = message.getSiblings();
-                for (Text sibling : siblings) {
-                    if (sibling.getString().contains("[OPEN MENU]")) {
-                        this.client.player.sendChatMessage(sibling.getStyle().getClickEvent().getValue());
-                    }
+        if(SkyblockerConfig.get().general.autoOpenSlayer) {
+            List<Text> siblings = message.getSiblings();
+            if (siblings.size() == 3) {
+                Text sibling = siblings.get(2);
+                ClickEvent clickEvent = sibling.getStyle().getClickEvent();
+                if(sibling.asString().equals("§2§l[OPEN MENU]") && clickEvent != null) {
+                    ClientPlayerEntity clientPlayerEntity = MinecraftClient.getInstance().player;
+                    assert clientPlayerEntity != null;
+                    MinecraftClient.getInstance().player.sendChatMessage(clickEvent.getValue());
                 }
             }
-
-            if (msg.contains("[NPC]")) {
-                if (SkyblockerConfig.get().locations.dwarvenMines.solveFetchur &&
-                        msg.contains("Fetchur")) {
-                    Fetchur.solve(msg, ci);
-                }
-
-                if (SkyblockerConfig.get().locations.dwarvenMines.solvePuzzler &&
-                        msg.contains("Puzzler"))
-                    Puzzler.solve(msg);
-            }
-
-            if(filter.shouldFilter(msg))
-                ci.cancel();
         }
-        */
     }
 
 }
