@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +26,8 @@ import java.util.zip.GZIPInputStream;
 public class PriceInfoTooltip {
     private JsonObject auctionPricesJson = null;
     private JsonObject bazaarPricesJson = null;
-    public static JsonObject prices = downloadPrices();
+    public static JsonObject prices;
+
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalNameForItem(stack);
 
@@ -39,12 +41,12 @@ public class PriceInfoTooltip {
         }catch(Exception e) {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.toString()), false);
         }
-    
+
 	}
     public static String round(double value, int places) {
         DecimalFormat df = new DecimalFormat("#,##0.00");
         if (places < 0) throw new IllegalArgumentException();
-    
+
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return df.format(bd);
@@ -80,8 +82,11 @@ public class PriceInfoTooltip {
         return internalname;
     }
 
+    public static void init() {
+        MinecraftClient.getInstance().execute(PriceInfoTooltip::downloadPrices);
+    }
 
-    public static JsonObject downloadPrices() {
+    private static void downloadPrices() {
         JsonObject result = null;
         try {
             URL apiAddr = new URL("https://moulberry.codes/auction_averages_lbin/3day.json.gz");
@@ -94,8 +99,8 @@ public class PriceInfoTooltip {
             }
         }
         catch(IOException e) {
-            e.printStackTrace();
+            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download item prices!", e);
         }
-        return result;
+        prices = result;
     }
 }

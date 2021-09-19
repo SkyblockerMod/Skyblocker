@@ -3,20 +3,21 @@ package me.xmrvizzy.skyblocker;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
+import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
+
 public class SkyblockerMod implements ClientModInitializer {
 	public static final String NAMESPACE = "skyblocker";
 	private static int TICKS = 0;
-	
+
 	@Override
 	public void onInitializeClient() {
 		HotbarSlotLock.init();
 		SkyblockerConfig.init();
-		
-		
+		PriceInfoTooltip.init();
 	}
 
 
@@ -25,7 +26,7 @@ public class SkyblockerMod implements ClientModInitializer {
 		if (client == null) return;
 
 		TICKS++;
-		if (TICKS % 4 == 0) 
+		if (TICKS % 4 == 0)
 			try {
 				if(Utils.isDungeons){
 					if (SkyblockerConfig.get().locations.dungeons.blazesolver) {
