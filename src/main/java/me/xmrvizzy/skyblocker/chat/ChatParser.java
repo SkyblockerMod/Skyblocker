@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.chat;
 
 import me.xmrvizzy.skyblocker.chat.filters.*;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Fetchur;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Puzzler;
 
@@ -8,6 +9,7 @@ import java.util.regex.Matcher;
 
 public class ChatParser {
     private final ChatListener[] listeners = new ChatListener[]{
+            new ThreeWeirdos(),
             new AoteFilter(),
             new ImplosionFilter(),
             new MoltenWaveFilter(),
