@@ -79,7 +79,7 @@ public class Trivia extends ChatListener {
         answers.put("What is the name of the person that upgrades pets?", new String[]{"Kat"});
         answers.put("What is the name of the lady of the Nether?", new String[]{"Elle"});
         answers.put("Which villager in the Village gives you a Rogue Sword?", new String[]{"Jamie"});
-        answers.put("How many unique minions are there?", new String[]{"53 Minions"});
+        answers.put("How many unique minions are there?", new String[]{"55 Minions"});
         answers.put("Which of these enemies does not spawn in the Spider's Den?", new String[]{"Zombie Spider", "Cave Spider", "Wither Skeleton",
                 "Dashing Spooder", "Broodfather", "Night Spider"});
         answers.put("Which of these monsters only spawns at night?", new String[]{"Zombie Villager", "Ghast"});
