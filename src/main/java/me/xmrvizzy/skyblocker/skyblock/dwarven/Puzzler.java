@@ -19,34 +19,31 @@ public class Puzzler extends ChatListener {
     public boolean onMessage(String[] groups) {
         int x = 0;
         int z = 0;
+        System.out.println(groups[1]);
         for (char c : groups[1].toCharArray()) {
-            switch (c) {
-                case '▲': z += 1;
-                case '▶': x -= 1;
-                case '▼': z -= 1;
-                case '◀': x += 1;
-            }
+            if (c == '▲') z++;
+            else if (c == '▼') z--;
+            else if (c == '◀') x++;
+            else if (c == '▶') x--;
         }
         StringBuilder message = new StringBuilder("§e[NPC] §dPuzzler§f: ");
-        if(z > 0) {
-            message.append("§d");
+        if (z > 0) {
+            message.append("§a");
             message.append(z);
-            message.append("▲");
-        }
-        else if (z < 0) {
-            message.append("§a▼");
+            message.append("§d▲");
+        } else if (z < 0) {
+            message.append("§d");
             message.append(-z);
-            message.append("▼");
+            message.append("§a▼");
         }
-        if(x > 0) {
-            message.append("§b");
+        if (x > 0) {
+            message.append("§5");
             message.append(x);
-            message.append("◀");
-        }
-        else if (x < 0) {
-            message.append("§5▶");
+            message.append("§b◀");
+        } else if (x < 0) {
+            message.append("§b");
             message.append(-x);
-            message.append("▶");
+            message.append("§5▶");
         }
 
         MinecraftClient client = MinecraftClient.getInstance();
