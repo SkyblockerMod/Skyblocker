@@ -1,18 +1,17 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
+import me.xmrvizzy.skyblocker.chat.ChatListenerTest;
 import org.junit.jupiter.api.Test;
-
-import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FetchurTest {
-    private static final Fetchur fetchur = new Fetchur();
+class FetchurTest extends ChatListenerTest<Fetchur> {
+    public FetchurTest() {
+        super(new Fetchur());
+    }
 
     @Test
     public void patternCaptures() {
-        Matcher m = fetchur.getPattern().matcher("§e[NPC] Fetchur§f: its a hint");
-        assertTrue(m.matches());
-        assertEquals(m.group(1), "a hint");
+        assertEquals(getGroups("§e[NPC] Fetchur§f: its a hint")[1], "a hint");
     }
 }
