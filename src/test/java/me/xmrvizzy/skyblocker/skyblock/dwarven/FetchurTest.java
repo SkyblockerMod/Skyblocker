@@ -12,6 +12,6 @@ class FetchurTest extends ChatListenerTest<Fetchur> {
 
     @Test
     public void patternCaptures() {
-        assertEquals(getGroups("§e[NPC] Fetchur§f: its a hint")[1], "a hint");
+        assertGroup("§e[NPC] Fetchur§f: its a hint", 1, "a hint");
     }
 }

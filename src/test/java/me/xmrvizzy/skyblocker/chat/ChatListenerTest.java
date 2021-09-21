@@ -28,4 +28,8 @@ public abstract class ChatListenerTest<T extends ChatListener> {
             groups[i] = matcher.group(i);
         return groups;
     }
+
+    protected void assertGroup(String text, int group, String expect) {
+        assertEquals(getGroups(text)[group], expect);
+    }
 }
