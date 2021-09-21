@@ -9,17 +9,25 @@ class TriviaTest extends ChatListenerTest<Trivia> {
     }
 
     @Test
-    void question() {
-        assertGroup("                       What is the status of Necron?", 1, "What is the status of Necron?");
+    void anyQuestion1() {
+        assertGroup("                      What is the first question?", 1, "What is the first question?");
     }
 
     @Test
-    void qestion2() {
-        assertGroup("       How many Fairy Souls are there in Jerry's Workshop?", 1, "How many Fairy Souls are there in Jerry's Workshop?");
+    void anyQestion2() {
+        assertGroup("      How many questions are there?", 1, "How many questions are there?");
     }
 
     @Test
-    void answer() {
-        assertGroup("     §6 ⓑ §a9 Fairy Souls", 3, "9 Fairy Souls");
+    void answer1() {
+        assertGroup("    §6 ⓐ §aAnswer 1", 3, "Answer 1");
+    }
+    @Test
+    void answer2() {
+        assertGroup("    §6 ⓑ §aAnswer 2", 3, "Answer 2");
+    }
+    @Test
+    void answer3() {
+        assertGroup("    §6 ⓒ §aAnswer 3", 3, "Answer 3");
     }
 }
