@@ -9,6 +9,9 @@ For the releases of Skyblocker see:
 * [GitHub releases](https://github.com/LifeIsAParadox/Skyblocker/releases)
 * [![Build Beta](https://github.com/LifeIsAParadox/Skyblocker/actions/workflows/beta.yml/badge.svg)](https://github.com/LifeIsAParadox/Skyblocker/actions/workflows/beta.yml)
 
+## Features
+[Features](FEATURES.md)
+
 ## Support me
 
 <https://ko-fi.com/wohlhabend>

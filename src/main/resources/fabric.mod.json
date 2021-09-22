@@ -11,7 +11,7 @@
     "sources": "https://github.com/LifeIsAParadox/Skyblocker",
     "issues": "https://github.com/LifeIsAParadox/Skyblocker/issues"
   },
-  "license": "GNU GPLv3",
+  "license": "GNU LGPLv3",
   "icon": "assets/skyblocker/icon.png",
   "environment": "client",
   "entrypoints": {
