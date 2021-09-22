@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.regex.Matcher;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 public class FancyStatusBars extends DrawableHelper {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/bars.png");
-    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9])+❤ +§(?:a([0-9]+)§a❈ Defense|b-[0-9]+ Mana \\(§6[a-zA-Z ]+§b\\)) +§(?:b([0-9]+)/([0-9]+)✎ Mana|[0-9,]+/[0-9,]+k? Drill Fuel)$");
+    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9]+)❤ {3,}(?:§a([0-9]+)§a❈ Defense|(\\S+(?: \\S+)*)) {3,}(?:§b([0-9]+)/([0-9]+)✎ Mana|(\\S+(?: \\S+)*))(?: {3,}(\\S+(?: \\S+)*))?$");
     private final Resource health;
     private final Resource mana;
     private int defense;
@@ -30,15 +31,33 @@ public class FancyStatusBars extends DrawableHelper {
         if(!SkyblockerConfig.get().general.bars.enableBars)
             return false;
         Matcher matcher = ACTION_BAR_STATUS.matcher(actionBar);
-        if(!matcher.matches()) {
+        if(!matcher.matches())
             return false;
-        }
         health.set(matcher.group(1), matcher.group(2));
         if(matcher.group(3) != null)
             defense = Integer.parseInt(matcher.group(3));
-        if(matcher.group(4) != null)
-            mana.set(matcher.group(4), matcher.group(5));
+        if(matcher.group(5) != null)
+            mana.set(matcher.group(5), matcher.group(6));
+
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, matcher.group(4));
+        appendIfNotNull(sb, matcher.group(7));
+        appendIfNotNull(sb, matcher.group(8));
+
+        if(!sb.isEmpty()) {
+            assert client.player != null;
+            client.player.sendMessage(Text.of(sb.toString()), true);
+        }
+
         return true;
+    }
+
+    private void appendIfNotNull(StringBuilder sb, String str) {
+        if(str == null)
+            return;
+        if(!sb.isEmpty())
+            sb.append("    ");
+        sb.append(str);
     }
 
     public boolean render(MatrixStack matrices, int scaledWidth, int scaledHeight) {
@@ -48,9 +67,9 @@ public class FancyStatusBars extends DrawableHelper {
         int top = scaledHeight - 35;
 
         int hpFillWidth = (int) (health.getFillLevel() * 33.0F);
-        if (hpFillWidth > 33) hpFillWidth = 33;
+        int hpOverflowWidth = (int) (health.getOverflow() * 33.0F);
         int manaFillWidth = (int) (mana.getFillLevel() * 33.0F);
-        if (manaFillWidth > 33) manaFillWidth = 33;
+        assert client.player != null;
         int xp = (int) (client.player.experienceProgress * 33.0F);
 
         // Icons
@@ -69,6 +88,7 @@ public class FancyStatusBars extends DrawableHelper {
 
         // Progress Bars
         this.drawTexture(matrices, left + 10, top + 1, 0, 16, hpFillWidth, 7);
+        this.drawTexture(matrices, left + 10, top + 1, 0, 44, hpOverflowWidth, 7);
         this.drawTexture(matrices, left + 55, top + 1, 0, 23, manaFillWidth, 7);
         this.drawTexture(matrices, left + 102, top + 1, 0, 30, 33, 7);
         this.drawTexture(matrices, left + 149, top + 1, 0, 37, xp, 7);
@@ -109,7 +129,10 @@ public class FancyStatusBars extends DrawableHelper {
             return value;
         }
         public double getFillLevel() {
-            return ((double)value)/((double)max);
+            return Math.min(((double)value)/((double)max),  1);
+        }
+        public double getOverflow() {
+            return Math.max(((double)value)/((double)max) - 1,  0);
         }
     }
 }
