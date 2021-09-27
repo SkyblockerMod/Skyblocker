@@ -31,23 +31,19 @@ public class Fetchur extends ChatListener {
     }
 
     static {
-        //It seems that hints on wiki aren't up to date.
-        //I will assume doors weren't the only ones changed
-        //and that admins did it to make hints more consistent.
-        //Will need to verify if this true.
-        //Changed most commas into "and"s.
         answers = new HashMap<>();
+        answers.put("red and soft", new TranslatableText("block.minecraft.red_wool").getString());
         answers.put("yellow and see-through", new TranslatableText("block.minecraft.yellow_stained_glass").getString());
         answers.put("circular and sometimes moves", new TranslatableText("item.minecraft.compass").getString());
         answers.put("expensive minerals", "Mithril");
         answers.put("useful during celebrations", new TranslatableText("item.minecraft.firework_rocket").getString());
         answers.put("hot and gives energy", "Cheap / Decent Coffee");
         answers.put("tall and can be opened", new TranslatableText("block.minecraft.oak_door").getString());
-        answers.put("explosive, more than usual", "Superboom TNT");
+        answers.put("brown and fluffy", new TranslatableText("item.minecraft.rabbit_foot").getString());
+        answers.put("explosive but more than usual", "Superboom TNT");
         answers.put("wearable and grows", new TranslatableText("block.minecraft.pumpkin").getString());
         answers.put("shiny and makes sparks", new TranslatableText("item.minecraft.flint_and_steel").getString());
         answers.put("red and white and you can mine it", new TranslatableText("block.minecraft.nether_quartz_ore").getString());
         answers.put("round and green, or purple", new TranslatableText("item.minecraft.ender_pearl").getString());
-        answers.put("red and Soft", new TranslatableText("block.minecraft.red_wool").getString());
     }
 }
