@@ -12,6 +12,7 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -20,9 +21,11 @@ import net.minecraft.util.math.Vec3f;
 
 public class RenderUtils {
 
-
-
     // -------------------- Outline Boxes --------------------
+
+    public static void drawBoxOutline(BlockPos blockPos, QuadColor color, float lineWidth, Direction... excludeDirs) {
+        drawBoxOutline(new Box(blockPos), color, lineWidth, excludeDirs);
+    }
 
     public static void drawBoxOutline(Box box, QuadColor color, float lineWidth, Direction... excludeDirs) {
         if (!FrustumUtils.isBoxVisible(box)) {

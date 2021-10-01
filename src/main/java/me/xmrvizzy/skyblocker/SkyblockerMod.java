@@ -29,9 +29,7 @@ public class SkyblockerMod implements ClientModInitializer {
 		if (TICKS % 4 == 0)
 			try {
 				if(Utils.isDungeons){
-					if (SkyblockerConfig.get().locations.dungeons.blazesolver) {
-						DungeonBlaze.DungeonBlaze();
-					}
+					DungeonBlaze.DungeonBlaze();
 				}
 			}catch(Exception e) {
 				//System.out.println("Blazesolver: " + e);
