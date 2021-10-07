@@ -9,8 +9,9 @@
     "InGameHudMixin",
     "ItemRendererMixin",
     "MinecraftClientMixin",
-    "AccessorWorldRenderer"
-
+    "AccessorWorldRenderer",
+    "GenericContainerScreenMixin",
+    "GenericContainerScreenHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
