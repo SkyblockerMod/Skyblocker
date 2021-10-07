@@ -1,32 +1,28 @@
 package me.xmrvizzy.skyblocker;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
-import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
-import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 
-public class SkyblockerMod implements ClientModInitializer {
+public class SkyblockerMod {
     public static final String NAMESPACE = "skyblocker";
-    private static int TICKS = 0;
+    private static final SkyblockerMod instance = new SkyblockerMod();
 
-    @Override
-    public void onInitializeClient() {
-        HotbarSlotLock.init();
-        SkyblockerConfig.init();
-        PriceInfoTooltip.init();
+    private SkyblockerMod() {
     }
 
+    public static SkyblockerMod getInstance() {
+        return instance;
+    }
 
-    public static void onTick() {
+    private int ticks = 0;
+
+    public void onTick() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return;
 
-        TICKS++;
-        if (TICKS % 4 == 0)
+        ticks++;
+        if (ticks % 4 == 0)
             try {
                 if (Utils.isDungeons) {
                     DungeonBlaze.DungeonBlaze();
@@ -34,11 +30,11 @@ public class SkyblockerMod implements ClientModInitializer {
             } catch (Exception e) {
                 //System.out.println("Blazesolver: " + e);
             }
-        if (TICKS % 20 == 0) {
+        if (ticks % 20 == 0) {
             if (client.world != null && !client.isInSingleplayer())
                 Utils.sbChecker();
 
-            TICKS = 0;
+            ticks = 0;
         }
     }
 }

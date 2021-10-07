@@ -19,7 +19,7 @@ public class MinecraftClientMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo ci) {
-        SkyblockerMod.onTick();
+        SkyblockerMod.getInstance().onTick();
     }
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
