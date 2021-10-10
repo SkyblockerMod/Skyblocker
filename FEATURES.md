@@ -1,9 +1,10 @@
 * Bars: Health and absorption, Mana, Defense, XP
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave
 * Dungeon Minimap
-* Dungeon Puzzle Solver: Three Weirdos
-* Dwarven Mines Solver: Fetchur, Puzzler, Blaze
+* Dungeon Puzzle Solver: Three Weirdos, Blaze
+  * F7 Terminal: Order, Color, Name
+* Dwarven Mines Solver: Fetchur, Puzzler
 * Drill Fuel in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the button)
-* price tooltip
+* price tooltip: bazaar, ah
 * reparty: write /rp to reparty

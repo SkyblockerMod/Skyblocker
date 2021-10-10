@@ -1,20 +1,23 @@
 {
   "key.categories.skyblocker": "Skyblocker",
-  "key.hotbarSlotLock": "Блокировка слота (хотбар)",
+  "key.hotbarSlotLock": "Блокировка слотов (Хотбар)",
 
   "text.autoconfig.skyblocker.title": "Настройки Skyblocker",
 
   "text.autoconfig.skyblocker.category.general": "Основные",
-  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API-ключ (В РАЗРАБОТКЕ)",
-  "text.autoconfig.skyblocker.option.general.bars": "Бары здоровья, маны, защиты, опыта",
+  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API-ключ ( в разработке)",
+  "text.autoconfig.skyblocker.option.general.bars": " Бары здоровья, маны, защиты и XP",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Включить бары",
 
   "text.autoconfig.skyblocker.category.locations": "Локации",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Подземелья",
   "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Включить карту",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Решить загадку \"Три чудака\"",
+  "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Решить головоломку Блейза",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Решить головоломку Тривия",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Гномьи шахты",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Включить топливо дрели",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Solve Fetchur",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Решить загадку \"Puzzler\"",
 
   "text.autoconfig.skyblocker.category.messages": "Сообщения",
@@ -22,5 +25,6 @@
   "text.autoconfig.skyblocker.option.messages.hideHeal": "Скрыть сообщения об исцелении",
   "text.autoconfig.skyblocker.option.messages.hideAOTE": "Скрыть сообщения от \"AOTE\"",
   "text.autoconfig.skyblocker.option.messages.hideImplosion": "Скрыть сообщение \"Implosion\"",
-  "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Скрыть сообщение \"Molten Wave\""
+  "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Скрыть сообщение \"Molten Wave\"",
+  "text.autoconfig.skyblocker.option.messages.hideAds": "Скрывать рекламу из публичного чата"
 }

@@ -24,19 +24,25 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
-    private JsonObject auctionPricesJson = null;
-    private JsonObject bazaarPricesJson = null;
-    public static JsonObject prices;
+    public static JsonObject bazaarPricesJson;
+    public static JsonObject auctionPricesJson;
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalNameForItem(stack);
 
         try {
-            if(!list.toString().contains("Avg. BIN Price") && prices != null && prices.has(name) ){
-                JsonElement getPrice = prices.get(name);
+            if(!list.toString().contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name) ){
+                JsonElement getPrice = auctionPricesJson.get(name);
                 String price = round(getPrice.getAsDouble(), 2);
 
                 list.add(new LiteralText("Avg. BIN Price: ").formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
+            }
+            else if(!list.toString().contains("Bazaar Price") && bazaarPricesJson != null && bazaarPricesJson.has(name) ){
+                JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
+                String buyprice = round(getItem.get("buyPrice").getAsDouble(), 2);
+                String sellprice = round(getItem.get("sellPrice").getAsDouble(), 2);
+                list.add(new LiteralText("Bazaar buy Price: ").formatted(Formatting.GOLD).append(new LiteralText(buyprice + " Coins").formatted(Formatting.DARK_AQUA)));
+                list.add(new LiteralText("Bazaar sell Price: ").formatted(Formatting.GOLD).append(new LiteralText(sellprice + " Coins").formatted(Formatting.DARK_AQUA)));
             }
         }catch(Exception e) {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.toString()), false);
@@ -84,6 +90,7 @@ public class PriceInfoTooltip {
 
     public static void init() {
         MinecraftClient.getInstance().execute(PriceInfoTooltip::downloadPrices);
+        MinecraftClient.getInstance().execute(PriceInfoTooltip::downloadbazaarPrices);
     }
 
     private static void downloadPrices() {
@@ -101,6 +108,18 @@ public class PriceInfoTooltip {
         catch(IOException e) {
             LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download item prices!", e);
         }
-        prices = result;
+        auctionPricesJson = result;
+    }
+    private static void downloadbazaarPrices() {
+        JsonObject result = null;
+        try {
+            URL apiAddr = new URL("https://sky.shiiyu.moe/api/v2/bazaar");
+            InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+            result = new Gson().fromJson(reader, JsonObject.class);
+        }
+        catch(IOException e) {
+            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download item prices!", e);
+        }
+        bazaarPricesJson = result;
     }
 }

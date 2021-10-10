@@ -1,0 +1,34 @@
+{
+  "key.categories.skyblocker": "Skyblocker",
+  "key.hotbarSlotLock": "Schlitzsperre (Hotbar)",
+
+  "text.autoconfig.skyblocker.title": "Skyblocker-Einstellungen",
+
+  "text.autoconfig.skyblocker.category.general": "Allgemein",
+  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Schlüssel (WIP)",
+  "text.autoconfig.skyblocker.option.general.bars": "Gesundheits-, Mana-, Verteidigungs- und XP-Balken",
+  "text.autoconfig.skyblocker.option.general.bars.enableBars": "Balken aktivieren",
+
+  "text.autoconfig.skyblocker.category.locations": "Standorte",
+  "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
+  "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Karte aktivieren",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Drei Verrückte Rätsel lösen",
+  "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Blaze Rätsel lösen",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Rätsel lösen",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Terminal Löser",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Wähle die richtige Farbe",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder": "Klick in der Reihenfolge lösen",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveStartsWith": "Beginnt mit lösen",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Zwergenminen",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Bohrtreibstoff aktivieren",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Löse Fetchur",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Puzzler-Rätsel lösen",
+
+  "text.autoconfig.skyblocker.category.messages": "Nachrichten",
+  "text.autoconfig.skyblocker.option.messages.hideAbility": "Abklingzeit der Fähigkeit nachricht verbergen",
+  "text.autoconfig.skyblocker.option.messages.hideHeal": "Heilungsnachrichten verbergen",
+  "text.autoconfig.skyblocker.option.messages.hideAOTE": "AOTE-Meldungen ausblenden",
+  "text.autoconfig.skyblocker.option.messages.hideImplosion": "Implosionsmeldung ausblenden",
+  "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Nachricht über Molten Wave ausblenden",
+  "text.autoconfig.skyblocker.option.messages.hideAds": "Werbung im öffentlichen Chat ausblenden"
+}
