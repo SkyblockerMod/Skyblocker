@@ -61,6 +61,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class Terminals {
         public boolean solveColor = true;
         public boolean solveOrder = true;
+        public boolean solveStartsWith = true;
     }
 
     public static class DwarvenMines {

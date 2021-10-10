@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.container;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -27,6 +28,7 @@ public class ContainerSolverManager extends DrawableHelper {
         solvers = new ContainerSolver[]{
                 new ColorTerminal(),
                 new OrderTerminal(),
+                new StartsWithTerminal(),
         };
     }
 
