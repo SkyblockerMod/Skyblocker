@@ -16,7 +16,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "me.xmrvizzy.skyblocker.SkyblockerMod"
+      "me.xmrvizzy.skyblocker.SkyblockerInitializer"
     ],
     "modmenu": [
       "me.xmrvizzy.skyblocker.config.modmenu.ModMenuEntry"
