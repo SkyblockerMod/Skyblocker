@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.container;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -24,6 +25,7 @@ public class ContainerSolverManager extends DrawableHelper {
 
     public ContainerSolverManager() {
         solvers = new ContainerSolver[]{
+                new ColorTerminal(),
                 new OrderTerminal(),
         };
     }
