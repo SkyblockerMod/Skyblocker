@@ -14,7 +14,5 @@ public abstract class ChatListener {
 
     public abstract boolean isEnabled();
     //Returns whether message should get filtered
-    public boolean onMessage(String[] groups) {
-        return true;
-    }
+    public abstract boolean onMessage(String[] groups);
 }

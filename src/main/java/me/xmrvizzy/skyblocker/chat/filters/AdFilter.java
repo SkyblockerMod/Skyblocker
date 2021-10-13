@@ -5,7 +5,7 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 
 import java.util.regex.Pattern;
 
-public class AdFilter extends ChatListener {
+public class AdFilter extends ChatFilter {
     private static final String regex;
 
     public AdFilter() {
