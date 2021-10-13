@@ -89,8 +89,8 @@ public class PriceInfoTooltip {
     }
 
     public static void init() {
-        MinecraftClient.getInstance().execute(PriceInfoTooltip::downloadPrices);
-        MinecraftClient.getInstance().execute(PriceInfoTooltip::downloadbazaarPrices);
+        new Thread(PriceInfoTooltip::downloadPrices).start();
+        new Thread(PriceInfoTooltip::downloadbazaarPrices).start();
     }
 
     private static void downloadPrices() {
