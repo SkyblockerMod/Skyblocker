@@ -33,3 +33,33 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+
+      - name: Read Changelog
+        id: read_changelog
+        shell: bash
+        run: |
+          CHANGELOG=$(sed '/___/Q' CHANGELOG.md | grep -v '# ')
+          echo "Changelog:\n$CHANGELOG"
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          echo "::set-output name=changelog::$CHANGELOG"
+
+      - uses: actions/github-script@v2
+        id: fname
+        with:
+          result-encoding: string
+          script: |
+            const fs = require("fs")
+            return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0]
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.read_changelog.outputs.changelog }}
+          files: build/libs/${{ steps.fname.outputs.result }}
+
+      - name: Publish to Modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
+        run: ./gradlew publishModrinth
