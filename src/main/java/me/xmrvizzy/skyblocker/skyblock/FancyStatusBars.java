@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class FancyStatusBars extends DrawableHelper {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/bars.png");
-    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9]+)❤(?:\\+§c[0-9]+\\S)? {3,}(?:§a([0-9]+)§a❈ Defense|(\\S+(?: \\S+)*)) {3,}(?:§b([0-9]+)/([0-9]+)✎ Mana|(\\S+(?: \\S+)*))(.*)$");
+    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9]+)❤(?:\\+§c[0-9]+\\S)? {3,}(?:§a([0-9]+)§a❈ Defense|(\\S+(?: \\S+)*)) {3,}(?:§b([0-9]+)/([0-9]+)✎ (?:Mana|§3([0-9]+)ʬ)?|(\\S+(?: \\S+)*))(.*)$");
     private final Resource health;
     private final Resource mana;
     private int defense;
@@ -36,13 +36,16 @@ public class FancyStatusBars extends DrawableHelper {
         health.set(matcher.group(1), matcher.group(2));
         if(matcher.group(3) != null)
             defense = Integer.parseInt(matcher.group(3));
-        if(matcher.group(5) != null)
+        if(matcher.group(5) != null) {
             mana.set(matcher.group(5), matcher.group(6));
+            if(matcher.group(7) != null)
+                mana.add(Integer.parseInt(matcher.group(7)));
+        }
 
         StringBuilder sb = new StringBuilder();
         appendIfNotNull(sb, matcher.group(4));
-        appendIfNotNull(sb, matcher.group(7));
         appendIfNotNull(sb, matcher.group(8));
+        appendIfNotNull(sb, matcher.group(9));
 
         if(!sb.isEmpty()) {
             assert client.player != null;
@@ -124,6 +127,9 @@ public class FancyStatusBars extends DrawableHelper {
         public void set(String value, String max) {
             this.value = Integer.parseInt(value);
             this.max = Integer.parseInt(max);
+        }
+        public void add(int value) {
+            this.value += value;
         }
         public int getValue() {
             return value;
