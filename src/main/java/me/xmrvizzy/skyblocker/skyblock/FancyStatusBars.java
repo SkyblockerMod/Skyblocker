@@ -74,6 +74,7 @@ public class FancyStatusBars extends DrawableHelper {
         int manaFillWidth = (int) (mana.getFillLevel() * 33.0F);
         assert client.player != null;
         int xp = (int) (client.player.experienceProgress * 33.0F);
+        int defenseFill = (int) (defense / (defense + 100.0) * 33.0);
 
         // Icons
 //        this.client.getTextureManager().bindTexture(BARS);
@@ -93,7 +94,7 @@ public class FancyStatusBars extends DrawableHelper {
         this.drawTexture(matrices, left + 10, top + 1, 0, 16, hpFillWidth, 7);
         this.drawTexture(matrices, left + 10, top + 1, 0, 44, hpOverflowWidth, 7);
         this.drawTexture(matrices, left + 55, top + 1, 0, 23, manaFillWidth, 7);
-        this.drawTexture(matrices, left + 102, top + 1, 0, 30, 33, 7);
+        this.drawTexture(matrices, left + 102, top + 1, 0, 30, defenseFill, 7);
         this.drawTexture(matrices, left + 149, top + 1, 0, 37, xp, 7);
 
         // Progress Texts
