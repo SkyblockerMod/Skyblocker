@@ -52,14 +52,40 @@ jobs:
           script: |
             const fs = require("fs")
             return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0]
-
-      - uses: softprops/action-gh-release@v1
+      - name: Release
+        id: uploadrelease
+        uses: softprops/action-gh-release@v1
         with:
           body: ${{ steps.read_changelog.outputs.changelog }}
           files: build/libs/${{ steps.fname.outputs.result }}
 
       - name: Publish to Modrinth
+        id: modrinth
         env:
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN  }}
           CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
         run: ./gradlew publishModrinth
+
+      - name: Get version tag
+        id: version_tag
+        run: |
+          [[ ! "$GITHUB_REF" =~ refs/tags ]] && exit
+          echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
+
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            "@here"
+            "Skyblocker ${{ steps.version_tag.outputs.value }}"
+            ""
+            "Changelog"
+            "```md"
+            "${{ steps.read_changelog.outputs.changelog }}"
+            "```"
+            "<${{ steps.uploadrelease.outputs.url }}>"
+            "<${{ steps.modrinth.outputs.url }}>"
+            ""
+            "<https://hysky.de/>"

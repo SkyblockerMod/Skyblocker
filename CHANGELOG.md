@@ -1,3 +1,11 @@
+# Release 1.2.2
+
+Fixes
+* Small status bar changes by @ExternalTime in #21
+* Fixed crash on opening color terminal with unknown color by @ExternalTime in #22
+
+Full Changelog: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.2.1...v1.2.2
+___
 # Release 1.2.1
 
 Fixes

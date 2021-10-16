@@ -109,6 +109,9 @@ task publishModrinth(type: TaskModrinthUpload) {
 	addLoader('fabric')
 	versionType = VersionType.RELEASE
 	changelog = System.getenv('CHANGELOG')
+	doLast {
+		println "::set-output name=url::https://modrinth.com/mod/skyblocker-liap/version/$uploadInfo.id"
+	}
 
 }
 
