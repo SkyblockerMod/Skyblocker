@@ -9,11 +9,14 @@ import net.minecraft.item.Items;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 
 public class ColorTerminal extends ContainerSolver {
+    private static final Logger LOGGER = LogManager.getLogger(ColorTerminal.class.getName());
     private static final Map<String, DyeColor> colorFromName;
     private DyeColor targetColor;
     private static final Map<Item, DyeColor> itemColor;
@@ -32,8 +35,14 @@ public class ColorTerminal extends ContainerSolver {
     public List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
         trimEdges(slots, 6);
         List<ColorHighlight> highlights = new ArrayList<>();
-        if(targetColor == null)
-            targetColor = colorFromName.get(groups[0]);
+        String colorString = groups[0];
+        if(targetColor == null) {
+            targetColor = colorFromName.get(colorString);
+            if(targetColor == null) {
+                LOGGER.error("[Skyblocker] Couldn't find dye color corresponding to \"" + colorString + "\"");
+                return Collections.emptyList();
+            }
+        }
         for(Map.Entry<Integer, ItemStack> slot : slots.entrySet()) {
             ItemStack itemStack = slot.getValue();
             if(!itemStack.hasEnchantments() && targetColor.equals(itemColor.get(itemStack.getItem())))
