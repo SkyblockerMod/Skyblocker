@@ -15,6 +15,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Solve Blaze Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Solve Trivia Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dungeons.oldLevers": "1.8 lever hitbox",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Terminal Solvers",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Colored",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder": "Solve Click In Order",
