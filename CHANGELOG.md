@@ -1,3 +1,10 @@
+# Release 1.3.0
+
+New features
+* Added feature changing lever hitboxes to ones from 1.8 by @ExternalTime in https://github.com/LifeIsAParadox/Skyblocker/pull/23
+
+Full Changelog: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.2.2...v1.3.0
+___
 # Release 1.2.2
 
 Fixes
