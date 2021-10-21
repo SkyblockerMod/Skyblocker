@@ -11,7 +11,8 @@
     "MinecraftClientMixin",
     "AccessorWorldRenderer",
     "GenericContainerScreenMixin",
-    "GenericContainerScreenHandlerMixin"
+    "GenericContainerScreenHandlerMixin",
+    "LeverBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

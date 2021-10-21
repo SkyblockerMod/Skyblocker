@@ -54,6 +54,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
+        public boolean oldLevers = false;
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Terminals terminals = new Terminals();
     }
