@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,20 +23,24 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
+    public static JsonObject shopPricesJson;
     public static JsonObject bazaarPricesJson;
     public static JsonObject auctionPricesJson;
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalNameForItem(stack);
-
         try {
+            if (!list.toString().contains("NPC Price") && shopPricesJson != null && shopPricesJson.has(name) ){
+                JsonElement getPrice = shopPricesJson.get(name);
+                String price = round(getPrice.getAsDouble(), 2);
+                list.add(new LiteralText("NPC Price:           ").formatted(Formatting.YELLOW).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
+            }
             if(!list.toString().contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name) ){
                 JsonElement getPrice = auctionPricesJson.get(name);
                 String price = round(getPrice.getAsDouble(), 2);
 
-                list.add(new LiteralText("Avg. BIN Price: ").formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
-            }
-            else if(!list.toString().contains("Bazaar Price") && bazaarPricesJson != null && bazaarPricesJson.has(name) ){
+                list.add(new LiteralText("Avg. BIN Price:     ").formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
+            } else if((!list.toString().contains("Bazaar buy Price") || !list.toString().contains("Bazaar sell Price")) && bazaarPricesJson != null && bazaarPricesJson.has(name) ){
                 JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
                 String buyprice = round(getItem.get("buyPrice").getAsDouble(), 2);
                 String sellprice = round(getItem.get("sellPrice").getAsDouble(), 2);
@@ -73,8 +76,6 @@ public class PriceInfoTooltip {
             } else {
                 return null;
             }
-
-
             if("ENCHANTED_BOOK".equals(internalname)) {
                 NbtCompound enchants = ea.getCompound("enchantments");
 
@@ -84,13 +85,13 @@ public class PriceInfoTooltip {
                 }
             }
         }
-
         return internalname;
     }
 
     public static void init() {
         new Thread(PriceInfoTooltip::downloadPrices).start();
         new Thread(PriceInfoTooltip::downloadbazaarPrices).start();
+        new Thread(PriceInfoTooltip::downloadshopPrices).start();
     }
 
     private static void downloadPrices() {
@@ -106,7 +107,7 @@ public class PriceInfoTooltip {
             }
         }
         catch(IOException e) {
-            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download item prices!", e);
+            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download auction item prices!", e);
         }
         auctionPricesJson = result;
     }
@@ -118,8 +119,21 @@ public class PriceInfoTooltip {
             result = new Gson().fromJson(reader, JsonObject.class);
         }
         catch(IOException e) {
-            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download item prices!", e);
+            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download bazaar item prices!", e);
         }
         bazaarPricesJson = result;
     }
+    private static void downloadshopPrices() {
+        JsonObject result = null;
+        try {
+            URL apiAddr = new URL("https://hysky.de/api/npcprice");
+            InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+            result = new Gson().fromJson(reader, JsonObject.class);
+        }
+        catch(IOException e) {
+            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download shop item prices!", e);
+        }
+        shopPricesJson = result;
+    }
+
 }
