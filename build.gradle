@@ -102,7 +102,7 @@ task publishModrinth(type: TaskModrinthUpload) {
 
 	token = System.getenv('MODRINTH_TOKEN')
 	projectId = project.modrinth_id
-	versionNumber = version
+	versionNumber = "v${project.version}"
 	versionName = "Skyblocker ${project.mod_version} (${project.minecraft_version})"
 	uploadFile = remapJar
 	addGameVersion((String) project.minecraft_version)
