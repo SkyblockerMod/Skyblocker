@@ -10,6 +10,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class PriceInfoTooltip {
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalnameFromNBT(stack);
+        String timestamp = getTimestamp(stack);
         try {
             if (!list.toString().contains("NPC Price") && shopPricesJson != null && shopPricesJson.has(name) ){
                 JsonElement getPrice = shopPricesJson.get(name);
@@ -47,8 +49,8 @@ public class PriceInfoTooltip {
                 list.add(new LiteralText(String.format("%-19s", "Bazaar buy Price:")).formatted(Formatting.GOLD).append(new LiteralText(buyprice + " Coins").formatted(Formatting.DARK_AQUA)));
                 list.add(new LiteralText(String.format("%-20s", "Bazaar sell Price:")).formatted(Formatting.GOLD).append(new LiteralText(sellprice + " Coins").formatted(Formatting.DARK_AQUA)));
             }
-            if (!list.toString().contains("Museum") && ismuseumJson != null && ismuseumJson.has(name) ){
-                list.add(new LiteralText(String.format("%-22s", "Museum:")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(getTimestamp(stack)).formatted(Formatting.LIGHT_PURPLE)));
+            if (!list.toString().contains("Museum") && ismuseumJson != null && timestamp !=null ){
+                list.add(new LiteralText(String.format(ismuseumJson.has(name)?"%-21s":"%-22s", (ismuseumJson.has(name))?"Museum: (Special)":"Museum:")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp+"").formatted(Formatting.LIGHT_PURPLE)));
             }
         }catch(Exception e) {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.toString()), false);
@@ -69,7 +71,7 @@ public class PriceInfoTooltip {
             if (ea.contains("timestamp", 8)) {
                 internalname = ea.getString("timestamp").replaceAll("\\s(.*)", "");
                 int month = Integer.parseInt(internalname.replaceAll("(\\d+)/(\\d+)/(\\d+)", "$1"));
-                internalname = internalname.replaceAll("(\\d+)/(\\d+)/(\\d+)", Month.of(month)+" $2, 20$3").toLowerCase();
+                internalname = StringUtils.capitalize(internalname.replaceAll("(\\d+)/(\\d+)/(\\d+)", Month.of(month)+" $2, 20$3").toLowerCase());
             }
         }
         return internalname;
