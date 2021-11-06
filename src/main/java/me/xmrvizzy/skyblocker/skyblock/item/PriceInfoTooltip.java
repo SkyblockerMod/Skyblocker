@@ -49,8 +49,10 @@ public class PriceInfoTooltip {
                 list.add(new LiteralText(String.format("%-19s", "Bazaar buy Price:")).formatted(Formatting.GOLD).append(new LiteralText(buyprice + " Coins").formatted(Formatting.DARK_AQUA)));
                 list.add(new LiteralText(String.format("%-20s", "Bazaar sell Price:")).formatted(Formatting.GOLD).append(new LiteralText(sellprice + " Coins").formatted(Formatting.DARK_AQUA)));
             }
-            if (!list.toString().contains("Museum") && ismuseumJson != null && timestamp != null) {
-                list.add(new LiteralText(String.format(ismuseumJson.has(name) ? "%-21s" : "%-22s", (ismuseumJson.has(name)) ? "Museum: (Special)" : "Museum:")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp + "").formatted(Formatting.LIGHT_PURPLE)));
+            if (!list.toString().contains("Museum") && ismuseumJson != null && ismuseumJson.has(name)) {
+                list.add(new LiteralText(String.format(ismuseumJson.get(name).toString().replaceAll("\"", "").equals("Weapons") ? "%-19s" : ismuseumJson.get(name).toString().replaceAll("\"", "").equals("Armor") ? "%-20s" : "%-21s", "Museum: (" + ismuseumJson.get(name).toString().replaceAll("\"", "") + ")")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp != null ? timestamp : "" + "").formatted(Formatting.RED)));
+            } else if (!list.toString().contains("Obtained") && timestamp != null) {
+                list.add(new LiteralText(String.format("%-23s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp + "").formatted(Formatting.RED)));
             }
         } catch (Exception e) {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.toString()), false);
@@ -152,7 +154,7 @@ public class PriceInfoTooltip {
     private static void downloadismuseum() {
         JsonObject result = null;
         try {
-            URL apiAddr = new URL("https://hysky.de/api/museum/isspecial");
+            URL apiAddr = new URL("https://hysky.de/api/museum");
             InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
             result = new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
