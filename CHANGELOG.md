@@ -1,3 +1,11 @@
+# Release 1.4.0
+
+New features
+* Added npc, lbin price into tooltip by @LifeIsAParadox
+* Added museum info into tooltip by @LifeIsAParadox
+
+Full Changelog: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.3.0...v1.4.0
+___
 # Release 1.3.0
 
 New features
