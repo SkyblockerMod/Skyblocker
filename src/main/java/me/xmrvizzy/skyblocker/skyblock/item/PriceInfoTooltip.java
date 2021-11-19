@@ -23,10 +23,11 @@ import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
-    public static JsonObject shopPricesJson;
-    public static JsonObject bazaarPricesJson;
-    public static JsonObject auctionPricesJson;
-    public static JsonObject ismuseumJson;
+    private static JsonObject shopPricesJson;
+    private static JsonObject bazaarPricesJson;
+    private static JsonObject auctionPricesJson;
+    private static JsonObject lbauctionPricesJson;
+    private static JsonObject ismuseumJson;
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
         String name = getInternalnameFromNBT(stack);
@@ -35,26 +36,34 @@ public class PriceInfoTooltip {
             if (!list.toString().contains("NPC Price") && shopPricesJson != null && shopPricesJson.has(name)) {
                 JsonElement getPrice = shopPricesJson.get(name);
                 String price = String.format(Locale.ENGLISH, "%1$,.2f", getPrice.getAsDouble());
-                list.add(new LiteralText(String.format("%-22s", "NPC Price:")).formatted(Formatting.YELLOW).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
+                list.add(new LiteralText(String.format("%-23s", "NPC Price:")).formatted(Formatting.YELLOW).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
             }
-            if (!list.toString().contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name)) {
-                JsonElement getPrice = auctionPricesJson.get(name);
-                String price = String.format(Locale.ENGLISH, "%1$,.2f", getPrice.getAsDouble());
-
-                list.add(new LiteralText(String.format("%-22s", "Avg. BIN Price:")).formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
-            } else if ((!list.toString().contains("Bazaar buy Price") || !list.toString().contains("Bazaar sell Price")) && bazaarPricesJson != null && bazaarPricesJson.has(name)) {
+            if ((!list.toString().contains("Bazaar buy Price") || !list.toString().contains("Bazaar sell Price")) && bazaarPricesJson != null && bazaarPricesJson.has(name)) {
                 JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
                 String buyprice = String.format(Locale.ENGLISH, "%1$,.2f", getItem.get("buyPrice").getAsDouble());
                 String sellprice = String.format(Locale.ENGLISH, "%1$,.2f", getItem.get("sellPrice").getAsDouble());
                 list.add(new LiteralText(String.format("%-19s", "Bazaar buy Price:")).formatted(Formatting.GOLD).append(new LiteralText(buyprice + " Coins").formatted(Formatting.DARK_AQUA)));
                 list.add(new LiteralText(String.format("%-20s", "Bazaar sell Price:")).formatted(Formatting.GOLD).append(new LiteralText(sellprice + " Coins").formatted(Formatting.DARK_AQUA)));
+            } else if ((!list.toString().contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name)) || (!list.toString().contains("Lowest BIN Price") && lbauctionPricesJson != null && lbauctionPricesJson.has(name))) {
+                if (!list.toString().contains("Lowest BIN Price") && lbauctionPricesJson != null && lbauctionPricesJson.has(name)) {
+                    JsonElement getPrice = lbauctionPricesJson.get(name);
+                    String lbprice = String.format(Locale.ENGLISH, "%1$,.2f", getPrice.getAsDouble());
+                    list.add(new LiteralText(String.format("%-21s", "Lowest BIN Price:")).formatted(Formatting.GOLD).append(new LiteralText(lbprice + " Coins").formatted(Formatting.DARK_AQUA)));
+                }
+                if (!list.toString().contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name)) {
+                    JsonElement getPrice = auctionPricesJson.get(name);
+                    String price = String.format(Locale.ENGLISH, "%1$,.2f", getPrice.getAsDouble());
+                    list.add(new LiteralText(String.format("%-22s", "Avg. BIN Price:")).formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
+                }
             }
+
             if (!list.toString().contains("Museum") && ismuseumJson != null && ismuseumJson.has(name)) {
                 list.add(new LiteralText(String.format(ismuseumJson.get(name).toString().replaceAll("\"", "").equals("Weapons") ? "%-19s" : ismuseumJson.get(name).toString().replaceAll("\"", "").equals("Armor") ? "%-20s" : "%-21s", "Museum: (" + ismuseumJson.get(name).toString().replaceAll("\"", "") + ")")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp != null ? timestamp : "" + "").formatted(Formatting.RED)));
             } else if (!list.toString().contains("Obtained") && timestamp != null) {
                 list.add(new LiteralText(String.format("%-23s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp + "").formatted(Formatting.RED)));
             }
         } catch (Exception e) {
+            assert MinecraftClient.getInstance().player != null;
             MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.toString()), false);
         }
 
@@ -105,6 +114,7 @@ public class PriceInfoTooltip {
 
     public static void init() {
         new Thread(PriceInfoTooltip::downloadPrices).start();
+        new Thread(PriceInfoTooltip::downloadlbPrices).start();
         new Thread(PriceInfoTooltip::downloadbazaarPrices).start();
         new Thread(PriceInfoTooltip::downloadshopPrices).start();
         new Thread(PriceInfoTooltip::downloadismuseum).start();
@@ -137,6 +147,18 @@ public class PriceInfoTooltip {
             LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download bazaar item prices!", e);
         }
         bazaarPricesJson = result;
+    }
+
+    private static void downloadlbPrices() {
+        JsonObject result = null;
+        try {
+            URL apiAddr = new URL("https://sbe-stole-skytils.design/api/auctions/lowestbins");
+            InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+            result = new Gson().fromJson(reader, JsonObject.class);
+        } catch (IOException e) {
+            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download lb item prices!", e);
+        }
+        lbauctionPricesJson = result;
     }
 
     private static void downloadshopPrices() {
