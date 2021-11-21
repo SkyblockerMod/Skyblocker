@@ -1,3 +1,14 @@
+# Release 1.4.1
+
+Fixes
+* Fixed color terminal solver not working for light blue color by @ExternalTime in #27
+* Cleaning in PriceInfoTooltip by @Zailer43 in #26
+
+New Contributor
+* @Zailer43 made their first contribution in #26
+
+Full Changelog: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.4.0...v1.4.1
+___
 # Release 1.4.0
 
 New features
