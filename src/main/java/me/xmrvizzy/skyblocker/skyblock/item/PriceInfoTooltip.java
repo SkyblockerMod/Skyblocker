@@ -20,47 +20,52 @@ import java.net.URL;
 import java.time.Month;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
     private static JsonObject shopPricesJson;
     private static JsonObject bazaarPricesJson;
     private static JsonObject auctionPricesJson;
-    private static JsonObject lbauctionPricesJson;
-    private static JsonObject ismuseumJson;
+    private static JsonObject lbAuctionPricesJson;
+    private static JsonObject isMuseumJson;
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> list) {
-        String name = getInternalnameFromNBT(stack);
+        String name = getInternalNameFromNBT(stack);
         String timestamp = getTimestamp(stack);
+        List<String> listString = list.stream()
+                .map(Text::getString)
+                .collect(Collectors.toList());
         try {
-            if (!list.toString().contains("NPC Price") && shopPricesJson != null && shopPricesJson.has(name)) {
+            if (!listString.contains("NPC Price") && shopPricesJson != null && shopPricesJson.has(name)) {
                 JsonElement getPrice = shopPricesJson.get(name);
-                String price = String.format(Locale.ENGLISH, "%1$,.2f", getPrice.getAsDouble());
-                list.add(new LiteralText(String.format("%-23s", "NPC Price:")).formatted(Formatting.YELLOW).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
+                list.add(new LiteralText(String.format("%-23s", "NPC Price:")).formatted(Formatting.YELLOW).append(getCoinsMessage(getPrice.getAsDouble())));
             }
-            if ((!list.toString().contains("Bazaar buy Price") || !list.toString().contains("Bazaar sell Price")) && bazaarPricesJson != null && bazaarPricesJson.has(name)) {
+            if ((!listString.contains("Bazaar buy Price") || !listString.contains("Bazaar sell Price")) && bazaarPricesJson != null && bazaarPricesJson.has(name)) {
                 JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
-                String buyprice = String.format(Locale.ENGLISH, "%1$,.2f", getItem.get("buyPrice").getAsDouble());
-                String sellprice = String.format(Locale.ENGLISH, "%1$,.2f", getItem.get("sellPrice").getAsDouble());
-                list.add(new LiteralText(String.format("%-19s", "Bazaar buy Price:")).formatted(Formatting.GOLD).append(new LiteralText(buyprice + " Coins").formatted(Formatting.DARK_AQUA)));
-                list.add(new LiteralText(String.format("%-20s", "Bazaar sell Price:")).formatted(Formatting.GOLD).append(new LiteralText(sellprice + " Coins").formatted(Formatting.DARK_AQUA)));
-            } else if ((!list.toString().contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name)) || (!list.toString().contains("Lowest BIN Price") && lbauctionPricesJson != null && lbauctionPricesJson.has(name))) {
-                if (!list.toString().contains("Lowest BIN Price") && lbauctionPricesJson != null && lbauctionPricesJson.has(name)) {
-                    JsonElement getPrice = lbauctionPricesJson.get(name);
-                    String lbprice = String.format(Locale.ENGLISH, "%1$,.2f", getPrice.getAsDouble());
-                    list.add(new LiteralText(String.format("%-21s", "Lowest BIN Price:")).formatted(Formatting.GOLD).append(new LiteralText(lbprice + " Coins").formatted(Formatting.DARK_AQUA)));
+                list.add(new LiteralText(String.format("%-19s", "Bazaar buy Price:")).formatted(Formatting.GOLD).append(getCoinsMessage(getItem.get("buyPrice").getAsDouble())));
+                list.add(new LiteralText(String.format("%-20s", "Bazaar sell Price:")).formatted(Formatting.GOLD).append(getCoinsMessage(getItem.get("sellPrice").getAsDouble())));
+            } else if ((!listString.contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name)) || (!listString.contains("Lowest BIN Price") && lbAuctionPricesJson != null && lbAuctionPricesJson.has(name))) {
+                if (!listString.contains("Lowest BIN Price") && lbAuctionPricesJson != null && lbAuctionPricesJson.has(name)) {
+                    JsonElement getPrice = lbAuctionPricesJson.get(name);
+                    list.add(new LiteralText(String.format("%-21s", "Lowest BIN Price:")).formatted(Formatting.GOLD).append(getCoinsMessage(getPrice.getAsDouble())));
                 }
-                if (!list.toString().contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name)) {
+                if (!listString.contains("Avg. BIN Price") && auctionPricesJson != null && auctionPricesJson.has(name)) {
                     JsonElement getPrice = auctionPricesJson.get(name);
-                    String price = String.format(Locale.ENGLISH, "%1$,.2f", getPrice.getAsDouble());
-                    list.add(new LiteralText(String.format("%-22s", "Avg. BIN Price:")).formatted(Formatting.GOLD).append(new LiteralText(price + " Coins").formatted(Formatting.DARK_AQUA)));
+                    list.add(new LiteralText(String.format("%-22s", "Avg. BIN Price:")).formatted(Formatting.GOLD).append(getCoinsMessage(getPrice.getAsDouble())));
                 }
             }
 
-            if (!list.toString().contains("Museum") && ismuseumJson != null && ismuseumJson.has(name)) {
-                list.add(new LiteralText(String.format(ismuseumJson.get(name).toString().replaceAll("\"", "").equals("Weapons") ? "%-19s" : ismuseumJson.get(name).toString().replaceAll("\"", "").equals("Armor") ? "%-20s" : "%-21s", "Museum: (" + ismuseumJson.get(name).toString().replaceAll("\"", "") + ")")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp != null ? timestamp : "" + "").formatted(Formatting.RED)));
-            } else if (!list.toString().contains("Obtained") && timestamp != null) {
-                list.add(new LiteralText(String.format("%-23s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp + "").formatted(Formatting.RED)));
+            if (!listString.contains("Museum") && isMuseumJson != null && isMuseumJson.has(name)) {
+                String itemCategory = isMuseumJson.get(name).toString().replaceAll("\"", "");
+                String format = switch (itemCategory) {
+                    case "Weapons" -> "%-19s";
+                    case "Armor" -> "%-20s";
+                    default -> "%-21s";
+                };
+                list.add(new LiteralText(String.format(format, "Museum: (" + itemCategory + ")")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp != null ? timestamp : "").formatted(Formatting.RED)));
+            } else if (!listString.contains("Obtained") && timestamp != null) {
+                list.add(new LiteralText(String.format("%-23s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE).append(new LiteralText(timestamp).formatted(Formatting.RED)));
             }
         } catch (Exception e) {
             assert MinecraftClient.getInstance().player != null;
@@ -76,48 +81,53 @@ public class PriceInfoTooltip {
 
     public static String getTimestamp(ItemStack stack) {
         NbtCompound tag = getInternalNameForItem(stack);
-        String internalname = null;
+        String internalName = null;
         if (tag != null && tag.contains("ExtraAttributes", 10)) {
             NbtCompound ea = tag.getCompound("ExtraAttributes");
 
             if (ea.contains("timestamp", 8)) {
-                internalname = ea.getString("timestamp").replaceAll("\\s(.*)", "");
-                int month = Integer.parseInt(internalname.replaceAll("(\\d+)/(\\d+)/(\\d+)", "$1"));
-                internalname = StringUtils.capitalize(internalname.replaceAll("(\\d+)/(\\d+)/(\\d+)", Month.of(month) + " $2, 20$3").toLowerCase());
+                internalName = ea.getString("timestamp").replaceAll("\\s(.*)", "");
+                int month = Integer.parseInt(internalName.replaceAll("(\\d+)/(\\d+)/(\\d+)", "$1"));
+                internalName = StringUtils.capitalize(internalName.replaceAll("(\\d+)/(\\d+)/(\\d+)", Month.of(month) + " $2, 20$3").toLowerCase());
             }
         }
-        return internalname;
+        return internalName;
     }
 
-    public static String getInternalnameFromNBT(ItemStack stack) {
+    public static String getInternalNameFromNBT(ItemStack stack) {
         NbtCompound tag = getInternalNameForItem(stack);
-        String internalname = null;
+        String internalName = null;
         if (tag != null && tag.contains("ExtraAttributes", 10)) {
             NbtCompound ea = tag.getCompound("ExtraAttributes");
 
             if (ea.contains("id", 8)) {
-                internalname = ea.getString("id").replaceAll(":", "-");
+                internalName = ea.getString("id").replaceAll(":", "-");
             } else {
                 return null;
             }
-            if ("ENCHANTED_BOOK".equals(internalname)) {
+            if ("ENCHANTED_BOOK".equals(internalName)) {
                 NbtCompound enchants = ea.getCompound("enchantments");
 
-                for (String enchname : enchants.getKeys()) {
-                    internalname = enchname.toUpperCase() + ";" + enchants.getInt(enchname);
+                for (String enchName : enchants.getKeys()) {
+                    internalName = enchName.toUpperCase() + ";" + enchants.getInt(enchName);
                     break;
                 }
             }
         }
-        return internalname;
+        return internalName;
+    }
+
+    private static Text getCoinsMessage(double price) {
+        String priceString = String.format(Locale.ENGLISH, "%1$,.0f", price);
+        return new LiteralText(priceString + " Coins").formatted(Formatting.DARK_AQUA);
     }
 
     public static void init() {
         new Thread(PriceInfoTooltip::downloadPrices).start();
-        new Thread(PriceInfoTooltip::downloadlbPrices).start();
-        new Thread(PriceInfoTooltip::downloadbazaarPrices).start();
-        new Thread(PriceInfoTooltip::downloadshopPrices).start();
-        new Thread(PriceInfoTooltip::downloadismuseum).start();
+        new Thread(PriceInfoTooltip::downloadLBPrices).start();
+        new Thread(PriceInfoTooltip::downloadBazaarPrices).start();
+        new Thread(PriceInfoTooltip::downloadShopPrices).start();
+        new Thread(PriceInfoTooltip::downloadIsMuseum).start();
     }
 
     private static void downloadPrices() {
@@ -137,7 +147,7 @@ public class PriceInfoTooltip {
         auctionPricesJson = result;
     }
 
-    private static void downloadbazaarPrices() {
+    private static void downloadBazaarPrices() {
         JsonObject result = null;
         try {
             URL apiAddr = new URL("https://sky.shiiyu.moe/api/v2/bazaar");
@@ -149,7 +159,7 @@ public class PriceInfoTooltip {
         bazaarPricesJson = result;
     }
 
-    private static void downloadlbPrices() {
+    private static void downloadLBPrices() {
         JsonObject result = null;
         try {
             URL apiAddr = new URL("https://sbe-stole-skytils.design/api/auctions/lowestbins");
@@ -158,10 +168,10 @@ public class PriceInfoTooltip {
         } catch (IOException e) {
             LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download lb item prices!", e);
         }
-        lbauctionPricesJson = result;
+        lbAuctionPricesJson = result;
     }
 
-    private static void downloadshopPrices() {
+    private static void downloadShopPrices() {
         JsonObject result = null;
         try {
             URL apiAddr = new URL("https://hysky.de/api/npcprice");
@@ -173,7 +183,7 @@ public class PriceInfoTooltip {
         shopPricesJson = result;
     }
 
-    private static void downloadismuseum() {
+    private static void downloadIsMuseum() {
         JsonObject result = null;
         try {
             URL apiAddr = new URL("https://hysky.de/api/museum");
@@ -182,7 +192,7 @@ public class PriceInfoTooltip {
         } catch (IOException e) {
             LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download museum items!", e);
         }
-        ismuseumJson = result;
+        isMuseumJson = result;
     }
 
 }
