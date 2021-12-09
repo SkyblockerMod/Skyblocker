@@ -1,3 +1,12 @@
+# Release 1.4.2
+
+supporting 1.18.x
+
+Fixes
+* Simplified ad filter implementation by @ExternalTime in #28
+
+Full Changelog: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.4.1...v1.4.2
+___
 # Release 1.4.1
 
 Fixes
