@@ -1,3 +1,12 @@
+# Release 1.4.3
+
+changed dependency Skyblocker requiere minimum **fabricloader** 0.12.11
+
+Fixes
+* security fix 
+
+Full Changelog: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.4.1...v1.4.2
+___
 # Release 1.4.2
 
 supporting 1.18.x
