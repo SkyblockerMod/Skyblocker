@@ -3,7 +3,7 @@
 changed dependency Skyblocker requiere minimum **fabricloader** 0.12.11
 
 Fixes
-* security fix
+* security fix 
 
 Full Changelog: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.4.1...v1.4.2
 ___
