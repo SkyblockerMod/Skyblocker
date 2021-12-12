@@ -26,7 +26,7 @@
     "skyblocker.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.3",
+    "fabricloader": ">=0.12.11",
     "fabric": "*",
 	"cloth-config2": "*",
     "minecraft": "1.17.x",
