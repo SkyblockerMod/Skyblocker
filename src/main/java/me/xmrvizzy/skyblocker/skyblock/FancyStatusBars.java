@@ -15,39 +15,47 @@ import java.util.regex.Pattern;
 
 public class FancyStatusBars extends DrawableHelper {
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/bars.png");
+    private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/bars.png");
     private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c]([0-9]+)/([0-9]+)❤(?:\\+§c[0-9]+\\S)? {3,}(?:§a([0-9]+)§a❈ Defense|(\\S+(?: \\S+)*)) {3,}(?:§b([0-9]+)/([0-9]+)✎ (?:Mana|§3([0-9]+)ʬ)?|(\\S+(?: \\S+)*))(.*)$");
-    private final Resource health;
-    private final Resource mana;
-    private int defense;
 
-    public FancyStatusBars() {
-        health = new Resource(100, 100);
-        mana = new Resource(100, 100);
-        defense = 0;
-    }
+    private final Resource[] resources = new Resource[]{
+            // Health
+            new Resource(16733525),
+            // Mana
+            new Resource(5636095),
+            // Defense
+            new Resource(12106180),
+            // Experience
+            new Resource(8453920),
+    };
 
     public boolean update(String actionBar) {
-        if(!SkyblockerConfig.get().general.bars.enableBars)
+        if (!SkyblockerConfig.get().general.bars.enableBars)
             return false;
         Matcher matcher = ACTION_BAR_STATUS.matcher(actionBar);
-        if(!matcher.matches())
+        if (!matcher.matches())
             return false;
-        health.set(matcher.group(1), matcher.group(2));
-        if(matcher.group(3) != null)
-            defense = Integer.parseInt(matcher.group(3));
-        if(matcher.group(5) != null) {
-            mana.set(matcher.group(5), matcher.group(6));
-            if(matcher.group(7) != null)
-                mana.add(Integer.parseInt(matcher.group(7)));
+
+        resources[0].setMax(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
+        if (matcher.group(3) != null) {
+            int def = Integer.parseInt(matcher.group(3));
+            resources[2].setFillLevel(def, (double) def / ((double) def + 100D));
         }
+        if (matcher.group(5) != null) {
+            int m = Integer.parseInt(matcher.group(5));
+            if (matcher.group(7) != null)
+                m += Integer.parseInt(matcher.group(7));
+            resources[1].setMax(m, Integer.parseInt(matcher.group(6)));
+        }
+        assert client.player != null;
+        resources[3].setFillLevel(client.player.experienceLevel, client.player.experienceProgress);
 
         StringBuilder sb = new StringBuilder();
         appendIfNotNull(sb, matcher.group(4));
         appendIfNotNull(sb, matcher.group(8));
         appendIfNotNull(sb, matcher.group(9));
 
-        if(!sb.isEmpty()) {
+        if (!sb.isEmpty()) {
             assert client.player != null;
             client.player.sendMessage(Text.of(sb.toString()), true);
         }
@@ -56,52 +64,34 @@ public class FancyStatusBars extends DrawableHelper {
     }
 
     private void appendIfNotNull(StringBuilder sb, String str) {
-        if(str == null)
+        if (str == null)
             return;
-        if(!sb.isEmpty())
+        if (!sb.isEmpty())
             sb.append("    ");
         sb.append(str);
     }
 
+    private static final int BAR_SPACING = 46;
+
     public boolean render(MatrixStack matrices, int scaledWidth, int scaledHeight) {
-        if(!SkyblockerConfig.get().general.bars.enableBars)
+        if (!SkyblockerConfig.get().general.bars.enableBars)
             return false;
         int left = scaledWidth / 2 - 91;
         int top = scaledHeight - 35;
-
-        int hpFillWidth = (int) (health.getFillLevel() * 33.0F);
-        int hpOverflowWidth = (int) (health.getOverflow() * 33.0F);
-        int manaFillWidth = (int) (mana.getFillLevel() * 33.0F);
-        assert client.player != null;
-        int xp = (int) (client.player.experienceProgress * 33.0F);
-        int defenseFill = (int) (defense / (defense + 100.0) * 33.0);
-
-        // Icons
-//        this.client.getTextureManager().bindTexture(BARS);
         RenderSystem.setShaderTexture(0, BARS);
-        this.drawTexture(matrices, left, top, 0, 0, 9, 9);
-        this.drawTexture(matrices, left + 47, top, 9, 0, 7, 9);
-        this.drawTexture(matrices, left + 92, top, 16, 0, 9, 9);
-        this.drawTexture(matrices, left + 139, top, 25, 0, 9, 9);
-
-        // Empty Bars
-        this.drawTexture(matrices, left + 10, top + 1, 0, 9, 33, 7);
-        this.drawTexture(matrices, left + 55, top + 1, 0, 9, 33, 7);
-        this.drawTexture(matrices, left + 102, top + 1, 0, 9, 33, 7);
-        this.drawTexture(matrices, left + 149, top + 1, 0, 9, 33, 7);
-
-        // Progress Bars
-        this.drawTexture(matrices, left + 10, top + 1, 0, 16, hpFillWidth, 7);
-        this.drawTexture(matrices, left + 10, top + 1, 0, 44, hpOverflowWidth, 7);
-        this.drawTexture(matrices, left + 55, top + 1, 0, 23, manaFillWidth, 7);
-        this.drawTexture(matrices, left + 102, top + 1, 0, 30, defenseFill, 7);
-        this.drawTexture(matrices, left + 149, top + 1, 0, 37, xp, 7);
-
-        // Progress Texts
-        renderText(matrices, health.getValue(), left + 11, top, 16733525);
-        renderText(matrices, mana.getValue(), left + 56, top, 5636095);
-        renderText(matrices, defense, left + 103, top, 12106180);
-        renderText(matrices, client.player.experienceLevel, left + 150, top, 8453920);
+        for (int i = 0; i < 4; i++) {
+            this.drawTexture(matrices, left + i * BAR_SPACING, top, 0, 9 * i, 43, 9);
+            int fillCount = resources[i].getFillCount();
+            for (int j = 0; j < fillCount; j++) {
+                this.drawTexture(matrices, left + 11 + i * BAR_SPACING, top, 43 + 31 * j, 9 * i, Resource.INNER_WIDTH, 9);
+            }
+            int fillLevel = resources[i].getFillLevel();
+            if (0 < fillLevel)
+                this.drawTexture(matrices, left + 11 + i * BAR_SPACING, top, 43 + 31 * fillCount, 9 * i, fillLevel, 9);
+        }
+        for (int i = 0; i < 4; i++) {
+            renderText(matrices, resources[i].getValue(), left + 11 + i * BAR_SPACING, top, resources[i].getTextColor());
+        }
         return true;
     }
 
@@ -111,35 +101,51 @@ public class FancyStatusBars extends DrawableHelper {
         int x = left + (33 - textRenderer.getWidth(text)) / 2;
         int y = top - 3;
 
-        textRenderer.draw(matrices, text, (float) (x + 1), (float) y, 0);
-        textRenderer.draw(matrices, text, (float) (x - 1), (float) y, 0);
-        textRenderer.draw(matrices, text, (float) x, (float) (y + 1), 0);
-        textRenderer.draw(matrices, text, (float) x, (float) (y - 1), 0);
+        // for i in [-1, 1]
+        for (int i = -1; i < 2; i += 2) {
+            textRenderer.draw(matrices, text, (float) (x + i), (float) y, 0);
+            textRenderer.draw(matrices, text, (float) x, (float) (y + i), 0);
+        }
+
         textRenderer.draw(matrices, text, (float) x, (float) y, color);
     }
 
     private static class Resource {
+        static final int INNER_WIDTH = 31;
         private int value;
-        private int max;
-        public Resource(int value, int max) {
+        private int fillLevel;
+        private final int textColor;
+
+        public Resource(int textColor) {
+            this.value = 0;
+            this.fillLevel = INNER_WIDTH;
+            this.textColor = textColor;
+        }
+
+        public void setMax(int value, int max) {
             this.value = value;
-            this.max = max;
+            this.fillLevel = value * INNER_WIDTH / max;
         }
-        public void set(String value, String max) {
-            this.value = Integer.parseInt(value);
-            this.max = Integer.parseInt(max);
+
+        public void setFillLevel(int value, double fillLevel) {
+            this.value = value;
+            this.fillLevel = (int) (INNER_WIDTH * fillLevel);
         }
-        public void add(int value) {
-            this.value += value;
-        }
+
         public int getValue() {
             return value;
         }
-        public double getFillLevel() {
-            return Math.min(((double)value)/((double)max),  1);
+
+        public int getFillCount() {
+            return fillLevel / INNER_WIDTH;
         }
-        public double getOverflow() {
-            return Math.max(((double)value)/((double)max) - 1,  0);
+
+        public int getFillLevel() {
+            return fillLevel % INNER_WIDTH;
+        }
+
+        public int getTextColor() {
+            return textColor;
         }
     }
 }
