@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,7 +29,7 @@ public class WikiLookup {
     public static void init(){
         wikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.wikiLookup",
-                GLFW.GLFW_KEY_Y,
+                GLFW.GLFW_KEY_F4,
                 "key.categories.skyblocker"
         ));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -47,8 +48,9 @@ public class WikiLookup {
                     JsonObject rootobj = root.getAsJsonObject();
                     String wikiLink = rootobj.get("info").getAsString();
                     Util.getOperatingSystem().open(wikiLink);
-                } catch (IOException e) {
+                } catch (IOException | NullPointerException e) {
                     e.printStackTrace();
+                    client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
                 }
 
             }
@@ -58,8 +60,8 @@ public class WikiLookup {
     public static String getSkyblockId() {
 
         //Grabbing the skyblock NBT data
-        ItemStack mainHandStack = client.player.getMainHandStack();
-        NbtCompound nbt = mainHandStack.getSubNbt("ExtraAttributes");
+        ItemStack mainStack = client.player.getMainHandStack();
+        NbtCompound nbt = mainStack.getSubNbt("ExtraAttributes");
         if (nbt != null) {
             id = nbt.getString("id");
         }
