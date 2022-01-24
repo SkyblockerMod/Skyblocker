@@ -11,7 +11,7 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
-version = "${project.mod_version}+${project.minecraft_version}"
+version = "${project.mod_version}+${project.suported_version}"
 group = project.maven_group
 
 repositories {
@@ -103,8 +103,9 @@ task publishModrinth(type: TaskModrinthUpload) {
 	token = System.getenv('MODRINTH_TOKEN')
 	projectId = project.modrinth_id
 	versionNumber = "v${project.version}"
-	versionName = "Skyblocker ${project.mod_version} (${project.minecraft_version})"
+	versionName = "Skyblocker ${project.mod_version} (${project.suported_version})"
 	uploadFile = remapJar
+	addGameVersion('1.17.1')
 	addGameVersion((String) project.minecraft_version)
 	addLoader('fabric')
 	versionType = VersionType.RELEASE
