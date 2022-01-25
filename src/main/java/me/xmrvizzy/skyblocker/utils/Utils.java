@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.utils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
@@ -33,6 +34,7 @@ public class Utils {
                     ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
                 }
                 isSkyblock = true;
+
             }
             else isSkyblock = false;
 
@@ -43,6 +45,53 @@ public class Utils {
             isDungeons = false;
         }
     }
+
+    public static String getLocation() {
+        String location = null;
+        List<String> sidebarLines = getSidebar();
+        try{
+            for (int i = 0; i < sidebarLines.size(); i++) {
+                if(sidebarLines.get(i).contains("⏣")) location = sidebarLines.get(i);
+            }
+            location = location.replace('⏣', ' ').strip();
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+        return location;
+    }
+    public static double getPurse() {
+        String purseString = null;
+        double purse = 0;
+
+        List<String> sidebarLines = getSidebar();
+        try{
+            for (int i = 0; i < sidebarLines.size(); i++) {
+                if(sidebarLines.get(i).contains("Piggy:")) purseString = sidebarLines.get(i);
+                if(sidebarLines.get(i).contains("Purse:")) purseString = sidebarLines.get(i);
+            }
+            if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
+            else purse = 0;
+
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+        return purse;
+    }
+    public static int getBits() {
+        int bits = 0;
+        String bitsString = null;
+        List<String> sidebarLines = getSidebar();
+        try{
+            for (int i = 0; i < sidebarLines.size(); i++) {
+                if(sidebarLines.get(i).contains("Bits")) bitsString = sidebarLines.get(i);
+            }
+            bits = Integer.parseInt(bitsString.replaceAll("Bits:", "").strip());
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+        return bits;
+    }
+
 
     public static List<String> getSidebar() {
         List<String> lines = new ArrayList<>();

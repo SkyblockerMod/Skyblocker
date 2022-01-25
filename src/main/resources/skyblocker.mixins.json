@@ -9,9 +9,10 @@
     "ItemRendererMixin",
     "MinecraftClientMixin",
     "AccessorWorldRenderer",
+    "LeverBlockMixin",
     "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",
-    "LeverBlockMixin"
+    "SoundManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -24,6 +24,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public Messages messages = new Messages();
 
+    @ConfigEntry.Category("fishing")
+    @ConfigEntry.Gui.TransitiveObject
+    public Fishing fishing = new Fishing();
+
     public static class General {
         public String apiKey;
 
@@ -31,12 +35,23 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Bars bars = new Bars();
 
+        @ConfigEntry.Category("RichPresence")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public RichPresence richPresence = new RichPresence();
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
     }
 
     public static class Bars {
         public boolean enableBars = true;
+    }
+    public static class RichPresence {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableRichPresence = true;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public Info info = Info.LOCATION;
+        public String customMessage;
     }
 
     public static class Locations {
@@ -78,6 +93,15 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideImplosion = false;
         public boolean hideMoltenWave = false;
         public boolean hideAds = false;
+    }
+
+    public static class Fishing {
+        public boolean enableFishingDing = false;
+    }
+    public enum Info {
+        PIGGY,
+        BITS,
+        LOCATION
     }
 
     public static void init() {
