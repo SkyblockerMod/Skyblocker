@@ -7,11 +7,11 @@ plugins {
 import com.modrinth.minotaur.TaskModrinthUpload
 import com.modrinth.minotaur.request.VersionType
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
-version = "${project.mod_version}+${project.minecraft_version}"
+version = "${project.mod_version}+${project.suported_version}"
 group = project.maven_group
 
 repositories {
@@ -67,8 +67,14 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.17 (21w19a) upwards uses Java 16.
-	it.options.release = 16
+	// ensure that the encoding is set to UTF-8, no matter what the system default is
+	// this fixes some edge cases with special characters not displaying correctly
+	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+	// If Javadoc is generated, this must be specified in that task too.
+	it.options.encoding = "UTF-8"
+
+	// Minecraft 1.18 upwards uses Java 17.
+	it.options.release = 17
 }
 
 java {
@@ -97,8 +103,9 @@ task publishModrinth(type: TaskModrinthUpload) {
 	token = System.getenv('MODRINTH_TOKEN')
 	projectId = project.modrinth_id
 	versionNumber = "v${project.version}"
-	versionName = "Skyblocker ${project.mod_version} (${project.minecraft_version})"
+	versionName = "Skyblocker ${project.mod_version} (${project.suported_version})"
 	uploadFile = remapJar
+	addGameVersion('1.17.1')
 	addGameVersion((String) project.minecraft_version)
 	addLoader('fabric')
 	versionType = VersionType.RELEASE
