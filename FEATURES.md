@@ -8,3 +8,4 @@
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the button)
 * price tooltip: npc, bazaar (avg, lbin), ah, museum
 * reparty: write /rp to reparty
+* Wiki Lookup
