@@ -3,15 +3,16 @@
   "package": "me.xmrvizzy.skyblocker.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "AccessorWorldRenderer",
     "ChatHudListenerMixin",
     "ClientPlayerEntityMixin",
+    "GenericContainerScreenHandlerMixin",
+    "GenericContainerScreenMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
+    "LeverBlockMixin",
     "MinecraftClientMixin",
-    "AccessorWorldRenderer",
-    "GenericContainerScreenMixin",
-    "GenericContainerScreenHandlerMixin",
-    "LeverBlockMixin"
+    "SoundManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
