@@ -99,7 +99,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableFishingDing = false;
     }
     public enum Info {
-        PIGGY,
+        PURSE,
         BITS,
         LOCATION
     }
