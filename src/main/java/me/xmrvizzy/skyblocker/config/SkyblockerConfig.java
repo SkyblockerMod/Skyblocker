@@ -24,10 +24,6 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public Messages messages = new Messages();
 
-    @ConfigEntry.Category("fishing")
-    @ConfigEntry.Gui.TransitiveObject
-    public Fishing fishing = new Fishing();
-
     public static class General {
         public String apiKey;
 
@@ -93,10 +89,6 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideImplosion = false;
         public boolean hideMoltenWave = false;
         public boolean hideAds = false;
-    }
-
-    public static class Fishing {
-        public boolean enableFishingDing = false;
     }
     public enum Info {
         PURSE,
