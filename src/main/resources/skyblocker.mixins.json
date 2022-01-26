@@ -12,7 +12,7 @@
     "LeverBlockMixin",
     "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",
-    "SoundManagerMixin"
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

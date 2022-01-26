@@ -53,6 +53,7 @@ public class Utils {
             for (int i = 0; i < sidebarLines.size(); i++) {
                 if(sidebarLines.get(i).contains("⏣")) location = sidebarLines.get(i);
             }
+            if (location == null) location = "Unknown";
             location = location.replace('⏣', ' ').strip();
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();

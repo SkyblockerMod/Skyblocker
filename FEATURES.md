@@ -12,4 +12,3 @@
 * reparty: write /rp to reparty
 * Wiki Lookup: press f4 to open the wiki page about the held item
 * Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
-* Fishing Ding: Plays a ding sound when you catch a fish, which can more easily notify the player 
