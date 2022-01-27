@@ -34,6 +34,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("RichPresence")
         @ConfigEntry.Gui.CollapsibleObject()
         public RichPresence richPresence = new RichPresence();
+      
+        @ConfigEntry.Category("itemList")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public ItemList itemList = new ItemList();
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
@@ -48,6 +52,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public Info info = Info.LOCATION;
         public String customMessage;
+    }
+
+    public static class ItemList {
+        public boolean enableItemList = true;
     }
 
     public static class Locations {
