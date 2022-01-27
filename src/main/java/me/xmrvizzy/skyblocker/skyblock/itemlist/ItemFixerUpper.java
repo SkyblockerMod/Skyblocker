@@ -27,7 +27,6 @@ public class ItemFixerUpper {
             Map.entry("minecraft:netherbrick", "minecraft:nether_brick"),
             Map.entry("minecraft:stained_hardened_clay", "minecraft:terracotta"),
             Map.entry("minecraft:quartz_ore", "minecraft:nether_quartz_ore"),
-            Map.entry("minecraft:skull", "minecraft:player_head"),
             Map.entry("minecraft:fish", "minecraft:cod"),
             Map.entry("minecraft:cooked_fish", "minecraft:cooked_cod"),
             Map.entry("minecraft:red_flower", "minecraft:poppy"),
@@ -129,6 +128,14 @@ public class ItemFixerUpper {
             Map.entry(120, "minecraft:villager_spawn_egg")
     );
 
+    private final static String[] SKULL_VARIANTS = {
+            "minecraft:skeleton_skull",
+            "minecraft:wither_skeleton_skull",
+            "minecraft:zombie_head",
+            "minecraft:player_head",
+            "minecraft:creeper_head"
+    };
+
     public static String convert(String id, int damage) {
         if (id.equals("minecraft:dye")) return DYE_COLORS[damage];
         if (id.equals("minecraft:log2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "log";
@@ -137,6 +144,8 @@ public class ItemFixerUpper {
         if (id.equals("minecraft:double_plant")) return DOUBLE_PLANT_VARIANTS[damage];
         if (id.equals("minecraft:spawn_egg")) return SPAWN_EGG_VARIANTS.getOrDefault(damage, "minecraft:ghast_spawn_egg");
         if (id.equals("minecraft:banner")) return "minecraft:" + BLOCK_COLORS[15 - damage] + "banner";
+        if (id.equals("minecraft:skull")) return SKULL_VARIANTS[damage];
+
         id = MAPPING.getOrDefault(id, id);
         if (Registry.ITEM.get(new Identifier(id)).equals(Items.AIR)) {
             String shortId = id.split(":")[1];
@@ -144,6 +153,7 @@ public class ItemFixerUpper {
                 return "minecraft:" + BLOCK_COLORS[damage] + shortId;
             if (damage < TREE_VARIANTS.length && !Registry.ITEM.get(new Identifier("minecraft:" + TREE_VARIANTS[damage] + shortId)).equals(Items.AIR))
                 return "minecraft:" + TREE_VARIANTS[damage] + shortId;
+
             if (id.contains("wooden_")) return id.replaceFirst("wooden_", TREE_VARIANTS[damage]);
             if (id.contains("minecraft:record")) return id.replaceFirst("minecraft:record", "minecraft:music_disc");
         }
