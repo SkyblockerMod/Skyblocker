@@ -11,7 +11,8 @@
     "AccessorWorldRenderer",
     "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",
-    "LeverBlockMixin"
+    "LeverBlockMixin",
+    "HandledScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

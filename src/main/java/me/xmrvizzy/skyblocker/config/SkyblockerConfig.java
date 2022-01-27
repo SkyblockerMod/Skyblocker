@@ -31,12 +31,20 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Bars bars = new Bars();
 
+        @ConfigEntry.Category("itemList")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public ItemList itemList = new ItemList();
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
     }
 
     public static class Bars {
         public boolean enableBars = true;
+    }
+
+    public static class ItemList {
+        public boolean enableItemList = true;
     }
 
     public static class Locations {
