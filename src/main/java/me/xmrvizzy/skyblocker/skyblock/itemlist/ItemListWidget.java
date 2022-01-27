@@ -32,6 +32,7 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
     private final int cols;
 
     private double maxScroll;
+    private boolean isHovered;
 
     private final HandledScreen screen;
     private final MinecraftClient client;
@@ -90,6 +91,7 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.isHovered = this.isMouseOver(mouseX, mouseY);
         ItemRenderer itemRenderer = client.getItemRenderer();
         RenderSystem.disableDepthTest();
         // slot hover
@@ -137,6 +139,14 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
     }
 
     @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        for (Element child : this.children) {
+            if (child.isMouseOver(mouseX, mouseY)) return true;
+        }
+        return this.isMouseOverList(mouseX, mouseY);
+    }
+
+    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         if (super.mouseScrolled(mouseX, mouseY, amount)) {
             return true;
@@ -176,6 +186,9 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
 
     @Override
     public SelectionType getType() {
+        for (Selectable selectable : selectables)
+            if (selectable.getType().isFocused()) return SelectionType.FOCUSED;
+        if (this.isHovered) return SelectionType.HOVERED;
         return SelectionType.NONE;
     }
 }
