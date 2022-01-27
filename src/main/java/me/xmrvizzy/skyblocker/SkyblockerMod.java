@@ -2,8 +2,8 @@ package me.xmrvizzy.skyblocker;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.container.ContainerSolverManager;
+import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
-import me.xmrvizzy.skyblocker.utils.Discord;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 
@@ -11,6 +11,8 @@ public class SkyblockerMod {
     public static final String NAMESPACE = "skyblocker";
     private static final SkyblockerMod instance = new SkyblockerMod();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
+    public DiscordRPCManager discordRPCManager = new DiscordRPCManager();
+    public static int rpTimer = 0;
 
     private SkyblockerMod() {
     }
@@ -35,13 +37,16 @@ public class SkyblockerMod {
                 //System.out.println("Blazesolver: " + e);
             }
         if (ticks % 20 == 0) {
+            rpTimer++;
+            if (rpTimer == 5){
+                discordRPCManager.updatePresence();
+                rpTimer = 0;
+            }
             if (client.world != null && !client.isInSingleplayer())
                 Utils.sbChecker();
-            Discord.update();
-            if (Discord.connected){
-                if (SkyblockerConfig.get().general.richPresence.enableRichPresence) Discord.updatePresence(Discord.getInfo(), SkyblockerConfig.get().general.richPresence.customMessage);
-                if (!SkyblockerConfig.get().general.richPresence.enableRichPresence || !Utils.isSkyblock || client.world == null) Discord.stop();
-            }
+            if (!discordRPCManager.isConnected && Utils.isSkyblock && SkyblockerConfig.get().general.richPresence.enableRichPresence) discordRPCManager.start();
+            if (discordRPCManager.isConnected && !SkyblockerConfig.get().general.richPresence.enableRichPresence) discordRPCManager.stop();
+            if (client.world == null || client.isInSingleplayer() || !Utils.isSkyblock) if (discordRPCManager.isConnected)discordRPCManager.stop();
             ticks = 0;
         }
     }

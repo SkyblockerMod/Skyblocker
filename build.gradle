@@ -30,6 +30,7 @@ repositories {
         name 'Maven Central'
     }
 	maven {url "https://jitpack.io"}
+	maven {url "https://maven.jaackson.me/repo"}
 
 }
 
@@ -55,12 +56,14 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation("com.github.thatgravyboat:DiscordIPC:d813b27") {
-		exclude module: 'log4j'
-	}
-	include "com.github.thatgravyboat:DiscordIPC:d813b27"
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
+	modImplementation ("com.jagrosh:DiscordIPC:0.5"){
+		exclude module: "slf4j-api"
+	}
+	include "com.jagrosh:DiscordIPC:0.5"
+	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-common:2.0.4"))
+	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.0.4"))
 }
 
 processResources {

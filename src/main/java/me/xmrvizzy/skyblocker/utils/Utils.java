@@ -2,7 +2,6 @@ package me.xmrvizzy.skyblocker.utils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
