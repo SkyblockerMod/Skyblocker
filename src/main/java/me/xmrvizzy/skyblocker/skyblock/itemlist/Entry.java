@@ -41,6 +41,7 @@ public final class Entry implements Comparable<Entry> {
         NbtCompound tag = new NbtCompound();
         root.put("tag", tag);
 
+        // add enchantment glint
         if (internalName.contains("ENCHANTED")) {
             NbtList enchantments = new NbtList();
             enchantments.add(new NbtCompound());
@@ -60,11 +61,12 @@ public final class Entry implements Comparable<Entry> {
         );
 
         String nbttag = obj.get("nbttag").getAsString();
-        Matcher matcher = Pattern.compile("SkullOwner:\\{Id:\"(.{36})\",Properties:\\{textures:\\[0:\\{Value:\"(.+)\"\\}\\]\\}\\}").matcher(nbttag);
-        if (matcher.find()) {
+        // add skull texture
+        Matcher skullMatcher = Pattern.compile("SkullOwner:\\{Id:\"(.{36})\",Properties:\\{textures:\\[0:\\{Value:\"(.+)\"}]}}").matcher(nbttag);
+        if (skullMatcher.find()) {
             NbtCompound skullOwner = new NbtCompound();
             tag.put("SkullOwner", skullOwner);
-            UUID uuid = UUID.fromString(matcher.group(1));
+            UUID uuid = UUID.fromString(skullMatcher.group(1));
             skullOwner.put("Id", NbtHelper.fromUuid(uuid));
             skullOwner.put("Name", NbtString.of(this.internalName));
 
@@ -74,7 +76,13 @@ public final class Entry implements Comparable<Entry> {
             properties.put("textures", textures);
             NbtCompound texture = new NbtCompound();
             textures.add(texture);
-            texture.put("Value", NbtString.of(matcher.group(2)));
+            texture.put("Value", NbtString.of(skullMatcher.group(2)));
+        }
+        // add leather armor dye color
+        Matcher colorMatcher = Pattern.compile("color:(\\d+)").matcher(nbttag);
+        if (colorMatcher.find()) {
+            NbtInt color = NbtInt.of(Integer.parseInt(colorMatcher.group(1)));
+            display.put("color", color);
         }
 
         this.itemStack = ItemStack.fromNbt(root);
@@ -90,7 +98,7 @@ public final class Entry implements Comparable<Entry> {
         String petName = internalName.split(";")[0];
         if (!internalName.contains(";") || !ItemRegistry.petNums.has(petName)) return list;
 
-        list.add(new Pair("\\{LVL\\}", "1 ➡ 100"));
+        list.add(new Pair<>("\\{LVL\\}", "1 ➡ 100"));
 
         final String[] rarities = {
                 "COMMON",
@@ -110,7 +118,7 @@ public final class Entry implements Comparable<Entry> {
             String key = entry.getKey();
             String left = "\\{" + key+ "\\}";
             String right = statNumsMin.get(key).getAsString() + " ➡ " + statNumsMax.get(key).getAsString();
-            list.add(new Pair(left, right));
+            list.add(new Pair<>(left, right));
         }
 
         JsonArray otherNumsMin = data.get("1").getAsJsonObject().get("otherNums").getAsJsonArray();

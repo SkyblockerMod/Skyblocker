@@ -9,28 +9,26 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class ItemRegistry {
     private static final String ITEM_REPO_URI = "https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git";
 
-    private static final String ITEM_REPO_DIR = "./config/skypixel/items-repo/";
+    private static final String ITEM_REPO_DIR = "./config/skyblocker/items-repo/";
     private static final String ITEM_LIST_DIR = ITEM_REPO_DIR + "items/";
     private static final String CONSTANTS_DIR = ITEM_REPO_DIR + "constants/";
     private static final String PETNUMS_FILE = CONSTANTS_DIR + "petnums.json";
 
-    private static final JsonParser JSON_PARSER = new JsonParser();
-
-    protected static SortedSet<Entry> registry = new TreeSet<Entry>();
+    protected static SortedSet<Entry> registry = new TreeSet<>();
     protected static JsonObject petNums;
 
     // TODO: make async
     public static void init() {
         updateItemRepo();
         try {
-            petNums = JSON_PARSER.parse(Files.readString(Paths.get(PETNUMS_FILE))).getAsJsonObject();
+            petNums = JsonParser.parseString(Files.readString(Paths.get(PETNUMS_FILE))).getAsJsonObject();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +41,7 @@ public class ItemRegistry {
                 Git.cloneRepository()
                         .setURI(ITEM_REPO_URI)
                         .setDirectory(new File(ITEM_REPO_DIR))
-                        .setBranchesToClone(Arrays.asList("refs/heads/master"))
+                        .setBranchesToClone(List.of("refs/heads/master"))
                         .setBranch("refs/heads/master")
                         .call();
             } catch (GitAPIException e) {
@@ -52,9 +50,7 @@ public class ItemRegistry {
         } else {
             try {
                 Git.open(new File(ITEM_REPO_DIR)).pull().call();
-            } catch (GitAPIException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (GitAPIException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -63,11 +59,12 @@ public class ItemRegistry {
     private static void importItemFiles() {
         File dir = new File(ITEM_LIST_DIR);
         File[] files = dir.listFiles();
+        assert files != null;
         for (File file : files) {
             String path = ITEM_LIST_DIR + "/" + file.getName();
             try {
                 String fileContent = Files.readString(Paths.get(path));
-                JsonObject json = JSON_PARSER.parse(fileContent).getAsJsonObject();
+                JsonObject json = JsonParser.parseString(fileContent).getAsJsonObject();
                 registry.add(new Entry(json));
             } catch (IOException e) {
                 e.printStackTrace();

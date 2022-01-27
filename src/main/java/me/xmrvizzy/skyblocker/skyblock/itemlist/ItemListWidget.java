@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Environment(value= EnvType.CLIENT)
@@ -39,11 +38,10 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
     private final List<Element> children = Lists.newArrayList();
     private final List<Selectable> selectables = Lists.newArrayList();
     private final List<Drawable> drawables = Lists.newArrayList();
-    private final TextFieldWidget search;
 
     public ItemListWidget(HandledScreen screen) {
-        this.client = MinecraftClient.getInstance();
         this.screen = screen;
+        this.client = MinecraftClient.getInstance();
 
         this.cols = (screen.width - 200) / 2 / 16;
         this.rows = (screen.height - 40) / 16;
@@ -52,14 +50,9 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
 
         this.maxScroll = Math.max(0, entries.size() / this.cols - this.rows + 1);
 
-        int searchX = this.gridX + 1;
-        int searchY = 18;
-        int searchWidth = this.cols * 16 - 2;
-        int searchHeight = 16;
-
-        this.search = new TextFieldWidget(this.client.textRenderer, searchX, searchY, searchWidth, searchHeight, Text.of("Search"));
-        this.search.setText(searchString);
-        this.search.setChangedListener(this::setSearch);
+        SearchWidget search = new SearchWidget(this.client.textRenderer, 8, 8, this.cols * 16);
+        search.setText(searchString);
+        search.setChangedListener(this::setSearch);
         this.addDrawableChild(search);
 
         this.setSearch(searchString);
@@ -80,7 +73,7 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
     }
 
     protected <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement) {
-        this.drawables.add((Drawable)drawableElement);
+        this.drawables.add(drawableElement);
         return this.addSelectableChild(drawableElement);
     }
 
@@ -91,7 +84,7 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
 
     protected <T extends Element & Selectable> T addSelectableChild(T child) {
         this.children.add(child);
-        this.selectables.add((Selectable)child);
+        this.selectables.add(child);
         return child;
     }
 
@@ -99,8 +92,6 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         ItemRenderer itemRenderer = client.getItemRenderer();
         RenderSystem.disableDepthTest();
-        // search box title
-        client.textRenderer.drawWithShadow(matrices, "Search", this.gridX, 6, 0xff9e9e9e);
         // slot hover
         int mouseOverIndex = getMouseOverIndex(mouseX, mouseY);
         if (mouseOverIndex != -1) {
@@ -126,9 +117,7 @@ public class ItemListWidget extends AbstractParentElement implements Drawable, S
         }
         RenderSystem.enableDepthTest();
         // render children
-        Iterator iter = this.drawables.iterator();
-        while(iter.hasNext()) {
-            Drawable drawable = (Drawable)iter.next();
+        for (Drawable drawable : this.drawables) {
             drawable.render(matrices, mouseX, mouseY, delta);
         }
     }
