@@ -10,7 +10,5 @@ public interface RecipeBookWidgetAccessor {
     @Accessor
     String getSearchText();
     @Accessor
-    int getLeftOffset();
-    @Accessor
     TextFieldWidget getSearchField();
 }

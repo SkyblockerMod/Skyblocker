@@ -35,7 +35,7 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
         super.initialize(parentWidth, parentHeight, client, narrow, craftingScreenHandler);
         this.parentWidth = parentWidth;
         this.parentHeight = parentHeight;
-        this.leftOffset = ((RecipeBookWidgetAccessor)this).getLeftOffset();
+        this.leftOffset = narrow ? 0 : 86;
         this.searchField = ((RecipeBookWidgetAccessor)this).getSearchField();
         int x = (this.parentWidth - 147) / 2 - this.leftOffset;
         int y = (this.parentHeight - 166) / 2;
@@ -51,6 +51,7 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, TEXTURE);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            this.searchField = ((RecipeBookWidgetAccessor)this).getSearchField();
             int i = (this.parentWidth - 147) / 2 - this.leftOffset;
             int j = (this.parentHeight - 166) / 2;
             this.drawTexture(matrices, i, j, 1, 1, 147, 166);
