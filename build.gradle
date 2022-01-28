@@ -29,15 +29,19 @@ repositories {
         url 'https://repo.maven.apache.org/maven2'
         name 'Maven Central'
     }
+	maven {
+		url "https://maven.siphalor.de/"
+		name "Siphalor's Maven"
+	}
 	maven {url "https://jitpack.io"}
 	maven {url "https://maven.jaackson.me/repo"}
 
 }
 
 dependencies {
-	implementation 'com.google.code.gson:gson:2.8.8'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+	implementation 'com.google.code.gson:gson:2.8.9'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -61,13 +65,20 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 	include(implementation("org.slf4j:slf4j-api:1.7.28"))
-	
-	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-	// You may need to force-disable transitiveness on them.
+
+	// https://github.com/Siphalor/amecs-api
+	modImplementation "de.siphalor:amecsapi-1.15:1+"
+	include "de.siphalor:amecsapi-1.15:1+"
+
+
+	//DiscordIPC + Libraries so it works on unix systems
 	modImplementation ("com.jagrosh:DiscordIPC:0.5"){
 		exclude module: "slf4j-api"
 	}
+	// https://github.com/jaacksondev/DiscordIPC
 	include "com.jagrosh:DiscordIPC:0.5"
+
+	//https://github.com/kohlschutter/junixsocket
 	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-common:2.0.4"))
 	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.0.4"))
 }
