@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
@@ -29,44 +32,42 @@ public class WikiLookup {
     public static void init(){
         wikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.wikiLookup",
+                InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F4,
                 "key.categories.skyblocker"
         ));
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (wikiLookup.wasPressed()) {
-                id = getSkyblockId();
-
-                try {
-                    //Setting up a connection with the repo
-                    String urlString = "https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/items/" + id + ".json";
-                    URL url = new URL(urlString);
-                    URLConnection request = url.openConnection();
-                    request.connect();
-
-                    //yoinking the wiki link
-                    JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-                    JsonObject rootobj = root.getAsJsonObject();
-                    String wikiLink = rootobj.get("info").getAsString();
-                    Util.getOperatingSystem().open(wikiLink);
-                } catch (IOException | NullPointerException e) {
-                    e.printStackTrace();
-                    client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
-                }
-
-            }
-        });
     }
 
-    public static String getSkyblockId() {
-
+    public static String getSkyblockId(Slot slot) {
         //Grabbing the skyblock NBT data
-        ItemStack mainStack = client.player.getMainHandStack();
-        NbtCompound nbt = mainStack.getSubNbt("ExtraAttributes");
+        ItemStack selectedStack = slot.getStack();
+        NbtCompound nbt = selectedStack.getSubNbt("ExtraAttributes");
         if (nbt != null) {
             id = nbt.getString("id");
         }
-
         return id;
+    }
+
+    public static void openWiki(Slot slot){
+        if (Utils.isSkyblock){
+            id = getSkyblockId(slot);
+            try {
+                //Setting up a connection with the repo
+                String urlString = "https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/items/" + id + ".json";
+                URL url = new URL(urlString);
+                URLConnection request = url.openConnection();
+                request.connect();
+
+                //yoinking the wiki link
+                JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
+                JsonObject rootobj = root.getAsJsonObject();
+                String wikiLink = rootobj.get("info").getAsString();
+                Util.getOperatingSystem().open(wikiLink);
+            } catch (IOException | NullPointerException e) {
+                e.printStackTrace();
+                client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
+            }
+        }
     }
 
 }
