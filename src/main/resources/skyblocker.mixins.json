@@ -15,7 +15,8 @@
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
     "InventoryScreenMixin",
-    "RecipeBookWidgetAccessor"
+    "RecipeBookWidgetAccessor",
+    "HandledScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
