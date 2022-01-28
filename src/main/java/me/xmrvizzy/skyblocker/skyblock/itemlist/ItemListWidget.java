@@ -69,6 +69,13 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
     }
 
     @Override
+    public void drawTooltip(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+        if (this.isOpen()) {
+            this.results.drawTooltip(matrices, mouseX, mouseY);
+        }
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.isOpen() && !this.client.player.isSpectator()) {
             if (this.searchField.mouseClicked(mouseX, mouseY, button)) return true;

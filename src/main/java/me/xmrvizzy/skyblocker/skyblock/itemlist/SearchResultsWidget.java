@@ -85,11 +85,17 @@ public class SearchResultsWidget implements Drawable {
         }
         if (this.prevPageButton.active) this.prevPageButton.render(matrices, mouseX, mouseY, delta);
         if (this.nextPageButton.active) this.nextPageButton.render(matrices, mouseX, mouseY, delta);
+        RenderSystem.enableDepthTest();
+    }
+
+    public void drawTooltip(MatrixStack matrices, int mouseX, int mouseY) {
+        RenderSystem.disableDepthTest();
         for (ResultButtonWidget button : resultButtons)
             if (button.isMouseOver(mouseX, mouseY))
                 button.renderTooltip(matrices, mouseX, mouseY);
         RenderSystem.enableDepthTest();
     }
+
 
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (ResultButtonWidget button : resultButtons)
