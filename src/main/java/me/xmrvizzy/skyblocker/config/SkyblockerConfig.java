@@ -39,6 +39,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public ItemList itemList = new ItemList();
 
+        @ConfigEntry.Category("quicknav")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public Quicknav quicknav = new Quicknav();
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
     }
@@ -47,8 +51,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableBars = true;
     }
     public static class RichPresence {
-        @ConfigEntry.Gui.Tooltip()
-        public boolean enableRichPresence = true;
+        public boolean enableRichPresence = false;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public Info info = Info.LOCATION;
         public String customMessage;
@@ -56,6 +59,10 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class ItemList {
         public boolean enableItemList = true;
+    }
+
+    public static class Quicknav {
+        public boolean enableQuicknav = true;
     }
 
     public static class Locations {

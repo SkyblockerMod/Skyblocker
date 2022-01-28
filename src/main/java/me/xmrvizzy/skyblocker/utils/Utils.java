@@ -49,8 +49,8 @@ public class Utils {
         String location = null;
         List<String> sidebarLines = getSidebar();
         try{
-            for (int i = 0; i < sidebarLines.size(); i++) {
-                if(sidebarLines.get(i).contains("⏣")) location = sidebarLines.get(i);
+            for (String sidebarLine : sidebarLines) {
+                if (sidebarLine.contains("⏣")) location = sidebarLine;
             }
             if (location == null) location = "Unknown";
             location = location.replace('⏣', ' ').strip();
@@ -65,9 +65,9 @@ public class Utils {
 
         List<String> sidebarLines = getSidebar();
         try{
-            for (int i = 0; i < sidebarLines.size(); i++) {
-                if(sidebarLines.get(i).contains("Piggy:")) purseString = sidebarLines.get(i);
-                if(sidebarLines.get(i).contains("Purse:")) purseString = sidebarLines.get(i);
+            for (String sidebarLine : sidebarLines) {
+                if (sidebarLine.contains("Piggy:")) purseString = sidebarLine;
+                if (sidebarLine.contains("Purse:")) purseString = sidebarLine;
             }
             if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
             else purse = 0;
@@ -82,10 +82,12 @@ public class Utils {
         String bitsString = null;
         List<String> sidebarLines = getSidebar();
         try{
-            for (int i = 0; i < sidebarLines.size(); i++) {
-                if(sidebarLines.get(i).contains("Bits")) bitsString = sidebarLines.get(i);
+            for (String sidebarLine : sidebarLines) {
+                if (sidebarLine.contains("Bits")) bitsString = sidebarLine;
             }
-            bits = Integer.parseInt(bitsString.replaceAll("Bits:", "").strip());
+            if (bitsString !=null) {
+                bits = Integer.parseInt(bitsString.replaceAll("[^0-9.]", "").strip());
+            }
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
