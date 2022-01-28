@@ -9,7 +9,7 @@
     "InGameHudMixin",
     "ItemRendererMixin",
     "LeverBlockMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
     "AccessorWorldRenderer",
     "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",

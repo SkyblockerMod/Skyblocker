@@ -29,10 +29,6 @@ repositories {
         url 'https://repo.maven.apache.org/maven2'
         name 'Maven Central'
     }
-	maven {
-		url "https://maven.siphalor.de/"
-		name "Siphalor's Maven"
-	}
 	maven {url "https://jitpack.io"}
 	maven {url "https://maven.jaackson.me/repo"}
 
@@ -65,10 +61,6 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 	include(implementation("org.slf4j:slf4j-api:1.7.28"))
-
-	// https://github.com/Siphalor/amecs-api
-	modImplementation "de.siphalor:amecsapi-1.15:1+"
-	include "de.siphalor:amecsapi-1.15:1+"
 
 
 	//DiscordIPC + Libraries so it works on unix systems
