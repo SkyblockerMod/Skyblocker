@@ -48,7 +48,7 @@ public class DiscordRPCManager implements IPCListener{
 
     public String getInfo(){
         String info = null;
-        if (SkyblockerConfig.get().general.richPresence.info == SkyblockerConfig.Info.BITS) info = "Bits: " + Utils.getBits();
+        if (SkyblockerConfig.get().general.richPresence.info == SkyblockerConfig.Info.BITS) info = "Bits: " + dFormat.format(Utils.getBits());
         if (SkyblockerConfig.get().general.richPresence.info == SkyblockerConfig.Info.PURSE) info = "Purse: " + dFormat.format(Utils.getPurse());
         if (SkyblockerConfig.get().general.richPresence.info == SkyblockerConfig.Info.LOCATION) info = "⏣ " + Utils.getLocation();
         return info;

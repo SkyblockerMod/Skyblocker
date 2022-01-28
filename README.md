@@ -43,10 +43,14 @@ ___
 
 ___
 ## Images
-<details>
-<summary>open (no images yet)</summary>
+<details open>
+<summary>open</summary>
 
-<img height="150" src="https://i.etsystatic.com/30407219/r/il/1183a7/3143262438/il_fullxfull.3143262438_9m3l.jpg" />
+<img padding="10px,0px" height="150" src="https://staging.hysky.de/hotbar.png" />
+<img padding="10px,0px" height="150" src="https://staging.hysky.de/minimap.png" />
+<img padding="10px,0px" height="150" src="https://staging.hysky.de/tooltip1.png" />
+<img padding="10px,0px" height="150" src="https://staging.hysky.de/tooltip2.png" />
+<img padding="10px,0px" height="150" src="https://staging.hysky.de/drill.png" />
 
 </details>
 
