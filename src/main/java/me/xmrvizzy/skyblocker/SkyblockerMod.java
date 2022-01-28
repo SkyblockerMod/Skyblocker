@@ -44,7 +44,7 @@ public class SkyblockerMod {
             }
             if (client.world != null && !client.isInSingleplayer())
                 Utils.sbChecker();
-            if (!discordRPCManager.isConnected && Utils.isSkyblock && SkyblockerConfig.get().general.richPresence.enableRichPresence) discordRPCManager.start();
+            if (!discordRPCManager.isConnected && Utils.isSkyblock && SkyblockerConfig.get().general.richPresence.enableRichPresence && client.world != null && !client.isInSingleplayer()) discordRPCManager.start();
             if (discordRPCManager.isConnected && !SkyblockerConfig.get().general.richPresence.enableRichPresence) discordRPCManager.stop();
             if (client.world == null || client.isInSingleplayer() || !Utils.isSkyblock) if (discordRPCManager.isConnected)discordRPCManager.stop();
             ticks = 0;

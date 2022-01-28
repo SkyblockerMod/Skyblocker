@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.discord;
 
+import com.google.gson.JsonObject;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.RichPresence;
@@ -54,6 +55,7 @@ public class DiscordRPCManager implements IPCListener{
     }
 
     public void stop(){
+        logger.info("Closing...");
         isConnected = false;
         client.close();
         client = null;
@@ -64,4 +66,11 @@ public class DiscordRPCManager implements IPCListener{
         logger.info("Started!");
         isConnected = true;
     }
+
+    @Override
+    public void onClose(IPCClient client, JsonObject json) {
+        logger.info("Closed");
+        isConnected = false;
+    }
+
 }
