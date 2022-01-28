@@ -1,6 +1,6 @@
 # Release 1.4.3
 
-changed dependency Skyblocker requiere minimum **fabricloader** 0.12.11
+changed dependency Skyblocker requires minimum **fabricloader** 0.12.11
 
 Fixes
 * security fix 
@@ -104,4 +104,4 @@ ___
 # Skyblocker Fabric 1.17.1
 
 This release updates the skyblocker mod to mc version 1.17.
-This is the first time i created/edited a mod.
+This is the first time I created/edited a mod.

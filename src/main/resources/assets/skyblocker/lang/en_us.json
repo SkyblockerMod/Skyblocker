@@ -9,6 +9,12 @@
   "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Key (WIP)",
   "text.autoconfig.skyblocker.option.general.bars": "Health, Mana, Defence & XP Bars",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Enable Bars",
+
+  "text.autoconfig.skyblocker.option.general.richPresence": "Discord Rich Presence",
+  "text.autoconfig.skyblocker.option.general.richPresence.info": "Skyblock Info",
+  "text.autoconfig.skyblocker.option.general.richPresence.enableRichPresence": "Enabled",
+  "text.autoconfig.skyblocker.option.general.richPresence.customMessage": "Custom Message",
+
   "text.autoconfig.skyblocker.option.general.itemList": "Item List",
   "text.autoconfig.skyblocker.option.general.itemList.enableItemList": "Enable Item List",
 
@@ -34,5 +40,8 @@
   "text.autoconfig.skyblocker.option.messages.hideAOTE": "Hide AOTE Messages",
   "text.autoconfig.skyblocker.option.messages.hideImplosion": "Hide Implosion Message",
   "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Hide Molten Wave Message",
-  "text.autoconfig.skyblocker.option.messages.hideAds": "Hide Ads From Public Chat"
+  "text.autoconfig.skyblocker.option.messages.hideAds": "Hide Ads From Public Chat",
+
+  "text.autoconfig.skyblocker.category.fishing": "Fishing",
+  "text.autoconfig.skyblocker.option.fishing.enableFishingDing": "Enable Fishing Ding"
 }

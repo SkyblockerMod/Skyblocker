@@ -5,13 +5,14 @@
   "client": [
     "ChatHudListenerMixin",
     "ClientPlayerEntityMixin",
+    "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
-    "MinecraftClientMixin",
+    "LeverBlockMixin",
+    "MinecraftClientMixin"
     "AccessorWorldRenderer",
     "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",
-    "LeverBlockMixin",
     "HandledScreenMixin"
   ],
   "injectors": {

@@ -31,6 +31,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Bars bars = new Bars();
 
+        @ConfigEntry.Category("RichPresence")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public RichPresence richPresence = new RichPresence();
+      
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public ItemList itemList = new ItemList();
@@ -41,6 +45,13 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class Bars {
         public boolean enableBars = true;
+    }
+    public static class RichPresence {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableRichPresence = true;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public Info info = Info.LOCATION;
+        public String customMessage;
     }
 
     public static class ItemList {
@@ -86,6 +97,11 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideImplosion = false;
         public boolean hideMoltenWave = false;
         public boolean hideAds = false;
+    }
+    public enum Info {
+        PURSE,
+        BITS,
+        LOCATION
     }
 
     public static void init() {
