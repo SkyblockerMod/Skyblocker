@@ -47,6 +47,7 @@ public class QuickNavButton extends ClickableWidget {
             int y = ((HandledScreenAccessor)handledScreen).getY();
             int w = ((HandledScreenAccessor)handledScreen).getBackgroundWidth();
             int h = ((HandledScreenAccessor)handledScreen).getBackgroundHeight();
+            if (h > 166) --h; // why is this even a thing
             this.x = x + this.index % 6 * 28 + 4;
             this.y = this.index < 6 ? y - 28 : y + h - 4;
             this.u = 28;

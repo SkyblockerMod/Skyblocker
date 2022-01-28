@@ -28,13 +28,8 @@ public abstract class HandledScreenMixin extends Screen {
     private void init(CallbackInfo ci) {
         // quicknav
         if (Utils.isSkyblock && SkyblockerConfig.get().general.quicknav.enableQuicknav) {
-            String title = super.getTitle().getString().trim();
-            int left_x = (super.width - this.backgroundWidth) / 2 + 4;
-            int right_x = (super.width + this.backgroundWidth) / 2 - 3;
-            int top_y = (super.height - this.backgroundHeight) / 2 - 28;
-            int bottom_y = (super.height + this.backgroundHeight) / 2 - 4;
-            if (this.backgroundHeight > 166) --bottom_y; // why is this even a thing
-            List<QuickNavButton> buttons = QuickNav.init(title, left_x, right_x, top_y, bottom_y);
+            String screenTitle = super.getTitle().getString().trim();
+            List<QuickNavButton> buttons = QuickNav.init(screenTitle);
             for (QuickNavButton button : buttons) super.addDrawableChild(button);
 
         }
