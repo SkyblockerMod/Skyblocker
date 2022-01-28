@@ -9,11 +9,13 @@
     "InGameHudMixin",
     "ItemRendererMixin",
     "LeverBlockMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
     "AccessorWorldRenderer",
     "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",
-    "HandledScreenMixin"
+    "HandledScreenMixin",
+    "InventoryScreenMixin",
+    "RecipeBookWidgetAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
