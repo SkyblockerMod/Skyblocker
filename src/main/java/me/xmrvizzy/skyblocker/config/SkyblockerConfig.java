@@ -53,7 +53,9 @@ public class SkyblockerConfig implements ConfigData {
     public static class RichPresence {
         public boolean enableRichPresence = false;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip()
         public Info info = Info.LOCATION;
+        public boolean cycleMode = false;
         public String customMessage;
     }
 

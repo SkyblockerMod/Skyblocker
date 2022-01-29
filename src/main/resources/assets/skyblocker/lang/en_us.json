@@ -14,6 +14,8 @@
 
   "text.autoconfig.skyblocker.option.general.richPresence": "Discord Rich Presence",
   "text.autoconfig.skyblocker.option.general.richPresence.info": "Skyblock Info",
+  "text.autoconfig.skyblocker.option.general.richPresence.info.@Tooltip": "This value doesn't matter if you are cycling",
+  "text.autoconfig.skyblocker.option.general.richPresence.cycleMode": "Cycle Skyblock Info",
   "text.autoconfig.skyblocker.option.general.richPresence.enableRichPresence": "Enabled",
   "text.autoconfig.skyblocker.option.general.richPresence.customMessage": "Custom Message",
 
