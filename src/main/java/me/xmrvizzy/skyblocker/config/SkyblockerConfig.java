@@ -36,11 +36,11 @@ public class SkyblockerConfig implements ConfigData {
         public RichPresence richPresence = new RichPresence();
       
         @ConfigEntry.Category("itemList")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
 
         @ConfigEntry.Category("quicknav")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject()
         public Quicknav quicknav = new Quicknav();
 
         @ConfigEntry.Gui.Excluded
