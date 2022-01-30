@@ -3,30 +3,33 @@ package me.xmrvizzy.skyblocker.skyblock.itemlist;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
-import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Entry implements Comparable<Entry> {
-    final ItemStack itemStack;
-    final String internalName;
-    final String familyName;
-    final int tierNumber;
-    final String clickCommand;
+public class ItemStackBuilder {
+    private final static String PETNUMS_PATH = ItemRegistry.LOCAL_ITEM_REPO_DIR + "constants/petnums.json";
+    private static JsonObject petNums;
 
-    public Entry(JsonObject obj) {
-        this.internalName = obj.get("internalname").getAsString();
-        this.familyName = this.internalName.replaceAll(".(\\d+)$", "");
-        this.tierNumber = Integer.parseInt("0" + this.internalName.replaceAll("[^\\d]", ""));
-        String cmd = obj.get("clickcommand").getAsString();
-        this.clickCommand = cmd.isBlank() ? null : "/" + cmd + " " + this.internalName.replaceAll(";(\\d+)$", "");
+    public static void init() {
+        try {
+            petNums = JsonParser.parseString(Files.readString(Paths.get(PETNUMS_PATH))).getAsJsonObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ItemStack parseJsonObj(JsonObject obj) {
+        String internalName = obj.get("internalname").getAsString();
 
         List<Pair<String, String>> injectors = new ArrayList<>();
         injectors.addAll(petData(internalName));
@@ -36,7 +39,7 @@ public final class Entry implements Comparable<Entry> {
 
         String id = obj.get("itemid").getAsString();
         int damage = obj.get("damage").getAsInt();
-        root.put("id", NbtString.of(ItemFixerUpper.convert(id, damage)));
+        root.put("id", NbtString.of(ItemFixerUpper.convertItemId(id, damage)));
 
         NbtCompound tag = new NbtCompound();
         root.put("tag", tag);
@@ -72,7 +75,7 @@ public final class Entry implements Comparable<Entry> {
             tag.put("SkullOwner", skullOwner);
             UUID uuid = UUID.fromString(skullMatcher.group(1));
             skullOwner.put("Id", NbtHelper.fromUuid(uuid));
-            skullOwner.put("Name", NbtString.of(this.internalName));
+            skullOwner.put("Name", NbtString.of(internalName));
 
             NbtCompound properties = new NbtCompound();
             skullOwner.put("Properties", properties);
@@ -89,10 +92,7 @@ public final class Entry implements Comparable<Entry> {
             display.put("color", color);
         }
 
-        this.itemStack = ItemStack.fromNbt(root);
-        if (this.itemStack.getItem().equals(Items.AIR)) {
-            System.err.println("ItemList: cannot register: " + this.internalName + " (" + id + ")");
-        }
+        return ItemStack.fromNbt(root);
     }
 
     // TODO: fix stats for GOLDEN_DRAGON (lv1 -> lv200)
@@ -100,7 +100,7 @@ public final class Entry implements Comparable<Entry> {
         List<Pair<String, String>> list = new ArrayList<>();
 
         String petName = internalName.split(";")[0];
-        if (!internalName.contains(";") || !ItemRegistry.petNums.has(petName)) return list;
+        if (!internalName.contains(";") || !petNums.has(petName)) return list;
 
         list.add(new Pair<>("\\{LVL\\}", "1 ➡ 100"));
 
@@ -113,7 +113,7 @@ public final class Entry implements Comparable<Entry> {
                 "MYTHIC"
         };
         String rarity = rarities[Integer.parseInt(internalName.split(";")[1])];
-        JsonObject data = ItemRegistry.petNums.get(petName).getAsJsonObject().get(rarity).getAsJsonObject();
+        JsonObject data = petNums.get(petName).getAsJsonObject().get(rarity).getAsJsonObject();
 
         JsonObject statNumsMin = data.get("1").getAsJsonObject().get("statNums").getAsJsonObject();
         JsonObject statNumsMax = data.get("100").getAsJsonObject().get("statNums").getAsJsonObject();
@@ -140,11 +140,5 @@ public final class Entry implements Comparable<Entry> {
         for (Pair<String, String> injector : injectors)
             string = string.replaceAll(injector.getLeft(), injector.getRight());
         return string;
-    }
-
-    @Override
-    public int compareTo(@NotNull Entry rhs) {
-        if (this.familyName.equals(rhs.familyName)) return this.tierNumber - rhs.tierNumber;
-        else return this.familyName.compareTo(rhs.familyName);
     }
 }

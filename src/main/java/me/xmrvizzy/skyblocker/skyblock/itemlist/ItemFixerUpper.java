@@ -136,7 +136,7 @@ public class ItemFixerUpper {
             "minecraft:creeper_head"
     };
 
-    public static String convert(String id, int damage) {
+    public static String convertItemId(String id, int damage) {
         if (id.equals("minecraft:dye")) return DYE_COLORS[damage];
         if (id.equals("minecraft:log2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "log";
         if (id.equals("minecraft:leaves2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "leaves";
