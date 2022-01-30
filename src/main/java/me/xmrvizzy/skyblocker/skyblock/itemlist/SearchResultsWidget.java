@@ -107,6 +107,7 @@ public class SearchResultsWidget implements Drawable {
             this.client.textRenderer.drawWithShadow(matrices, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
             this.client.textRenderer.drawWithShadow(matrices, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
+            this.client.textRenderer.drawWithShadow(matrices, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
         }
         for (ResultButtonWidget button : resultButtons)
             button.render(matrices, mouseX, mouseY, delta);
