@@ -5,6 +5,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -19,13 +21,15 @@ public class SearchResultsWidget implements Drawable {
     private final int rows = 4;
     private final int cols = 5;
 
-    private final List<Entry> searchResults = new ArrayList<>();
+    private final List<ItemStack> searchResults = new ArrayList<>();
+    private List<Recipe> recipeResults = new ArrayList<>();
     private String searchText = null;
     private List<ResultButtonWidget> resultButtons = new ArrayList<>();
     private ToggleButtonWidget nextPageButton;
     private ToggleButtonWidget prevPageButton;
     private int currentPage = 0;
     private int pageCount = 0;
+    private boolean displayRecipes = false;
 
     public SearchResultsWidget(MinecraftClient client, int parentX, int parentY) {
         this.client = client;
@@ -45,29 +49,53 @@ public class SearchResultsWidget implements Drawable {
         this.prevPageButton.setTextureUV(1, 208, 13, 18, TEXTURE);
     }
 
+    public void closeRecipeView() {
+        this.currentPage = 0;
+        this.pageCount = (this.searchResults.size() - 1) / resultButtons.size() + 1;
+        this.displayRecipes = false;
+        this.updateButtons();
+    }
+
     protected void updateSearchResult(String searchText) {
         if (!searchText.equals(this.searchText)) {
             this.searchText = searchText;
             this.searchResults.clear();
-            for (Entry entry : ItemRegistry.registry) {
-                String name = entry.itemStack.getName().toString().toLowerCase();
-                String lore = entry.itemStack.getNbt().toString().toLowerCase();
+            for (ItemStack entry : ItemRegistry.items) {
+                String name = entry.getName().toString().toLowerCase();
+                String lore = entry.getNbt().getCompound("display").getCompound("Lore").toString().toLowerCase();
                 if (name.contains(this.searchText) || lore.contains(this.searchText))
                     this.searchResults.add(entry);
             }
             this.currentPage = 0;
             this.pageCount = (this.searchResults.size() - 1) / resultButtons.size() + 1;
+            this.displayRecipes = false;
             this.updateButtons();
         }
     }
 
     private void updateButtons() {
-        for (int i = 0; i < resultButtons.size(); ++i) {
-            int index = this.currentPage * resultButtons.size() + i;
-            if (index < this.searchResults.size()) {
-                resultButtons.get(i).setItemStack(this.searchResults.get(index).itemStack);
-            } else {
-                resultButtons.get(i).clearItemStack();
+        if (this.displayRecipes) {
+            Recipe recipe = this.recipeResults.get(this.currentPage);
+            for (ResultButtonWidget button : resultButtons)
+                button.clearItemStack();
+            resultButtons.get( 5).setItemStack(recipe.grid.get(0));
+            resultButtons.get( 6).setItemStack(recipe.grid.get(1));
+            resultButtons.get( 7).setItemStack(recipe.grid.get(2));
+            resultButtons.get(10).setItemStack(recipe.grid.get(3));
+            resultButtons.get(11).setItemStack(recipe.grid.get(4));
+            resultButtons.get(12).setItemStack(recipe.grid.get(5));
+            resultButtons.get(15).setItemStack(recipe.grid.get(6));
+            resultButtons.get(16).setItemStack(recipe.grid.get(7));
+            resultButtons.get(17).setItemStack(recipe.grid.get(8));
+            resultButtons.get(14).setItemStack(recipe.result);
+        } else {
+            for (int i = 0; i < resultButtons.size(); ++i) {
+                int index = this.currentPage * resultButtons.size() + i;
+                if (index < this.searchResults.size()) {
+                    resultButtons.get(i).setItemStack(this.searchResults.get(index));
+                } else {
+                    resultButtons.get(i).clearItemStack();
+                }
             }
         }
         this.prevPageButton.active = this.currentPage > 0;
@@ -76,6 +104,13 @@ public class SearchResultsWidget implements Drawable {
 
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         RenderSystem.disableDepthTest();
+        if (this.displayRecipes) {
+            String craftText = this.recipeResults.get(this.currentPage).text;
+            this.client.textRenderer.drawWithShadow(matrices, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
+            Text resultText = this.recipeResults.get(this.currentPage).result.getName();
+            this.client.textRenderer.drawWithShadow(matrices, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
+            this.client.textRenderer.drawWithShadow(matrices, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
+        }
         for (ResultButtonWidget button : resultButtons)
             button.render(matrices, mouseX, mouseY, delta);
         if (this.pageCount > 1) {
@@ -96,10 +131,20 @@ public class SearchResultsWidget implements Drawable {
         RenderSystem.enableDepthTest();
     }
 
-
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (ResultButtonWidget button : resultButtons)
-            if (button.mouseClicked(mouseX, mouseY, mouseButton)) return true;
+            if (button.mouseClicked(mouseX, mouseY, mouseButton)) {
+                String internalName = button.itemStack.getNbt().getCompound("ExtraAttributes").getString("id");
+                List<Recipe> recipes = ItemRegistry.getRecipes(internalName);
+                if (!recipes.isEmpty()) {
+                    this.recipeResults = recipes;
+                    this.currentPage = 0;
+                    this.pageCount = recipes.size();
+                    this.displayRecipes = true;
+                    this.updateButtons();
+                }
+                return true;
+            }
         if (this.prevPageButton.mouseClicked(mouseX, mouseY, mouseButton)) {
             --this.currentPage;
             this.updateButtons();

@@ -7,6 +7,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -15,13 +16,14 @@ import java.util.List;
 public class ResultButtonWidget extends ClickableWidget {
     private static final Identifier BACKGROUND_TEXTURE = new Identifier("textures/gui/recipe_book.png");
 
-    private ItemStack itemStack = null;
+    protected ItemStack itemStack = null;
 
     public ResultButtonWidget(int x, int y) {
         super(x, y, 25, 25, Text.of(""));
     }
 
     protected void setItemStack(ItemStack itemStack) {
+        this.active = !itemStack.getItem().equals(Items.AIR);
         this.visible = true;
         this.itemStack = itemStack;
     }
@@ -38,6 +40,7 @@ public class ResultButtonWidget extends ClickableWidget {
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
         this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
         client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
+        client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
     }
 
     @Override
