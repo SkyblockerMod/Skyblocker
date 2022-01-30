@@ -40,6 +40,7 @@ public class ResultButtonWidget extends ClickableWidget {
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
         this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
         client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
+        client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
     }
 
     @Override
