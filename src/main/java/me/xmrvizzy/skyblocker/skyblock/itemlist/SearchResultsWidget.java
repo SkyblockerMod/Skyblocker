@@ -49,6 +49,11 @@ public class SearchResultsWidget implements Drawable {
         this.prevPageButton.setTextureUV(1, 208, 13, 18, TEXTURE);
     }
 
+    public void closeRecipeView() {
+        this.displayRecipes = false;
+        this.updateButtons();
+    }
+
     protected void updateSearchResult(String searchText) {
         if (!searchText.equals(this.searchText)) {
             this.searchText = searchText;

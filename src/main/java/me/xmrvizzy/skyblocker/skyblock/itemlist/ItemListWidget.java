@@ -78,7 +78,10 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.isOpen() && !this.client.player.isSpectator()) {
-            if (this.searchField.mouseClicked(mouseX, mouseY, button)) return true;
+            if (this.searchField.mouseClicked(mouseX, mouseY, button)) {
+                this.results.closeRecipeView();
+                return true;
+            }
             if (this.results.mouseClicked(mouseX, mouseY, button)) return true;
         }
         return false;
