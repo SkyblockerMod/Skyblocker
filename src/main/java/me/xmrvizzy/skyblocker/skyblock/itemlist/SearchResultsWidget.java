@@ -50,6 +50,8 @@ public class SearchResultsWidget implements Drawable {
     }
 
     public void closeRecipeView() {
+        this.currentPage = 0;
+        this.pageCount = (this.searchResults.size() - 1) / resultButtons.size() + 1;
         this.displayRecipes = false;
         this.updateButtons();
     }
