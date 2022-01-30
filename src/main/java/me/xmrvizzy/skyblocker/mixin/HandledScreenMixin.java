@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import java.util.List;
 
 @Mixin(HandledScreen.class)
@@ -33,19 +34,10 @@ public abstract class HandledScreenMixin extends Screen {
 
     @Inject(method = "init()V", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
-        if (Utils.isSkyblock && SkyblockerConfig.get().general.itemList.enableItemList) {
-            super.addDrawableChild(new ItemListWidget((HandledScreen)(Object)this));
-        }
-
         // quicknav
         if (Utils.isSkyblock && SkyblockerConfig.get().general.quicknav.enableQuicknav) {
-            String title = super.getTitle().getString().trim();
-            int left_x = (super.width - this.backgroundWidth) / 2 + 4;
-            int right_x = (super.width + this.backgroundWidth) / 2 - 3;
-            int top_y = (super.height - this.backgroundHeight) / 2 - 28;
-            int bottom_y = (super.height + this.backgroundHeight) / 2 - 4;
-            if (this.backgroundHeight > 166) --bottom_y; // why is this even a thing
-            List<QuickNavButton> buttons = QuickNav.init(title, left_x, right_x, top_y, bottom_y);
+            String screenTitle = super.getTitle().getString().trim();
+            List<QuickNavButton> buttons = QuickNav.init(screenTitle);
             for (QuickNavButton button : buttons) super.addDrawableChild(button);
 
         }

@@ -13,7 +13,10 @@
     "AccessorWorldRenderer",
     "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",
-    "HandledScreenMixin"
+    "HandledScreenMixin",
+    "InventoryScreenMixin",
+    "RecipeBookWidgetAccessor",
+    "HandledScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
