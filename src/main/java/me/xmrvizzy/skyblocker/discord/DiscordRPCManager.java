@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.discord;
 
+import com.google.gson.JsonObject;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.RichPresence;
@@ -17,6 +18,7 @@ public class DiscordRPCManager implements IPCListener{
     public boolean isConnected;
     public static final Logger logger = LoggerFactory.getLogger("Skyblocker DiscordRPC");
     public static DecimalFormat dFormat = new DecimalFormat("###,###.##");
+    public int cycleCount = 0;
 
     public void start(){
         try {
@@ -47,13 +49,24 @@ public class DiscordRPCManager implements IPCListener{
 
     public String getInfo(){
         String info = null;
-        if (SkyblockerConfig.get().general.richPresence.info == SkyblockerConfig.Info.BITS) info = "Bits: " + dFormat.format(Utils.getBits());
-        if (SkyblockerConfig.get().general.richPresence.info == SkyblockerConfig.Info.PURSE) info = "Purse: " + dFormat.format(Utils.getPurse());
-        if (SkyblockerConfig.get().general.richPresence.info == SkyblockerConfig.Info.LOCATION) info = "⏣ " + Utils.getLocation();
+        if (!SkyblockerConfig.get().general.richPresence.cycleMode){
+            switch (SkyblockerConfig.get().general.richPresence.info){
+                case BITS -> info = "Bits: " + dFormat.format(Utils.getBits());
+                case PURSE -> info = "Purse: " + dFormat.format(Utils.getPurse());
+                case LOCATION -> info = "⏣ " + Utils.getLocation();
+            }
+        } else if (SkyblockerConfig.get().general.richPresence.cycleMode){
+            switch (cycleCount){
+                case 0 -> info = "Bits: " + dFormat.format(Utils.getBits());
+                case 1 -> info = "Purse: " + dFormat.format(Utils.getPurse());
+                case 2 -> info = "⏣ " + Utils.getLocation();
+            }
+        }
         return info;
     }
 
     public void stop(){
+        logger.info("Closing...");
         isConnected = false;
         client.close();
         client = null;
@@ -64,4 +77,11 @@ public class DiscordRPCManager implements IPCListener{
         logger.info("Started!");
         isConnected = true;
     }
+
+    @Override
+    public void onClose(IPCClient client, JsonObject json) {
+        logger.info("Closed");
+        isConnected = false;
+    }
+
 }

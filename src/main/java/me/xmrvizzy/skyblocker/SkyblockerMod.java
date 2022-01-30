@@ -6,6 +6,7 @@ import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 
 import java.util.Objects;
 
@@ -14,7 +15,6 @@ public class SkyblockerMod {
     private static final SkyblockerMod instance = new SkyblockerMod();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public DiscordRPCManager discordRPCManager = new DiscordRPCManager();
-    public static int rpTimer = 0;
 
     private SkyblockerMod() {
     }
@@ -24,6 +24,7 @@ public class SkyblockerMod {
     }
 
     private int ticks = 0;
+    private int rpTimer = 0;
 
     public void onTick() {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -42,6 +43,8 @@ public class SkyblockerMod {
             rpTimer++;
             if (rpTimer == 5){
                 discordRPCManager.updatePresence();
+                discordRPCManager.cycleCount++;
+                if (discordRPCManager.cycleCount == 3) discordRPCManager.cycleCount = 0;
                 rpTimer = 0;
             }
             if (client.world != null && !client.isInSingleplayer())
