@@ -42,6 +42,8 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Quicknav quicknav = new Quicknav();
 
+        public boolean enableUpdateNotification = true;
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
     }
