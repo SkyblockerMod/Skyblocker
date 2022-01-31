@@ -28,7 +28,6 @@ public class SkyblockerMod {
     public void onTick() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return;
-        System.out.println(ticks);
         ticks++;
         if(onHypxiel()) {
             if (ticks % 4 == 0)
