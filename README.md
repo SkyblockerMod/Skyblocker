@@ -38,6 +38,9 @@ ___
 * price tooltip: npc, bazaar (avg, lbin), ah, museum
 * reparty: write /rp to reparty
 * Wiki Lookup: press f4 to open the wiki page about the held item
+* Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
+* Quicknav: fast navigate between pets, armor, enderchest, skill, collection, crafting, enchant, envil, warp dungeon, warp hub
+* Recipe book: in the vanilla recipe book all skyblock items are listed and you can see the recipe of the item
 
 </details>
 
@@ -46,11 +49,13 @@ ___
 <details open>
 <summary>open</summary>
 
-<img padding="10px,0px" height="150" src="https://staging.hysky.de/hotbar.png" />
-<img padding="10px,0px" height="150" src="https://staging.hysky.de/minimap.png" />
-<img padding="10px,0px" height="150" src="https://staging.hysky.de/tooltip1.png" />
-<img padding="10px,0px" height="150" src="https://staging.hysky.de/tooltip2.png" />
-<img padding="10px,0px" height="150" src="https://staging.hysky.de/drill.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/hotbar.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/minimap.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/tooltip1.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/tooltip2.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/drill.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/richpresencesmall.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/recipe.png" />
 
 </details>
 

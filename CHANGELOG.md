@@ -1,3 +1,26 @@
+# Release 1.5.0
+
+the mod support 1.17.x and 1.18.x but requires java 17.
+
+New Features
+* Added Wiki Lookup by @TacoMonkey11 in https://github.com/LifeIsAParadox/Skyblocker/pull/30
+* Discord Rich Presence by @TacoMonkey11
+* Quicknavigation by @KonaeAkira
+* Recepe book by @KonaeAkira
+
+Fixes
+* Simplified drawing of status bars by @ExternalTime in https://github.com/LifeIsAParadox/Skyblocker/pull/29
+* Added Discord Rich Presence with a few other small fixes by @TacoMonkey11 in https://github.com/LifeIsAParadox/Skyblocker/pull/31
+* Make the item list display in the recipe book by @KonaeAkira in https://github.com/LifeIsAParadox/Skyblocker/pull/33
+* Add recipe view to item list by @KonaeAkira in https://github.com/LifeIsAParadox/Skyblocker/pull/35
+* Added inventory wiki lookup + small bug fixes + DiscordRPC cycle option by @TacoMonkey11 in https://github.com/LifeIsAParadox/Skyblocker/pull/34
+
+New Contributors
+* @TacoMonkey11 made their first contribution in https://github.com/LifeIsAParadox/Skyblocker/pull/30
+* @KonaeAkira made their first contribution in https://github.com/LifeIsAParadox/Skyblocker/pull/32
+
+**Full Changelog**: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.4.3...v1.5.0
+___
 # Release 1.4.3
 
 changed dependency Skyblocker requires minimum **fabricloader** 0.12.11

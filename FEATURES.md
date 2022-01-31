@@ -12,3 +12,5 @@
 * reparty: write /rp to reparty
 * Wiki Lookup: press f4 to open the wiki page about the held item
 * Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
+* Quicknav: fast navigate between pets, armor, enderchest, skill, collection, crafting, enchant, envil, warp dungeon, warp hub
+* Recipe book: in the vanilla recipe book all skyblock items are listed and you can see the recipe of the item
