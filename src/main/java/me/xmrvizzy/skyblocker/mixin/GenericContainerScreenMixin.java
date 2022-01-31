@@ -25,7 +25,7 @@ public abstract class GenericContainerScreenMixin extends HandledScreen<GenericC
     @Override
     protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
         super.drawForeground(matrices, mouseX, mouseY);
-        if (Utils.isSkyblock)
+        if (Utils.isOnSkyblock)
             SkyblockerMod.getInstance().containerSolverManager.onDraw(matrices, this.handler.slots.subList(0, rows * 9));
     }
 }
