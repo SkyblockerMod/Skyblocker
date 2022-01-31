@@ -24,23 +24,22 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public Messages messages = new Messages();
 
+    @ConfigEntry.Category("richPresence")
+    @ConfigEntry.Gui.TransitiveObject
+    public RichPresence richPresence = new RichPresence();
+
     public static class General {
-        public String apiKey;
 
         @ConfigEntry.Category("bars")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Bars bars = new Bars();
-
-        @ConfigEntry.Category("RichPresence")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public RichPresence richPresence = new RichPresence();
       
         @ConfigEntry.Category("itemList")
-        @ConfigEntry.Gui.CollapsibleObject()
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public ItemList itemList = new ItemList();
 
         @ConfigEntry.Category("quicknav")
-        @ConfigEntry.Gui.CollapsibleObject()
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Quicknav quicknav = new Quicknav();
 
         @ConfigEntry.Gui.Excluded

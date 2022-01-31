@@ -39,7 +39,7 @@ public class DiscordRPCManager implements IPCListener{
 
     public void updatePresence(){
         RichPresence presence = new RichPresence.Builder()
-                .setState(SkyblockerConfig.get().general.richPresence.customMessage)
+                .setState(SkyblockerConfig.get().richPresence.customMessage)
                 .setDetails(getInfo())
                 .setStartTimestamp(startTimestamp)
                 .setLargeImage("skyblocker-default")
@@ -49,13 +49,13 @@ public class DiscordRPCManager implements IPCListener{
 
     public String getInfo(){
         String info = null;
-        if (!SkyblockerConfig.get().general.richPresence.cycleMode){
-            switch (SkyblockerConfig.get().general.richPresence.info){
+        if (!SkyblockerConfig.get().richPresence.cycleMode){
+            switch (SkyblockerConfig.get().richPresence.info){
                 case BITS -> info = "Bits: " + dFormat.format(Utils.getBits());
                 case PURSE -> info = "Purse: " + dFormat.format(Utils.getPurse());
                 case LOCATION -> info = "⏣ " + Utils.getLocation();
             }
-        } else if (SkyblockerConfig.get().general.richPresence.cycleMode){
+        } else if (SkyblockerConfig.get().richPresence.cycleMode){
             switch (cycleCount){
                 case 0 -> info = "Bits: " + dFormat.format(Utils.getBits());
                 case 1 -> info = "Purse: " + dFormat.format(Utils.getPurse());

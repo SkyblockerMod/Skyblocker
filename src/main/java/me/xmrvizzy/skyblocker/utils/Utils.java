@@ -23,6 +23,11 @@ public class Utils {
 
     public static void sbChecker() {
         List<String> sidebar = getSidebar();
+        if (sidebar == null) {
+            isSkyblock = false;
+            isDungeons = false;
+            return;
+        }
         String string = sidebar.toString();
 
         if (sidebar.isEmpty()) return;
@@ -49,6 +54,7 @@ public class Utils {
         String location = null;
         List<String> sidebarLines = getSidebar();
         try{
+            assert sidebarLines != null;
             for (String sidebarLine : sidebarLines) {
                 if (sidebarLine.contains("⏣")) location = sidebarLine;
             }
@@ -65,6 +71,7 @@ public class Utils {
 
         List<String> sidebarLines = getSidebar();
         try{
+            assert sidebarLines != null;
             for (String sidebarLine : sidebarLines) {
                 if (sidebarLine.contains("Piggy:")) purseString = sidebarLine;
                 if (sidebarLine.contains("Purse:")) purseString = sidebarLine;
@@ -82,6 +89,7 @@ public class Utils {
         String bitsString = null;
         List<String> sidebarLines = getSidebar();
         try{
+            assert sidebarLines != null;
             for (String sidebarLine : sidebarLines) {
                 if (sidebarLine.contains("Bits")) bitsString = sidebarLine;
             }
