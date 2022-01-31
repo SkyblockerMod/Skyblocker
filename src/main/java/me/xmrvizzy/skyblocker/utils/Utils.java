@@ -9,6 +9,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,37 +105,29 @@ public class Utils {
 
 
     public static List<String> getSidebar() {
-        List<String> lines = new ArrayList<>();
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.world == null) return lines;
+        try {
+            assert MinecraftClient.getInstance().player != null;
+            Scoreboard scoreboard = MinecraftClient.getInstance().player.getScoreboard();
+            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
+            List<String> lines = new ArrayList<>();
+            for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
+                Team team = scoreboard.getPlayerTeam(score.getPlayerName());
+                if (team != null) {
+                    String line = team.getPrefix().getString() + team.getSuffix().getString();
+                    if (line.trim().length() > 0) {
+                        String formatted = Formatting.strip(line);
+                        lines.add(formatted);
+                    }
+                }
+            }
 
-        Scoreboard scoreboard = client.world.getScoreboard();
-        if (scoreboard == null) return lines;
-        ScoreboardObjective sidebar = scoreboard.getObjectiveForSlot(1);
-        if (sidebar == null) return lines;
-
-        Collection<ScoreboardPlayerScore> scores = scoreboard.getAllPlayerScores(sidebar);
-        List<ScoreboardPlayerScore> list = scores.stream()
-                .filter(input -> input != null && input.getPlayerName() != null && !input.getPlayerName().startsWith("#"))
-                .collect(Collectors.toList());
-
-        if (list.size() > 15) {
-            scores = Lists.newArrayList(Iterables.skip(list, scores.size() - 15));
-        } else {
-            scores = list;
+            if (objective != null) {
+                lines.add(objective.getDisplayName().getString());
+                Collections.reverse(lines);
+            }
+            return lines;
+        } catch (NullPointerException e) {
+            return null;
         }
-
-        for (ScoreboardPlayerScore score : scores) {
-            Team team = scoreboard.getPlayerTeam(score.getPlayerName());
-            if (team == null) return lines;
-            String text = team.getPrefix().getString() + team.getSuffix().getString();
-            if (text.trim().length() > 0)
-                lines.add(text);
-        }
-
-        lines.add(sidebar.getDisplayName().getString());
-        Collections.reverse(lines);
-
-        return lines;
     }
 }
