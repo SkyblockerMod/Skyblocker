@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.chat;
 
+import me.xmrvizzy.skyblocker.chat.chatevents.AuctionSoldEvent;
 import me.xmrvizzy.skyblocker.chat.filters.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Reparty;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
@@ -11,17 +12,21 @@ import java.util.regex.Matcher;
 
 public class ChatParser {
     private final static ChatListener[] listeners = new ChatListener[]{
-            new Reparty(),
+            // solvers
+            new Fetchur(),
+            new Puzzler(),
+            new Trivia(),
             new ThreeWeirdos(),
+            // filters
+            new Reparty(),
             new AoteFilter(),
             new ImplosionFilter(),
             new MoltenWaveFilter(),
             new HealFilter(),
             new AbilityFilter(),
             new AdFilter(),
-            new Fetchur(),
-            new Puzzler(),
-            new Trivia(),
+            // Toasts
+            new AuctionSoldEvent(),
     };
 
     public boolean shouldFilter(String message) {
