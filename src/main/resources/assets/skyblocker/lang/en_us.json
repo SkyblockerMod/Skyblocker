@@ -48,5 +48,8 @@
   "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
   "skyblocker.update.update_link": " §2§nClick here§r",
   "skyblocker.update.update_message_end" : " §ato find out about latest features.",
-  "skyblocker.update.hover_text": "Open Modrinth"
+  "skyblocker.update.hover_text": "Open Modrinth",
+
+  "skyblocker.auction_sold.title": "Auction Bought!",
+  "skyblocker.auction_sold.desc" : "Collect your coins in chat!"
 }
