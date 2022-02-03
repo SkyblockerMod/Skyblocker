@@ -62,8 +62,8 @@ public class SearchResultsWidget implements Drawable {
             this.searchResults.clear();
             for (ItemStack entry : ItemRegistry.items) {
                 String name = entry.getName().toString().toLowerCase();
-                String lore = entry.getNbt().getCompound("display").getCompound("Lore").toString().toLowerCase();
-                if (name.contains(this.searchText) || lore.contains(this.searchText))
+                String disp = entry.getNbt().getCompound("display").toString().toLowerCase();
+                if (name.contains(this.searchText) || disp.contains(this.searchText))
                     this.searchResults.add(entry);
             }
             this.currentPage = 0;
