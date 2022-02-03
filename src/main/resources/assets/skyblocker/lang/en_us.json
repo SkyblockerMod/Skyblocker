@@ -48,5 +48,6 @@
   "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
   "skyblocker.update.update_link": " §2§nClick here§r",
   "skyblocker.update.update_message_end" : " §ato find out about latest features.",
-  "skyblocker.update.hover_text": "Open Modrinth"
+  "skyblocker.update.hover_text": "Open Modrinth",
+  "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "Update Notification"
 }
