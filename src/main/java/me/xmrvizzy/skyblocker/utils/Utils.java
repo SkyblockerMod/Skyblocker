@@ -23,8 +23,9 @@ public class Utils {
     public static boolean isInjected = false;
 
     public static void sbChecker() {
-        List<String> sidebar = getSidebar();
-        if (sidebar == null) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        List<String> sidebar;
+        if (client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null) {
             isSkyblock = false;
             isDungeons = false;
             return;

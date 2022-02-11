@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.color.QuadColor;
 import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -14,13 +15,15 @@ public class DungeonBlaze {
     static Entity lowestBlaze = null;
     static boolean renderHooked = false;
     
-    public static void DungeonBlaze() {
+    public static void update() {
+        if (!Utils.isDungeons) return;
         MinecraftClient client = MinecraftClient.getInstance();
         if(!renderHooked){
 
             WorldRenderEvents.END.register(DungeonBlaze::blazeRenderer);
             renderHooked = true;
         }
+        assert client.world != null;
         Iterable<Entity> entities = client.world.getEntities();
         int highestHealth = 0;
         int lowestHealth = 99999999;

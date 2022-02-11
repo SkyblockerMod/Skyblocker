@@ -20,6 +20,17 @@ public class DiscordRPCManager implements IPCListener{
     public static DecimalFormat dFormat = new DecimalFormat("###,###.##");
     public int cycleCount = 0;
 
+    public void update() {
+        if (!SkyblockerConfig.get().richPresence.enableRichPresence || !Utils.isSkyblock) {
+            if (isConnected) stop();
+            return;
+        }
+        if (!isConnected) start();
+        if (SkyblockerConfig.get().richPresence.cycleMode)
+            cycleCount = (cycleCount + 1) % 3;
+        updatePresence();
+    }
+
     public void start(){
         try {
             logger.info("Starting...");
