@@ -12,6 +12,8 @@ import java.util.Objects;
 public class SkyblockerMod {
     public static final String NAMESPACE = "skyblocker";
     private static final SkyblockerMod instance = new SkyblockerMod();
+
+    public final Scheduler scheduler = new Scheduler();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public DiscordRPCManager discordRPCManager = new DiscordRPCManager();
 
