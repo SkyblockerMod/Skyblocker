@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker;
+package me.xmrvizzy.skyblocker.utils;
 
 import java.util.PriorityQueue;
 

@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker;
 import me.xmrvizzy.skyblocker.container.ContainerSolverManager;
 import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
+import me.xmrvizzy.skyblocker.utils.Scheduler;
 import me.xmrvizzy.skyblocker.utils.Utils;
 
 public class SkyblockerMod {
