@@ -29,6 +29,7 @@ public class BackpackPreview extends DrawableHelper {
 
     private static final Inventory[] storage = new Inventory[27];
     private static final boolean[] dirty = new boolean[27];
+    private static boolean loaded = false;
     private static int counter = 0;
 
     private static File getSaveDir() {
@@ -39,19 +40,23 @@ public class BackpackPreview extends DrawableHelper {
     }
 
     public static void loadStorage(HandledScreen screen) {
-        String title = screen.getTitle().getString();
-        if (title.equals("Storage"))
-            for (int index = 0; index < storage.length; ++index) {
-                File file = new File(getSaveDir().getPath(), index + ".nbt");
-                if (file.isFile()) {
-                    try {
-                        NbtCompound root = NbtIo.read(file);
-                        storage[index] = new DummyInventory(root);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+        if (!loaded) {
+            String title = screen.getTitle().getString();
+            if (title.equals("Storage")) {
+                for (int index = 0; index < storage.length; ++index) {
+                    File file = new File(getSaveDir().getPath(), index + ".nbt");
+                    if (file.isFile()) {
+                        try {
+                            NbtCompound root = NbtIo.read(file);
+                            storage[index] = new DummyInventory(root);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+                loaded = true;
             }
+        }
     }
 
     private static void saveStorage(int index) {
