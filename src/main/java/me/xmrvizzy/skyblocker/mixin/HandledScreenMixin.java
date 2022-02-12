@@ -58,9 +58,4 @@ public abstract class HandledScreenMixin extends Screen {
             if (BackpackPreview.renderPreview(matrices, focusedSlot.getIndex(), x, y)) ci.cancel();
         }
     }
-
-    @Inject(method = "tick", at = @At("TAIL"))
-    public void tick(CallbackInfo ci) {
-        BackpackPreview.tick();
-    }
 }

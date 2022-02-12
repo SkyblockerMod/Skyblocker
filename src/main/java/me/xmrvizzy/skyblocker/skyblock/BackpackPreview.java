@@ -92,12 +92,14 @@ public class BackpackPreview extends DrawableHelper {
     }
 
     public static void tick() {
-        if (++counter == 200) {
+        if (++counter == 100) {
             counter = 0;
             for (int i = 0; i < dirty.length; ++i)
                 if (dirty[i]) {
                     saveStorage(i);
-                    dirty[i] = false;
+                    String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
+                    int index = getStorageIndexFromTitle(title);
+                    dirty[i] = i == index;
                 }
         }
     }
