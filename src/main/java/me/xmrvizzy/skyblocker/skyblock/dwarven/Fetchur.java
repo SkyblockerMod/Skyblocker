@@ -33,7 +33,7 @@ public class Fetchur extends ChatListener {
     static {
         answers = new HashMap<>();
         answers.put("red and soft", new TranslatableText("block.minecraft.red_wool").getString());
-        answers.put("yellow and see-through", new TranslatableText("block.minecraft.yellow_stained_glass").getString());
+        answers.put("yellow and see through", new TranslatableText("block.minecraft.yellow_stained_glass").getString());
         answers.put("circular and sometimes moves", new TranslatableText("item.minecraft.compass").getString());
         answers.put("expensive minerals", "Mithril");
         answers.put("useful during celebrations", new TranslatableText("item.minecraft.firework_rocket").getString());
