@@ -49,5 +49,11 @@
   "text.autoconfig.skyblocker.option.messages.hideAOTE": "Hide AOTE Messages",
   "text.autoconfig.skyblocker.option.messages.hideImplosion": "Hide Implosion Message",
   "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Hide Molten Wave Message",
-  "text.autoconfig.skyblocker.option.messages.hideAds": "Hide Ads From Public Chat"
+  "text.autoconfig.skyblocker.option.messages.hideAds": "Hide Ads From Public Chat",
+
+  "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
+  "skyblocker.update.update_link": " §2§nClick here§r",
+  "skyblocker.update.update_message_end" : " §ato find out about latest features.",
+  "skyblocker.update.hover_text": "Open Modrinth",
+  "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "Update Notification"
 }
