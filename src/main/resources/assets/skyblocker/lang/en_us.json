@@ -10,6 +10,12 @@
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Enable Bars",
   "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
+  "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Enable Museum & Date",
 
   "text.autoconfig.skyblocker.category.richPresence": "Discord Rich Presence",
   "text.autoconfig.skyblocker.option.richPresence.info": "Skyblock Info",
