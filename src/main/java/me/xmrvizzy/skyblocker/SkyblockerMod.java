@@ -30,42 +30,47 @@ public class SkyblockerMod {
         if (client == null) return;
         ticks++;
         if(onHypxiel()) {
-            if (ticks % 4 == 0)
+            if (ticks % 4 == 0) {
                 try {
                     if (Utils.isDungeons) {
                         DungeonBlaze.DungeonBlaze();
                     }
-                } catch (Exception e) {
-                    //System.out.println("Blazesolver: " + e);
+                } catch (Exception ex) {
+                    //System.out.println("BlazeSolver: " + ex);
                 }
+            }
+
             if (ticks % 20 == 0) {
                 rpTimer++;
-                if (rpTimer == 5) {
-                    if (discordRPCManager.isConnected && Utils.isSkyblock && SkyblockerConfig.get().richPresence.enableRichPresence) {
+                if (rpTimer == 5 && discordRPCManager.isConnected && Utils.isSkyblock) {
+                    if (SkyblockerConfig.get().richPresence.enableRichPresence) {
                         discordRPCManager.updatePresence();
                     }
-                    if (discordRPCManager.isConnected && Utils.isSkyblock && SkyblockerConfig.get().richPresence.cycleMode) {
+                    if (SkyblockerConfig.get().richPresence.cycleMode) {
                         discordRPCManager.cycleCount++;
-                        if (discordRPCManager.cycleCount == 3) discordRPCManager.cycleCount = 0;
+                        if (discordRPCManager.cycleCount == 3) {
+                            discordRPCManager.cycleCount = 0;
+                        }
                     }
                     rpTimer = 0;
                 }
-                if (client.world != null && !client.isInSingleplayer())
+                if (client.world != null && !client.isInSingleplayer()) {
                     Utils.sbChecker();
-                if (!discordRPCManager.isConnected && Utils.isSkyblock && SkyblockerConfig.get().richPresence.enableRichPresence)
+                }
+                if (!discordRPCManager.isConnected && Utils.isSkyblock && SkyblockerConfig.get().richPresence.enableRichPresence) {
                     discordRPCManager.start();
-                if (discordRPCManager.isConnected && !SkyblockerConfig.get().richPresence.enableRichPresence)
+                }
+                if (discordRPCManager.isConnected && !SkyblockerConfig.get().richPresence.enableRichPresence) {
                     discordRPCManager.stop();
+                }
                 ticks = 0;
             }
         } else {
-            if (ticks % 20 == 0) {
-                if (discordRPCManager.isConnected) {
-                    discordRPCManager.stop();
-                }
-                Utils.sbChecker();
-                ticks = 0;
+            if (ticks % 20 == 0 && discordRPCManager.isConnected) {
+                discordRPCManager.stop();
             }
+            Utils.sbChecker();
+            ticks = 0;
         }
     }
     public static MinecraftClient client() {
@@ -78,7 +83,9 @@ public class SkyblockerMod {
     }
     public static boolean onHypxiel() {
         try {
-            return client() != null && !client().isInSingleplayer() && Objects.requireNonNull(client().getCurrentServerEntry()).address != null && client().getCurrentServerEntry().address.contains("hypixel.net");
+            return client() != null && !client().isInSingleplayer()
+                    && Objects.requireNonNull(client().getCurrentServerEntry()).address != null
+                    && client().getCurrentServerEntry().address.contains("hypixel.net");
         } catch (NullPointerException exception) {
             return false;
         }

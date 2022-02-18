@@ -10,8 +10,8 @@ import net.fabricmc.api.ClientModInitializer;
 public class SkyblockerInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        HotbarSlotLock.init();
         SkyblockerConfig.init();
+        HotbarSlotLock.init();
         PriceInfoTooltip.init();
         WikiLookup.init();
         ItemRegistry.init();

@@ -2,8 +2,8 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import me.xmrvizzy.skyblocker.chat.ChatListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
@@ -13,38 +13,43 @@ public class Trivia extends ChatListener {
     private static final Map<String, String[]> answers;
     private List<String> solutions = Collections.emptyList();
 
-    public Trivia() {
-        super("^ +(?:([A-Za-z' ]*\\?)|§6 ([ⓐⓑⓒ]) §a([a-zA-Z0-9 ]+))$");
-    }
-
     @Override
-    public boolean isEnabled() {
-        return SkyblockerConfig.get().locations.dungeons.solveTrivia;
-    }
+    public boolean onMessage(String message) {
+        if (Utils.isDungeons != true) {
+            return false;
+        }
 
-    @Override
-    public boolean onMessage(String[] groups) {
-        if (groups[3] != null) {
-            if (!solutions.contains(groups[3])) {
-                ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                assert player != null;
-                MinecraftClient.getInstance().player.sendMessage(new LiteralText("     " + Formatting.GOLD + groups[2] + Formatting.RED + " " + groups[3]), false);
-                return true;
-            }
-        } else
-            updateSolutions(groups[1]);
-        return false;
-    }
+        MinecraftClient client = MinecraftClient.getInstance();
 
-    private void updateSolutions(String question) {
-        if (question.equals("What SkyBlock year is it?")) {
-            long currentTime = System.currentTimeMillis() / 1000L;
+        if (client.player == null || client.world == null) {
+            throw new RuntimeException("[Skyblocker] client.player or client.world cannot be null!");
+        }
+
+        if (message.contains("What SkyBlock year is it?")) {
+            long currentTime = System.currentTimeMillis() /1000L;
             long diff = currentTime - 1560276000;
             int year = (int) (diff / 446400 + 1);
             solutions = Collections.singletonList("Year " + year);
         } else {
-            solutions = Arrays.asList(answers.get(question));
+            for (String question : answers.keySet()) {
+                if (message.contains(question)) {
+                    solutions = Arrays.asList(answers.get(question));
+                    break;
+                }
+            }
         }
+
+        if (solutions != null && (message.contains("ⓐ") || message.contains("ⓑ") || message.contains("ⓒ"))) {
+            for (String solution : solutions) {
+                if (!message.contains(solution)) {
+                    String letter = message.charAt(7) + " ";
+                    String option = message.substring(11);
+                    client.player.sendMessage(new LiteralText("     " + Formatting.GOLD + letter + Formatting.RED + option), false);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     static {
@@ -85,5 +90,10 @@ public class Trivia extends ChatListener {
         answers.put("Which of these monsters only spawns at night?", new String[]{"Zombie Villager", "Ghast"});
         answers.put("Which of these is not a dragon in The End?", new String[]{"Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon",
                 "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"});
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return SkyblockerConfig.get().locations.dungeons.solveTrivia;
     }
 }

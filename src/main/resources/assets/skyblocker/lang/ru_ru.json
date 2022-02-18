@@ -1,13 +1,31 @@
 {
   "key.categories.skyblocker": "Skyblocker",
   "key.hotbarSlotLock": "Блокировка слотов (Хотбар)",
+  "key.wikiLookup": "Wiki Lookup",
 
   "text.autoconfig.skyblocker.title": "Настройки Skyblocker",
 
   "text.autoconfig.skyblocker.category.general": "Основные",
-  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API-ключ ( в разработке)",
   "text.autoconfig.skyblocker.option.general.bars": " Бары здоровья, маны, защиты и XP",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Включить бары",
+  "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
+  "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
+  "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Enable Museum & Date",
+
+  "text.autoconfig.skyblocker.category.richPresence": "Discord Rich Presence",
+  "text.autoconfig.skyblocker.option.richPresence.info": "Skyblock Info",
+  "text.autoconfig.skyblocker.option.richPresence.info.@Tooltip": "This value doesn't matter if you are cycling",
+  "text.autoconfig.skyblocker.option.richPresence.cycleMode": "Cycle Skyblock Info",
+  "text.autoconfig.skyblocker.option.richPresence.enableRichPresence": "Enabled",
+  "text.autoconfig.skyblocker.option.richPresence.customMessage": "Custom Message",
+
+  "text.autoconfig.skyblocker.option.general.itemList": "Item List",
+  "text.autoconfig.skyblocker.option.general.itemList.enableItemList": "Enable Item List",
 
   "text.autoconfig.skyblocker.category.locations": "Локации",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Подземелья",
@@ -15,6 +33,11 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Решить загадку \"Три чудака\"",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Решить головоломку Блейза",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Решить головоломку Тривия",
+  "text.autoconfig.skyblocker.option.locations.dungeons.oldLevers": "1.8 lever hitbox",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Terminal Solvers",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Colored",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder": "Solve Click In Order",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveStartsWith": "Solve Starts With",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Гномьи шахты",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Включить топливо дрели",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Solve Fetchur",
@@ -26,5 +49,6 @@
   "text.autoconfig.skyblocker.option.messages.hideAOTE": "Скрыть сообщения от \"AOTE\"",
   "text.autoconfig.skyblocker.option.messages.hideImplosion": "Скрыть сообщение \"Implosion\"",
   "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Скрыть сообщение \"Molten Wave\"",
-  "text.autoconfig.skyblocker.option.messages.hideAds": "Скрывать рекламу из публичного чата"
+  "text.autoconfig.skyblocker.option.messages.hideCombo": "Hide Combo Messages",
+  "text.autoconfig.skyblocker.option.messages.hideTeleportPad": "Hide Teleport Pad Messages"
 }

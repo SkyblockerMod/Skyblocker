@@ -1,7 +1,5 @@
 package me.xmrvizzy.skyblocker.utils;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
@@ -66,6 +64,7 @@ public class Utils {
         }
         return location;
     }
+
     public static double getPurse() {
         String purseString = null;
         double purse = 0;
@@ -85,6 +84,7 @@ public class Utils {
         }
         return purse;
     }
+
     public static int getBits() {
         int bits = 0;
         String bitsString = null;
@@ -102,7 +102,6 @@ public class Utils {
         }
         return bits;
     }
-
 
     public static List<String> getSidebar() {
         try {

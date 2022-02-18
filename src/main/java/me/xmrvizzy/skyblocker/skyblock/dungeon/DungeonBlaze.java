@@ -16,29 +16,27 @@ public class DungeonBlaze {
     
     public static void DungeonBlaze() {
         MinecraftClient client = MinecraftClient.getInstance();
-        if(!renderHooked){
+        Iterable<Entity> entities = client.world.getEntities();
 
+        if(!renderHooked){
             WorldRenderEvents.END.register(DungeonBlaze::blazeRenderer);
             renderHooked = true;
         }
-        Iterable<Entity> entities = client.world.getEntities();
+
         int highestHealth = 0;
         int lowestHealth = 99999999;
 
         for (Entity entity : entities) {
             if (entity.getName().getString().contains("Blaze") && entity.getName().getString().contains("/")) {
-        
                 String blazeName = entity.getName().getString();
                 try {
-                    
                     int health = Integer.parseInt(blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1));
                   
                     if (health > highestHealth) {
                         highestHealth = health;
-                        
                         highestBlaze = entity;
-                        
                     }
+
                     if (health < lowestHealth) {
                         lowestHealth = health;
                         lowestBlaze = entity;
@@ -50,23 +48,22 @@ public class DungeonBlaze {
         }
     }
     public static void blazeRenderer(WorldRenderContext wrc) {
-        QuadColor outlineColorRed = QuadColor.single( 0.0F, 1.0F, 0.0F, 1f);
-        QuadColor outlineColorGreen = QuadColor.single(1.0F, 0.0F, 0.0F, 1f);
+        QuadColor outlineColorGreen = QuadColor.single( 0.0F, 1.0F, 0.0F, 1f);
         try {
             if(highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfig.get().locations.dungeons.blazesolver){
                 /* Outline */
-                if(highestBlaze.getY() <69) {
+                if (highestBlaze.getY() < 69) {
                     Box blaze = highestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                    RenderUtils.drawBoxOutline(blaze, outlineColorRed, 5f);
+                    RenderUtils.drawBoxOutline(blaze, outlineColorGreen, 5f);
                 }
 
                 /* Outline */
-                if(lowestBlaze.getY() >69) {
+                if (lowestBlaze.getY() > 69) {
                     Box blaze = lowestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                    RenderUtils.drawBoxOutline(blaze, outlineColorRed, 5f);
+                    RenderUtils.drawBoxOutline(blaze, outlineColorGreen, 5f);
                 }
             }
-        }catch(Exception e) {
+        } catch(Exception e) {
             System.out.println("BlazeRenderer: " + e);
         }
     }

@@ -77,9 +77,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
     private void renderStatusBars(MatrixStack matrices, CallbackInfo ci) {
-        if(!Utils.isSkyblock)
+        if (!Utils.isSkyblock)
             return;
-        if(statusBars.render(matrices, scaledWidth, scaledHeight))
+        if (statusBars.render(matrices, scaledWidth, scaledHeight))
             ci.cancel();
 
         if (Utils.isDungeons && SkyblockerConfig.get().locations.dungeons.enableMap)

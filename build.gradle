@@ -60,7 +60,7 @@ dependencies {
 	include(implementation("org.eclipse.jgit:org.eclipse.jgit:6.0.0.202111291000-r"))
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-	include(implementation("org.slf4j:slf4j-api:1.7.28"))
+	include(implementation("org.slf4j:slf4j-api:1.7.7"))
 
 
 	//DiscordIPC + Libraries so it works on unix systems
@@ -70,9 +70,9 @@ dependencies {
 	// https://github.com/jaacksondev/DiscordIPC
 	include "com.jagrosh:DiscordIPC:0.5"
 
-	//https://github.com/kohlschutter/junixsocket
-	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-common:2.0.4"))
-	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.0.4"))
+	// https://github.com/kohlschutter/junixsocket
+	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-common:2.4.0"))
+	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.4.0"))
 }
 
 processResources {
