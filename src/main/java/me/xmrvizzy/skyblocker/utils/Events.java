@@ -14,7 +14,7 @@ public class Events {
     public static void onSkyblockJoin(){
         Utils.isOnSkyblock = true;
         logger.info("Joined Skyblock");
-        if (UpdateChecker.shouldUpdate() && SkyblockerConfig.get().general.enableUpdateNotification){
+        if (UpdateChecker.shouldUpdate()){
             TranslatableText linkMessage = new TranslatableText("skyblocker.update.update_message");
             TranslatableText linkMessageEnding = new TranslatableText("skyblocker.update.update_message_end");
             TranslatableText link = new TranslatableText("skyblocker.update.update_link");
