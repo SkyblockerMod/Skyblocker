@@ -1,7 +1,5 @@
 package me.xmrvizzy.skyblocker.utils;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
@@ -12,44 +10,35 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Utils {
-    public static boolean isSkyblock = false;
-    public static boolean isDungeons = false;
+    public static boolean isOnSkyblock = false;
+    public static boolean isInDungeons = false;
     public static boolean isInjected = false;
 
     public static void sbChecker() {
         List<String> sidebar = getSidebar();
         if (sidebar == null) {
-            isSkyblock = false;
-            isDungeons = false;
+            isOnSkyblock = false;
+            isInDungeons = false;
             return;
         }
         String string = sidebar.toString();
 
         if (sidebar.isEmpty()) return;
-        if (sidebar.get(sidebar.size() - 1).equals("www.hypixel.net")) {
-            if (sidebar.get(0).contains("SKYBLOCK")){
+            if (sidebar.get(0).contains("SKYBLOCK") && !isOnSkyblock){
                 if(!isInjected){
                     isInjected = true;
                     ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
                 }
-                isSkyblock = true;
+                Events.onSkyblockJoin();
 
             }
-            else isSkyblock = false;
-
-            isDungeons = isSkyblock && string.contains("The Catacombs");
-
-        } else {
-            isSkyblock = false;
-            isDungeons = false;
+            if (!sidebar.get(0).contains("SKYBLOCK") && isOnSkyblock) Events.onSkyblockDisconnect();
+            isInDungeons = isOnSkyblock && string.contains("The Catacombs");
         }
-    }
 
     public static String getLocation() {
         String location = null;
