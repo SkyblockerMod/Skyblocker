@@ -29,6 +29,6 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
     public void dropSelectedItem(boolean dropEntireStack, CallbackInfoReturnable<Boolean> cir) {
-        if (Utils.isSkyblock) HotbarSlotLock.handleDropSelectedItem(this.getInventory().selectedSlot, cir);
+        if (Utils.isOnSkyblock) HotbarSlotLock.handleDropSelectedItem(this.getInventory().selectedSlot, cir);
     }
 }

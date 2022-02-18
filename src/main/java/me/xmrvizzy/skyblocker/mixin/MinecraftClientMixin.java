@@ -27,13 +27,13 @@ public class MinecraftClientMixin {
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
     public void handleInputEvents(CallbackInfo ci) {
-        if (Utils.isSkyblock) HotbarSlotLock.handleInputEvents(player);
+        if (Utils.isOnSkyblock) HotbarSlotLock.handleInputEvents(player);
     }
 
     @Inject(method = "setScreen", at = @At("HEAD"))
     public void onSetScreen(Screen screen, CallbackInfo ci) {
         ContainerSolverManager manager = SkyblockerMod.getInstance().containerSolverManager;
-        if(Utils.isSkyblock && screen instanceof GenericContainerScreen)
+        if(Utils.isOnSkyblock && screen instanceof GenericContainerScreen)
             manager.onSetScreen((GenericContainerScreen) screen);
         else
             manager.clearScreen();
