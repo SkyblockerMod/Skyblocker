@@ -42,6 +42,8 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Quicknav quicknav = new Quicknav();
 
+        public boolean enableUpdateNotification = true;
+
         @ConfigEntry.Category("itemTooltip")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public ItemTooltip itemTooltip = new ItemTooltip();

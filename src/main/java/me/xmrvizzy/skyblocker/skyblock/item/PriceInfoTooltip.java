@@ -34,6 +34,7 @@ public class PriceInfoTooltip {
     private static JsonObject isMuseumJson;
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
+        int count = stack.getCount();
         String name = getInternalNameFromNBT(stack);
         String timestamp = getTimestamp(stack);
         List<String> listString = lines.stream()
@@ -44,17 +45,18 @@ public class PriceInfoTooltip {
             if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice
                     && !listString.contains("NPC Price") && npcPricesJson != null && npcPricesJson.has(name)) {
 
-                lines.add(new LiteralText(String.format("%-23s", "NPC Price:"))
+                lines.add(new LiteralText(String.format("%-21s", "NPC Price:"))
                         .formatted(Formatting.YELLOW)
-                        .append(getCoinsMessage(npcPricesJson.get(name).getAsDouble())));
+                        .append(getCoinsMessage(npcPricesJson.get(name).getAsDouble(), count)));
             }
 
             if ((!listString.contains("Avg. BIN Price") && avgPricesJson != null && avgPricesJson.has(name))
                     || (!listString.contains("Lowest BIN Price") && lowestPricesJson != null && lowestPricesJson.has(name))) {
-                if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && lowestPricesJson != null) {
-                    lines.add(new LiteralText(String.format("%-21s", "Lowest BIN Price:"))
+
+                if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN) {
+                    lines.add(new LiteralText(String.format("%-19s", "Lowest BIN Price:"))
                             .formatted(Formatting.GOLD)
-                            .append(getCoinsMessage(lowestPricesJson.get(name).getAsDouble())));
+                            .append(getCoinsMessage(lowestPricesJson.get(name).getAsDouble(), count)));
                 }
 
                 // Change format from Skytils to Moulberry's for Avg. BIN
@@ -73,22 +75,23 @@ public class PriceInfoTooltip {
                     name = name.replace(":", "-");
                 }
 
-                if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN && avgPricesJson != null) {
-                    lines.add(new LiteralText(String.format("%-22s", "Avg. BIN Price:"))
+                // has(name) check because Skytils keeps old data but Moulberry not
+                if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN && avgPricesJson.has(name)) {
+                    lines.add(new LiteralText(String.format("%-21s", "Avg. BIN Price:"))
                             .formatted(Formatting.GOLD)
-                            .append(getCoinsMessage(avgPricesJson.get(name).getAsDouble())));
+                            .append(getCoinsMessage(avgPricesJson.get(name).getAsDouble(), count)));
                 }
             } else if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice
                     && (!listString.contains("Bazaar buy Price") || !listString.contains("Bazaar sell Price"))
                     && bazaarPricesJson != null && bazaarPricesJson.has(name)) {
 
                 JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
-                lines.add(new LiteralText(String.format("%-19s", "Bazaar buy Price:"))
+                lines.add(new LiteralText(String.format("%-18s", "Bazaar buy Price:"))
                         .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(getItem.get("buyPrice").getAsDouble())));
-                lines.add(new LiteralText(String.format("%-20s", "Bazaar sell Price:"))
+                        .append(getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
+                lines.add(new LiteralText(String.format("%-19s", "Bazaar sell Price:"))
                         .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(getItem.get("sellPrice").getAsDouble())));
+                        .append(getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
             }
 
             if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate
@@ -96,9 +99,9 @@ public class PriceInfoTooltip {
 
                 String itemCategory = isMuseumJson.get(name).toString().replaceAll("\"", "");
                 String format = switch (itemCategory) {
-                    case "Weapons" -> "%-19s";
-                    case "Armor" -> "%-20s";
-                    default -> "%-21s";
+                    case "Weapons" -> "%-18s";
+                    case "Armor" -> "%-19s";
+                    default -> "%-20s";
                 };
 
                 lines.add(new LiteralText(String.format(format, "Museum: (" + itemCategory + ")"))
@@ -107,7 +110,7 @@ public class PriceInfoTooltip {
             } else if (!listString.contains("Obtained") && timestamp != null
                     && SkyblockerConfig.get().general.itemTooltip.enableMuseumDate) {
 
-                lines.add(new LiteralText(String.format("%-23s", "Obtained: "))
+                lines.add(new LiteralText(String.format("%-22s", "Obtained: "))
                         .formatted(Formatting.LIGHT_PURPLE)
                         .append(new LiteralText(timestamp).formatted(Formatting.RED)));
             }
@@ -164,9 +167,17 @@ public class PriceInfoTooltip {
         return internalName;
     }
 
-    private static Text getCoinsMessage(double price) {
-        String priceString = String.format(Locale.ENGLISH, "%1$,.0f", price);
-        return new LiteralText(priceString + " Coins").formatted(Formatting.DARK_AQUA);
+    private static Text getCoinsMessage(double price, int count) {
+        if (count == 1) {
+            String priceString = String.format(Locale.ENGLISH, "%1$,.0f", price);
+            return new LiteralText(priceString + " Coins").formatted(Formatting.DARK_AQUA);
+        } else {
+            String priceString = String.format(Locale.ENGLISH, "%1$,.0f", price * count);
+            LiteralText priceText = (LiteralText) new LiteralText(priceString + " Coins ").formatted(Formatting.DARK_AQUA);
+            priceString = String.format(Locale.ENGLISH, "%1$,.0f", price);
+            LiteralText priceText2 = (LiteralText)  new LiteralText( "(" + priceString + " each)").formatted(Formatting.GRAY);
+            return priceText.append(priceText2);
+        }
     }
 
     public static boolean firstRun = true;
