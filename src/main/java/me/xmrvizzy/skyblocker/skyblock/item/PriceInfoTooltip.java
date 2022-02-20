@@ -23,7 +23,6 @@ import java.time.Month;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
