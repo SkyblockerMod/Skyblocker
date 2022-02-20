@@ -77,10 +77,12 @@ public class DiscordRPCManager implements IPCListener{
     }
 
     public void stop(){
-        logger.info("Closing...");
-        isConnected = false;
-        client.close();
-        client = null;
+        if (client != null){
+            logger.info("Closing...");
+            isConnected = false;
+            client.close();
+            client = null;
+        }
     }
 
     @Override
