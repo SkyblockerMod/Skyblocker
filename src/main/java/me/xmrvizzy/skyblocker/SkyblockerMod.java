@@ -10,15 +10,14 @@ public class SkyblockerMod {
     public static final String NAMESPACE = "skyblocker";
     private static final SkyblockerMod instance = new SkyblockerMod();
 
-    public final Scheduler generalScheduler = new Scheduler();
-    public final Scheduler sbScheduler = new Scheduler();
+    public final Scheduler scheduler = new Scheduler();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public final DiscordRPCManager discordRPCManager = new DiscordRPCManager();
 
     private SkyblockerMod() {
-        generalScheduler.scheduleCyclic(Utils::sbChecker, 20);
-        generalScheduler.scheduleCyclic(discordRPCManager::update, 100);
-        sbScheduler.scheduleCyclic(DungeonBlaze::update, 4);
+        scheduler.scheduleCyclic(Utils::sbChecker, 20);
+        scheduler.scheduleCyclic(discordRPCManager::update, 100);
+        scheduler.scheduleCyclic(DungeonBlaze::update, 4);
     }
 
     public static SkyblockerMod getInstance() {
@@ -26,7 +25,6 @@ public class SkyblockerMod {
     }
 
     public void onTick() {
-        generalScheduler.tick();
-        if (Utils.isOnSkyblock) sbScheduler.tick();
+        scheduler.tick();
     }
 }

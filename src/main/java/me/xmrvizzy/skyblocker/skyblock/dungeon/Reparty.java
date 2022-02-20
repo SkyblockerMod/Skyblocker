@@ -74,11 +74,11 @@ public class Reparty extends ChatListener {
             }
             sendCommand(playerEntity, sb.toString(), i + 2);
         }
-        skyblocker.generalScheduler.schedule(() -> repartying = false, invites + 2);
+        skyblocker.scheduler.schedule(() -> repartying = false, invites + 2);
     }
 
     private void sendCommand(ClientPlayerEntity player, String command, int delay) {
-        skyblocker.generalScheduler.schedule(() ->
+        skyblocker.scheduler.schedule(() ->
                 player.sendChatMessage(command), delay * BASE_DELAY
         );
     }
