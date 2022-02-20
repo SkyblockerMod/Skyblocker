@@ -19,8 +19,9 @@ public class Utils {
     public static boolean isInjected = false;
 
     public static void sbChecker() {
-        List<String> sidebar = getSidebar();
-        if (sidebar == null) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        List<String> sidebar;
+        if (client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null) {
             isOnSkyblock = false;
             isInDungeons = false;
             return;
@@ -28,22 +29,22 @@ public class Utils {
         String string = sidebar.toString();
 
         if (sidebar.isEmpty()) return;
-            if (sidebar.get(0).contains("SKYBLOCK") && !isOnSkyblock){
-                if(!isInjected){
-                    isInjected = true;
-                    ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
-                }
-                Events.onSkyblockJoin();
-
+        if (sidebar.get(0).contains("SKYBLOCK") && !isOnSkyblock) {
+            if (!isInjected) {
+                isInjected = true;
+                ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
             }
-            if (!sidebar.get(0).contains("SKYBLOCK") && isOnSkyblock) Events.onSkyblockDisconnect();
-            isInDungeons = isOnSkyblock && string.contains("The Catacombs");
+            Events.onSkyblockJoin();
+
         }
+        if (!sidebar.get(0).contains("SKYBLOCK") && isOnSkyblock) Events.onSkyblockDisconnect();
+        isInDungeons = isOnSkyblock && string.contains("The Catacombs");
+    }
 
     public static String getLocation() {
         String location = null;
         List<String> sidebarLines = getSidebar();
-        try{
+        try {
             assert sidebarLines != null;
             for (String sidebarLine : sidebarLines) {
                 if (sidebarLine.contains("⏣")) location = sidebarLine;
@@ -55,12 +56,13 @@ public class Utils {
         }
         return location;
     }
+
     public static double getPurse() {
         String purseString = null;
         double purse = 0;
 
         List<String> sidebarLines = getSidebar();
-        try{
+        try {
             assert sidebarLines != null;
             for (String sidebarLine : sidebarLines) {
                 if (sidebarLine.contains("Piggy:")) purseString = sidebarLine;
@@ -74,16 +76,17 @@ public class Utils {
         }
         return purse;
     }
+
     public static int getBits() {
         int bits = 0;
         String bitsString = null;
         List<String> sidebarLines = getSidebar();
-        try{
+        try {
             assert sidebarLines != null;
             for (String sidebarLine : sidebarLines) {
                 if (sidebarLine.contains("Bits")) bitsString = sidebarLine;
             }
-            if (bitsString !=null) {
+            if (bitsString != null) {
                 bits = Integer.parseInt(bitsString.replaceAll("[^0-9.]", "").strip());
             }
         } catch (IndexOutOfBoundsException e) {
