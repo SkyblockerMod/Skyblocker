@@ -16,7 +16,7 @@ public class DungeonBlaze {
     static boolean renderHooked = false;
     
     public static void update() {
-        if (!Utils.isDungeons) return;
+        if (!Utils.isInDungeons) return;
         MinecraftClient client = MinecraftClient.getInstance();
         if(!renderHooked){
 

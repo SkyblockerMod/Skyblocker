@@ -2,7 +2,6 @@ package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
-import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemListWidget;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNavButton;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -35,7 +34,7 @@ public abstract class HandledScreenMixin extends Screen {
     @Inject(method = "init()V", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
         // quicknav
-        if (Utils.isSkyblock && SkyblockerConfig.get().general.quicknav.enableQuicknav) {
+        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.quicknav.enableQuicknav) {
             String screenTitle = super.getTitle().getString().trim();
             List<QuickNavButton> buttons = QuickNav.init(screenTitle);
             for (QuickNavButton button : buttons) super.addDrawableChild(button);

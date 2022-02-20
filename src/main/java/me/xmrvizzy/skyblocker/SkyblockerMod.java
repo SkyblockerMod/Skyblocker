@@ -27,6 +27,6 @@ public class SkyblockerMod {
 
     public void onTick() {
         generalScheduler.tick();
-        if (Utils.isSkyblock) sbScheduler.tick();
+        if (Utils.isOnSkyblock) sbScheduler.tick();
     }
 }

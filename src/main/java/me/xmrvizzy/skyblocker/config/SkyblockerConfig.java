@@ -42,6 +42,12 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Quicknav quicknav = new Quicknav();
 
+        public boolean enableUpdateNotification = true;
+
+        @ConfigEntry.Category("itemTooltip")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public ItemTooltip itemTooltip = new ItemTooltip();
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
     }
@@ -64,6 +70,14 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class Quicknav {
         public boolean enableQuicknav = true;
+    }
+
+    public static class ItemTooltip {
+        public boolean enableNPCPrice = true;
+        public boolean enableAvgBIN = true;
+        public boolean enableLowestBIN = true;
+        public boolean enableBazaarPrice = true;
+        public boolean enableMuseumDate = true;
     }
 
     public static class Locations {

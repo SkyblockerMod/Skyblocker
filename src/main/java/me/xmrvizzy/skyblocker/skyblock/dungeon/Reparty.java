@@ -25,7 +25,7 @@ public class Reparty extends ChatListener {
         repartying = false;
         ClientCommandManager.DISPATCHER.register(
                 ClientCommandManager.literal("rp").executes(context -> {
-                    if (!Utils.isSkyblock || repartying)
+                    if (!Utils.isOnSkyblock || repartying)
                         return 0;
                     assert client.player != null;
                     repartying = true;

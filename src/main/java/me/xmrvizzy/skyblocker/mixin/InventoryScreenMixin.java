@@ -19,7 +19,7 @@ public class InventoryScreenMixin {
             )
     )
     RecipeBookWidget constructor() {
-        if (Utils.isSkyblock && SkyblockerConfig.get().general.itemList.enableItemList)
+        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.itemList.enableItemList)
             return new ItemListWidget();
         else
             return new RecipeBookWidget();

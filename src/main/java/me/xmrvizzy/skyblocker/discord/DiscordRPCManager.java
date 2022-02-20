@@ -21,7 +21,7 @@ public class DiscordRPCManager implements IPCListener{
     public int cycleCount = 0;
 
     public void update() {
-        if (!SkyblockerConfig.get().richPresence.enableRichPresence || !Utils.isSkyblock) {
+        if (!SkyblockerConfig.get().richPresence.enableRichPresence || !Utils.isOnSkyblock) {
             if (isConnected) stop();
             return;
         }

@@ -21,7 +21,6 @@ public class Puzzler extends ChatListener {
     public boolean onMessage(String[] groups) {
         int x = 181;
         int z = 135;
-        System.out.println(groups[1]);
         for (char c : groups[1].toCharArray()) {
             if (c == '▲') z++;
             else if (c == '▼') z--;
