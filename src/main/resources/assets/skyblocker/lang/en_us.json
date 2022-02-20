@@ -16,6 +16,7 @@
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Enable Museum & Date",
+  "skyblocker.itemTooltip.NullMessage": "§b[§6Skyblocker§b] §cItem price info on tooltip will renew in max 60 seconds.",
 
   "text.autoconfig.skyblocker.category.richPresence": "Discord Rich Presence",
   "text.autoconfig.skyblocker.option.richPresence.info": "Skyblock Info",
