@@ -119,6 +119,8 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideImplosion = false;
         public boolean hideMoltenWave = false;
         public boolean hideAds = false;
+        public boolean hideTeleportPad = false;
+        public boolean hideCombo = false;
     }
     public enum Info {
         PURSE,

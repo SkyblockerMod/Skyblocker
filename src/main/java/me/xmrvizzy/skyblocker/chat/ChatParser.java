@@ -19,6 +19,8 @@ public class ChatParser {
             new HealFilter(),
             new AbilityFilter(),
             new AdFilter(),
+            new TeleportPadFilter(),
+            new ComboFilter(),
             new Fetchur(),
             new Puzzler(),
             new Trivia(),
