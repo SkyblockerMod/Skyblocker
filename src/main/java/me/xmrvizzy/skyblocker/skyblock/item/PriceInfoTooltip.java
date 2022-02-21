@@ -197,12 +197,12 @@ public class PriceInfoTooltip {
 
     private static Text getCoinsMessage(double price, int count) {
         if (count == 1) {
-            String priceString = String.format(Locale.ENGLISH, "%1$,.0f", price);
+            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
             return new LiteralText(priceString + " Coins").formatted(Formatting.DARK_AQUA);
         } else {
-            String priceString = String.format(Locale.ENGLISH, "%1$,.0f", price * count);
+            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
             LiteralText priceText = (LiteralText) new LiteralText(priceString + " Coins ").formatted(Formatting.DARK_AQUA);
-            priceString = String.format(Locale.ENGLISH, "%1$,.0f", price);
+            priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
             LiteralText priceText2 = (LiteralText)  new LiteralText( "(" + priceString + " each)").formatted(Formatting.GRAY);
             return priceText.append(priceText2);
         }
