@@ -218,7 +218,7 @@ public class PriceInfoTooltip {
                 if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN || minute == 0) {
                     CompletableFuture.runAsync(PriceInfoTooltip::downloadLowestPrices);
                 }
-                if ((SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice || minute == 0) && minute % 3 == 0) {
+                if ((SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice || minute == 0) && (bazaarPricesJson == null || minute % 3 == 0)) {
                     CompletableFuture.runAsync(PriceInfoTooltip::downloadBazaarPrices);
                 }
                 if ((SkyblockerConfig.get().general.itemTooltip.enableNPCPrice || minute == 0) && npcPricesJson == null) {
