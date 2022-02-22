@@ -208,23 +208,28 @@ public class PriceInfoTooltip {
         }
     }
 
-    public static boolean firstRun = true;
+    public static int minute = 0;
     public static void init() {
         skyblocker.scheduler.scheduleCyclic(() -> {
             {
-                if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN || firstRun)
+                if ((SkyblockerConfig.get().general.itemTooltip.enableAvgBIN || minute == 0) && (avgPricesJson == null || minute % 5 == 0)) {
                     CompletableFuture.runAsync(PriceInfoTooltip::downloadAvgPrices);
-                if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN || firstRun)
+                }
+                if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN || minute == 0) {
                     CompletableFuture.runAsync(PriceInfoTooltip::downloadLowestPrices);
-                if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice || firstRun)
+                }
+                if ((SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice || minute == 0) && minute % 3 == 0) {
                     CompletableFuture.runAsync(PriceInfoTooltip::downloadBazaarPrices);
-                if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice || firstRun)
+                }
+                if ((SkyblockerConfig.get().general.itemTooltip.enableNPCPrice || minute == 0) && npcPricesJson == null) {
                     CompletableFuture.runAsync(PriceInfoTooltip::downloadNPCPrices);
-                if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate || firstRun)
+                }
+                if ((SkyblockerConfig.get().general.itemTooltip.enableMuseumDate || minute == 0) && isMuseumJson == null) {
                     CompletableFuture.runAsync(PriceInfoTooltip::downloadIsMuseum);
+                }
+                minute++;
             }
         }, 1200);
-        firstRun = false;
     }
 
     private static void downloadAvgPrices() {
