@@ -72,14 +72,16 @@ public class PriceInfoTooltip {
                 } else if (name.contains("ENCHANTED_BOOK-")) {
                     name = name.replace("ENCHANTED_BOOK-", "").replace("-", ";");
                 } else if (name.contains("POTION-")) {
-                    name = "POTION";
+                    //name = "POTION";
+                    name = "";
                 } else if (name.contains("RUNE-")) {
-                    name = "RUNE";
+                    //name = "RUNE";
+                    name = "";
                 } else {
                     name = name.replace(":", "-");
                 }
 
-                if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN && avgPricesJson.has(name)) {
+                if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN && !name.isEmpty() && avgPricesJson.has(name)) {
                     lines.add(new LiteralText(String.format("%-21s", "Avg. BIN Price:"))
                             .formatted(Formatting.GOLD)
                             .append(getCoinsMessage(avgPricesJson.get(name).getAsDouble(), count)));
