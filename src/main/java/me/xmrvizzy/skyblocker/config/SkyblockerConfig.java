@@ -72,9 +72,18 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableQuicknav = true;
     }
 
+    public enum Average {
+        ONE_DAY,
+        THREE_DAY,
+        BOTH
+    }
+
     public static class ItemTooltip {
         public boolean enableNPCPrice = true;
         public boolean enableAvgBIN = true;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip()
+        public Average avg = Average.THREE_DAY;
         public boolean enableLowestBIN = true;
         public boolean enableBazaarPrice = true;
         public boolean enableMuseumDate = true;
@@ -122,6 +131,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideTeleportPad = false;
         public boolean hideCombo = false;
     }
+
     public enum Info {
         PURSE,
         BITS,

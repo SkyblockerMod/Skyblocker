@@ -13,6 +13,8 @@
   "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.avg": "Average Type",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "You can choose how many days of average price to be",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Enable Museum & Date",
