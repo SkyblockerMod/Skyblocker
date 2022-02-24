@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNavButton;
@@ -8,6 +9,7 @@ import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -38,14 +40,23 @@ public abstract class HandledScreenMixin extends Screen {
             String screenTitle = super.getTitle().getString().trim();
             List<QuickNavButton> buttons = QuickNav.init(screenTitle);
             for (QuickNavButton button : buttons) super.addDrawableChild(button);
-
         }
+        BackpackPreview.loadStorage((HandledScreen)(Object)this);
+        BackpackPreview.updateStorage((HandledScreen)(Object)this);
     }
 
     @Inject(at = @At("HEAD"), method = "keyPressed", cancellable = true)
     public void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         if (keyCode != 256 && !MinecraftClient.getInstance().options.keyInventory.matchesKey(keyCode, scanCode)){
             if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) WikiLookup.openWiki(focusedSlot);
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
+    public void drawMouseOverTooltip(MatrixStack matrices, int x, int y, CallbackInfo ci) {
+        String title = ((HandledScreen)(Object)this).getTitle().getString();
+        if (Screen.hasShiftDown() && title.equals("Storage") && focusedSlot != null) {
+            if (BackpackPreview.renderPreview(matrices, focusedSlot.getIndex(), x, y)) ci.cancel();
         }
     }
 }
