@@ -2,6 +2,8 @@ package me.xmrvizzy.skyblocker.skyblock;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -26,15 +28,25 @@ public class BackpackPreview extends DrawableHelper {
     private static final BackpackPreview instance = new BackpackPreview();
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
     private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\((\\d+)/\\d+\\)");
+    private static final int STORAGE_SIZE = 27;
 
-    private static final Inventory[] storage = new Inventory[27];
-    private static final boolean[] dirty = new boolean[27];
+    private static final Inventory[] storage = new Inventory[STORAGE_SIZE];
+    private static final boolean[] dirty = new boolean[STORAGE_SIZE];
     private static boolean loaded = false;
-    private static int counter = 0;
+
+    public static void tick() {
+        if (Utils.isOnSkyblock) {
+            for (int index = 0; index < STORAGE_SIZE; ++index)
+                if (dirty[index]) saveStorage(index);
+            String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
+            int index = getStorageIndexFromTitle(title);
+            if (index != -1) dirty[index] = true;
+        }
+    }
 
     private static File getSaveDir() {
         String uuid = MinecraftClient.getInstance().player.getUuidAsString();
-        File dir = new File("./config/skyblocker/backpack-preview/" + uuid + "/");
+        File dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + uuid).toFile();
         dir.mkdirs();
         return dir;
     }
@@ -43,7 +55,7 @@ public class BackpackPreview extends DrawableHelper {
         if (!loaded) {
             String title = screen.getTitle().getString();
             if (title.equals("Storage")) {
-                for (int index = 0; index < storage.length; ++index) {
+                for (int index = 0; index < STORAGE_SIZE; ++index) {
                     File file = new File(getSaveDir().getPath(), index + ".nbt");
                     if (file.isFile()) {
                         try {
@@ -93,19 +105,6 @@ public class BackpackPreview extends DrawableHelper {
         if (index != -1) {
             storage[index] = ((HandledScreen<?>)screen).getScreenHandler().slots.get(0).inventory;
             dirty[index] = true;
-        }
-    }
-
-    public static void tick() {
-        if (++counter == 100) {
-            counter = 0;
-            for (int i = 0; i < dirty.length; ++i)
-                if (dirty[i]) {
-                    saveStorage(i);
-                    String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
-                    int index = getStorageIndexFromTitle(title);
-                    dirty[i] = i == index;
-                }
         }
     }
 
