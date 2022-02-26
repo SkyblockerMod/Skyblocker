@@ -25,8 +25,6 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.GZIPInputStream;
 
-import static me.xmrvizzy.skyblocker.config.SkyblockerConfig.Average.BOTH;
-
 public class PriceInfoTooltip {
     private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
     private static JsonObject npcPricesJson;
@@ -236,7 +234,7 @@ public class PriceInfoTooltip {
                         && (oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0)) {
                     SkyblockerConfig.Average avg;
                     if (oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute == 0) {
-                        avg = BOTH;
+                        avg = SkyblockerConfig.Average.BOTH;
                     } else {
                         avg = SkyblockerConfig.get().general.itemTooltip.avg;
                     }
