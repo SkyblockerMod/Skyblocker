@@ -15,9 +15,7 @@ public class StatsCommand {
                                     new Thread(() -> {
                                         PlayerProfiles playerProfiles = ProfileUtils.getProfiles(StringArgumentType.getString(context, "username"));
                                         for (String profileId : playerProfiles.profiles().keySet()){
-                                            if (playerProfiles.profiles().get(profileId).cuteName().equalsIgnoreCase(StringArgumentType.getString(context, "cute name"))){
-                                                System.out.println(playerProfiles);
-                                            }
+                                            System.out.println("Just imagine it did something");
                                         }
                                     }).start();
                                     return 1;

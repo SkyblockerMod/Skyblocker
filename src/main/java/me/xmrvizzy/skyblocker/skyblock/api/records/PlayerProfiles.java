@@ -41,21 +41,26 @@ public record PlayerProfiles(HashMap<String, PlayerProfile> profiles) {
             public record Item(
                     @SerializedName("Count") byte count,
                     int damage,
-                    Tag tag
+                    Tag tag,
+                    boolean isInactive,
+                    boolean inBackpack,
+                    Item[] containsItems
             ){
                 public record Tag(
                         @SerializedName("ExtraAttributes") ExtraAttributes extraAttributes,
                         Display display,
-                        @SerializedName("SkullOwner") SkullOwner skullOwner
+                        @SerializedName("SkullOwner") SkullOwner skullOwner,
+                        Enchant[] ench
                 ){
-                    public record ExtraAttributes(String id){}
-                    public record Display(@SerializedName("Name") String name, @SerializedName("lore") String[] lore, int color){}
+                    public record ExtraAttributes(String id, HashMap<String, Integer> enchantments){}
+                    public record Display(@SerializedName("Name") String name, @SerializedName("Lore") String[] lore, Integer color){}
                     public record SkullOwner(
                             @SerializedName("Id") String id,
                             @SerializedName("Properties") Properties properties
                     ){
                         public record Properties(HashMap<String, String>[] textures){}
                     }
+                    public record Enchant(int lvl, int id){}
                 }
             }
         }
