@@ -38,9 +38,11 @@ public class BackpackPreview extends DrawableHelper {
         if (Utils.isOnSkyblock) {
             for (int index = 0; index < STORAGE_SIZE; ++index)
                 if (dirty[index]) saveStorage(index);
-            String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
-            int index = getStorageIndexFromTitle(title);
-            if (index != -1) dirty[index] = true;
+            if (MinecraftClient.getInstance().currentScreen != null) {
+                String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
+                int index = getStorageIndexFromTitle(title);
+                if (index != -1) dirty[index] = true;
+            }
         }
     }
 
