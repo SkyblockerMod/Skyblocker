@@ -13,7 +13,7 @@ public class StatsCommand {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("debug")
                         .then(ClientCommandManager.literal("stats").then(ClientCommandManager.argument("username", StringArgumentType.string())
-                                .then(ClientCommandManager.argument("cute name", StringArgumentType.string()).executes(context -> {
+                                .executes(context -> {
                                     new Thread(() -> {
                                         PlayerProfiles playerProfiles = ProfileUtils.getProfiles(StringArgumentType.getString(context, "username"));
                                         for (String profileId : playerProfiles.profiles().keySet()){
@@ -22,6 +22,6 @@ public class StatsCommand {
                                         }
                                     }).start();
                                     return 1;
-                                }))))));
+                                })))));
     }
 }
