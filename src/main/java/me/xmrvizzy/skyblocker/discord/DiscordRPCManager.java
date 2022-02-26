@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.RichPresence;
+import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public class DiscordRPCManager implements IPCListener{
     }
 
     public void stop(){
-        if (client != null){
+        if (client != null && client.getStatus() == PipeStatus.CONNECTED) {
             logger.info("Closing...");
             isConnected = false;
             client.close();
