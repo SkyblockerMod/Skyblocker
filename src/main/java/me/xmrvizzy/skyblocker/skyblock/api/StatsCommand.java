@@ -1,10 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.api;
 
+import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.xmrvizzy.skyblocker.skyblock.api.records.PlayerProfiles;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-
-import java.text.DecimalFormat;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.LiteralText;
 
 public class StatsCommand {
     public static void init(){
@@ -15,7 +17,8 @@ public class StatsCommand {
                                     new Thread(() -> {
                                         PlayerProfiles playerProfiles = ProfileUtils.getProfiles(StringArgumentType.getString(context, "username"));
                                         for (String profileId : playerProfiles.profiles().keySet()){
-                                            System.out.println("Just imagine it did something");
+                                            MinecraftClient.getInstance().player.sendMessage(new LiteralText(playerProfiles.profiles().get(profileId).cuteName())
+                                                    .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, new GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(playerProfiles.profiles().get(profileId))))), false);
                                         }
                                     }).start();
                                     return 1;
