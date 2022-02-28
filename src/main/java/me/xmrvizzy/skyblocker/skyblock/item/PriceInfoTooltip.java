@@ -29,7 +29,7 @@ import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
     private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
-    private static final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+    private static final MinecraftClient client = MinecraftClient.getInstance();
     private static JsonObject npcPricesJson;
     private static JsonObject bazaarPricesJson;
     private static JsonObject oneDayAvgPricesJson;
@@ -46,15 +46,11 @@ public class PriceInfoTooltip {
         List<String> listString = lines.stream()
                 .map(Text::getString).toList();
 
-        if (player == null) {
-            throw new RuntimeException("[Skyblocker] client.player cannot be null!");
-        }
-
         try {
             if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && !listString.contains("NPC Price")) {
                 if (npcPricesJson == null) {
                     if (!nullMsgSend) {
-                        player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                        client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
                         nullMsgSend = true;
                     }
                 } else if (npcPricesJson.has(name)) {
@@ -67,7 +63,7 @@ public class PriceInfoTooltip {
             if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !listString.contains("Lowest BIN Price")) {
                 if (lowestPricesJson == null) {
                     if (!nullMsgSend) {
-                        player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                        client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
                         nullMsgSend = true;
                     }
                 } else if (lowestPricesJson.has(name)) {
@@ -80,7 +76,7 @@ public class PriceInfoTooltip {
             if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN && !listString.contains("Avg. BIN Price")) {
                 if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
                     if (!nullMsgSend) {
-                        player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                        client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
                         nullMsgSend = true;
                     }
                 } else if (threeDayAvgPricesJson.has(name) || oneDayAvgPricesJson.has(name)) {
@@ -139,7 +135,7 @@ public class PriceInfoTooltip {
                     && (!listString.contains("Bazaar buy Price") || !listString.contains("Bazaar sell Price"))) {
                 if (bazaarPricesJson == null) {
                     if (!nullMsgSend) {
-                        player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                        client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
                         nullMsgSend = true;
                     }
                 } else if (bazaarPricesJson.has(name)) {
@@ -156,7 +152,7 @@ public class PriceInfoTooltip {
             if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !listString.contains("Museum")) {
                 if (isMuseumJson == null) {
                     if (!nullMsgSend) {
-                        player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                        client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
                         nullMsgSend = true;
                     }
                 } else if (isMuseumJson.has(name)) {
@@ -178,7 +174,7 @@ public class PriceInfoTooltip {
             }
 
         } catch (Exception e) {
-            player.sendMessage(new LiteralText(e.toString()), false);
+            client.player.sendMessage(new LiteralText(e.toString()), false);
         }
 
     }
