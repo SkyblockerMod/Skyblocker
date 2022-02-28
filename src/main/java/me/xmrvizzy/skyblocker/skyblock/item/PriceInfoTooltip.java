@@ -6,7 +6,6 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
@@ -45,6 +44,10 @@ public class PriceInfoTooltip {
         String timestamp = getTimestamp(stack);
         List<String> listString = lines.stream()
                 .map(Text::getString).toList();
+
+        if (client.player == null) {
+            throw new RuntimeException("[Skyblocker] client.player cannot be null!");
+        }
 
         try {
             if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && !listString.contains("NPC Price")) {
