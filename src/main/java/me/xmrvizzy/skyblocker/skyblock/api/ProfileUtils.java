@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import marcono1234.gson.recordadapter.RecordTypeAdapterFactory;
 import me.xmrvizzy.skyblocker.skyblock.api.records.PlayerProfiles;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemFixerUpper;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
@@ -38,9 +37,9 @@ public class ProfileUtils {
         return null;
     }
 
-    public static List<ItemStack> itemsFromApiInventory(PlayerProfiles.PlayerProfile.Items.Item[] items){
+    public static List<ItemStack> itemsFromApiInventory(me.xmrvizzy.skyblocker.skyblock.api.records.Items.Item[] items){
         List<ItemStack> inventory = new ArrayList<>();
-        for (PlayerProfiles.PlayerProfile.Items.Item item : items){
+        for (me.xmrvizzy.skyblocker.skyblock.api.records.Items.Item item : items){
             try{
                 if (item.tag() != null){
                     JsonObject obj = new Gson().fromJson(Files.readString(Path.of("./config/skyblocker/items-repo/items/" + item.tag().extraAttributes().id() + ".json")), JsonObject.class);
