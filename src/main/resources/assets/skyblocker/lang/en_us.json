@@ -13,9 +13,12 @@
   "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.avg": "Average Type",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "You can choose how many days of average price to be",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Enable Museum & Date",
+  "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "text.autoconfig.skyblocker.category.richPresence": "Discord Rich Presence",
   "text.autoconfig.skyblocker.option.richPresence.info": "Skyblock Info",
@@ -50,6 +53,8 @@
   "text.autoconfig.skyblocker.option.messages.hideImplosion": "Hide Implosion Message",
   "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Hide Molten Wave Message",
   "text.autoconfig.skyblocker.option.messages.hideAds": "Hide Ads From Public Chat",
+  "text.autoconfig.skyblocker.option.messages.hideTeleportPad": "Hide Teleport Pad Messages",
+  "text.autoconfig.skyblocker.option.messages.hideCombo": "Hide Combo Messages",
 
   "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
   "skyblocker.update.update_link": " §2§nClick here§r",
