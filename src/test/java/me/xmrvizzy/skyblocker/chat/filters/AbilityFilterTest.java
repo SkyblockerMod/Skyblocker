@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatListenerTest;
 import org.junit.jupiter.api.Test;
 
 class AbilityFilterTest extends ChatFilterTest<AbilityFilter> {

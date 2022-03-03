@@ -21,6 +21,7 @@ public class ChatParser {
             new AdFilter(),
             new TeleportPadFilter(),
             new ComboFilter(),
+            new AutopetFilter(),
             new Fetchur(),
             new Puzzler(),
             new Trivia(),

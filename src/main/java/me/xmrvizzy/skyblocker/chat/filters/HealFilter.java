@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 
 public class HealFilter extends ChatFilter {

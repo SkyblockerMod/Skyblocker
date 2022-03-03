@@ -121,6 +121,12 @@ public class SkyblockerConfig implements ConfigData {
         public boolean solvePuzzler = true;
     }
 
+    public enum Autopet {
+        ActionBar,
+        Hide,
+        Show
+    }
+
     public static class Messages {
         public boolean hideAbility = false;
         public boolean hideHeal = false;
@@ -130,6 +136,8 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideAds = false;
         public boolean hideTeleportPad = false;
         public boolean hideCombo = false;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public Autopet autopet = Autopet.Show;
     }
 
     public enum Info {
