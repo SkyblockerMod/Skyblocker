@@ -31,7 +31,7 @@ public class ProfileUtils {
                     .serializeNulls()
                     .create();
             return gson.fromJson(reader, PlayerProfiles.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -101,7 +101,7 @@ public class ProfileUtils {
                 } else {
                     inventory.add(Items.AIR.getDefaultStack());
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
