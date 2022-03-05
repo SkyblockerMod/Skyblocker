@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.chat;
 
 import me.xmrvizzy.skyblocker.chat.filters.*;
+import me.xmrvizzy.skyblocker.skyblock.api.ApiKeyListener;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Reparty;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Trivia;
@@ -24,6 +25,7 @@ public class ChatParser {
             new Fetchur(),
             new Puzzler(),
             new Trivia(),
+            new ApiKeyListener()
     };
 
     public boolean shouldFilter(String message) {

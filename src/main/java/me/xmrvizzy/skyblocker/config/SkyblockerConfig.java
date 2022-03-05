@@ -30,6 +30,9 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class General {
 
+        @ConfigEntry.Gui.Excluded
+        public String apiKey;
+
         @ConfigEntry.Category("bars")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Bars bars = new Bars();
