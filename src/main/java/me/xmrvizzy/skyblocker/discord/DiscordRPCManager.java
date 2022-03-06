@@ -1,12 +1,12 @@
 package me.xmrvizzy.skyblocker.discord;
 
-import com.google.gson.JsonObject;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 import java.time.OffsetDateTime;
 
 public class DiscordRPCManager implements IPCListener{
-    public static long startTimestamp;
+    public static OffsetDateTime startTimestamp;
     public static IPCClient client;
     public boolean isConnected;
     public static final Logger logger = LoggerFactory.getLogger("Skyblocker DiscordRPC");
@@ -35,7 +35,7 @@ public class DiscordRPCManager implements IPCListener{
     public void start(){
         try {
             logger.info("Starting...");
-            startTimestamp = OffsetDateTime.now().toEpochSecond();
+            startTimestamp = OffsetDateTime.now();
             client = new IPCClient(934607927837356052L);
             client.setListener(this);
             try {
@@ -92,10 +92,10 @@ public class DiscordRPCManager implements IPCListener{
         isConnected = true;
     }
 
+
     @Override
-    public void onClose(IPCClient client, JsonObject json) {
+    public void onClose(IPCClient client, JSONObject json) {
         logger.info("Closed");
         isConnected = false;
     }
-
 }
