@@ -11,12 +11,12 @@ public class AutopetFilter extends ChatFilter {
 
     @Override
     public boolean isEnabled() {
-        return SkyblockerConfig.get().messages.autopet != SkyblockerConfig.Autopet.Show;
+        return SkyblockerConfig.get().messages.autopet != SkyblockerConfig.MsgOptions.Show;
     }
 
     @Override
     public boolean onMessage(String[] groups) {
-        if (SkyblockerConfig.get().messages.autopet == SkyblockerConfig.Autopet.ActionBar) {
+        if (SkyblockerConfig.get().messages.autopet == SkyblockerConfig.MsgOptions.ActionBar) {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText(groups[0].replace("§a§lVIEW RULE", "")), true);
         }
         return true;
