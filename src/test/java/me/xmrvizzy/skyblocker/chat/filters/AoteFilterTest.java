@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatListenerTest;
 import org.junit.jupiter.api.Test;
 
 class AoteFilterTest extends ChatFilterTest<AoteFilter> {
@@ -10,6 +9,6 @@ class AoteFilterTest extends ChatFilterTest<AoteFilter> {
 
     @Test
     void testRegex() {
-        assertFilters("There are blocks in the way!");
+        assertMatches("There are blocks in the way!");
     }
 }

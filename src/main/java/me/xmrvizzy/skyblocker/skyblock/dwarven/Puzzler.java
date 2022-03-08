@@ -1,27 +1,31 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import me.xmrvizzy.skyblocker.chat.ChatListener;
+import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
-public class Puzzler extends ChatListener {
+import java.util.regex.Matcher;
+
+public class Puzzler extends ChatPatternListener {
     public Puzzler() {
         super("^§e\\[NPC] §dPuzzler§f: ((?:§d▲|§5▶|§b◀|§a▼){10})$");
     }
 
     @Override
-    public boolean isEnabled() {
-        return SkyblockerConfig.get().locations.dwarvenMines.solvePuzzler;
+    public ChatFilterResult state() {
+        return SkyblockerConfig.get().locations.dwarvenMines.solvePuzzler ? null : ChatFilterResult.PASS;
     }
 
     @Override
-    public boolean onMessage(String[] groups) {
+    public boolean onMatch(Text message, Matcher matcher) {
         int x = 181;
         int z = 135;
-        for (char c : groups[1].toCharArray()) {
+        for (char c : matcher.group(1).toCharArray()) {
             if (c == '▲') z++;
             else if (c == '▼') z--;
             else if (c == '◀') x++;

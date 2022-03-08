@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import me.xmrvizzy.skyblocker.chat.ChatListener;
+import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -8,24 +9,26 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
-public class Fetchur extends ChatListener {
-    private static Map<String, String> answers;
+public class Fetchur extends ChatPatternListener {
+    private static final Map<String, String> answers;
 
     public Fetchur() {
         super("^§e\\[NPC] Fetchur§f: (?:its|theyre) ([a-zA-Z, \\-]*)$");
     }
 
     @Override
-    public boolean isEnabled() {
-        return SkyblockerConfig.get().locations.dwarvenMines.solveFetchur;
+    public ChatFilterResult state() {
+        return SkyblockerConfig.get().locations.dwarvenMines.solveFetchur ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override
-    public boolean onMessage(String[] groups) {
+    public boolean onMatch(Text message, Matcher matcher) {
         MinecraftClient client = MinecraftClient.getInstance();
         assert client.player != null;
-        String answer = answers.getOrDefault(groups[1], groups[1]);
+        String riddle = matcher.group(1);
+        String answer = answers.getOrDefault(riddle, riddle);
         client.player.sendMessage(Text.of("§e[NPC] Fetchur§f: " + answer), false);
         return true;
     }

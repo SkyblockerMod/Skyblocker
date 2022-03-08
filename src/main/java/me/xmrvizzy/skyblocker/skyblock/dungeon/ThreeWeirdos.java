@@ -1,24 +1,27 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.chat.ChatListener;
+import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class ThreeWeirdos extends ChatListener {
+import java.util.regex.Matcher;
+
+public class ThreeWeirdos extends ChatPatternListener {
     public ThreeWeirdos() {
         super("^§e\\[NPC] §c([A-Z][a-z]+)§f: (?:The reward is(?: not in my chest!|n't in any of our chests\\.)|My chest (?:doesn't have the reward\\. We are all telling the truth\\.|has the reward and I'm telling the truth!)|At least one of them is lying, and the reward is not in §c§c[A-Z][a-z]+'s §rchest\\!|Both of them are telling the truth\\. Also, §c§c[A-Z][a-z]+ §rhas the reward in their chest\\!)$");
     }
 
     @Override
-    public boolean isEnabled() {
-        return SkyblockerConfig.get().locations.dungeons.solveThreeWeirdos;
+    public ChatFilterResult state() {
+        return SkyblockerConfig.get().locations.dungeons.solveThreeWeirdos ? null : ChatFilterResult.PASS;
     }
 
     @Override
-    public boolean onMessage(String[] groups) {
+    public boolean onMatch(Text message, Matcher matcher) {
         MinecraftClient client = MinecraftClient.getInstance();
         assert client.world != null;
         assert client.player != null;
@@ -27,13 +30,13 @@ public class ThreeWeirdos extends ChatListener {
                 client.player.getBoundingBox().expand(3),
                 entity -> {
                     Text customName = entity.getCustomName();
-                    if (customName != null && customName.getString().equals(groups[1])) {
+                    if (customName != null && customName.getString().equals(matcher.group(1))) {
                         return true;
                     }
                     return false;
                 }
         ).forEach(
-                entity -> entity.setCustomName(Text.of(Formatting.GREEN + groups[1]))
+                entity -> entity.setCustomName(Text.of(Formatting.GREEN + matcher.group(1)))
         );
         return false;
     }
