@@ -1,24 +1,36 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
+import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
-public class AutopetFilter extends ChatFilter {
+import java.util.Objects;
+import java.util.regex.Matcher;
+
+public class AutopetFilter extends ChatPatternListener {
     public AutopetFilter() {
         super("^§cAutopet §eequipped your §7.*§e! §a§lVIEW RULE$");
     }
 
     @Override
-    public boolean isEnabled() {
-        return SkyblockerConfig.get().messages.autopet != SkyblockerConfig.MsgOptions.Show;
+    public boolean onMatch(Text _message, Matcher matcher) {
+        if (SkyblockerConfig.get().messages.hideAutopet == ChatFilterResult.ACTION_BAR) {
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(
+                    new LiteralText(
+                            _message.getString().replace("§a§lVIEW RULE", "")
+                    ), true);
+        }
+        return true;
     }
 
     @Override
-    public boolean onMessage(String[] groups) {
-        if (SkyblockerConfig.get().messages.autopet == SkyblockerConfig.MsgOptions.ActionBar) {
-            MinecraftClient.getInstance().player.sendMessage(new LiteralText(groups[0].replace("§a§lVIEW RULE", "")), true);
-        }
-        return true;
+    public ChatFilterResult state() {
+        if (SkyblockerConfig.get().messages.hideAutopet == ChatFilterResult.ACTION_BAR)
+            return ChatFilterResult.FILTER;
+        else
+            return SkyblockerConfig.get().messages.hideAutopet;
     }
 }

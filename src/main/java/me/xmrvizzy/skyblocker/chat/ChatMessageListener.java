@@ -39,6 +39,7 @@ public interface ChatMessageListener {
                 new ImplosionFilter(),
                 new MoltenWaveFilter(),
                 new TeleportPadFilter(),
+                new AutopetFilter(),
         };
         for (ChatMessageListener listener : listeners)
             EVENT.register(listener);

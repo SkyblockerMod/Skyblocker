@@ -142,6 +142,8 @@ public class SkyblockerConfig implements ConfigData {
         public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public ChatFilterResult hideCombo = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
     }
 
     public enum Info {

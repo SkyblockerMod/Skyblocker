@@ -55,7 +55,7 @@
   "text.autoconfig.skyblocker.option.messages.hideAds": "Hide Ads From Public Chat",
   "text.autoconfig.skyblocker.option.messages.hideTeleportPad": "Hide Teleport Pad Messages",
   "text.autoconfig.skyblocker.option.messages.hideCombo": "Hide Combo Messages",
-  "text.autoconfig.skyblocker.option.messages.autopet": "Autopet Messages",
+  "text.autoconfig.skyblocker.option.messages.hideAutopet": "Hide Autopet Messages",
 
   "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
   "skyblocker.update.update_link": " §2§nClick here§r",
