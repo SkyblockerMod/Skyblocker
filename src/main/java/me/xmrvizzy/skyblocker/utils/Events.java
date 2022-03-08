@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 public class Events {
     public static MinecraftClient client = MinecraftClient.getInstance();
-    public static Logger logger = LoggerFactory.getLogger(SkyblockerMod.NAMESPACE);
+    public static Logger LOGGER = LoggerFactory.getLogger(SkyblockerMod.NAMESPACE);
 
     public static void onSkyblockJoin(){
         Utils.isOnSkyblock = true;
-        logger.info("Joined Skyblock");
+        LOGGER.info("[Skyblocker] Joined Skyblock");
         if (UpdateChecker.shouldUpdate()){
             TranslatableText linkMessage = new TranslatableText("skyblocker.update.update_message");
             TranslatableText linkMessageEnding = new TranslatableText("skyblocker.update.update_message_end");
@@ -26,7 +26,7 @@ public class Events {
     }
 
     public static void onSkyblockDisconnect(){
-        logger.info("Disconnected from Skyblock");
+        LOGGER.info("[Skyblocker] Disconnected from Skyblock");
         SkyblockerMod.getInstance().discordRPCManager.stop();
         Utils.isOnSkyblock = false;
         Utils.isInDungeons = false;

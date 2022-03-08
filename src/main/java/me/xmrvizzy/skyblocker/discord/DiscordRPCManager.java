@@ -17,7 +17,7 @@ public class DiscordRPCManager implements IPCListener{
     public static long startTimestamp;
     public static IPCClient client;
     public boolean isConnected;
-    public static final Logger logger = LoggerFactory.getLogger("Skyblocker DiscordRPC");
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiscordRPCManager.class.getName());
     public static DecimalFormat dFormat = new DecimalFormat("###,###.##");
     public int cycleCount = 0;
 
@@ -34,17 +34,17 @@ public class DiscordRPCManager implements IPCListener{
 
     public void start(){
         try {
-            logger.info("Starting...");
+            LOGGER.info("[Skyblocker DiscordRPC] Starting...");
             startTimestamp = OffsetDateTime.now().toEpochSecond();
             client = new IPCClient(934607927837356052L);
             client.setListener(this);
             try {
                 client.connect();
             } catch (Exception e) {
-                logger.warn("Failed to connect: " + e.getMessage());
+                LOGGER.warn("Failed to connect: " + e.getMessage());
             }
         } catch (Throwable ex) {
-            logger.error("unexpected error occurred while trying to start...");
+            LOGGER.error("[Skyblocker DiscordRPC] unexpected error occurred while trying to start...");
             ex.printStackTrace();
         }
     }
@@ -79,7 +79,7 @@ public class DiscordRPCManager implements IPCListener{
 
     public void stop(){
         if (client != null && client.getStatus() == PipeStatus.CONNECTED) {
-            logger.info("Closing...");
+            LOGGER.info("Closing...");
             isConnected = false;
             client.close();
             client = null;
@@ -88,13 +88,13 @@ public class DiscordRPCManager implements IPCListener{
 
     @Override
     public void onReady(IPCClient client) {
-        logger.info("Started!");
+        LOGGER.info("Started!");
         isConnected = true;
     }
 
     @Override
     public void onClose(IPCClient client, JsonObject json) {
-        logger.info("Closed");
+        LOGGER.info("Closed");
         isConnected = false;
     }
 
