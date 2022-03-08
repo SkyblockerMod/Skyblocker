@@ -1,31 +1,35 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatListenerTest;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
-class AdFilterTest extends ChatFilterTest<AdFilter> {
+import java.util.regex.Matcher;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class AdFilterTest extends ChatPatternListenerTest<AdFilter> {
     public AdFilterTest() {
         super(new AdFilter());
     }
 
     @Test
     void noRank() {
-        assertCaptures("§7Advertiser§7: advertisement");
+        assertMatches("§7Advertiser§7: advertisement");
     }
 
     @Test
     void vip() {
-        assertCaptures("§a[VIP] Advertiser§f: advertisement");
+        assertMatches("§a[VIP] Advertiser§f: advertisement");
     }
 
     @Test
     void mvp() {
-        assertCaptures("§b[MVP§c+§b] Advertiser§f: advertisement");
+        assertMatches("§b[MVP§c+§b] Advertiser§f: advertisement");
     }
 
     @Test
     void plusPlus() {
-        assertCaptures("§6[MVP§c++§6] Advertiser§f: advertisement");
+        assertMatches("§6[MVP§c++§6] Advertiser§f: advertisement");
     }
 
     @Test
@@ -50,6 +54,14 @@ class AdFilterTest extends ChatFilterTest<AdFilter> {
 
     @Test
     void notAd() {
-        assertNotFilters("§a[VIP] NotMatching§f: This message shouldn't match!");
+        Matcher matcher = listener.pattern.matcher("§a[VIP] NotMatching§f: This message shouldn't match!");
+        assertTrue(matcher.matches());
+        assertFalse(listener.onMatch(null, matcher));
+    }
+
+    void assertFilters(String message) {
+        Matcher matcher = listener.pattern.matcher(message);
+        assertTrue(matcher.matches());
+        assertTrue(listener.onMatch(null, matcher));
     }
 }

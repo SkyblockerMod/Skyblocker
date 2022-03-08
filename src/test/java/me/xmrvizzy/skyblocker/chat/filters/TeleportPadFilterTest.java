@@ -9,11 +9,11 @@ public class TeleportPadFilterTest extends ChatFilterTest<TeleportPadFilter> {
 
     @Test
     void testTeleport() {
-        assertFilters("Warped from the Base Teleport Pad to the Minion Teleport Pad!");
+        assertMatches("Warped from the Base Teleport Pad to the Minion Teleport Pad!");
     }
 
     @Test
     void testNoDestination() {
-        assertFilters("This Teleport Pad does not have a destination set!");
+        assertMatches("This Teleport Pad does not have a destination set!");
     }
 }

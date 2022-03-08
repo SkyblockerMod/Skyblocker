@@ -1,11 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import me.xmrvizzy.skyblocker.chat.ChatListenerTest;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class FetchurTest extends ChatListenerTest<Fetchur> {
+class FetchurTest extends ChatPatternListenerTest<Fetchur> {
     public FetchurTest() {
         super(new Fetchur());
     }
