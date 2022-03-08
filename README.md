@@ -10,23 +10,14 @@
 
 Hypixel Skyblock Mod for Minecraft 1.17.x + 1.18.x
 
+Installation guide is [here](https://github.com/LifeIsAParadox/Skyblocker/wiki/installation)
 
-### Table of content 
-* [Features](#features)
-* [Images](#images)
-* [Requirements](#requirements)
-* [Install Fabric](#install-fabric)
-* [Install Skyblocker](#install-skyblocker)
-* [Modpack](#modpack) easy install (recommended)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-___
 ## Features
 <details open>
 <summary>open</summary>
 
 * Bars: Health and absorption, Mana, Defense, XP
-* Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave
+* Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
 * Dungeon Puzzle Solver:
    * Three Weirdos
@@ -41,6 +32,8 @@ ___
 * Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
 * Quicknav: fast navigate between pets, armor, enderchest, skill, collection, crafting, enchant, envil, warp dungeon, warp hub
 * Recipe book: in the vanilla recipe book all skyblock items are listed and you can see the recipe of the item
+* Backpack preview: after you clicked your backpack or enderchest once you can hover over the backpack or enderchest and hold shift to preview
+* Update notification
 
 </details>
 
@@ -56,72 +49,25 @@ ___
 <img padding="10px,0px" height="150" src="https://hysky.de/drill.png" />
 <img padding="10px,0px" height="150" src="https://hysky.de/richpresencesmall.png" />
 <img padding="10px,0px" height="150" src="https://hysky.de/recipe.png" />
+<img padding="10px,0px" height="150" src="https://hysky.de/backpack-preview.png" />
 
 </details>
 
-___
-## Requirements
-<details>
-<summary>open</summary>
+## Contribute
 
-**Fabric Loader** 0.12.11 or higher: https://fabricmc.net/use/ \
-**Fabric API**: https://modrinth.com/mod/fabric-api/versions \
-(optional) **modmenu**: https://modrinth.com/mod/modmenu
+Everyone can contribute to Skyblocker, read [this](https://github.com/LifeIsAParadox/Skyblocker/wiki/Contribute) for more information.
 
-</details>
+## Stargazers
 
-___
-## Install Fabric
-<details>
-<summary>open</summary>
+[![Stargazers repo roster for @LifeIsAParadox/Skyblocker](https://reporoster.com/stars/LifeIsAParadox/Skyblocker)](https://github.com/LifeIsAParadox/Skyblocker/stargazers)
 
-1. Download the Fabric installer from https://fabricmc.net/use/. Similar to Forge, this installer will generate all of the required files for whichever version of Minecraft you select. However, Fabric does not have multiple installers for each version and you can install any version you want via the same installer.
-2. Open the Fabric installer, which should automatically have the `Client` tab selected at the top. \
-![install image](https://web.archive.org/web/20211023134637im_/https://images.shockbyte.com/knowledgebase/javaw_0EdmmFE7hw.png)
-3. Select the Minecraft version you want to install onto your client. You can also select a version for the Fabric Mod Loader here, although it's normally best left on the latest version unless required by a specific mod.
-4. Ensure that the install location is set to the correct place. The correct location varies per operating system and install, but should look something like one of these depending on your platform:
-   * Windows: `%AppData%/.minecraft` or `C:/Users/(username)/AppData/Roaming/.minecraft` 
-   * MacOS: `~/Library/Application Support/minecraft` 
-   * Linux: `~/.minecraft`
-5. If you'd like the installer to automatically create a selectable profile within your Minecraft launcher, make sure the `Create profile` box is checked.
-6. Click the Install button, and your install should complete within a few seconds! After that, click `OK` and close off the installer.
-   1. Open the Minecraft Launcher and the newly created Fabric profile should automatically be selected. Click `Play`, and your Fabric install will load up. \
-   ![Install image 2](https://web.archive.org/web/20211023134637im_/https://images.shockbyte.com/knowledgebase/javaw_r8qQWFtkAh.png) \
-   <small><i>Source and images: <a href='https://web.archive.org/web/20211023134636/https://shockbyte.com/billing/knowledgebase/212/How-to-install-FabricMC-on-your-PC.html'>schockbyte.com</a></i></small>
+## Credits
 
-</details>
+|     [<img alt="Kraineff" src="https://github.com/Kraineff.png" width="100">](https://github.com/Kraineff)     |             [<img alt="d3dx9" src="https://github.com/d3dx9.png" width="100">](https://github.com/d3dx9)              | [<img alt="LifeIsAParadox" src="https://github.com/LifeIsAParadox.png" width="100">](https://github.com/LifeIsAParadox) | [<img alt="ExternalTime" src="https://github.com/ExternalTime.png" width="100">](https://github.com/ExternalTime) | [<img alt="Zailer43" src="https://github.com/Zailer43.png" width="100">](https://github.com/Zailer43) | [<img alt="TacoMonkey11" src="https://github.com/TacoMonkey11.png" width="100">](https://github.com/TacoMonkey11) |   [<img alt="KonaeAkira" src="https://github.com/KonaeAkira.png" width="100">](https://github.com/KonaeAkira)   | [<img alt="Fix3dll" src="https://github.com/Fix3dll.png" width="100">](https://github.com/Fix3dll) |
+|:-------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
+|                                    [Kraineff](https://github.com/Kraineff)                                    |                                           [d3dx9](https://github.com/d3dx9)                                           |                                   [LifeIsAParadox](https://github.com/LifeIsAParadox)                                   |                            [ExternalTime](https://github.com/ExternalTime)                            |                                [Zailer43](https://github.com/Zailer43)                                |                                  [TacoMonkey11](https://github.com/TacoMonkey11)                                  |                                   [KonaeAkira](https://github.com/KonaeAkira)                                   |                               [Fix3dll](https://github.com/Fix3dll)                                |
 
-___
-## Install Skyblocker
-
-<details>
-<summary>open</summary>
-
-1. Download Skyblocker from [Modrinth](https://modrinth.com/mod/skyblocker-liap/versions) or [Github](https://github.com/LifeIsAParadox/Skyblocker/releases/latest)
-2. Download Fabric Api from [Modrinth](https://modrinth.com/mod/fabric-api/versions) or [Curseforge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
-   1. (optional) Download Modmenu from [Modrinth](https://modrinth.com/mod/modmenu/versions) or [Curseforge](https://www.curseforge.com/minecraft/mc-mods/modmenu)
-3. Once the mods have been downloaded, navigate to your Minecraft install folder. This varies per operating system and install, but should look something like this depending on your platform:
-   * Windows: `%AppData%/.minecraft` or `C:/Users/(username)/AppData/Roaming/.minecraft`
-   * MacOS: `~/Library/Application Support/minecraft`    
-   * Linux: `~/.minecraft`
-
-    ![](https://web.archive.org/web/20211022181423im_/https://images.shockbyte.com/knowledgebase/explorer_aDOT2ascSM.png)
-4. Open the `mods` folder in your Minecraft install folder. If there isn't a `mods` folder there, you can create it.
-5. Move the mod JAR files that you downloaded into the `mods` folder in your Minecraft install folder.
-6. After moving all the files, open the Minecraft Launcher and start the game using your Fabric profile.
-
-<small><i>Source and image: <a href='https://web.archive.org/web/20211024070022/https://shockbyte.com/billing/knowledgebase/213/How-to-install-FabricMC-Mods-on-your-PC.html'>schockbyte.com</a></i></small>
-
-</details>
-
-___
-## Modpack
-
-<details>
-<summary>open</summary>
-
-1. Download the [skyblocker modpack](https://github.com/LifeIsAParadox/Skyblocker-modpack/releases/latest). Select Multimc or ~~Curseforge~~ version.
-   1. (Multimc) Drag and drop the zip into Multi mc and start the new instance. Every time you start the instance the modpack checks and updates mods to the latest version.
-   2. (Curseforge) not implemented yet
-
-</details>
+### Translators
+German ([LifeIsAParadox](https://github.com/LifeIsAParadox)) \
+Indonesian ([null2264](https://github.com/null2264)) \
+Russian ([HyperSoop](https://github.com/HyperSoop))

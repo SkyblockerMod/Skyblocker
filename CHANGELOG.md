@@ -1,6 +1,35 @@
-# Release 1.5.0
+# Release 1.6.0
 
-the mod support 1.17.x and 1.18.x but requires java 17.
+This release only support 1.18.x
+
+Skyblocker now supports 1.18.2 but requires minimum **fabricloader** version of 0.13.11
+
+New Features
+* Add backpack preview by @KonaeAkira in https://github.com/LifeIsAParadox/Skyblocker/pull/40
+* Added Update Notification by @TacoMonkey11 in https://github.com/LifeIsAParadox/Skyblocker/pull/36
+
+Fixes
+* Fix item search not including lore by @KonaeAkira in https://github.com/LifeIsAParadox/Skyblocker/pull/37
+* Updated fetchur solver by @ExternalTime in https://github.com/LifeIsAParadox/Skyblocker/pull/41
+* customizable and improved item tooltip by @Fix3dll in https://github.com/LifeIsAParadox/Skyblocker/pull/44
+* Added simple scheduler for recurring and delayed tasks by @ExternalTime in https://github.com/LifeIsAParadox/Skyblocker/pull/39
+* Fix RPC crash by @TacoMonkey11 in https://github.com/LifeIsAParadox/Skyblocker/pull/45
+* Use the new scheduler and use fabricLoader to get config dir by @KonaeAkira in https://github.com/LifeIsAParadox/Skyblocker/pull/49
+* little fix for other items, change TimerTask to Scheduler by @Fix3dll in https://github.com/LifeIsAParadox/Skyblocker/pull/46
+* Rewrote chat listener interface to use fabric events api by @ExternalTime in https://github.com/LifeIsAParadox/Skyblocker/pull/53
+* migrate from log4j to slf4j by @Lifeisaparadox
+* Fix RPC crash by @Lifeisaparadox
+* Fix Backpack preview crash by @Lifeisaparadox
+
+added Indonesian translate by @null2264
+added russian translate by @HyperSoop
+
+New Contributor
+* @Fix3dll made their first contribution in https://github.com/LifeIsAParadox/Skyblocker/pull/44
+
+**Full Changelog**: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.5.0...v1.6.0
+___
+# Release 1.5.0
 
 New Features
 * Added Wiki Lookup by @TacoMonkey11 in https://github.com/LifeIsAParadox/Skyblocker/pull/30
