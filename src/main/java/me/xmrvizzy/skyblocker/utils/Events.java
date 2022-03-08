@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.utils;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.*;
 import org.slf4j.Logger;
@@ -21,7 +20,9 @@ public class Events {
             TranslatableText hoverText = new TranslatableText("skyblocker.update.hover_text");
             linkMessage.append(link.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://modrinth.com/mod/skyblocker-liap/versions")).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)))).append(linkMessageEnding);
 
-            client.player.sendMessage(linkMessage, false);
+            if (client.player != null) {
+                client.player.sendMessage(linkMessage, false);
+            }
         }
     }
 
