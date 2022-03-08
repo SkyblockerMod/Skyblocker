@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker;
 
+import me.xmrvizzy.skyblocker.chat.ChatMessageListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.api.StatsCommand;
@@ -17,5 +18,6 @@ public class SkyblockerInitializer implements ClientModInitializer {
         WikiLookup.init();
         ItemRegistry.init();
         StatsCommand.init();
+        ChatMessageListener.init();
     }
 }
