@@ -1,0 +1,18 @@
+{
+  "key.categories.skyblocker": "Skyblocker",
+  "key.hotbarSlotLock": "Kunci Slot (Hotbar)",
+  "text.autoconfig.skyblocker.title": "Pengaturan Skyblocker",
+  "text.autoconfig.skyblocker.category.general": "Umum",
+  "text.autoconfig.skyblocker.option.general.bars": "Darah, Mana, Pertahanan & Bar XP",
+  "text.autoconfig.skyblocker.option.general.bars.enableBars": "Aktifkan Bar",
+  "text.autoconfig.skyblocker.category.locations": "Lokasi",
+  "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
+  "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Aktifkan Peta",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Pecahkan Teka Teki \"Tiga Orang Aneh\"",
+  "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Pecahkan Teka Teki \"Blaze\"",
+  "text.autoconfig.skyblocker.category.messages": "Pesan",
+  "text.autoconfig.skyblocker.option.messages.hideAbility": "Sembunyikan Cooldown Kemampuan",
+  "text.autoconfig.skyblocker.option.messages.hideHeal": "Sembunyikan Pesan Penyembuhan",
+  "text.autoconfig.skyblocker.option.messages.hideAOTE": "Sembunyikan Pesan AOTE",
+  "text.autoconfig.skyblocker.option.messages.hideAds": "Sembunyikan Iklan dari Chat Publik"
+}
