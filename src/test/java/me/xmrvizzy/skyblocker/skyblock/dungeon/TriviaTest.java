@@ -1,9 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.chat.ChatListenerTest;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
-class TriviaTest extends ChatListenerTest<Trivia> {
+class TriviaTest extends ChatPatternListenerTest<Trivia> {
     public TriviaTest() {
         super(new Trivia());
     }

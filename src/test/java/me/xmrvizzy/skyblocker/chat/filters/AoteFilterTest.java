@@ -9,6 +9,6 @@ class AoteFilterTest extends ChatFilterTest<AoteFilter> {
 
     @Test
     void testRegex() {
-        assertFilters("There are blocks in the way!");
+        assertMatches("There are blocks in the way!");
     }
 }

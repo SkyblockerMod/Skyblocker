@@ -1,15 +1,18 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.chat.ChatListener;
+import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
-public class Trivia extends ChatListener {
+public class Trivia extends ChatPatternListener {
     private static final Map<String, String[]> answers;
     private List<String> solutions = Collections.emptyList();
 
@@ -18,21 +21,22 @@ public class Trivia extends ChatListener {
     }
 
     @Override
-    public boolean isEnabled() {
-        return SkyblockerConfig.get().locations.dungeons.solveTrivia;
+    public ChatFilterResult state() {
+        return SkyblockerConfig.get().locations.dungeons.solveTrivia ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override
-    public boolean onMessage(String[] groups) {
-        if (groups[3] != null) {
-            if (!solutions.contains(groups[3])) {
+    public boolean onMatch(Text message, Matcher matcher) {
+        String riddle = matcher.group(3);
+        if (riddle != null) {
+            if (!solutions.contains(riddle)) {
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
                 assert player != null;
-                MinecraftClient.getInstance().player.sendMessage(new LiteralText("     " + Formatting.GOLD + groups[2] + Formatting.RED + " " + groups[3]), false);
+                MinecraftClient.getInstance().player.sendMessage(new LiteralText("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle), false);
                 return true;
             }
         } else
-            updateSolutions(groups[1]);
+            updateSolutions(matcher.group(0));
         return false;
     }
 

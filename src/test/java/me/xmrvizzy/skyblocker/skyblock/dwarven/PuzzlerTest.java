@@ -1,9 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import me.xmrvizzy.skyblocker.chat.ChatListenerTest;
+import me.xmrvizzy.skyblocker.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
-class PuzzlerTest extends ChatListenerTest<Puzzler> {
+class PuzzlerTest extends ChatPatternListenerTest<Puzzler> {
     public PuzzlerTest() {
         super(new Puzzler());
     }

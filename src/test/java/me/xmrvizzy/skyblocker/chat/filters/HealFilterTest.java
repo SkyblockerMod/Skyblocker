@@ -9,11 +9,11 @@ class HealFilterTest extends ChatFilterTest<HealFilter> {
 
     @Test
     void healSelf() {
-        assertFilters("You healed yourself for 18.3 health!");
+        assertMatches("You healed yourself for 18.3 health!");
     }
 
     @Test
     void healedYou() {
-        assertFilters("H3aler_ healed you for 56 health!");
+        assertMatches("H3aler_ healed you for 56 health!");
     }
 }
