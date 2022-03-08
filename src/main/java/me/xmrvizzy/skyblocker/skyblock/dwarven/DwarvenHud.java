@@ -24,7 +24,7 @@ public class DwarvenHud {
             Pattern.compile("^.*((?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium): (\\d+\\.?\\d*%|DONE)"),
             Pattern.compile("^.*(Goblin Raid): (\\d+\\.?\\d*%|DONE)"),
             Pattern.compile("^.*((?:Powder Ghast|Star Sentry) Puncher): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*(Raffle): (\\d+\\.?\\d*%|DONE)"),
+            Pattern.compile("^.*((?<!Lucky )Raffle): (\\d+\\.?\\d*%|DONE)"),
             Pattern.compile("^.*(Lucky Raffle): (\\d+\\.?\\d*%|DONE)"),
             Pattern.compile("^.*(2x Mithril Powder Collector): (\\d+\\.?\\d*%|DONE)"),
             Pattern.compile("^.*((?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector): (\\d+\\.?\\d*%|DONE)"),
