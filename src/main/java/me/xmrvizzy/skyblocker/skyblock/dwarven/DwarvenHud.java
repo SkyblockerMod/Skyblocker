@@ -50,7 +50,7 @@ public class DwarvenHud {
                 });
                 if (commissions.size() > 0){
                     if (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground)
-                        DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 150, hudY + 50, 0x64000000);
+                        DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 150, hudY + (20 * commissions.size()), 0x64000000);
                     int y = 0;
                     for (Commission commission : commissions) {
                         client.textRenderer.drawWithShadow(matrixStack, new LiteralText(commission.commission).styled(style -> style.withColor(Formatting.AQUA)).append(new LiteralText(": " + commission.progression).styled(style -> style.withColor(Formatting.GREEN))), hudX + 5, hudY + y + 5, 0xFFFFFFFF);
