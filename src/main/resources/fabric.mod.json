@@ -5,7 +5,7 @@
   "name": "Skyblocker",
   "description": "Hypixel Skyblock Mod",
   "authors": ["xMrVizzy", "d3dx9", "LifeIsAParadox"],
-  "contributors": ["ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira"],
+  "contributors": ["ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira", "Fix3dll"],
   "contact": {
     "homepage": "https://hysky.de",
     "sources": "https://github.com/LifeIsAParadox/Skyblocker",
@@ -26,10 +26,10 @@
     "skyblocker.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.12.11",
+    "fabricloader": ">=0.13.3",
     "fabric": "*",
 	"cloth-config2": "*",
-    "minecraft": ["1.18.x","1.17.x"]
+    "minecraft": ["1.18.x"]
   },
   "custom": {
     "modmenu": {
