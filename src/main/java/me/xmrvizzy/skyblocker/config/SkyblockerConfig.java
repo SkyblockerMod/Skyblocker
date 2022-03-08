@@ -5,6 +5,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,14 +137,22 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Messages {
-        public boolean hideAbility = false;
-        public boolean hideHeal = false;
-        public boolean hideAOTE = false;
-        public boolean hideImplosion = false;
-        public boolean hideMoltenWave = false;
-        public boolean hideAds = false;
-        public boolean hideTeleportPad = false;
-        public boolean hideCombo = false;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideAbility = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideHeal = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideAOTE = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideAds = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ChatFilterResult hideCombo = ChatFilterResult.PASS;
     }
 
     public enum Info {
