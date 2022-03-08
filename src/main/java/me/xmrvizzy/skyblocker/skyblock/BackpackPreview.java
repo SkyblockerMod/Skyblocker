@@ -47,10 +47,7 @@ public class BackpackPreview extends DrawableHelper {
     }
 
     private static File getSaveDir() {
-        String uuid = null;
-        if (MinecraftClient.getInstance().player != null) {
-            uuid = MinecraftClient.getInstance().player.getUuidAsString();
-        }
+        String uuid = MinecraftClient.getInstance().getSession().getUuid();
         File dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + uuid).toFile();
         dir.mkdirs();
         return dir;
