@@ -5,7 +5,6 @@
   "text.autoconfig.skyblocker.title": "Skyblocker-Einstellungen",
 
   "text.autoconfig.skyblocker.category.general": "Allgemein",
-  "text.autoconfig.skyblocker.option.general.apiKey": "Hypixel API Schlüssel (WIP)",
   "text.autoconfig.skyblocker.option.general.bars": "Gesundheits-, Mana-, Verteidigungs- und XP-Balken",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Balken aktivieren",
 
