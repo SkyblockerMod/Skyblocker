@@ -130,7 +130,7 @@ public class ItemStackBuilder {
         for (int i = 0; i < otherNumsMin.size(); ++i) {
             String left = "\\{" + i + "\\}";
             String right = otherNumsMin.get(i).getAsString() + " ➡ " + otherNumsMax.get(i).getAsString();
-            list.add(new Pair(left, right));
+            list.add(new Pair<>(left, right));
         }
 
         return list;

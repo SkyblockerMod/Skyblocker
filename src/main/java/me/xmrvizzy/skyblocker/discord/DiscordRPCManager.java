@@ -79,7 +79,7 @@ public class DiscordRPCManager implements IPCListener{
 
     public void stop(){
         if (client != null && client.getStatus() == PipeStatus.CONNECTED) {
-            LOGGER.info("Closing...");
+            LOGGER.info("[Skyblocker DiscordRPC] Closing...");
             isConnected = false;
             client.close();
             client = null;
@@ -88,13 +88,13 @@ public class DiscordRPCManager implements IPCListener{
 
     @Override
     public void onReady(IPCClient client) {
-        LOGGER.info("Started!");
+        LOGGER.info("[Skyblocker DiscordRPC] Started!");
         isConnected = true;
     }
 
     @Override
     public void onClose(IPCClient client, JsonObject json) {
-        LOGGER.info("Closed");
+        LOGGER.info("[Skyblocker DiscordRPC] Closed");
         isConnected = false;
     }
 
