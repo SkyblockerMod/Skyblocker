@@ -45,6 +45,11 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Enable Drill Fuel",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Solve Fetchur",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Dwarven HUD",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Enabled",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Enable Background",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.x": "X",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "Y",
 
   "text.autoconfig.skyblocker.category.messages": "Messages",
   "text.autoconfig.skyblocker.option.messages.hideAbility": "Hide Ability Cooldown",
