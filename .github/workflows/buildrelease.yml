@@ -64,7 +64,7 @@ jobs:
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN  }}
           CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
-        run: ./gradlew publishModrinth
+        run: ./gradlew modrinth
 
       - name: Get version tag
         id: version_tag
