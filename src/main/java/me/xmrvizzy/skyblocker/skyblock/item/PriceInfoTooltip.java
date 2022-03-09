@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -47,9 +48,7 @@ public class PriceInfoTooltip {
         List<String> listString = lines.stream()
                 .map(Text::getString).toList();
 
-        if (client.player == null) {
-            throw new RuntimeException("[Skyblocker] client.player cannot be null!");
-        }
+        if (!Utils.isOnSkyblock || client.player == null || name == null) return;
 
         if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && !listString.contains("NPC Price")) {
             if (npcPricesJson == null) {
