@@ -42,13 +42,15 @@ public class PriceInfoTooltip {
     private final static Gson gson = new Gson();
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
-        int count = stack.getCount();
+        if (!Utils.isOnSkyblock || client.player == null) return;
+
         String name = getInternalNameFromNBT(stack);
+        if (name == null) return;
+
+        int count = stack.getCount();
         String timestamp = getTimestamp(stack);
         List<String> listString = lines.stream()
                 .map(Text::getString).toList();
-
-        if (!Utils.isOnSkyblock || client.player == null || name == null) return;
 
         if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && !listString.contains("NPC Price")) {
             if (npcPricesJson == null) {
