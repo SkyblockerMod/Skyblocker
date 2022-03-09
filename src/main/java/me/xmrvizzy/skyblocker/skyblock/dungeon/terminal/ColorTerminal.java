@@ -9,14 +9,14 @@ import net.minecraft.item.Items;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 
 public class ColorTerminal extends ContainerSolver {
-    private static final Logger LOGGER = LogManager.getLogger(ColorTerminal.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
     private static final Map<String, DyeColor> colorFromName;
     private DyeColor targetColor;
     private static final Map<Item, DyeColor> itemColor;

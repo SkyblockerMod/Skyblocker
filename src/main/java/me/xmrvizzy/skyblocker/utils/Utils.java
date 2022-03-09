@@ -45,12 +45,13 @@ public class Utils {
         String location = null;
         List<String> sidebarLines = getSidebar();
         try {
-            assert sidebarLines != null;
-            for (String sidebarLine : sidebarLines) {
-                if (sidebarLine.contains("⏣")) location = sidebarLine;
+            if( sidebarLines != null) {
+                for (String sidebarLine : sidebarLines) {
+                    if (sidebarLine.contains("⏣")) location = sidebarLine;
+                }
+                if (location == null) location = "Unknown";
+                location = location.replace('⏣', ' ').strip();
             }
-            if (location == null) location = "Unknown";
-            location = location.replace('⏣', ' ').strip();
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -63,10 +64,12 @@ public class Utils {
 
         List<String> sidebarLines = getSidebar();
         try {
-            assert sidebarLines != null;
-            for (String sidebarLine : sidebarLines) {
-                if (sidebarLine.contains("Piggy:")) purseString = sidebarLine;
-                if (sidebarLine.contains("Purse:")) purseString = sidebarLine;
+
+            if (sidebarLines != null) {
+                for (String sidebarLine : sidebarLines) {
+                    if (sidebarLine.contains("Piggy:")) purseString = sidebarLine;
+                    if (sidebarLine.contains("Purse:")) purseString = sidebarLine;
+                }
             }
             if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
             else purse = 0;
@@ -82,9 +85,10 @@ public class Utils {
         String bitsString = null;
         List<String> sidebarLines = getSidebar();
         try {
-            assert sidebarLines != null;
-            for (String sidebarLine : sidebarLines) {
-                if (sidebarLine.contains("Bits")) bitsString = sidebarLine;
+            if (sidebarLines != null) {
+                for (String sidebarLine : sidebarLines) {
+                    if (sidebarLine.contains("Bits")) bitsString = sidebarLine;
+                }
             }
             if (bitsString != null) {
                 bits = Integer.parseInt(bitsString.replaceAll("[^0-9.]", "").strip());

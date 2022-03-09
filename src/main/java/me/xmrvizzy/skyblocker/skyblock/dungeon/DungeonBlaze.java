@@ -9,8 +9,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DungeonBlaze {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
     static Entity highestBlaze = null;
     static Entity lowestBlaze = null;
     static boolean renderHooked = false;
@@ -70,7 +73,7 @@ public class DungeonBlaze {
                 }
             }
         }catch(Exception e) {
-            System.out.println("BlazeRenderer: " + e);
+            LOGGER.warn("[Skyblocker BlazeRenderer] " + e);
         }
     }
 }

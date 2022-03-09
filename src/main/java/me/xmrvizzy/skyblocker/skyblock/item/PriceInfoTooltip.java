@@ -13,7 +13,8 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PriceInfoTooltip.class.getName());
     private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static JsonObject npcPricesJson;
@@ -301,7 +303,7 @@ public class PriceInfoTooltip {
                 }
             }
         } catch (IOException e) {
-            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download average BIN prices!", e);
+            LOGGER.warn("[Skyblocker] Failed to download average BIN prices!", e);
         }
         switch (type) {
             case ONE_DAY -> oneDayAvgPricesJson = result;
@@ -316,7 +318,7 @@ public class PriceInfoTooltip {
             InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
             result = new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
-            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download bazaar prices!", e);
+            LOGGER.warn("[Skyblocker] Failed to download bazaar prices!", e);
         }
         bazaarPricesJson = result;
     }
@@ -328,7 +330,7 @@ public class PriceInfoTooltip {
             InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
             result = new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
-            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download lowest BIN prices!", e);
+            LOGGER.warn("[Skyblocker] Failed to download lowest BIN prices!", e);
         }
         lowestPricesJson = result;
     }
@@ -340,7 +342,7 @@ public class PriceInfoTooltip {
             InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
             result = new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
-            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download NPC prices!", e);
+            LOGGER.warn("[Skyblocker] Failed to download NPC prices!", e);
         }
         npcPricesJson = result;
     }
@@ -352,7 +354,7 @@ public class PriceInfoTooltip {
             InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
             result = new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
-            LogManager.getLogger(PriceInfoTooltip.class.getName()).warn("[Skyblocker] Failed to download museum items!", e);
+            LOGGER.warn("[Skyblocker] Failed to download museum items!", e);
         }
         isMuseumJson = result;
     }
