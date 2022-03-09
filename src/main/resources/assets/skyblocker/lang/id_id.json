@@ -14,5 +14,21 @@
   "text.autoconfig.skyblocker.option.messages.hideAbility": "Sembunyikan Cooldown Kemampuan",
   "text.autoconfig.skyblocker.option.messages.hideHeal": "Sembunyikan Pesan Penyembuhan",
   "text.autoconfig.skyblocker.option.messages.hideAOTE": "Sembunyikan Pesan AOTE",
-  "text.autoconfig.skyblocker.option.messages.hideAds": "Sembunyikan Iklan dari Chat Publik"
+  "text.autoconfig.skyblocker.option.messages.hideAds": "Sembunyikan Iklan dari Chat Publik",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Aktifkan Harga NPC",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Aktifkan Harga BIN Terendah",
+  "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cInformasi harga item yang ditampilkan dalam tooltip akan diperbarui dalam jangka waktu maks. 60 detik. Jika pembaharuan gagal silahkan check latest.log",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Aktifkan Rata-rata Harga BIN",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.avg": "Tipe Rata-rata",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Aktifkan Harga Jual Beli Bazaar",
+  "text.autoconfig.skyblocker.option.richPresence.info": "Informasi Skyblock",
+  "text.autoconfig.skyblocker.option.richPresence.enableRichPresence": "Diaktifkan",
+  "text.autoconfig.skyblocker.option.general.itemList": "Daftar Item",
+  "text.autoconfig.skyblocker.option.general.itemList.enableItemList": "Aktifkan Daftar Item",
+  "key.wikiLookup": "Pencarian Wiki",
+  "text.autoconfig.skyblocker.option.general.quicknav": "Navigasi Cepat",
+  "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Aktifkan Navigasi Cepat",
+  "text.autoconfig.skyblocker.option.general.itemTooltip": "Keterangan Item",
+  "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "Perbarui Notifikasi",
+  "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Setel API key anda secara otomatis!"
 }
