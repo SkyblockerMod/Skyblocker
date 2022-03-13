@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -41,17 +42,17 @@ public class PriceInfoTooltip {
     private final static Gson gson = new Gson();
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
-        int count = stack.getCount();
+        if (!Utils.isOnSkyblock || client.player == null) return;
+
         String name = getInternalNameFromNBT(stack);
+        if (name == null) return;
+
+        int count = stack.getCount();
         String timestamp = getTimestamp(stack);
-        List<String> listString = lines.stream()
-                .map(Text::getString).toList();
+        List<String> listString = lines.stream().map(Text::getString).toList();
 
-        if (client.player == null) {
-            throw new RuntimeException("[Skyblocker] client.player cannot be null!");
-        }
-
-        if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && !listString.contains("NPC Price")) {
+        if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice
+                && listString.stream().noneMatch(each -> each.contains("NPC Price:"))) {
             if (npcPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
@@ -64,7 +65,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !listString.contains("Lowest BIN Price")) {
+        if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN) {
             if (lowestPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
@@ -77,7 +78,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN && !listString.contains("Avg. BIN Price")) {
+        if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
             if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
@@ -136,7 +137,7 @@ public class PriceInfoTooltip {
         }
 
         if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice
-                && (!listString.contains("Bazaar buy Price") || !listString.contains("Bazaar sell Price"))) {
+                && listString.stream().noneMatch(each -> each.contains("Buy price:") || each.contains("Sell price:"))) {
             if (bazaarPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
@@ -153,28 +154,27 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !listString.contains("Museum")) {
+        if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate) {
             if (isMuseumJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
-            } else if (isMuseumJson.has(name)) {
+            } else if (isMuseumJson.has(name) && listString.stream().noneMatch(each -> each.contains("Museum:"))) {
                 String itemCategory = isMuseumJson.get(name).toString().replaceAll("\"", "");
                 String format = switch (itemCategory) {
                     case "Weapons" -> "%-18s";
                     case "Armor" -> "%-19s";
                     default -> "%-20s";
                 };
-
                 lines.add(new LiteralText(String.format(format, "Museum: (" + itemCategory + ")"))
                         .formatted(Formatting.LIGHT_PURPLE)
                         .append(new LiteralText(timestamp != null ? timestamp : "").formatted(Formatting.RED)));
+            } else if (timestamp != null && listString.stream().noneMatch(each -> each.contains("Obtained:"))) {
+                lines.add(new LiteralText(String.format("%-21s", "Obtained: "))
+                        .formatted(Formatting.LIGHT_PURPLE)
+                        .append(new LiteralText(timestamp).formatted(Formatting.RED)));
             }
-        } else if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !listString.contains("Obtained") && timestamp != null) {
-            lines.add(new LiteralText(String.format("%-22s", "Obtained: "))
-                    .formatted(Formatting.LIGHT_PURPLE)
-                    .append(new LiteralText(timestamp).formatted(Formatting.RED)));
         }
     }
 
