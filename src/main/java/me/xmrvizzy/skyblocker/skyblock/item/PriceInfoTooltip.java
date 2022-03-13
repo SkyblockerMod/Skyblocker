@@ -51,8 +51,7 @@ public class PriceInfoTooltip {
         String timestamp = getTimestamp(stack);
         List<String> listString = lines.stream().map(Text::getString).toList();
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice
-                && listString.stream().noneMatch(each -> each.contains("NPC Price:"))) {
+        if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
             if (npcPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
@@ -160,7 +159,7 @@ public class PriceInfoTooltip {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
-            } else if (isMuseumJson.has(name) && listString.stream().noneMatch(each -> each.contains("Museum:"))) {
+            } else if (isMuseumJson.has(name)) {
                 String itemCategory = isMuseumJson.get(name).toString().replaceAll("\"", "");
                 String format = switch (itemCategory) {
                     case "Weapons" -> "%-18s";
@@ -170,7 +169,7 @@ public class PriceInfoTooltip {
                 lines.add(new LiteralText(String.format(format, "Museum: (" + itemCategory + ")"))
                         .formatted(Formatting.LIGHT_PURPLE)
                         .append(new LiteralText(timestamp != null ? timestamp : "").formatted(Formatting.RED)));
-            } else if (timestamp != null && listString.stream().noneMatch(each -> each.contains("Obtained:"))) {
+            } else if (timestamp != null) {
                 lines.add(new LiteralText(String.format("%-21s", "Obtained: "))
                         .formatted(Formatting.LIGHT_PURPLE)
                         .append(new LiteralText(timestamp).formatted(Formatting.RED)));

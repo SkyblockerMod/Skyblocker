@@ -79,7 +79,15 @@ public class SkyblockerConfig implements ConfigData {
     public enum Average {
         ONE_DAY,
         THREE_DAY,
-        BOTH
+        BOTH;
+
+        public String toString() {
+            return switch (this) {
+                case ONE_DAY -> "1 day price";
+                case THREE_DAY -> "3 day price";
+                case BOTH -> "Both";
+            };
+        }
     }
 
     public static class ItemTooltip {
