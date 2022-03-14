@@ -30,6 +30,8 @@ public class SkyblockerConfig implements ConfigData {
     public RichPresence richPresence = new RichPresence();
 
     public static class General {
+        public boolean enableUpdateNotification = true;
+        public boolean backpackPreviewWithoutShift = false;
 
         @ConfigEntry.Gui.Excluded
         public String apiKey;
@@ -45,8 +47,6 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("quicknav")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Quicknav quicknav = new Quicknav();
-
-        public boolean enableUpdateNotification = true;
 
         @ConfigEntry.Category("itemTooltip")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)

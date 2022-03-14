@@ -49,7 +49,6 @@ public class PriceInfoTooltip {
 
         int count = stack.getCount();
         String timestamp = getTimestamp(stack);
-        List<String> listString = lines.stream().map(Text::getString).toList();
 
         if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
             if (npcPricesJson == null) {
@@ -136,7 +135,7 @@ public class PriceInfoTooltip {
         }
 
         if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice
-                && listString.stream().noneMatch(each -> each.contains("Buy price:") || each.contains("Sell price:"))) {
+                && lines.stream().noneMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"))) {
             if (bazaarPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);

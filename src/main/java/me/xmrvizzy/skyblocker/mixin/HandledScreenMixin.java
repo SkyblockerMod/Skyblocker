@@ -55,7 +55,8 @@ public abstract class HandledScreenMixin extends Screen {
     @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void drawMouseOverTooltip(MatrixStack matrices, int x, int y, CallbackInfo ci) {
         String title = ((HandledScreen)(Object)this).getTitle().getString();
-        if (Screen.hasShiftDown() && title.equals("Storage") && focusedSlot != null) {
+        boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift || Screen.hasShiftDown();
+        if (shiftDown && title.equals("Storage") && focusedSlot != null) {
             if (BackpackPreview.renderPreview(matrices, focusedSlot.getIndex(), x, y)) ci.cancel();
         }
     }
