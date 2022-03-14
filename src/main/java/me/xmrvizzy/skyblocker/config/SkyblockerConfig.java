@@ -152,6 +152,7 @@ public class SkyblockerConfig implements ConfigData {
         public ChatFilterResult hideCombo = ChatFilterResult.PASS;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
+        public boolean hideMana = false;
     }
 
     public enum Info {
