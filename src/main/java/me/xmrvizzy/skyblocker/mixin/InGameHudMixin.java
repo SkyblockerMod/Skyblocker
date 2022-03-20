@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
     private static final Identifier SLOT_LOCK = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png");
-    private static final Pattern ACTION_BAR_MANA = Pattern.compile("^§b-\\d+ Mana \\(.*\\)(| +)$");
 
     private final FancyStatusBars statusBars = new FancyStatusBars();
     private MatrixStack hotbarMatrices;
@@ -50,11 +49,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
         if(!Utils.isOnSkyblock)
             return;
         String msg = message.getString();
-        if (SkyblockerConfig.get().messages.hideMana) {
-            Matcher matcher = ACTION_BAR_MANA.matcher(msg);
-            if (matcher.matches())
-                ci.cancel();
-        }
         if(statusBars.update(msg))
             ci.cancel();
     }

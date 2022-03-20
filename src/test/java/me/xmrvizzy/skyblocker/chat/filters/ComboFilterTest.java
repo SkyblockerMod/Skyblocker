@@ -18,6 +18,11 @@ public class ComboFilterTest extends ChatFilterTest<ComboFilter> {
     }
 
     @Test
+    void testComboEXP() {
+        assertMatches("+20 Kill Combo +15% Combat Exp");
+    }
+
+    @Test
     void testComboExpired() {
         assertMatches("Your Kill Combo has expired! You reached a 11 Kill Combo!");
     }
