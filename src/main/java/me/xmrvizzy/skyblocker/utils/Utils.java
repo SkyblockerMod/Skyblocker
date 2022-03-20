@@ -1,8 +1,6 @@
 package me.xmrvizzy.skyblocker.utils;
 
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
-import me.xmrvizzy.skyblocker.utils.events.SkyblockJoinCallback;
-import me.xmrvizzy.skyblocker.utils.events.SkyblockLeaveCallback;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.scoreboard.Scoreboard;
@@ -36,11 +34,11 @@ public class Utils {
                 isInjected = true;
                 ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
             }
-            SkyblockJoinCallback.EVENT.invoker().join();
+            SkyblockEvents.JOIN.invoker().onSkyblockJoin();
             isOnSkyblock = true;
         }
         if (!sidebar.get(0).contains("SKYBLOCK") && isOnSkyblock) {
-            SkyblockLeaveCallback.EVENT.invoker().leave();
+            SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
             Utils.isOnSkyblock = false;
             Utils.isInDungeons = false;
         }

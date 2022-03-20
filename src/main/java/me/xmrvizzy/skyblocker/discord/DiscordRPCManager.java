@@ -7,8 +7,7 @@ import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import me.xmrvizzy.skyblocker.utils.events.SkyblockLeaveCallback;
-import net.minecraft.util.ActionResult;
+import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,10 +100,7 @@ public class DiscordRPCManager implements IPCListener{
     }
 
     public void init(){
-        SkyblockLeaveCallback.EVENT.register(() -> {
-            stop();
-            return ActionResult.PASS;
-        });
+        SkyblockEvents.LEAVE.register(this::stop);
     }
 
 }

@@ -3,13 +3,11 @@ package me.xmrvizzy.skyblocker.utils;
 import com.google.gson.*;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.events.SkyblockJoinCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.util.VersionNumber;
 
 import java.io.IOException;
@@ -53,8 +51,8 @@ public class UpdateChecker {
     }
 
     public static void init(){
-        if (shouldUpdate()){
-            SkyblockJoinCallback.EVENT.register(() -> {
+        SkyblockEvents.JOIN.register(() -> {
+            if (shouldUpdate()) {
                 TranslatableText linkMessage = new TranslatableText("skyblocker.update.update_message");
                 TranslatableText linkMessageEnding = new TranslatableText("skyblocker.update.update_message_end");
                 TranslatableText link = new TranslatableText("skyblocker.update.update_link");
@@ -62,8 +60,7 @@ public class UpdateChecker {
                 linkMessage.append(link.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://modrinth.com/mod/skyblocker-liap/versions")).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)))).append(linkMessageEnding);
 
                 MinecraftClient.getInstance().player.sendMessage(linkMessage, false);
-                return ActionResult.PASS;
-            });
-        }
+            }
+        });
     }
 }
