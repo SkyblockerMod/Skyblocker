@@ -17,7 +17,7 @@ public class FancyStatusBars extends DrawableHelper {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/bars.png");
     private static final Pattern ACTION_BAR_MANA = Pattern.compile("§b-\\d+ Mana \\(.*\\) +");
-    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c](\\d+)/(\\d+)❤(?:\\+§c\\d+.)?(?: +§a(\\d+)§a❈ Defense)?(?: +(\\S+(?:\\s\\S+)*))??(?: +§b(\\d+)/(\\d+)✎ +(?:Mana|§3(\\d+)ʬ))?(?: +(§[27].*))?$");
+    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c](\\d+)/(\\d+)❤(\\+§c\\d+.)?(?: +§a(\\d+)§a❈ Defense)?(?: +(\\S+(?:\\s\\S+)*))??(?: +§b(\\d+)/(\\d+)✎ +(?:Mana|§3(\\d+)ʬ))?(?: +(§[27].*))?$");
 
     private final Resource[] resources = new Resource[]{
             // Health
@@ -48,28 +48,31 @@ public class FancyStatusBars extends DrawableHelper {
             return false;
 
         resources[0].setMax(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
-        if (matcher.group(3) != null) {
-            int def = Integer.parseInt(matcher.group(3));
+        if (matcher.group(4) != null) {
+            int def = Integer.parseInt(matcher.group(4));
             resources[2].setFillLevel(def, (double) def / ((double) def + 100D));
         }
-        if (matcher.group(5) != null) {
-            int m = Integer.parseInt(matcher.group(5));
-            if (matcher.group(7) != null)
-                m += Integer.parseInt(matcher.group(7));
-            resources[1].setMax(m, Integer.parseInt(matcher.group(6)));
+        if (matcher.group(6) != null) {
+            int m = Integer.parseInt(matcher.group(6));
+            if (matcher.group(8) != null)
+                m += Integer.parseInt(matcher.group(8));
+            resources[1].setMax(m, Integer.parseInt(matcher.group(7)));
         }
         assert client.player != null;
         resources[3].setFillLevel(client.player.experienceLevel, client.player.experienceProgress);
 
         StringBuilder sb = new StringBuilder();
+        if (matcher.group(3) != null) {
+            sb.append("§c").append(matcher.group(3));
+        }
         if (SkyblockerConfig.get().messages.hideMana) {
             Matcher mana = ACTION_BAR_MANA.matcher(actionBar);
             if (!mana.find())
-                appendIfNotNull(sb, matcher.group(4));
+                appendIfNotNull(sb, matcher.group(5));
         } else {
-            appendIfNotNull(sb, matcher.group(4));
+            appendIfNotNull(sb, matcher.group(5));
         }
-        appendIfNotNull(sb, matcher.group(8));
+        appendIfNotNull(sb, matcher.group(9));
 
         if (!sb.isEmpty()) {
             assert client.player != null;
