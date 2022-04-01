@@ -1,3 +1,13 @@
+# Release 1.6.2
+
+Fixes
+* filter for mana consumption message from action bar by @Fix3dll in https://github.com/LifeIsAParadox/Skyblocker/pull/61
+* lowestbin
+
+added french translate by @edgarogh
+
+**Full Changelog**: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.6.1...v1.6.2
+___
 # Release 1.6.1
 
 Fixes
