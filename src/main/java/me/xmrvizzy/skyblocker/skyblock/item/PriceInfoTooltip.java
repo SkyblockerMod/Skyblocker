@@ -49,6 +49,7 @@ public class PriceInfoTooltip {
 
         int count = stack.getCount();
         String timestamp = getTimestamp(stack);
+        boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
 
         if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
             if (npcPricesJson == null) {
@@ -63,7 +64,28 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN) {
+        boolean bazaarExist = false;
+        if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice
+                && !bazaarOpened) {
+            if (bazaarPricesJson == null) {
+                if (!nullMsgSend) {
+                    client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                    nullMsgSend = true;
+                }
+            } else if (bazaarPricesJson.has(name)) {
+                JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
+                lines.add(new LiteralText(String.format("%-18s", "Bazaar buy Price:"))
+                        .formatted(Formatting.GOLD)
+                        .append(getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
+                lines.add(new LiteralText(String.format("%-19s", "Bazaar sell Price:"))
+                        .formatted(Formatting.GOLD)
+                        .append(getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
+                bazaarExist = true;
+            }
+        }
+
+        // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
+        if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
             if (lowestPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
@@ -134,25 +156,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice
-                && lines.stream().noneMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"))) {
-            if (bazaarPricesJson == null) {
-                if (!nullMsgSend) {
-                    client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
-                    nullMsgSend = true;
-                }
-            } else if (bazaarPricesJson.has(name)) {
-                JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
-                lines.add(new LiteralText(String.format("%-18s", "Bazaar buy Price:"))
-                        .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
-                lines.add(new LiteralText(String.format("%-19s", "Bazaar sell Price:"))
-                        .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
-            }
-        }
-
-        if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate) {
+        if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !bazaarOpened) {
             if (isMuseumJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
