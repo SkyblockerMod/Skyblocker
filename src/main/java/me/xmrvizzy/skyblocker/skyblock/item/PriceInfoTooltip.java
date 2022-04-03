@@ -256,9 +256,16 @@ public class PriceInfoTooltip {
         }
     }
 
-    public static int minute = 0;
+    // If these options is true beforehand, the client will get first data of these options while loading.
+    // After then, it will only fetch the data if it is on Skyblock.
+    public static int minute = -1;
     public static void init() {
         skyblocker.scheduler.scheduleCyclic(() -> {
+            if (!Utils.isOnSkyblock && 0 < minute++) {
+                nullMsgSend = false;
+                return;
+            }
+
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
             if ((SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) && (oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0)) {
                 SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
