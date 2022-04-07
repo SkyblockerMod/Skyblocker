@@ -31,9 +31,9 @@ public class Trivia extends ChatPatternListener {
         if (riddle != null) {
             if (!solutions.contains(riddle)) {
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                assert player != null;
-                MinecraftClient.getInstance().player.sendMessage(new LiteralText("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle), false);
-                return true;
+                if (player != null)
+                    MinecraftClient.getInstance().player.sendMessage(new LiteralText("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle), false);
+                return player != null;
             }
         } else
             updateSolutions(matcher.group(0));

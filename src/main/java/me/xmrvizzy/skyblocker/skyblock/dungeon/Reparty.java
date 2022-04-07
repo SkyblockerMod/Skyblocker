@@ -27,9 +27,8 @@ public class Reparty extends ChatPatternListener {
         repartying = false;
         ClientCommandManager.DISPATCHER.register(
                 ClientCommandManager.literal("rp").executes(context -> {
-                    if (!Utils.isOnSkyblock || repartying)
+                    if (!Utils.isOnSkyblock || repartying || client.player == null)
                         return 0;
-                    assert client.player != null;
                     repartying = true;
                     client.player.sendChatMessage("/p list");
                     return 0;
@@ -63,7 +62,10 @@ public class Reparty extends ChatPatternListener {
 
     private void reparty() {
         ClientPlayerEntity playerEntity = client.player;
-        assert playerEntity != null;
+        if (playerEntity == null) {
+            repartying = false;
+            return;
+        }
         sendCommand(playerEntity, "/p disband", 1);
         StringBuilder sb = new StringBuilder();
         int invites = (players.length - 1) / 5 + 1;

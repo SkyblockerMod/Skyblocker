@@ -32,8 +32,8 @@ public class Puzzler extends ChatPatternListener {
             else if (c == '▶') x--;
         }
         ClientWorld world = MinecraftClient.getInstance().world;
-        assert world != null;
-        world.setBlockStateWithoutNeighborUpdates(new BlockPos(x, 195, z), Blocks.CRIMSON_PLANKS.getDefaultState());
+        if (world != null)
+            world.setBlockStateWithoutNeighborUpdates(new BlockPos(x, 195, z), Blocks.CRIMSON_PLANKS.getDefaultState());
         return false;
     }
 }
