@@ -70,4 +70,5 @@ Everyone can contribute to Skyblocker, read [this](https://github.com/LifeIsAPar
 ### Translators
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox)) \
 Indonesian ([null2264](https://github.com/null2264)) \
-Russian ([HyperSoop](https://github.com/HyperSoop))
+Russian ([HyperSoop](https://github.com/HyperSoop)) \
+French ([edgarogh](https://github.com/edgarogh))

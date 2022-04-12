@@ -1,3 +1,23 @@
+# Release 1.6.2
+
+Fixes
+* filter for mana consumption message from action bar by @Fix3dll in https://github.com/LifeIsAParadox/Skyblocker/pull/61
+* lowestbin
+
+added french translate by @edgarogh
+
+**Full Changelog**: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.6.1...v1.6.2
+___
+# Release 1.6.1
+
+Fixes
+* PriceInfoTooltip fixes by @Fix3dll in https://github.com/LifeIsAParadox/Skyblocker/pull/56
+* quick and small change by @Fix3dll in https://github.com/LifeIsAParadox/Skyblocker/pull/57
+* backpack preview without shift by @Fix3dll in https://github.com/LifeIsAParadox/Skyblocker/pull/60
+
+
+**Full Changelog**: https://github.com/LifeIsAParadox/Skyblocker/compare/v1.6.0...v1.6.1
+___
 # Release 1.6.0
 
 This release only support 1.18.x

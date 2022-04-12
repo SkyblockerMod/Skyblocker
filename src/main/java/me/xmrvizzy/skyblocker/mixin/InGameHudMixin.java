@@ -24,6 +24,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {

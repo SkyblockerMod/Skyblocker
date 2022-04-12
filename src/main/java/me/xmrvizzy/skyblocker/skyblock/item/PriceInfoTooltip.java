@@ -324,7 +324,7 @@ public class PriceInfoTooltip {
     private static void downloadLowestPrices() {
         JsonObject result = null;
         try {
-            URL apiAddr = new URL("https://sbe-stole-skytils.design/api/auctions/lowestbins");
+            URL apiAddr = new URL("https://skytils.gg/api/auctions/lowestbins");
             InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
             result = new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
