@@ -28,7 +28,10 @@ repositories {
 		url 'https://repo.maven.apache.org/maven2'
 		name 'Maven Central'
 	}
-	maven {url "https://maven.jaackson.me/repo"}
+	maven {
+		name = "meteor-maven"
+		url = "https://maven.meteordev.org"
+	}
 	maven {url "https://jitpack.io"}
 }
 
@@ -57,18 +60,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit used pull data from the NEU item repo
 	include(implementation("org.eclipse.jgit:org.eclipse.jgit:6.0.0.202111291000-r"))
 
-	//DiscordIPC + Libraries so it works on unix systems
-	modImplementation ("com.jagrosh:DiscordIPC:0.5")
-
-	// https://github.com/jaacksondev/DiscordIPC
-	include "com.jagrosh:DiscordIPC:0.5"
-
-	//https://github.com/kohlschutter/junixsocket discordrpc unix
-	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-common:2.0.4"))
-	include(modImplementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.0.4"))
-
+	include(modImplementation ("meteordevelopment:discord-ipc:1.1"))
 	//  allow gson to deserialize the api data into a record
-	include(modImplementation("com.github.Marcono1234:gson-record-type-adapter-factory:0.2.0"))
+	include(implementation("com.github.Marcono1234:gson-record-type-adapter-factory:0.2.0"))
 }
 
 processResources {

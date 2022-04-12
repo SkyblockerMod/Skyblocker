@@ -65,7 +65,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip()
         public Info info = Info.LOCATION;
         public boolean cycleMode = false;
-        public String customMessage;
+        public String customMessage = "All on Fabric!";
     }
 
     public static class ItemList {
