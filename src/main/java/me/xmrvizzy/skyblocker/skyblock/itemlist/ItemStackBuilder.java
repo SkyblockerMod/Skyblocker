@@ -9,21 +9,20 @@ import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemStackBuilder {
-    private final static String PETNUMS_PATH = ItemRegistry.LOCAL_ITEM_REPO_DIR + "constants/petnums.json";
+    private final static Path PETNUMS_PATH = ItemRegistry.LOCAL_ITEM_REPO_DIR.resolve("constants/petnums.json");
     private static JsonObject petNums;
 
     public static void init() {
         try {
-            petNums = JsonParser.parseString(Files.readString(Paths.get(PETNUMS_PATH))).getAsJsonObject();
-        } catch (IOException e) {
+            petNums = JsonParser.parseString(Files.readString(PETNUMS_PATH)).getAsJsonObject();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

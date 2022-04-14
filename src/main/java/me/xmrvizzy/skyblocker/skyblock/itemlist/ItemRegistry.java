@@ -2,22 +2,22 @@ package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 
 public class ItemRegistry {
-    protected static final String REMOTE_ITEM_REPO_DIR = "https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git";
-    protected static final String LOCAL_ITEM_REPO_DIR = "./config/skyblocker/items-repo/";
+    protected static final String REMOTE_ITEM_REPO = "https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git";
+    protected static final Path LOCAL_ITEM_REPO_DIR = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/item-repo");
 
-    private static final String ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR + "items/";
+    private static final Path ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR.resolve("items");
 
     protected static List<ItemStack> items = new ArrayList<>();
     protected static Map<String, ItemStack> itemsMap = new HashMap<>();
@@ -31,21 +31,21 @@ public class ItemRegistry {
     }
 
     private static void updateItemRepo() {
-        if (!Files.isDirectory(Paths.get(LOCAL_ITEM_REPO_DIR))) {
+        if (!Files.isDirectory(LOCAL_ITEM_REPO_DIR)) {
             try {
                 Git.cloneRepository()
-                        .setURI(REMOTE_ITEM_REPO_DIR)
-                        .setDirectory(new File(LOCAL_ITEM_REPO_DIR))
+                        .setURI(REMOTE_ITEM_REPO)
+                        .setDirectory(LOCAL_ITEM_REPO_DIR.toFile())
                         .setBranchesToClone(List.of("refs/heads/master"))
                         .setBranch("refs/heads/master")
                         .call();
-            } catch (GitAPIException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                Git.open(new File(LOCAL_ITEM_REPO_DIR)).pull().call();
-            } catch (GitAPIException | IOException e) {
+                Git.open(LOCAL_ITEM_REPO_DIR.toFile()).pull().call();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -54,16 +54,15 @@ public class ItemRegistry {
     private static void importItemFiles() {
         List<JsonObject> jsonObjs = new ArrayList<>();
 
-        File dir = new File(ITEM_LIST_DIR);
+        File dir = ITEM_LIST_DIR.toFile();
         File[] files = dir.listFiles();
         assert files != null;
         for (File file : files) {
-            String path = ITEM_LIST_DIR + "/" + file.getName();
+            Path path = ITEM_LIST_DIR.resolve(file.getName());
             try {
-                String fileContent = Files.readString(Paths.get(path));
+                String fileContent = Files.readString(path);
                 jsonObjs.add(JsonParser.parseString(fileContent).getAsJsonObject());
-            } catch (IOException e) {
-                System.err.println("Couldn't import " + path);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
