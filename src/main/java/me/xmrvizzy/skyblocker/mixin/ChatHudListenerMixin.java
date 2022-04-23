@@ -33,9 +33,8 @@ public class ChatHudListenerMixin {
         switch (result) {
             case ACTION_BAR:
                 ClientPlayerEntity player = client.player;
-                // Couldn't have received original message if client was null
-                assert player != null;
-                player.sendMessage(message, true);
+                if (player != null)
+                    player.sendMessage(message, true);
             case FILTER:
                 ci.cancel();
         }

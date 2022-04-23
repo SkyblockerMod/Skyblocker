@@ -7,6 +7,7 @@ import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import org.slf4j.Logger;
@@ -19,15 +20,14 @@ public class DungeonBlaze {
     static boolean renderHooked = false;
     
     public static void update() {
-        if (!Utils.isInDungeons) return;
-        MinecraftClient client = MinecraftClient.getInstance();
+        ClientWorld world = MinecraftClient.getInstance().world;
+        if (world == null || !Utils.isInDungeons) return;
         if(!renderHooked){
 
             WorldRenderEvents.END.register(DungeonBlaze::blazeRenderer);
             renderHooked = true;
         }
-        assert client.world != null;
-        Iterable<Entity> entities = client.world.getEntities();
+        Iterable<Entity> entities = world.getEntities();
         int highestHealth = 0;
         int lowestHealth = 99999999;
 

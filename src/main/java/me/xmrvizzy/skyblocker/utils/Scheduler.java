@@ -1,8 +1,12 @@
 package me.xmrvizzy.skyblocker.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.PriorityQueue;
 
 public class Scheduler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
     private int currentTick;
     private final PriorityQueue<ScheduledTask> tasks;
 
@@ -12,21 +16,25 @@ public class Scheduler {
     }
 
     public void schedule(Runnable task, int delay) {
-        assert delay > 0;
+        if (delay < 0)
+            LOGGER.warn("Scheduled a task with negative delay");
         ScheduledTask tmp = new ScheduledTask(currentTick + delay, task);
         tasks.add(tmp);
     }
 
     public void scheduleCyclic(Runnable task, int period) {
-        new CyclicTask(task, period).run();
+        if (period <= 0)
+            LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
+        else
+            new CyclicTask(task, period).run();
     }
 
     public void tick() {
         currentTick += 1;
         ScheduledTask task;
         while ((task = tasks.peek()) != null && task.schedule <= currentTick) {
-            task.run();
             tasks.poll();
+            task.run();
         }
     }
 
