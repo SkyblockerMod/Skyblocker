@@ -65,8 +65,7 @@ public class PriceInfoTooltip {
         }
 
         boolean bazaarExist = false;
-        if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice
-                && !bazaarOpened) {
+        if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice && !bazaarOpened) {
             if (bazaarPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
@@ -76,10 +75,14 @@ public class PriceInfoTooltip {
                 JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
                 lines.add(new LiteralText(String.format("%-18s", "Bazaar buy Price:"))
                         .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
+                        .append(getItem.get("buyPrice").isJsonNull()
+                                ? new LiteralText("No data").formatted(Formatting.RED)
+                                : getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
                 lines.add(new LiteralText(String.format("%-19s", "Bazaar sell Price:"))
                         .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
+                        .append(getItem.get("sellPrice").isJsonNull()
+                                ? new LiteralText("No data").formatted(Formatting.RED)
+                                : getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
                 bazaarExist = true;
             }
         }
@@ -132,26 +135,18 @@ public class PriceInfoTooltip {
 
                 // "No data" line because of API not keeping old data, it causes NullPointerException
                 if (!name.isEmpty() && (type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH)) {
-                    if (oneDayAvgPricesJson.get(name) != null) {
-                        lines.add(new LiteralText(String.format("%-19s", "1 Day Avg. Price:"))
-                                .formatted(Formatting.GOLD)
-                                .append(getCoinsMessage(oneDayAvgPricesJson.get(name).getAsDouble(), count)));
-                    } else {
-                        lines.add(new LiteralText(String.format("%-19s", "1 Day Avg. Price:"))
-                                .formatted(Formatting.GOLD)
-                                .append(new LiteralText("No data").formatted(Formatting.RED)));
-                    }
+                    lines.add(new LiteralText(String.format("%-19s", "1 Day Avg. Price:"))
+                            .formatted(Formatting.GOLD)
+                            .append(oneDayAvgPricesJson.get(name) == null
+                                    ? new LiteralText("No data").formatted(Formatting.RED)
+                                    : getCoinsMessage(oneDayAvgPricesJson.get(name).getAsDouble(), count)));
                 }
                 if (!name.isEmpty() && (type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH)) {
-                    if (threeDayAvgPricesJson.get(name) != null) {
-                        lines.add(new LiteralText(String.format("%-19s", "3 Day Avg. Price:"))
-                                .formatted(Formatting.GOLD)
-                                .append(getCoinsMessage(threeDayAvgPricesJson.get(name).getAsDouble(), count)));
-                    } else {
-                        lines.add(new LiteralText(String.format("%-19s", "3 Day Avg. Price:"))
-                                .formatted(Formatting.GOLD)
-                                .append(new LiteralText("No data").formatted(Formatting.RED)));
-                    }
+                    lines.add(new LiteralText(String.format("%-19s", "3 Day Avg. Price:"))
+                            .formatted(Formatting.GOLD)
+                            .append(threeDayAvgPricesJson.get(name) == null
+                                    ? new LiteralText("No data").formatted(Formatting.RED)
+                                    : getCoinsMessage(threeDayAvgPricesJson.get(name).getAsDouble(), count)));
                 }
             }
         }
