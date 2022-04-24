@@ -55,11 +55,11 @@ ___
 
 ## Contribute
 
-Everyone can contribute to Skyblocker, read [this](https://github.com/LifeIsAParadox/Skyblocker/wiki/Contribute) for more information.
+Everyone can contribute to Skyblocker, read [this](https://github.com/SkyblockerMod/Skyblocker/wiki/Contribute) for more information.
 
 ## Stargazers
 
-[![Stargazers repo roster for @LifeIsAParadox/Skyblocker](https://reporoster.com/stars/LifeIsAParadox/Skyblocker)](https://github.com/LifeIsAParadox/Skyblocker/stargazers)
+[![Stargazers repo roster for @LifeIsAParadox/Skyblocker](https://reporoster.com/stars/SkyblockerMod/Skyblocker)](https://github.com/SkyblockerMod/Skyblocker/stargazers)
 
 ## Credits
 
