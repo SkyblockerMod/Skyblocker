@@ -23,17 +23,13 @@ public class ThreeWeirdos extends ChatPatternListener {
     @Override
     public boolean onMatch(Text message, Matcher matcher) {
         MinecraftClient client = MinecraftClient.getInstance();
-        assert client.world != null;
-        assert client.player != null;
+        if (client.player == null || client.world == null) return false;
         client.world.getEntitiesByClass(
                 ArmorStandEntity.class,
                 client.player.getBoundingBox().expand(3),
                 entity -> {
                     Text customName = entity.getCustomName();
-                    if (customName != null && customName.getString().equals(matcher.group(1))) {
-                        return true;
-                    }
-                    return false;
+                    return customName != null && customName.getString().equals(matcher.group(1));
                 }
         ).forEach(
                 entity -> entity.setCustomName(Text.of(Formatting.GREEN + matcher.group(1)))

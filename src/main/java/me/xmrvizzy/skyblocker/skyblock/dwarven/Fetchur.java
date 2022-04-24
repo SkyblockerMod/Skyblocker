@@ -26,7 +26,7 @@ public class Fetchur extends ChatPatternListener {
     @Override
     public boolean onMatch(Text message, Matcher matcher) {
         MinecraftClient client = MinecraftClient.getInstance();
-        assert client.player != null;
+        if (client.player == null) return false;
         String riddle = matcher.group(1);
         String answer = answers.getOrDefault(riddle, riddle);
         client.player.sendMessage(Text.of("§e[NPC] Fetchur§f: " + answer), false);

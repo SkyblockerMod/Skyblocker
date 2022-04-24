@@ -131,6 +131,17 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableDrillFuel = true;
         public boolean solveFetchur = true;
         public boolean solvePuzzler = true;
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public DwarvenHud dwarvenHud = new DwarvenHud();
+    }
+
+    public static class DwarvenHud {
+        public boolean enabled = true;
+        public boolean enableBackground = true;
+        @ConfigEntry.BoundedDiscrete(min = 3, max = 2000)
+        public int x = 10;
+        @ConfigEntry.BoundedDiscrete(min = 3, max = 2000)
+        public int y = 10;
     }
 
     public static class Messages {

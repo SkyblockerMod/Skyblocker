@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.utils;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -102,7 +103,8 @@ public class Utils {
 
     public static List<String> getSidebar() {
         try {
-            assert MinecraftClient.getInstance().player != null;
+            ClientPlayerEntity client = MinecraftClient.getInstance().player;
+            if (client == null) return Collections.emptyList();
             Scoreboard scoreboard = MinecraftClient.getInstance().player.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
             List<String> lines = new ArrayList<>();
