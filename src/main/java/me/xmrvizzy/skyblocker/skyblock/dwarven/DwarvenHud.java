@@ -17,19 +17,19 @@ public class DwarvenHud {
 
     public static MinecraftClient client = MinecraftClient.getInstance();
 
-    public static final List<Pattern> COMMISSIONS = List.of(
-            Pattern.compile("^.*((?:Titanium|Mithril|Hard Stone) Miner): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*((?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasuite Member|Yog|Boss Corleone|Thyst) Slayer): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*((?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*((?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*(Goblin Raid): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*((?:Powder Ghast|Star Sentry) Puncher): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*((?<!Lucky )Raffle): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*(Lucky Raffle): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*(2x Mithril Powder Collector): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*((?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*((?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter): (\\d+\\.?\\d*%|DONE)"),
-            Pattern.compile("^.*(Chest Looter): (\\d+\\.?\\d*%|DONE)")
+    public static final List<String> COMMISSIONS = List.of(
+            "((?:Titanium|Mithril|Hard Stone) Miner): (.*)",
+            "((?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasuite Member|Yog|Boss Corleone|Thyst) Slayer): (.*)",
+            "((?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril): (.*)",
+            "((?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium): (.*)",
+            "(Goblin Raid): (.*)",
+            "((?:Powder Ghast|Star Sentry) Puncher): (.*)",
+            "((?<!Lucky )Raffle): (.*)",
+            "(Lucky Raffle): (.*)",
+            "(2x Mithril Powder Collector): (.*)",
+            "((?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector): (.*)",
+            "((?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter): (.*)",
+            "(Chest Looter): (.*)"
             );
     public static void init(){
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
@@ -39,8 +39,8 @@ public class DwarvenHud {
                 List<Commission> commissions = new ArrayList<>();
                 client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
                     if (playerListEntry.getDisplayName() != null) {
-                        for (Pattern pattern : COMMISSIONS) {
-                            Matcher matcher = pattern.matcher(playerListEntry.getDisplayName().getString());
+                        for (String pattern : COMMISSIONS) {
+                            Matcher matcher = Pattern.compile(pattern).matcher(playerListEntry.getDisplayName().getString());
                             if (matcher.find()) {
                                 commissions.add(new Commission(matcher.group(1), matcher.group(2)));
                             }
@@ -50,7 +50,7 @@ public class DwarvenHud {
                 });
                 if (commissions.size() > 0){
                     if (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground)
-                        DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 150, hudY + (20 * commissions.size()), 0x64000000);
+                        DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
                     int y = 0;
                     for (Commission commission : commissions) {
                         client.textRenderer.drawWithShadow(matrixStack, new LiteralText(commission.commission).styled(style -> style.withColor(Formatting.AQUA)).append(new LiteralText(": " + commission.progression).styled(style -> style.withColor(Formatting.GREEN))), hudX + 5, hudY + y + 5, 0xFFFFFFFF);
