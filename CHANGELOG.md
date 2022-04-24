@@ -1,3 +1,14 @@
+# Release 1.6.3
+
+Fixes
+* fix crash when not hovering over a slot while trying to use wikilookup by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/64
+* Quick fix for fancybar and skyblock check for price info fetcher by @Fix3dll in https://github.com/SkyblockerMod/Skyblocker/pull/63
+* Replaced most assertions with proper error handling by @ExternalTime in https://github.com/SkyblockerMod/Skyblocker/pull/65
+* Fix crash when recipe in neurepo is wrong formated @LifeIsAParadox
+* Use config path provided by Fabric API @KonaeAkira
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.6.2...v1.6.3
+___
 # Release 1.6.2
 
 Fixes
