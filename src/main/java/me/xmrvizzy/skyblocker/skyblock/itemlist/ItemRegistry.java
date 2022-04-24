@@ -7,6 +7,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import org.eclipse.jgit.api.Git;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -109,6 +111,7 @@ public class ItemRegistry {
 }
 
 class Recipe {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Recipe.class);
     String text = "";
     List<ItemStack> grid = new ArrayList<>(9);
     ItemStack result;
@@ -130,12 +133,17 @@ class Recipe {
     }
 
     private static ItemStack getItemStack(String internalName) {
-        if (internalName.length() > 0) {
-            int count = Integer.parseInt(internalName.split(":")[1]);
-            internalName = internalName.split(":")[0];
-            ItemStack itemStack = ItemRegistry.itemsMap.get(internalName).copy();
-            itemStack.setCount(count);
-            return itemStack;
+        try {
+            if (internalName.length() > 0) {
+                int count = Integer.parseInt(internalName.split(":")[1]);
+                internalName = internalName.split(":")[0];
+                ItemStack itemStack = ItemRegistry.itemsMap.get(internalName).copy();
+                itemStack.setCount(count);
+                return itemStack;
+            }
+        }
+        catch(Exception e) {
+            LOGGER.error("[Skyblocker-Recipe] "+internalName,e);
         }
         return Items.AIR.getDefaultStack();
     }
