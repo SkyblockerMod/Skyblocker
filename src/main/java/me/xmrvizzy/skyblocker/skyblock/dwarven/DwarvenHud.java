@@ -11,26 +11,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DwarvenHud {
 
 
     public static MinecraftClient client = MinecraftClient.getInstance();
 
-    public static final List<String> COMMISSIONS = List.of(
-            "((?:Titanium|Mithril|Hard Stone) Miner): (.*)",
-            "((?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasuite Member|Yog|Boss Corleone|Thyst) Slayer): (.*)",
-            "((?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril): (.*)",
-            "((?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium): (.*)",
-            "(Goblin Raid): (.*)",
-            "((?:Powder Ghast|Star Sentry) Puncher): (.*)",
-            "((?<!Lucky )Raffle): (.*)",
-            "(Lucky Raffle): (.*)",
-            "(2x Mithril Powder Collector): (.*)",
-            "((?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector): (.*)",
-            "((?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter): (.*)",
-            "(Chest Looter): (.*)"
-            );
+    public static final List<Pattern> COMMISSIONS = List.of(
+            "(?:Titanium|Mithril|Hard Stone) Miner",
+            "(?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasuite Member|Yog|Boss Corleone|Thyst) Slayer",
+            "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
+            "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
+            "Goblin Raid",
+            "(?:Powder Ghast|Star Sentry) Puncher",
+            "(?<!Lucky )Raffle",
+            "Lucky Raffle",
+            "2x Mithril Powder Collector",
+            "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector",
+            "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
+            "Chest Looter"
+            ).stream().map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
+            .collect(Collectors.toList());
     public static void init(){
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
             if (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled) {
@@ -39,8 +41,8 @@ public class DwarvenHud {
                 List<Commission> commissions = new ArrayList<>();
                 client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
                     if (playerListEntry.getDisplayName() != null) {
-                        for (String pattern : COMMISSIONS) {
-                            Matcher matcher = Pattern.compile(pattern).matcher(playerListEntry.getDisplayName().getString());
+                        for (Pattern pattern : COMMISSIONS) {
+                            Matcher matcher = pattern.matcher(playerListEntry.getDisplayName().getString());
                             if (matcher.find()) {
                                 commissions.add(new Commission(matcher.group(1), matcher.group(2)));
                             }
