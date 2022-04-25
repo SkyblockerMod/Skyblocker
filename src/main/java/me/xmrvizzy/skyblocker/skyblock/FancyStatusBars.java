@@ -17,7 +17,7 @@ public class FancyStatusBars extends DrawableHelper {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/bars.png");
     private static final Pattern ACTION_BAR_MANA = Pattern.compile("§b-\\d+ Mana \\(.*\\) +");
-    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c](\\d+)/(\\d+)❤(\\+§c\\d+.)? +(?:§a(\\d+)§a❈ Defense|([^✎]*?))?(?: +§b(\\d+)/(\\d+)✎ +(?:Mana|§3(\\d+)ʬ))?(?: +(§[27].*))?$");
+    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c](\\d+)/(\\d+)❤(\\+§c\\d+.)? +(?:§a(\\d+)§a❈ Defense|([^✎]*?))?(?: +§b(\\d+)/(\\d+)✎ +(?:Mana|§3(\\d+)ʬ)| +(§c§lNOT ENOUGH MANA))?(?: +(§[27].*))?$");
 
     private final Resource[] resources = new Resource[]{
             // Health
@@ -73,6 +73,7 @@ public class FancyStatusBars extends DrawableHelper {
             appendIfNotNull(sb, matcher.group(5));
         }
         appendIfNotNull(sb, matcher.group(9));
+        appendIfNotNull(sb, matcher.group(10));
 
         if (!sb.isEmpty()) {
             assert client.player != null;
