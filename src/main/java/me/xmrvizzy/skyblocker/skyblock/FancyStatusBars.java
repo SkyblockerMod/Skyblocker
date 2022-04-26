@@ -7,164 +7,93 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class FancyStatusBars extends DrawableHelper {
-    private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/bars.png");
-    private static final Pattern ACTION_BAR_MANA = Pattern.compile("§b-\\d+ Mana \\(.*\\) +");
-    private static final Pattern ACTION_BAR_STATUS = Pattern.compile("^§[6c](\\d+)/(\\d+)❤(\\+§c\\d+.)? +(?:§a(\\d+)§a❈ Defense|([^✎]*?))?(?: +§b(\\d+)/(\\d+)✎ +(?:Mana|§3(\\d+)ʬ))?(?: +(§[27].*))?$");
 
-    private final Resource[] resources = new Resource[]{
-            // Health
-            new Resource(16733525),
-            // Mana
-            new Resource(5636095),
-            // Defense
-            new Resource(12106180),
-            // Experience
-            new Resource(8453920),
+    private final MinecraftClient client = MinecraftClient.getInstance();
+    private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
+
+    private final StatusBar[] bars = new StatusBar[]{
+            new StatusBar(0, 16733525, 2),
+            new StatusBar(1, 5636095, 2),
+            new StatusBar(2, 12106180, 1),
+            new StatusBar(3, 8453920, 1),
     };
 
-    public boolean update(String actionBar) {
-        if (!SkyblockerConfig.get().general.bars.enableBars) {
-            if (SkyblockerConfig.get().messages.hideMana) {
-                Matcher mana = ACTION_BAR_MANA.matcher(actionBar);
-                if (mana.find()) {
-                    assert client.player != null;
-                    client.player.sendMessage(Text.of(actionBar.replace(mana.group(), "")), true);
-                    return true;
-                }
-            }
-            return false;
-        }
+    private int left;
+    private int top;
 
-        Matcher matcher = ACTION_BAR_STATUS.matcher(actionBar);
-        if (!matcher.matches())
-            return false;
-
-        resources[0].setMax(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
-        if (matcher.group(4) != null) {
-            int def = Integer.parseInt(matcher.group(4));
-            resources[2].setFillLevel(def, (double) def / ((double) def + 100D));
-        }
-        if (matcher.group(6) != null) {
-            int m = Integer.parseInt(matcher.group(6));
-            if (matcher.group(8) != null)
-                m += Integer.parseInt(matcher.group(8));
-            resources[1].setMax(m, Integer.parseInt(matcher.group(7)));
-        }
-        assert client.player != null;
-        resources[3].setFillLevel(client.player.experienceLevel, client.player.experienceProgress);
-
-        StringBuilder sb = new StringBuilder();
-        if (matcher.group(3) != null) {
-            sb.append("§c").append(matcher.group(3));
-        }
-        if (SkyblockerConfig.get().messages.hideMana) {
-            Matcher mana = ACTION_BAR_MANA.matcher(actionBar);
-            if (!mana.find())
-                appendIfNotNull(sb, matcher.group(5));
-        } else {
-            appendIfNotNull(sb, matcher.group(5));
-        }
-        appendIfNotNull(sb, matcher.group(9));
-
-        if (!sb.isEmpty()) {
-            assert client.player != null;
-            client.player.sendMessage(Text.of(sb.toString()), true);
-        }
-
-        return true;
+    private int fill(int value, int max) {
+        return (32 * value - 1) / max;
     }
-
-    private void appendIfNotNull(StringBuilder sb, String str) {
-        if (str == null)
-            return;
-        if (!sb.isEmpty())
-            sb.append("    ");
-        sb.append(str);
-    }
-
-    private static final int BAR_SPACING = 46;
 
     public boolean render(MatrixStack matrices, int scaledWidth, int scaledHeight) {
-        if (!SkyblockerConfig.get().general.bars.enableBars)
+        var player = client.player;
+        if (!SkyblockerConfig.get().general.bars.enableBars || player == null)
             return false;
-        int left = scaledWidth / 2 - 91;
-        int top = scaledHeight - 35;
+        left = scaledWidth / 2 - 91;
+        top = scaledHeight - 35;
+
+        bars[0].update(statusBarTracker.getHealth());
+        bars[1].update(statusBarTracker.getMana());
+        int def = statusBarTracker.getDefense();
+        bars[2].fill[0] = fill(def, def + 100);
+        bars[2].text = def;
+        bars[3].fill[0] = (int) (32 * player.experienceProgress);
+        bars[3].text = player.experienceLevel;
+
         RenderSystem.setShaderTexture(0, BARS);
-        for (int i = 0; i < 4; i++) {
-            this.drawTexture(matrices, left + i * BAR_SPACING, top, 0, 9 * i, 43, 9);
-            int fillCount = resources[i].getFillCount();
-            for (int j = 0; j < fillCount; j++) {
-                this.drawTexture(matrices, left + 11 + i * BAR_SPACING, top, 43 + 31 * j, 9 * i, Resource.INNER_WIDTH, 9);
-            }
-            int fillLevel = resources[i].getFillLevel();
-            if (0 < fillLevel)
-                this.drawTexture(matrices, left + 11 + i * BAR_SPACING, top, 43 + 31 * fillCount, 9 * i, fillLevel, 9);
-        }
-        for (int i = 0; i < 4; i++) {
-            renderText(matrices, resources[i].getValue(), left + 11 + i * BAR_SPACING, top, resources[i].getTextColor());
-        }
+        for (var bar : bars)
+            bar.draw(matrices);
+        for (var bar : bars)
+            bar.drawText(matrices);
         return true;
     }
 
-    private void renderText(MatrixStack matrices, int value, int left, int top, int color) {
-        TextRenderer textRenderer = client.textRenderer;
-        String text = Integer.toString(value);
-        int x = left + (33 - textRenderer.getWidth(text)) / 2;
-        int y = top - 3;
+    private class StatusBar {
+        public final int[] fill;
+        private final int offsetX;
+        private final int v;
+        private final int text_color;
+        public Object text;
 
-        // for i in [-1, 1]
-        for (int i = -1; i < 2; i += 2) {
-            textRenderer.draw(matrices, text, (float) (x + i), (float) y, 0);
-            textRenderer.draw(matrices, text, (float) x, (float) (y + i), 0);
+        private StatusBar(int i, int textColor, int fillNum) {
+            this.offsetX = i * 46;
+            this.v = i * 9;
+            this.text_color = textColor;
+            this.fill = new int[fillNum];
+            this.fill[0] = 33;
+            this.text = "";
         }
 
-        textRenderer.draw(matrices, text, (float) x, (float) y, color);
-    }
-
-    private static class Resource {
-        static final int INNER_WIDTH = 31;
-        private int value;
-        private int fillLevel;
-        private final int textColor;
-
-        public Resource(int textColor) {
-            this.value = 0;
-            this.fillLevel = INNER_WIDTH;
-            this.textColor = textColor;
+        public void update(StatusBarTracker.Resource resource) {
+            int max = resource.max();
+            int val = resource.value();
+            this.fill[0] = fill(val, max);
+            this.fill[1] = fill(resource.overflow(), max);
+            this.text = val;
         }
 
-        public void setMax(int value, int max) {
-            this.value = value;
-            this.fillLevel = value * INNER_WIDTH / max;
+        public void draw(MatrixStack matrices) {
+            drawTexture(matrices, left + offsetX, top, 0, v, 43, 9);
+            for (int i = 0; i < fill.length; i++)
+                drawTexture(matrices, left + offsetX + 11, top, 43 + i * 31, v, fill[i], 9);
         }
 
-        public void setFillLevel(int value, double fillLevel) {
-            this.value = value;
-            this.fillLevel = (int) (INNER_WIDTH * fillLevel);
-        }
+        public void drawText(MatrixStack matrices) {
+            TextRenderer textRenderer = client.textRenderer;
+            String text = this.text.toString();
+            int x = left + this.offsetX + 11 + (33 - textRenderer.getWidth(text)) / 2;
+            int y = top - 3;
 
-        public int getValue() {
-            return value;
-        }
-
-        public int getFillCount() {
-            return fillLevel / INNER_WIDTH;
-        }
-
-        public int getFillLevel() {
-            return fillLevel % INNER_WIDTH;
-        }
-
-        public int getTextColor() {
-            return textColor;
+            final int[] offsets = new int[]{-1, 1};
+            for (int i : offsets) {
+                textRenderer.draw(matrices, text, (float) (x + i), (float) y, 0);
+                textRenderer.draw(matrices, text, (float) x, (float) (y + i), 0);
+            }
+            textRenderer.draw(matrices, text, (float) x, (float) y, text_color);
         }
     }
 }
