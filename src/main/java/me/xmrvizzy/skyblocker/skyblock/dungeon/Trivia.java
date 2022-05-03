@@ -60,16 +60,15 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the status of Thorn?", new String[]{"Shaman Necromancer"});
         answers.put("What is the status of Livid?", new String[]{"Master Necromancer"});
         answers.put("What is the status of Sadan?", new String[]{"Necromancer Lord"});
-        answers.put("What is the status of Maxor?", new String[]{"Young Wither"});
-        answers.put("What is the status of Goldor?", new String[]{"Wither Soldier"});
-        answers.put("What is the status of Storm?", new String[]{"Elementalist"});
-        answers.put("What is the status of Necron?", new String[]{"Wither Lord"});
-        answers.put("How many total Fairy Souls are there?", new String[]{"227 Fairy Souls"});
+        answers.put("What is the status of Maxor?", new String[]{"The Wither Lords"});
+        answers.put("What is the status of Goldor?", new String[]{"The Wither Lords"});
+        answers.put("What is the status of Storm?", new String[]{"The Wither Lords"});
+        answers.put("What is the status of Necron?", new String[]{"The Wither Lords"});
+        answers.put("How many total Fairy Souls are there?", new String[]{"238 Fairy Souls"});
         answers.put("How many Fairy Souls are there in Spider's Den?", new String[]{"19 Fairy Souls"});
         answers.put("How many Fairy Souls are there in The End?", new String[]{"12 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in The Barn?", new String[]{"7 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Mushroom Desert?", new String[]{"13 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Blazing Fortress?", new String[]{"19 Fairy Souls"});
+        answers.put("How many Fairy Souls are there in The Farming Islands?", new String[]{"20 Fairy Souls"});
+        answers.put("How many Fairy Souls are there in Crimson Isle?", new String[]{"29 Fairy Souls"});
         answers.put("How many Fairy Souls are there in The Park?", new String[]{"11 Fairy Souls"});
         answers.put("How many Fairy Souls are there in Jerry's Workshop?", new String[]{"5 Fairy Souls"});
         answers.put("How many Fairy Souls are there in Hub?", new String[]{"79 Fairy Souls"});
@@ -83,7 +82,7 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the name of the person that upgrades pets?", new String[]{"Kat"});
         answers.put("What is the name of the lady of the Nether?", new String[]{"Elle"});
         answers.put("Which villager in the Village gives you a Rogue Sword?", new String[]{"Jamie"});
-        answers.put("How many unique minions are there?", new String[]{"55 Minions"});
+        answers.put("How many unique minions are there?", new String[]{"58 Minions"});
         answers.put("Which of these enemies does not spawn in the Spider's Den?", new String[]{"Zombie Spider", "Cave Spider", "Wither Skeleton",
                 "Dashing Spooder", "Broodfather", "Night Spider"});
         answers.put("Which of these monsters only spawns at night?", new String[]{"Zombie Villager", "Ghast"});
