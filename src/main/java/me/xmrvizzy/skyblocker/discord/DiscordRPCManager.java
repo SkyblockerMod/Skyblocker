@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.discord;
 
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import meteordevelopment.discordipc.DiscordIPC;
 import meteordevelopment.discordipc.RichPresence;
@@ -16,6 +17,10 @@ public class DiscordRPCManager {
     public static final Logger LOGGER = LoggerFactory.getLogger(DiscordRPCManager.class.getName());
     public static long startTimeStamp;
     public static int cycleCount;
+
+    public static void init(){
+        SkyblockEvents.LEAVE.register(DiscordIPC::stop);
+    }
 
     public void update(){
         if (!SkyblockerConfig.get().richPresence.enableRichPresence || !Utils.isOnSkyblock){
