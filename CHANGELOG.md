@@ -1,3 +1,15 @@
+# Release 1.7.0
+
+New Feature
+* Commission HUD by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/55
+* Rewrote status bars again by @ExternalTime in https://github.com/SkyblockerMod/Skyblocker/pull/68
+
+Fixes
+* fixed crash on itemtooltip on legacy timestamps by @LifeIsAParadox
+* Updated Trivia @LifeIsAParadox
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.6.3...v1.7.0
+___
 # Release 1.6.3
 
 Fixes

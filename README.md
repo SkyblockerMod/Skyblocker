@@ -20,9 +20,9 @@ Installation guide is [here](https://github.com/LifeIsAParadox/Skyblocker/wiki/i
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
 * Dungeon Puzzle Solver:
-   * Three Weirdos
-   * Blaze
-   * F7 Terminal: Order, Color, Name
+  * Three Weirdos
+  * Blaze
+  * F7 Terminal: Order, Color, Name
 * Dwarven Mines Solver: Fetchur, Puzzler
 * Drill Fuel in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
@@ -34,6 +34,7 @@ Installation guide is [here](https://github.com/LifeIsAParadox/Skyblocker/wiki/i
 * Recipe book: in the vanilla recipe book all skyblock items are listed and you can see the recipe of the item
 * Backpack preview: after you clicked your backpack or enderchest once you can hover over the backpack or enderchest and hold shift to preview
 * Update notification
+* Commission HUD: Dwarven Mines quests
 
 </details>
 

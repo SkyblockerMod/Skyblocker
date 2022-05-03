@@ -16,3 +16,4 @@
 * Recipe book: in the vanilla recipe book all skyblock items are listed and you can see the recipe of the item
 * Backpack preview: after you clicked your backpack or enderchest once you can hover over the backpack or enderchest and hold shift to preview
 * Update notification
+* Commission HUD: Dwarven Mines quests
