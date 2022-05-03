@@ -5,6 +5,8 @@ New Feature
 * Rewrote status bars again by @ExternalTime in https://github.com/SkyblockerMod/Skyblocker/pull/68
 
 Fixes
+* Replace bootleg events with fabric api events by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/66
+* Replace DiscordIPC library with a more modern one by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/69
 * fixed crash on itemtooltip on legacy timestamps by @LifeIsAParadox
 * Updated Trivia @LifeIsAParadox
 
