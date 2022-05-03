@@ -13,7 +13,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.time.Month;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -180,6 +181,20 @@ public class PriceInfoTooltip {
         return stack.getNbt();
     }
 
+    /**
+     * this method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
+     * Currently there are two types of timestamps the legacy which is built like this
+     * "dd/MM/yy hh:mm" ("25/04/20 16:38") and the current which is built like this
+     * "MM/dd/yy hh:mm aa" ("12/24/20 11:08 PM"). Since Hypixel transforms the two formats into one format without
+     * taking into account of their formats, we do the same. The final result looks like this
+     * "MMMM dd, yyyy" (December 24, 2020).
+     * Since the legacy format has a 25 as "month" SimpleDateFormat converts the 25 into 2 years and 1 month and makes
+     * "25/04/20 16:38" -> "January 04, 2022" instead of "April 25, 2020".
+     * This causes the museum rank to be much worse than it should be.
+     *
+     * @param stack the item under the pointer
+     * @return if the item have an "Timestamp" it will be shown formated on the tooltip
+     */
     public static String getTimestamp(ItemStack stack) {
         NbtCompound tag = getInternalNameForItem(stack);
         String internalName = null;
@@ -187,9 +202,16 @@ public class PriceInfoTooltip {
             NbtCompound ea = tag.getCompound("ExtraAttributes");
 
             if (ea.contains("timestamp", 8)) {
-                internalName = ea.getString("timestamp").replaceAll("\\s(.*)", "");
-                int month = Integer.parseInt(internalName.replaceAll("(\\d+)/(\\d+)/(\\d+)", "$1"));
-                internalName = StringUtils.capitalize(internalName.replaceAll("(\\d+)/(\\d+)/(\\d+)", Month.of(month) + " $2, 20$3").toLowerCase());
+                internalName = ea.getString("timestamp");
+                SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yy");
+
+                try {
+                    Date date = dt.parse(internalName);
+                    SimpleDateFormat dt1 = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+                    internalName = dt1.format(date);
+                } catch (ParseException e) {
+                    LOGGER.warn("[Skyblocker-tooltip] getTimestamp", e);
+                }
             }
         }
         return internalName;
