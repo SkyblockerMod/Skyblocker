@@ -24,9 +24,11 @@ public class DiscordRPCManager {
     }
 
     public void update(){
-        if (SkyblockerConfig.get().richPresence.customMessage.isBlank()) {
-            SkyblockerConfig.get().richPresence.customMessage = "All on Fabric!";
-            AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+        if (SkyblockerConfig.get().richPresence.customMessage != null ) {
+            if (SkyblockerConfig.get().richPresence.customMessage.isBlank()) {
+                SkyblockerConfig.get().richPresence.customMessage = "All on Fabric!";
+                AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+            }
         }
         if (!SkyblockerConfig.get().richPresence.enableRichPresence || !Utils.isOnSkyblock){
             if (DiscordIPC.isConnected()) DiscordIPC.stop();
