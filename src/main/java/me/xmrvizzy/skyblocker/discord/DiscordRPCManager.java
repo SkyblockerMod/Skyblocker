@@ -7,6 +7,7 @@ import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,6 +97,10 @@ public class DiscordRPCManager implements IPCListener{
     public void onClose(IPCClient client, JsonObject json) {
         LOGGER.info("[Skyblocker DiscordRPC] Closed");
         isConnected = false;
+    }
+
+    public void init(){
+        SkyblockEvents.LEAVE.register(this::stop);
     }
 
 }
