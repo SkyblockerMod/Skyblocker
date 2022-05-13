@@ -6,6 +6,8 @@
   "text.autoconfig.skyblocker.category.general": "Основные",
   "text.autoconfig.skyblocker.option.general.bars": "Полоски здоровья, маны, защиты и опыта",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Включить полоски",
+  "text.autoconfig.skyblocker.option.general.sprinthud": "Индикатор переключения спринта",
+  "text.autoconfig.skyblocker.option.general.sprinthud.enableSprintHud": "Включить отображение спринта",
 
   "text.autoconfig.skyblocker.category.locations": "Локации",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Катакомбы",

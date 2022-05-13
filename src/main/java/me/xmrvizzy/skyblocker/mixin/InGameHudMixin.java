@@ -6,6 +6,7 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.FancyStatusBars;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
+import me.xmrvizzy.skyblocker.skyblock.ToggleHud;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
@@ -102,5 +103,12 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private void renderMountHealth(MatrixStack matrices, CallbackInfo ci) {
         if (Utils.isOnSkyblock && SkyblockerConfig.get().general.bars.enableBars)
             ci.cancel();
+    }
+
+    @Inject(method="render", at=@At("HEAD"))
+    public void render(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+        if (SkyblockerConfig.get().general.sprinthud.enableSprintHud) {
+            ToggleHud.render(matrices);
+        }
     }
 }

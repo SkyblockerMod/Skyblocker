@@ -39,7 +39,11 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("bars")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public Bars bars = new Bars();
-      
+
+        @ConfigEntry.Category("sprint")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        public SprintHud sprinthud = new SprintHud();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
         public ItemList itemList = new ItemList();
@@ -59,6 +63,11 @@ public class SkyblockerConfig implements ConfigData {
     public static class Bars {
         public boolean enableBars = true;
     }
+
+    public static class SprintHud {
+        public boolean enableSprintHud = false;
+    }
+
     public static class RichPresence {
         public boolean enableRichPresence = false;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)

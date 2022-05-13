@@ -8,6 +8,8 @@
   "text.autoconfig.skyblocker.category.general": "General",
   "text.autoconfig.skyblocker.option.general.bars": "Health, Mana, Defence & XP Bars",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Enable Bars",
+  "text.autoconfig.skyblocker.option.general.sprinthud": "Vanilla Toggle Sprint indicator",
+  "text.autoconfig.skyblocker.option.general.sprinthud.enableSprintHud": "Enable Toggle Sprint HUD",
   "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
