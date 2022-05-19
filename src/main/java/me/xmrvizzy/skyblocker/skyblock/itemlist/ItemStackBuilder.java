@@ -47,13 +47,6 @@ public class ItemStackBuilder {
         tag.put("ExtraAttributes", extra);
         extra.put("id", NbtString.of(internalName));
 
-        // add enchantment glint
-        if (internalName.contains("ENCHANTED")) {
-            NbtList enchantments = new NbtList();
-            enchantments.add(new NbtCompound());
-            tag.put("Enchantments", enchantments);
-        }
-
         NbtCompound display = new NbtCompound();
         tag.put("display", display);
 
@@ -89,6 +82,12 @@ public class ItemStackBuilder {
         if (colorMatcher.find()) {
             NbtInt color = NbtInt.of(Integer.parseInt(colorMatcher.group(1)));
             display.put("color", color);
+        }
+        // add enchantment glint
+        if (nbttag.contains("ench:")) {
+            NbtList enchantments = new NbtList();
+            enchantments.add(new NbtCompound());
+            tag.put("Enchantments", enchantments);
         }
 
         return ItemStack.fromNbt(root);

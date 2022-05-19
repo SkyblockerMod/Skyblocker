@@ -27,12 +27,11 @@ public class ItemFixerUpper {
             Map.entry("minecraft:netherbrick", "minecraft:nether_brick"),
             Map.entry("minecraft:stained_hardened_clay", "minecraft:terracotta"),
             Map.entry("minecraft:quartz_ore", "minecraft:nether_quartz_ore"),
-            Map.entry("minecraft:fish", "minecraft:cod"),
-            Map.entry("minecraft:cooked_fish", "minecraft:cooked_cod"),
             Map.entry("minecraft:red_flower", "minecraft:poppy"),
             Map.entry("minecraft:tallgrass", "minecraft:grass"),
             Map.entry("minecraft:stone_slab2", "minecraft:red_sandstone_slab"),
-            Map.entry("minecraft:waterlily", "minecraft:lily_pad")
+            Map.entry("minecraft:waterlily", "minecraft:lily_pad"),
+            Map.entry("minecraft:stone_stairs", "minecraft:cobblestone_stairs")
     );
 
     private final static String[] DYE_COLORS = {
@@ -136,6 +135,63 @@ public class ItemFixerUpper {
             "minecraft:creeper_head"
     };
 
+    private final static String[] FISH_VARIANTS = {
+            "minecraft:cod",
+            "minecraft:salmon",
+            "minecraft:tropical_fish",
+            "minecraft:pufferfish"
+    };
+
+    private final static String[] COOKED_FISH_VARIANTS = {
+            "minecraft:cooked_cod",
+            "minecraft:cooked_salmon"
+    };
+
+    private final static String[] STONE_VARIANTS = {
+            "minecraft:stone",
+            "minecraft:granite",
+            "minecraft:polished_granite",
+            "minecraft:diorite",
+            "minecraft:polished_diorite",
+            "minecraft:andesite",
+            "minecraft:polished_andesite"
+    };
+
+    private final static String[] STONE_SLAB_VARIANTS = {
+            "minecraft:smooth_stone_slab",
+            "minecraft:sandstone_slab",
+            "minecraft:barrier", // doesn't exist
+            "minecraft:cobblestone_slab",
+            "minecraft:brick_slab",
+            "minecraft:stone_brick_slab",
+            "minecraft:nether_brick_slab",
+            "minecraft:quartz_slab"
+    };
+
+    private final static String[] COBBLESTONE_WALL_VARIANTS = {
+            "minecraft:cobblestone_wall",
+            "minecraft:mossy_cobblestone_wall"
+    };
+
+    private final static String[] DIRT_VARIANTS = {
+            "minecraft:dirt",
+            "minecraft:coarse_dirt",
+            "minecraft:podzol"
+    };
+
+    private final static String[] SPONGE_VARIANTS = {
+            "minecraft:sponge",
+            "minecraft:wet_sponge"
+    };
+
+    private final static String[] PRISMARINE_VARIANTS = {
+            "minecraft:prismarine",
+            "minecraft:prismarine_bricks",
+            "minecraft:dark_prismarine"
+    };
+
+    // TODO: map potions to their correct colors
+
     public static String convertItemId(String id, int damage) {
         if (id.equals("minecraft:dye")) return DYE_COLORS[damage];
         if (id.equals("minecraft:log2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "log";
@@ -145,6 +201,14 @@ public class ItemFixerUpper {
         if (id.equals("minecraft:spawn_egg")) return SPAWN_EGG_VARIANTS.getOrDefault(damage, "minecraft:ghast_spawn_egg");
         if (id.equals("minecraft:banner")) return "minecraft:" + BLOCK_COLORS[15 - damage] + "banner";
         if (id.equals("minecraft:skull")) return SKULL_VARIANTS[damage];
+        if (id.equals("minecraft:fish")) return FISH_VARIANTS[damage];
+        if (id.equals("minecraft:cooked_fish")) return COOKED_FISH_VARIANTS[damage];
+        if (id.equals("minecraft:stone")) return STONE_VARIANTS[damage];
+        if (id.equals("minecraft:stone_slab")) return STONE_SLAB_VARIANTS[damage];
+        if (id.equals("minecraft:cobblestone_wall")) return COBBLESTONE_WALL_VARIANTS[damage];
+        if (id.equals("minecraft:dirt")) return DIRT_VARIANTS[damage];
+        if (id.equals("minecraft:sponge")) return SPONGE_VARIANTS[damage];
+        if (id.equals("minecraft:prismarine")) return PRISMARINE_VARIANTS[damage];
 
         id = MAPPING.getOrDefault(id, id);
         if (Registry.ITEM.get(new Identifier(id)).equals(Items.AIR)) {
