@@ -57,6 +57,20 @@ public class FancyStatusBars extends DrawableHelper {
         bars[3].fill[0] = (int) (32 * player.experienceProgress);
         bars[3].text = player.experienceLevel;
 
+        // Update positions of bars from config
+        for (int i = 0; i < 4; i++) {
+            int configAnchorNum = switch (i) {
+                case 0 -> SkyblockerConfig.get().general.bars.barpositions.healthBarPosition.toInt();
+                case 1 -> SkyblockerConfig.get().general.bars.barpositions.manaBarPosition.toInt();
+                case 2 -> SkyblockerConfig.get().general.bars.barpositions.defenceBarPosition.toInt();
+                case 3 -> SkyblockerConfig.get().general.bars.barpositions.experienceBarPosition.toInt();
+                default -> 0;
+            };
+
+            if (bars[i].anchorNum != configAnchorNum)
+                moveBar(i, configAnchorNum);
+        }
+
         RenderSystem.setShaderTexture(0, BARS);
         for (var bar : bars)
             bar.draw(matrices);
