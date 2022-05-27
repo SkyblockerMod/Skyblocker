@@ -37,20 +37,24 @@ public class SkyblockerConfig implements ConfigData {
         public String apiKey;
 
         @ConfigEntry.Category("bars")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public Bars bars = new Bars();
       
         @ConfigEntry.Category("itemList")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public ItemList itemList = new ItemList();
 
         @ConfigEntry.Category("quicknav")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public Quicknav quicknav = new Quicknav();
 
         @ConfigEntry.Category("itemTooltip")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public ItemTooltip itemTooltip = new ItemTooltip();
+
+        @ConfigEntry.Category("hitbox")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public Hitbox hitbox = new Hitbox();
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
@@ -59,6 +63,12 @@ public class SkyblockerConfig implements ConfigData {
     public static class Bars {
         public boolean enableBars = true;
     }
+
+    public static class Hitbox {
+        public boolean oldFarmlandHitbox = true;
+        public boolean oldLeverHitbox = false;
+    }
+
     public static class RichPresence {
         public boolean enableRichPresence = false;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
@@ -103,11 +113,11 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class Locations {
         @ConfigEntry.Category("dungeons")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public Dungeons dungeons = new Dungeons();
 
         @ConfigEntry.Category("dwarvenmines")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public DwarvenMines dwarvenMines = new DwarvenMines();
     }
 
@@ -116,8 +126,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
-        public boolean oldLevers = false;
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public Terminals terminals = new Terminals();
     }
 
@@ -131,7 +140,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableDrillFuel = true;
         public boolean solveFetchur = true;
         public boolean solvePuzzler = true;
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public DwarvenHud dwarvenHud = new DwarvenHud();
     }
 
