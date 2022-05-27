@@ -24,6 +24,7 @@ public class FancyStatusBars extends DrawableHelper {
 
     // Positions to show the bars
     // 0: Hotbar Layer 1, 1: Hotbar Layer 2, 2: Right of hotbar
+    // Anything outside the set values hides the bar
     private final int[] anchorsX = new int[3];
     private final int[] anchorsY = new int[3];
 
@@ -149,6 +150,9 @@ public class FancyStatusBars extends DrawableHelper {
         }
 
         public void draw(MatrixStack matrices) {
+            // Dont draw if anchorNum is outside of range
+            if (anchorNum < 0 || anchorNum > 2) return;
+
             // Draw the icon for the bar
             drawTexture(matrices, anchorsX[anchorNum] + offsetX, anchorsY[anchorNum], 0, v, 9, 9);
 
@@ -168,6 +172,9 @@ public class FancyStatusBars extends DrawableHelper {
         }
 
         public void drawText(MatrixStack matrices) {
+            // Dont draw if anchorNum is outside of range
+            if (anchorNum < 0 || anchorNum > 2) return;
+
             TextRenderer textRenderer = client.textRenderer;
             String text = this.text.toString();
             int x = anchorsX[anchorNum] + this.offsetX + 11 + (bar_width - textRenderer.getWidth(text)) / 2;

@@ -79,13 +79,15 @@ public class SkyblockerConfig implements ConfigData {
     public enum BarPosition {
         LAYER1,
         LAYER2,
-        RIGHT;
+        RIGHT,
+        NONE;
 
         public String toString() {
             return switch (this) {
                 case LAYER1 -> "Layer 1";
                 case LAYER2 -> "Layer 2";
                 case RIGHT -> "Right";
+                case NONE -> "Disabled";
             };
         }
 
@@ -94,6 +96,7 @@ public class SkyblockerConfig implements ConfigData {
                 case LAYER1 -> 0;
                 case LAYER2 -> 1;
                 case RIGHT -> 2;
+                case NONE -> -1;
             };
         }
     }
