@@ -46,7 +46,7 @@ public class FancyStatusBars extends DrawableHelper {
         anchorsX[0] = scaledWidth / 2 - 91;
         anchorsY[0] = scaledHeight - 33;
         anchorsX[1] = anchorsX[0];
-        anchorsY[1] = anchorsY[0] - 13;
+        anchorsY[1] = anchorsY[0] - 10;
         anchorsX[2] = (scaledWidth / 2 + 91) + 2;
         anchorsY[2] = scaledHeight - 16;
 
@@ -88,15 +88,9 @@ public class FancyStatusBars extends DrawableHelper {
         int layer1Count = 0, layer2Count = 0, rightCount = 0;
         for (int i = 0; i < 4; i++) {
             switch (bars[i].anchorNum) {
-                case 0:
-                    layer1Count++;
-                    break;
-                case 1:
-                    layer2Count++;
-                    break;
-                case 2:
-                    rightCount++;
-                    break;
+                case 0 -> layer1Count++;
+                case 1 -> layer2Count++;
+                case 2 -> rightCount++;
             }
         }
 
@@ -104,21 +98,21 @@ public class FancyStatusBars extends DrawableHelper {
         int adjustedLayer1Count = 0, adjustedLayer2Count = 0, adjustedRightCount = 0;
         for (int i = 0; i < 4; i++) {
             switch (bars[i].anchorNum) {
-                case 0:
+                case 0 -> {
                     bars[i].bar_width = (172 - ((layer1Count - 1) * 11)) / layer1Count;
-                    bars[i].offsetX = adjustedLayer1Count * (bars[i].bar_width + 11  + (layer1Count == 3 ? 0 : 1));
+                    bars[i].offsetX = adjustedLayer1Count * (bars[i].bar_width + 11 + (layer1Count == 3 ? 0 : 1));
                     adjustedLayer1Count++;
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     bars[i].bar_width = (172 - ((layer2Count - 1) * 11)) / layer2Count;
                     bars[i].offsetX = adjustedLayer2Count * (bars[i].bar_width + 11 + (layer2Count == 3 ? 0 : 1));
                     adjustedLayer2Count++;
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     bars[i].bar_width = 50;
                     bars[i].offsetX = adjustedRightCount * (50 + 11);
                     adjustedRightCount++;
-                    break;
+                }
             }
         }
     }
