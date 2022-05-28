@@ -24,6 +24,9 @@
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Enable Museum & Date",
+  "text.autoconfig.skyblocker.option.general.hitbox": "Hitboxes",
+  "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
+  "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
   "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "text.autoconfig.skyblocker.category.richPresence": "Discord Rich Presence",
@@ -42,7 +45,6 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Solve Blaze Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Solve Trivia Puzzle",
-  "text.autoconfig.skyblocker.option.locations.dungeons.oldLevers": "1.8 lever hitbox",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Terminal Solvers",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Colored",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder": "Solve Click In Order",

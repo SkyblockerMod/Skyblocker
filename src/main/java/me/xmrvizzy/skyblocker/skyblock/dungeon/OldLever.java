@@ -14,7 +14,7 @@ public class OldLever {
     protected static final VoxelShape WEST_SHAPE;
 
     public static VoxelShape getShape(WallMountLocation wallMountLocation, Direction direction) {
-        if (!SkyblockerConfig.get().locations.dungeons.oldLevers)
+        if (!SkyblockerConfig.get().general.hitbox.oldLeverHitbox)
             return null;
 
         if (wallMountLocation == WallMountLocation.FLOOR) {
