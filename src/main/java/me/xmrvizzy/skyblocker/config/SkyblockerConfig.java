@@ -62,6 +62,47 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class Bars {
         public boolean enableBars = true;
+
+        @ConfigEntry.Category("barpositions")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public BarPositions barpositions = new BarPositions();
+    }
+
+    public static class BarPositions {
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public BarPosition healthBarPosition = BarPosition.LAYER1;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public BarPosition manaBarPosition = BarPosition.LAYER1;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public BarPosition defenceBarPosition = BarPosition.LAYER1;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public BarPosition experienceBarPosition = BarPosition.LAYER1;
+
+    }
+
+    public enum BarPosition {
+        LAYER1,
+        LAYER2,
+        RIGHT,
+        NONE;
+
+        public String toString() {
+            return switch (this) {
+                case LAYER1 -> "Layer 1";
+                case LAYER2 -> "Layer 2";
+                case RIGHT -> "Right";
+                case NONE -> "Disabled";
+            };
+        }
+
+        public int toInt() {
+            return switch (this) {
+                case LAYER1 -> 0;
+                case LAYER2 -> 1;
+                case RIGHT -> 2;
+                case NONE -> -1;
+            };
+        }
     }
 
     public static class Hitbox {
