@@ -5,7 +5,6 @@
   "client": [
     "ChatHudListenerMixin",
     "ClientPlayerEntityMixin",
-    "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
     "LeverBlockMixin",
