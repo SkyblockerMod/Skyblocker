@@ -47,19 +47,20 @@ public abstract class HandledScreenMixin extends Screen {
 
     @Inject(at = @At("HEAD"), method = "keyPressed", cancellable = true)
     public void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-        if (focusedSlot != null){
-            if (keyCode != 256 && !MinecraftClient.getInstance().options.inventoryKey.matchesKey(keyCode, scanCode)){
-                if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) WikiLookup.openWiki(focusedSlot);
+        if (this.focusedSlot != null){
+            if (keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode)){
+                if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) WikiLookup.openWiki(this.focusedSlot);
             }
         }
     }
 
     @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void drawMouseOverTooltip(MatrixStack matrices, int x, int y, CallbackInfo ci) {
-        String title = ((HandledScreen)(Object)this).getTitle().getString();
-        boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift || Screen.hasShiftDown();
-        if (shiftDown && title.equals("Storage") && focusedSlot != null) {
-            if (BackpackPreview.renderPreview(matrices, focusedSlot.getIndex(), x, y)) ci.cancel();
+        String title = ((HandledScreen<?>)(Object)this).getTitle().getString();
+        boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
+        if (shiftDown && title.equals("Storage") && this.focusedSlot != null) {
+            if (this.focusedSlot.inventory == this.client.player.getInventory()) return;
+            if (BackpackPreview.renderPreview(matrices, this.focusedSlot.getIndex(), x, y)) ci.cancel();
         }
     }
 }
