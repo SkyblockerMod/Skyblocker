@@ -41,8 +41,8 @@ public abstract class HandledScreenMixin extends Screen {
             List<QuickNavButton> buttons = QuickNav.init(screenTitle);
             for (QuickNavButton button : buttons) super.addDrawableChild(button);
         }
-        BackpackPreview.loadStorage((HandledScreen)(Object)this);
-        BackpackPreview.updateStorage((HandledScreen)(Object)this);
+        // backpack preview
+        BackpackPreview.updateStorage((HandledScreen<?>)(Object)this);
     }
 
     @Inject(at = @At("HEAD"), method = "keyPressed", cancellable = true)
