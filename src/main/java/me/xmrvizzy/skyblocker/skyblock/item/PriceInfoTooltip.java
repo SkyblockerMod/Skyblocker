@@ -9,9 +9,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.LiteralTextContent;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +56,11 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
             if (npcPricesJson == null) {
                 if (!nullMsgSend) {
-                    client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
             } else if (npcPricesJson.has(name)) {
-                lines.add(new LiteralText(String.format("%-21s", "NPC Price:"))
+                lines.add(Text.literal(String.format("%-21s", "NPC Price:"))
                         .formatted(Formatting.YELLOW)
                         .append(getCoinsMessage(npcPricesJson.get(name).getAsDouble(), count)));
             }
@@ -69,20 +70,20 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice && !bazaarOpened) {
             if (bazaarPricesJson == null) {
                 if (!nullMsgSend) {
-                    client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
             } else if (bazaarPricesJson.has(name)) {
                 JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
-                lines.add(new LiteralText(String.format("%-18s", "Bazaar buy Price:"))
+                lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
                         .formatted(Formatting.GOLD)
                         .append(getItem.get("buyPrice").isJsonNull()
-                                ? new LiteralText("No data").formatted(Formatting.RED)
+                                ? Text.literal("No data").formatted(Formatting.RED)
                                 : getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
-                lines.add(new LiteralText(String.format("%-19s", "Bazaar sell Price:"))
+                lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
                         .formatted(Formatting.GOLD)
                         .append(getItem.get("sellPrice").isJsonNull()
-                                ? new LiteralText("No data").formatted(Formatting.RED)
+                                ? Text.literal("No data").formatted(Formatting.RED)
                                 : getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
                 bazaarExist = true;
             }
@@ -92,11 +93,11 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
             if (lowestPricesJson == null) {
                 if (!nullMsgSend) {
-                    client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                    client.player.sendMessage(Text.literal("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
             } else if (lowestPricesJson.has(name)) {
-                lines.add(new LiteralText(String.format("%-19s", "Lowest BIN Price:"))
+                lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
                         .formatted(Formatting.GOLD)
                         .append(getCoinsMessage(lowestPricesJson.get(name).getAsDouble(), count)));
             }
@@ -105,7 +106,7 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
             if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
                 if (!nullMsgSend) {
-                    client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                    client.player.sendMessage(Text.literal("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
             } else if (threeDayAvgPricesJson.has(name) || oneDayAvgPricesJson.has(name)) {
@@ -136,17 +137,17 @@ public class PriceInfoTooltip {
 
                 // "No data" line because of API not keeping old data, it causes NullPointerException
                 if (!name.isEmpty() && (type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH)) {
-                    lines.add(new LiteralText(String.format("%-19s", "1 Day Avg. Price:"))
+                    lines.add(Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                             .formatted(Formatting.GOLD)
                             .append(oneDayAvgPricesJson.get(name) == null
-                                    ? new LiteralText("No data").formatted(Formatting.RED)
+                                    ? Text.literal("No data").formatted(Formatting.RED)
                                     : getCoinsMessage(oneDayAvgPricesJson.get(name).getAsDouble(), count)));
                 }
                 if (!name.isEmpty() && (type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH)) {
-                    lines.add(new LiteralText(String.format("%-19s", "3 Day Avg. Price:"))
+                    lines.add(Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                             .formatted(Formatting.GOLD)
                             .append(threeDayAvgPricesJson.get(name) == null
-                                    ? new LiteralText("No data").formatted(Formatting.RED)
+                                    ? Text.literal("No data").formatted(Formatting.RED)
                                     : getCoinsMessage(threeDayAvgPricesJson.get(name).getAsDouble(), count)));
                 }
             }
@@ -155,7 +156,7 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !bazaarOpened) {
             if (isMuseumJson == null) {
                 if (!nullMsgSend) {
-                    client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
             } else if (isMuseumJson.has(name)) {
@@ -165,13 +166,13 @@ public class PriceInfoTooltip {
                     case "Armor" -> "%-19s";
                     default -> "%-20s";
                 };
-                lines.add(new LiteralText(String.format(format, "Museum: (" + itemCategory + ")"))
+                lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
                         .formatted(Formatting.LIGHT_PURPLE)
-                        .append(new LiteralText(timestamp != null ? timestamp : "").formatted(Formatting.RED)));
+                        .append(Text.literal(timestamp != null ? timestamp : "").formatted(Formatting.RED)));
             } else if (timestamp != null) {
-                lines.add(new LiteralText(String.format("%-21s", "Obtained: "))
+                lines.add(Text.literal(String.format("%-21s", "Obtained: "))
                         .formatted(Formatting.LIGHT_PURPLE)
-                        .append(new LiteralText(timestamp).formatted(Formatting.RED)));
+                        .append(Text.literal(timestamp).formatted(Formatting.RED)));
             }
         }
     }
@@ -263,12 +264,12 @@ public class PriceInfoTooltip {
     private static Text getCoinsMessage(double price, int count) {
         if (count == 1) {
             String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
-            return new LiteralText(priceString + " Coins").formatted(Formatting.DARK_AQUA);
+            return Text.literal(priceString + " Coins").formatted(Formatting.DARK_AQUA);
         } else {
             String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
-            LiteralText priceText = (LiteralText) new LiteralText(priceString + " Coins ").formatted(Formatting.DARK_AQUA);
+            MutableText priceText = Text.literal(priceString + " Coins ").formatted(Formatting.DARK_AQUA);
             priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
-            LiteralText priceText2 = (LiteralText)  new LiteralText( "(" + priceString + " each)").formatted(Formatting.GRAY);
+            MutableText priceText2 =  Text.literal( "(" + priceString + " each)").formatted(Formatting.GRAY);
             return priceText.append(priceText2);
         }
     }

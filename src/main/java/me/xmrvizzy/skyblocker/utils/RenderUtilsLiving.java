@@ -72,7 +72,7 @@ public class RenderUtilsLiving {
         } else {
             matrices.push();
             matrices.translate(1, 1, 0);
-            mc.textRenderer.draw(text.copy(), -halfWidth, 0f, 0x202020, false, matrices.peek().getPositionMatrix(), immediate, true, 0, 0xf000f0);
+            mc.textRenderer.draw(text.copyContentOnly(), -halfWidth, 0f, 0x202020, false, matrices.peek().getPositionMatrix(), immediate, true, 0, 0xf000f0);
             immediate.draw();
             matrices.pop();
         }

@@ -5,9 +5,7 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 import org.spongepowered.asm.util.VersionNumber;
 
 import java.io.IOException;
@@ -53,10 +51,10 @@ public class UpdateChecker {
     public static void init(){
         SkyblockEvents.JOIN.register(() -> {
             if (shouldUpdate()) {
-                TranslatableText linkMessage = new TranslatableText("skyblocker.update.update_message");
-                TranslatableText linkMessageEnding = new TranslatableText("skyblocker.update.update_message_end");
-                TranslatableText link = new TranslatableText("skyblocker.update.update_link");
-                TranslatableText hoverText = new TranslatableText("skyblocker.update.hover_text");
+                MutableText linkMessage = Text.translatable("skyblocker.update.update_message");
+                MutableText linkMessageEnding = Text.translatable("skyblocker.update.update_message_end");
+                MutableText link = Text.translatable("skyblocker.update.update_link");
+                MutableText hoverText = Text.translatable("skyblocker.update.hover_text");
                 linkMessage.append(link.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://modrinth.com/mod/skyblocker-liap/versions")).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)))).append(linkMessageEnding);
 
                 MinecraftClient.getInstance().player.sendMessage(linkMessage, false);

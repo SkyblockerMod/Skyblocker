@@ -6,7 +6,8 @@ import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudListener;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.MessageType;
+import net.minecraft.network.message.MessageSender;
+import net.minecraft.network.message.MessageType;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +26,7 @@ public class ChatHudListenerMixin {
     private MinecraftClient client;
 
     @Inject(method = "onChatMessage", at = @At("HEAD"), cancellable = true)
-    public void onMessage(MessageType messageType, Text message, UUID senderUuid, CallbackInfo ci) {
+    public void onMessage(MessageType type, Text message, MessageSender sender, CallbackInfo ci) {
         if (!Utils.isOnSkyblock)
             return;
         String asString = message.getString();

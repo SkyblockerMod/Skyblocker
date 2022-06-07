@@ -4,7 +4,8 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.LiteralTextContent;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class DwarvenHud {
                         DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
                     int y = 0;
                     for (Commission commission : commissions) {
-                        client.textRenderer.drawWithShadow(matrixStack, new LiteralText(commission.commission).styled(style -> style.withColor(Formatting.AQUA)).append(new LiteralText(": " + commission.progression).styled(style -> style.withColor(Formatting.GREEN))), hudX + 5, hudY + y + 5, 0xFFFFFFFF);
+                        client.textRenderer.drawWithShadow(matrixStack, Text.literal(commission.commission).styled(style -> style.withColor(Formatting.AQUA)).append(Text.literal(": " + commission.progression).styled(style -> style.withColor(Formatting.GREEN))), hudX + 5, hudY + y + 5, 0xFFFFFFFF);
                         y += 20;
                     }
                 }
