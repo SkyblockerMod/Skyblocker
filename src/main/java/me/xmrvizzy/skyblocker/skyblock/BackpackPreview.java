@@ -41,6 +41,7 @@ public class BackpackPreview extends DrawableHelper {
     private static Path save_dir = null;
 
     public static void tick() {
+        Utils.sbChecker(); // force update isOnSkyblock to prevent crash on disconnect
         if (Utils.isOnSkyblock) {
             // save all dirty storages
             saveStorage();

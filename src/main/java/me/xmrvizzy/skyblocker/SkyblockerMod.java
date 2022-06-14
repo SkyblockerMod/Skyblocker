@@ -21,7 +21,7 @@ public class SkyblockerMod {
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
         scheduler.scheduleCyclic(discordRPCManager::update, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
-        scheduler.scheduleCyclic(BackpackPreview::tick, 20);
+        scheduler.scheduleCyclic(BackpackPreview::tick, 50);
     }
 
     public static SkyblockerMod getInstance() {
