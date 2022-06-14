@@ -1,3 +1,19 @@
+# Release 1.8.0
+
+New Feature
+* Added support for moving fancy bars by @ADON15c in https://github.com/SkyblockerMod/Skyblocker/pull/72
+* Add option to use 1.8 farmland hitbox by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/678025b21af4d45518a382b546c14fb12f131114
+* multi-profile support for backpack preview by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/75918834349f1068557716142e342a7d01356040
+
+Fixes
+* Fix some items having the wrong texture by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/pull/71
+* reparty one at a time by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/aa5cf6bb18e84d604880ef37f2bda7250feaad2e
+
+New Contributors
+* @ADON15c made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/72
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.7.0...v1.8.0
+___
 # Release 1.7.0
 
 New Feature
