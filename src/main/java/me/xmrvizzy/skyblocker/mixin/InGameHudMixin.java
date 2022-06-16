@@ -5,6 +5,7 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.FancyStatusBars;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
+import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
@@ -24,14 +25,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
     private static final Identifier SLOT_LOCK = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png");
 
+    private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
     private final FancyStatusBars statusBars = new FancyStatusBars();
     private MatrixStack hotbarMatrices;
     private int hotbarSlotIndex;
@@ -44,13 +43,21 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Shadow
     private int scaledWidth;
 
+    @Shadow
+    private void setOverlayMessage(Text message, boolean tinted) {
+    }
+
     @Inject(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
     private void onSetOverlayMessage(Text message, boolean tinted, CallbackInfo ci) {
-        if(!Utils.isOnSkyblock)
+        if (!Utils.isOnSkyblock || !SkyblockerConfig.get().general.bars.enableBars)
             return;
         String msg = message.getString();
-        if(statusBars.update(msg))
+        String res = statusBarTracker.update(msg, SkyblockerConfig.get().messages.hideMana);
+        if (msg != res) {
+            if (res != null)
+                setOverlayMessage(Text.of(res), tinted);
             ci.cancel();
+        }
     }
 
     @Inject(method = "renderHotbar", at = @At("HEAD"))

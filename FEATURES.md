@@ -1,4 +1,4 @@
-* Bars: Health and absorption, Mana, Defense, XP
+* Bars: Health and absorption, Mana, Defense, XP (moving fancy bars)
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
 * Dungeon Puzzle Solver:
@@ -16,3 +16,5 @@
 * Recipe book: in the vanilla recipe book all skyblock items are listed and you can see the recipe of the item
 * Backpack preview: after you clicked your backpack or enderchest once you can hover over the backpack or enderchest and hold shift to preview
 * Update notification
+* Commission HUD: Dwarven Mines quests
+* 1.8 hitbox for lever and farmland

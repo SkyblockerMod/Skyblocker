@@ -5,10 +5,10 @@
   "client": [
     "ChatHudListenerMixin",
     "ClientPlayerEntityMixin",
-    "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
     "LeverBlockMixin",
+    "FarmlandBlockMixin",
     "MinecraftClientMixin",
     "AccessorWorldRenderer",
     "GenericContainerScreenMixin",
