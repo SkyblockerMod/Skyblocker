@@ -55,7 +55,7 @@ public class ColorTerminal extends ContainerSolver {
     static {
         colorFromName = new HashMap<>();
         for (DyeColor color : DyeColor.values())
-            colorFromName.put(color.getName().toUpperCase(Locale.ROOT), color);
+            colorFromName.put(color.getName().toUpperCase(Locale.ENGLISH), color);
         colorFromName.put("SILVER", DyeColor.LIGHT_GRAY);
         colorFromName.put("LIGHT BLUE", DyeColor.LIGHT_BLUE);
 
