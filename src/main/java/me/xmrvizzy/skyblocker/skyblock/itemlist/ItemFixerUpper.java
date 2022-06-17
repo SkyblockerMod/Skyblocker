@@ -27,7 +27,6 @@ public class ItemFixerUpper {
             Map.entry("minecraft:netherbrick", "minecraft:nether_brick"),
             Map.entry("minecraft:stained_hardened_clay", "minecraft:terracotta"),
             Map.entry("minecraft:quartz_ore", "minecraft:nether_quartz_ore"),
-            Map.entry("minecraft:red_flower", "minecraft:poppy"),
             Map.entry("minecraft:tallgrass", "minecraft:grass"),
             Map.entry("minecraft:stone_slab2", "minecraft:red_sandstone_slab"),
             Map.entry("minecraft:waterlily", "minecraft:lily_pad"),
@@ -86,6 +85,18 @@ public class ItemFixerUpper {
             "minecraft:mossy_stone_bricks",
             "minecraft:cracked_stone_bricks",
             "minecraft:chiseled_stone_bricks"
+    };
+
+    private final static String[] RED_FLOWER_VARIANTS = {
+            "minecraft:poppy",
+            "minecraft:blue_orchid",
+            "minecraft:allium",
+            "minecraft:azure_bluet",
+            "minecraft:red_tulip",
+            "minecraft:orange_tulip",
+            "minecraft:white_tulip",
+            "minecraft:pink_tulip",
+            "minecraft:oxeye_daisy"
     };
 
     private final static String[] DOUBLE_PLANT_VARIANTS = {
@@ -197,6 +208,7 @@ public class ItemFixerUpper {
         if (id.equals("minecraft:log2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "log";
         if (id.equals("minecraft:leaves2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "leaves";
         if (id.equals("minecraft:stonebrick")) return STONE_BRICK_VARIANTS[damage];
+        if (id.equals("minecraft:red_flower")) return RED_FLOWER_VARIANTS[damage];
         if (id.equals("minecraft:double_plant")) return DOUBLE_PLANT_VARIANTS[damage];
         if (id.equals("minecraft:spawn_egg")) return SPAWN_EGG_VARIANTS.getOrDefault(damage, "minecraft:ghast_spawn_egg");
         if (id.equals("minecraft:banner")) return "minecraft:" + BLOCK_COLORS[15 - damage] + "banner";
