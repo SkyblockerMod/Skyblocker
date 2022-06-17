@@ -233,7 +233,7 @@ public class PriceInfoTooltip {
                 if (ea.contains("enchantments")) {
                     NbtCompound enchants = ea.getCompound("enchantments");
                     String enchant = enchants.getKeys().stream().findFirst().get();
-                    internalName += "-" + enchant.toUpperCase() + "-" + enchants.getInt(enchant);
+                    internalName += "-" + enchant.toUpperCase(Locale.ENGLISH) + "-" + enchants.getInt(enchant);
                 }
             } else if ("PET".equals(internalName)) {
                 if (ea.contains("petInfo")) {
@@ -245,14 +245,14 @@ public class PriceInfoTooltip {
                 String extended = ea.contains("extended") ? "-EXTENDED" : "";
                 String splash = ea.contains("splash") ? "-SPLASH" : "";
                 if (ea.contains("potion") && ea.contains("potion_level")) {
-                    internalName += "-" + ea.getString("potion").toUpperCase() + "-" + ea.getInt("potion_level")
+                    internalName += "-" + ea.getString("potion").toUpperCase(Locale.ENGLISH) + "-" + ea.getInt("potion_level")
                             + enhanced + extended + splash;
                 }
             } else if ("RUNE".equals(internalName)) {
                 if (ea.contains("runes")) {
                     NbtCompound runes = ea.getCompound("runes");
                     String rune = runes.getKeys().stream().findFirst().get();
-                    internalName += "-" + rune.toUpperCase() + "-" + runes.getInt(rune);
+                    internalName += "-" + rune.toUpperCase(Locale.ENGLISH) + "-" + runes.getInt(rune);
                 }
             }
 

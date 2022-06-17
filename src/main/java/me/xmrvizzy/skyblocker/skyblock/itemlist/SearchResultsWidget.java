@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchResultsWidget implements Drawable {
     private static final Identifier TEXTURE = new Identifier("textures/gui/recipe_book.png");
@@ -61,8 +62,8 @@ public class SearchResultsWidget implements Drawable {
             this.searchText = searchText;
             this.searchResults.clear();
             for (ItemStack entry : ItemRegistry.items) {
-                String name = entry.getName().toString().toLowerCase();
-                String disp = entry.getNbt().getCompound("display").toString().toLowerCase();
+                String name = entry.getName().toString().toLowerCase(Locale.ENGLISH);
+                String disp = entry.getNbt().getCompound("display").toString().toLowerCase(Locale.ENGLISH);
                 if (name.contains(this.searchText) || disp.contains(this.searchText))
                     this.searchResults.add(entry);
             }
