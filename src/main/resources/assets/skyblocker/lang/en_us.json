@@ -28,6 +28,7 @@
   "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
   "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
+  "skyblocker.itemTooltip.noData": "§cNo Data",
 
   "text.autoconfig.skyblocker.category.richPresence": "Discord Rich Presence",
   "text.autoconfig.skyblocker.option.richPresence.info": "Skyblock Info",
