@@ -246,7 +246,7 @@ public class PriceInfoTooltip {
             } else if ("RUNE".equals(internalName)) {
                 if (ea.contains("runes")) {
                     NbtCompound runes = ea.getCompound("runes");
-                    String rune = ea.getCompound("runes").getKeys().stream().findFirst().get();
+                    String rune = runes.getKeys().stream().findFirst().get();
                     internalName += "-" + rune.toUpperCase(Locale.ENGLISH) + "-" + runes.getInt(rune);
                 }
             }
@@ -266,14 +266,14 @@ public class PriceInfoTooltip {
         return slotText;
     }
 
-    /**
-     * If these options is true beforehand, the client will get first data of these options while loading.
-     * After then, it will only fetch the data if it is on Skyblock.
-     */
     private final static HashMap<String, String> downloadList;
 
     private static int minute = -1;
 
+    /**
+     * If these options is true beforehand, the client will get first data of these options while loading.
+     * After then, it will only fetch the data if it is on Skyblock.
+     */
     public static void init() {
         skyblocker.scheduler.scheduleCyclic(() -> {
             if (!Utils.isOnSkyblock && 0 < minute++) {
