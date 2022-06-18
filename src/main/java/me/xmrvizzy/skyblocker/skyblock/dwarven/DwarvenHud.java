@@ -20,7 +20,7 @@ public class DwarvenHud {
 
     public static final List<Pattern> COMMISSIONS = List.of(
             "(?:Titanium|Mithril|Hard Stone) Miner",
-            "(?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasuite Member|Yog|Boss Corleone|Thyst) Slayer",
+            "(?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
             "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
             "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
             "Goblin Raid",
