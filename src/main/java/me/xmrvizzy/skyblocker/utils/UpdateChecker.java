@@ -23,7 +23,8 @@ public class UpdateChecker {
     public static Matcher matcher;
     public static VersionNumber localVersion = null;
     public static VersionNumber latestVersion = null;
-    public static boolean shouldUpdate(){
+
+    public static void checkVersion(){
         if (SkyblockerConfig.get().general.enableUpdateNotification){
             new Thread(() -> {
                 try{
@@ -47,18 +48,17 @@ public class UpdateChecker {
                 }
             }).start();
         }
-        return shouldUpdate;
     }
 
     public static void init(){
+        checkVersion();
         SkyblockEvents.JOIN.register(() -> {
-            if (shouldUpdate()) {
+            if (shouldUpdate) {
                 TranslatableText linkMessage = new TranslatableText("skyblocker.update.update_message");
                 TranslatableText linkMessageEnding = new TranslatableText("skyblocker.update.update_message_end");
                 TranslatableText link = new TranslatableText("skyblocker.update.update_link");
                 TranslatableText hoverText = new TranslatableText("skyblocker.update.hover_text");
                 linkMessage.append(link.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://modrinth.com/mod/skyblocker-liap/versions")).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)))).append(linkMessageEnding);
-
                 MinecraftClient.getInstance().player.sendMessage(linkMessage, false);
             }
         });
