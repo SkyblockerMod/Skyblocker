@@ -1,3 +1,13 @@
+# Release 1.8.1
+
+Fixes
+* Fix crash on disconnect by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/7a8ad1e4f6a7cc3e685a5199a5dd0ca0049c61ff
+* Fix item price tooltip not working with some languages by @Fix3dll in https://github.com/SkyblockerMod/Skyblocker/pull/74
+* Fix spirit sceptre and other flower items having the wrong texture in the item list by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/84097869dc18443660511e656885498beb3c6bc9
+* Fix "Team Treasurite Member Slayer" not showing up in commissions HUD by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/55524d92f3a15b68a52a0ea5edc9ba3765a781bb
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.8.0...v1.8.1
+___
 # Release 1.8.0
 
 New Feature
