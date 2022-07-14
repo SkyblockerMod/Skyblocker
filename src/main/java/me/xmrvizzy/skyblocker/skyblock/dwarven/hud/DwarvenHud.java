@@ -1,9 +1,12 @@
-package me.xmrvizzy.skyblocker.skyblock.dwarven;
+package me.xmrvizzy.skyblocker.skyblock.dwarven.hud;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.hud.HudConfig;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
@@ -51,16 +54,33 @@ public class DwarvenHud {
                     }
                 });
                 if (commissions.size() > 0){
-                    if (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground)
-                        DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
-                    int y = 0;
-                    for (Commission commission : commissions) {
-                        client.textRenderer.drawWithShadow(matrixStack, new LiteralText(commission.commission).styled(style -> style.withColor(Formatting.AQUA)).append(new LiteralText(": " + commission.progression).styled(style -> style.withColor(Formatting.GREEN))), hudX + 5, hudY + y + 5, 0xFFFFFFFF);
-                        y += 20;
-                    }
+                    if (client.currentScreen != null)
+                        if (client.currentScreen instanceof HudConfig)
+                            return;
+                    drawHud(matrixStack, commissions, hudX, hudY);
                 }
             }
         });
+
+        ClientCommandManager.DISPATCHER.register(
+                ClientCommandManager.literal("skyblocker")
+                        .then(ClientCommandManager.literal("hud")
+                                .then(ClientCommandManager.literal("dwarven").executes(context -> {
+                                    new Thread(() -> {
+                                        MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(new DwarvenHudConfig()));
+                                    }).start();
+                                    return 0;
+                                }))));
+    }
+
+    public static void drawHud(MatrixStack matrixStack, List<Commission> commissions, int hudX, int hudY) {
+        if (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground)
+            DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
+        int y = 0;
+        for (Commission commission : commissions) {
+            client.textRenderer.drawWithShadow(matrixStack, new LiteralText(commission.commission).styled(style -> style.withColor(Formatting.AQUA)).append(new LiteralText(": " + commission.progression).styled(style -> style.withColor(Formatting.GREEN))), hudX + 5, hudY + y + 5, 0xFFFFFFFF);
+            y += 20;
+        }
     }
 
     public static class Commission{
