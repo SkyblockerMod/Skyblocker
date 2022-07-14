@@ -79,6 +79,8 @@ public class RenderUtils {
                 e.getZ() - MathHelper.lerp(tickDelta, e.lastRenderZ, e.getZ()));
     }
 
+    public static boolean pointExistsInArea(double x, double y, double areaX, double areaY, double areaX2, double areaY2) { return x >= areaX && x <= areaX2 && y >= areaY && y <= areaY2; }
+
     public static void setup() {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
