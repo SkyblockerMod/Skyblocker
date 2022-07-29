@@ -60,7 +60,7 @@ public class QuickNavButton extends ClickableWidget {
     public void onClick(double mouseX, double mouseY) {
         if (!this.toggled) {
             this.toggled = true;
-            CLIENT.player.sendChatMessage(command);
+            CLIENT.player.sendChatMessage(command, Text.of(command));
         }
     }
 
