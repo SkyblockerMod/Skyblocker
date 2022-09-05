@@ -93,7 +93,7 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
             if (lowestPricesJson == null) {
                 if (!nullMsgSend) {
-                    client.player.sendMessage(Text.literal("skyblocker.itemTooltip.nullMessage"), false);
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
             } else if (lowestPricesJson.has(name)) {
@@ -106,7 +106,7 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
             if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
                 if (!nullMsgSend) {
-                    client.player.sendMessage(Text.literal("skyblocker.itemTooltip.nullMessage"), false);
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
                     nullMsgSend = true;
                 }
             } else if (threeDayAvgPricesJson.has(name) || oneDayAvgPricesJson.has(name)) {
