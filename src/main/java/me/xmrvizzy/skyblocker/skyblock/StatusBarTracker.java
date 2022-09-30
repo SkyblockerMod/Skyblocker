@@ -70,6 +70,7 @@ public class StatusBarTracker {
     }
 
     public String update(String actionBar, boolean filterManaUse) {
+        actionBar = actionBar.replaceAll(",", "");
         var sb = new StringBuilder();
         Matcher matcher = STATUS_HEALTH.matcher(actionBar);
         if (!matcher.lookingAt())
