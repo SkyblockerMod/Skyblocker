@@ -13,7 +13,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 
 @Environment(value= EnvType.CLIENT)
@@ -57,7 +57,7 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
             this.drawTexture(matrices, i, j, 1, 1, 147, 166);
             this.searchField = ((RecipeBookWidgetAccessor)this).getSearchField();
             if (!this.searchField.isFocused() && this.searchField.getText().isEmpty()) {
-                Text hintText = (new TranslatableText("gui.recipebook.search_hint")).formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
+                Text hintText = (Text.translatable("gui.recipebook.search_hint")).formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
                 drawTextWithShadow(matrices, this.client.textRenderer, hintText, i + 25, j + 14, -1);
             } else {
                 this.searchField.render(matrices, mouseX, mouseY, delta);

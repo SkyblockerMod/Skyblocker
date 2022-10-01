@@ -7,10 +7,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StatusBarTracker {
-    private static final Pattern STATUS_HEALTH = Pattern.compile("§[6c](\\d+)/(\\d+)❤(?:(\\+§c\\d+. *)| *)");
-    private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(\\d+)§a❈ Defense *");
-    private static final Pattern MANA_USE = Pattern.compile("§b-\\d+ Mana \\(§\\S+(?:\\s\\S+)* *");
-    private static final Pattern MANA_STATUS = Pattern.compile("§b(\\d+)/(\\d+)✎ (?:Mana|§3(\\d+)ʬ) *");
+    private static final Pattern STATUS_HEALTH = Pattern.compile("§[6c](\\d+(,\\d\\d\\d)*)/(\\d+(,\\d\\d\\d)*)❤(?:(\\+§c(\\d+(,\\d\\d\\d)*). *)| *)");
+    private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(\\d+(,\\d\\d\\d)*)§a❈ Defense *");
+    private static final Pattern MANA_USE = Pattern.compile("§b-(\\d+(,\\d\\d\\d)*) Mana \\(§\\S+(?:\\s\\S+)* *");
+    private static final Pattern MANA_STATUS = Pattern.compile("§b(\\d+(,\\d\\d\\d)*)/(\\d+(,\\d\\d\\d)*)✎ (?:Mana|§3(\\d+(,\\d\\d\\d)*)ʬ) *");
 
     private Resource health = new Resource(100, 100, 0);
     private Resource mana = new Resource(100, 100, 0);
@@ -29,19 +29,19 @@ public class StatusBarTracker {
     }
 
     private int parseInt(Matcher m, int group) {
-        return Integer.parseInt(m.group(group));
+        return Integer.parseInt(m.group(group).replace(",", ""));
     }
 
     private void updateMana(Matcher m) {
         int value = parseInt(m, 1);
-        int max = parseInt(m, 2);
-        int overflow = m.group(3) == null ? 0 : parseInt(m, 3);
+        int max = parseInt(m, 3);
+        int overflow = m.group(5) == null ? 0 : parseInt(m, 5);
         this.mana = new Resource(value, max, overflow);
     }
 
     private void updateHealth(Matcher m) {
         int value = parseInt(m, 1);
-        int max = parseInt(m, 2);
+        int max = parseInt(m, 3);
         int overflow = 0;
         ClientPlayerEntity player = null;
         try {
@@ -75,9 +75,9 @@ public class StatusBarTracker {
         if (!matcher.lookingAt())
             return actionBar;
         updateHealth(matcher);
-        if (matcher.group(3) != null) {
+        if (matcher.group(5) != null) {
             sb.append("§c❤");
-            sb.append(matcher.group(3));
+            sb.append(matcher.group(5));
         }
         actionBar = reset(actionBar, matcher);
         if (matcher.usePattern(MANA_STATUS).lookingAt()) {

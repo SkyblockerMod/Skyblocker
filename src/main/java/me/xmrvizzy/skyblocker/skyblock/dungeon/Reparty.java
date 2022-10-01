@@ -4,7 +4,8 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
@@ -25,14 +26,17 @@ public class Reparty extends ChatPatternListener {
     public Reparty() {
         super("^(?:You are not currently in a party\\.|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*)))$");
         this.repartying = false;
-        ClientCommandManager.DISPATCHER.register(
-                ClientCommandManager.literal("rp").executes(context -> {
-                    if (!Utils.isOnSkyblock || this.repartying || client.player == null) return 0;
-                    this.repartying = true;
-                    client.player.sendChatMessage("/p list");
-                    return 0;
-                })
-        );
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
+                if (!Utils.isOnSkyblock || this.repartying || client.player == null) return 0;
+                this.repartying = true;
+                client.player.sendChatMessage("/p list", Text.of("/p list"));
+                return 0;
+            }));
+        });
+
+
+
     }
 
     @Override
@@ -73,6 +77,6 @@ public class Reparty extends ChatPatternListener {
     }
 
     private void sendCommand(ClientPlayerEntity player, String command, int delay) {
-        skyblocker.scheduler.schedule(() -> player.sendChatMessage(command), delay * BASE_DELAY);
+        skyblocker.scheduler.schedule(() -> player.sendChatMessage(command, Text.of(command)), delay * BASE_DELAY);
     }
 }

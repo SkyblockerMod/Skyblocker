@@ -5,7 +5,6 @@ import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -32,7 +31,7 @@ public class Trivia extends ChatPatternListener {
             if (!solutions.contains(riddle)) {
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
                 if (player != null)
-                    MinecraftClient.getInstance().player.sendMessage(new LiteralText("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle), false);
+                    MinecraftClient.getInstance().player.sendMessage(Text.of("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle), false);
                 return player != null;
             }
         } else

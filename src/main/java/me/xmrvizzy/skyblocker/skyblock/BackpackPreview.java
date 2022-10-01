@@ -31,7 +31,7 @@ public class BackpackPreview extends DrawableHelper {
     private static final BackpackPreview instance = new BackpackPreview();
     private static final Pattern PROFILE_PATTERN = Pattern.compile("Profile: ([a-zA-Z]+)");
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
-    private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\((\\d+)/\\d+\\)");
+    private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
     private static final int STORAGE_SIZE = 27;
 
     private static final Inventory[] storage = new Inventory[STORAGE_SIZE];

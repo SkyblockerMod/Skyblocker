@@ -11,7 +11,8 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.LiteralTextContent;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 @Environment(value=EnvType.CLIENT)
@@ -32,7 +33,7 @@ public class QuickNavButton extends ClickableWidget {
     private final ItemStack icon;
 
     public QuickNavButton(int index, boolean toggled, String command, ItemStack icon) {
-        super(0, 0, 28, 32, LiteralText.EMPTY);
+        super(0, 0, 28, 32, Text.empty());
         this.index = index;
         this.toggled = toggled;
         this.command = command;
@@ -59,7 +60,7 @@ public class QuickNavButton extends ClickableWidget {
     public void onClick(double mouseX, double mouseY) {
         if (!this.toggled) {
             this.toggled = true;
-            CLIENT.player.sendChatMessage(command);
+            CLIENT.player.sendChatMessage(command, Text.of(command));
         }
     }
 

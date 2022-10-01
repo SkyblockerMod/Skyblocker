@@ -4,7 +4,7 @@ import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
 
 import java.util.Objects;
@@ -19,7 +19,7 @@ public class AutopetFilter extends ChatPatternListener {
     public boolean onMatch(Text _message, Matcher matcher) {
         if (SkyblockerConfig.get().messages.hideAutopet == ChatFilterResult.ACTION_BAR) {
             Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(
-                    new LiteralText(
+                    Text.literal(
                             _message.getString().replace("§a§lVIEW RULE", "")
                     ), true);
         }

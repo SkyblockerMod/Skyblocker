@@ -9,9 +9,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.LiteralTextContent;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -34,12 +34,12 @@ public class PriceInfoTooltip {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceInfoTooltip.class.getName());
     private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    private static JsonObject npcJson;
-    private static JsonObject bazaarJson;
-    private static JsonObject oneDayAvgJson;
-    private static JsonObject threeDayAvgJson;
-    private static JsonObject lowestBINJson;
-    private static JsonObject museumJson;
+    private static JsonObject npcPricesJson;
+    private static JsonObject bazaarPricesJson;
+    private static JsonObject oneDayAvgPricesJson;
+    private static JsonObject threeDayAvgPricesJson;
+    private static JsonObject lowestPricesJson;
+    private static JsonObject isMuseumJson;
     private static boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
 
@@ -51,34 +51,39 @@ public class PriceInfoTooltip {
 
         int count = stack.getCount();
         String timestamp = getTimestamp(stack);
-        boolean bazaarOpened = lines.stream().anyMatch(each ->
-                each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
+        boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
 
         if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
-            if (npcJson == null) {
-                nullMessage();
-            } else if (npcJson.has(name)) {
-                lines.add(new LiteralText(String.format("%-21s", "NPC Price:"))
+            if (npcPricesJson == null) {
+                if (!nullMsgSend) {
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
+                    nullMsgSend = true;
+                }
+            } else if (npcPricesJson.has(name)) {
+                lines.add(Text.literal(String.format("%-21s", "NPC Price:"))
                         .formatted(Formatting.YELLOW)
-                        .append(getCoinsMessage(npcJson.get(name).getAsDouble(), count)));
+                        .append(getCoinsMessage(npcPricesJson.get(name).getAsDouble(), count)));
             }
         }
 
         boolean bazaarExist = false;
         if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice && !bazaarOpened) {
-            if (bazaarJson == null) {
-                nullMessage();
-            } else if (bazaarJson.has(name)) {
-                JsonObject getItem = bazaarJson.getAsJsonObject(name);
-                lines.add(new LiteralText(String.format("%-18s", "Bazaar buy Price:"))
+            if (bazaarPricesJson == null) {
+                if (!nullMsgSend) {
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
+                    nullMsgSend = true;
+                }
+            } else if (bazaarPricesJson.has(name)) {
+                JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
+                lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
                         .formatted(Formatting.GOLD)
                         .append(getItem.get("buyPrice").isJsonNull()
-                                ? new TranslatableText("skyblocker.itemTooltip.noData")
+                                ? Text.literal("No data").formatted(Formatting.RED)
                                 : getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
-                lines.add(new LiteralText(String.format("%-19s", "Bazaar sell Price:"))
+                lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
                         .formatted(Formatting.GOLD)
                         .append(getItem.get("sellPrice").isJsonNull()
-                                ? new TranslatableText("skyblocker.itemTooltip.noData")
+                                ? Text.literal("No data").formatted(Formatting.RED)
                                 : getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
                 bazaarExist = true;
             }
@@ -86,19 +91,25 @@ public class PriceInfoTooltip {
 
         // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
         if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
-            if (lowestBINJson == null) {
-                nullMessage();
-            } else if (lowestBINJson.has(name)) {
-                lines.add(new LiteralText(String.format("%-19s", "Lowest BIN Price:"))
+            if (lowestPricesJson == null) {
+                if (!nullMsgSend) {
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
+                    nullMsgSend = true;
+                }
+            } else if (lowestPricesJson.has(name)) {
+                lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
                         .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(lowestBINJson.get(name).getAsDouble(), count)));
+                        .append(getCoinsMessage(lowestPricesJson.get(name).getAsDouble(), count)));
             }
         }
 
         if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
-            if (threeDayAvgJson == null || oneDayAvgJson == null) {
-                nullMessage();
-            } else if (threeDayAvgJson.has(name) || oneDayAvgJson.has(name)) {
+            if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
+                if (!nullMsgSend) {
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
+                    nullMsgSend = true;
+                }
+            } else if (threeDayAvgPricesJson.has(name) || oneDayAvgPricesJson.has(name)) {
                 /*
                   We are skipping check average prices for potions and runes
                   because there is no data for their in API.
@@ -126,47 +137,43 @@ public class PriceInfoTooltip {
 
                 // "No data" line because of API not keeping old data, it causes NullPointerException
                 if (!name.isEmpty() && (type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH)) {
-                    lines.add(new LiteralText(String.format("%-19s", "1 Day Avg. Price:"))
+                    lines.add(Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                             .formatted(Formatting.GOLD)
-                            .append(oneDayAvgJson.get(name) == null
-                                    ? new TranslatableText("skyblocker.itemTooltip.noData")
-                                    : getCoinsMessage(oneDayAvgJson.get(name).getAsDouble(), count)));
+                            .append(oneDayAvgPricesJson.get(name) == null
+                                    ? Text.literal("No data").formatted(Formatting.RED)
+                                    : getCoinsMessage(oneDayAvgPricesJson.get(name).getAsDouble(), count)));
                 }
                 if (!name.isEmpty() && (type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH)) {
-                    lines.add(new LiteralText(String.format("%-19s", "3 Day Avg. Price:"))
+                    lines.add(Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                             .formatted(Formatting.GOLD)
-                            .append(threeDayAvgJson.get(name) == null
-                                    ? new TranslatableText("skyblocker.itemTooltip.noData")
-                                    : getCoinsMessage(threeDayAvgJson.get(name).getAsDouble(), count)));
+                            .append(threeDayAvgPricesJson.get(name) == null
+                                    ? Text.literal("No data").formatted(Formatting.RED)
+                                    : getCoinsMessage(threeDayAvgPricesJson.get(name).getAsDouble(), count)));
                 }
             }
         }
 
         if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !bazaarOpened) {
-            if (museumJson == null) {
-                nullMessage();
-            } else if (museumJson.has(name)) {
-                String itemCategory = museumJson.get(name).toString().replaceAll("\"", "");
+            if (isMuseumJson == null) {
+                if (!nullMsgSend) {
+                    client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
+                    nullMsgSend = true;
+                }
+            } else if (isMuseumJson.has(name)) {
+                String itemCategory = isMuseumJson.get(name).toString().replaceAll("\"", "");
                 String format = switch (itemCategory) {
                     case "Weapons" -> "%-18s";
                     case "Armor" -> "%-19s";
                     default -> "%-20s";
                 };
-                lines.add(new LiteralText(String.format(format, "Museum: (" + itemCategory + ")"))
+                lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
                         .formatted(Formatting.LIGHT_PURPLE)
-                        .append(new LiteralText(timestamp != null ? timestamp : "").formatted(Formatting.RED)));
+                        .append(Text.literal(timestamp != null ? timestamp : "").formatted(Formatting.RED)));
             } else if (timestamp != null) {
-                lines.add(new LiteralText(String.format("%-21s", "Obtained: "))
+                lines.add(Text.literal(String.format("%-21s", "Obtained: "))
                         .formatted(Formatting.LIGHT_PURPLE)
-                        .append(new LiteralText(timestamp).formatted(Formatting.RED)));
+                        .append(Text.literal(timestamp).formatted(Formatting.RED)));
             }
-        }
-    }
-
-    public static void nullMessage() {
-        if (!nullMsgSend) {
-            client.player.sendMessage(new TranslatableText("skyblocker.itemTooltip.nullMessage"), false);
-            nullMsgSend = true;
         }
     }
 
@@ -239,8 +246,7 @@ public class PriceInfoTooltip {
                 String extended = ea.contains("extended") ? "-EXTENDED" : "";
                 String splash = ea.contains("splash") ? "-SPLASH" : "";
                 if (ea.contains("potion") && ea.contains("potion_level")) {
-                    internalName += "-" + ea.getString("potion").toUpperCase(Locale.ENGLISH)
-                            + "-" + ea.getInt("potion_level")
+                    internalName += "-" + ea.getString("potion").toUpperCase(Locale.ENGLISH) + "-" + ea.getInt("potion_level")
                             + enhanced + extended + splash;
                 }
             } else if ("RUNE".equals(internalName)) {
@@ -256,24 +262,21 @@ public class PriceInfoTooltip {
     }
 
     private static Text getCoinsMessage(double price, int count) {
-        String slotPrice = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
-        LiteralText slotText = (LiteralText) new LiteralText(slotPrice + " Coins ").formatted(Formatting.DARK_AQUA);
-
-        if (count != 1) {
-            String unitPrice = String.format(Locale.ENGLISH, "%1$,.1f", price);
-            slotText.append(new LiteralText( "(" + unitPrice + " each)").formatted(Formatting.GRAY));
+        if (count == 1) {
+            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
+            return Text.literal(priceString + " Coins").formatted(Formatting.DARK_AQUA);
+        } else {
+            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
+            MutableText priceText = Text.literal(priceString + " Coins ").formatted(Formatting.DARK_AQUA);
+            priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
+            MutableText priceText2 =  Text.literal( "(" + priceString + " each)").formatted(Formatting.GRAY);
+            return priceText.append(priceText2);
         }
-        return slotText;
     }
 
-    private final static HashMap<String, String> downloadList;
-
-    private static int minute = -1;
-
-    /**
-     * If these options is true beforehand, the client will get first data of these options while loading.
-     * After then, it will only fetch the data if it is on Skyblock.
-     */
+    // If these options is true beforehand, the client will get first data of these options while loading.
+    // After then, it will only fetch the data if it is on Skyblock.
+    public static int minute = -1;
     public static void init() {
         skyblocker.scheduler.scheduleCyclic(() -> {
             if (!Utils.isOnSkyblock && 0 < minute++) {
@@ -282,65 +285,105 @@ public class PriceInfoTooltip {
             }
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
-
-            if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN
-                    && (oneDayAvgJson == null || threeDayAvgJson == null || minute % 5 == 0)) {
+            if ((SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) && (oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0)) {
                 SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
 
-                if (oneDayAvgJson == null || type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH)
-                    futureList.add(CompletableFuture.runAsync(() ->
-                            oneDayAvgJson = download("average BIN prices", "1day.json.gz")));
-
-                if (threeDayAvgJson == null || type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH)
-                    futureList.add(CompletableFuture.runAsync(() ->
-                            threeDayAvgJson = download("average BIN prices", "3day.json.gz")));
+                if (type == SkyblockerConfig.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null) {
+                    futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(SkyblockerConfig.Average.THREE_DAY)));
+                    futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(SkyblockerConfig.Average.ONE_DAY)));
+                } else {
+                    futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(type)));
+                }
             }
             if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN) {
-                futureList.add(CompletableFuture.runAsync(() ->
-                        lowestBINJson = download("lowest BIN prices", null)));
+                futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadLowestPrices));
             }
             if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice) {
-                futureList.add(CompletableFuture.runAsync(() ->
-                        bazaarJson = download("bazaar prices", null)));
+                futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadBazaarPrices));
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && npcJson == null) {
-                futureList.add(CompletableFuture.runAsync(() ->
-                        npcJson = download("NPC prices", null)));
+            if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && npcPricesJson == null) {
+                futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadNPCPrices));
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && museumJson == null) {
-                futureList.add(CompletableFuture.runAsync(() ->
-                        museumJson = download("museum items", null)));
+            if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && isMuseumJson == null) {
+                futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadIsMuseum));
             }
-
             minute++;
             CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
                     .whenComplete((unused, throwable) -> nullMsgSend = false);
         }, 1200);
     }
 
-    private static JsonObject download(String key, String avgType) {
-        String rest = avgType == null ? "" : avgType;
+    private static void downloadAvgPrices(SkyblockerConfig.Average type) {
+        JsonObject result = null;
+        String avgDay = null;
+        switch (type) {
+            case ONE_DAY -> avgDay = "1day.json.gz";
+            case THREE_DAY -> avgDay = "3day.json.gz";
+        }
         try {
-            URL apiAddr = new URL(downloadList.get(key).concat(rest));
+            URL apiAddr = new URL("https://moulberry.codes/auction_averages_lbin/" + avgDay);
             try (InputStream src = apiAddr.openStream()) {
-                GZIPInputStream gzipOutput = avgType == null ? null : new GZIPInputStream(src);
-                try (InputStreamReader reader = new InputStreamReader(avgType == null ? src : gzipOutput)) {
-                    return new Gson().fromJson(reader, JsonObject.class);
+                try (GZIPInputStream gzipOutput = new GZIPInputStream(src)) {
+                    try (InputStreamReader reader = new InputStreamReader(gzipOutput)) {
+                        result = new Gson().fromJson(reader, JsonObject.class);
+                    }
                 }
             }
         } catch (IOException e) {
-            LOGGER.warn("[Skyblocker] Failed to download " + key + "!", e);
-            return null;
+            LOGGER.warn("[Skyblocker] Failed to download average BIN prices!", e);
+        }
+        switch (type) {
+            case ONE_DAY -> oneDayAvgPricesJson = result;
+            case THREE_DAY -> threeDayAvgPricesJson = result;
         }
     }
 
-    static {
-        downloadList = new HashMap<>();
-        downloadList.put("average BIN prices", "https://moulberry.codes/auction_averages_lbin/");
-        downloadList.put("lowest BIN prices", "https://skytils.gg/api/auctions/lowestbins");
-        downloadList.put("bazaar prices", "https://hysky.de/api/bazaar");
-        downloadList.put("NPC prices", "https://hysky.de/api/npcprice");
-        downloadList.put("museum items", "https://hysky.de/api/museum");
+    private static void downloadBazaarPrices() {
+        JsonObject result = null;
+        try {
+            URL apiAddr = new URL("https://hysky.de/api/bazaar");
+            InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+            result = new Gson().fromJson(reader, JsonObject.class);
+        } catch (IOException e) {
+            LOGGER.warn("[Skyblocker] Failed to download bazaar prices!", e);
+        }
+        bazaarPricesJson = result;
+    }
+
+    private static void downloadLowestPrices() {
+        JsonObject result = null;
+        try {
+            URL apiAddr = new URL("https://skytils.gg/api/auctions/lowestbins");
+            InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+            result = new Gson().fromJson(reader, JsonObject.class);
+        } catch (IOException e) {
+            LOGGER.warn("[Skyblocker] Failed to download lowest BIN prices!", e);
+        }
+        lowestPricesJson = result;
+    }
+
+    private static void downloadNPCPrices() {
+        JsonObject result = null;
+        try {
+            URL apiAddr = new URL("https://hysky.de/api/npcprice");
+            InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+            result = new Gson().fromJson(reader, JsonObject.class);
+        } catch (IOException e) {
+            LOGGER.warn("[Skyblocker] Failed to download NPC prices!", e);
+        }
+        npcPricesJson = result;
+    }
+
+    private static void downloadIsMuseum() {
+        JsonObject result = null;
+        try {
+            URL apiAddr = new URL("https://hysky.de/api/museum");
+            InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+            result = new Gson().fromJson(reader, JsonObject.class);
+        } catch (IOException e) {
+            LOGGER.warn("[Skyblocker] Failed to download museum items!", e);
+        }
+        isMuseumJson = result;
     }
 
 }

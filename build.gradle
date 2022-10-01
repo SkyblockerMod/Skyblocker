@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.0-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.modrinth.minotaur' version '2.+'
 }
@@ -107,7 +107,7 @@ modrinth {
 	versionNumber = "v${project.version}"
 	versionName = "Skyblocker ${project.mod_version} for ${project.suported_version}"
 	uploadFile = remapJar
-	gameVersions = ["1.18", "1.18.1", project.minecraft_version]
+	gameVersions = ["1.19", "1.19.1", project.minecraft_version]
 	loaders = ["fabric"]
 	versionType = "release"
 	dependencies = [ // Yet another array. Create a new `ModDependency` or `VersionDependency` with two strings - the ID and the scope
