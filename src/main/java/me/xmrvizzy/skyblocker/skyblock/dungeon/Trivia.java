@@ -16,7 +16,7 @@ public class Trivia extends ChatPatternListener {
     private List<String> solutions = Collections.emptyList();
 
     public Trivia() {
-        super("^ +(?:([A-Za-z' ]*\\?)|§6 ([ⓐⓑⓒ]) §a([a-zA-Z0-9 ]+))$");
+        super("^ +(?:([A-Za-z,' ]*\\?)|§6 ([ⓐⓑⓒ]) §a([a-zA-Z0-9 ]+))$");
     }
 
     @Override
@@ -64,6 +64,7 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the status of Goldor?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Storm?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Necron?", new String[]{"The Wither Lords"});
+        answers.put("What is the status of Maxor, Storm, Goldor and Necron?", new String[]{"The Wither Lords"});
         answers.put("How many total Fairy Souls are there?", new String[]{"238 Fairy Souls"});
         answers.put("How many Fairy Souls are there in Spider's Den?", new String[]{"19 Fairy Souls"});
         answers.put("How many Fairy Souls are there in The End?", new String[]{"12 Fairy Souls"});
