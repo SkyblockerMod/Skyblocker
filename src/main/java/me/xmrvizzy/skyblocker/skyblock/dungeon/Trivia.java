@@ -40,13 +40,14 @@ public class Trivia extends ChatPatternListener {
     }
 
     private void updateSolutions(String question) {
-        if (question.equals("What SkyBlock year is it?")) {
+        String trimmedQuestion = question.trim();
+        if (trimmedQuestion.equals("What SkyBlock year is it?")) {
             long currentTime = System.currentTimeMillis() / 1000L;
             long diff = currentTime - 1560276000;
             int year = (int) (diff / 446400 + 1);
             solutions = Collections.singletonList("Year " + year);
         } else {
-            solutions = Arrays.asList(answers.get(question));
+            solutions = Arrays.asList(answers.get(trimmedQuestion));
         }
     }
 
