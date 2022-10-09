@@ -42,25 +42,13 @@ public class StatusBarTracker {
     private void updateHealth(Matcher m) {
         int value = parseInt(m, 1);
         int max = parseInt(m, 3);
-        int overflow = 0;
-        ClientPlayerEntity player = null;
-        try {
-            player = MinecraftClient.getInstance().player;
+        int overflow = Math.max(0, value - max);
+        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            value = (int) (player.getHealth() * max / player.getMaxHealth());
+            overflow = (int) (player.getAbsorptionAmount() * max / player.getMaxHealth());
         }
-        // Is triggered by tests. Couldn't come up with a better solution.
-        catch (NullPointerException ignored) {
-        }
-        if (player != null) {
-            int hp = (int) (player.getHealth() * max / player.getMaxHealth());
-            overflow = value - hp;
-            value = hp;
-        } else if (value > max) {
-            overflow = value - max;
-            value = max;
-        }
-        if (overflow > max)
-            overflow = max;
-        this.health = new Resource(value, max, overflow);
+        this.health = new Resource(Math.min(value, max), max, Math.min(overflow, max));
     }
 
     private String reset(String str, Matcher m) {
@@ -101,10 +89,5 @@ public class StatusBarTracker {
         return res.isEmpty() ? null : res;
     }
 
-    public record Resource(
-            int value,
-            int max,
-            int overflow
-    ) {
-    }
+    public record Resource(int value, int max, int overflow) {}
 }

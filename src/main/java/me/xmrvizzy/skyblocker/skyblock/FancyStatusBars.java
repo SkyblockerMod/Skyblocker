@@ -56,7 +56,7 @@ public class FancyStatusBars extends DrawableHelper {
         int def = statusBarTracker.getDefense();
         bars[2].fill[0] = fill(def, def + 100);
         bars[2].text = def;
-        bars[3].fill[0] = (int) (32 * player.experienceProgress);
+        bars[3].fill[0] = (int) (100 * player.experienceProgress);
         bars[3].text = player.experienceLevel;
 
         // Update positions of bars from config
