@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.container;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.CroesusHelper;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
@@ -29,6 +30,7 @@ public class ContainerSolverManager extends DrawableHelper {
                 new ColorTerminal(),
                 new OrderTerminal(),
                 new StartsWithTerminal(),
+                new CroesusHelper()
         };
     }
 

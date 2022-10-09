@@ -163,6 +163,8 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Dungeons {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean croesusHelper = true;
         public boolean enableMap = true;
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;

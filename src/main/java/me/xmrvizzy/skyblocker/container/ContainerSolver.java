@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public abstract class ContainerSolver {
     private final Pattern CONTAINER_NAME;
     protected final static int GREEN_HIGHLIGHT = 128 << 24 | 64 << 16 | 196 << 8 | 64;
+    protected final static int GRAY_HIGHLIGHT = 128 << 24 | 64 << 16 | 64 << 8 | 64;
 
     public ContainerSolver(String containerName) {
         CONTAINER_NAME = Pattern.compile(containerName);
