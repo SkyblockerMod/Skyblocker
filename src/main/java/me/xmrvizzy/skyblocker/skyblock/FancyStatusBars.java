@@ -153,16 +153,19 @@ public class FancyStatusBars extends DrawableHelper {
 
             // Draw the background for the bar
             drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10, anchorsY[anchorNum], 10, v, 2, 9);
-            for (int i = 2; i < bar_width - 2; i++)
-                drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10 + i, anchorsY[anchorNum], 12, v, 1, 9);
-            drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10 + bar_width - 2, anchorsY[anchorNum], 41, v, 2, 9);
+            for (int i = 2; i < bar_width - 2; i += 58)
+                drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10 + i, anchorsY[anchorNum], 12, v, Math.min(58, bar_width - 2 - i), 9);
+            drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10 + bar_width - 2, anchorsY[anchorNum], 70, v, 2, 9);
 
             // Draw the filled part of the bar
             for (int i = 0; i < fill.length; i++) {
-                for (int j = (bar_width - 3); j >= 0; j--) {
-                    if ( Math.max((j * 100)/(bar_width - 3), 1) > fill[i]) continue;
-                    drawTexture(matrices, anchorsX[anchorNum] + offsetX + 11 + j, anchorsY[anchorNum], ((j == 0 || j == bar_width - 3) ? 43 : 44)  + i * 31, v, 1, 9);
-                }
+                int fill_width = this.fill[i] * (bar_width - 2) / 100;
+                if (fill_width >= 1)
+                    drawTexture(matrices, anchorsX[anchorNum] + offsetX + 11, anchorsY[anchorNum], 72 + i*60, v, 1, 9);
+                for (int j = 1; j < fill_width - 1; j += 58)
+                    drawTexture(matrices, anchorsX[anchorNum] + offsetX + 11 + j, anchorsY[anchorNum], 73 + i*60, v, Math.min(58, fill_width - 1 - j), 9);
+                if (fill_width == bar_width - 2)
+                    drawTexture(matrices, anchorsX[anchorNum] + offsetX + 11 + fill_width - 1, anchorsY[anchorNum], 131 + i*60, v, 1, 9);
             }
         }
 
