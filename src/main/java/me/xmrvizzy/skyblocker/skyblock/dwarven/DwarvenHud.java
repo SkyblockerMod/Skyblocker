@@ -1,10 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.text.LiteralTextContent;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DwarvenHud {
 
@@ -36,7 +39,15 @@ public class DwarvenHud {
             "Chest Looter"
             ).map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
             .collect(Collectors.toList());
-    public static void init(){
+    public static void init() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
+                .then(ClientCommandManager.literal("hud")
+                        .then(ClientCommandManager.literal("dwarven")
+                                .executes(context -> {
+                                    client.send(() -> client.setScreen(new DwarvenHudConfigScreen(Text.of("Dwarven HUD Config"))));
+                                    return 1;
+                                })))));
+
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
             if (!SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled || client.player == null || commissionList.isEmpty()) return;
             render(matrixStack, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);

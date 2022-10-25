@@ -190,9 +190,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class DwarvenHud {
         public boolean enabled = true;
         public boolean enableBackground = true;
-        @ConfigEntry.BoundedDiscrete(min = 3, max = 2000)
         public int x = 10;
-        @ConfigEntry.BoundedDiscrete(min = 3, max = 2000)
         public int y = 10;
     }
 
