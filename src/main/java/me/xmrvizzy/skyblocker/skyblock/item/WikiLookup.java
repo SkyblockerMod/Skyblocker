@@ -60,7 +60,7 @@ public class WikiLookup {
                 //yoinking the wiki link
                 JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
                 JsonObject rootobj = root.getAsJsonObject();
-                String wikiLink = rootobj.get("info").getAsString();
+                String wikiLink = rootobj.get("info").getAsJsonArray().get(1).getAsString();
                 Util.getOperatingSystem().open(wikiLink);
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
