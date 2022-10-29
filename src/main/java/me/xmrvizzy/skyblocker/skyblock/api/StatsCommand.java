@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
 
 public class StatsCommand {

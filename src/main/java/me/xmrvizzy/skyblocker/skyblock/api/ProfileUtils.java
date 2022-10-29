@@ -3,7 +3,6 @@ package me.xmrvizzy.skyblocker.skyblock.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import marcono1234.gson.recordadapter.RecordTypeAdapterFactory;
 import me.xmrvizzy.skyblocker.skyblock.api.records.PlayerProfiles;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemFixerUpper;
 import net.minecraft.item.ItemStack;
@@ -11,7 +10,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
@@ -27,7 +25,6 @@ public class ProfileUtils {
             URL url = new URL("https://sky.shiiyu.moe/api/v2/profile/" + name);
             InputStreamReader reader = new InputStreamReader(url.openStream());
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapterFactory(RecordTypeAdapterFactory.builder().allowMissingComponentValues().create())
                     .serializeNulls()
                     .create();
             return gson.fromJson(reader, PlayerProfiles.class);

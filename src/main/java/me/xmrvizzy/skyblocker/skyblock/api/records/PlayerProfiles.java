@@ -1,15 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.api.records;
 
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import marcono1234.gson.recordadapter.RecordTypeAdapterFactory;
 import me.xmrvizzy.skyblocker.skyblock.api.records.dungeons.Dungeons;
 import me.xmrvizzy.skyblocker.skyblock.api.records.mining.Mining;
 import me.xmrvizzy.skyblocker.skyblock.api.records.misc.Misc;
 
 import java.util.HashMap;
 
-@JsonAdapter(RecordTypeAdapterFactory.class)
 public record PlayerProfiles(HashMap<String, PlayerProfile> profiles) {
     public record PlayerProfile(
             @SerializedName("profile_id") String profileId,
