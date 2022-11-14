@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.google.code.gson:gson:2.9.0'
+	implementation 'com.google.code.gson:gson:2.10'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 	// To change the versions see the gradle.properties file
@@ -61,8 +61,6 @@ dependencies {
 	include(implementation("org.eclipse.jgit:org.eclipse.jgit:6.0.0.202111291000-r"))
 
 	include(modImplementation ("meteordevelopment:discord-ipc:1.1"))
-	//  allow gson to deserialize the api data into a record
-	include(implementation("com.github.Marcono1234:gson-record-type-adapter-factory:0.2.0"))
 }
 
 processResources {
