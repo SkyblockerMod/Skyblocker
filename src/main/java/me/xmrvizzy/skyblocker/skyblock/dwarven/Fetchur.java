@@ -36,7 +36,10 @@ public class Fetchur extends ChatPatternListener {
         answers = new HashMap<>();
         answers.put("red and soft", Text.translatable("block.minecraft.red_wool").getString());
         answers.put("yellow and see through", Text.translatable("block.minecraft.yellow_stained_glass").getString());
-        answers.put("circular and sometimes moves", Text.translatable("item.minecraft.compass").getString());
+        // TODO uncomment once Hypixel fix the typo
+        // answers.put("circular and sometimes moves", Text.translatable("item.minecraft.compass").getString());
+        // TODO remove when typo fixed by hypixel
+        answers.put("circlular and sometimes moves", Text.translatable("item.minecraft.compass").getString());
         answers.put("expensive minerals", "Mithril");
         answers.put("useful during celebrations", Text.translatable("item.minecraft.firework_rocket").getString());
         answers.put("hot and gives energy", "Cheap / Decent Coffee");
