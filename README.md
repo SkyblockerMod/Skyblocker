@@ -81,4 +81,4 @@ Everyone can contribute to Skyblocker, read [this](https://github.com/Skyblocker
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox)) \
 Indonesian ([null2264](https://github.com/null2264)) \
 Russian ([HyperSoop](https://github.com/HyperSoop)) \
-French ([edgarogh](https://github.com/edgarogh))
+French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01))
