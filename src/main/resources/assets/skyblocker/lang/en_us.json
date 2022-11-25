@@ -86,10 +86,14 @@
   "text.config.skyblocker-config.option.messages.hideMana": "Hide Mana Consumption Messages from Action Bar",
   "text.config.skyblocker-config.option.messages.hideMana.tooltip": "Gives a better experience with FancyBar",
 
-  "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
-  "skyblocker.update.update_link": " §2§nClick here§r",
-  "skyblocker.update.update_message_end" : " §ato find out about latest features.",
-  "skyblocker.update.hover_text": "Open Modrinth",
+  "skyblocker.update.update_message": [
+    { "text": "[", "color": "aqua"},
+    { "text":  "Skyblocker", "color": "gold"},
+    { "text": "] ", "color": "aqua"},
+    { "text":  "There is a new version available! ", "color": "green"},
+    { "text": "Click Here ", "color": "green", "underlined": true, "clickEvent": {"action": "open_url", "value":  "https://modrinth.com/mod/skyblocker-liap/versions"}, "hoverEvent": {"action": "show_text", "value": {"text":  "Open Modrinth"}} },
+    { "text": "to find out about latest features.", "color":  "green"}
+  ],
   "text.config.skyblocker-config.option.general.enableUpdateNotification": "Update Notification",
 
   "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Automatically set your API key!"
