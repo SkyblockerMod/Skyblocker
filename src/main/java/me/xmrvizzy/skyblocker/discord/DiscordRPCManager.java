@@ -1,8 +1,7 @@
 package me.xmrvizzy.skyblocker.discord;
 
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import meteordevelopment.discordipc.DiscordIPC;
@@ -24,16 +23,17 @@ public class DiscordRPCManager {
     }
 
     public void update(){
-        if (SkyblockerConfig.get().richPresence.customMessage != null ) {
-            if (SkyblockerConfig.get().richPresence.customMessage.isBlank()) {
-                SkyblockerConfig.get().richPresence.customMessage = "All on Fabric!";
-                AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+        if (SkyblockerMod.getInstance() == null) return;
+        if (SkyblockerMod.getInstance().CONFIG.richPresence.customMessage() != null ) {
+            if (SkyblockerMod.getInstance().CONFIG.richPresence.customMessage().isBlank()) {
+                SkyblockerMod.getInstance().CONFIG.richPresence.customMessage("All on Fabric!");
+                SkyblockerMod.getInstance().CONFIG.save();
             }
         }
-        if (!SkyblockerConfig.get().richPresence.enableRichPresence || !Utils.isOnSkyblock){
+        if (!SkyblockerMod.getInstance().CONFIG.richPresence.enableRichPresence() || !Utils.isOnSkyblock){
             if (DiscordIPC.isConnected()) DiscordIPC.stop();
         }
-        if (SkyblockerConfig.get().richPresence.enableRichPresence && Utils.isOnSkyblock && !DiscordIPC.isConnected()){
+        if (SkyblockerMod.getInstance().CONFIG.richPresence.enableRichPresence() && Utils.isOnSkyblock && !DiscordIPC.isConnected()){
             if (!DiscordIPC.start(934607927837356052L, () -> {
                 LOGGER.info("Started up rich presence");
                 startTimeStamp = Instant.now().getEpochSecond();
@@ -42,7 +42,7 @@ public class DiscordRPCManager {
                 return;
             }
         }
-        if (SkyblockerConfig.get().richPresence.cycleMode)
+        if (SkyblockerMod.getInstance().CONFIG.richPresence.cycleMode())
             cycleCount = (cycleCount + 1) % 3;
         buildPresence();
     }
@@ -51,20 +51,20 @@ public class DiscordRPCManager {
         RichPresence presence = new RichPresence();
         presence.setLargeImage("skyblocker-default", null);
         presence.setStart(startTimeStamp);
-        presence.setDetails(SkyblockerConfig.get().richPresence.customMessage);
+        presence.setDetails(SkyblockerMod.getInstance().CONFIG.richPresence.customMessage());
         presence.setState(getInfo());
         DiscordIPC.setActivity(presence);
     }
 
     public String getInfo(){
         String info = null;
-        if (!SkyblockerConfig.get().richPresence.cycleMode){
-            switch (SkyblockerConfig.get().richPresence.info){
+        if (!SkyblockerMod.getInstance().CONFIG.richPresence.cycleMode()){
+            switch (SkyblockerMod.getInstance().CONFIG.richPresence.richPresenceInfo()){
                 case BITS -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case PURSE -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
                 case LOCATION -> info = "⏣ " + Utils.getLocation();
             }
-        } else if (SkyblockerConfig.get().richPresence.cycleMode){
+        } else if (SkyblockerMod.getInstance().CONFIG.richPresence.cycleMode()){
             switch (cycleCount){
                 case 0 -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case 1 -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());

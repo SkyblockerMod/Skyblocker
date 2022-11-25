@@ -17,9 +17,6 @@
   "entrypoints": {
     "client": [
       "me.xmrvizzy.skyblocker.SkyblockerInitializer"
-    ],
-    "modmenu": [
-      "me.xmrvizzy.skyblocker.config.modmenu.ModMenuEntry"
     ]
   },
   "mixins": [
@@ -28,7 +25,6 @@
   "depends": {
     "fabricloader": ">=0.14.6",
     "fabric": "*",
-	"cloth-config2": "*",
     "minecraft": [">=1.19.1"]
   },
   "custom": {

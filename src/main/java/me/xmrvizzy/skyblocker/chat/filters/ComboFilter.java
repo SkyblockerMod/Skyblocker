@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 
 public class ComboFilter extends SimpleChatFilter {
     public ComboFilter() {
@@ -11,6 +11,6 @@ public class ComboFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfig.get().messages.hideCombo;
+        return SkyblockerMod.getInstance().CONFIG.messages.hideCombo();
     }
 }

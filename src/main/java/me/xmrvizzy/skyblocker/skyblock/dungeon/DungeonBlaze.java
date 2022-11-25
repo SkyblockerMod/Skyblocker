@@ -1,9 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.color.QuadColor;
-import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -59,7 +59,7 @@ public class DungeonBlaze {
         QuadColor outlineColorRed = QuadColor.single( 0.0F, 1.0F, 0.0F, 1f);
         QuadColor outlineColorGreen = QuadColor.single(1.0F, 0.0F, 0.0F, 1f);
         try {
-            if(highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfig.get().locations.dungeons.blazesolver){
+            if(highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerMod.getInstance().CONFIG.dungeons.blazesolver()){
                 /* Outline */
                 if(highestBlaze.getY() <69) {
                     Box blaze = highestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);

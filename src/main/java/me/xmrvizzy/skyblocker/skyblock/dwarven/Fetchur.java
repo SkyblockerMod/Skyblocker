@@ -1,11 +1,11 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -19,7 +19,7 @@ public class Fetchur extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfig.get().locations.dwarvenMines.solveFetchur ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return SkyblockerMod.getInstance().CONFIG.dwarvenMines.solveFetchur() ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

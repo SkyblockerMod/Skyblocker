@@ -2,11 +2,9 @@ package me.xmrvizzy.skyblocker.skyblock;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
@@ -42,7 +40,7 @@ public class FancyStatusBars extends DrawableHelper {
 
     public boolean render(MatrixStack matrices, int scaledWidth, int scaledHeight) {
         var player = client.player;
-        if (!SkyblockerConfig.get().general.bars.enableBars || player == null)
+        if (!SkyblockerMod.getInstance().CONFIG.general.bars.enableBars() || player == null)
             return false;
         anchorsX[0] = scaledWidth / 2 - 91;
         anchorsY[0] = scaledHeight - 33;
@@ -62,10 +60,10 @@ public class FancyStatusBars extends DrawableHelper {
         // Update positions of bars from config
         for (int i = 0; i < 4; i++) {
             int configAnchorNum = switch (i) {
-                case 0 -> SkyblockerConfig.get().general.bars.barpositions.healthBarPosition.toInt();
-                case 1 -> SkyblockerConfig.get().general.bars.barpositions.manaBarPosition.toInt();
-                case 2 -> SkyblockerConfig.get().general.bars.barpositions.defenceBarPosition.toInt();
-                case 3 -> SkyblockerConfig.get().general.bars.barpositions.experienceBarPosition.toInt();
+                case 0 -> SkyblockerMod.getInstance().CONFIG.general.bars.barpositions.healthBarPosition().toInt();
+                case 1 -> SkyblockerMod.getInstance().CONFIG.general.bars.barpositions.manaBarPosition().toInt();
+                case 2 -> SkyblockerMod.getInstance().CONFIG.general.bars.barpositions.defenceBarPosition().toInt();
+                case 3 -> SkyblockerMod.getInstance().CONFIG.general.bars.barpositions.experienceBarPosition().toInt();
                 default -> 0;
             };
 

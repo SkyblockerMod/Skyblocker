@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.mixin;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemListWidget;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -19,7 +19,7 @@ public class InventoryScreenMixin {
             )
     )
     RecipeBookWidget constructor() {
-        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.itemList.enableItemList)
+        if (Utils.isOnSkyblock && SkyblockerMod.getInstance().CONFIG.general.itemList.enableItemList())
             return new ItemListWidget();
         else
             return new RecipeBookWidget();

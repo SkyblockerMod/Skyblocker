@@ -3,16 +3,14 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigModel;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +51,7 @@ public class PriceInfoTooltip {
         String timestamp = getTimestamp(stack);
         boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
+        if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableNPCPrice()) {
             if (npcPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
@@ -67,7 +65,7 @@ public class PriceInfoTooltip {
         }
 
         boolean bazaarExist = false;
-        if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice && !bazaarOpened) {
+        if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableBazaarPrice() && !bazaarOpened) {
             if (bazaarPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
@@ -90,7 +88,7 @@ public class PriceInfoTooltip {
         }
 
         // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
-        if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
+        if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableLowestBIN() && !bazaarOpened && !bazaarExist) {
             if (lowestPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
@@ -103,7 +101,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
+        if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableAvgBIN()) {
             if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
@@ -133,17 +131,17 @@ public class PriceInfoTooltip {
                     name = name.replace(":", "-");
                 }
 
-                SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
+                SkyblockerConfigModel.Average type = SkyblockerMod.getInstance().CONFIG.general.itemTooltip.avg();
 
                 // "No data" line because of API not keeping old data, it causes NullPointerException
-                if (!name.isEmpty() && (type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH)) {
+                if (!name.isEmpty() && (type == SkyblockerConfigModel.Average.ONE_DAY || type == SkyblockerConfigModel.Average.BOTH)) {
                     lines.add(Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                             .formatted(Formatting.GOLD)
                             .append(oneDayAvgPricesJson.get(name) == null
                                     ? Text.literal("No data").formatted(Formatting.RED)
                                     : getCoinsMessage(oneDayAvgPricesJson.get(name).getAsDouble(), count)));
                 }
-                if (!name.isEmpty() && (type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH)) {
+                if (!name.isEmpty() && (type == SkyblockerConfigModel.Average.THREE_DAY || type == SkyblockerConfigModel.Average.BOTH)) {
                     lines.add(Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                             .formatted(Formatting.GOLD)
                             .append(threeDayAvgPricesJson.get(name) == null
@@ -153,7 +151,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !bazaarOpened) {
+        if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableMuseumDate() && !bazaarOpened) {
             if (isMuseumJson == null) {
                 if (!nullMsgSend) {
                     client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
@@ -285,26 +283,26 @@ public class PriceInfoTooltip {
             }
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
-            if ((SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) && (oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0)) {
-                SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
+            if ((SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableAvgBIN()) && (oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0)) {
+                SkyblockerConfigModel.Average type = SkyblockerMod.getInstance().CONFIG.general.itemTooltip.avg();
 
-                if (type == SkyblockerConfig.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null) {
-                    futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(SkyblockerConfig.Average.THREE_DAY)));
-                    futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(SkyblockerConfig.Average.ONE_DAY)));
+                if (type == SkyblockerConfigModel.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null) {
+                    futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(SkyblockerConfigModel.Average.THREE_DAY)));
+                    futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(SkyblockerConfigModel.Average.ONE_DAY)));
                 } else {
                     futureList.add(CompletableFuture.runAsync(() -> downloadAvgPrices(type)));
                 }
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN) {
+            if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableLowestBIN()) {
                 futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadLowestPrices));
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice) {
+            if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableBazaarPrice()) {
                 futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadBazaarPrices));
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && npcPricesJson == null) {
+            if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableNPCPrice() && npcPricesJson == null) {
                 futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadNPCPrices));
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && isMuseumJson == null) {
+            if (SkyblockerMod.getInstance().CONFIG.general.itemTooltip.enableMuseumDate() && isMuseumJson == null) {
                 futureList.add(CompletableFuture.runAsync(PriceInfoTooltip::downloadIsMuseum));
             }
             minute++;
@@ -313,7 +311,7 @@ public class PriceInfoTooltip {
         }, 1200);
     }
 
-    private static void downloadAvgPrices(SkyblockerConfig.Average type) {
+    private static void downloadAvgPrices(SkyblockerConfigModel.Average type) {
         JsonObject result = null;
         String avgDay = null;
         switch (type) {

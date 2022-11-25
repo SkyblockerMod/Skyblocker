@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.util.math.Direction;
@@ -14,7 +14,7 @@ public class OldLever {
     protected static final VoxelShape WEST_SHAPE;
 
     public static VoxelShape getShape(WallMountLocation wallMountLocation, Direction direction) {
-        if (!SkyblockerConfig.get().general.hitbox.oldLeverHitbox)
+        if (!SkyblockerMod.getInstance().CONFIG.general.hitbox.oldLeverHitbox())
             return null;
 
         if (wallMountLocation == WallMountLocation.FLOOR) {

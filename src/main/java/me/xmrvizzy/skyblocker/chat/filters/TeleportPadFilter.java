@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 
 public class TeleportPadFilter extends SimpleChatFilter {
     public TeleportPadFilter() {
@@ -11,6 +11,6 @@ public class TeleportPadFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfig.get().messages.hideTeleportPad;
+        return SkyblockerMod.getInstance().CONFIG.messages.hideTeleportPad();
     }
 }

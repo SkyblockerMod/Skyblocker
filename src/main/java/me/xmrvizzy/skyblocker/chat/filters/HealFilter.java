@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.chat.filters;
 
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 
 public class HealFilter extends SimpleChatFilter {
     public HealFilter() {
@@ -10,6 +10,6 @@ public class HealFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfig.get().messages.hideHeal;
+        return SkyblockerMod.getInstance().CONFIG.messages.hideHeal();
     }
 }

@@ -1,12 +1,11 @@
 package me.xmrvizzy.skyblocker.skyblock.api;
 
-import me.shedaniel.autoconfig.AutoConfig;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
+
 import java.util.regex.Matcher;
 
 public class ApiKeyListener extends ChatPatternListener {
@@ -21,8 +20,8 @@ public class ApiKeyListener extends ChatPatternListener {
 
     @Override
     protected boolean onMatch(Text message, Matcher matcher) {
-        SkyblockerConfig.get().general.apiKey = matcher.group(1);
-        AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+        SkyblockerMod.getInstance().CONFIG.general.apiKey(matcher.group(1));
+        SkyblockerMod.getInstance().CONFIG.save();
         MinecraftClient.getInstance().player.sendMessage(Text.translatable("skyblocker.api.got_key"), false);
         return false;
     }

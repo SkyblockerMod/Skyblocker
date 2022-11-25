@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.font.TextRenderer;
@@ -28,7 +28,7 @@ public abstract class ItemRendererMixin {
     @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
     public void renderItemBar(TextRenderer renderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
 
-        if (Utils.isOnSkyblock && SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel) {
+        if (Utils.isOnSkyblock && SkyblockerMod.getInstance().CONFIG.dwarvenMines.enableDrillFuel()) {
             if (!stack.isEmpty()) {
                 NbtCompound tag = stack.getNbt();
                 if (tag != null && tag.contains("ExtraAttributes")) {

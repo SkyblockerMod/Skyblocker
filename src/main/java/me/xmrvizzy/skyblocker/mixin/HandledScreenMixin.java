@@ -1,12 +1,11 @@
 package me.xmrvizzy.skyblocker.mixin;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNavButton;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -36,7 +35,7 @@ public abstract class HandledScreenMixin extends Screen {
     @Inject(method = "init()V", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
         // quicknav
-        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.quicknav.enableQuicknav) {
+        if (Utils.isOnSkyblock && SkyblockerMod.getInstance().CONFIG.general.quicknav.enableQuicknav()) {
             String screenTitle = super.getTitle().getString().trim();
             List<QuickNavButton> buttons = QuickNav.init(screenTitle);
             for (QuickNavButton button : buttons) super.addDrawableChild(button);
@@ -57,7 +56,7 @@ public abstract class HandledScreenMixin extends Screen {
     @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void drawMouseOverTooltip(MatrixStack matrices, int x, int y, CallbackInfo ci) {
         String title = ((HandledScreen<?>)(Object)this).getTitle().getString();
-        boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
+        boolean shiftDown = SkyblockerMod.getInstance().CONFIG.general.backpackPreviewWithoutShift() ^ Screen.hasShiftDown();
         if (shiftDown && title.equals("Storage") && this.focusedSlot != null) {
             if (this.focusedSlot.inventory == this.client.player.getInventory()) return;
             if (BackpackPreview.renderPreview(matrices, this.focusedSlot.getIndex(), x, y)) ci.cancel();
