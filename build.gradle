@@ -48,12 +48,6 @@ dependencies {
 	// OwO
 	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
 	include "io.wispforest:owo-lib:${project.owo_version}"
-	// Cloth config
-	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}") {
-		exclude group: "net.fabricmc.fabric-api"
-		exclude module: "modmenu"
-	}
-	include "me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}"
 
 	// Mod Menu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
