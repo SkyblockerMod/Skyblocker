@@ -42,7 +42,6 @@ public class UpdateChecker {
         }
         SkyblockEvents.JOIN.register(() -> {
             if (localVersion != null && latestVersion != null) {
-                System.out.println(localVersion.compareTo(latestVersion) == -1);
                 if (localVersion.compareTo(latestVersion) == -1) MinecraftClient.getInstance().player.sendMessage(Text.translatable("skyblocker.update.update_message"), false);
             }
         });
