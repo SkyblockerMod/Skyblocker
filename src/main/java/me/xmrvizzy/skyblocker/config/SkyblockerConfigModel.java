@@ -8,7 +8,7 @@ import java.util.List;
 
 
 @Modmenu(modId = "skyblocker")
-@Config(name = "skyblocker-config", wrapperName = "SkyblockerConfigWrapper")
+@Config(name = "skyblocker/skyblocker-config", wrapperName = "SkyblockerConfigWrapper")
 public class SkyblockerConfigModel {
     @Nest
     public General general = new General();
