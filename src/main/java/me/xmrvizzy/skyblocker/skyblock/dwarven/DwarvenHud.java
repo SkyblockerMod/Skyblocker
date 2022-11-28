@@ -1,14 +1,23 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
+import io.wispforest.owo.ui.component.Components;
+import io.wispforest.owo.ui.container.Containers;
+import io.wispforest.owo.ui.container.FlowLayout;
+import io.wispforest.owo.ui.core.Insets;
+import io.wispforest.owo.ui.core.Positioning;
+import io.wispforest.owo.ui.core.Sizing;
+import io.wispforest.owo.ui.core.Surface;
+import io.wispforest.owo.ui.hud.Hud;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextContent;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +30,8 @@ public class DwarvenHud {
 
 
     public static MinecraftClient client = MinecraftClient.getInstance();
-    public static List<Commission> commissionList = new ArrayList<>();
+    public static MutableText commissionText = MutableText.of(TextContent.EMPTY);
+    public static Identifier hudId = new Identifier("skyblocker", "dwarven_hud");
 
 
     public static final List<Pattern> COMMISSIONS = Stream.of(
@@ -48,26 +58,28 @@ public class DwarvenHud {
                                     return 1;
                                 })))));
 
+        Hud.add(hudId, () ->
+                Containers
+                        .verticalFlow(Sizing.content(), Sizing.content())
+                        .padding(Insets.of(3))
+                        .positioning(Positioning.absolute(0,0))
+        );
+
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
-            if (!SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.enabled() || client.player == null || commissionList.isEmpty()) return;
-            render(matrixStack, SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.x(), SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.y(), commissionList);
+            if (!SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.enabled() || client.player == null || commissionText.equals(Text.of(""))) return;
+            var hud = (FlowLayout) Hud.getComponent(hudId);
+            if (SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.enableBackground()) {
+                hud.surface(Surface.VANILLA_TRANSLUCENT);
+            }
+            hud.clearChildren();
+            hud.positioning(Positioning.absolute(SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.x(), SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.y()));
+            hud.child(Components.label(commissionText));
         });
     }
 
-    public static void render(MatrixStack matrixStack, int hudX, int hudY, List<Commission> commissions) {
-        if (commissions.size() > 0){
-            if (SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.enableBackground())
-                DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
-            int y = 0;
-            for (Commission commission : commissions) {
-                client.textRenderer.drawWithShadow(matrixStack, Text.literal(commission.commission).styled(style -> style.withColor(Formatting.AQUA)).append(Text.literal(": " + commission.progression).styled(style -> style.withColor(Formatting.GREEN))), hudX + 5, hudY + y + 5, 0xFFFFFFFF);
-                y += 20;
-            }
-        }
-    }
-
     public static void update() {
-        commissionList = new ArrayList<>();
+        List<Commission> commissionList = new ArrayList<>();
+        commissionText = (MutableText) Text.of("");
         if (client.player == null || !SkyblockerMod.getInstance().CONFIG.dwarvenMines.dwarvenHud.enabled()) return;
 
         client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
@@ -81,6 +93,11 @@ public class DwarvenHud {
                 }
             }
         });
+
+        for (int i = 0; i < commissionList.size(); i++) {
+            commissionText.append(commissionList.get(i).commission).append(": ").append(Text.literal(commissionList.get(i).progression).styled(style -> style.withColor(Formatting.GREEN)));
+            if (i != (commissionList.size() - 1)) commissionText.append("\n");
+        }
     }
 
     public static class Commission{
