@@ -48,7 +48,7 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
         if (this.isOpen()) {
             matrices.push();
             matrices.translate(0.0D, 0.0D, 100.0D);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
             RenderSystem.setShaderTexture(0, TEXTURE);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             this.searchField = ((RecipeBookWidgetAccessor)this).getSearchField();

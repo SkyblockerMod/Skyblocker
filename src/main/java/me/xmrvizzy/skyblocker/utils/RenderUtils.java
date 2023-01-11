@@ -41,7 +41,7 @@ public class RenderUtils {
 
         // Outline
         RenderSystem.disableCull();
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
         RenderSystem.lineWidth(lineWidth);
 
         buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);

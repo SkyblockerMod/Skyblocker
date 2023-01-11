@@ -36,7 +36,7 @@ public class ResultButtonWidget extends ClickableWidget {
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient client = MinecraftClient.getInstance();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
         this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
         client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);

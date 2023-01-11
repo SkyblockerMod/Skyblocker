@@ -22,7 +22,7 @@ public class ToastBuilder implements Toast {
 
     @Override
     public Toast.Visibility draw(MatrixStack matrices, ToastManager manager, long startTime) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 

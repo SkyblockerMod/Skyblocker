@@ -1,9 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
 import java.util.Map;
 
 public class ItemFixerUpper {
