@@ -15,7 +15,8 @@ public class ItemUtils {
     public static List<Text> getTooltip(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player != null && item != null)
-            return item.getTooltip(client.player, TooltipContext.Default.NORMAL);
+            // return item.getTooltip(client.player, TooltipContext.Default.NORMAL);
+            return item.getTooltip(client.player, TooltipContext.Default.BASIC);
         return Collections.emptyList();
     }
 
