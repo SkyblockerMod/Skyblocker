@@ -49,8 +49,10 @@ public class QuickNavButton extends ClickableWidget {
             int w = ((HandledScreenAccessor)handledScreen).getBackgroundWidth();
             int h = ((HandledScreenAccessor)handledScreen).getBackgroundHeight();
             if (h > 166) --h; // why is this even a thing
-            this.x = x + this.index % 6 * 28 + 4;
-            this.y = this.index < 6 ? y - 28 : y + h - 4;
+            // this.x = x + this.index % 6 * 28 + 4;
+            this.setX(x + this.index % 6 * 28 + 4);
+            // this.y = this.index < 6 ? y - 28 : y + h - 4;
+            this.setY(this.index < 6 ? y - 28 : y + h - 4);
             this.u = 28;
             this.v = (index < 6 ? 0 : 64) + (toggled ? 32 : 0);
         }
@@ -60,7 +62,8 @@ public class QuickNavButton extends ClickableWidget {
     public void onClick(double mouseX, double mouseY) {
         if (!this.toggled) {
             this.toggled = true;
-            CLIENT.player.sendChatMessage(command, Text.of(command));
+            // CLIENT.player.sendChatMessage(command, Text.of(command));
+            CLIENT.player.sendMessage(Text.of(command));
         }
     }
 
@@ -72,21 +75,28 @@ public class QuickNavButton extends ClickableWidget {
         // render button background
         if (!this.toggled) {
             if (this.index >= 6)
-                this.drawTexture(matrices, this.x, this.y + 4, this.u, this.v + 4, this.width, this.height - 4);
+                // this.drawTexture(matrices, this.x, this.y + 4, this.u, this.v + 4, this.width, this.height - 4);
+                this.drawTexture(matrices, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
             else
-                this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
-        } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
+                // this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
+                this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height - 4);
+        // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
+        } else this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
         // render button icon
         if (!this.toggled) {
             if (this.index >= 6)
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
+                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 6);
             else
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
+                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 9);
         } else {
             if (this.index >= 6)
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
+                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 9);
             else
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
+                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 6);
         }
         RenderSystem.enableDepthTest();
     }

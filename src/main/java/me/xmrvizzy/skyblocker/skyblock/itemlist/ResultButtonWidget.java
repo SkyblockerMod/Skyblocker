@@ -38,9 +38,12 @@ public class ResultButtonWidget extends ClickableWidget {
         MinecraftClient client = MinecraftClient.getInstance();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
-        this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
-        client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
-        client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
+        // this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
+        this.drawTexture(matrices, this.getX(), this.getY(), 29, 206, this.getWidth(), this.getHeight());
+        // client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
+        client.getItemRenderer().renderInGui(this.itemStack, this.getX() + 4, this.getY() + 4);
+        // client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
+        client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
     }
 
     @Override

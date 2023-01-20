@@ -17,7 +17,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-//import net.minecraft.util.math.Vec3f;
+// import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.RotationAxis;
 
 public class RenderUtils {
