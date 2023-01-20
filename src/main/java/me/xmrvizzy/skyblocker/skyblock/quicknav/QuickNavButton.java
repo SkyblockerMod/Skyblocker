@@ -64,6 +64,7 @@ public class QuickNavButton extends ClickableWidget {
             this.toggled = true;
             // CLIENT.player.sendChatMessage(command, Text.of(command));
             CLIENT.player.sendMessage(Text.of(command));
+            // TODO : add null check with log error
         }
     }
 

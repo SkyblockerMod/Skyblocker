@@ -1,6 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
 import net.minecraft.item.Items;
+// import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import java.util.Map;
@@ -222,11 +224,14 @@ public class ItemFixerUpper {
         if (id.equals("minecraft:prismarine")) return PRISMARINE_VARIANTS[damage];
 
         id = MAPPING.getOrDefault(id, id);
-        if (Registry.ITEM.get(new Identifier(id)).equals(Items.AIR)) {
+        // if (Registry.ITEM.get(new Identifier(id)).equals(Items.AIR)) {
+        if (Registries.ITEM.get(new Identifier(id)).equals(Items.AIR)) {
             String shortId = id.split(":")[1];
-            if (damage < BLOCK_COLORS.length && !Registry.ITEM.get(new Identifier("minecraft:" + BLOCK_COLORS[damage] + shortId)).equals(Items.AIR))
+            // if (damage < BLOCK_COLORS.length && !Registry.ITEM.get(new Identifier("minecraft:" + BLOCK_COLORS[damage] + shortId)).equals(Items.AIR))
+            if (damage < BLOCK_COLORS.length && !Registries.ITEM.get(new Identifier("minecraft:" + BLOCK_COLORS[damage] + shortId)).equals(Items.AIR))
                 return "minecraft:" + BLOCK_COLORS[damage] + shortId;
-            if (damage < TREE_VARIANTS.length && !Registry.ITEM.get(new Identifier("minecraft:" + TREE_VARIANTS[damage] + shortId)).equals(Items.AIR))
+            // if (damage < TREE_VARIANTS.length && !Registry.ITEM.get(new Identifier("minecraft:" + TREE_VARIANTS[damage] + shortId)).equals(Items.AIR))
+            if (damage < TREE_VARIANTS.length && !Registries.ITEM.get(new Identifier("minecraft:" + TREE_VARIANTS[damage] + shortId)).equals(Items.AIR))
                 return "minecraft:" + TREE_VARIANTS[damage] + shortId;
 
             if (id.contains("wooden_")) return id.replaceFirst("wooden_", TREE_VARIANTS[damage]);

@@ -6,7 +6,8 @@ import me.xmrvizzy.skyblocker.container.ContainerSolver;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registry;
+// import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -62,7 +63,8 @@ public class ColorTerminal extends ContainerSolver {
         itemColor = new HashMap<>();
         for (DyeColor color : DyeColor.values())
             for (String item : new String[]{"dye", "wool", "stained_glass", "terracotta"})
-                itemColor.put(Registry.ITEM.get(new Identifier(color.getName() + '_' + item)), color);
+                // itemColor.put(Registry.ITEM.get(new Identifier(color.getName() + '_' + item)), color);
+                itemColor.put(Registries.ITEM.get(new Identifier(color.getName() + '_' + item)), color);
         itemColor.put(Items.BONE_MEAL, DyeColor.WHITE);
         itemColor.put(Items.LAPIS_LAZULI, DyeColor.BLUE);
         itemColor.put(Items.COCOA_BEANS, DyeColor.BROWN);

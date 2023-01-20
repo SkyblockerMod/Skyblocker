@@ -50,6 +50,7 @@ public class ResultButtonWidget extends ClickableWidget {
     public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
         MinecraftClient client = MinecraftClient.getInstance();
         List<Text> tooltip = client.currentScreen.getTooltipFromItem(this.itemStack);
+        // TODO : add null check with log error
         client.currentScreen.renderTooltip(matrices, tooltip, mouseX, mouseY);
     }
 
