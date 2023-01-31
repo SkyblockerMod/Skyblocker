@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,98 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public RichPresence richPresence = new RichPresence();
 
+    @ConfigEntry.Category("quickNav")
+    @ConfigEntry.Gui.TransitiveObject
+    public QuickNav quickNav = new QuickNav();
+
+    public static class QuickNav {
+        public boolean enableQuickNav = true;
+
+        @ConfigEntry.Category("button1")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button1 = new QuickNavItem(true, new ItemData("diamond_sword"), "Your Skills", "/skills");
+
+        @ConfigEntry.Category("button2")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collection", "/collection");
+
+        @ConfigEntry.Category("button3")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button3 = new QuickNavItem(false, new ItemData("air"), "", "");
+
+        @ConfigEntry.Category("button4")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button4 = new QuickNavItem(true, new ItemData("bone"), "Pets", "/pets");
+
+        @ConfigEntry.Category("button5")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button5 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe", "/wardrobe");
+
+        @ConfigEntry.Category("button6")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"),  "Storage", "/storage");
+
+        @ConfigEntry.Category("button7")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button7 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}"), "", "/hub");
+
+        @ConfigEntry.Category("button8")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button8 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;1605800870,415127827,-1236127084,15358548],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}}}"), "", "/warp dungeon");
+
+        @ConfigEntry.Category("button9")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button9 = new QuickNavItem(false, new ItemData("air"), "", "");
+
+        @ConfigEntry.Category("button10")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant", "/enchant");
+
+        @ConfigEntry.Category("button11")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button11 = new QuickNavItem(true, new ItemData("anvil"), "Anvil", "/anvil");
+
+        @ConfigEntry.Category("button12")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public QuickNavItem button12 = new QuickNavItem(true, new ItemData("crafting_table"), "Craft Item", "/craft");
+    }
+
+    public static class QuickNavItem {
+        public QuickNavItem(Boolean render, ItemData itemData, String uiTitle, String clickEvent) {
+            this.render = render;
+            this.item = itemData;
+            this.clickEvent = clickEvent;
+            this.uiTitle = uiTitle;
+        }
+
+        public Boolean render;
+
+        @ConfigEntry.Category("item")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public ItemData item;
+
+        public String uiTitle;
+        public String clickEvent;
+    }
+
+    public static class ItemData {
+        public ItemData(String itemName, int count, String nbt) {
+            this.itemName = itemName;
+            this.count = count;
+            this.nbt = nbt;
+        }
+
+        public ItemData(String itemName) {
+            this.itemName = itemName;
+            this.count = 1;
+            this.nbt = "";
+        }
+
+        public String itemName;
+        public int count;
+        public String nbt;
+    }
+
     public static class General {
         public boolean enableUpdateNotification = true;
         public boolean backpackPreviewWithoutShift = false;
@@ -43,10 +136,6 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
         public ItemList itemList = new ItemList();
-
-        @ConfigEntry.Category("quicknav")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
-        public Quicknav quicknav = new Quicknav();
 
         @ConfigEntry.Category("itemTooltip")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
@@ -121,10 +210,6 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class ItemList {
         public boolean enableItemList = true;
-    }
-
-    public static class Quicknav {
-        public boolean enableQuicknav = true;
     }
 
     public enum Average {
