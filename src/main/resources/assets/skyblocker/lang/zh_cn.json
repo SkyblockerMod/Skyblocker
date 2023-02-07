@@ -37,6 +37,21 @@
   "text.autoconfig.skyblocker.option.richPresence.enableRichPresence": "已启用",
   "text.autoconfig.skyblocker.option.richPresence.customMessage": "自定义消息",
 
+  "text.autoconfig.skyblocker.category.quickNav" : "快速导航",
+  "text.autoconfig.skyblocker.option.quickNav.enableQuickNav" : "启用快速导航",
+  "text.autoconfig.skyblocker.option.quickNav.button1" : "按钮1",
+  "text.autoconfig.skyblocker.option.quickNav.button2" : "按钮2",
+  "text.autoconfig.skyblocker.option.quickNav.button3" : "按钮3",
+  "text.autoconfig.skyblocker.option.quickNav.button4" : "按钮4",
+  "text.autoconfig.skyblocker.option.quickNav.button5" : "按钮5",
+  "text.autoconfig.skyblocker.option.quickNav.button6" : "按钮6",
+  "text.autoconfig.skyblocker.option.quickNav.button7" : "按钮7",
+  "text.autoconfig.skyblocker.option.quickNav.button8" : "按钮8",
+  "text.autoconfig.skyblocker.option.quickNav.button9" : "按钮9",
+  "text.autoconfig.skyblocker.option.quickNav.button10" : "按钮10",
+  "text.autoconfig.skyblocker.option.quickNav.button11" : "按钮11",
+  "text.autoconfig.skyblocker.option.quickNav.button12" : "按钮12",
+  
   "text.autoconfig.skyblocker.option.general.itemList": "物品列表",
   "text.autoconfig.skyblocker.option.general.itemList.enableItemList": "启用物品列表",
 
