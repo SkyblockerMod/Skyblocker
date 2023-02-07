@@ -22,6 +22,7 @@ public class Utils {
     public static void sbChecker() {
         MinecraftClient client = MinecraftClient.getInstance();
         List<String> sidebar;
+
         if (client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null) {
             isOnSkyblock = false;
             isInDungeons = false;
