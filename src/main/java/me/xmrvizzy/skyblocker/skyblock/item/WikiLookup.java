@@ -65,7 +65,7 @@ public class WikiLookup {
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
                 client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
-            } catch (ArrayIndexOutOfBoundsException | IllegalStateException e) {
+            } catch (IndexOutOfBoundsException | IllegalStateException e) {
                 e.printStackTrace();
                 client.player.sendMessage(Text.of("Error while retrieving wiki article..."), false);
             }
