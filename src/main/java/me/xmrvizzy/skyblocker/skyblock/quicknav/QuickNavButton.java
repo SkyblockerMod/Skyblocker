@@ -83,7 +83,7 @@ public class QuickNavButton extends ClickableWidget {
         } else {
         	matrices.push();
         	//Move the top buttons 2 pixels up if they're selected
-        	if (this.index <= 6) matrices.translate(0f, -2f, 0f);
+        	if (this.index < 6) matrices.translate(0f, -2f, 0f);
         	this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
         	matrices.pop();
         }
