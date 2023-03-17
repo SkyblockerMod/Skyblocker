@@ -14,19 +14,19 @@ public class QuickNav {
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
         try {
-            buttons.add(new QuickNavButton(0, screenTitle.contains("Your Skills"), "/skills", new ItemStack(Items.DIAMOND_SWORD)));
-            buttons.add(new QuickNavButton(1, screenTitle.contains("Collection"), "/collection", new ItemStack(Items.PAINTING)));
+            buttons.add(new QuickNavButton(0, screenTitle.contains("Your Skills"), "skills", new ItemStack(Items.DIAMOND_SWORD)));
+            buttons.add(new QuickNavButton(1, screenTitle.contains("Collection"), "collection", new ItemStack(Items.PAINTING)));
 
-            buttons.add(new QuickNavButton(3, screenTitle.contains("Pets"), "/pets", new ItemStack(Items.BONE)));
-            buttons.add(new QuickNavButton(4, screenTitle.contains("Wardrobe"), "/wardrobe", ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:leather_chestplate\", Count:1, tag:{display:{color:8991416}}}"))));
-            buttons.add(new QuickNavButton(5, screenTitle.contains("Storage"), "/storage", new ItemStack(Items.ENDER_CHEST)));
+            buttons.add(new QuickNavButton(3, screenTitle.contains("Pets"), "pets", new ItemStack(Items.BONE)));
+            buttons.add(new QuickNavButton(4, screenTitle.contains("Wardrobe"), "wardrobe", ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:leather_chestplate\", Count:1, tag:{display:{color:8991416}}}"))));
+            buttons.add(new QuickNavButton(5, screenTitle.contains("Storage"), "storage", new ItemStack(Items.ENDER_CHEST)));
 
-            buttons.add(new QuickNavButton(6, false, "/warp hub", ItemStack.fromNbt(StringNbtReader.parse(skyblockHubIconNbt))));
-            buttons.add(new QuickNavButton(7, false, "/warp dungeon_hub", ItemStack.fromNbt(StringNbtReader.parse(dungeonHubIconNbt))));
+            buttons.add(new QuickNavButton(6, false, "warp hub", ItemStack.fromNbt(StringNbtReader.parse(skyblockHubIconNbt))));
+            buttons.add(new QuickNavButton(7, false, "warp dungeon_hub", ItemStack.fromNbt(StringNbtReader.parse(dungeonHubIconNbt))));
 
-            buttons.add(new QuickNavButton(9, screenTitle.contains("Enchant Item"), "/etable", new ItemStack(Items.ENCHANTING_TABLE)));
-            buttons.add(new QuickNavButton(10, screenTitle.contains("Anvil"), "/anvil", new ItemStack(Items.ANVIL)));
-            buttons.add(new QuickNavButton(11, screenTitle.contains("Craft Item"), "/craft", new ItemStack(Items.CRAFTING_TABLE)));
+            buttons.add(new QuickNavButton(9, screenTitle.contains("Enchant Item"), "etable", new ItemStack(Items.ENCHANTING_TABLE)));
+            buttons.add(new QuickNavButton(10, screenTitle.contains("Anvil"), "anvil", new ItemStack(Items.ANVIL)));
+            buttons.add(new QuickNavButton(11, screenTitle.contains("Craft Item"), "craft", new ItemStack(Items.CRAFTING_TABLE)));
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }
