@@ -1,5 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
@@ -7,9 +14,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
-import java.util.*;
-import java.util.regex.Matcher;
 
 public class Trivia extends ChatPatternListener {
     private static final Map<String, String[]> answers;
@@ -65,7 +69,7 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the status of Storm?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Necron?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Maxor, Storm, Goldor and Necron?", new String[]{"The Wither Lords"});
-        answers.put("How many total Fairy Souls are there?", new String[]{"238 Fairy Souls"});
+        answers.put("How many total Fairy Souls are there?", new String[]{"239 Fairy Souls"});
         answers.put("How many Fairy Souls are there in Spider's Den?", new String[]{"19 Fairy Souls"});
         answers.put("How many Fairy Souls are there in The End?", new String[]{"12 Fairy Souls"});
         answers.put("How many Fairy Souls are there in The Farming Islands?", new String[]{"20 Fairy Souls"});

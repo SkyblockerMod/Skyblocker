@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import me.xmrvizzy.skyblocker.mixin.RecipeBookWidgetAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,7 +14,6 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 
 @Environment(value= EnvType.CLIENT)
@@ -76,14 +76,16 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.isOpen() && !this.client.player.isSpectator()) {
-            if (this.searchField.mouseClicked(mouseX, mouseY, button)) {
-                this.results.closeRecipeView();
-                return true;
-            }
-            if (this.results.mouseClicked(mouseX, mouseY, button)) return true;
-        }
-        return false;
-    }
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (!this.isOpen() || this.client.player.isSpectator()) {
+			return false;
+		}
+		if (this.searchField != null && this.searchField.mouseClicked(mouseX, mouseY, button)) {
+			this.results.closeRecipeView();
+			return true;
+		}
+		if (this.results.mouseClicked(mouseX, mouseY, button))
+			return true;
+		return false;
+	}
 }

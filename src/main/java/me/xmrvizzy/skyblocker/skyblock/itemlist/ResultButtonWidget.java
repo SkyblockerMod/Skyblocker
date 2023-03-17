@@ -1,6 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -10,8 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.util.List;
 
 public class ResultButtonWidget extends ClickableWidget {
     private static final Identifier BACKGROUND_TEXTURE = new Identifier("textures/gui/recipe_book.png");
@@ -46,7 +47,6 @@ public class ResultButtonWidget extends ClickableWidget {
         client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
     }
 
-    @Override
     public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
         MinecraftClient client = MinecraftClient.getInstance();
         List<Text> tooltip = client.currentScreen.getTooltipFromItem(this.itemStack);
@@ -54,8 +54,9 @@ public class ResultButtonWidget extends ClickableWidget {
         client.currentScreen.renderTooltip(matrices, tooltip, mouseX, mouseY);
     }
 
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-
-    }
+	@Override
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+		// TODO Auto-generated method stub
+		
+	}
 }
