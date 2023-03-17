@@ -67,11 +67,11 @@ public class QuickNavButton extends ClickableWidget {
         this.updateCoordinates();
         RenderSystem.setShaderTexture(0, BUTTON_TEXTURE);
         RenderSystem.disableDepthTest();
-        //Move buttons 1 pixel up
-        matrices.push();
-        matrices.translate(0f, -1f, 0f);
         // render button background
         if (!this.toggled) {
+            //Move buttons 1 pixel up if they aren't selected
+            matrices.push();
+            matrices.translate(0f, -1f, 0f);
             if (this.index >= 6)
                 // this.drawTexture(matrices, this.x, this.y + 4, this.u, this.v + 4, this.width, this.height - 4);
                 this.drawTexture(matrices, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
@@ -79,8 +79,14 @@ public class QuickNavButton extends ClickableWidget {
                 // this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
                 this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height - 4);
         // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
-        } else this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
-        matrices.pop();
+            matrices.pop();
+        } else {
+        	matrices.push();
+        	//Move the top buttons 2 pixels up if they're selected
+        	if (this.index <= 6) matrices.translate(0f, -2f, 0f);
+        	this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
+        	matrices.pop();
+        }
         // render button icon
         if (!this.toggled) {
             if (this.index >= 6)
