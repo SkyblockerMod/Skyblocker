@@ -36,7 +36,7 @@ public abstract class HandledScreenMixin extends Screen {
     @Inject(method = "init()V", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
         // quicknav
-        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.quicknav.enableQuicknav) {
+        if (Utils.isOnSkyblock && SkyblockerConfig.get().quickNav.enableQuickNav) {
             String screenTitle = super.getTitle().getString().trim();
             List<QuickNavButton> buttons = QuickNav.init(screenTitle);
             for (QuickNavButton button : buttons) super.addDrawableChild(button);

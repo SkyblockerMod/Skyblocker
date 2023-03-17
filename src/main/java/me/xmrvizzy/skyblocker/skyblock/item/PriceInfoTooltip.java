@@ -353,11 +353,18 @@ public class PriceInfoTooltip {
     private static void downloadLowestPrices() {
         JsonObject result = null;
         try {
-            URL apiAddr = new URL("https://skytils.gg/api/auctions/lowestbins");
+            URL apiAddr = new URL("https://lb.tricked.pro/lowestbins");
             InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
             result = new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
-            LOGGER.warn("[Skyblocker] Failed to download lowest BIN prices!", e);
+            LOGGER.warn("[Skyblocker] Failed to download lowest BIN prices from the main source!", e);
+            try {
+                URL apiAddr = new URL("https://lb2.tricked.pro/lowestbins");
+                InputStreamReader reader = new InputStreamReader(apiAddr.openStream());
+                result = new Gson().fromJson(reader, JsonObject.class);
+            } catch (IOException e2) {
+                LOGGER.warn("[Skyblocker] Failed to download lowest BIN prices from the backup source!", e2);
+            }
         }
         lowestPricesJson = result;
     }

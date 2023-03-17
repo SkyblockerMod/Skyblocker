@@ -5,32 +5,51 @@ import java.util.List;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.StringNbtReader;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class QuickNav {
     private static final String skyblockHubIconNbt = "{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}";
     private static final String dungeonHubIconNbt = "{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;1605800870,415127827,-1236127084,15358548],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}}}}";
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
+        SkyblockerConfig.QuickNav data = SkyblockerConfig.get().quickNav;
         try {
-            buttons.add(new QuickNavButton(0, screenTitle.contains("Your Skills"), "skills", new ItemStack(Items.DIAMOND_SWORD)));
-            buttons.add(new QuickNavButton(1, screenTitle.contains("Collection"), "collection", new ItemStack(Items.PAINTING)));
-
-            buttons.add(new QuickNavButton(3, screenTitle.contains("Pets"), "pets", new ItemStack(Items.BONE)));
-            buttons.add(new QuickNavButton(4, screenTitle.contains("Wardrobe"), "wardrobe", ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:leather_chestplate\", Count:1, tag:{display:{color:8991416}}}"))));
-            buttons.add(new QuickNavButton(5, screenTitle.contains("Storage"), "storage", new ItemStack(Items.ENDER_CHEST)));
-
-            buttons.add(new QuickNavButton(6, false, "warp hub", ItemStack.fromNbt(StringNbtReader.parse(skyblockHubIconNbt))));
-            buttons.add(new QuickNavButton(7, false, "warp dungeon_hub", ItemStack.fromNbt(StringNbtReader.parse(dungeonHubIconNbt))));
-
-            buttons.add(new QuickNavButton(9, screenTitle.contains("Enchant Item"), "etable", new ItemStack(Items.ENCHANTING_TABLE)));
-            buttons.add(new QuickNavButton(10, screenTitle.contains("Anvil"), "anvil", new ItemStack(Items.ANVIL)));
-            buttons.add(new QuickNavButton(11, screenTitle.contains("Craft Item"), "craft", new ItemStack(Items.CRAFTING_TABLE)));
+            if (data.button1.render) buttons.add(parseButton(data.button1, screenTitle, 0));
+            if (data.button2.render) buttons.add(parseButton(data.button2, screenTitle, 1));
+            if (data.button3.render) buttons.add(parseButton(data.button3, screenTitle, 2));
+            if (data.button4.render) buttons.add(parseButton(data.button4, screenTitle, 3));
+            if (data.button5.render) buttons.add(parseButton(data.button5, screenTitle, 4));
+            if (data.button6.render) buttons.add(parseButton(data.button6, screenTitle, 5));
+            if (data.button7.render) buttons.add(parseButton(data.button7, screenTitle, 6));
+            if (data.button8.render) buttons.add(parseButton(data.button8, screenTitle, 7));
+            if (data.button9.render) buttons.add(parseButton(data.button9, screenTitle, 8));
+            if (data.button10.render) buttons.add(parseButton(data.button10, screenTitle, 9));
+            if (data.button11.render) buttons.add(parseButton(data.button11, screenTitle, 10));
+            if (data.button12.render) buttons.add(parseButton(data.button12, screenTitle, 11));
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }
         return buttons;
+    }
+
+    private static QuickNavButton parseButton(SkyblockerConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
+        SkyblockerConfig.ItemData itemData = buttonInfo.item;
+        String nbtString = "{id:\"minecraft:" + itemData.itemName.toLowerCase(Locale.ROOT) + "\",Count:1";
+        if (itemData.nbt.length() > 2) nbtString += "," + itemData.nbt;
+        nbtString += "}";
+        return new QuickNavButton(id,
+                screenTitle.contains(buttonInfo.uiTitle),
+                buttonInfo.clickEvent,
+                ItemStack.fromNbt(StringNbtReader.parse(nbtString))
+        );
     }
 }
