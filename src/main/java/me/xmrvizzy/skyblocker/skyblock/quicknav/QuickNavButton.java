@@ -86,17 +86,17 @@ public class QuickNavButton extends ClickableWidget {
         if (!this.toggled) {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 6);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 5);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 9);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 8);
         } else {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 9);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 8);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 6, this.getY() + 6);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 5);
         }
         RenderSystem.enableDepthTest();
     }
