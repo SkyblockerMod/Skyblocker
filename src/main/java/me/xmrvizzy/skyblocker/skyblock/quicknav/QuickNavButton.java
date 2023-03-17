@@ -28,7 +28,7 @@ public class QuickNavButton extends ClickableWidget {
     private final ItemStack icon;
 
     public QuickNavButton(int index, boolean toggled, String command, ItemStack icon) {
-        super(0, 0, 28, 32, Text.empty());
+        super(0, 0, 26, 32, Text.empty());
         this.index = index;
         this.toggled = toggled;
         this.command = command;
@@ -45,10 +45,10 @@ public class QuickNavButton extends ClickableWidget {
             int h = ((HandledScreenAccessor)handledScreen).getBackgroundHeight();
             if (h > 166) --h; // why is this even a thing
             // this.x = x + this.index % 6 * 28 + 4;
-            this.setX(x + this.index % 6 * 28 + 4);
+            this.setX(x + this.index % 6 * 26 + 4);
             // this.y = this.index < 6 ? y - 28 : y + h - 4;
-            this.setY(this.index < 6 ? y - 28 : y + h - 4);
-            this.u = 28;
+            this.setY(this.index < 6 ? y - 26 : y + h - 4);
+            this.u = 26;
             this.v = (index < 6 ? 0 : 64) + (toggled ? 32 : 0);
         }
     }
@@ -68,6 +68,9 @@ public class QuickNavButton extends ClickableWidget {
         this.updateCoordinates();
         RenderSystem.setShaderTexture(0, BUTTON_TEXTURE);
         RenderSystem.disableDepthTest();
+        //Move buttons 1 pixel up
+        matrices.push();
+        matrices.translate(0f, -1f, 0f);
         // render button background
         if (!this.toggled) {
             if (this.index >= 6)
@@ -78,6 +81,7 @@ public class QuickNavButton extends ClickableWidget {
                 this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height - 4);
         // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
         } else this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
+        matrices.pop();
         // render button icon
         if (!this.toggled) {
             if (this.index >= 6)
