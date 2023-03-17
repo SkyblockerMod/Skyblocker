@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.quicknav;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import me.xmrvizzy.skyblocker.mixin.HandledScreenAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,7 +12,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -19,11 +19,6 @@ import net.minecraft.util.Identifier;
 public class QuickNavButton extends ClickableWidget {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final Identifier BUTTON_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
-
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-
-    }
 
     private int index;
     private boolean toggled;
@@ -101,4 +96,10 @@ public class QuickNavButton extends ClickableWidget {
         }
         RenderSystem.enableDepthTest();
     }
+
+	@Override
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+		// TODO Auto-generated method stub
+		
+	}
 }
