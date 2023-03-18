@@ -69,17 +69,13 @@ public class QuickNavButton extends ClickableWidget {
         RenderSystem.disableDepthTest();
         // render button background
         if (!this.toggled) {
-            //Move buttons 1 pixel up if they aren't selected
-            matrices.push();
-            matrices.translate(0f, -1f, 0f);
             if (this.index >= 6)
                 // this.drawTexture(matrices, this.x, this.y + 4, this.u, this.v + 4, this.width, this.height - 4);
                 this.drawTexture(matrices, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
             else
                 // this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
-                this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height - 4);
+                this.drawTexture(matrices, this.getX(), this.getY() - 2, this.u, this.v, this.width, this.height - 4);
         // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
-            matrices.pop();
         } else {
         	matrices.push();
         	//Move the top buttons 2 pixels up if they're selected
@@ -91,17 +87,17 @@ public class QuickNavButton extends ClickableWidget {
         if (!this.toggled) {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 5);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 6);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 8);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 7);
         } else {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 8);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 9);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 5);
+                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 6);
         }
         RenderSystem.enableDepthTest();
     }
