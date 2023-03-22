@@ -6,7 +6,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
-import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -219,8 +218,8 @@ public class SkyblockerConfig implements ConfigData {
 
         public String toString() {
             return switch (this) {
-                case ONE_DAY -> "1 day price";
-                case THREE_DAY -> "3 day price";
+                case ONE_DAY -> "1 day avg";
+                case THREE_DAY -> "3 day avg";
                 case BOTH -> "Both";
             };
         }
