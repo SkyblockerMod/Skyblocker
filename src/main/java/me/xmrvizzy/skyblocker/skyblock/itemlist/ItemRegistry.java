@@ -4,13 +4,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import org.eclipse.jgit.api.Git;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -24,6 +27,7 @@ public class ItemRegistry {
     protected static List<ItemStack> items = new ArrayList<>();
     protected static Map<String, ItemStack> itemsMap = new HashMap<>();
     protected static List<Recipe> recipes = new ArrayList<>();
+    static final MinecraftClient client = MinecraftClient.getInstance();
 
     // TODO: make async
     public static void init() {
@@ -93,6 +97,18 @@ public class ItemRegistry {
             }
             return lhsFamilyName.compareTo(rhsFamilyName);
         });
+    }
+
+    public static String getWikiLink(String internalName) {
+        try {
+            String fileContent = Files.readString(ITEM_LIST_DIR.resolve(internalName + ".json"));
+            JsonObject fileJson = JsonParser.parseString(fileContent).getAsJsonObject();
+            return fileJson.get("info").getAsJsonArray().get(1).getAsString();
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+            client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
+            return null;
+        }
     }
 
     public static List<Recipe> getRecipes(String internalName) {

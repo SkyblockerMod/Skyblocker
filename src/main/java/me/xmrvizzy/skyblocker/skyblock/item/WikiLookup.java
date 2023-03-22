@@ -1,9 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
@@ -16,11 +14,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.util.concurrent.CompletableFuture;
 
 public class WikiLookup {
     public static KeyBinding wikiLookup;
@@ -51,23 +45,12 @@ public class WikiLookup {
         if (Utils.isOnSkyblock) {
             id = getSkyblockId(slot);
             try {
-                //Setting up a connection with the repo
-                String urlString = "https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/items/" + id + ".json";
-                URL url = new URL(urlString);
-                URLConnection request = url.openConnection();
-                request.connect();
-
-                //yoinking the wiki link
-                JsonElement root = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-                JsonObject rootobj = root.getAsJsonObject();
-                String wikiLink = rootobj.get("info").getAsJsonArray().get(1).getAsString();
-                Util.getOperatingSystem().open(wikiLink);
-            } catch (IOException | NullPointerException e) {
-                e.printStackTrace();
-                client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
+                String wikiLink = ItemRegistry.getWikiLink(id);
+                CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink));
             } catch (IndexOutOfBoundsException | IllegalStateException e) {
                 e.printStackTrace();
-                client.player.sendMessage(Text.of("Error while retrieving wiki article..."), false);
+                if (client.player != null)
+                    client.player.sendMessage(Text.of("Error while retrieving wiki article..."), false);
             }
         }
     }
