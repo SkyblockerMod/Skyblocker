@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class ItemRegistry {
-    protected static final String REMOTE_ITEM_REPO = "https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git";
+    protected static final String REMOTE_ITEM_REPO = "https://github.com/NotEnoughUpdates/NotEnoughUpdates-REPO";
     protected static final Path LOCAL_ITEM_REPO_DIR = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/item-repo");
 
     private static final Path ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR.resolve("items");
@@ -135,7 +135,7 @@ class Recipe {
     private static ItemStack getItemStack(String internalName) {
         try {
             if (internalName.length() > 0) {
-                int count = Integer.parseInt(internalName.split(":")[1]);
+                int count = Integer.parseInt(internalName.split(":").length > 1 ? internalName.split(":")[1] : "1");
                 internalName = internalName.split(":")[0];
                 ItemStack itemStack = ItemRegistry.itemsMap.get(internalName).copy();
                 itemStack.setCount(count);
