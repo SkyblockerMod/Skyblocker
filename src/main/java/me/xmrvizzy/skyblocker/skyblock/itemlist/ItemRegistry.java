@@ -17,8 +17,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class ItemRegistry {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemRegistry.class);
     protected static final String REMOTE_ITEM_REPO = "https://github.com/NotEnoughUpdates/NotEnoughUpdates-REPO";
     protected static final Path LOCAL_ITEM_REPO_DIR = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/item-repo");
 
@@ -27,13 +29,20 @@ public class ItemRegistry {
     protected static List<ItemStack> items = new ArrayList<>();
     protected static Map<String, ItemStack> itemsMap = new HashMap<>();
     protected static List<Recipe> recipes = new ArrayList<>();
-    static final MinecraftClient client = MinecraftClient.getInstance();
+    protected static final MinecraftClient client = MinecraftClient.getInstance();
+    static boolean filesImported = false;
 
-    // TODO: make async
     public static void init() {
-        updateItemRepo();
-        ItemStackBuilder.init();
-        importItemFiles();
+        CompletableFuture.runAsync(ItemRegistry::updateItemRepo)
+                .whenComplete((result, ex) -> {
+                    if (ex == null) {
+                        ItemStackBuilder.init();
+                        importItemFiles();
+                    }
+                    else {
+                        LOGGER.error("[Skyblocker-ItemRegistry] " + ex);
+                    }
+                });
     }
 
     private static void updateItemRepo() {
@@ -97,6 +106,7 @@ public class ItemRegistry {
             }
             return lhsFamilyName.compareTo(rhsFamilyName);
         });
+        filesImported = true;
     }
 
     public static String getWikiLink(String internalName) {
