@@ -4,19 +4,24 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import org.eclipse.jgit.api.Git;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class ItemRegistry {
-    protected static final String REMOTE_ITEM_REPO = "https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemRegistry.class);
+    protected static final String REMOTE_ITEM_REPO = "https://github.com/NotEnoughUpdates/NotEnoughUpdates-REPO";
     protected static final Path LOCAL_ITEM_REPO_DIR = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/item-repo");
 
     private static final Path ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR.resolve("items");
@@ -24,12 +29,20 @@ public class ItemRegistry {
     protected static List<ItemStack> items = new ArrayList<>();
     protected static Map<String, ItemStack> itemsMap = new HashMap<>();
     protected static List<Recipe> recipes = new ArrayList<>();
+    protected static final MinecraftClient client = MinecraftClient.getInstance();
+    static boolean filesImported = false;
 
-    // TODO: make async
     public static void init() {
-        updateItemRepo();
-        ItemStackBuilder.init();
-        importItemFiles();
+        CompletableFuture.runAsync(ItemRegistry::updateItemRepo)
+                .whenComplete((result, ex) -> {
+                    if (ex == null) {
+                        ItemStackBuilder.init();
+                        importItemFiles();
+                    }
+                    else {
+                        LOGGER.error("[Skyblocker-ItemRegistry] " + ex);
+                    }
+                });
     }
 
     private static void updateItemRepo() {
@@ -93,6 +106,19 @@ public class ItemRegistry {
             }
             return lhsFamilyName.compareTo(rhsFamilyName);
         });
+        filesImported = true;
+    }
+
+    public static String getWikiLink(String internalName) {
+        try {
+            String fileContent = Files.readString(ITEM_LIST_DIR.resolve(internalName + ".json"));
+            JsonObject fileJson = JsonParser.parseString(fileContent).getAsJsonObject();
+            return fileJson.get("info").getAsJsonArray().get(1).getAsString();
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+            client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
+            return null;
+        }
     }
 
     public static List<Recipe> getRecipes(String internalName) {
@@ -135,7 +161,7 @@ class Recipe {
     private static ItemStack getItemStack(String internalName) {
         try {
             if (internalName.length() > 0) {
-                int count = Integer.parseInt(internalName.split(":")[1]);
+                int count = Integer.parseInt(internalName.split(":").length > 1 ? internalName.split(":")[1] : "1");
                 internalName = internalName.split(":")[0];
                 ItemStack itemStack = ItemRegistry.itemsMap.get(internalName).copy();
                 itemStack.setCount(count);

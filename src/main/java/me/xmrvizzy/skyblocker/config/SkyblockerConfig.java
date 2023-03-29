@@ -1,14 +1,14 @@
 package me.xmrvizzy.skyblocker.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Config(name = "skyblocker")
 public class SkyblockerConfig implements ConfigData {
@@ -66,7 +66,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button8")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
-        public QuickNavItem button8 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;1605800870,415127827,-1236127084,15358548],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}}}"), "none", "/warp dungeon_hub");
+        public QuickNavItem button8 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;1605800870,415127827,-1236127084,15358548],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}}}"), "none", "/warp dungeon");
 
         @ConfigEntry.Category("button9")
         @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
@@ -174,8 +174,7 @@ public class SkyblockerConfig implements ConfigData {
         RIGHT,
         NONE;
 
-        @Override
-		public String toString() {
+        public String toString() {
             return switch (this) {
                 case LAYER1 -> "Layer 1";
                 case LAYER2 -> "Layer 2";
@@ -217,11 +216,10 @@ public class SkyblockerConfig implements ConfigData {
         THREE_DAY,
         BOTH;
 
-        @Override
-		public String toString() {
+        public String toString() {
             return switch (this) {
-                case ONE_DAY -> "1 day price";
-                case THREE_DAY -> "3 day price";
+                case ONE_DAY -> "1 day avg";
+                case THREE_DAY -> "3 day avg";
                 case BOTH -> "Both";
             };
         }
