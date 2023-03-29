@@ -43,8 +43,6 @@ public abstract class ItemRendererMixin {
                         }
 
                         RenderSystem.disableDepthTest();
-//                        RenderSystem.disableTexture();
-//                        RenderSystem.disableAlphaTest();
                         RenderSystem.disableBlend();
                         float hue = Math.max(0.0F, 1.0F - (max - current) / max);
                         int width = Math.round(current / max * 13.0F);
@@ -52,8 +50,6 @@ public abstract class ItemRendererMixin {
                         DrawableHelper.fill(matrices, x + 2, y + 13, x + 15, y + 15, 0xFF000000);
                         DrawableHelper.fill(matrices, x + 2, y + 13, x + 2 + width, y + 14, rgb);
                         RenderSystem.enableBlend();
-//                        RenderSystem.enableAlphaTest();
-//                        RenderSystem.enableTexture();
                         RenderSystem.enableDepthTest();
                     }
                 }

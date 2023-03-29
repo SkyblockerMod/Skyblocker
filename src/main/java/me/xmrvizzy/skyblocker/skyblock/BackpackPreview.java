@@ -48,7 +48,7 @@ public class BackpackPreview extends DrawableHelper {
             // update save dir based on uuid and sb profile
             String uuid = MinecraftClient.getInstance().getSession().getUuid().replaceAll("-", "");
             String profile = getSkyblockProfile();
-            if (uuid != null && profile != null) {
+            if (profile != null) {
                 save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + uuid + "/" + profile);
                 save_dir.toFile().mkdirs();
                 if (loaded.equals(uuid + "/" + profile)) {
@@ -121,7 +121,7 @@ public class BackpackPreview extends DrawableHelper {
         String title = screen.getTitle().getString();
         int index = getStorageIndexFromTitle(title);
         if (index != -1) {
-            storage[index] = ((HandledScreen<?>) screen).getScreenHandler().slots.get(0).inventory;
+            storage[index] = screen.getScreenHandler().slots.get(0).inventory;
             dirty[index] = true;
         }
     }
@@ -140,10 +140,10 @@ public class BackpackPreview extends DrawableHelper {
 
         RenderSystem.disableDepthTest();
         RenderSystem.setShaderTexture(0, TEXTURE);
-        instance.drawTexture(matrices, x, y, 0, 0, 176, 7);
+        BackpackPreview.drawTexture(matrices, x, y, 0, 0, 176, 7);
         for (int i = 0; i < rows; ++i)
-            instance.drawTexture(matrices, x, y + i * 18 + 7, 0, 7, 176, 18);
-        instance.drawTexture(matrices, x, y + rows * 18 + 7, 0, 25, 176, 7);
+            BackpackPreview.drawTexture(matrices, x, y + i * 18 + 7, 0, 7, 176, 18);
+        BackpackPreview.drawTexture(matrices, x, y + rows * 18 + 7, 0, 25, 176, 7);
         RenderSystem.enableDepthTest();
 
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
@@ -184,7 +184,7 @@ public class BackpackPreview extends DrawableHelper {
 }
 
 class DummyInventory implements Inventory {
-    private List<ItemStack> stacks;
+    private final List<ItemStack> stacks;
 
     public DummyInventory(NbtCompound root) {
         stacks = new ArrayList<>(root.getInt("size") + 9);

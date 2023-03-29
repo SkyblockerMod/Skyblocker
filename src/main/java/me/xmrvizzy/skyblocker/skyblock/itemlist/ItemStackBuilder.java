@@ -30,8 +30,7 @@ public class ItemStackBuilder {
     public static ItemStack parseJsonObj(JsonObject obj) {
         String internalName = obj.get("internalname").getAsString();
 
-        List<Pair<String, String>> injectors = new ArrayList<>();
-        injectors.addAll(petData(internalName));
+        List<Pair<String, String>> injectors = new ArrayList<>(petData(internalName));
 
         NbtCompound root = new NbtCompound();
         root.put("Count", NbtByte.of((byte)1));

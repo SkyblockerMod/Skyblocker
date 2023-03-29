@@ -6,6 +6,7 @@ import me.xmrvizzy.skyblocker.mixin.HandledScreenAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -20,7 +21,7 @@ public class QuickNavButton extends ClickableWidget {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final Identifier BUTTON_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
 
-    private int index;
+    private final int index;
     private boolean toggled;
     private int u;
     private int v;
@@ -37,8 +38,7 @@ public class QuickNavButton extends ClickableWidget {
 
     private void updateCoordinates() {
         Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (screen instanceof HandledScreen<?>) {
-            HandledScreen<?> handledScreen = (HandledScreen<?>) screen;
+        if (screen instanceof HandledScreen<?> handledScreen) {
             int x = ((HandledScreenAccessor)handledScreen).getX();
             int y = ((HandledScreenAccessor)handledScreen).getY();
             int w = ((HandledScreenAccessor)handledScreen).getBackgroundWidth();
@@ -71,16 +71,16 @@ public class QuickNavButton extends ClickableWidget {
         if (!this.toggled) {
             if (this.index >= 6)
                 // this.drawTexture(matrices, this.x, this.y + 4, this.u, this.v + 4, this.width, this.height - 4);
-                this.drawTexture(matrices, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
+                DrawableHelper.drawTexture(matrices, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
             else
                 // this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
-                this.drawTexture(matrices, this.getX(), this.getY() - 2, this.u, this.v, this.width, this.height - 4);
+                DrawableHelper.drawTexture(matrices, this.getX(), this.getY() - 2, this.u, this.v, this.width, this.height - 4);
         // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
         } else {
         	matrices.push();
         	//Move the top buttons 2 pixels up if they're selected
         	if (this.index < 6) matrices.translate(0f, -2f, 0f);
-        	this.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
+            DrawableHelper.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
         	matrices.pop();
         }
         // render button icon

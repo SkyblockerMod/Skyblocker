@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker;
 
 import me.xmrvizzy.skyblocker.chat.ChatMessageListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.api.StatsCommand;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
@@ -23,6 +24,6 @@ public class SkyblockerInitializer implements ClientModInitializer {
         DwarvenHud.init();
         ChatMessageListener.init();
         UpdateChecker.init();
-        SkyblockerMod.getInstance().discordRPCManager.init();
+        DiscordRPCManager.init();
     }
 }

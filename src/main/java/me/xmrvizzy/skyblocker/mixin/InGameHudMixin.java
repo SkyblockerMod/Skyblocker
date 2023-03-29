@@ -53,7 +53,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             return;
         String msg = message.getString();
         String res = statusBarTracker.update(msg, SkyblockerConfig.get().messages.hideMana);
-        if (msg != res) {
+        if (!msg.equals(res)) {
             if (res != null)
                 setOverlayMessage(Text.of(res), tinted);
             ci.cancel();
@@ -73,7 +73,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         if (Utils.isOnSkyblock) {
             if (HotbarSlotLock.isLocked(hotbarSlotIndex)) {
                 RenderSystem.setShaderTexture(0,SLOT_LOCK);
-                this.drawTexture(hotbarMatrices, i, j, 0, 0,16, 16);
+                DrawableHelper.drawTexture(hotbarMatrices, i, j, 0, 0,16, 16);
             }
             hotbarSlotIndex++;
         }

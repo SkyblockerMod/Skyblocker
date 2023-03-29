@@ -1,8 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
@@ -12,6 +9,9 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Reparty extends ChatPatternListener {
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -26,17 +26,12 @@ public class Reparty extends ChatPatternListener {
     public Reparty() {
         super("^(?:You are not currently in a party\\.|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*)))$");
         this.repartying = false;
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
-                if (!Utils.isOnSkyblock || this.repartying || client.player == null) return 0;
-                this.repartying = true;
-                client.player.networkHandler.sendCommand("p list");
-                return 0;
-            }));
-        });
-
-
-
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
+            if (!Utils.isOnSkyblock || this.repartying || client.player == null) return 0;
+            this.repartying = true;
+            client.player.networkHandler.sendCommand("p list");
+            return 0;
+        })));
     }
 
     @Override

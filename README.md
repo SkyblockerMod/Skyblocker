@@ -31,7 +31,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Wiki Lookup: press f4 to open the wiki page about the held item
 * Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
 * Quicknav: fast navigate between pets, armor, enderchest, skill, collection, crafting, enchant, envil, warp dungeon, warp hub
-* Recipe book: in the vanilla recipe book all skyblock items are listed and you can see the recipe of the item
+* Recipe book: in the vanilla recipe book all skyblock items are listed, and you can see the recipe of the item
 * Backpack preview: after you clicked your backpack or enderchest once you can hover over the backpack or enderchest and hold shift to preview
 * Update notification
 * Commission HUD: Dwarven Mines quests
@@ -67,16 +67,16 @@ Everyone can contribute to Skyblocker, read [this](https://github.com/Skyblocker
 
 |     [<img alt="Kraineff" src="https://github.com/Kraineff.png" width="100">](https://github.com/Kraineff)     |             [<img alt="d3dx9" src="https://github.com/d3dx9.png" width="100">](https://github.com/d3dx9)              | [<img alt="LifeIsAParadox" src="https://github.com/LifeIsAParadox.png" width="100">](https://github.com/LifeIsAParadox) | [<img alt="ExternalTime" src="https://github.com/ExternalTime.png" width="100">](https://github.com/ExternalTime) |
 |:-------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
-|                                    [Kraineff](https://github.com/Kraineff)                                    |                                           [d3dx9](https://github.com/d3dx9)                                           |                                   [LifeIsAParadox](https://github.com/LifeIsAParadox)                                   |                     [ExternalTime](https://github.com/ExternalTime)                                               |
+|                                    [Kraineff](https://github.com/Kraineff)                                    |                                           [d3dx9](https://github.com/d3dx9)                                           |                                   [LifeIsAParadox](https://github.com/LifeIsAParadox)                                   |                                  [ExternalTime](https://github.com/ExternalTime)                                  |
 
 | [<img alt="Zailer43" src="https://github.com/Zailer43.png" width="100">](https://github.com/Zailer43) | [<img alt="TacoMonkey11" src="https://github.com/TacoMonkey11.png" width="100">](https://github.com/TacoMonkey11) |   [<img alt="KonaeAkira" src="https://github.com/KonaeAkira.png" width="100">](https://github.com/KonaeAkira)   | [<img alt="Fix3dll" src="https://github.com/Fix3dll.png" width="100">](https://github.com/Fix3dll) |
 |:-----------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
-|                                [Zailer43](https://github.com/Zailer43)                                |                                  [TacoMonkey11](https://github.com/TacoMonkey11)                                  |                                   [KonaeAkira](https://github.com/KonaeAkira)                                   |                       [Fix3dll](https://github.com/Fix3dll)                                        |
+|                                [Zailer43](https://github.com/Zailer43)                                |                                  [TacoMonkey11](https://github.com/TacoMonkey11)                                  |                                   [KonaeAkira](https://github.com/KonaeAkira)                                   |                               [Fix3dll](https://github.com/Fix3dll)                                |
 
 
 | [<img alt="Zailer43" src="https://github.com/ADON15c.png" width="100">](https://github.com/ADON15c) |
 |:---------------------------------------------------------------------------------------------------:|
-|                       [ADON15c](https://github.com/ADON15c)                                         |
+|                                [ADON15c](https://github.com/ADON15c)                                |
 ### Translators
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox)) \
 Indonesian ([null2264](https://github.com/null2264)) \

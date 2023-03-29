@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(InventoryScreen.class)
 public class InventoryScreenMixin {
     @Redirect(
-            method = "",
+            method = "<init>",
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/client/gui/screen/recipebook/RecipeBookWidget"
