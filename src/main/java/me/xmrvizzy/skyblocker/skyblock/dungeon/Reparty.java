@@ -1,17 +1,17 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Reparty extends ChatPatternListener {
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -30,7 +30,7 @@ public class Reparty extends ChatPatternListener {
             dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
                 if (!Utils.isOnSkyblock || this.repartying || client.player == null) return 0;
                 this.repartying = true;
-                client.player.sendChatMessage("/p list", Text.of("/p list"));
+                client.player.networkHandler.sendCommand("p list");
                 return 0;
             }));
         });
@@ -68,15 +68,16 @@ public class Reparty extends ChatPatternListener {
             this.repartying = false;
             return;
         }
-        sendCommand(playerEntity, "/p disband", 1);
+        sendCommand(playerEntity, "p disband", 1);
         for (int i = 0; i < this.players.length; ++i) {
-            String command = "/p invite " + this.players[i];
+            String command = "p invite " + this.players[i];
             sendCommand(playerEntity, command, i + 2);
         }
         skyblocker.scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
     }
 
     private void sendCommand(ClientPlayerEntity player, String command, int delay) {
-        skyblocker.scheduler.schedule(() -> player.sendChatMessage(command, Text.of(command)), delay * BASE_DELAY);
+        // skyblocker.scheduler.schedule(() -> player.sendChatMessage(command, Text.of(command)), delay * BASE_DELAY);
+        skyblocker.scheduler.schedule(() -> player.networkHandler.sendCommand(command), delay * BASE_DELAY);
     }
 }

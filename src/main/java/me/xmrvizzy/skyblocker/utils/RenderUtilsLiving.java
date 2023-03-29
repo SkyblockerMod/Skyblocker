@@ -35,7 +35,9 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3f;
+//import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
+import org.joml.Vector3f;
 
 public class RenderUtilsLiving {
 
@@ -52,8 +54,10 @@ public class RenderUtilsLiving {
         MatrixStack matrices = matrixFrom(x, y, z);
 
         Camera camera = mc.gameRenderer.getCamera();
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-camera.getYaw()));
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
+        // matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-camera.getYaw()));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+        // matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -92,20 +96,24 @@ public class RenderUtilsLiving {
         MatrixStack matrices = matrixFrom(x, y, z);
 
         Camera camera = mc.gameRenderer.getCamera();
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-camera.getYaw()));
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
+        // matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-camera.getYaw()));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+        // matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
         matrices.translate(offX, offY, 0);
         matrices.scale((float) scale, (float) scale, 0.001f);
 
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f));
+        // matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f));
 
         //mc.getBufferBuilders().getEntityVertexConsumers().draw();
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        Vec3f[] currentLight = getCurrentLight();
+        // Vec3f[] currentLight = getCurrentLight();
+        Vector3f[] currentLight = getCurrentLight();
         DiffuseLighting.disableGuiDepthLighting();
 
         mc.getBufferBuilders().getEntityVertexConsumers().draw();
@@ -123,21 +131,25 @@ public class RenderUtilsLiving {
         MatrixStack matrices = new MatrixStack();
 
         Camera camera = mc.gameRenderer.getCamera();
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(camera.getYaw() + 180.0F));
+        // matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(camera.getPitch()));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+        // matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(camera.getYaw() + 180.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
 
         matrices.translate(x - camera.getPos().x, y - camera.getPos().y, z - camera.getPos().z);
 
         return matrices;
     }
 
-    public static Vec3f[] getCurrentLight() {
+    // public static Vec3f[] getCurrentLight() {
+    public static Vector3f[] getCurrentLight() {
         if (shaderLightField == null) {
             shaderLightField = FieldUtils.getField(RenderSystem.class, "shaderLightDirections", true);
         }
 
         try {
-            return (Vec3f[]) shaderLightField.get(null);
+            // return (Vec3f[]) shaderLightField.get(null);
+            return (Vector3f[]) shaderLightField.get(null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

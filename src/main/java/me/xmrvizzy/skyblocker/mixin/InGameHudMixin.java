@@ -44,7 +44,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private int scaledWidth;
 
     @Shadow
-    private void setOverlayMessage(Text message, boolean tinted) {
+    public void setOverlayMessage(Text message, boolean tinted) {
     }
 
     @Inject(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)

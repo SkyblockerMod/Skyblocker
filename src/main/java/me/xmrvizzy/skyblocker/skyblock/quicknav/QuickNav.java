@@ -1,7 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.quicknav;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.StringNbtReader;
