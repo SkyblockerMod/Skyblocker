@@ -69,7 +69,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     }
 
     @Inject(method = "renderHotbarItem", at = @At("HEAD"))
-    public void renderHotbarItem(int i, int j, float f, PlayerEntity player, ItemStack stack, int seed, CallbackInfo ci) {
+    public void renderHotbarItem(MatrixStack matrices, int i, int j, float f, PlayerEntity player, ItemStack stack, int seed, CallbackInfo ci) {
         if (Utils.isOnSkyblock) {
             if (HotbarSlotLock.isLocked(hotbarSlotIndex)) {
                 RenderSystem.setShaderTexture(0,SLOT_LOCK);
