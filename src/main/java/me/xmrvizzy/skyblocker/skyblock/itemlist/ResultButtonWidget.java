@@ -42,9 +42,9 @@ public class ResultButtonWidget extends ClickableWidget {
         // this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
         this.drawTexture(matrices, this.getX(), this.getY(), 29, 206, this.getWidth(), this.getHeight());
         // client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
-        client.getItemRenderer().renderInGui(this.itemStack, this.getX() + 4, this.getY() + 4);
+        client.getItemRenderer().renderInGui(matrices, this.itemStack, this.getX() + 4, this.getY() + 4);
         // client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
-        client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
+        client.getItemRenderer().renderGuiItemOverlay(matrices, client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
     }
 
     public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {

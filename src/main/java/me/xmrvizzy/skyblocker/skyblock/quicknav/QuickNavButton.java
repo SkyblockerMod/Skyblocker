@@ -87,17 +87,17 @@ public class QuickNavButton extends ClickableWidget {
         if (!this.toggled) {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 6);
+                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 6);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 7);
+                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 7);
         } else {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 9);
+                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 9);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(this.icon,this.getX() + 5, this.getY() + 6);
+                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 6);
         }
         RenderSystem.enableDepthTest();
     }

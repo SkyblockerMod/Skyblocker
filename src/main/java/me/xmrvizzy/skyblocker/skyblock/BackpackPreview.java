@@ -68,7 +68,7 @@ public class BackpackPreview extends DrawableHelper {
     }
 
     public static void loadStorage() {
-        assert(save_dir != null);
+        assert (save_dir != null);
         for (int index = 0; index < STORAGE_SIZE; ++index) {
             storage[index] = null;
             dirty[index] = false;
@@ -85,7 +85,7 @@ public class BackpackPreview extends DrawableHelper {
     }
 
     private static void saveStorage() {
-        assert(save_dir != null);
+        assert (save_dir != null);
         for (int index = 0; index < STORAGE_SIZE; ++index) {
             if (dirty[index]) {
                 if (storage[index] != null) {
@@ -121,7 +121,7 @@ public class BackpackPreview extends DrawableHelper {
         String title = screen.getTitle().getString();
         int index = getStorageIndexFromTitle(title);
         if (index != -1) {
-            storage[index] = ((HandledScreen<?>)screen).getScreenHandler().slots.get(0).inventory;
+            storage[index] = ((HandledScreen<?>) screen).getScreenHandler().slots.get(0).inventory;
             dirty[index] = true;
         }
     }
@@ -151,10 +151,11 @@ public class BackpackPreview extends DrawableHelper {
         for (int i = 9; i < storage[index].size(); ++i) {
             int itemX = x + (i - 9) % 9 * 18 + 8;
             int itemY = y + (i - 9) / 9 * 18 + 8;
-            itemRenderer.zOffset = 200.0F;
-            itemRenderer.renderInGui(storage[index].getStack(i), itemX, itemY);
-            itemRenderer.renderGuiItemOverlay(textRenderer, storage[index].getStack(i), itemX, itemY);
-            itemRenderer.zOffset = 0.0F;
+            matrices.push();
+            matrices.translate(0, 0, 200);
+            itemRenderer.renderInGui(matrices, storage[index].getStack(i), itemX, itemY);
+            itemRenderer.renderGuiItemOverlay(matrices, textRenderer, storage[index].getStack(i), itemX, itemY);
+            matrices.pop();
         }
 
         return true;
@@ -189,34 +190,50 @@ class DummyInventory implements Inventory {
         stacks = new ArrayList<>(root.getInt("size") + 9);
         for (int i = 0; i < 9; ++i) stacks.add(ItemStack.EMPTY);
         root.getList("list", NbtCompound.COMPOUND_TYPE).forEach(item ->
-                stacks.add(ItemStack.fromNbt((NbtCompound)item))
+                stacks.add(ItemStack.fromNbt((NbtCompound) item))
         );
     }
 
     @Override
-    public int size() { return stacks.size(); }
+    public int size() {
+        return stacks.size();
+    }
 
     @Override
-    public boolean isEmpty() { return false; }
+    public boolean isEmpty() {
+        return false;
+    }
 
     @Override
-    public ItemStack getStack(int slot) { return stacks.get(slot); }
+    public ItemStack getStack(int slot) {
+        return stacks.get(slot);
+    }
 
     @Override
-    public ItemStack removeStack(int slot, int amount) { return null; }
+    public ItemStack removeStack(int slot, int amount) {
+        return null;
+    }
 
     @Override
-    public ItemStack removeStack(int slot) { return null; }
+    public ItemStack removeStack(int slot) {
+        return null;
+    }
 
     @Override
-    public void setStack(int slot, ItemStack stack) { stacks.set(slot, stack); }
+    public void setStack(int slot, ItemStack stack) {
+        stacks.set(slot, stack);
+    }
 
     @Override
-    public void markDirty() {}
+    public void markDirty() {
+    }
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) { return false; }
+    public boolean canPlayerUse(PlayerEntity player) {
+        return false;
+    }
 
     @Override
-    public void clear() {}
+    public void clear() {
+    }
 }
