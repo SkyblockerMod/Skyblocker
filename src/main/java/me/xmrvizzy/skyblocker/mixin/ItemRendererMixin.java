@@ -48,9 +48,9 @@ public abstract class ItemRendererMixin {
                         RenderSystem.disableDepthTest();
                         float hue = Math.max(0.0F, 1.0F - (max - current) / max);
                         int width = Math.round(current / max * 13.0F);
-                        Color colour = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
+                        Color color = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
                         DrawableHelper.fill(matrices, x + 2, y + 13, x + 15, y + 15, 0xFF000000);
-                        DrawableHelper.fill(matrices, x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(colour.getAlpha(), colour.getRed(), colour.getGreen(), colour.getBlue()));
+                        DrawableHelper.fill(matrices, x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
                         RenderSystem.enableDepthTest();
                     }
                 }

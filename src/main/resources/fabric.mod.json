@@ -29,7 +29,7 @@
     "fabricloader": ">=0.14.17",
     "fabric-api": ">=0.76.0+1.19.4",
     "cloth-config2": "*",
-    "minecraft": ">=1.19.4"
+    "minecraft": "~1.19.4"
   },
   "custom": {
     "modmenu": {
