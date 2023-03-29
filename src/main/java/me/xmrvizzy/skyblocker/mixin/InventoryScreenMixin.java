@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(InventoryScreen.class)
-public class InventoryScreenMixin {
+public abstract class InventoryScreenMixin {
     @Redirect(
             method = "<init>",
             at = @At(
@@ -18,7 +18,7 @@ public class InventoryScreenMixin {
                     target = "net/minecraft/client/gui/screen/recipebook/RecipeBookWidget"
             )
     )
-    RecipeBookWidget constructor() {
+    RecipeBookWidget skyblocker$constructor() {
         if (Utils.isOnSkyblock && SkyblockerConfig.get().general.itemList.enableItemList)
             return new ItemListWidget();
         else

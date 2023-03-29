@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
     @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
-    public void renderItemBar(MatrixStack matrices, TextRenderer renderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
+    public void skyblocker$renderItemBar(MatrixStack matrices, TextRenderer renderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
 
         if (Utils.isOnSkyblock && SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel) {
             if (!stack.isEmpty()) {
