@@ -1,6 +1,16 @@
 package me.xmrvizzy.skyblocker.mixin;
 
+import java.awt.Color;
+import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -10,14 +20,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.MathHelper;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.regex.Pattern;
+import net.minecraft.util.math.ColorHelper;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
@@ -43,13 +46,11 @@ public abstract class ItemRendererMixin {
                         }
 
                         RenderSystem.disableDepthTest();
-                        RenderSystem.disableBlend();
                         float hue = Math.max(0.0F, 1.0F - (max - current) / max);
                         int width = Math.round(current / max * 13.0F);
-                        int rgb = MathHelper.hsvToRgb(hue / 3.0F, 1.0F, 1.0F);
+                        Color colour = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
                         DrawableHelper.fill(matrices, x + 2, y + 13, x + 15, y + 15, 0xFF000000);
-                        DrawableHelper.fill(matrices, x + 2, y + 13, x + 2 + width, y + 14, rgb);
-                        RenderSystem.enableBlend();
+                        DrawableHelper.fill(matrices, x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(colour.getAlpha(), colour.getRed(), colour.getGreen(), colour.getBlue()));
                         RenderSystem.enableDepthTest();
                     }
                 }
