@@ -23,7 +23,7 @@ public class DwarvenHudConfigScreen extends Screen {
         super.render(matrices, mouseX, mouseY, delta);
         renderBackground(matrices);
         DwarvenHud.render(matrices, hudX, hudY, List.of(new DwarvenHud.Commission("Test Commission 1", "1%"), new DwarvenHud.Commission("Test Commission 2", "2%")));
-        drawCenteredText(matrices, textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
+        drawCenteredTextWithShadow(matrices, textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
     }
 
     @Override

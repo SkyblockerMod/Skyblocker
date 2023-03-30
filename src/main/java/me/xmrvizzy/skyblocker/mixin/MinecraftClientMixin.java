@@ -16,24 +16,26 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public class MinecraftClientMixin {
+public abstract class MinecraftClientMixin {
 
-    @Shadow @Nullable public ClientPlayerEntity player;
+    @Shadow
+    @Nullable
+    public ClientPlayerEntity player;
 
     @Inject(method = "tick", at = @At("HEAD"))
-    public void tick(CallbackInfo ci) {
+    public void skyblocker$tick(CallbackInfo ci) {
         SkyblockerMod.getInstance().onTick();
     }
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
-    public void handleInputEvents(CallbackInfo ci) {
+    public void skyblocker$handleInputEvents(CallbackInfo ci) {
         if (Utils.isOnSkyblock) HotbarSlotLock.handleInputEvents(player);
     }
 
     @Inject(method = "setScreen", at = @At("HEAD"))
-    public void onSetScreen(Screen screen, CallbackInfo ci) {
+    public void skyblocker$onSetScreen(Screen screen, CallbackInfo ci) {
         ContainerSolverManager manager = SkyblockerMod.getInstance().containerSolverManager;
-        if(Utils.isOnSkyblock && screen instanceof GenericContainerScreen)
+        if (Utils.isOnSkyblock && screen instanceof GenericContainerScreen)
             manager.onSetScreen((GenericContainerScreen) screen);
         else
             manager.clearScreen();

@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class DwarvenHud {
 
 
-    public static MinecraftClient client = MinecraftClient.getInstance();
+    public static final MinecraftClient client = MinecraftClient.getInstance();
     public static List<Commission> commissionList = new ArrayList<>();
 
 
@@ -84,8 +84,8 @@ public class DwarvenHud {
     }
 
     public static class Commission{
-        String commission;
-        String progression;
+        final String commission;
+        final String progression;
 
         public Commission(String commission, String progression){
             this.commission = commission;

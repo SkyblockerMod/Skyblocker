@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
 
 public class UpdateChecker {
     public static boolean shouldUpdate = false;
-    public static Pattern pattern = Pattern.compile("v(\\d+)\\.(\\d+)\\.(\\d+)");
-    public static Pattern localPattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
+    public static final Pattern pattern = Pattern.compile("v(\\d+)\\.(\\d+)\\.(\\d+)");
+    public static final Pattern localPattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
     public static Matcher matcher;
     public static VersionNumber localVersion = null;
     public static VersionNumber latestVersion = null;

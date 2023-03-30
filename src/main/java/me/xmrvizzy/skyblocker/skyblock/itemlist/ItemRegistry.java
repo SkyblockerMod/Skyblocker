@@ -26,9 +26,9 @@ public class ItemRegistry {
 
     private static final Path ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR.resolve("items");
 
-    protected static List<ItemStack> items = new ArrayList<>();
-    protected static Map<String, ItemStack> itemsMap = new HashMap<>();
-    protected static List<Recipe> recipes = new ArrayList<>();
+    protected static final List<ItemStack> items = new ArrayList<>();
+    protected static final Map<String, ItemStack> itemsMap = new HashMap<>();
+    protected static final List<Recipe> recipes = new ArrayList<>();
     protected static final MinecraftClient client = MinecraftClient.getInstance();
     static boolean filesImported = false;
 
@@ -139,7 +139,7 @@ public class ItemRegistry {
 class Recipe {
     private static final Logger LOGGER = LoggerFactory.getLogger(Recipe.class);
     String text = "";
-    List<ItemStack> grid = new ArrayList<>(9);
+    final List<ItemStack> grid = new ArrayList<>(9);
     ItemStack result;
 
     public static Recipe fromJsonObject(JsonObject jsonObj) {

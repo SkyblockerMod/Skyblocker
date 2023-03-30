@@ -21,14 +21,18 @@ public class OldLever {
             return FLOOR_SHAPE;
         } else if (wallMountLocation == WallMountLocation.WALL) {
             switch (direction) {
-                case EAST:
+                case EAST -> {
                     return EAST_SHAPE;
-                case WEST:
+                }
+                case WEST -> {
                     return WEST_SHAPE;
-                case SOUTH:
+                }
+                case SOUTH -> {
                     return SOUTH_SHAPE;
-                case NORTH:
+                }
+                case NORTH -> {
                     return NORTH_SHAPE;
+                }
             }
         }
         return null;

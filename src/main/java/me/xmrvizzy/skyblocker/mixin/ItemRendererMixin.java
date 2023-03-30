@@ -1,32 +1,31 @@
 package me.xmrvizzy.skyblocker.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
-import me.xmrvizzy.skyblocker.utils.Utils;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.MathHelper;
+import java.awt.Color;
+import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.regex.Pattern;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.ColorHelper;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
-
-    @Shadow protected abstract void renderGuiQuad(BufferBuilder buffer, int x, int y, int width, int height, int red, int green, int blue, int alpha);
-
-    @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
-    public void renderItemBar(TextRenderer renderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
+    @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
+    public void skyblocker$renderItemBar(MatrixStack matrices, TextRenderer renderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
 
         if (Utils.isOnSkyblock && SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel) {
             if (!stack.isEmpty()) {
@@ -47,19 +46,11 @@ public abstract class ItemRendererMixin {
                         }
 
                         RenderSystem.disableDepthTest();
-                        RenderSystem.disableTexture();
-//                        RenderSystem.disableAlphaTest();
-                        RenderSystem.disableBlend();
-                        Tessellator tessellator = Tessellator.getInstance();
-                        BufferBuilder buffer = tessellator.getBuffer();
                         float hue = Math.max(0.0F, 1.0F - (max - current) / max);
                         int width = Math.round(current / max * 13.0F);
-                        int rgb = MathHelper.hsvToRgb(hue / 3.0F, 1.0F, 1.0F);
-                        this.renderGuiQuad(buffer, x + 2, y + 13, 13, 2, 0,0,0,255);
-                        this.renderGuiQuad(buffer, x + 2, y + 13, width, 1, rgb >> 16 & 255, rgb >> 8 & 255, rgb & 255, 255);
-                        RenderSystem.enableBlend();
-//                        RenderSystem.enableAlphaTest();
-                        RenderSystem.enableTexture();
+                        Color color = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
+                        DrawableHelper.fill(matrices, x + 2, y + 13, x + 15, y + 15, 0xFF000000);
+                        DrawableHelper.fill(matrices, x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
                         RenderSystem.enableDepthTest();
                     }
                 }
