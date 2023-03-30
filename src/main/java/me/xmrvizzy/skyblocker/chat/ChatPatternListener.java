@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ChatPatternListener implements ChatMessageListener {
-    protected static String NUMBER = "-?[0-9]{1,3}(?>,[0-9]{3})*(?:\\.[1-9])?";
+    protected static final String NUMBER = "-?[0-9]{1,3}(?>,[0-9]{3})*(?:\\.[1-9])?";
     public final Pattern pattern;
 
     public ChatPatternListener(String pattern) {

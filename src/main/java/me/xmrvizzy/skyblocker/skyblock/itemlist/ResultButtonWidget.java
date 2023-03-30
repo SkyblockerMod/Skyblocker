@@ -5,6 +5,7 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.GameRenderer;
@@ -40,11 +41,11 @@ public class ResultButtonWidget extends ClickableWidget {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
         // this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
-        this.drawTexture(matrices, this.getX(), this.getY(), 29, 206, this.getWidth(), this.getHeight());
+        DrawableHelper.drawTexture(matrices, this.getX(), this.getY(), 29, 206, this.getWidth(), this.getHeight());
         // client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
-        client.getItemRenderer().renderInGui(this.itemStack, this.getX() + 4, this.getY() + 4);
+        client.getItemRenderer().renderInGui(matrices, this.itemStack, this.getX() + 4, this.getY() + 4);
         // client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
-        client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
+        client.getItemRenderer().renderGuiItemOverlay(matrices, client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
     }
 
     public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {

@@ -75,7 +75,7 @@ public class RenderUtils {
             return Vec3d.ZERO;
         }
 
-        double tickDelta = (double) MinecraftClient.getInstance().getTickDelta();
+        double tickDelta = MinecraftClient.getInstance().getTickDelta();
         return new Vec3d(
                 e.getX() - MathHelper.lerp(tickDelta, e.lastRenderX, e.getX()),
                 e.getY() - MathHelper.lerp(tickDelta, e.lastRenderY, e.getY()),
@@ -89,11 +89,9 @@ public class RenderUtils {
     public static void setup() {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.disableTexture();
     }
 
     public static void cleanup() {
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 }

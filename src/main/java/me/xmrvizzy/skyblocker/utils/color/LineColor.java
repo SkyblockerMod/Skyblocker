@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Function4;
 
 public class LineColor extends RenderColor {
 
-    private Function4<Float, Float, Float, Integer, int[]> getColorFunc;
+    private final Function4<Float, Float, Float, Integer, int[]> getColorFunc;
 
     public static LineColor single(float red, float green, float blue, float alpha) {
         return LineColor.single((int) (red * 255f), (int) (green * 255f), (int) (blue * 255f), (int) (alpha * 255f));

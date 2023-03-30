@@ -42,17 +42,11 @@ public class QuadColor extends RenderColor {
     }
 
     public static QuadColor custom(int red1, int green1, int blue1, int alpha1, int red2, int green2, int blue2, int alpha2, int red3, int green3, int blue3, int alpha3, int red4, int green4, int blue4, int alpha4) {
-        return new QuadColor(curVertex -> {
-            switch (curVertex) {
-                case 0:
-                    return new int[]{red1, green1, blue1, alpha1};
-                case 1:
-                    return new int[]{red2, green2, blue2, alpha2};
-                case 2:
-                    return new int[]{red3, green3, blue3, alpha3};
-                default:
-                    return new int[]{red4, green4, blue4, alpha4};
-            }
+        return new QuadColor(curVertex -> switch (curVertex) {
+            case 0 -> new int[]{red1, green1, blue1, alpha1};
+            case 1 -> new int[]{red2, green2, blue2, alpha2};
+            case 2 -> new int[]{red3, green3, blue3, alpha3};
+            default -> new int[]{red4, green4, blue4, alpha4};
         });
     }
 
@@ -78,9 +72,7 @@ public class QuadColor extends RenderColor {
         for (int i = 0; i < 4; i++) {
             int[] curColor = getColor(i);
 
-            for (int j = 0; j < 4; j++) {
-                outColor[i * 4 + j] = curColor[j];
-            }
+            System.arraycopy(curColor, 0, outColor, i * 4, 4);
         }
 
         return outColor;

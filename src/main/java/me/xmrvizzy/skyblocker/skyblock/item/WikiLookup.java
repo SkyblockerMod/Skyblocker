@@ -24,7 +24,7 @@ import java.net.URLConnection;
 
 public class WikiLookup {
     public static KeyBinding wikiLookup;
-    static MinecraftClient client = MinecraftClient.getInstance();
+    static final MinecraftClient client = MinecraftClient.getInstance();
     static String id;
     public static Gson gson = new Gson();
 

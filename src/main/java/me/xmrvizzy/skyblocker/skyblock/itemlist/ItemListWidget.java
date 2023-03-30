@@ -7,6 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -54,7 +55,7 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
             this.searchField = ((RecipeBookWidgetAccessor)this).getSearchField();
             int i = (this.parentWidth - 147) / 2 - this.leftOffset;
             int j = (this.parentHeight - 166) / 2;
-            this.drawTexture(matrices, i, j, 1, 1, 147, 166);
+            DrawableHelper.drawTexture(matrices, i, j, 1, 1, 147, 166);
             this.searchField = ((RecipeBookWidgetAccessor)this).getSearchField();
             if (!this.searchField.isFocused() && this.searchField.getText().isEmpty()) {
                 Text hintText = (Text.translatable("gui.recipebook.search_hint")).formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
@@ -84,8 +85,6 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
 			this.results.closeRecipeView();
 			return true;
 		}
-		if (this.results.mouseClicked(mouseX, mouseY, button))
-			return true;
-		return false;
+		return this.results.mouseClicked(mouseX, mouseY, button);
 	}
 }
