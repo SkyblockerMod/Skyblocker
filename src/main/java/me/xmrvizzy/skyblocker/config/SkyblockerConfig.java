@@ -252,6 +252,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip()
         public final boolean croesusHelper = true;
         public final boolean enableMap = true;
+        public final float mapScaling = 1f;
         public final boolean solveThreeWeirdos = true;
         public final boolean blazesolver = true;
         public final boolean solveTrivia = true;
