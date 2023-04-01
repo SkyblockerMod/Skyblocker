@@ -1,14 +1,14 @@
 package me.xmrvizzy.skyblocker.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Config(name = "skyblocker")
 public class SkyblockerConfig implements ConfigData {
@@ -205,7 +205,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip()
         public final Info info = Info.LOCATION;
         public final boolean cycleMode = false;
-        public String customMessage;
+        public String customMessage = "Playing Skyblock";
     }
 
     public static class ItemList {
