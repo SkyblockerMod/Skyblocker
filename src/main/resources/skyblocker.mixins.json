@@ -3,7 +3,6 @@
   "package": "me.xmrvizzy.skyblocker.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ChatHudListenerMixin",
     "ClientPlayerEntityMixin",
     "InGameHudMixin",
     "ItemRendererMixin",
