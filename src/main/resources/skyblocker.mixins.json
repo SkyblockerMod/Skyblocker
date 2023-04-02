@@ -16,7 +16,9 @@
     "HandledScreenMixin",
     "InventoryScreenMixin",
     "RecipeBookWidgetAccessor",
-    "HandledScreenAccessor"
+    "HandledScreenAccessor",
+    "PlayerListHudAccessor",
+    "PlayerListHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
