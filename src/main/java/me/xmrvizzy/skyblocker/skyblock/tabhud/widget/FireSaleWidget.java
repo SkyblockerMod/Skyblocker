@@ -12,6 +12,7 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.Formatting;
 
 // TODO: untested with active fire sales
@@ -42,8 +43,8 @@ public class FireSaleWidget extends Widget {
             found = true;
             Text a = Text.literal(m.group(1));
             Text b = Text.literal(m.group(2) + "/" + m.group(3) + "000");
-            float pcnt = (1 - (Float.parseFloat(m.group(2)) / (Float.parseFloat(m.group(3)) * 1000)))/100f;
-            ProgressComponent pc = new ProgressComponent(Ico.GOLD, a, b, pcnt, Formatting.LIGHT_PURPLE.getColorValue());
+            float pcnt = (1 - (Float.parseFloat(m.group(2)) / (Float.parseFloat(m.group(3)) * 1000)))*100f;
+            ProgressComponent pc = new ProgressComponent(Ico.GOLD, a, b, pcnt, pcntToCol(pcnt));
             this.addComponent(pc);
         }
         if (!found) {
@@ -51,6 +52,10 @@ public class FireSaleWidget extends Widget {
         }
         this.pack();
 
+    }
+
+    private int pcntToCol(float pcnt) {
+        return MathHelper.hsvToRgb(pcnt / 300f, 0.9f, 0.9f);
     }
 
 }
