@@ -74,7 +74,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button10")
         @ConfigEntry.Gui.CollapsibleObject()
-        public final QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant", "/etable");
+        public final QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant Item", "/etable");
 
         @ConfigEntry.Category("button11")
         @ConfigEntry.Gui.CollapsibleObject()
