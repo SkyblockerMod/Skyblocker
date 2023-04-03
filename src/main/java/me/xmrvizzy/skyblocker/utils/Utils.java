@@ -31,18 +31,19 @@ public class Utils {
         String string = sidebar.toString();
 
         if (sidebar.isEmpty()) return;
-        if (sidebar.get(0).contains("SKYBLOCK") && !isOnSkyblock) {
-            if (!isInjected) {
-                isInjected = true;
-                ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+        if (sidebar.get(0).contains("SKYBLOCK") || sidebar.get(0).contains("SKIBLOCK")) {
+            if (!isOnSkyblock) {
+                if (!isInjected) {
+                    isInjected = true;
+                    ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+                }
+                SkyblockEvents.JOIN.invoker().onSkyblockJoin();
+                isOnSkyblock = true;
             }
-            SkyblockEvents.JOIN.invoker().onSkyblockJoin();
-            isOnSkyblock = true;
-        }
-        if (!sidebar.get(0).contains("SKYBLOCK") && isOnSkyblock) {
+        } else if (isOnSkyblock) {
             SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
-            Utils.isOnSkyblock = false;
-            Utils.isInDungeons = false;
+            isOnSkyblock = false;
+            isInDungeons = false;
         }
         isInDungeons = isOnSkyblock && string.contains("The Catacombs");
     }
