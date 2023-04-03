@@ -11,52 +11,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
-import java.time.Instant;
 
 public class DiscordRPCManager {
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###,###.##");
-    public static final Logger LOGGER = LoggerFactory.getLogger(DiscordRPCManager.class.getName());
+    public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Discord RPC");
     public static long startTimeStamp;
     public static int cycleCount;
 
     public static void init(){
         SkyblockEvents.LEAVE.register(DiscordIPC::stop);
+        SkyblockEvents.JOIN.register(() -> {
+            startTimeStamp = System.currentTimeMillis();
+            if (DiscordIPC.start(934607927837356052L, null)) {
+                DiscordIPC.setActivity(buildPresence());
+                LOGGER.info("Discord RPC started");
+            } else {
+                LOGGER.error("Discord RPC failed to start");
+            }
+        });
     }
 
-    public void update(){
-        if (SkyblockerConfig.get().richPresence.customMessage != null ) {
-            if (SkyblockerConfig.get().richPresence.customMessage.isBlank()) {
-                SkyblockerConfig.get().richPresence.customMessage = "All on Fabric!";
-                AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
-            }
+    public static void update(){
+        // If the custom message is empty, discord will keep the last message, this is can serve as a default if the user doesn't want a custom message
+        if (SkyblockerConfig.get().richPresence.customMessage.isEmpty()) {
+            SkyblockerConfig.get().richPresence.customMessage = "Playing Skyblock";
+            AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
         }
-        if (!SkyblockerConfig.get().richPresence.enableRichPresence || !Utils.isOnSkyblock){
-            if (DiscordIPC.isConnected()) DiscordIPC.stop();
+        if ((!Utils.isOnSkyblock || !SkyblockerConfig.get().richPresence.enableRichPresence) && DiscordIPC.isConnected()){
+            DiscordIPC.stop();
+            LOGGER.info("Discord RPC stopped");
+            return;
         }
-        if (SkyblockerConfig.get().richPresence.enableRichPresence && Utils.isOnSkyblock && !DiscordIPC.isConnected()){
-            if (!DiscordIPC.start(934607927837356052L, () -> {
-                LOGGER.info("Started up rich presence");
-                startTimeStamp = Instant.now().getEpochSecond();
-            })){
-                LOGGER.info("An error occurred while attempting to connect to discord");
-                return;
-            }
-        }
-        if (SkyblockerConfig.get().richPresence.cycleMode)
-            cycleCount = (cycleCount + 1) % 3;
-        buildPresence();
+        if (SkyblockerConfig.get().richPresence.cycleMode) cycleCount = (cycleCount + 1) % 3;
+        DiscordIPC.setActivity(buildPresence());
     }
 
-    public void buildPresence(){
+    public static RichPresence buildPresence(){
         RichPresence presence = new RichPresence();
         presence.setLargeImage("skyblocker-default", null);
         presence.setStart(startTimeStamp);
         presence.setDetails(SkyblockerConfig.get().richPresence.customMessage);
         presence.setState(getInfo());
-        DiscordIPC.setActivity(presence);
+        return presence;
     }
 
-    public String getInfo(){
+    public static String getInfo(){
         String info = null;
         if (!SkyblockerConfig.get().richPresence.cycleMode){
             switch (SkyblockerConfig.get().richPresence.info){
