@@ -1,3 +1,13 @@
+## Skyblocker Tab Menu Fork
+This will be merged into Skyblocker when ready. It's not at the moment, but you can help by testing and opening issues.
+
+### Known Issues
+* Crimson Isle is not yet supported. (Getting Combat 24 is just... oof)
+* Garden isn't entirely supported. (I only recently got back into SB, this was new)
+* Scraping the entire player list every frame isn't ideal. (possible optimisation for later)
+
+------------------------ 
+
 <img height="150" src="https://hypixel.net/attachments/skyblocker-png.2715347" />
 
 ## Skyblocker
