@@ -21,6 +21,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public final Locations locations = new Locations();
 
+    @ConfigEntry.Category("quickNav")
+    @ConfigEntry.Gui.TransitiveObject
+    public final QuickNav quickNav = new QuickNav();
+
     @ConfigEntry.Category("messages")
     @ConfigEntry.Gui.TransitiveObject
     public final Messages messages = new Messages();
@@ -28,10 +32,6 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Category("richPresence")
     @ConfigEntry.Gui.TransitiveObject
     public final RichPresence richPresence = new RichPresence();
-
-    @ConfigEntry.Category("quickNav")
-    @ConfigEntry.Gui.TransitiveObject
-    public final QuickNav quickNav = new QuickNav();
 
     public static class QuickNav {
         public final boolean enableQuickNav = true;
