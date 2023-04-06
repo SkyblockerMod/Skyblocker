@@ -42,7 +42,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button2")
         @ConfigEntry.Gui.CollapsibleObject()
-        public final QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collection", "/collection");
+        public final QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collections", "/collection");
 
         @ConfigEntry.Category("button3")
         @ConfigEntry.Gui.CollapsibleObject()
