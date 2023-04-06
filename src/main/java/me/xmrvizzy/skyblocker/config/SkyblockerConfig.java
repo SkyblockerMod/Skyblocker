@@ -46,15 +46,15 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button3")
         @ConfigEntry.Gui.CollapsibleObject()
-        public final QuickNavItem button3 = new QuickNavItem(false, new ItemData("air"), "", "");
+        public final QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "\\(\\d+/\\d+\\) Pets", "/pets");
 
         @ConfigEntry.Category("button4")
         @ConfigEntry.Gui.CollapsibleObject()
-        public final QuickNavItem button4 = new QuickNavItem(true, new ItemData("bone"), "Pets", "/pets");
+        public final QuickNavItem button4 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe \\([12]/2\\)", "/wardrobe");
 
         @ConfigEntry.Category("button5")
         @ConfigEntry.Gui.CollapsibleObject()
-        public final QuickNavItem button5 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe", "/wardrobe");
+        public final QuickNavItem button5 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;-2081424676,-57521078,-2073572414,158072763],Properties:{textures:[{Value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}}}"), "Sack of Sacks", "/sacks");
 
         @ConfigEntry.Category("button6")
         @ConfigEntry.Gui.CollapsibleObject()
