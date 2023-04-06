@@ -15,12 +15,11 @@ public class SkyblockerMod {
 
     public final Scheduler scheduler = new Scheduler();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
-    public final DiscordRPCManager discordRPCManager = new DiscordRPCManager();
     public final StatusBarTracker statusBarTracker = new StatusBarTracker();
 
     private SkyblockerMod() {
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
-        scheduler.scheduleCyclic(discordRPCManager::update, 100);
+        scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
         scheduler.scheduleCyclic(BackpackPreview::tick, 50);
         scheduler.scheduleCyclic(DwarvenHud::update, 40);
