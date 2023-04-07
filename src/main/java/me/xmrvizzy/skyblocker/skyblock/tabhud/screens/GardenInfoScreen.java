@@ -4,48 +4,47 @@ import java.util.List;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CookieWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EffectWidget;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ElectionWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EventWidget;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.GardenSkillsWidget;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ProfileWidget;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.SkillsWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.UpgradeWidget;
-
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
 
-public class GenericInfoScreen extends Screen {
+public class GardenInfoScreen extends Screen {
 
-    public GenericInfoScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
+    public GardenInfoScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
         
         String f = footer.getString();
 
-        SkillsWidget sw = new SkillsWidget(ple);
-        EventWidget evw = new EventWidget(ple, false);
+        GardenSkillsWidget gsw = new GardenSkillsWidget(ple);
+        EventWidget evw = new EventWidget(ple, true);
         UpgradeWidget uw = new UpgradeWidget(f);
 
         ProfileWidget pw = new ProfileWidget(ple);
         EffectWidget efw = new EffectWidget(f);
 
-        ElectionWidget elw = new ElectionWidget(ple);
+        JacobsContestWidget jcw = new JacobsContestWidget(ple);
         CookieWidget cw = new CookieWidget(f);
         
         // goofy ahh layout code incoming
-        this.stackWidgetsH(sw, evw, uw);
+        this.stackWidgetsH(gsw, evw, uw);
         this.stackWidgetsH(pw, efw);
-        this.stackWidgetsH(elw, cw);
+        this.stackWidgetsH(jcw, cw);
 
-        this.centerW(sw);
+        this.centerW(gsw);
         this.centerW(evw);
         this.centerW(uw);
 
-        this.collideAgainstL(pw, sw, evw, uw);
-        this.collideAgainstL(efw, sw, evw, uw);
+        this.collideAgainstL(pw, gsw, evw, uw);
+        this.collideAgainstL(efw, gsw, evw, uw);
 
-        this.collideAgainstR(elw, sw, evw, uw);
-        this.collideAgainstR(cw, sw, evw, uw);
+        this.collideAgainstR(jcw, gsw, evw, uw);
+        this.collideAgainstR(cw, gsw, evw, uw);
 
-        this.addWidgets(sw, evw, uw, pw, efw, elw, cw);
+        this.addWidgets(gsw, evw, uw, pw, efw, jcw, cw);
     }
 
 }

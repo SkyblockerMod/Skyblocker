@@ -157,7 +157,7 @@ public class Screen {
 
     public static Screen getCorrect(int w, int h, List<PlayerListEntry> ple, Text footer) {
         if (TabHud.genericTgl.isPressed()) {
-            return new GenericInfoScreen(w, h, ple, footer);
+            return Screen.correctGenericScrn(w, h, ple, footer);
         // } else if (TabHud.mapTgl.isPressed()) {
         //     return Screen.correctMapScrn(w, h, ple, footer);
         } else if (TabHud.playerTgl.isPressed()) {
@@ -166,6 +166,7 @@ public class Screen {
             return Screen.correctMainScrn(w, h, ple, footer);
         }
     }
+
 
     private static ScreenType getScreenType(List<PlayerListEntry> ple) {
         String cat2Name = StrMan.strAt(ple, 40);
@@ -221,6 +222,14 @@ public class Screen {
     //     // };
     //     return new EmptyScreen(w, h, list, footer);
     // }
+
+    private static Screen correctGenericScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
+        return switch (getScreenType(list)) {
+            case GARDEN -> new GardenInfoScreen(w, h, list, footer);
+            default -> new GenericInfoScreen(w, h, list, footer); // ok
+        };
+    }
+
 
     private static Screen correctPlayerScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
         return switch (getScreenType(list)) {

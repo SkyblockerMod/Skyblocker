@@ -16,15 +16,19 @@ import net.minecraft.util.Formatting;
 public class EventWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
 
-    public EventWidget(List<PlayerListEntry> list) {
+    public EventWidget(List<PlayerListEntry> list, boolean isInGarden) {
         super(TITLE, Formatting.YELLOW.getColorValue());
 
-        Text eventName = StrMan.stdEntry(list, 73, "Name:", Formatting.YELLOW);
+        // hypixel devs carefully inserting the most random edge cases #317:
+        // the event info is placed a bit differently when in the garden.
+        int offset = (isInGarden) ? -1 : 0;
+
+        Text eventName = StrMan.stdEntry(list, 73 + offset, "Name:", Formatting.YELLOW);
         IcoTextComponent event = new IcoTextComponent(Ico.NTAG, eventName);
         this.addComponent(event);
 
         // this could look better
-        Text time = StrMan.plainEntry(list, 74);
+        Text time = StrMan.plainEntry(list, 74 + offset);
         IcoTextComponent t = new IcoTextComponent(Ico.CLOCK, time);
         this.addComponent(t);
         this.pack();

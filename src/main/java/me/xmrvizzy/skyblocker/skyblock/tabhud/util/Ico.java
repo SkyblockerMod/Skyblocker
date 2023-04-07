@@ -47,4 +47,5 @@ public class Ico {
     public static final ItemStack COPPER = new ItemStack(Items.COPPER_INGOT);
     public static final ItemStack COMPOSTER = new ItemStack(Items.COMPOSTER);
     public static final ItemStack SAPLING = new ItemStack(Items.OAK_SAPLING);
+    public static final ItemStack MILESTONE = new ItemStack(Items.LODESTONE);
 }
