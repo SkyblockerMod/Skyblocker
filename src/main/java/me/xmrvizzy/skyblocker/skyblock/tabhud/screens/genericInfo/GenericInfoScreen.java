@@ -1,7 +1,8 @@
-package me.xmrvizzy.skyblocker.skyblock.tabhud.screens;
+package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo;
 
 import java.util.List;
 
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CookieWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EffectWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ElectionWidget;
@@ -17,7 +18,7 @@ public class GenericInfoScreen extends Screen {
 
     public GenericInfoScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
-        
+
         String f = footer.getString();
 
         SkillsWidget sw = new SkillsWidget(ple);

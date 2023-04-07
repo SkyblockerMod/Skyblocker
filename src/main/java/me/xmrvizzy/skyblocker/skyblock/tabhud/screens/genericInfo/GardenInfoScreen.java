@@ -1,7 +1,8 @@
-package me.xmrvizzy.skyblocker.skyblock.tabhud.screens;
+package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo;
 
 import java.util.List;
 
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CookieWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EffectWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EventWidget;
@@ -16,7 +17,7 @@ public class GardenInfoScreen extends Screen {
 
     public GardenInfoScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
-        
+
         String f = footer.getString();
 
         GardenSkillsWidget gsw = new GardenSkillsWidget(ple);

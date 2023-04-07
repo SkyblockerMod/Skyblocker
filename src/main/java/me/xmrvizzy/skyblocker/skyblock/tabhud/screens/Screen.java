@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.*;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.*;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.*;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
@@ -225,7 +228,7 @@ public class Screen {
 
     private static Screen correctGenericScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
         return switch (getScreenType(list)) {
-            case GARDEN -> new GardenInfoScreen(w, h, list, footer);
+            case GARDEN -> new GardenInfoScreen(w, h, list, footer); // ok
             default -> new GenericInfoScreen(w, h, list, footer); // ok
         };
     }

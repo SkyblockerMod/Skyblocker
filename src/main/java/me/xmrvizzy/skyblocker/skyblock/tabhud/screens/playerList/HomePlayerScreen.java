@@ -1,7 +1,8 @@
-package me.xmrvizzy.skyblocker.skyblock.tabhud.screens;
+package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList;
 
 import java.util.List;
 
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.IslandGuestsWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.IslandSelfWidget;
 
