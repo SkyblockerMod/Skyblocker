@@ -3,7 +3,6 @@ This will be merged into Skyblocker when ready. It's not at the moment, more of 
 
 ### Known Issues
 * Crimson Isle is not yet supported. (Getting Combat 24 is just... oof)
-* Garden isn't entirely supported. (I only recently got back into SB, this was new)
 * Scraping the entire player list every frame isn't ideal. (possible optimisation for later)
 * Settings and keybinds aren't at the right place and don't have the correct text (this is a quick fix)
 * The election widget is broken due to a recent change in its layout. (`:(`)
