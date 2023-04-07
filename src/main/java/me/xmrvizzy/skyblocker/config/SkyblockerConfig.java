@@ -21,6 +21,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public Locations locations = new Locations();
 
+    @ConfigEntry.Category("quickNav")
+    @ConfigEntry.Gui.TransitiveObject
+    public QuickNav quickNav = new QuickNav();
+
     @ConfigEntry.Category("messages")
     @ConfigEntry.Gui.TransitiveObject
     public Messages messages = new Messages();
@@ -28,10 +32,6 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Category("richPresence")
     @ConfigEntry.Gui.TransitiveObject
     public RichPresence richPresence = new RichPresence();
-
-    @ConfigEntry.Category("quickNav")
-    @ConfigEntry.Gui.TransitiveObject
-    public QuickNav quickNav = new QuickNav();
 
     public static class QuickNav {
         public boolean enableQuickNav = true;
@@ -42,19 +42,19 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button2")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collection", "/collection");
+        public QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collections", "/collection");
 
         @ConfigEntry.Category("button3")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button3 = new QuickNavItem(false, new ItemData("air"), "", "");
+        public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "\\(\\d+/\\d+\\) Pets", "/pets");
 
         @ConfigEntry.Category("button4")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button4 = new QuickNavItem(true, new ItemData("bone"), "Pets", "/pets");
+        public QuickNavItem button4 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe \\([12]/2\\)", "/wardrobe");
 
         @ConfigEntry.Category("button5")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button5 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe", "/wardrobe");
+        public QuickNavItem button5 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;-2081424676,-57521078,-2073572414,158072763],Properties:{textures:[{Value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}}}"), "Sack of Sacks", "/sacks");
 
         @ConfigEntry.Category("button6")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -70,11 +70,11 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button9")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button9 = new QuickNavItem(false, new ItemData("air"), "", "");
+        public QuickNavItem button9 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;-562285948,532499670,-1705302742,775653035],Properties:{textures:[{Value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjVkZjU1NTkyNjQzMGQ1ZDc1YWRlZDIxZGQ5NjE5Yjc2YzViN2NhMmM3ZjU0MDE0NDA1MjNkNTNhOGJjZmFhYiJ9fX0=\"}]}}}"), "Visit prtl", "/visit prtl");
 
         @ConfigEntry.Category("button10")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant", "/etable");
+        public QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant Item", "/etable");
 
         @ConfigEntry.Category("button11")
         @ConfigEntry.Gui.CollapsibleObject()
