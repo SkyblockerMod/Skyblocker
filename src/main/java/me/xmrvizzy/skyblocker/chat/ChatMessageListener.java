@@ -7,6 +7,7 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Trivia;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Fetchur;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Puzzler;
+import me.xmrvizzy.skyblocker.skyblock.barn.TreasureHunter;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.text.Text;
@@ -30,6 +31,7 @@ public interface ChatMessageListener {
                 new Reparty(),
                 new ThreeWeirdos(),
                 new Trivia(),
+                new TreasureHunter(),
                 // Filters
                 new AbilityFilter(),
                 new AdFilter(),
