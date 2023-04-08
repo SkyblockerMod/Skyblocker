@@ -16,12 +16,12 @@ public class TabHud {
     public static void init() {
 
         playerTgl = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding("key.skyhytab.playerTgl",
+                new KeyBinding("key.skyblocker.playerTgl",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_LEFT_SHIFT,
                         "key.categories.skyblocker"));
         genericTgl = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding("key.tabhud.genericTgl",
+                new KeyBinding("key.skyblocker.genericTgl",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_LEFT_ALT,
                         "key.categories.skyblocker"));
@@ -31,7 +31,7 @@ public class TabHud {
         //                 GLFW.GLFW_KEY_LEFT_ALT,
         //                 "key.categories.skyblocker"));
         defaultTgl = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding("key.tabhud.defaultTgl",
+                new KeyBinding("key.skyblocker.defaultTgl",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_B,
                         "key.categories.skyblocker"));
