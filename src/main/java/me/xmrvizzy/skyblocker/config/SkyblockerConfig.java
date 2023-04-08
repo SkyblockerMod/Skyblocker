@@ -286,6 +286,7 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class Barn {
         public boolean solveTreasureHunter = true;
+        public boolean solveHungryHiker = true;
     }
 
     public static class Messages {
