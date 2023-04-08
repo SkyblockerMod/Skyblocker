@@ -16,8 +16,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// XXX crashes when in garden, as this shows jacob's farming info there...
-// "starts in", then the three farmable things
 // this widget shows the status or results of the current election
 
 public class ElectionWidget extends Widget {
@@ -37,6 +35,7 @@ public class ElectionWidget extends Widget {
 
     static {
         MAYOR_DATA.put("Aatrox", Ico.DIASWORD);
+        MAYOR_DATA.put("Cole", Ico.PICKAXE);
         MAYOR_DATA.put("Diana", Ico.BONE);
         MAYOR_DATA.put("Diaz", Ico.GOLD);
         MAYOR_DATA.put("Finnegan", Ico.HOE);
@@ -55,7 +54,6 @@ public class ElectionWidget extends Widget {
 
         if (StrMan.strAt(list, 76).contains("Over!")) {
             // election is over
-
             IcoTextComponent over = new IcoTextComponent(Ico.BARRIER, EL_OVER);
             this.addComponent(over);
 
