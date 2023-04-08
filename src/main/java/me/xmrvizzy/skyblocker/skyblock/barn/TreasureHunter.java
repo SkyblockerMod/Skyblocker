@@ -27,7 +27,7 @@ public class TreasureHunter extends ChatPatternListener {
         if (client.player == null) return false;
         String hint = matcher.group(1);
         String location = locations.getOrDefault(hint, hint);
-        client.player.sendMessage(Text.of("§e[NPC] Treasure Hunter§f: " + location), false);
+        client.player.sendMessage(Text.of("§e[NPC] Treasure Hunter§f: Go mine around " + location), false);
         return true;
     }
 

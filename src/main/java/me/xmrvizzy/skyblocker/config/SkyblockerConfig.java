@@ -248,7 +248,7 @@ public class SkyblockerConfig implements ConfigData {
         public DwarvenMines dwarvenMines = new DwarvenMines();
 
         @ConfigEntry.Category("barn")
-        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        @ConfigEntry.Gui.CollapsibleObject()
         public Barn barn = new Barn();
     }
 
