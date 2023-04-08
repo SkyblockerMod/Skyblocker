@@ -239,6 +239,10 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Locations {
+        @ConfigEntry.Category("barn")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Barn barn = new Barn();
+
         @ConfigEntry.Category("dungeons")
         @ConfigEntry.Gui.CollapsibleObject()
         public Dungeons dungeons = new Dungeons();
@@ -246,10 +250,6 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("dwarvenmines")
         @ConfigEntry.Gui.CollapsibleObject()
         public DwarvenMines dwarvenMines = new DwarvenMines();
-
-        @ConfigEntry.Category("barn")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Barn barn = new Barn();
     }
 
     public static class Dungeons {
@@ -285,8 +285,8 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Barn {
-        public boolean solveTreasureHunter = true;
         public boolean solveHungryHiker = true;
+        public boolean solveTreasureHunter = true;
     }
 
     public static class Messages {
