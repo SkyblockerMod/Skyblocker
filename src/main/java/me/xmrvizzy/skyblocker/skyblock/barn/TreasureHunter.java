@@ -51,7 +51,7 @@ public class TreasureHunter extends ChatPatternListener {
         locations.put("I saw something near a farmer's cart, you should check it out", "155 90 -591");
         locations.put("I remember there was a stone pillar made only of cobblestone in the oasis, could be something there", "122 66 -409");
         locations.put("I thought I saw something near the smallest stone pillar in the oasis", "94 65 -455");
-        locations.put("I found something by a mossy stone pillar in the oasis, you should taking a look", "179 93 -537");
+        locations.put("I found something by a mossy stone pillar in the oasis, you should take a look", "179 93 -537");
         locations.put("Down in the glowing Mushroom Cave, there was a weird looking mushroom, check it out", "182 44 -451");
         locations.put("Something caught my eye by the red sand near the bridge over the gorge", "306 105 -489");
         locations.put("I seem to recall seeing something near the well in the village", "170 77 -375");
