@@ -30,7 +30,6 @@ public class PlayerListHudMixin {
     @Shadow
     private Text footer;
 
-    boolean ok = true;
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", cancellable = true)
     public void skyblocker$renderTabHud(MatrixStack ms, int scaledW, Scoreboard sb, ScoreboardObjective sbo, CallbackInfo info) {
 
@@ -61,8 +60,7 @@ public class PlayerListHudMixin {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            SkyblockerConfig.get().general.tabHudEnabled = false;
-            MinecraftClient.getInstance().player.sendMessage(Text.of("The tab HUD has crashed due to some unexpected text, see log! :("));
+            MinecraftClient.getInstance().player.sendMessage(Text.of("The tab HUD has encountered unexpected text, see log! :("));
         }
 
     }
