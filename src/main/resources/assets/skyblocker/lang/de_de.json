@@ -1,10 +1,14 @@
 {
   "key.categories.skyblocker": "Skyblocker",
   "key.hotbarSlotLock": "Schlitzsperre (Hotbar)",
+  "key.skyblocker.playerTgl": "Tab-HUD auf Spielerliste umstellen",
+  "key.skyblocker.defaultTgl": "Tab-HUD auf Standard umstellen",
+  "key.skyblocker.genericTgl": "Tab-HUD auf allgemeine Infos umstellen",
 
   "text.autoconfig.skyblocker.title": "Skyblocker-Einstellungen",
 
   "text.autoconfig.skyblocker.category.general": "Allgemein",
+  "text.autoconfig.skyblocker.option.general.tabHudEnabled": "Schöneres Tab-HUD aktivieren",
   "text.autoconfig.skyblocker.option.general.bars": "Gesundheits-, Mana-, Verteidigungs- und XP-Balken",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Balken aktivieren",
 

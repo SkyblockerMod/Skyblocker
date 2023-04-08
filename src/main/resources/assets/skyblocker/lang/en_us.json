@@ -1,6 +1,9 @@
 {
   "key.categories.skyblocker": "Skyblocker",
   "key.hotbarSlotLock": "Slot Lock (Hotbar)",
+  "key.skyblocker.playerTgl": "Switch tab HUD to player list",
+  "key.skyblocker.defaultTgl": "Switch tab HUD to default view",
+  "key.skyblocker.genericTgl": "Switch tab HUD to general info",
   "key.wikiLookup": "Wiki Lookup",
 
   "text.autoconfig.skyblocker.title": "Skyblocker Settings",
@@ -16,6 +19,7 @@
   "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
+  "text.autoconfig.skyblocker.option.general.tabHudEnabled": "Enable fancy tab HUD",
   "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
