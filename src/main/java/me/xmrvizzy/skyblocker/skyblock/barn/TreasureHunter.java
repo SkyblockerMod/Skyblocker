@@ -40,7 +40,7 @@ public class TreasureHunter extends ChatPatternListener {
         locations.put("There's a small house in the gorge, I saw some treasure near there.", "297 87 -562");
         locations.put("There's this guy who says he has the best sheep in the world. I think I saw something around his hut.", "392 85 -372");
         locations.put("I spotted something by an odd looking mushroom on one of the ledges in the Mushroom Gorge, you should check it out.", "305 73 -557");
-        locations.put("There are some small ruins out in the desert, might want to check it out.", "320 102 -471");
+        locations.put("There are some small ruins out in the desert, might want to check them out.", "320 102 -471");
         locations.put("Some dirt was kicked up by the water pool in the overgrown Mushroom Cave. Have a look over there.", "234 56 -410");
         locations.put("There are some old stone structures in the Mushroom Gorge, give them a look.", "223 54 -503");
         locations.put("In the Mushroom Gorge where blue meets the ceiling and floor, you will find what you are looking for.", "205 42 -527");
