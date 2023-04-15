@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.chat;
 
+import net.minecraft.client.resource.language.I18n;
 public enum ChatFilterResult {
     // Skip this one / no action
     PASS,
@@ -10,11 +11,8 @@ public enum ChatFilterResult {
     // Skip remaining checks, don't filter
     // null
 
+    @Override
     public String toString() {
-        return switch (this) {
-            case PASS -> "Disabled";
-            case FILTER -> "Filter";
-            case ACTION_BAR -> "Move to action bar";
-        };
+        return I18n.translate("text.autoconfig.skyblocker.option.messages.chatFilterResult." + name());
     }
 }
