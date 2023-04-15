@@ -34,7 +34,7 @@ public class TreasureHunter extends ChatPatternListener {
 
     static {
         locations = new HashMap<>();
-        locations.put("There's a treasure chest somewhere in a small cave in the gorge.", "256 70 -490");
+        locations.put("There's a treasure chest somewhere in a small cave in the gorge.", "258 70 -492");
         locations.put("I was in the desert earlier, and I saw something near a red sand rock.", "357 82 -319");
         locations.put("There's this guy who collects animals to experiment on, I think I saw something near his house.", "259 184 -564");
         locations.put("There's a small house in the gorge, I saw some treasure near there.", "297 87 -562");
