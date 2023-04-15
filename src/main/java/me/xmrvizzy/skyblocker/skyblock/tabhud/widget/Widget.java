@@ -73,10 +73,16 @@ public abstract class Widget {
     }
 
     public final void render(MatrixStack ms) {
+        this.render(ms, true);
+    }
 
-        DrawableHelper.fill(ms, x + 1, y, x + w - 1, y + h, COL_BG_BOX);
-        DrawableHelper.fill(ms, x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
-        DrawableHelper.fill(ms, x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
+    public final void render(MatrixStack ms, boolean hasBG) {
+
+        if (hasBG) {
+            DrawableHelper.fill(ms, x + 1, y, x + w - 1, y + h, COL_BG_BOX);
+            DrawableHelper.fill(ms, x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
+            DrawableHelper.fill(ms, x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
+        }
 
         int strHeightHalf = Widget.txtRend.fontHeight / 2;
         int strAreaWidth = Widget.txtRend.getWidth(title) + 4;
