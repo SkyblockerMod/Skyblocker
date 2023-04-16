@@ -22,15 +22,15 @@ import java.util.concurrent.CompletableFuture;
 public class ItemRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemRegistry.class);
     protected static final String REMOTE_ITEM_REPO = "https://github.com/NotEnoughUpdates/NotEnoughUpdates-REPO";
-    protected static final Path LOCAL_ITEM_REPO_DIR = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/item-repo");
+    public static final Path LOCAL_ITEM_REPO_DIR = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/item-repo");
 
-    private static final Path ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR.resolve("items");
+    protected static final Path ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR.resolve("items");
 
     protected static final List<ItemStack> items = new ArrayList<>();
     protected static final Map<String, ItemStack> itemsMap = new HashMap<>();
     protected static final List<Recipe> recipes = new ArrayList<>();
-    protected static final MinecraftClient client = MinecraftClient.getInstance();
-    static boolean filesImported = false;
+    public static final MinecraftClient client = MinecraftClient.getInstance();
+    public static boolean filesImported = false;
 
     public static void init() {
         CompletableFuture.runAsync(ItemRegistry::updateItemRepo)
@@ -46,20 +46,16 @@ public class ItemRegistry {
     }
 
     private static void updateItemRepo() {
+        Git git;
         if (!Files.isDirectory(LOCAL_ITEM_REPO_DIR)) {
             try {
-                Git.cloneRepository()
+                git = Git.cloneRepository()
                         .setURI(REMOTE_ITEM_REPO)
                         .setDirectory(LOCAL_ITEM_REPO_DIR.toFile())
                         .setBranchesToClone(List.of("refs/heads/master"))
                         .setBranch("refs/heads/master")
                         .call();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                Git.open(LOCAL_ITEM_REPO_DIR.toFile()).pull().call();
+                git.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
