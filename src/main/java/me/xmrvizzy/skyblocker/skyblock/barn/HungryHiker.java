@@ -36,7 +36,7 @@ public class HungryHiker extends ChatPatternListener {
     static {
         foods = new HashMap<>();
         foods.put("from a cow.", Text.translatable("item.minecraft.cooked_beef").getString());
-        foods.put("from a fowl.", Text.translatable("item.minecraft.cooked_chicken").getString());
+        foods.put("meat from a fowl.", Text.translatable("item.minecraft.cooked_chicken").getString());
         foods.put("red on the inside, green on the outside.", Text.translatable("item.minecraft.melon_slice").getString());
         foods.put("a cooked potato.", Text.translatable("item.minecraft.baked_potato").getString());
         foods.put("a stew.", Text.translatable("item.minecraft.rabbit_stew").getString());
