@@ -6,10 +6,6 @@ plugins {
 
 import com.modrinth.minotaur.dependencies.ModDependency
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
@@ -63,6 +59,10 @@ dependencies {
 	include(modImplementation ("meteordevelopment:discord-ipc:1.1"))
 }
 
+base {
+	archivesName = project.archives_base_name
+}
+
 processResources {
 	inputs.property "version", project.version
 
@@ -87,11 +87,14 @@ java {
 	// if it is present.
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${base.archivesName.get()}"}
 	}
 }
 
@@ -105,7 +108,7 @@ modrinth {
 	versionNumber = "v${project.version}"
 	versionName = "Skyblocker ${project.mod_version} for ${project.minecraft_version}"
 	uploadFile = remapJar
-	gameVersions = ["1.19", "1.19.1", project.minecraft_version]
+	gameVersions = [project.minecraft_version]
 	loaders = ["fabric"]
 	versionType = "release"
 	dependencies = [ // Yet another array. Create a new `ModDependency` or `VersionDependency` with two strings - the ID and the scope
