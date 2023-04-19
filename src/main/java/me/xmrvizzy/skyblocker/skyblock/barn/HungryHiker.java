@@ -29,7 +29,7 @@ public class HungryHiker extends ChatPatternListener {
         String food = foods.get(foodDescription);
         if (food == null) return false;
         String middlePartOfTheMessageToSend = matcher.group(2) != null ? matcher.group(2) : matcher.group(1);
-        client.player.sendMessage(Text.of("§e[NPC] Hungry Hiker§f: " + middlePartOfTheMessageToSend + " " + food), false);
+        client.player.sendMessage(Text.of("§e[NPC] Hungry Hiker§f: " + middlePartOfTheMessageToSend + " " + food + "."), false);
         return true;
     }
 
