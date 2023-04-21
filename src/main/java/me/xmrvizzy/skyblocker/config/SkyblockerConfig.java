@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import net.minecraft.client.resource.language.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,12 +179,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @Override
 		public String toString() {
-            return switch (this) {
-                case LAYER1 -> "Layer 1";
-                case LAYER2 -> "Layer 2";
-                case RIGHT -> "Right";
-                case NONE -> "Disabled";
-            };
+            return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
         }
 
         public int toInt() {
@@ -221,11 +217,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @Override
 		public String toString() {
-            return switch (this) {
-                case ONE_DAY -> "1 day price";
-                case THREE_DAY -> "3 day price";
-                case BOTH -> "Both";
-            };
+            return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
         }
     }
 
@@ -326,7 +318,11 @@ public class SkyblockerConfig implements ConfigData {
     public enum Info {
         PURSE,
         BITS,
-        LOCATION
+        LOCATION;
+        @Override
+        public String toString() {
+            return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
+        }
     }
 
     public static void init() {
