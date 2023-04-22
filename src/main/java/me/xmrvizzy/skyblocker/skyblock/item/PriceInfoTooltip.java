@@ -86,6 +86,7 @@ public class PriceInfoTooltip {
         }
 
         // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
+        boolean lbinExist = false;
         if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
             if (lowestPricesJson == null) {
                 nullWarning();
@@ -94,6 +95,7 @@ public class PriceInfoTooltip {
                 lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
                         .formatted(Formatting.GOLD)
                         .append(getCoinsMessage(lowestPricesJson.get(name).getAsDouble(), count)));
+                lbinExist = true;
             }
         }
 
@@ -115,13 +117,16 @@ public class PriceInfoTooltip {
                             .replace("LEGENDARY", "4")
                             .replace("MYTHIC", "5")
                             .replace("-", ";");
-                } else if (name.contains("POTION-") || name.contains("RUNE-") || name.contains("ENCHANTED_BOOK-")) {
+                } else if (name.contains("RUNE-")) {
+                    name = name.replace("RUNE-", "");
+                    name = name.substring(0, name.indexOf("-")) + "_RUNE;" + name.substring(name.lastIndexOf("-") + 1);
+                } else if (name.contains("POTION-") || name.contains("ENCHANTED_BOOK-")) {
                     name = "";
                 } else {
                     name = name.replace(":", "-");
                 }
 
-                if (!name.isEmpty() && (threeDayAvgPricesJson.has(name) || oneDayAvgPricesJson.has(name))) {
+                if (!name.isEmpty() && lbinExist) {
                     SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
 
                     // "No data" line because of API not keeping old data, it causes NullPointerException
@@ -244,12 +249,13 @@ public class PriceInfoTooltip {
                         return internalName + "-" + petInfo.get("type").getAsString() + "-" + petInfo.get("tier").getAsString();
                     }
                 } else if ("POTION".equals(internalName)) {
+                    // New API just contains 'enhanced' tag.
                     String enhanced = ea.contains("enhanced") ? "-ENHANCED" : "";
-                    String extended = ea.contains("extended") ? "-EXTENDED" : "";
-                    String splash = ea.contains("splash") ? "-SPLASH" : "";
+                    //String extended = ea.contains("extended") ? "-EXTENDED" : "";
+                    //String splash = ea.contains("splash") ? "-SPLASH" : "";
                     if (ea.contains("potion") && ea.contains("potion_level")) {
                         return internalName + "-" + ea.getString("potion").toUpperCase(Locale.ENGLISH) + "-" + ea.getInt("potion_level")
-                                + enhanced + extended + splash;
+                                + enhanced; //+ extended + splash;
                     }
                 } else if ("RUNE".equals(internalName)) {
                     if (ea.contains("runes")) {
@@ -310,7 +316,7 @@ public class PriceInfoTooltip {
                 }
             }
             if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN)
-                futureList.add(CompletableFuture.runAsync(() -> lowestPricesJson = downloadPrices("lowest bin")));
+                futureList.add(CompletableFuture.runAsync(() -> lowestPricesJson = downloadPrices("lowest bins")));
 
             if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice)
                 futureList.add(CompletableFuture.runAsync(() -> bazaarPricesJson = downloadPrices("bazaar")));
@@ -337,8 +343,8 @@ public class PriceInfoTooltip {
         } catch (IOException e) {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
 
-            if (type.equals("lowest bin"))
-                lowestPricesJson = downloadPrices("lowest bin backup");
+            if (type.equals("lowest bins"))
+                lowestPricesJson = downloadPrices("lowest bins backup");
 
             return null;
         }
@@ -349,8 +355,8 @@ public class PriceInfoTooltip {
         apiAddresses.put("1 day avg", "https://moulberry.codes/auction_averages_lbin/1day.json.gz");
         apiAddresses.put("3 day avg", "https://moulberry.codes/auction_averages_lbin/3day.json.gz");
         apiAddresses.put("bazaar", "https://hysky.de/api/bazaar");
-        apiAddresses.put("lowest bin", "https://lb.tricked.pro/lowestbins");
-        apiAddresses.put("lowest bin backup", "https://lb2.tricked.pro/lowestbins");
+        apiAddresses.put("lowest bins", "https://lb.tricked.pro/lowestbins");
+        apiAddresses.put("lowest bins backup", "https://lb2.tricked.pro/lowestbins");
         apiAddresses.put("npc", "https://hysky.de/api/npcprice");
         apiAddresses.put("museum", "https://hysky.de/api/museum");
     }
