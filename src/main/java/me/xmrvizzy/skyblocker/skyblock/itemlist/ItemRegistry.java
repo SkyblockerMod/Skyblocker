@@ -109,7 +109,12 @@ public class ItemRegistry {
         try {
             String fileContent = Files.readString(ITEM_LIST_DIR.resolve(internalName + ".json"));
             JsonObject fileJson = JsonParser.parseString(fileContent).getAsJsonObject();
-            return fileJson.get("info").getAsJsonArray().get(1).getAsString();
+            //TODO optional official or unofficial wiki link
+            try {
+                return fileJson.get("info").getAsJsonArray().get(1).getAsString();
+            } catch (IndexOutOfBoundsException e) {
+                return fileJson.get("info").getAsJsonArray().get(0).getAsString();
+            }
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
             client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
