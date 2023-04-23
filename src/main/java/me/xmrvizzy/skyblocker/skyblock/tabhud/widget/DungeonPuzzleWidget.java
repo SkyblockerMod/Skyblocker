@@ -24,9 +24,9 @@ public class DungeonPuzzleWidget extends Widget {
     // match a puzzle entry
     // group 1: name
     // group 2: status
-    // yes, that " ?" is needed. 
+    // " ?.*" to diescard the solver's name if present
     // the teleport maze has a trailing whitespace that messes with the regex
-    private static final Pattern PUZZLE_PATTERN = Pattern.compile(" (.*): \\[(.*)\\] ?");
+    private static final Pattern PUZZLE_PATTERN = Pattern.compile(" (.*): \\[(.*)\\] ?.*");
 
     public DungeonPuzzleWidget(List<PlayerListEntry> list) {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
@@ -43,6 +43,9 @@ public class DungeonPuzzleWidget extends Widget {
             IcoTextComponent itc = new IcoTextComponent(Ico.SIGN, t);
             this.addComponent(itc);
             pos++;
+            // code points for puzzle status chars unsolved and solved: 10022, 10004
+            // not sure which one is which
+            // still need to find out codepoint for the puzzle failed char
         }
         this.pack();
 

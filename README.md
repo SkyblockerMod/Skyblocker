@@ -4,7 +4,6 @@ This will be merged into Skyblocker when ready. It's not at the moment, but you 
 ### Known Issues
 * Relevant for players:
     * Crimson Isle is not yet supported. (Getting Combat 24 is just... oof)
-    * Dungeon puzzles HUD isn't working correctly
     * Minor visual bugs when using ImmediatelyFast
 * Relevant for devs:
     * Scraping the entire player list every frame isn't ideal. (possible optimisation for later)

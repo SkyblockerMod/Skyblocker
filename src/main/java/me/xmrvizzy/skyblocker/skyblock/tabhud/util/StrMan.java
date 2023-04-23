@@ -44,6 +44,10 @@ public class StrMan {
             return null;
         }
         String str = txt.getString();
+        if (str.length() == 0) {
+            return null;
+        }
+
         Matcher m = p.matcher(str);
         if (!m.matches()) {
             LOGGER.error("ERROR: Regex {} failed for input \"{}\"", p.pattern(), str);
