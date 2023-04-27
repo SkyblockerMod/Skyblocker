@@ -26,5 +26,6 @@
     "text.autoconfig.skyblocker.option.messages.hideImplosion": "Implosionsmeldung ausblenden",
     "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Nachricht über Molten Wave ausblenden",
     "text.autoconfig.skyblocker.option.messages.hideAds": "Werbung im öffentlichen Chat ausblenden",
-    "key.wikiLookup": "Wiki-Abfrage"
+    "key.wikiLookup": "Wiki-Abfrage",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.RIGHT": "Rechts"
 }
