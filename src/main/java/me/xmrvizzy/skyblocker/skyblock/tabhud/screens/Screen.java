@@ -252,8 +252,8 @@ public class Screen {
             case CRYSTAL_HOLLOWS, DWARVEN_MINES -> new MineServerScreen(w, h, list, footer);
             case FARMING_ISLAND -> new FarmingServerScreen(w, h, list, footer); // ok
             case DUNGEON_HUB -> new DungeonHubScreen(w, h, list, footer); // ok
-            case DUNGEON -> new DungeonScreen(w, h, list, footer);
-            case CRIMSON_ISLE -> null; // TODO
+            case DUNGEON -> new DungeonScreen(w, h, list, footer); // ok
+            case CRIMSON_ISLE -> new CrimsonIsleScreen(w, h, list, footer); // ???
             case GARDEN -> new GardenScreen(w, h, list, footer);
             default -> new GenericServerScreen(w, h, list, footer); // ok
         };
