@@ -1,3 +1,55 @@
+# Release 1.9.0
+
+Supports 1.19.4
+
+## What's Changed
+* Fix trivia solver glitch by @TheColdPot in https://github.com/SkyblockerMod/Skyblocker/pull/89
+* optimize Dwarven HUD & add draggable config by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/93
+* Use official hypixel wiki for WikiLookup by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/94
+* Corrections + Update by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/99
+* Fix Fetchur solver not working by adding typo'ed variant by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/100
+* Update GSON and remove old adapter by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/95
+* Adding QuickNav Customization by @MiraculixxT in https://github.com/SkyblockerMod/Skyblocker/pull/111
+* Fix multiple README badges by @triphora in https://github.com/SkyblockerMod/Skyblocker/pull/110
+* Add Chinese translation by @catandA in https://github.com/SkyblockerMod/Skyblocker/pull/113
+* Fixes crash with WikiLookup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/114
+* Fixed IndexOutOfBoundsException in WikiLookup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/118
+* fix LBIN by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/119
+* Update to 1.19.3 by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/109
+* Support for 1.19.4 & Cleanup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/123
+* account for the easter name change and refactor slightly by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/125
+* Update gradle & mr version by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/126
+* fix msg filter by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/128
+* Fix config loading by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/124
+* port UpdateChecker to java.net.http by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/129
+* Move Discord RPC connection to JOIN event + refactor by @TacoMonkey11 in https://github.com/SkyblockerMod/Skyblocker/pull/130
+* Changes to quicknav tabs (Fixes and Additions) by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/132
+* More I18n for config by @catandA in https://github.com/SkyblockerMod/Skyblocker/pull/115
+* Add Japanese by @hirochisan in https://github.com/SkyblockerMod/Skyblocker/pull/139
+
+## New Contributors
+* @TheColdPot made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/89
+* @Julienraptor01 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/99
+* @MiraculixxT made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/111
+* @triphora made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/110
+* @catandA made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/113
+* @kevinthegreat1 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/114
+* @AzureAaron made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/124
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.8.2...v1.9.0
+
+___
+# Release 1.8.2
+
+## Fixes
+* Fix status bars not working after new Skyblock update by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/b3a7de41788209dab1d1f453e8b8630169096018
+* Fix backpack preview not updating preview content after new Skyblock update by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/f681ad65e73b12ccd01d1fa8184a4b0abc3ee3c2
+* Fix the url of the meteordev repository by @Username404-59 in https://github.com/SkyblockerMod/Skyblocker/pull/84
+* Update PriceInfoTooltip.java by @Fix3dll in https://github.com/SkyblockerMod/Skyblocker/pull/86
+* Fix update notification not showing on first start-up by @KonaeAkira in https://github.com/SkyblockerMod/Skyblocker/commit/26e6a755c002a56db415d9b219ffafefbe384537
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.8.1...v1.8.2
+___
 # Release 1.8.1
 
 Fixes
