@@ -231,6 +231,10 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Locations {
+        @ConfigEntry.Category("barn")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Barn barn = new Barn();
+
         @ConfigEntry.Category("dungeons")
         @ConfigEntry.Gui.CollapsibleObject()
         public Dungeons dungeons = new Dungeons();
@@ -270,6 +274,11 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableBackground = true;
         public int x = 10;
         public int y = 10;
+    }
+
+    public static class Barn {
+        public boolean solveHungryHiker = true;
+        public boolean solveTreasureHunter = true;
     }
 
     public static class Messages {
