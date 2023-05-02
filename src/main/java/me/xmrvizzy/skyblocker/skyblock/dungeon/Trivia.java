@@ -69,7 +69,7 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the status of Storm?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Necron?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Maxor, Storm, Goldor and Necron?", new String[]{"The Wither Lords"});
-        answers.put("How many total Fairy Souls are there?", new String[]{"239 Fairy Souls"});
+        answers.put("How many total Fairy Souls are there?", new String[]{"240 Fairy Souls"});
         answers.put("How many Fairy Souls are there in Spider's Den?", new String[]{"19 Fairy Souls"});
         answers.put("How many Fairy Souls are there in The End?", new String[]{"12 Fairy Souls"});
         answers.put("How many Fairy Souls are there in The Farming Islands?", new String[]{"20 Fairy Souls"});
