@@ -125,6 +125,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class General {
         public boolean enableUpdateNotification = true;
         public boolean backpackPreviewWithoutShift = false;
+        public boolean hideEmptyTooltips = true;
 
         @ConfigEntry.Gui.Excluded
         public String apiKey;
