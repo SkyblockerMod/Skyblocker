@@ -1,5 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
+import org.apache.commons.lang3.StringUtils;
+
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -8,7 +11,6 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
-import org.apache.commons.lang3.StringUtils;
 
 public class DungeonMap {
 
@@ -25,11 +27,12 @@ public class DungeonMap {
             VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
             MapRenderer map = client.gameRenderer.getMapRenderer();
             MapState state = FilledMapItem.getMapState(mapid, client.world);
+            float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
 
             if (state == null) return;
             matrices.push();
             matrices.translate(2, 2, 0);
-            matrices.scale(1, 1, 0);
+            matrices.scale(scaling, scaling, 0f);
             map.draw( matrices, vertices, mapid, state, false, 15728880);
             vertices.draw();
             matrices.pop();
