@@ -18,6 +18,9 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Manager class for {@link ContainerSolver}s like terminal solvers and experiment solvers. To add a new container solver, extend {@link ContainerSolver} and register it in {@link #ContainerSolverManager()}.
+ */
 public class ContainerSolverManager extends DrawableHelper {
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("");
     private final ContainerSolver[] solvers;
