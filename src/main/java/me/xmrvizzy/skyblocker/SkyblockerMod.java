@@ -13,14 +13,13 @@ import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
+import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.utils.Scheduler;
 import me.xmrvizzy.skyblocker.utils.UpdateChecker;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-
-import java.awt.*;
 
 public class SkyblockerMod implements ClientModInitializer {
     public static final String NAMESPACE = "skyblocker";
@@ -51,6 +50,8 @@ public class SkyblockerMod implements ClientModInitializer {
         WikiLookup.init();
         ItemRegistry.init();
         ContainerSolverManager.init();
+        BackpackPreview.init();
+        QuickNav.init();
         StatsCommand.init();
         DwarvenHud.init();
         ChatMessageListener.init();
