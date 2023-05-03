@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.container.ContainerSolverManager;
+import me.xmrvizzy.skyblocker.gui.ContainerSolverManager;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;

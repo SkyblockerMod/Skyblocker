@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.container;
+package me.xmrvizzy.skyblocker.gui;
 
 import net.minecraft.item.ItemStack;
 
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Abstract class for container solvers. Extend this class to add a new container solver, like terminal solvers or experiment solvers.
+ * Abstract class for gui solvers. Extend this class to add a new gui solver, like terminal solvers or experiment solvers.
  */
 public abstract class ContainerSolver {
     private final Pattern CONTAINER_NAME;

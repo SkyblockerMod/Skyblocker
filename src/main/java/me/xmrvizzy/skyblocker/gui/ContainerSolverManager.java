@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.container;
+package me.xmrvizzy.skyblocker.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.CroesusHelper;
@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Manager class for {@link ContainerSolver}s like terminal solvers and experiment solvers. To add a new container solver, extend {@link ContainerSolver} and register it in {@link #ContainerSolverManager()}.
+ * Manager class for {@link ContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link ContainerSolver} and register it in {@link #ContainerSolverManager()}.
  */
 public class ContainerSolverManager extends DrawableHelper {
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("");

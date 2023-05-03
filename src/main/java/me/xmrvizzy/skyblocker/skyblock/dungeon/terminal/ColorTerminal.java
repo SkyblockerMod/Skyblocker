@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.terminal;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.container.ColorHighlight;
-import me.xmrvizzy.skyblocker.container.ContainerSolver;
+import me.xmrvizzy.skyblocker.gui.ColorHighlight;
+import me.xmrvizzy.skyblocker.gui.ContainerSolver;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker;
 
-import me.xmrvizzy.skyblocker.container.ContainerSolverManager;
+import me.xmrvizzy.skyblocker.gui.ContainerSolverManager;
 import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
