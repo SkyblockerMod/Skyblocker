@@ -2,8 +2,9 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import java.util.ArrayList;
 
-import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
+import com.mojang.blaze3d.systems.RenderSystem;
 
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -78,18 +79,24 @@ public abstract class Widget {
 
     public final void render(MatrixStack ms, boolean hasBG) {
 
+        // not sure if this is the way to go, but it fixes Z-layer issues
+        // like blocks being rendered behind the BG and the hotbar clipping into things
+        RenderSystem.enableDepthTest();
+        ms.push();
+        // move above other UI elements
+        ms.translate(0, 0, 200);
         if (hasBG) {
             DrawableHelper.fill(ms, x + 1, y, x + w - 1, y + h, COL_BG_BOX);
             DrawableHelper.fill(ms, x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
             DrawableHelper.fill(ms, x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
         }
+        // move above background (if exists)
+        ms.translate(0, 0, 100);
 
         int strHeightHalf = Widget.txtRend.fontHeight / 2;
         int strAreaWidth = Widget.txtRend.getWidth(title) + 4;
 
         txtRend.draw(ms, title, x + 8, y + 2, this.color);
-
-        DrawableHelper.fill(ms, x + 2, y + 1 + strHeightHalf, strAreaWidth, strHeightHalf, strAreaWidth);
 
         this.drawHLine(ms, x + 2, y + 1 + strHeightHalf, 4);
         this.drawHLine(ms, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
@@ -104,6 +111,8 @@ public abstract class Widget {
             c.render(ms, x + BORDER_SZE_W, yOffs);
             yOffs += c.getHeight() + 4;
         }
+        // pop manipulations above
+        ms.pop();
     }
 
     private void drawHLine(MatrixStack ms, int xpos, int ypos, int width) {
