@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.TableComponent;
@@ -25,19 +27,25 @@ public class SkillsWidget extends Widget {
     // match the skill entry
     // group 1: skill name and level
     // group 2: progress to next level (without "%")
-    private static final Pattern SKILL_PATTERN = Pattern.compile("\\S*: ([A-Za-z]* [0-9]*): (\\S*)%");
+    private static final Pattern SKILL_PATTERN = Pattern.compile("\\S*: ([A-Za-z]* [0-9]*): ([0-9.]*)%?");
 
     public SkillsWidget(List<PlayerListEntry> list) {
         super(TITLE, Formatting.YELLOW.getColorValue());
 
         Matcher m = StrMan.regexAt(list, 66, SKILL_PATTERN);
-
-        float pcnt = Float.parseFloat(m.group(2));
         String skill = m.group(1);
+        String pcntStr = m.group(2);
 
-        ProgressComponent pc = new ProgressComponent(Ico.LANTERN, Text.of(skill), pcnt, Formatting.GOLD.getColorValue());
+        Component progress;
+        if (!pcntStr.equals("MAX")) {
+            float pcnt = Float.parseFloat(pcntStr);
+            progress = new ProgressComponent(Ico.LANTERN, Text.of(skill),
+                    Text.of(pcntStr), pcnt, Formatting.GOLD.getColorValue());
+        } else {
+            progress = new IcoFatTextComponent(Ico.LANTERN, Text.of(skill), Text.literal(pcntStr).formatted(Formatting.RED));
+        }
 
-        this.addComponent(pc);
+        this.addComponent(progress);
 
         Text speed = StrMan.stdEntry(list, 67, "SPD", Formatting.WHITE);
         IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
