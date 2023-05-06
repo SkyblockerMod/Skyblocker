@@ -4,9 +4,8 @@ This will be merged into Skyblocker when ready. It's not at the moment, but you 
 ### Known Issues
 * Relevant for players:
     * Crimson Isle is not yet supported. (Getting Combat 24 is just... oof)
-    * Minor visual bugs when using ImmediatelyFast
 * Relevant for devs:
-    * Scraping the entire player list every frame isn't ideal. (possible optimisation for later)
+    * Scraping the entire player list multiple times every frame isn't ideal. (possible optimisation for later)
     * The error catching is broken and fails to deactivate the mod on parse failure. (this won't be in the final release anyways)
     * Placement of the text and icons for rendering should probably be done with the `MatrixStack` arg and not with my hacky "external" solution (`ItemRenderer.render()` couldn't accept one pre 1.19.4)
 
