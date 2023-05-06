@@ -15,16 +15,18 @@ public class MineServerScreen extends Screen{
 
     public MineServerScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
         super(w, h);
+
         ServerWidget sw = new ServerWidget(list);
         PowderWidget pw = new PowderWidget(list);
         CommsWidget cw = new CommsWidget(list);
         ForgeWidget fw = new ForgeWidget(list);
-        stackWidgetsH(sw, pw, cw);
-        centerH(fw);
-        offCenterL(sw);
-        offCenterL(pw);
-        offCenterL(cw);
-        offCenterR(fw);
+
+        this.stackWidgetsH(sw, pw, cw);
+        this.centerH(fw);
+        this.offCenterL(sw);
+        this.offCenterL(pw);
+        this.offCenterL(cw);
+        this.offCenterR(fw);
         this.addWidgets(fw, cw, pw, sw);
     }
 

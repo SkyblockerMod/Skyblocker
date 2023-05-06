@@ -13,8 +13,10 @@ public class GuestPlayerScreen extends Screen{
 
     public GuestPlayerScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
         super(w, h);
+
         IslandGuestsWidget igw = new IslandGuestsWidget(list);
         IslandOwnersWidget iow = new IslandOwnersWidget(list);
+
         this.centerH(iow);
         this.centerH(igw);
         this.stackWidgetsW(igw, iow);

@@ -22,16 +22,16 @@ public class DungeonScreen extends Screen {
         DungeonServerWidget dsrw = new DungeonServerWidget(ple);
         DungeonPuzzleWidget dpuw = new DungeonPuzzleWidget(ple);
 
-        offCenterL(ddow);
-        offCenterL(ddew);
-        offCenterL(dscw);
-        offCenterR(dsrw);
-        offCenterR(dpuw);
+        this.offCenterL(ddow);
+        this.offCenterL(ddew);
+        this.offCenterL(dscw);
+        this.offCenterR(dsrw);
+        this.offCenterR(dpuw);
 
-        stackWidgetsH(ddow, ddew, dscw);
-        stackWidgetsH(dsrw, dpuw);
+        this.stackWidgetsH(ddow, ddew, dscw);
+        this.stackWidgetsH(dsrw, dpuw);
 
-        addWidgets(ddow, ddew, dscw, dsrw, dpuw);
+        this.addWidgets(ddow, ddew, dscw, dsrw, dpuw);
 
     }
 

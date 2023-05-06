@@ -8,7 +8,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
 
 public class EmptyScreen extends Screen {
-    
+
     public EmptyScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
         EmptyWidget ew = new EmptyWidget(ple);

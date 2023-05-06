@@ -13,11 +13,13 @@ public class DungeonHubScreen extends Screen{
 
     public DungeonHubScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
         super(w, h);
+
         ServerWidget sw = new ServerWidget(list);
         EssenceWidget ew = new EssenceWidget(list);
-        centerW(sw);
-        centerW(ew);
-        stackWidgetsH(sw, ew);
+
+        this.centerW(sw);
+        this.centerW(ew);
+        this.stackWidgetsH(sw, ew);
         this.addWidget(ew);
         this.addWidget(sw);
     }

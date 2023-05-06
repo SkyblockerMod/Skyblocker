@@ -16,6 +16,7 @@ public class HomeServerScreen extends Screen {
 
         IslandServerWidget isw = new IslandServerWidget(list);
         MinionWidget mw = new MinionWidget(list);
+
         this.centerH(isw);
         this.centerH(mw);
         this.stackWidgetsW(isw, mw);

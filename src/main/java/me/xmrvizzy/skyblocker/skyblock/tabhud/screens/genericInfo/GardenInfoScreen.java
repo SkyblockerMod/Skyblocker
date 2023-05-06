@@ -29,8 +29,8 @@ public class GardenInfoScreen extends Screen {
 
         JacobsContestWidget jcw = new JacobsContestWidget(ple);
         CookieWidget cw = new CookieWidget(f);
-        
-        // goofy ahh layout code incoming
+
+        // layout code incoming
         this.stackWidgetsH(gsw, evw, uw);
         this.stackWidgetsH(pw, efw);
         this.stackWidgetsH(jcw, cw);

@@ -14,10 +14,12 @@ public class CrimsonIsleScreen extends Screen {
 
     public CrimsonIsleScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
+
         ServerWidget sw = new ServerWidget(ple);
         ReputationWidget rw = new ReputationWidget(ple);
         QuestWidget qw = new QuestWidget(ple);
         VolcanoWidget vw = new VolcanoWidget(ple);
+
         this.stackWidgetsH(sw, rw, vw);
         this.offCenterL(sw);
         this.offCenterL(rw);

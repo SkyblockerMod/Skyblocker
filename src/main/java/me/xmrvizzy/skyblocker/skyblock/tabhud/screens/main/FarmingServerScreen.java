@@ -13,11 +13,13 @@ public class FarmingServerScreen extends Screen{
 
     public FarmingServerScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
         super(w, h);
+
         ServerWidget sw = new ServerWidget(list);
         TrapperWidget tw = new TrapperWidget(list);
-        centerW(sw);
-        centerW(tw);
-        stackWidgetsH(sw, tw);
+
+        this.centerW(sw);
+        this.centerW(tw);
+        this.stackWidgetsH(sw, tw);
         this.addWidgets(tw, sw);
     }
 

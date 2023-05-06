@@ -30,8 +30,7 @@ public class GenericInfoScreen extends Screen {
 
         ElectionWidget elw = new ElectionWidget(ple);
         CookieWidget cw = new CookieWidget(f);
-        
-        // goofy ahh layout code incoming
+
         this.stackWidgetsH(sw, evw, uw);
         this.stackWidgetsH(pw, efw);
         this.stackWidgetsH(elw, cw);

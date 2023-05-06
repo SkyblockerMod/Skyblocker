@@ -12,7 +12,9 @@ public class ParkServerScreen extends Screen{
 
     public ParkServerScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
+
         ParkServerWidget sw = new ParkServerWidget(ple);
+
         this.center(sw);
         this.addWidget(sw);
     }

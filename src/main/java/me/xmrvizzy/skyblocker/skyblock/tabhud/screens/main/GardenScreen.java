@@ -12,6 +12,7 @@ public class GardenScreen extends Screen{
 
     public GardenScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
+
         GardenServerWidget gsw = new GardenServerWidget(ple);
         ComposterWidget cw = new ComposterWidget(ple);
 

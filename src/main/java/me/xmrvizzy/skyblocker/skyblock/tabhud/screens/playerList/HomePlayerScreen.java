@@ -13,8 +13,10 @@ public class HomePlayerScreen extends Screen {
 
     public HomePlayerScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
         super(w, h);
+
         IslandSelfWidget isw = new IslandSelfWidget(list);
         IslandGuestsWidget igw = new IslandGuestsWidget(list);
+
         this.centerH(isw);
         this.centerH(igw);
         this.stackWidgetsW(isw, igw);

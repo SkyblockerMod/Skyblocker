@@ -12,7 +12,9 @@ public class GuestServerScreen extends Screen{
 
     public GuestServerScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
         super(w, h);
+
         GuestServerWidget gsw = new GuestServerWidget(list);
+
         this.center(gsw);
         this.addWidget(gsw);
     }

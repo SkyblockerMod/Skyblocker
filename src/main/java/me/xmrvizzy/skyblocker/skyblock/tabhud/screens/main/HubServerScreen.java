@@ -13,8 +13,10 @@ public class HubServerScreen extends Screen {
 
     public HubServerScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
         super(w, h);
+
         ServerWidget sw = new ServerWidget(ple);
         FireSaleWidget fsw = new FireSaleWidget(ple);
+
         this.centerW(sw);
         this.centerW(fsw);
         this.stackWidgetsH(sw, fsw);
