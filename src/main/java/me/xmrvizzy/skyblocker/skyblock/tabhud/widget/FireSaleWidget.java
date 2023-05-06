@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 
@@ -34,6 +35,12 @@ public class FireSaleWidget extends Widget {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
 
         boolean found = false;
+        if (StrMan.strAt(list, 46).contains("Starts In")) {
+            IcoTextComponent start = new IcoTextComponent(Ico.CLOCK, StrMan.stdEntry(list, 46, "Starts in", Formatting.DARK_AQUA));
+            this.addComponent(start);
+            this.pack();
+            return;
+        }
 
         for (int i = 46;; i++) {
             Matcher m = StrMan.regexAt(list, i, FIRE_PATTERN);
