@@ -20,7 +20,7 @@ public class ReputationWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Faction Status").formatted(Formatting.AQUA,
             Formatting.BOLD);
 
-    private static final Pattern PROGRESS_PATTERN = Pattern.compile(" \\|+ \\((\\d+%)\\)");
+    private static final Pattern PROGRESS_PATTERN = Pattern.compile(" \\|+ \\(([0-9.]*%)\\)");
     private static final Pattern STATE_PATTERN = Pattern.compile("(\\S*) *(\\S*)");
 
     public ReputationWidget(List<PlayerListEntry> list) {
@@ -41,7 +41,7 @@ public class ReputationWidget extends Widget {
 
         float pcnt = Float.parseFloat(prog.group(1));
 
-        ProgressComponent pc = new ProgressComponent(Ico.LANTERN, Text.of(state.group(1) + " -> " + state.group(2)), pcnt, Formatting.AQUA.getColorValue());
+        ProgressComponent pc = new ProgressComponent(Ico.LANTERN, Text.of(state.group(1) + " -> " + state.group(2)), Text.of(rep), pcnt, Formatting.AQUA.getColorValue());
         this.addComponent(pc);
 
         this.pack();
