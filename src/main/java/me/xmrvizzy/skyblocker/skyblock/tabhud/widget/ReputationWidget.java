@@ -20,7 +20,7 @@ public class ReputationWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Faction Status").formatted(Formatting.AQUA,
             Formatting.BOLD);
 
-    private static final Pattern PROGRESS_PATTERN = Pattern.compile(" \\|+ \\(([0-9.]*%)\\)");
+    private static final Pattern PROGRESS_PATTERN = Pattern.compile(" \\|+ \\(([0-9.]*)%\\)");
     private static final Pattern STATE_PATTERN = Pattern.compile("(\\S*) *(\\S*)");
 
     public ReputationWidget(List<PlayerListEntry> list) {

@@ -27,7 +27,7 @@ public class SkillsWidget extends Widget {
     // match the skill entry
     // group 1: skill name and level
     // group 2: progress to next level (without "%")
-    private static final Pattern SKILL_PATTERN = Pattern.compile("\\S*: ([A-Za-z]* [0-9]*): ([0-9.]*)%?");
+    private static final Pattern SKILL_PATTERN = Pattern.compile("\\S*: ([A-Za-z]* [0-9]*): ([0-9.MAX]*)%?");
 
     public SkillsWidget(List<PlayerListEntry> list) {
         super(TITLE, Formatting.YELLOW.getColorValue());
