@@ -125,6 +125,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class General {
         public boolean enableUpdateNotification = true;
         public boolean backpackPreviewWithoutShift = false;
+        public boolean hideEmptyTooltips = true;
 
         public boolean tabHudEnabled = true;
 
@@ -134,7 +135,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("bars")
         @ConfigEntry.Gui.CollapsibleObject()
         public Bars bars = new Bars();
-      
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -233,6 +234,10 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Locations {
+        @ConfigEntry.Category("barn")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Barn barn = new Barn();
+
         @ConfigEntry.Category("dungeons")
         @ConfigEntry.Gui.CollapsibleObject()
         public Dungeons dungeons = new Dungeons();
@@ -246,6 +251,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip()
         public boolean croesusHelper = true;
         public boolean enableMap = true;
+        public float mapScaling = 1f;
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
@@ -290,6 +296,11 @@ public class SkyblockerConfig implements ConfigData {
                 case CLASSIC -> "Classic";
             };
         }
+    }
+
+    public static class Barn {
+        public boolean solveHungryHiker = true;
+        public boolean solveTreasureHunter = true;
     }
 
     public static class Messages {
