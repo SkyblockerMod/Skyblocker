@@ -20,18 +20,18 @@ public class TableComponent extends Component {
     }
 
     public void addToCell(int x, int y, Component c) {
-        comps[x][y] = c;
+        this.comps[x][y] = c;
 
         // are tables still too wide?
-        cellW = Math.max(cellW, c.width + PAD_S);
+        this.cellW = Math.max(this.cellW, c.width + PAD_S);
 
         // assume all rows are equally high so overwriting doesn't matter
         // if this wasn't the case, drawing would need more math
         // not doing any of that if it's not needed
-        cellH = c.height;
+        this.cellH = c.height;
 
-        this.width = cellW * tw;
-        this.height = (cellH + PAD_S) * th - PAD_S;
+        this.width = this.cellW * this.tw;
+        this.height = (this.cellH + PAD_S) * this.th - PAD_S;
 
     }
 
@@ -45,7 +45,7 @@ public class TableComponent extends Component {
             }
             if (x != tw - 1) {
                 DrawableHelper.fill(ms, xpos + ((x + 1) * (cellW + PAD_S)) - 1, ypos + 1,
-                        xpos + ((x + 1) * (cellW + PAD_S)), ypos + this.height - 1, color);
+                        xpos + ((x + 1) * (cellW + PAD_S)), ypos + this.height - 1, this.color);
             }
         }
     }

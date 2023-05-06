@@ -10,9 +10,9 @@ import net.minecraft.client.network.PlayerListEntry;
 
 @Mixin(PlayerListHud.class)
 public interface PlayerListHudAccessor {
-    
+
     @Accessor("ENTRY_ORDERING")
     public static Comparator<PlayerListEntry> getOrdering() {
-        throw new AssertionError(); 
+        throw new AssertionError();
     }
 }
