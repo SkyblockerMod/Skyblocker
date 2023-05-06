@@ -118,6 +118,7 @@ public abstract class Widget {
         }
         // pop manipulations above
         ms.pop();
+        RenderSystem.disableDepthTest();
     }
 
     private void drawHLine(MatrixStack ms, int xpos, int ypos, int width) {
