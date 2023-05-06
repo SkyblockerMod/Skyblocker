@@ -31,13 +31,12 @@ public class PlayerListHudMixin {
     private Text footer;
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", cancellable = true)
-    public void skyblocker$renderTabHud(MatrixStack ms, int scaledW, Scoreboard sb, ScoreboardObjective sbo, CallbackInfo info) {
+    public void skyblocker$renderTabHud(MatrixStack ms, int scaledW, Scoreboard sb, ScoreboardObjective sbo,
+            CallbackInfo info) {
 
-        if (!Utils.isOnSkyblock) {
-            return;
-        }
-
-        if (TabHud.defaultTgl.isPressed()) {
+        if (!Utils.isOnSkyblock
+                || !SkyblockerConfig.get().general.tabHudEnabled
+                || TabHud.defaultTgl.isPressed()) {
             return;
         }
 
@@ -47,7 +46,8 @@ public class PlayerListHudMixin {
             return;
         }
 
-        List<PlayerListEntry> list = nwH.getListedPlayerListEntries().stream().sorted(PlayerListHudAccessor.getOrdering()).toList();
+        List<PlayerListEntry> list = nwH.getListedPlayerListEntries().stream()
+                .sorted(PlayerListHudAccessor.getOrdering()).toList();
         int w = scaledW;
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
 
@@ -60,7 +60,7 @@ public class PlayerListHudMixin {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MinecraftClient.getInstance().player.sendMessage(Text.of("The tab HUD has encountered unexpected text, see log! :("));
+            client.player.sendMessage(Text.of("The tab HUD has encountered unexpected text, see log! :("));
         }
 
     }
