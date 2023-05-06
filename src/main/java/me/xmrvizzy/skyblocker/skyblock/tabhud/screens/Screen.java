@@ -7,7 +7,7 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.*;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.*;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.*;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 import net.minecraft.client.network.PlayerListEntry;
@@ -16,32 +16,67 @@ import net.minecraft.text.Text;
 
 public class Screen {
 
-    private enum ScreenType {
-        DUNGEON, 
-        GUEST_ISLAND, 
-        HOME_ISLAND, 
-        CRIMSON_ISLE, 
-        DUNGEON_HUB, 
-        FARMING_ISLAND, 
-        PARK, 
-        DWARVEN_MINES,
-        CRYSTAL_HOLLOWS,
-        END, 
-        GOLD_MINE, 
-        DEEP_CAVERNS, 
-        HUB, 
-        SPIDER_DEN, 
-        JERRY, 
-        GARDEN, 
-        NONE
-    }
-
     private ArrayList<Widget> widgets = new ArrayList<>();
     private int w, h;
 
     public Screen(int w, int h) {
         this.w = w;
         this.h = h;
+    }
+
+    public static Screen getCorrect(int w, int h, List<PlayerListEntry> ple, Text footer) {
+        if (TabHud.genericTgl.isPressed()) {
+            return Screen.correctGenericScrn(w, h, ple, footer);
+        // } else if (TabHud.mapTgl.isPressed()) {
+        //     return Screen.correctMapScrn(w, h, ple, footer);
+        } else if (TabHud.playerTgl.isPressed()) {
+            return Screen.correctPlayerScrn(w, h, ple, footer);
+        } else {
+            return Screen.correctMainScrn(w, h, ple, footer);
+        }
+    }
+
+
+    // private static Screen correctMapScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
+    //     // return switch (getScreenType(list)) {
+    //     // case CRYSTAL_HOLLOWS -> null;
+    //     // case DUNGEON -> null;
+    //     // default -> new EmptyScreen(w, h, list, footer);
+    //     // };
+    //     return new EmptyScreen(w, h, list, footer);
+    // }
+
+    private static Screen correctGenericScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
+        return switch (PlayerLocator.getPlayerLocation()) {
+            case GARDEN -> new GardenInfoScreen(w, h, list, footer); // ok
+            default -> new GenericInfoScreen(w, h, list, footer); // ok
+        };
+    }
+
+
+    private static Screen correctPlayerScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
+        return switch (PlayerLocator.getPlayerLocation()) {
+            case GUEST_ISLAND -> new GuestPlayerScreen(w, h, list, footer); // ok
+            case HOME_ISLAND -> new HomePlayerScreen(w, h, list, footer); // ok
+            case DUNGEON -> new DungeonPlayerScreen(w, h, list, footer);
+            default -> new PlayerListScreen(w, h, list, footer); // ok
+        };
+    }
+
+    private static Screen correctMainScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
+        return switch (PlayerLocator.getPlayerLocation()) {
+            case PARK -> new ParkServerScreen(w, h, list, footer); // ok
+            case HUB -> new HubServerScreen(w, h, list, footer); // ok
+            case HOME_ISLAND -> new HomeServerScreen(w, h, list, footer); // ok
+            case GUEST_ISLAND -> new GuestServerScreen(w, h, list, footer); // ok
+            case CRYSTAL_HOLLOWS, DWARVEN_MINES -> new MineServerScreen(w, h, list, footer);
+            case FARMING_ISLAND -> new FarmingServerScreen(w, h, list, footer); // ok
+            case DUNGEON_HUB -> new DungeonHubScreen(w, h, list, footer); // ok
+            case DUNGEON -> new DungeonScreen(w, h, list, footer); // ok
+            case CRIMSON_ISLE -> new CrimsonIsleScreen(w, h, list, footer); // ???
+            case GARDEN -> new GardenScreen(w, h, list, footer);
+            default -> new GenericServerScreen(w, h, list, footer); // ok
+        };
     }
 
     public void addWidget(Widget w) {
@@ -157,106 +192,4 @@ public class Screen {
         }
         w.setX(xCor);
     }
-
-    public static Screen getCorrect(int w, int h, List<PlayerListEntry> ple, Text footer) {
-        if (TabHud.genericTgl.isPressed()) {
-            return Screen.correctGenericScrn(w, h, ple, footer);
-        // } else if (TabHud.mapTgl.isPressed()) {
-        //     return Screen.correctMapScrn(w, h, ple, footer);
-        } else if (TabHud.playerTgl.isPressed()) {
-            return Screen.correctPlayerScrn(w, h, ple, footer);
-        } else {
-            return Screen.correctMainScrn(w, h, ple, footer);
-        }
-    }
-
-
-    private static ScreenType getScreenType(List<PlayerListEntry> ple) {
-        String cat2Name = StrMan.strAt(ple, 40);
-
-        if (cat2Name.contains("Dungeon Stats")) {
-            return ScreenType.DUNGEON;
-        }
-
-        String areaDesciptor = StrMan.strAt(ple, 41).substring(6);
-        switch (areaDesciptor) {
-            case "Private Island":
-                if (ple.get(44).getDisplayName().getString().endsWith("Guest")) {
-                    return ScreenType.GUEST_ISLAND;
-                } else {
-                    return ScreenType.HOME_ISLAND;
-                }
-            case "Crimson Isle":
-                return ScreenType.CRIMSON_ISLE;
-            case "Dungeon Hub":
-                return ScreenType.DUNGEON_HUB;
-            case "The Farming Islands":
-                return ScreenType.FARMING_ISLAND;
-            case "The Park":
-                return ScreenType.PARK;
-            case "Dwarven Mines":
-                return ScreenType.DWARVEN_MINES;
-            case "Crystal Hollows":
-                return ScreenType.CRYSTAL_HOLLOWS;
-            case "The End":
-                return ScreenType.END;
-            case "Gold Mine":
-                return ScreenType.GOLD_MINE;
-            case "Deep Caverns":
-                return ScreenType.DEEP_CAVERNS;
-            case "Hub":
-                return ScreenType.HUB;
-            case "Spider's Den":
-                return ScreenType.SPIDER_DEN;
-            case "Jerry's Workshop":
-                return ScreenType.JERRY;
-            case "Garden":
-                return ScreenType.GARDEN;
-            default:
-                return ScreenType.NONE;
-        }
-    }
-
-    // private static Screen correctMapScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
-    //     // return switch (getScreenType(list)) {
-    //     // case CRYSTAL_HOLLOWS -> null;
-    //     // case DUNGEON -> null;
-    //     // default -> new EmptyScreen(w, h, list, footer);
-    //     // };
-    //     return new EmptyScreen(w, h, list, footer);
-    // }
-
-    private static Screen correctGenericScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
-        return switch (getScreenType(list)) {
-            case GARDEN -> new GardenInfoScreen(w, h, list, footer); // ok
-            default -> new GenericInfoScreen(w, h, list, footer); // ok
-        };
-    }
-
-
-    private static Screen correctPlayerScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
-        return switch (getScreenType(list)) {
-            case GUEST_ISLAND -> new GuestPlayerScreen(w, h, list, footer); // ok
-            case HOME_ISLAND -> new HomePlayerScreen(w, h, list, footer); // ok
-            case DUNGEON -> new DungeonPlayerScreen(w, h, list, footer);
-            default -> new PlayerListScreen(w, h, list, footer); // ok
-        };
-    }
-
-    private static Screen correctMainScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
-        return switch (getScreenType(list)) {
-            case PARK -> new ParkServerScreen(w, h, list, footer); // ok
-            case HUB -> new HubServerScreen(w, h, list, footer); // ok
-            case HOME_ISLAND -> new HomeServerScreen(w, h, list, footer); // ok
-            case GUEST_ISLAND -> new GuestServerScreen(w, h, list, footer); // ok
-            case CRYSTAL_HOLLOWS, DWARVEN_MINES -> new MineServerScreen(w, h, list, footer);
-            case FARMING_ISLAND -> new FarmingServerScreen(w, h, list, footer); // ok
-            case DUNGEON_HUB -> new DungeonHubScreen(w, h, list, footer); // ok
-            case DUNGEON -> new DungeonScreen(w, h, list, footer); // ok
-            case CRIMSON_ISLE -> new CrimsonIsleScreen(w, h, list, footer); // ???
-            case GARDEN -> new GardenScreen(w, h, list, footer);
-            default -> new GenericServerScreen(w, h, list, footer); // ok
-        };
-    }
-
 }
