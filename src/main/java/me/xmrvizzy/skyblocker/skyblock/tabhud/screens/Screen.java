@@ -3,13 +3,27 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.*;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.*;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.*;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.GardenInfoScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.GenericInfoScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.CrimsonIsleScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.DungeonHubScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.DungeonScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.FarmingServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.GardenScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.GenericServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.GuestServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.HomeServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.HubServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.MineServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.ParkServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.DungeonPlayerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.GuestPlayerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.HomePlayerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.PlayerListScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
-
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -20,15 +34,16 @@ public class Screen {
     private int w, h;
 
     public Screen(int w, int h) {
-        this.w = w;
-        this.h = h;
+        float scale = SkyblockerConfig.get().general.tabHudScale / 100f;
+        this.w = (int) (w / scale);
+        this.h = (int) (h / scale);
     }
 
     public static Screen getCorrect(int w, int h, List<PlayerListEntry> ple, Text footer) {
         if (TabHud.genericTgl.isPressed()) {
             return Screen.correctGenericScrn(w, h, ple, footer);
-        // } else if (TabHud.mapTgl.isPressed()) {
-        //     return Screen.correctMapScrn(w, h, ple, footer);
+            // } else if (TabHud.mapTgl.isPressed()) {
+            // return Screen.correctMapScrn(w, h, ple, footer);
         } else if (TabHud.playerTgl.isPressed()) {
             return Screen.correctPlayerScrn(w, h, ple, footer);
         } else {
@@ -36,14 +51,14 @@ public class Screen {
         }
     }
 
-
-    // private static Screen correctMapScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
-    //     // return switch (getScreenType(list)) {
-    //     // case CRYSTAL_HOLLOWS -> null;
-    //     // case DUNGEON -> null;
-    //     // default -> new EmptyScreen(w, h, list, footer);
-    //     // };
-    //     return new EmptyScreen(w, h, list, footer);
+    // private static Screen correctMapScrn(int w, int h, List<PlayerListEntry>
+    // list, Text footer) {
+    // // return switch (getScreenType(list)) {
+    // // case CRYSTAL_HOLLOWS -> null;
+    // // case DUNGEON -> null;
+    // // default -> new EmptyScreen(w, h, list, footer);
+    // // };
+    // return new EmptyScreen(w, h, list, footer);
     // }
 
     private static Screen correctGenericScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
@@ -52,7 +67,6 @@ public class Screen {
             default -> new GenericInfoScreen(w, h, list, footer); // ok
         };
     }
-
 
     private static Screen correctPlayerScrn(int w, int h, List<PlayerListEntry> list, Text footer) {
         return switch (PlayerLocator.getPlayerLocation()) {

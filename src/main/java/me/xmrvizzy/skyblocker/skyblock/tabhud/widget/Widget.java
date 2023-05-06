@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -83,6 +84,10 @@ public abstract class Widget {
         // like blocks being rendered behind the BG and the hotbar clipping into things
         RenderSystem.enableDepthTest();
         ms.push();
+
+        float scale = SkyblockerConfig.get().general.tabHudScale / 100f;
+        ms.scale(scale, scale, 1);
+
         // move above other UI elements
         ms.translate(0, 0, 200);
         if (hasBG) {

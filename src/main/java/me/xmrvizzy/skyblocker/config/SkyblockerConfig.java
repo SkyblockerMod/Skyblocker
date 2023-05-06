@@ -128,6 +128,9 @@ public class SkyblockerConfig implements ConfigData {
         public boolean hideEmptyTooltips = true;
 
         public boolean tabHudEnabled = true;
+        @ConfigEntry.BoundedDiscrete(min=10, max=200)
+        @ConfigEntry.Gui.Tooltip()
+        public int tabHudScale = 100;
 
         @ConfigEntry.Gui.Excluded
         public String apiKey;
