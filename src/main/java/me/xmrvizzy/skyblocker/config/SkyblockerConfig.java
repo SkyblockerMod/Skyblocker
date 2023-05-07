@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import net.minecraft.client.resource.language.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +125,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class General {
         public boolean enableUpdateNotification = true;
         public boolean backpackPreviewWithoutShift = false;
+        public boolean hideEmptyTooltips = true;
 
         @ConfigEntry.Gui.Excluded
         public String apiKey;
@@ -176,12 +178,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @Override
 		public String toString() {
-            return switch (this) {
-                case LAYER1 -> "Layer 1";
-                case LAYER2 -> "Layer 2";
-                case RIGHT -> "Right";
-                case NONE -> "Disabled";
-            };
+            return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
         }
 
         public int toInt() {
@@ -219,11 +216,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @Override
 		public String toString() {
-            return switch (this) {
-                case ONE_DAY -> "1 day price";
-                case THREE_DAY -> "3 day price";
-                case BOTH -> "Both";
-            };
+            return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
         }
     }
 
@@ -239,6 +232,10 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Locations {
+        @ConfigEntry.Category("barn")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Barn barn = new Barn();
+
         @ConfigEntry.Category("dungeons")
         @ConfigEntry.Gui.CollapsibleObject()
         public Dungeons dungeons = new Dungeons();
@@ -252,6 +249,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip()
         public boolean croesusHelper = true;
         public boolean enableMap = true;
+        public float mapScaling = 1f;
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
@@ -280,6 +278,11 @@ public class SkyblockerConfig implements ConfigData {
         public int y = 10;
     }
 
+    public static class Barn {
+        public boolean solveHungryHiker = true;
+        public boolean solveTreasureHunter = true;
+    }
+
     public static class Messages {
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public ChatFilterResult hideAbility = ChatFilterResult.PASS;
@@ -306,7 +309,11 @@ public class SkyblockerConfig implements ConfigData {
     public enum Info {
         PURSE,
         BITS,
-        LOCATION
+        LOCATION;
+        @Override
+        public String toString() {
+            return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
+        }
     }
 
     public static void init() {
