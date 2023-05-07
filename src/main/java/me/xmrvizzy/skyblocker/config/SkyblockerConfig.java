@@ -127,10 +127,9 @@ public class SkyblockerConfig implements ConfigData {
         public boolean backpackPreviewWithoutShift = false;
         public boolean hideEmptyTooltips = true;
 
-        public boolean tabHudEnabled = true;
-        @ConfigEntry.BoundedDiscrete(min=10, max=200)
-        @ConfigEntry.Gui.Tooltip()
-        public int tabHudScale = 100;
+        @ConfigEntry.Category("tabHud")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TabHudConf tabHud = new TabHudConf();
 
         @ConfigEntry.Gui.Excluded
         public String apiKey;
@@ -153,6 +152,14 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
+    }
+
+    public static class TabHudConf {
+        public boolean tabHudEnabled = true;
+
+        @ConfigEntry.BoundedDiscrete(min=10, max=200)
+        @ConfigEntry.Gui.Tooltip()
+        public int tabHudScale = 100;
     }
 
     public static class Bars {

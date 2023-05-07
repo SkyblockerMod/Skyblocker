@@ -34,7 +34,7 @@ public class Screen {
     private int w, h;
 
     public Screen(int w, int h) {
-        float scale = SkyblockerConfig.get().general.tabHudScale / 100f;
+        float scale = SkyblockerConfig.get().general.tabHud.tabHudScale / 100f;
         this.w = (int) (w / scale);
         this.h = (int) (h / scale);
     }

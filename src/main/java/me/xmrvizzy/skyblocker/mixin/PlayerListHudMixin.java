@@ -35,7 +35,7 @@ public class PlayerListHudMixin {
             CallbackInfo info) {
 
         if (!Utils.isOnSkyblock
-                || !SkyblockerConfig.get().general.tabHudEnabled
+                || !SkyblockerConfig.get().general.tabHud.tabHudEnabled
                 || TabHud.defaultTgl.isPressed()) {
             return;
         }
