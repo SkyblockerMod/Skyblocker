@@ -29,8 +29,8 @@ public class DungeonPlayerWidget extends Widget {
     // group 3: level (or nothing, if pre dungeon start)
     // as a side effect, this regex keeps the iron man icon in the name
     // not sure if that should be
-    private static final Pattern PLAYER_PATTERN = Pattern.compile("\\[\\d*\\] (.*) \\((\\S*) ?([XVI]*)\\)");
-    
+    private static final Pattern PLAYER_PATTERN = Pattern.compile("\\[\\d*\\] (.*) \\((\\S*) ?([LXVI]*)\\)");
+
     private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
     static {
         ICOS.put("Tank", Ico.CHESTPLATE);
@@ -54,7 +54,7 @@ public class DungeonPlayerWidget extends Widget {
 
             Text name = Text.literal("Name: ").append(Text.literal(m.group(1)).formatted(Formatting.YELLOW));
             this.addComponent(new IcoTextComponent(Ico.PLAYER, name));
-            
+
             String cl = m.group(2);
             Formatting clf = Formatting.GRAY;
             ItemStack cli = Ico.BARRIER;
