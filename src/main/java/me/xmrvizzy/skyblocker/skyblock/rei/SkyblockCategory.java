@@ -23,7 +23,6 @@ public class SkyblockCategory implements DisplayCategory<SkyblockCraftingDisplay
 
     @Override
     public Text getTitle() {
-        // TODO use own translation key
         return Text.translatable("key.categories.skyblocker");
     }
 
