@@ -20,6 +20,9 @@
     ],
     "modmenu": [
       "me.xmrvizzy.skyblocker.config.modmenu.ModMenuEntry"
+    ],
+    "rei_client": [
+      "me.xmrvizzy.skyblocker.skyblock.rei.SkyblockerREIClientPlugin"
     ]
   },
   "mixins": [

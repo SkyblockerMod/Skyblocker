@@ -50,6 +50,10 @@ dependencies {
 	// Mod Menu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
+	// REI
+	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
@@ -113,7 +117,8 @@ modrinth {
 	versionType = "release"
 	dependencies = [ // Yet another array. Create a new `ModDependency` or `VersionDependency` with two strings - the ID and the scope
 					 new ModDependency("P7dR8mSH", "required"), // Creates a new required dependency on Fabric API
-					 new ModDependency("mOgUt4GM", "optional") // modmenu
+					 new ModDependency("mOgUt4GM", "optional"), // modmenu
+					 new ModDependency("nfn13YXA", "optional") // REI
 	]
 	changelog = System.getenv('CHANGELOG')
 }
