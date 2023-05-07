@@ -17,10 +17,10 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
     @Override
     public Optional<List<SkyblockCraftingDisplay>> getRecipeFor(EntryStack<?> entry) {
         if (!(entry.getValue() instanceof ItemStack)) return Optional.empty();
-        EntryStack<ItemStack> itemStackEntryStack = EntryStacks.of((ItemStack) entry.getValue());
+        EntryStack<ItemStack> inputItem = EntryStacks.of((ItemStack) entry.getValue());
         List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipes()
                 .stream()
-                .filter(recipe -> ItemRegistry.getInternalName(recipe.getResult()).equals(ItemRegistry.getInternalName(itemStackEntryStack.getValue())))
+                .filter(recipe -> ItemRegistry.getInternalName(recipe.getResult()).equals(ItemRegistry.getInternalName(inputItem.getValue())))
                 .toList();
 
         return Optional.of(generateDisplays(filteredRecipes));
@@ -29,12 +29,13 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
     @Override
     public Optional<List<SkyblockCraftingDisplay>> getUsageFor(EntryStack<?> entry) {
         if (!(entry.getValue() instanceof ItemStack)) return Optional.empty();
-        EntryStack<ItemStack> itemStackEntryStack = EntryStacks.of((ItemStack) entry.getValue());
+        EntryStack<ItemStack> inputItem = EntryStacks.of((ItemStack) entry.getValue());
         List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipes()
                 .stream()
                 .filter(recipe -> {
                     for (ItemStack item : recipe.getGrid()) {
-                        if(ItemRegistry.getInternalName(item).equals(ItemRegistry.getInternalName(itemStackEntryStack.getValue()))) return true;
+                        if(!ItemRegistry.getInternalName(item).equals("") && ItemRegistry.getInternalName(item).equals(ItemRegistry.getInternalName(inputItem.getValue())))
+                            return true;
                     }
                     return false;
                 })
