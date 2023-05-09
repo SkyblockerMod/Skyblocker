@@ -23,16 +23,22 @@ public class ForgeWidget extends Widget {
 
     public ForgeWidget(List<PlayerListEntry> list) {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+         int forgestart = 54;
+        // why is it forges and not fabrics >:(
+        if (!StrMan.strAt(list, 53).startsWith("Forge")) {
+            forgestart += 2;
+        }
 
-        for (int i = 0; i < 5; i++) {
-            String fstr = StrMan.strAt(list, i + 54).substring(4);
+
+        for (int i = forgestart, slot = 0; i < forgestart + 5 && i < 60; i++,slot ++) {
+            String fstr = StrMan.strAt(list, i).substring(4);
             Component c;
             Text l1, l2;
 
             switch (fstr) {
                 case "LOCKED":
                     l1 = Text.literal("Locked").formatted(Formatting.RED);
-                    l2 = switch (i + 1) {
+                    l2 = switch (slot) {
                         case 3 -> Text.literal("Req. HotM 3").formatted(Formatting.GRAY);
                         case 4 -> Text.literal("Req. HotM 4").formatted(Formatting.GRAY);
                         case 5 -> Text.literal("Req. PotM 2").formatted(Formatting.GRAY);
