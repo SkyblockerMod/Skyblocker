@@ -51,9 +51,9 @@ public class SkillsWidget extends Widget {
         IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
         Text strength = StrMan.stdEntry(list, 68, "STR", Formatting.RED);
         IcoTextComponent str = new IcoTextComponent(Ico.SWORD, strength);
-        Text critDmg = StrMan.stdEntry(list, 69, "CDG", Formatting.BLUE);
+        Text critDmg = StrMan.stdEntry(list, 69, "CCH", Formatting.BLUE);
         IcoTextComponent cdg = new IcoTextComponent(Ico.SWORD, critDmg);
-        Text critCh = StrMan.stdEntry(list, 70, "CCH", Formatting.BLUE);
+        Text critCh = StrMan.stdEntry(list, 70, "CDG", Formatting.BLUE);
         IcoTextComponent cch = new IcoTextComponent(Ico.SWORD, critCh);
         Text aSpeed = StrMan.stdEntry(list, 71, "ASP", Formatting.YELLOW);
         IcoTextComponent asp = new IcoTextComponent(Ico.HOE, aSpeed);
