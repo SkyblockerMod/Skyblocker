@@ -24,7 +24,7 @@ public class CookieWidget extends Widget {
         if (lines[1].startsWith("Not")) {
             this.addComponent(new IcoTextComponent(Ico.COOKIE, Text.of("Not active")));
         } else {
-            Text cookie = Text.literal("Time Left: ").append(lines[2]);
+            Text cookie = Text.literal("Time Left: ").append(lines[1]);
             this.addComponent(new IcoTextComponent(Ico.COOKIE, cookie));
         }
         this.pack();
