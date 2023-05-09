@@ -10,6 +10,7 @@ import net.minecraft.util.Formatting;
 
 // this widgte shows, how many active effects you have
 // it also shows one of those in detail
+// the parsing is super suspect and should be replaced by some regexes sometime later
 
 public class EffectWidget extends Widget {
 
@@ -25,6 +26,12 @@ public class EffectWidget extends Widget {
         if (lines[1].startsWith("No")) {
             Text txt = Text.literal("No effects active").formatted(Formatting.GRAY);
             this.addComponent(new IcoTextComponent(Ico.POTION, txt));
+        } else if (lines[1].contains("God")) {
+            String timeleft = lines[1].split("! ")[0];
+            Text godpot = Text.literal("God potion!").formatted(Formatting.RED, Formatting.BOLD);
+            Text txttleft = Text.literal(timeleft).formatted(Formatting.LIGHT_PURPLE);
+            IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, godpot, txttleft);
+            this.addComponent(iftc);
         } else {
             String number = lines[1].substring("You have ".length());
             number = number.substring(0, number.indexOf(' '));
