@@ -20,12 +20,12 @@ public class CrimsonIsleScreen extends Screen {
         QuestWidget qw = new QuestWidget(ple);
         VolcanoWidget vw = new VolcanoWidget(ple);
 
-        this.stackWidgetsH(sw, rw, vw);
+        this.stackWidgetsH(sw, rw);
+        this.stackWidgetsH(qw, vw);
         this.offCenterL(sw);
         this.offCenterL(rw);
-        this.offCenterL(vw);
+        this.offCenterR(vw);
         this.offCenterR(qw);
-        this.centerH(qw);
         this.addWidgets(sw, rw, qw, vw);
     }
 
