@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,7 +9,6 @@ import java.util.regex.Pattern;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -32,12 +32,17 @@ public class DungeonPlayerWidget extends Widget {
     private static final Pattern PLAYER_PATTERN = Pattern.compile("\\[\\d*\\] (.*) \\((\\S*) ?([LXVI]*)\\)");
 
     private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
+    private static final ArrayList<String> MSGS = new ArrayList<>();
     static {
         ICOS.put("Tank", Ico.CHESTPLATE);
         ICOS.put("Mage", Ico.B_ROD);
         ICOS.put("Berserk", Ico.DIASWORD);
         ICOS.put("Archer", Ico.BOW);
         ICOS.put("Healer", Ico.POTION);
+
+        MSGS.add("PRESS A TO JOIN");
+        MSGS.add("Invite a friend!");
+        MSGS.add("But nobody came.");
     }
 
     // title needs to be changeable here
@@ -48,7 +53,7 @@ public class DungeonPlayerWidget extends Widget {
 
         if (list.get(start).getDisplayName().getString().length() < 2) {
             this.addComponent(
-                    new IcoTextComponent(Ico.SIGN, Text.literal("PRESS A TO JOIN").formatted(Formatting.GRAY)));
+                    new IcoTextComponent(Ico.SIGN, Text.literal(MSGS.get((int)(Math.random()*MSGS.size()))).formatted(Formatting.GRAY)));
         } else {
             Matcher m = StrMan.regexAt(list, start, PLAYER_PATTERN);
 
