@@ -9,7 +9,6 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about active super cookies
 // or not, if you're unwilling to buy one
-// TODO: test with active cookie. I'm not buying one.
 
 public class CookieWidget extends Widget {
 

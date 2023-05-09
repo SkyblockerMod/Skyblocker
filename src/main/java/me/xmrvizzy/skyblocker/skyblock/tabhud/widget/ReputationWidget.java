@@ -13,14 +13,20 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows your faction status
+// this widget shows your faction status (crimson isle)
 
 public class ReputationWidget extends Widget {
 
     private static final MutableText TITLE = Text.literal("Faction Status").formatted(Formatting.AQUA,
             Formatting.BOLD);
 
+    // matches your faction alignment progress
+    // group 1: percentage to next alignment level
     private static final Pattern PROGRESS_PATTERN = Pattern.compile(" \\|+ \\(([0-9.]*)%\\)");
+
+    // matches alignment level names
+    // group 1: left level name
+    // group 2: right level name
     private static final Pattern STATE_PATTERN = Pattern.compile("(\\S*) *(\\S*)");
 
     public ReputationWidget(List<PlayerListEntry> list) {

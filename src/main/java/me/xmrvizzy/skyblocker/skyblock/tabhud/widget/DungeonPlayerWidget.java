@@ -16,7 +16,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 // this widget shows info about a player in the current dungeon group
-// when inside a dungeon
 
 public class DungeonPlayerWidget extends Widget {
 

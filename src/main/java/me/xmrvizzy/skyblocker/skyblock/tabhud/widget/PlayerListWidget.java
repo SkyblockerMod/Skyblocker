@@ -13,8 +13,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows a list of players with their skins
-// in most areas
+// this widget shows a list of players with their skins.
+// responsible for non-private-island areas
 
 public class PlayerListWidget extends Widget {
 

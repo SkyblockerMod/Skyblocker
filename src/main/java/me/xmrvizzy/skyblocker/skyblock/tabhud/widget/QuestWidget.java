@@ -11,7 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows your Crimson Isle suests
+// this widget shows your crimson isle faction quests
 
 public class QuestWidget extends Widget {
 

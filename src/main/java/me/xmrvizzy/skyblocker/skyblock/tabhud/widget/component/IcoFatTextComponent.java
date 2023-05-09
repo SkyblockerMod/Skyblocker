@@ -4,6 +4,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+// widget component that consists of an icon and two lines of text
+
 public class IcoFatTextComponent extends Component {
 
     private static final int ICO_OFFS = 1;

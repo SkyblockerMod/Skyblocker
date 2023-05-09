@@ -12,7 +12,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows a list of the owners of your home island
+// this widget shows a list of the owners while on your home island
 
 public class IslandSelfWidget extends Widget {
 
@@ -20,7 +20,7 @@ public class IslandSelfWidget extends Widget {
             Formatting.BOLD);
 
     // matches an owner
-    // group 1: player name 
+    // group 1: player name
     private static final Pattern OWNER_PATTERN = Pattern.compile("\\[\\d*\\] (.*)");
 
     public IslandSelfWidget(List<PlayerListEntry> list) {

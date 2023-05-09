@@ -8,7 +8,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows info about current profile/account upgrades
+// this widget shows info about ongoing profile/account upgrades
 // or not, if there aren't any
 // TODO: not very pretty atm
 

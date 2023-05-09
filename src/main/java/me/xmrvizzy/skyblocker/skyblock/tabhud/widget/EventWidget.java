@@ -11,7 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows info about ongoing events (e.g. jacob's farming)
+// this widget shows info about ongoing events (e.g. election)
 
 public class EventWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);

@@ -11,7 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows, how meny pelts you have (farming island only)
+// this widget shows how meny pelts you have (farming island)
 
 public class TrapperWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Trapper").formatted(Formatting.DARK_AQUA,

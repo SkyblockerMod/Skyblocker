@@ -8,8 +8,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widgte shows, how many active effects you have
-// it also shows one of those in detail
+// this widgte shows, how many active effects you have.
+// it also shows one of those in detail.
 // the parsing is super suspect and should be replaced by some regexes sometime later
 
 public class EffectWidget extends Widget {

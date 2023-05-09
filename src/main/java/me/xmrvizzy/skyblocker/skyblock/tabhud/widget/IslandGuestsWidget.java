@@ -12,8 +12,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows a list of all people visiting 
-// the same private island as you
+// this widget shows a list of all people visiting the same private island as you
 
 public class IslandGuestsWidget extends Widget {
 

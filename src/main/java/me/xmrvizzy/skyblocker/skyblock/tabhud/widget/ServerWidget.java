@@ -11,9 +11,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows info about "generic" servers
+// this widget shows info about "generic" servers.
 // a server is "generic", when only name, server ID and gems are shown
-// in the thrid column of the tab menu
+// in the third column of the tab HUD
 
 public class ServerWidget extends Widget {
 

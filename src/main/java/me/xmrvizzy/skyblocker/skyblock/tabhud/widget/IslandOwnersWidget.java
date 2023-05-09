@@ -12,8 +12,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows a list of the owners of a private island
-// when you're visiting someone else
+// this widget shows a list of the owners of a home island while guesting
 
 public class IslandOwnersWidget extends Widget {
 

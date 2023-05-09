@@ -5,6 +5,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+// widget component that consists of an icon, some text and a progress bar
+// progress bar either shows percentage or custom text
+// NOTICE: pcnt is 0-100, not 0-1!
+
 public class ProgressComponent extends Component {
 
     private static final int BAR_WIDTH = 100;

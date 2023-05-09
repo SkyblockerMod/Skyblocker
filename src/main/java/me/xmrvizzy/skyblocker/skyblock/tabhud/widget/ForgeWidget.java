@@ -13,7 +13,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows what you're forging right now
+// this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
 
 public class ForgeWidget extends Widget {

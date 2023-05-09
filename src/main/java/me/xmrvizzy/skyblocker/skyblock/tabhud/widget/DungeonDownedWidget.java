@@ -12,7 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 // this widget shows info about... something?
-// TODO: test this.
+// related to downed people in dungeons, not sure what this is supposed to show
 
 public class DungeonDownedWidget extends Widget {
 

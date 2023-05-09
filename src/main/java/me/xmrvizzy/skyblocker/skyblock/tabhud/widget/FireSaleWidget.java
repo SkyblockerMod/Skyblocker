@@ -16,7 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.Formatting;
 
-// this widget shows info about fire sales when in the hub
+// this widget shows info about fire sales when in the hub.
 // or not, if there isn't one going on
 
 public class FireSaleWidget extends Widget {
@@ -27,7 +27,7 @@ public class FireSaleWidget extends Widget {
     // matches a fire sale item
     // group 1: item name
     // group 2: # items bought
-    // group 1: # items available in total (1 digit + "k")
+    // group 3: # items available in total (1 digit + "k")
     private static final Pattern FIRE_PATTERN = Pattern.compile(" (.*): (\\d*)/([0-9.]*)k");
 
     public FireSaleWidget(List<PlayerListEntry> list) {

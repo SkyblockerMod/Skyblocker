@@ -11,7 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows info about secrets of the dungeon
+// this widget shows info about the secrets of the dungeon
 
 public class DungeonSecretWidget extends Widget {
 

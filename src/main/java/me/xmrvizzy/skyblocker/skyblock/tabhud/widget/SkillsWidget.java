@@ -17,7 +17,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows info about a skill and some stats
+// this widget shows info about a skill and some stats,
+// as seen in the rightmost column of the default HUD
 
 public class SkillsWidget extends Widget {
 

@@ -12,7 +12,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// this widget shows your dungeon essences
+// this widget shows your dungeon essences (dungeon hub only)
 
 public class EssenceWidget extends Widget {
 

@@ -20,6 +20,8 @@ public class GardenServerWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
 
+    // match the next visitor in the garden
+    // group 1: visitor name
     private static final Pattern VISITOR_PATTERN = Pattern.compile(" Next Visitor: (.*)$");
 
     public GardenServerWidget(List<PlayerListEntry> list) {

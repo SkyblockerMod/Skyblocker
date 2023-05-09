@@ -17,7 +17,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
 // this widget shows the status of the king's commissions.
-// works in both the dwarven mines and the CH
+// (dwarven mines and crystal hollows)
 
 public class CommsWidget extends Widget {
 

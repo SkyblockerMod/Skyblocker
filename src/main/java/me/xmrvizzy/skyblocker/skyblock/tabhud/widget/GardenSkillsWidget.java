@@ -15,6 +15,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+// this widget shows info about your skills while in the garden
 
 public class GardenSkillsWidget extends Widget {
 
@@ -25,8 +26,7 @@ public class GardenSkillsWidget extends Widget {
     // group 1: skill name and level
     // group 2: progress to next level (without "%")
     private static final Pattern SKILL_PATTERN = Pattern.compile("\\S*: ([A-Za-z]* [0-9]*): (\\S*)%");
-    // same with leading space
-    // TODO: make better, maybe
+    // same, but with leading space
     private static final Pattern MS_PATTERN = Pattern.compile(" \\S*: ([A-Za-z]* [0-9]*): (\\S*)%");
 
     public GardenSkillsWidget(List<PlayerListEntry> list) {

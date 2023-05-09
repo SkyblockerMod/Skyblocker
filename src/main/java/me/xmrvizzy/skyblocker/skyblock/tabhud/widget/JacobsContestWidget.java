@@ -14,6 +14,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+// this widget shows info about the current jacob's contest (garden only)
+
 public class JacobsContestWidget extends Widget {
 
     private static final MutableText TITLE = Text.literal("Jacob's Contest").formatted(Formatting.YELLOW,

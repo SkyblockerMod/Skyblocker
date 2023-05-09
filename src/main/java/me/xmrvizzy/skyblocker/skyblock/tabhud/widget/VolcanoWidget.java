@@ -13,7 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
-// this widget shows the volcano status
+// shows the volcano status (crimson isle)
 
 public class VolcanoWidget extends Widget {
 

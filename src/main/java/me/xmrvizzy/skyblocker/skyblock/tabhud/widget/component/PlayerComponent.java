@@ -7,6 +7,8 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+// widget component that consists of a player's skin icon and their name
+
 public class PlayerComponent extends Component {
 
     private static final int SKIN_ICO_DIM = 8;

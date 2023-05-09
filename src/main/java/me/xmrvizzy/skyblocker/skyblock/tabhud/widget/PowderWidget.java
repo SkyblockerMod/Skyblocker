@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 // this widget shows how much mithril and gemstone powder you have
+// (dwarven mines and crystal hollows)
 
 public class PowderWidget extends Widget {
 

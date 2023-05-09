@@ -14,7 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 // this widget shows info about all puzzeles in the dungeon (name and status)
-// TODO: if puzzle was failed, show player name
 
 public class DungeonPuzzleWidget extends Widget {
 

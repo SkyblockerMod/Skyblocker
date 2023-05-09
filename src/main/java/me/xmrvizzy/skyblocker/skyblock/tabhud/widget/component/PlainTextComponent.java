@@ -3,6 +3,8 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+// widget component that consists of a line of text
+
 public class PlainTextComponent extends Component {
 
     private Text text;
