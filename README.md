@@ -1,13 +1,13 @@
 ## Skyblocker Tab Menu Fork
-This will be merged into Skyblocker when ready. It's not at the moment, but you can help by testing and opening issues.
+This will be merged into Skyblocker when ready (soon)
 
 ### Known Issues
 * Relevant for players:
-    * Crimson Isle is not yet supported. (Getting Combat 24 is just... oof)
     * Some names clip outside of the player list screen sometimes
 * Relevant for devs:
     * Scraping the entire player list multiple times every frame isn't ideal. (possible optimisation for later)
     * The error catching is broken and fails to deactivate the mod on parse failure. (this won't be in the final release anyways)
+    * Encountering errors should be handled more gracefully
 
 Apart from that, it's working!
 
