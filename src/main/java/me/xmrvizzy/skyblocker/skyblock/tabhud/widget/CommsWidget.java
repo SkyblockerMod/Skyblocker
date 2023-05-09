@@ -32,9 +32,11 @@ public class CommsWidget extends Widget {
     public CommsWidget(List<PlayerListEntry> list) {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
 
-        for (int i = 50; i <= 51; i++) {
+        for (int i = 50; i <= 53; i++) {
             Matcher m = StrMan.regexAt(list, i, COMM_PATTERN);
-
+            if (m == null) {
+                break;
+            }
             String g2 = m.group(2);
             ProgressComponent pc;
             if (g2.equals("DONE")) {
