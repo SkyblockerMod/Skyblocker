@@ -39,9 +39,11 @@ public abstract class HandledScreenMixin extends Screen {
     @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci) {
     	//Hide Empty Tooltips
-        Text stackName = focusedSlot.getStack().getName();
-        String strName = stackName.getString();
-    	if(this.focusedSlot != null && Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" ")) ci.cancel();
+    	if(this.focusedSlot != null) {
+            Text stackName = focusedSlot.getStack().getName();
+            String strName = stackName.getString();
+    		if(Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" ")) ci.cancel();
+    	}
     	
     	//Backpack Preview
         String title = this.getTitle().getString();
