@@ -64,6 +64,5 @@
     "text.autoconfig.skyblocker.option.messages.hideCombo": "Comboのメッセージを非表示にする",
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "Autopetのメッセージを非表示にする",
     "text.autoconfig.skyblocker.option.messages.hideMana": "マナの使用表示をアクションバーから非表示にする",
-    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBarでより良くできます",
-    "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2あなたのAPI keyを設定しました!"
+    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBarでより良くできます"
 }

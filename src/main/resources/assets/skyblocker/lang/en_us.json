@@ -188,7 +188,5 @@
   "text.autoconfig.skyblocker.option.messages.hideMana": "Hide Mana Consumption Messages from Action Bar",
   "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Gives a better experience with FancyBar",
 
-  "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Hide empty item tooltips in menus",
-
-  "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Automatically set your API key!"
+  "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Hide empty item tooltips in menus"
 }

@@ -1,14 +1,13 @@
 package me.xmrvizzy.skyblocker.chat;
 
 import me.xmrvizzy.skyblocker.chat.filters.*;
-import me.xmrvizzy.skyblocker.skyblock.api.ApiKeyListener;
 import me.xmrvizzy.skyblocker.skyblock.barn.HungryHiker;
+import me.xmrvizzy.skyblocker.skyblock.barn.TreasureHunter;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Reparty;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Trivia;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Fetchur;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Puzzler;
-import me.xmrvizzy.skyblocker.skyblock.barn.TreasureHunter;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.text.Text;
@@ -26,7 +25,6 @@ public interface ChatMessageListener {
     static void init() {
         ChatMessageListener[] listeners = new ChatMessageListener[]{
                 // Features
-                new ApiKeyListener(),
                 new Fetchur(),
                 new Puzzler(),
                 new Reparty(),

@@ -95,6 +95,5 @@
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "隐藏自动宠物消息",
     "text.autoconfig.skyblocker.option.messages.hideMana": "在动作栏中隐藏魔力消耗信息",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "被已经提供了更好方案的属性条代替",
-    "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2自动设置你的API秘钥！",
     "text.autoconfig.skyblocker.option.quickNav.button1.item.nbt": "NBT"
 }

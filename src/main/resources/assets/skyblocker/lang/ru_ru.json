@@ -32,7 +32,6 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveStartsWith": "Решать начинается с",
   "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cИнформация о цене предмета обновится через менее чем 60 секунд. Если нет, проверьте latest.log.",
   "text.autoconfig.skyblocker.option.messages.hideTeleportPad": "Скрывать сообщения телепортаторов",
-  "skyblocker.update.update_link": " §2§nНажми,§r",
   "text.autoconfig.skyblocker.option.general.quicknav": "Кнопки быстрого доступа",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Включено",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Показать средние цены на BIN",
@@ -50,7 +49,6 @@
   "text.autoconfig.skyblocker.option.general.itemList": "Список предметов",
   "text.autoconfig.skyblocker.option.general.itemList.enableItemList": "Включено",
   "text.autoconfig.skyblocker.option.messages.hideCombo": "Скрывать сообщения о комбо",
-  "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Ключ API установлен автоматически!",
   "key.wikiLookup": "Быстрый переход на вики",
   "text.autoconfig.skyblocker.option.general.itemTooltip": "Описание предметов",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Показать цены у NPC"

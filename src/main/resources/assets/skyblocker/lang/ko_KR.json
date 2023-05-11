@@ -180,5 +180,4 @@
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "Autopet 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideMana": "액션바에서 마나 사용 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBar 로 더 나은 기능을 사용합니다",
-    "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2자동으로 API 키를 설정했습니다!"
 }

@@ -73,8 +73,5 @@
   "text.autoconfig.skyblocker.option.messages.hideCombo": "Cacher les messages de combo",
   "text.autoconfig.skyblocker.option.messages.hideAutopet": "Cacher les messages de l'auto-familier",
   "text.autoconfig.skyblocker.option.messages.hideMana": "Cacher les messages de consommation de mana de la barre d'action",
-  "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Permet une meilleure expérience avec les barres",
-
-
-  "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Votre clé d'API a été automatiquement définie!"
+  "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Permet une meilleure expérience avec les barres"
 }
