@@ -95,11 +95,6 @@
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "隐藏自动宠物消息",
     "text.autoconfig.skyblocker.option.messages.hideMana": "在动作栏中隐藏魔力消耗信息",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "被已经提供了更好方案的属性条代替",
-    "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2有新版本可用！",
-    "skyblocker.update.update_link": " §2§n点击这里§r",
-    "skyblocker.update.update_message_end": " §a来了解最新功能",
-    "skyblocker.update.hover_text": "打开Modrinth",
-    "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "更新通知",
     "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2自动设置你的API秘钥！",
     "text.autoconfig.skyblocker.option.quickNav.button1.item.nbt": "NBT"
 }

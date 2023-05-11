@@ -65,10 +65,5 @@
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "Autopetのメッセージを非表示にする",
     "text.autoconfig.skyblocker.option.messages.hideMana": "マナの使用表示をアクションバーから非表示にする",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBarでより良くできます",
-    "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2新しいバージョンがあります!",
-    "skyblocker.update.update_link": " §2§nここをクリック§r",
-    "skyblocker.update.update_message_end": " §a最新の機能を体験しましょう.",
-    "skyblocker.update.hover_text": "Modrinthを開く",
-    "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "アップデート通知",
     "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2あなたのAPI keyを設定しました!"
 }

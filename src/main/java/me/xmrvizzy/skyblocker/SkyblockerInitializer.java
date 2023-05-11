@@ -9,7 +9,6 @@ import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
-import me.xmrvizzy.skyblocker.utils.UpdateChecker;
 import net.fabricmc.api.ClientModInitializer;
 
 public class SkyblockerInitializer implements ClientModInitializer {
@@ -23,7 +22,6 @@ public class SkyblockerInitializer implements ClientModInitializer {
         StatsCommand.init();
         DwarvenHud.init();
         ChatMessageListener.init();
-        UpdateChecker.init();
         DiscordRPCManager.init();
     }
 }
