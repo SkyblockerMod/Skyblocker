@@ -1,10 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 /**
@@ -27,10 +25,9 @@ public class PlayerComponent extends Component {
     }
 
     @Override
-    public void render(MatrixStack ms, int x, int y) {
-        RenderSystem.setShaderTexture(0, tex);
-        PlayerSkinDrawer.draw(ms, x, y, SKIN_ICO_DIM);
-        txtRend.draw(ms, name, x + SKIN_ICO_DIM + PAD_S, y, 0xffffffff);
+    public void render(DrawContext context, int x, int y) {
+        PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM);
+        context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, 0xffffffff, false);
     }
 
 }

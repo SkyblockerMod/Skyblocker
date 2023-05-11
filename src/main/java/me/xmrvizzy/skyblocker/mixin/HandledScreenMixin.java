@@ -3,9 +3,10 @@ package me.xmrvizzy.skyblocker.mixin;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -36,12 +37,18 @@ public abstract class HandledScreenMixin extends Screen {
     }
 
     @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
-    public void skyblocker$drawMouseOverTooltip(MatrixStack matrices, int x, int y, CallbackInfo ci) {
+    public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci) {
+    	//Hide Empty Tooltips
+        Text stackName = focusedSlot.getStack().getName();
+        String strName = stackName.getString();
+    	if(this.focusedSlot != null && Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" ")) ci.cancel();
+    	
+    	//Backpack Preview
         String title = this.getTitle().getString();
         boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
         if (shiftDown && title.equals("Storage") && this.focusedSlot != null) {
             if (this.focusedSlot.inventory == this.client.player.getInventory()) return;
-            if (BackpackPreview.renderPreview(matrices, this.focusedSlot.getIndex(), x, y)) ci.cancel();
+            if (BackpackPreview.renderPreview(context, this.focusedSlot.getIndex(), x, y)) ci.cancel();
         }
     }
 }

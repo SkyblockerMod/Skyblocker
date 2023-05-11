@@ -8,7 +8,7 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * Manager class for {@link ContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link ContainerSolver} and register it in {@link #ContainerSolverManager()}.
  */
-public class ContainerSolverManager extends DrawableHelper {
+public class ContainerSolverManager {
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("");
     private final ContainerSolver[] solvers;
     private ContainerSolver currentSolver = null;
@@ -43,10 +43,11 @@ public class ContainerSolverManager extends DrawableHelper {
     public void init() {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
-                ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, delta) -> {
+                ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, delta) -> {
+                	MatrixStack matrices = context.getMatrices();
                     matrices.push();
                     matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);
-                    onDraw(matrices, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
+                    onDraw(context, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
                     matrices.pop();
                 });
                 onSetScreen(genericContainerScreen);
@@ -83,7 +84,7 @@ public class ContainerSolverManager extends DrawableHelper {
         highlights = null;
     }
 
-    public void onDraw(MatrixStack matrices, List<Slot> slots) {
+    public void onDraw(DrawContext context, List<Slot> slots) {
         if (currentSolver == null)
             return;
         if (highlights == null)
@@ -93,7 +94,7 @@ public class ContainerSolverManager extends DrawableHelper {
         for (ColorHighlight highlight : highlights) {
             Slot slot = slots.get(highlight.slot());
             int color = highlight.color();
-            fillGradient(matrices, slot.x, slot.y, slot.x + 16, slot.y + 16, color, color);
+            context.fillGradient(slot.x, slot.y, slot.x + 16, slot.y + 16, color, color);
         }
         RenderSystem.colorMask(true, true, true, true);
     }

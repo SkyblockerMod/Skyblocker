@@ -2,8 +2,8 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 
 /**
  * Abstract base class for a component that may be added to a Widget.
@@ -15,12 +15,11 @@ public abstract class Component {
     public static final int PAD_L = 4;
 
     static TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
-    static ItemRenderer itmRend = MinecraftClient.getInstance().getItemRenderer();
 
     // these should always be the content dimensions without any padding.
     int width, height;
 
-    public abstract void render(MatrixStack ms, int x, int y);
+    public abstract void render(DrawContext context, int x, int y);
 
     public int getWidth() {
         return this.width;

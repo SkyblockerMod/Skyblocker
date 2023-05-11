@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -49,35 +49,35 @@ public class DwarvenHud {
                                     return 1;
                                 })))));
 
-        HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
+        HudRenderCallback.EVENT.register((context, tickDelta) -> {
             if (!SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled
                 || client.options.playerListKey.isPressed()
                 || client.player == null
                 || commissionList.isEmpty()) {
                 return;
             }
-            render(matrixStack, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
+            render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
         });
     }
 
-    public static void render(MatrixStack matrixStack, int hudX, int hudY, List<Commission> commissions) {
+    public static void render(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
 
         switch(SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
-            case SIMPLE -> renderSimple(matrixStack, hudX, hudY, commissions);
-            case FANCY -> renderFancy(matrixStack, hudX, hudY, commissions);
-            case CLASSIC -> renderClassic(matrixStack, hudX, hudY, commissions);
+            case SIMPLE -> renderSimple(context, hudX, hudY, commissions);
+            case FANCY -> renderFancy(context, hudX, hudY, commissions);
+            case CLASSIC -> renderClassic(context, hudX, hudY, commissions);
         }
     }
 
-    public static void renderClassic(MatrixStack matrixStack, int hudX, int hudY, List<Commission> commissions) {
+    public static void renderClassic(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
         if (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground) {
-            DrawableHelper.fill(matrixStack, hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
+            context.fill(hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
         }
 
         int y = 0;
         for (Commission commission : commissions) {
-            client.textRenderer
-                .drawWithShadow(matrixStack,
+            context
+                .drawTextWithShadow(client.textRenderer,
                     Text.literal(commission.commission + ": ")
                         .styled(style -> style.withColor(Formatting.AQUA))
                         .append(Text.literal(commission.progression)
@@ -87,18 +87,18 @@ public class DwarvenHud {
         }
     }
 
-    public static void renderSimple(MatrixStack matrixStack, int hudX, int hudY, List<Commission> commissions) {
+    public static void renderSimple(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
         CommsWidget cw = new CommsWidget(commissions, false);
         cw.setX(hudX);
         cw.setY(hudY);
-        cw.render(matrixStack, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+        cw.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
-    public static void renderFancy(MatrixStack matrixStack, int hudX, int hudY, List<Commission> commissions) {
+    public static void renderFancy(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
         CommsWidget cw = new CommsWidget(commissions, true);
         cw.setX(hudX);
         cw.setY(hudY);
-        cw.render(matrixStack, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+        cw.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
     public static void update() {

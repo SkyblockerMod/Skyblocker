@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 /**
  * Meta-Component that consists of a grid of other components
@@ -38,11 +37,11 @@ public class TableComponent extends Component {
     }
 
     @Override
-    public void render(MatrixStack ms, int xpos, int ypos) {
+    public void render(DrawContext context, int xpos, int ypos) {
         for (int x = 0; x < cols; x++) {
             for (int y = 0; y < rows; y++) {
                 if (comps[x][y] != null) {
-                    comps[x][y].render(ms, xpos + (x * cellW), ypos + y * cellH);
+                    comps[x][y].render(context, xpos + (x * cellW), ypos + y * cellH);
                 }
             }
             // add a line before the col if we're not drawing the first one
@@ -51,7 +50,7 @@ public class TableComponent extends Component {
                 int lineX2 = xpos + (x * cellW) - PAD_S;
                 int lineY1 = ypos + 1;
                 int lineY2 = ypos + this.height - PAD_S - 1; // not sure why but it looks correct
-                DrawableHelper.fill(ms, lineX1, lineY1, lineX2, lineY2, this.color);
+                context.fill(lineX1, lineY1, lineX2, lineY2, this.color);
             }
         }
     }

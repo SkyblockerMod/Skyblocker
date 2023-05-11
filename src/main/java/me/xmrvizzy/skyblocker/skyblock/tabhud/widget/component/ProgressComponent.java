@@ -1,8 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -55,16 +54,16 @@ public class ProgressComponent extends Component {
     }
 
     @Override
-    public void render(MatrixStack ms, int x, int y) {
-        itmRend.renderGuiItemIcon(ms, ico, x, y + ICO_OFFS);
-        txtRend.draw(ms, desc, x + ICO_DIM + PAD_L, y, 0xffffffff);
+    public void render(DrawContext context, int x, int y) {
+        context.drawItem(ico, x, y + ICO_OFFS);
+        context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, 0xffffffff, false);
 
         int barX = x + ICO_DIM + PAD_L;
         int barY = y + txtRend.fontHeight + PAD_S;
         int endOffsX = ((int) (this.barW * (this.pcnt / 100f)));
-        DrawableHelper.fill(ms, barX + endOffsX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
-        DrawableHelper.fill(ms, barX, barY, barX + endOffsX, barY + BAR_HEIGHT,
+        context.fill(barX + endOffsX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
+        context.fill(barX, barY, barX + endOffsX, barY + BAR_HEIGHT,
                 this.color);
-        txtRend.drawWithShadow(ms, bar, barX + 3, barY + 2, 0xffffffff);
+        context.drawTextWithShadow(txtRend, bar, barX + 3, barY + 2, 0xffffffff);
     }
 }

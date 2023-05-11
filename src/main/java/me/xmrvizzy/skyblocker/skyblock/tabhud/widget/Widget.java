@@ -10,7 +10,7 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -103,14 +103,15 @@ public abstract class Widget {
     /**
      * Draw this widget with a background
      */
-    public final void render(MatrixStack ms) {
-        this.render(ms, true);
+    public final void render(DrawContext context) {
+        this.render(context, true);
     }
 
     /**
      * Draw this widget, possibly with a background
      */
-    public final void render(MatrixStack ms, boolean hasBG) {
+    public final void render(DrawContext context, boolean hasBG) {
+    	MatrixStack ms = context.getMatrices();
 
         // not sure if this is the way to go, but it fixes Z-layer issues
         // like blocks being rendered behind the BG and the hotbar clipping into things
@@ -123,9 +124,9 @@ public abstract class Widget {
         // move above other UI elements
         ms.translate(0, 0, 200);
         if (hasBG) {
-            DrawableHelper.fill(ms, x + 1, y, x + w - 1, y + h, COL_BG_BOX);
-            DrawableHelper.fill(ms, x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
-            DrawableHelper.fill(ms, x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
+        	context.fill(x + 1, y, x + w - 1, y + h, COL_BG_BOX);
+        	context.fill(x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
+        	context.fill(x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
         }
         // move above background (if exists)
         ms.translate(0, 0, 100);
@@ -133,19 +134,19 @@ public abstract class Widget {
         int strHeightHalf = Widget.txtRend.fontHeight / 2;
         int strAreaWidth = Widget.txtRend.getWidth(title) + 4;
 
-        txtRend.draw(ms, title, x + 8, y + 2, this.color);
+        context.drawText(txtRend, title, x + 8, y + 2, this.color, false);
 
-        this.drawHLine(ms, x + 2, y + 1 + strHeightHalf, 4);
-        this.drawHLine(ms, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-        this.drawHLine(ms, x + 2, y + h - 2, w - 4);
+        this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
+        this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+        this.drawHLine(context, x + 2, y + h - 2, w - 4);
 
-        this.drawVLine(ms, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-        this.drawVLine(ms, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+        this.drawVLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+        this.drawVLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
 
         int yOffs = y + BORDER_SZE_N;
 
         for (Component c : components) {
-            c.render(ms, x + BORDER_SZE_W, yOffs);
+            c.render(context, x + BORDER_SZE_W, yOffs);
             yOffs += c.getHeight() + Component.PAD_L;
         }
         // pop manipulations above
@@ -153,12 +154,12 @@ public abstract class Widget {
         RenderSystem.disableDepthTest();
     }
 
-    private void drawHLine(MatrixStack ms, int xpos, int ypos, int width) {
-        DrawableHelper.fill(ms, xpos, ypos, xpos + width, ypos + 1, this.color);
+    private void drawHLine(DrawContext context, int xpos, int ypos, int width) {
+        context.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
     }
 
-    private void drawVLine(MatrixStack ms, int xpos, int ypos, int height) {
-        DrawableHelper.fill(ms, xpos, ypos, xpos + 1, ypos + height, this.color);
+    private void drawVLine(DrawContext context, int xpos, int ypos, int height) {
+        context.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
     }
 
     /**
