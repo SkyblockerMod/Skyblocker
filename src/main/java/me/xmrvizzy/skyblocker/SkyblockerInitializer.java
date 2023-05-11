@@ -4,7 +4,6 @@ import me.xmrvizzy.skyblocker.chat.ChatMessageListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
-import me.xmrvizzy.skyblocker.skyblock.api.StatsCommand;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
@@ -19,7 +18,6 @@ public class SkyblockerInitializer implements ClientModInitializer {
         PriceInfoTooltip.init();
         WikiLookup.init();
         ItemRegistry.init();
-        StatsCommand.init();
         DwarvenHud.init();
         ChatMessageListener.init();
         DiscordRPCManager.init();
