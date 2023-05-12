@@ -26,14 +26,18 @@ public class PlayerListWidget extends Widget {
     public PlayerListWidget(List<PlayerListEntry> l) {
         super(TITLE, Formatting.GREEN.getColorValue());
 
+        // hard cap to 4x20 entries.
+        // 5x20 is too wide (and not possible in theory. in reality however...)
+        int listlen = Math.min(l.size(), 160);
+
         // unintuitive int ceil division stolen from
         // https://stackoverflow.com/questions/7139382/java-rounding-up-to-an-int-using-math-ceil#21830188
-        int tblW = ((l.size() - 80) - 1) / 20 + 1;
+        int tblW = ((listlen - 80) - 1) / 20 + 1;
 
-        TableComponent tc = new TableComponent(tblW, (l.size() - 80 >= 20) ? 20 : l.size() - 80,
+        TableComponent tc = new TableComponent(tblW, (listlen - 80 >= 20) ? 20 : listlen - 80,
                 Formatting.GREEN.getColorValue());
 
-        for (int i = 80; i < l.size(); i++) {
+        for (int i = 80; i < listlen; i++) {
             list.add(l.get(i));
         }
 
