@@ -20,7 +20,7 @@ public class ProfileWidget extends Widget {
     public ProfileWidget(List<PlayerListEntry> list) {
         super(TITLE, Formatting.YELLOW.getColorValue());
 
-        Text profileType = StrMan.stdEntry(list, 61, "Type:", Formatting.GREEN);
+        Text profileType = StrMan.stdEntry(list, 61, "Profile:", Formatting.GREEN);
         IcoTextComponent profile = new IcoTextComponent(Ico.SIGN, profileType);
         this.addComponent(profile);
 
