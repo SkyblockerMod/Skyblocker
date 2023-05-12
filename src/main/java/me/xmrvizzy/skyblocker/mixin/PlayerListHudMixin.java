@@ -48,6 +48,12 @@ public class PlayerListHudMixin {
 
         List<PlayerListEntry> list = nwH.getListedPlayerListEntries().stream()
                 .sorted(PlayerListHudAccessor.getOrdering()).toList();
+
+        // list hasn't loaded completely, abort until widgets handle errors correctly
+        if (list.size() < 40) {
+            return;
+        }
+
         int w = scaledW;
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
 
