@@ -8,12 +8,13 @@ import net.minecraft.client.util.math.MatrixStack;
 public abstract class Component {
 
     static final int ICO_DIM = 16;
-    static final int PAD_S = 2;
-    static final int PAD_L = 4;
+    public static final int PAD_S = 2;
+    public static final int PAD_L = 4;
 
     static TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
     static ItemRenderer itmRend = MinecraftClient.getInstance().getItemRenderer();
 
+    // these should always be the content dimensions without any padding.
     int width, height;
 
     public abstract void render(MatrixStack ms, int x, int y);

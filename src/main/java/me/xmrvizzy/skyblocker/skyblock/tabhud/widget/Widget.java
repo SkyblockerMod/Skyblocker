@@ -40,9 +40,11 @@ public abstract class Widget {
 
     public final void pack() {
         for (Component c : components) {
-            h += c.getHeight() + 4;
-            w = Math.max(w, c.getWidth());
+            h += c.getHeight() + Component.PAD_L;
+            w = Math.max(w, c.getWidth() + Component.PAD_S);
         }
+
+        h -= Component.PAD_L / 2; // less padding after lowest/last component
         h += BORDER_SZE_N + BORDER_SZE_S - 2;
         w += BORDER_SZE_E + BORDER_SZE_W;
 
@@ -114,7 +116,7 @@ public abstract class Widget {
 
         for (Component c : components) {
             c.render(ms, x + BORDER_SZE_W, yOffs);
-            yOffs += c.getHeight() + 4;
+            yOffs += c.getHeight() + Component.PAD_L;
         }
         // pop manipulations above
         ms.pop();

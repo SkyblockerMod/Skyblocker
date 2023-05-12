@@ -30,8 +30,8 @@ public class ProgressComponent extends Component {
         this.pcnt = pcnt;
 
         this.barW = BAR_WIDTH;
+        this.width = ICO_DIM + PAD_L + Math.max(this.barW, txtRend.getWidth(desc));
         this.height = txtRend.fontHeight + PAD_S + 2 + txtRend.fontHeight + 2;
-        this.width = ICO_DIM + PAD_L + Math.max(this.barW, txtRend.getWidth(desc)) + PAD_S;
     }
 
     public ProgressComponent(ItemStack ico, Text text, float pcnt, int color) {

@@ -18,8 +18,8 @@ public class IcoFatTextComponent extends Component {
         this.l1 = l1;
         this.l2 = l2;
 
-        this.width = ICO_DIM + PAD_L + Math.max(txtRend.getWidth(l1), txtRend.getWidth(l2)) + PAD_S;
-        this.height = txtRend.fontHeight * 2 + PAD_S;
+        this.width = ICO_DIM + PAD_L + Math.max(txtRend.getWidth(l1), txtRend.getWidth(l2));
+        this.height = txtRend.fontHeight + PAD_S + txtRend.fontHeight;
     }
 
     @Override

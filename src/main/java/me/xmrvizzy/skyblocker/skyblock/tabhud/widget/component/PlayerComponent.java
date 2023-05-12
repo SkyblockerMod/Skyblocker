@@ -21,7 +21,7 @@ public class PlayerComponent extends Component {
         name = ple.getProfile().getName();
         tex = ple.getSkinTexture();
 
-        this.width = txtRend.getWidth(name) + PAD_S + SKIN_ICO_DIM;
+        this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(name) ;
         this.height = txtRend.fontHeight;
     }
 

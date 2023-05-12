@@ -15,7 +15,7 @@ public class IcoTextComponent extends Component {
         this.ico = ico;
         this.text = text;
 
-        this.width = ICO_DIM + PAD_L + txtRend.getWidth(text) + PAD_S;
+        this.width = ICO_DIM + PAD_L + txtRend.getWidth(text);
         this.height = ICO_DIM;
     }
 

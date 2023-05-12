@@ -12,13 +12,13 @@ public class PlainTextComponent extends Component {
     public PlainTextComponent(Text text) {
         this.text = text;
 
-        this.width = PAD_S + txtRend.getWidth(text) + PAD_S;
+        this.width = PAD_S + txtRend.getWidth(text); // looks off without padding
         this.height = txtRend.fontHeight;
     }
 
     @Override
     public void render(MatrixStack ms, int x, int y) {
-        txtRend.draw(ms, text, x + PAD_S, y, 0xffffffff);
+        txtRend.draw(ms, text, x, y, 0xffffffff);
     }
 
 }
