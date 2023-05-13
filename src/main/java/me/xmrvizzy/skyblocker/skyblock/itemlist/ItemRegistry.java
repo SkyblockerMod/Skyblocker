@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +47,27 @@ public class ItemRegistry {
     }
 
     private static void updateItemRepo() {
-        Git git;
         if (!Files.isDirectory(LOCAL_ITEM_REPO_DIR)) {
             try {
-                git = Git.cloneRepository()
+                Git.cloneRepository()
                         .setURI(REMOTE_ITEM_REPO)
                         .setDirectory(LOCAL_ITEM_REPO_DIR.toFile())
                         .setBranchesToClone(List.of("refs/heads/master"))
                         .setBranch("refs/heads/master")
                         .call();
-                git.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                PullResult pull = Git.open(LOCAL_ITEM_REPO_DIR.toFile()).pull().setRebase(true).call();
+                if (pull.getRebaseResult() == null) {
+                    LOGGER.info("[Skyblocker Repository Update] No update result");
+                } else if (pull.getRebaseResult().getStatus().isSuccessful()) {
+                    LOGGER.info("[Skyblocker Repository Update] Status: " + pull.getRebaseResult().getStatus().name());
+                } else if (!pull.getRebaseResult().getStatus().isSuccessful()) {
+                    LOGGER.warn("[Skyblocker Repository Update] Status: " + pull.getRebaseResult().getStatus().name());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -68,7 +68,12 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
             } else {
                 this.searchField.render(matrices, mouseX, mouseY, delta);
             }
-            if (ItemRegistry.filesImported && results != null){
+            if (ItemRegistry.filesImported){
+                if (results == null) {
+                    int x = (this.parentWidth - 147) / 2 - this.leftOffset;
+                    int y = (this.parentHeight - 166) / 2;
+                    this.results = new SearchResultsWidget(this.client, x, y);
+                }
                 this.updateSearchResult();
                 this.results.render(matrices, mouseX, mouseY, delta);
             }

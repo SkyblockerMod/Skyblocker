@@ -11,7 +11,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class RepositoryUpdate {
 
-    //TODO add button to config for this
+    /**
+     * Adds command to update repository manually from ingame.
+     * <p></p>
+     * TODO A button could be added to the settings menu that will trigger this command.
+     */
     public static void init(){
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
             ClientCommandManager.literal("skyblocker")
