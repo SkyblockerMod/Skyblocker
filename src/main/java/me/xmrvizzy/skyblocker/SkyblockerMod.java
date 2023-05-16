@@ -23,22 +23,18 @@ import net.minecraft.client.MinecraftClient;
 
 public class SkyblockerMod implements ClientModInitializer {
     public static final String NAMESPACE = "skyblocker";
-    private static final SkyblockerMod instance = new SkyblockerMod();
+    private static SkyblockerMod INSTANCE;
 
     public final Scheduler scheduler = new Scheduler();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public final StatusBarTracker statusBarTracker = new StatusBarTracker();
 
-    private SkyblockerMod() {
-        scheduler.scheduleCyclic(Utils::sbChecker, 20);
-        scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
-        scheduler.scheduleCyclic(DungeonBlaze::update, 4);
-        scheduler.scheduleCyclic(BackpackPreview::tick, 50);
-        scheduler.scheduleCyclic(DwarvenHud::update, 40);
+    public SkyblockerMod() {
+        INSTANCE = this;
     }
 
     public static SkyblockerMod getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
@@ -57,6 +53,11 @@ public class SkyblockerMod implements ClientModInitializer {
         ChatMessageListener.init();
         UpdateChecker.init();
         DiscordRPCManager.init();
+        scheduler.scheduleCyclic(Utils::sbChecker, 20);
+        scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
+        scheduler.scheduleCyclic(DungeonBlaze::update, 4);
+        scheduler.scheduleCyclic(BackpackPreview::tick, 50);
+        scheduler.scheduleCyclic(DwarvenHud::update, 40);
     }
 
     public void tick(MinecraftClient client) {
