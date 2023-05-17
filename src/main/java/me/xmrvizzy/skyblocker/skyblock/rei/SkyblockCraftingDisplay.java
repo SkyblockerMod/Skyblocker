@@ -1,18 +1,39 @@
 package me.xmrvizzy.skyblocker.skyblock.rei;
 
 
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
-import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCustomDisplay;
-import net.minecraft.recipe.Recipe;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /**
  * Skyblock Crafting Recipe display class for REI
  */
-public class SkyblockCraftingDisplay extends DefaultCustomDisplay {
-    public SkyblockCraftingDisplay(@Nullable Recipe<?> possibleRecipe, List<EntryIngredient> input, List<EntryIngredient> output) {
-        super(possibleRecipe, input, output);
+public class SkyblockCraftingDisplay extends BasicDisplay implements SimpleGridMenuDisplay {
+
+    private final String craftText;
+    public SkyblockCraftingDisplay(List<EntryIngredient> input, List<EntryIngredient> output, String craftText) {
+        super(input, output);
+        this.craftText = craftText;
+    }
+    public String getCraftText() {
+        return craftText;
+    }
+
+    @Override
+    public int getWidth() {
+        return 3;
+    }
+
+    @Override
+    public int getHeight() {
+        return 3;
+    }
+
+    @Override
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return SkyblockerREIClientPlugin.SKYBLOCK;
     }
 }

@@ -11,13 +11,13 @@ import java.util.List;
 
 public class SkyblockCraftingRecipe {
     private static final Logger LOGGER = LoggerFactory.getLogger(SkyblockCraftingRecipe.class);
-    String text = "";
+    String craftText = "";
     final List<ItemStack> grid = new ArrayList<>(9);
     ItemStack result;
 
     public static SkyblockCraftingRecipe fromJsonObject(JsonObject jsonObj) {
         SkyblockCraftingRecipe recipe = new SkyblockCraftingRecipe();
-        if (jsonObj.has("crafttext")) recipe.text = jsonObj.get("crafttext").getAsString();
+        if (jsonObj.has("crafttext")) recipe.craftText = jsonObj.get("crafttext").getAsString();
         recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("A1").getAsString()));
         recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("A2").getAsString()));
         recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("A3").getAsString()));
@@ -52,5 +52,9 @@ public class SkyblockCraftingRecipe {
 
     public ItemStack getResult() {
         return result;
+    }
+
+    public String getCraftText() {
+        return craftText;
     }
 }

@@ -29,12 +29,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry displayRegistry) {
-
-        ViewSearchBuilder builder = ViewSearchBuilder.builder();
-        builder.addCategory(SKYBLOCK);
-
         displayRegistry.registerDisplayGenerator(SKYBLOCK, new SkyblockCraftingDisplayGenerator());
-
     }
 
     @Override

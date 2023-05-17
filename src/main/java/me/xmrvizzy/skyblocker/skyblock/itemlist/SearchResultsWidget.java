@@ -109,7 +109,7 @@ public class SearchResultsWidget implements Drawable {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
-            String craftText = this.recipeResults.get(this.currentPage).text;
+            String craftText = this.recipeResults.get(this.currentPage).craftText;
             this.client.textRenderer.drawWithShadow(matrices, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
             this.client.textRenderer.drawWithShadow(matrices, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);

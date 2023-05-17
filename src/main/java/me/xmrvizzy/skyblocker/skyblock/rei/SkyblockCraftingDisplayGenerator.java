@@ -60,7 +60,7 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
             }
             outputs.add(EntryIngredient.of(EntryStacks.of(recipe.getResult())));
 
-            displays.add(new SkyblockCraftingDisplay(null, inputs, outputs));
+            displays.add(new SkyblockCraftingDisplay(inputs, outputs, recipe.getCraftText()));
         }
         return displays;
     }
