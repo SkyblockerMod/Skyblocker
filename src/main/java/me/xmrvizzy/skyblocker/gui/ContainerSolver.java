@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.container;
+package me.xmrvizzy.skyblocker.gui;
 
 import net.minecraft.item.ItemStack;
 
@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * Abstract class for gui solvers. Extend this class to add a new gui solver, like terminal solvers or experiment solvers.
+ */
 public abstract class ContainerSolver {
     private final Pattern CONTAINER_NAME;
     protected final static int GREEN_HIGHLIGHT = 128 << 24 | 64 << 16 | 196 << 8 | 64;
