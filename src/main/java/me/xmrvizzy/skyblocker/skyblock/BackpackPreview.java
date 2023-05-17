@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -39,6 +40,14 @@ public class BackpackPreview extends DrawableHelper {
 
     private static String loaded = ""; // uuid + sb profile currently loaded
     private static Path save_dir = null;
+
+    public static void init() {
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof HandledScreen<?> handledScreen) {
+                updateStorage(handledScreen);
+            }
+        });
+    }
 
     public static void tick() {
         Utils.sbChecker(); // force update isOnSkyblock to prevent crash on disconnect

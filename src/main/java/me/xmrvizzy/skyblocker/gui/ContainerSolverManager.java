@@ -1,10 +1,13 @@
 package me.xmrvizzy.skyblocker.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.CroesusHelper;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -35,6 +38,18 @@ public class ContainerSolverManager extends DrawableHelper {
                 new StartsWithTerminal(),
                 new CroesusHelper()
         };
+    }
+
+    public static void init() {
+        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            ContainerSolverManager containerSolverManager = SkyblockerMod.getInstance().containerSolverManager;
+            if (Utils.isOnSkyblock && screen instanceof GenericContainerScreen genericContainerScreen) {
+                ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, delta) -> containerSolverManager.onDraw(matrices, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
+                containerSolverManager.onSetScreen(genericContainerScreen);
+            } else {
+                containerSolverManager.clearScreen();
+            }
+        });
     }
 
     public void onSetScreen(@NotNull GenericContainerScreen screen) {
