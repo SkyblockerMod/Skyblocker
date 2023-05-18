@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.CroesusHelper;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
@@ -40,14 +39,13 @@ public class ContainerSolverManager extends DrawableHelper {
         };
     }
 
-    public static void init() {
+    public void init() {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            ContainerSolverManager containerSolverManager = SkyblockerMod.getInstance().containerSolverManager;
             if (Utils.isOnSkyblock && screen instanceof GenericContainerScreen genericContainerScreen) {
-                ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, delta) -> containerSolverManager.onDraw(matrices, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
-                containerSolverManager.onSetScreen(genericContainerScreen);
+                ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, delta) -> onDraw(matrices, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
+                onSetScreen(genericContainerScreen);
             } else {
-                containerSolverManager.clearScreen();
+                clearScreen();
             }
         });
     }

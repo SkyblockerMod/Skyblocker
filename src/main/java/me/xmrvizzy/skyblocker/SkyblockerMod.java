@@ -47,7 +47,6 @@ public class SkyblockerMod implements ClientModInitializer {
         WikiLookup.init();
         ItemRegistry.init();
         RepositoryUpdate.init();
-        ContainerSolverManager.init();
         BackpackPreview.init();
         QuickNav.init();
         StatsCommand.init();
@@ -55,6 +54,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ChatMessageListener.init();
         UpdateChecker.init();
         DiscordRPCManager.init();
+        containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
