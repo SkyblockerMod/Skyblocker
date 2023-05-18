@@ -22,7 +22,7 @@ public class SearchResultsWidget implements Drawable {
     private final int parentY;
 
     private final List<ItemStack> searchResults = new ArrayList<>();
-    private List<Recipe> recipeResults = new ArrayList<>();
+    private List<SkyblockCraftingRecipe> recipeResults = new ArrayList<>();
     private String searchText = null;
     private final List<ResultButtonWidget> resultButtons = new ArrayList<>();
     private final ToggleButtonWidget nextPageButton;
@@ -79,7 +79,7 @@ public class SearchResultsWidget implements Drawable {
 
     private void updateButtons() {
         if (this.displayRecipes) {
-            Recipe recipe = this.recipeResults.get(this.currentPage);
+            SkyblockCraftingRecipe recipe = this.recipeResults.get(this.currentPage);
             for (ResultButtonWidget button : resultButtons)
                 button.clearItemStack();
             resultButtons.get(5).setItemStack(recipe.grid.get(0));
@@ -109,7 +109,7 @@ public class SearchResultsWidget implements Drawable {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
-            String craftText = this.recipeResults.get(this.currentPage).text;
+            String craftText = this.recipeResults.get(this.currentPage).craftText;
             this.client.textRenderer.drawWithShadow(matrices, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
             this.client.textRenderer.drawWithShadow(matrices, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
@@ -142,7 +142,7 @@ public class SearchResultsWidget implements Drawable {
                     continue;
                 }
                 String internalName = button.itemStack.getNbt().getCompound("ExtraAttributes").getString("id");
-                List<Recipe> recipes = ItemRegistry.getRecipes(internalName);
+                List<SkyblockCraftingRecipe> recipes = ItemRegistry.getRecipes(internalName);
                 if (!recipes.isEmpty()) {
                     this.recipeResults = recipes;
                     this.currentPage = 0;
