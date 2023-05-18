@@ -26,6 +26,7 @@ public abstract class FarmlandBlockMixin extends Block {
             cir.setReturnValue(Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 16.0));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
         return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 15.0, 16.0);
