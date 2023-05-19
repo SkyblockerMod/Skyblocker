@@ -1,21 +1,21 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList;
 
-import java.util.List;
+
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.IslandGuestsWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.IslandOwnersWidget;
 
-import net.minecraft.client.network.PlayerListEntry;
+
 import net.minecraft.text.Text;
 
 public class GuestPlayerScreen extends Screen{
 
-    public GuestPlayerScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
+    public GuestPlayerScreen(int w, int h, Text footer) {
         super(w, h);
 
-        IslandGuestsWidget igw = new IslandGuestsWidget(list);
-        IslandOwnersWidget iow = new IslandOwnersWidget(list);
+        IslandGuestsWidget igw = new IslandGuestsWidget();
+        IslandOwnersWidget iow = new IslandOwnersWidget();
 
         this.centerH(iow);
         this.centerH(igw);

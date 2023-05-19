@@ -1,11 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.util;
 
-import java.util.List;
-
-import me.xmrvizzy.skyblocker.mixin.PlayerListHudAccessor;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.PlayerListEntry;
 
 public class PlayerLocator {
 
@@ -26,8 +21,7 @@ public class PlayerLocator {
         SPIDER_DEN,
         JERRY,
         GARDEN,
-        UNKNOWN,
-        NONE
+        UNKNOWN
     }
 
     public static Location getPlayerLocation() {
@@ -36,19 +30,22 @@ public class PlayerLocator {
             return Location.UNKNOWN;
         }
 
-        List<PlayerListEntry> ple = MinecraftClient.getInstance().getNetworkHandler().getPlayerList().stream()
-                .sorted(PlayerListHudAccessor.getOrdering()).toList();
-
-        String cat2Name = StrMan.strAt(ple, 40);
-
-        if (cat2Name.contains("Dungeon Stats")) {
+        if (Utils.isInDungeons) {
             return Location.DUNGEON;
         }
 
-        String areaDesciptor = StrMan.strAt(ple, 41).substring(6);
-        switch (areaDesciptor) {
+        String areaDesciptor = PlayerListMgr.strAt(41);
+
+        if (areaDesciptor == null || areaDesciptor.length() < 6) {
+            return Location.UNKNOWN;
+        }
+
+        switch (areaDesciptor.substring(6)) {
             case "Private Island":
-                if (ple.get(44).getDisplayName().getString().endsWith("Guest")) {
+                String islandType = PlayerListMgr.strAt(44);
+                if (islandType == null) {
+                    return Location.UNKNOWN;
+                } else if (islandType.endsWith("Guest")) {
                     return Location.GUEST_ISLAND;
                 } else {
                     return Location.HOME_ISLAND;
@@ -80,7 +77,7 @@ public class PlayerLocator {
             case "Garden":
                 return Location.GARDEN;
             default:
-                return Location.NONE;
+                return Location.UNKNOWN;
         }
     }
 }

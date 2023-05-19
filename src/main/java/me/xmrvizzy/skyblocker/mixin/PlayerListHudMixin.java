@@ -1,7 +1,5 @@
 package me.xmrvizzy.skyblocker.mixin;
 
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +15,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -46,27 +43,15 @@ public class PlayerListHudMixin {
             return;
         }
 
-        List<PlayerListEntry> list = nwH.getListedPlayerListEntries().stream()
-                .sorted(PlayerListHudAccessor.getOrdering()).toList();
-
-        // list hasn't loaded completely, abort until widgets handle errors correctly
-        if (list.size() < 40) {
-            return;
-        }
-
         int w = scaledW;
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
-
         try {
-
-            Screen screen = Screen.getCorrect(w, h, list, footer);
-            if (screen != null) {
-                screen.render(ms);
-                info.cancel();
-            }
+            long then  = System.nanoTime();
+            Screen screen = Screen.getCorrect(w, h, footer);
+            screen.render(ms);
+            info.cancel();
         } catch (Exception e) {
             e.printStackTrace();
-            client.player.sendMessage(Text.of("The tab HUD has encountered unexpected text, see log! :("));
         }
 
     }

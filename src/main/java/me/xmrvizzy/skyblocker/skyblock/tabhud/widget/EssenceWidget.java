@@ -1,13 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
-
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.TableComponent;
 
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -21,16 +17,16 @@ public class EssenceWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Essences").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
 
-    public EssenceWidget(List<PlayerListEntry> list) {
+    public EssenceWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
-        wither = StrMan.stdEntry(list, 46, "Wither:", Formatting.DARK_PURPLE);
-        spider = StrMan.stdEntry(list, 47, "Spider:", Formatting.DARK_PURPLE);
-        undead = StrMan.stdEntry(list, 48, "Undead:", Formatting.DARK_PURPLE);
-        dragon = StrMan.stdEntry(list, 49, "Dragon:", Formatting.DARK_PURPLE);
-        gold = StrMan.stdEntry(list, 50, "Gold:", Formatting.DARK_PURPLE);
-        diamond = StrMan.stdEntry(list, 51, "Diamond:", Formatting.DARK_PURPLE);
-        ice = StrMan.stdEntry(list, 52, "Ice:", Formatting.DARK_PURPLE);
-        crimson = StrMan.stdEntry(list, 53, "Crimson:", Formatting.DARK_PURPLE);
+        wither = Widget.simpleEntryText(46, "Wither:", Formatting.DARK_PURPLE);
+        spider = Widget.simpleEntryText(47, "Spider:", Formatting.DARK_PURPLE);
+        undead = Widget.simpleEntryText(48, "Undead:", Formatting.DARK_PURPLE);
+        dragon = Widget.simpleEntryText(49, "Dragon:", Formatting.DARK_PURPLE);
+        gold = Widget.simpleEntryText(50, "Gold:", Formatting.DARK_PURPLE);
+        diamond = Widget.simpleEntryText(51, "Diamond:", Formatting.DARK_PURPLE);
+        ice = Widget.simpleEntryText(52, "Ice:", Formatting.DARK_PURPLE);
+        crimson = Widget.simpleEntryText(53, "Crimson:", Formatting.DARK_PURPLE);
 
         TableComponent tc = new TableComponent(2, 4, Formatting.DARK_AQUA.getColorValue());
 

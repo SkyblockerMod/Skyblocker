@@ -2,14 +2,12 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -28,7 +26,8 @@ public class DungeonPlayerWidget extends Widget {
     // group 3: level (or nothing, if pre dungeon start)
     // as a side effect, this regex keeps the iron man icon in the name
     // not sure if that should be
-    private static final Pattern PLAYER_PATTERN = Pattern.compile("\\[\\d*\\] (.*) \\((\\S*) ?([LXVI]*)\\)");
+    private static final Pattern PLAYER_PATTERN = Pattern
+            .compile("\\[\\d*\\] (?<name>.*) \\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
 
     private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
     private static final ArrayList<String> MSGS = new ArrayList<>();
@@ -42,45 +41,49 @@ public class DungeonPlayerWidget extends Widget {
         MSGS.add("PRESS A TO JOIN");
         MSGS.add("Invite a friend!");
         MSGS.add("But nobody came.");
+        MSGS.add("More is better!");
     }
 
     // title needs to be changeable here
-    public DungeonPlayerWidget(List<PlayerListEntry> list, int player) {
+    public DungeonPlayerWidget(int player) {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
 
         int start = 1 + (player - 1) * 4;
 
-        if (list.get(start).getDisplayName().getString().length() < 2) {
-            this.addComponent(
-                    new IcoTextComponent(Ico.SIGN, Text.literal(MSGS.get((int)(Math.random()*MSGS.size()))).formatted(Formatting.GRAY)));
+        if (PlayerListMgr.strAt(start) == null) {
+            int idx = player - 2;
+            IcoTextComponent noplayer = new IcoTextComponent(Ico.SIGN,
+                    Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY));
+            this.addComponent(noplayer);
+            this.pack();
+            return;
+        }
+        Matcher m = PlayerListMgr.regexAt(start, PLAYER_PATTERN);
+        if (m == null) {
+            this.addComponent(new IcoTextComponent());
+            this.addComponent(new IcoTextComponent());
         } else {
-            Matcher m = StrMan.regexAt(list, start, PLAYER_PATTERN);
 
-            Text name = Text.literal("Name: ").append(Text.literal(m.group(1)).formatted(Formatting.YELLOW));
+            Text name = Text.literal("Name: ").append(Text.literal(m.group("name")).formatted(Formatting.YELLOW));
             this.addComponent(new IcoTextComponent(Ico.PLAYER, name));
 
-            String cl = m.group(2);
+            String cl = m.group("class");
             Formatting clf = Formatting.GRAY;
             ItemStack cli = Ico.BARRIER;
             if (!cl.equals("EMPTY")) {
                 cli = ICOS.get(cl);
                 clf = Formatting.LIGHT_PURPLE;
-                cl += " " + m.group(3);
+                cl += " " + m.group("level");
             }
 
-            Text class_ = Text.literal("Class: ").append(Text.literal(cl).formatted(clf));
-            IcoTextComponent itclass = new IcoTextComponent(cli, class_);
+            Text clazz = Text.literal("Class: ").append(Text.literal(cl).formatted(clf));
+            IcoTextComponent itclass = new IcoTextComponent(cli, clazz);
             this.addComponent(itclass);
-
-            Text ult = StrMan.stdEntry(list, start + 1, "Ult Cooldown:", Formatting.GOLD);
-            IcoTextComponent ul = new IcoTextComponent(Ico.CLOCK, ult);
-            this.addComponent(ul);
-
-            Text revive = StrMan.stdEntry(list, start + 2, "Revives:", Formatting.DARK_PURPLE);
-            IcoTextComponent re = new IcoTextComponent(Ico.POTION, revive);
-            this.addComponent(re);
-
         }
+
+        this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
+        this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
+
         this.pack();
 
     }

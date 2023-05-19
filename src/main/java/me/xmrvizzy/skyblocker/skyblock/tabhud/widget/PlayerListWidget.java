@@ -3,8 +3,9 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.TableComponent;
 
@@ -23,12 +24,19 @@ public class PlayerListWidget extends Widget {
 
     private ArrayList<PlayerListEntry> list = new ArrayList<>();
 
-    public PlayerListWidget(List<PlayerListEntry> l) {
+    public PlayerListWidget() {
         super(TITLE, Formatting.GREEN.getColorValue());
 
         // hard cap to 4x20 entries.
         // 5x20 is too wide (and not possible in theory. in reality however...)
-        int listlen = Math.min(l.size(), 160);
+        int listlen = Math.min(PlayerListMgr.getSize(), 160);
+
+        // list isn't fully loaded, so our hack won't work...
+        if (listlen < 80) {
+            this.addComponent(new PlainTextComponent(Text.literal("List loading...").formatted(Formatting.GRAY)));
+            this.pack();
+            return;
+        }
 
         // unintuitive int ceil division stolen from
         // https://stackoverflow.com/questions/7139382/java-rounding-up-to-an-int-using-math-ceil#21830188
@@ -38,7 +46,7 @@ public class PlayerListWidget extends Widget {
                 Formatting.GREEN.getColorValue());
 
         for (int i = 80; i < listlen; i++) {
-            list.add(l.get(i));
+            list.add(PlayerListMgr.getRaw(i));
         }
 
         Collections.sort(list, new Comparator<PlayerListEntry>() {

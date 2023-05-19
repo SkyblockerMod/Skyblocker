@@ -1,11 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import java.util.HashMap;
-import java.util.List;
 
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
@@ -41,13 +39,17 @@ public class VolcanoWidget extends Widget {
                 new Pair<ItemStack, Formatting>(new ItemStack(Items.SKELETON_SKULL), Formatting.DARK_RED));
     }
 
-    public VolcanoWidget(List<PlayerListEntry> list) {
+    public VolcanoWidget() {
         super(TITLE, Formatting.AQUA.getColorValue());
 
-        String s = StrMan.strAt(list, 58).trim();
-        Pair<ItemStack, Formatting> p = BOOM_TYPE.get(s);
-        IcoTextComponent itc = new IcoTextComponent(p.getLeft(), Text.literal(s).formatted(p.getRight()));
-        this.addComponent(itc);
+        String s = PlayerListMgr.strAt(58);
+        if (s == null) {
+            this.addComponent(new IcoTextComponent());
+        } else {
+            Pair<ItemStack, Formatting> p = BOOM_TYPE.get(s);
+            this.addComponent(new IcoTextComponent(p.getLeft(), Text.literal(s).formatted(p.getRight())));
+        }
+
         this.pack();
 
     }

@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo;
 
-import java.util.List;
+
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CookieWidget;
@@ -11,24 +11,24 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ProfileWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.SkillsWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.UpgradeWidget;
 
-import net.minecraft.client.network.PlayerListEntry;
+
 import net.minecraft.text.Text;
 
 public class GenericInfoScreen extends Screen {
 
-    public GenericInfoScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
+    public GenericInfoScreen(int w, int h, Text footer) {
         super(w, h);
 
         String f = footer.getString();
 
-        SkillsWidget sw = new SkillsWidget(ple);
-        EventWidget evw = new EventWidget(ple, false);
+        SkillsWidget sw = new SkillsWidget();
+        EventWidget evw = new EventWidget(false);
         UpgradeWidget uw = new UpgradeWidget(f);
 
-        ProfileWidget pw = new ProfileWidget(ple);
+        ProfileWidget pw = new ProfileWidget();
         EffectWidget efw = new EffectWidget(f);
 
-        ElectionWidget elw = new ElectionWidget(ple);
+        ElectionWidget elw = new ElectionWidget();
         CookieWidget cw = new CookieWidget(f);
 
         this.stackWidgetsH(sw, evw, uw);

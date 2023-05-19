@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main;
 
-import java.util.List;
+
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CommsWidget;
@@ -8,18 +8,18 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ForgeWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.PowderWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ServerWidget;
 
-import net.minecraft.client.network.PlayerListEntry;
+
 import net.minecraft.text.Text;
 
 public class MineServerScreen extends Screen{
 
-    public MineServerScreen(int w, int h, List<PlayerListEntry> list, Text footer) {
+    public MineServerScreen(int w, int h, Text footer) {
         super(w, h);
 
-        ServerWidget sw = new ServerWidget(list);
-        PowderWidget pw = new PowderWidget(list);
-        CommsWidget cw = new CommsWidget(list);
-        ForgeWidget fw = new ForgeWidget(list);
+        ServerWidget sw = new ServerWidget();
+        PowderWidget pw = new PowderWidget();
+        CommsWidget cw = new CommsWidget();
+        ForgeWidget fw = new ForgeWidget();
 
         this.stackWidgetsH(sw, pw, cw);
         this.centerH(fw);

@@ -1,14 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -25,26 +23,32 @@ public class DungeonPuzzleWidget extends Widget {
     // group 2: status
     // " ?.*" to diescard the solver's name if present
     // the teleport maze has a trailing whitespace that messes with the regex
-    private static final Pattern PUZZLE_PATTERN = Pattern.compile(" (.*): \\[(.*)\\] ?.*");
+    private static final Pattern PUZZLE_PATTERN = Pattern.compile("(?<name>.*): \\[(?<status>.*)\\] ?.*");
 
-    public DungeonPuzzleWidget(List<PlayerListEntry> list) {
+    public DungeonPuzzleWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
 
         int pos = 48;
 
         while (pos < 60) {
-            Matcher m = StrMan.regexAt(list, pos, PUZZLE_PATTERN);
+            Matcher m = PlayerListMgr.regexAt(pos, PUZZLE_PATTERN);
             if (m == null) {
                 break;
             }
-            Text t = Text.literal(m.group(1) + ": ").append(Text.literal("[").formatted(Formatting.GRAY))
-                    .append(m.group(2)).append(Text.literal("]").formatted(Formatting.GRAY));
+            Text t = Text.literal(m.group("name") + ": ")
+                    .append(Text.literal("[").formatted(Formatting.GRAY))
+                    .append(m.group("status"))
+                    .append(Text.literal("]").formatted(Formatting.GRAY));
             IcoTextComponent itc = new IcoTextComponent(Ico.SIGN, t);
             this.addComponent(itc);
             pos++;
             // code points for puzzle status chars unsolved and solved: 10022, 10004
             // not sure which one is which
             // still need to find out codepoint for the puzzle failed char
+        }
+        if (pos == 48) {
+            this.addComponent(
+                    new IcoTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
         }
         this.pack();
 

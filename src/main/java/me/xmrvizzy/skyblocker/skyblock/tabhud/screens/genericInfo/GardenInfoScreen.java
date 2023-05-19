@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo;
 
-import java.util.List;
+
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CookieWidget;
@@ -10,24 +10,24 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.GardenSkillsWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ProfileWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.UpgradeWidget;
-import net.minecraft.client.network.PlayerListEntry;
+
 import net.minecraft.text.Text;
 
 public class GardenInfoScreen extends Screen {
 
-    public GardenInfoScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
+    public GardenInfoScreen(int w, int h, Text footer) {
         super(w, h);
 
         String f = footer.getString();
 
-        GardenSkillsWidget gsw = new GardenSkillsWidget(ple);
-        EventWidget evw = new EventWidget(ple, true);
+        GardenSkillsWidget gsw = new GardenSkillsWidget();
+        EventWidget evw = new EventWidget(true);
         UpgradeWidget uw = new UpgradeWidget(f);
 
-        ProfileWidget pw = new ProfileWidget(ple);
+        ProfileWidget pw = new ProfileWidget();
         EffectWidget efw = new EffectWidget(f);
 
-        JacobsContestWidget jcw = new JacobsContestWidget(ple);
+        JacobsContestWidget jcw = new JacobsContestWidget();
         CookieWidget cw = new CookieWidget(f);
 
         // layout code incoming

@@ -6,11 +6,11 @@ import java.util.regex.Pattern;
 
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -27,23 +27,31 @@ public class CommsWidget extends Widget {
     // match a comm
     // group 1: comm name
     // group 2: comm progress (without "%" for comms that show a percentage)
-    private static final Pattern COMM_PATTERN = Pattern.compile(" (.*): (.*)%?");
+    private static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
-    public CommsWidget(List<PlayerListEntry> list) {
+    public CommsWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
 
         for (int i = 50; i <= 53; i++) {
-            Matcher m = StrMan.regexAt(list, i, COMM_PATTERN);
+            Matcher m = PlayerListMgr.regexAt(i, COMM_PATTERN);
+            // end of comms found?
             if (m == null) {
+                if (i == 50) {
+                    this.addComponent(new IcoTextComponent());
+                }
                 break;
             }
-            String g2 = m.group(2);
+
             ProgressComponent pc;
-            if (g2.equals("DONE")) {
-                pc = new ProgressComponent(Ico.BOOK, Text.of(m.group(1)), Text.of(g2), 100f, pcntToCol(100));
+
+            String name = m.group("name");
+            String progress = m.group("progress");
+
+            if (progress.equals("DONE")) {
+                pc = new ProgressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f, pcntToCol(100));
             } else {
-                float pcnt = Float.parseFloat(g2.substring(0, g2.length() - 1));
-                pc = new ProgressComponent(Ico.BOOK, Text.of(m.group(1)), pcnt, pcntToCol(pcnt));
+                float pcnt = Float.parseFloat(progress.substring(0, progress.length() - 1));
+                pc = new ProgressComponent(Ico.BOOK, Text.of(name), pcnt, pcntToCol(pcnt));
             }
             this.addComponent(pc);
         }

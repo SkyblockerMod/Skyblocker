@@ -1,19 +1,17 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList;
 
-import java.util.List;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.PlayerListWidget;
 
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
 
 public class PlayerListScreen extends Screen {
 
-    public PlayerListScreen(int w, int h, List<PlayerListEntry> ple, Text footer) {
+    public PlayerListScreen(int w, int h, Text footer) {
         super(w, h);
 
-        PlayerListWidget plw = new PlayerListWidget(ple);
+        PlayerListWidget plw = new PlayerListWidget();
 
         this.center(plw);
         this.addWidget(plw);

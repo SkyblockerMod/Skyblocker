@@ -1,9 +1,11 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 // widget component that consists of an icon, some text and a progress bar
 // progress bar either shows percentage or custom text
@@ -22,20 +24,32 @@ public class ProgressComponent extends Component {
     private int color;
     private int barW;
 
-    public ProgressComponent(ItemStack ico, Text desc, Text bar, float pcnt, int color) {
-        this.ico = ico;
-        this.desc = desc;
-        this.bar = bar;
-        this.color = 0xff000000 | color;
+    public ProgressComponent(ItemStack ico, Text d, Text b, float pcnt, int color) {
+        this.ico = (ico == null) ? Ico.BARRIER : ico;
+        this.desc = d;
+        this.bar = b;
+        this.color = color;
         this.pcnt = pcnt;
 
+        if (d == null || b == null) {
+            this.ico = Ico.BARRIER;
+            this.desc = Text.literal("No data").formatted(Formatting.GRAY);
+            this.bar = Text.literal("---").formatted(Formatting.GRAY);
+            this.pcnt = 100f;
+            this.color = 0xff000000 | Formatting.DARK_GRAY.getColorValue();
+        }
+
         this.barW = BAR_WIDTH;
-        this.width = ICO_DIM + PAD_L + Math.max(this.barW, txtRend.getWidth(desc));
+        this.width = ICO_DIM + PAD_L + Math.max(this.barW, txtRend.getWidth(this.desc));
         this.height = txtRend.fontHeight + PAD_S + 2 + txtRend.fontHeight + 2;
     }
 
     public ProgressComponent(ItemStack ico, Text text, float pcnt, int color) {
         this(ico, text, Text.of(pcnt + "%"), pcnt, color);
+    }
+
+    public ProgressComponent() {
+        this(null, null, null, 100, 0);
     }
 
     @Override

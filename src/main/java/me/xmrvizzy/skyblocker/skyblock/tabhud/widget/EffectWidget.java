@@ -20,8 +20,19 @@ public class EffectWidget extends Widget {
     public EffectWidget(String footertext) {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
 
-        String interesting = footertext.split("Active Effects")[1];
-        String[] lines = interesting.split("\n");
+        if (footertext == null ||!footertext.contains("Active Effects")) {
+            this.addComponent(new IcoTextComponent());
+            this.pack();
+            return;
+
+        }
+
+        String[] lines = footertext.split("Active Effects")[1].split("\n");
+        if (lines.length < 2) {
+            this.addComponent(new IcoTextComponent());
+            this.pack();
+            return;
+        }
 
         if (lines[1].startsWith("No")) {
             Text txt = Text.literal("No effects active").formatted(Formatting.GRAY);
@@ -34,7 +45,13 @@ public class EffectWidget extends Widget {
             this.addComponent(iftc);
         } else {
             String number = lines[1].substring("You have ".length());
-            number = number.substring(0, number.indexOf(' '));
+            int idx = number.indexOf(' ');
+            if (idx == -1 ||lines.length < 4) {
+                this.addComponent(new IcoFatTextComponent());
+                this.pack();
+                return;
+            }
+            number = number.substring(0, idx);
             Text active = Text.literal("Active Effects: ").append(Text.literal(number).formatted(Formatting.YELLOW));
 
             IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, active,

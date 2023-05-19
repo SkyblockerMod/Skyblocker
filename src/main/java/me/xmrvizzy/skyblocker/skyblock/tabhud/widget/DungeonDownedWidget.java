@@ -1,12 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
-
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,23 +16,20 @@ public class DungeonDownedWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Downed").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
 
-    public DungeonDownedWidget(List<PlayerListEntry> list) {
+    public DungeonDownedWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
         Formatting format = Formatting.RED;
-        if (StrMan.strAt(list, 21).endsWith("NONE")) {
+        String down = PlayerListMgr.strAt(21);
+        if (down != null && down.endsWith("NONE")) {
             format = Formatting.GRAY;
         }
-        Text downed = StrMan.stdEntry(list, 21, "Downed:", format);
-        IcoTextComponent down = new IcoTextComponent(Ico.SKULL, downed);
-        this.addComponent(down);
+        int idx = down.indexOf(": ");
+        Text downed = (down == null || idx== -1) ? null : Widget.simpleEntryText(down.substring(idx + 2), "Downed:", format);
+        IcoTextComponent d = new IcoTextComponent(Ico.SKULL, downed);
+        this.addComponent(d);
 
-        Text time = StrMan.stdEntry(list, 22, "Time:", Formatting.GRAY);
-        IcoTextComponent t = new IcoTextComponent(Ico.CLOCK, time);
-        this.addComponent(t);
-
-        Text revive = StrMan.stdEntry(list, 23, "Revive:", Formatting.GRAY);
-        IcoTextComponent rev = new IcoTextComponent(Ico.POTION, revive);
-        this.addComponent(rev);
+        this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GRAY, 22);
+        this.addSimpleIcoText(Ico.POTION, "Revive:", Formatting.GRAY, 23);
         this.pack();
     }
 

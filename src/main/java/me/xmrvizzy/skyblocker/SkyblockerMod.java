@@ -6,6 +6,7 @@ import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.Scheduler;
 import me.xmrvizzy.skyblocker.utils.Utils;
 
@@ -23,6 +24,7 @@ public class SkyblockerMod {
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
         scheduler.scheduleCyclic(BackpackPreview::tick, 50);
         scheduler.scheduleCyclic(DwarvenHud::update, 40);
+        scheduler.scheduleCyclic(PlayerListMgr::updateList, 20);
     }
 
     public static SkyblockerMod getInstance() {

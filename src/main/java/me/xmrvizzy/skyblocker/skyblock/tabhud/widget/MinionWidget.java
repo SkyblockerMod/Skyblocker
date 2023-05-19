@@ -1,15 +1,13 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.StrMan;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
@@ -90,18 +88,18 @@ public class MinionWidget extends Widget {
     // group 1: name
     // group 2: level
     // group 3: status
-    public static final Pattern MINION_PATTERN = Pattern.compile(" (.*) ([XVI]*) \\[(.*)\\]");
+    public static final Pattern MINION_PATTERN = Pattern.compile("(?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)\\]");
 
-    public MinionWidget(List<PlayerListEntry> list) {
+    public MinionWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
 
         for (int i = 48; i < 59; i++) {
-            Matcher m = StrMan.regexAt(list, i, MINION_PATTERN);
+            Matcher m = PlayerListMgr.regexAt(i, MINION_PATTERN);
             if (m != null) {
 
-                String min = m.group(1);
-                String lvl = m.group(2);
-                String stat = m.group(3);
+                String min = m.group("name");
+                String lvl = m.group("level");
+                String stat = m.group("status");
 
                 MutableText mt = Text.literal(min + " " + lvl).append(Text.literal(": "));
 
@@ -111,7 +109,7 @@ public class MinionWidget extends Widget {
                 } else if (stat.equals("SLOW")) {
                     format = Formatting.YELLOW;
                 }
-		        // makes "BLOCKED" also red. in reality, it's some kind of crimson
+                // makes "BLOCKED" also red. in reality, it's some kind of crimson
                 mt.append(Text.literal(stat).formatted(format));
 
                 IcoTextComponent itc = new IcoTextComponent(MIN_ICOS.get(min), mt);
@@ -125,9 +123,9 @@ public class MinionWidget extends Widget {
         // if more minions are placed than the tab menu can display,
         // a "And X more..." text is shown
         // look for that and add it to the widget
-        if (list.get(59).getDisplayName() != null) {
-            String other = list.get(59).getDisplayName().getString();
-            this.addComponent(new PlainTextComponent(Text.of(other.trim())));
+        String more = PlayerListMgr.strAt(59);
+        if (more != null) {
+            this.addComponent(new PlainTextComponent(Text.of(more)));
         }
         this.pack();
     }
