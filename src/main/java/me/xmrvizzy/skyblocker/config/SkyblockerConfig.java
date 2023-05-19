@@ -189,7 +189,7 @@ public class SkyblockerConfig implements ConfigData {
         NONE;
 
         @Override
-		public String toString() {
+		    public String toString() {
             return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
         }
 
@@ -227,7 +227,7 @@ public class SkyblockerConfig implements ConfigData {
         BOTH;
 
         @Override
-		public String toString() {
+		    public String toString() {
             return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
         }
     }

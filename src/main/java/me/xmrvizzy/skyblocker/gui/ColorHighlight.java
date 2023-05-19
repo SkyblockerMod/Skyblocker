@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.container;
+package me.xmrvizzy.skyblocker.gui;
 
 public record ColorHighlight(int slot, int color) {
 }

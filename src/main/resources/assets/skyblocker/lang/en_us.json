@@ -206,5 +206,7 @@
   "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "Update Notification",
   "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Hide empty item tooltips in menus",
 
+  "skyblocker.updaterepository.failed":  "§b[§6Skyblocker§b] §cUpdating local repository failed. Remove files manually and restart game.",
+
   "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Automatically set your API key!"
 }
