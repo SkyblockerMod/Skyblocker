@@ -5,6 +5,7 @@
   "client": [
     "AccessorWorldRenderer",
     "ClientPlayerEntityMixin",
+    "ClientPlayNetworkHandlerMixin",
     "FarmlandBlockMixin",
     "GenericContainerScreenHandlerMixin",
     "HandledScreenAccessor",
