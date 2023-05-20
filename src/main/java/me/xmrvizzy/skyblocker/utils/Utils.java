@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Utility variables and methods for retrieving Skyblock related information.
+ */
 public class Utils {
     private static boolean isOnSkyblock = false;
     private static boolean isInDungeons = false;
