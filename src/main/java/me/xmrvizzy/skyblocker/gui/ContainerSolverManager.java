@@ -45,7 +45,7 @@ public class ContainerSolverManager extends DrawableHelper {
             if (Utils.isOnSkyblock && screen instanceof GenericContainerScreen genericContainerScreen) {
                 ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, delta) -> {
                     matrices.push();
-                    matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 0);
+                    matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);
                     onDraw(matrices, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
                     matrices.pop();
                 });
@@ -88,7 +88,6 @@ public class ContainerSolverManager extends DrawableHelper {
             return;
         if (highlights == null)
             highlights = currentSolver.getColors(groups, slotMap(slots));
-        RenderSystem.disableDepthTest();
         RenderSystem.colorMask(true, true, true, false);
         for (ColorHighlight highlight : highlights) {
             Slot slot = slots.get(highlight.slot());
@@ -96,7 +95,6 @@ public class ContainerSolverManager extends DrawableHelper {
             fillGradient(matrices, slot.x, slot.y, slot.x + 16, slot.y + 16, color, color);
         }
         RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.enableDepthTest();
     }
 
     private Map<Integer, ItemStack> slotMap(List<Slot> slots) {
