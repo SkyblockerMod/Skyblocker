@@ -37,7 +37,7 @@ public class DiscordRPCManager {
             SkyblockerConfig.get().richPresence.customMessage = "Playing Skyblock";
             AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
         }
-        if ((!Utils.isOnSkyblock || !SkyblockerConfig.get().richPresence.enableRichPresence) && DiscordIPC.isConnected()){
+        if ((!Utils.isOnSkyblock() || !SkyblockerConfig.get().richPresence.enableRichPresence) && DiscordIPC.isConnected()){
             DiscordIPC.stop();
             LOGGER.info("Discord RPC stopped");
             return;

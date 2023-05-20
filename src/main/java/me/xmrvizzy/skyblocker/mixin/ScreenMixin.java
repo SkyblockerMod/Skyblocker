@@ -17,7 +17,7 @@ public abstract class ScreenMixin {
     public void skyblocker$renderTooltip(MatrixStack matrices, ItemStack itemStack, int x, int y, CallbackInfo ci) {
         Text stackName = itemStack.getName();
         String strName = stackName.getString();
-        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" ")) {
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" ")) {
             ci.cancel();
         }
     }

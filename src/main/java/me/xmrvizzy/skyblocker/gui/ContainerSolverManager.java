@@ -42,7 +42,7 @@ public class ContainerSolverManager extends DrawableHelper {
 
     public void init() {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (Utils.isOnSkyblock && screen instanceof GenericContainerScreen genericContainerScreen) {
+            if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
                 ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, delta) -> {
                     matrices.push();
                     matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);

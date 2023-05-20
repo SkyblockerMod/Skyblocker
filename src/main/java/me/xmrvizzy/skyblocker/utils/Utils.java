@@ -15,9 +15,21 @@ import java.util.Collections;
 import java.util.List;
 
 public class Utils {
-    public static boolean isOnSkyblock = false;
-    public static boolean isInDungeons = false;
-    public static boolean isInjected = false;
+    private static boolean isOnSkyblock = false;
+    private static boolean isInDungeons = false;
+    private static boolean isInjected = false;
+
+    public static boolean isOnSkyblock() {
+        return isOnSkyblock;
+    }
+
+    public static boolean isInDungeons() {
+        return isInDungeons;
+    }
+
+    public static boolean isInjected() {
+        return isInjected;
+    }
 
     public static void sbChecker() {
         MinecraftClient client = MinecraftClient.getInstance();

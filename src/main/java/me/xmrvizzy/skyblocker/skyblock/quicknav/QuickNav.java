@@ -19,7 +19,7 @@ public class QuickNav {
 
     public static void init() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (Utils.isOnSkyblock && SkyblockerConfig.get().quickNav.enableQuickNav && screen instanceof HandledScreen<?>) {
+            if (Utils.isOnSkyblock() && SkyblockerConfig.get().quickNav.enableQuickNav && screen instanceof HandledScreen<?>) {
                 String screenTitle = screen.getTitle().getString().trim();
                 List<QuickNavButton> buttons = QuickNav.init(screenTitle);
                 for (QuickNavButton button : buttons) Screens.getButtons(screen).add(button);

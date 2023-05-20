@@ -27,7 +27,7 @@ public class Reparty extends ChatPatternListener {
         super("^(?:You are not currently in a party\\.|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*)))$");
         this.repartying = false;
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
-            if (!Utils.isOnSkyblock || this.repartying || client.player == null) return 0;
+            if (!Utils.isOnSkyblock() || this.repartying || client.player == null) return 0;
             this.repartying = true;
             client.player.networkHandler.sendCommand("p list");
             return 0;

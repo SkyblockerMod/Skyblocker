@@ -19,7 +19,7 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
     public void skyblocker$handleInputEvents(CallbackInfo ci) {
-        if (Utils.isOnSkyblock) {
+        if (Utils.isOnSkyblock()) {
             HotbarSlotLock.handleInputEvents(player);
         }
     }
