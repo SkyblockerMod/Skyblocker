@@ -88,6 +88,7 @@ public class ContainerSolverManager extends DrawableHelper {
             return;
         if (highlights == null)
             highlights = currentSolver.getColors(groups, slotMap(slots));
+        RenderSystem.enableDepthTest();
         RenderSystem.colorMask(true, true, true, false);
         for (ColorHighlight highlight : highlights) {
             Slot slot = slots.get(highlight.slot());
