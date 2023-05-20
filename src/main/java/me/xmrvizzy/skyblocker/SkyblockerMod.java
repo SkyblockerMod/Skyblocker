@@ -5,6 +5,7 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.gui.ContainerSolverManager;
 import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
+import me.xmrvizzy.skyblocker.skyblock.FishingHelper;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
 import me.xmrvizzy.skyblocker.skyblock.api.RepositoryUpdate;
@@ -65,6 +66,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ChatMessageListener.init();
         UpdateChecker.init();
         DiscordRPCManager.init();
+        FishingHelper.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
