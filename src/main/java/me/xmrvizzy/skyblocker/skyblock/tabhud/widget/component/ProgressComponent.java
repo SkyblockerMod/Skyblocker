@@ -28,7 +28,7 @@ public class ProgressComponent extends Component {
         this.ico = (ico == null) ? Ico.BARRIER : ico;
         this.desc = d;
         this.bar = b;
-        this.color = color;
+        this.color = 0xff000000 | color;
         this.pcnt = pcnt;
 
         if (d == null || b == null) {
@@ -59,8 +59,9 @@ public class ProgressComponent extends Component {
 
         int barX = x + ICO_DIM + PAD_L;
         int barY = y + txtRend.fontHeight + PAD_S;
-        DrawableHelper.fill(ms, barX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
-        DrawableHelper.fill(ms, barX, barY, barX + ((int) (this.barW * (this.pcnt / 100f))), barY + BAR_HEIGHT,
+        int endOffsX = ((int) (this.barW * (this.pcnt / 100f)));
+        DrawableHelper.fill(ms, barX + endOffsX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
+        DrawableHelper.fill(ms, barX, barY, barX + endOffsX, barY + BAR_HEIGHT,
                 this.color);
         txtRend.drawWithShadow(ms, bar, barX + 3, barY + 2, 0xffffffff);
     }
