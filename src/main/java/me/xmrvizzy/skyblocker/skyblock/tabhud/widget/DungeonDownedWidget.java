@@ -24,7 +24,7 @@ public class DungeonDownedWidget extends Widget {
             format = Formatting.GRAY;
         }
         int idx = down.indexOf(": ");
-        Text downed = (down == null || idx== -1) ? null : Widget.simpleEntryText(down.substring(idx + 2), "Downed:", format);
+        Text downed = (down == null || idx== -1) ? null : Widget.simpleEntryText(down.substring(idx + 2), "Downed: ", format);
         IcoTextComponent d = new IcoTextComponent(Ico.SKULL, downed);
         this.addComponent(d);
 
