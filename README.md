@@ -1,12 +1,3 @@
-## Skyblocker Tab Menu Fork
-This will be merged into Skyblocker when ready (soon)
-
-### Known Issues
-* Scraping the entire player list multiple times every frame isn't ideal. (possible optimisation for later)
-* Encountering errors should be handled more gracefully
-
-Apart from that, it's working!
-
 <img height="150" src="https://hysky.de/skyblocker.png" alt="skyblocker"/>
 
 ## Skyblocker
