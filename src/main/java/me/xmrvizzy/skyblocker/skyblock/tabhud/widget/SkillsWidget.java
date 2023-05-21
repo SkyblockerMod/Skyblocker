@@ -43,7 +43,7 @@ public class SkillsWidget extends Widget {
             if (!pcntStr.equals("MAX")) {
                 float pcnt = Float.parseFloat(pcntStr);
                 progress = new ProgressComponent(Ico.LANTERN, Text.of(skill),
-                        Text.of(pcntStr), pcnt, Formatting.GOLD.getColorValue());
+                        Text.of(pcntStr + "%"), pcnt, Formatting.GOLD.getColorValue());
             } else {
                 progress = new IcoFatTextComponent(Ico.LANTERN, Text.of(skill),
                         Text.literal(pcntStr).formatted(Formatting.RED));
