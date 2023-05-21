@@ -46,7 +46,6 @@ public class PlayerListHudMixin {
         int w = scaledW;
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
         try {
-            long then  = System.nanoTime();
             Screen screen = Screen.getCorrect(w, h, footer);
             screen.render(ms);
             info.cancel();
