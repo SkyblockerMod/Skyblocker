@@ -10,7 +10,6 @@
     "FarmlandBlockMixin",
     "MinecraftClientMixin",
     "AccessorWorldRenderer",
-    "GenericContainerScreenMixin",
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
     "InventoryScreenMixin",
