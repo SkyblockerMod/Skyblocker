@@ -62,7 +62,7 @@ public interface ChatMessageListener {
         }
         // Register EVENT to ClientReceiveMessageEvents.ALLOW_GAME from fabric api
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-            if (!Utils.isOnSkyblock) {
+            if (!Utils.isOnSkyblock()) {
                 return true;
             }
             ChatFilterResult result = EVENT.invoker().onMessage(message, message.getString());

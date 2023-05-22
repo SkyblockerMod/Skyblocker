@@ -22,7 +22,7 @@ public abstract class LeverBlockMixin extends WallMountedBlock {
 
     @Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
     public void skyblocker$onGetOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
-        if (Utils.isOnSkyblock) {
+        if (Utils.isOnSkyblock()) {
             VoxelShape shape = OldLever.getShape(state.get(FACE), state.get(FACING));
             if (shape != null)
                 cir.setReturnValue(shape);

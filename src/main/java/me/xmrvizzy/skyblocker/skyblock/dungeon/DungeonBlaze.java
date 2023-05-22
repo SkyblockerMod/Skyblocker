@@ -21,7 +21,7 @@ public class DungeonBlaze {
     
     public static void update() {
         ClientWorld world = MinecraftClient.getInstance().world;
-        if (world == null || !Utils.isInDungeons) return;
+        if (world == null || !Utils.isInDungeons()) return;
         if(!renderHooked){
 
             WorldRenderEvents.END.register(DungeonBlaze::blazeRenderer);

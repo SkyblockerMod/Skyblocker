@@ -42,7 +42,7 @@ public class WikiLookup {
     }
 
     public static void openWiki(Slot slot) {
-        if (Utils.isOnSkyblock) {
+        if (Utils.isOnSkyblock()) {
             id = getSkyblockId(slot);
             try {
                 String wikiLink = ItemRegistry.getWikiLink(id);

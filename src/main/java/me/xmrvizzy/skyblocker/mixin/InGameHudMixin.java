@@ -50,7 +50,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
     private void skyblocker$onSetOverlayMessage(Text message, boolean tinted, CallbackInfo ci) {
-        if (!Utils.isOnSkyblock || !SkyblockerConfig.get().general.bars.enableBars)
+        if (!Utils.isOnSkyblock() || !SkyblockerConfig.get().general.bars.enableBars)
             return;
         String msg = message.getString();
         String res = statusBarTracker.update(msg, SkyblockerConfig.get().messages.hideMana);
@@ -63,7 +63,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderHotbar", at = @At("HEAD"))
     public void skyblocker$renderHotbar(float f, MatrixStack matrices, CallbackInfo ci) {
-        if (Utils.isOnSkyblock) {
+        if (Utils.isOnSkyblock()) {
             hotbarMatrices = matrices;
             hotbarSlotIndex = 0;
         }
@@ -71,7 +71,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderHotbarItem", at = @At("HEAD"))
     public void skyblocker$renderHotbarItem(MatrixStack matrices, int i, int j, float f, PlayerEntity player, ItemStack stack, int seed, CallbackInfo ci) {
-        if (Utils.isOnSkyblock) {
+        if (Utils.isOnSkyblock()) {
             if (HotbarSlotLock.isLocked(hotbarSlotIndex)) {
                 RenderSystem.setShaderTexture(0, SLOT_LOCK);
                 DrawableHelper.drawTexture(hotbarMatrices, i, j, 0, 0, 16, 16);
@@ -82,18 +82,18 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderExperienceBar(MatrixStack matrices, int x, CallbackInfo ci) {
-        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.bars.enableBars)
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars)
             ci.cancel();
     }
 
     @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderStatusBars(MatrixStack matrices, CallbackInfo ci) {
-        if (!Utils.isOnSkyblock)
+        if (!Utils.isOnSkyblock())
             return;
         if (statusBars.render(matrices, scaledWidth, scaledHeight))
             ci.cancel();
 
-        if (Utils.isInDungeons && SkyblockerConfig.get().locations.dungeons.enableMap)
+        if (Utils.isInDungeons() && SkyblockerConfig.get().locations.dungeons.enableMap)
             DungeonMap.render(matrices);
 
         RenderSystem.setShaderTexture(0, GUI_ICONS_TEXTURE);
@@ -101,7 +101,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderMountHealth(MatrixStack matrices, CallbackInfo ci) {
-        if (Utils.isOnSkyblock && SkyblockerConfig.get().general.bars.enableBars)
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars)
             ci.cancel();
     }
 }

@@ -13,14 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
-
     @Shadow
     @Nullable
     public ClientPlayerEntity player;
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
     public void skyblocker$handleInputEvents(CallbackInfo ci) {
-        if (Utils.isOnSkyblock) {
+        if (Utils.isOnSkyblock()) {
             HotbarSlotLock.handleInputEvents(player);
         }
     }
