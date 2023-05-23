@@ -12,7 +12,7 @@ import java.util.PriorityQueue;
 public class Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
     private int currentTick;
-    private final PriorityQueue<ScheduledTask> tasks;
+    protected final PriorityQueue<ScheduledTask> tasks;
 
     /**
      * Do not instantiate this class. Use {@link SkyblockerMod#scheduler} instead.
@@ -52,9 +52,12 @@ public class Scheduler {
         currentTick += 1;
         ScheduledTask task;
         while ((task = tasks.peek()) != null && task.schedule <= currentTick) {
-            tasks.poll();
-            task.run();
+            runTask(tasks.poll());
         }
+    }
+
+    protected void runTask(Runnable task){
+        task.run();
     }
 
     /**
@@ -62,7 +65,7 @@ public class Scheduler {
      * @param inner the task to run
      * @param period the period in ticks
      */
-    private record CyclicTask(Runnable inner, int period) implements Runnable {
+    protected record CyclicTask(Runnable inner, int period) implements Runnable {
         @Override
         public void run() {
             SkyblockerMod.getInstance().scheduler.schedule(this, period);
@@ -75,7 +78,7 @@ public class Scheduler {
      * @param inner the task to run
      * @param schedule the tick to run at
      */
-    private record ScheduledTask(Runnable inner, int schedule) implements Comparable<ScheduledTask>, Runnable {
+    protected record ScheduledTask(Runnable inner, int schedule) implements Comparable<ScheduledTask>, Runnable {
         @Override
         public int compareTo(ScheduledTask o) {
             return schedule - o.schedule;

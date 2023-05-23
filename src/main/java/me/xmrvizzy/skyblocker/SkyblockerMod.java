@@ -11,11 +11,13 @@ import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
 import me.xmrvizzy.skyblocker.skyblock.api.RepositoryUpdate;
 import me.xmrvizzy.skyblocker.skyblock.api.StatsCommand;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.LividColor;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
+import me.xmrvizzy.skyblocker.utils.MessageScheduler;
 import me.xmrvizzy.skyblocker.utils.Scheduler;
 import me.xmrvizzy.skyblocker.utils.UpdateChecker;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -32,6 +34,7 @@ public class SkyblockerMod implements ClientModInitializer {
 
     @SuppressWarnings("deprecation")
     public final Scheduler scheduler = new Scheduler();
+    public final MessageScheduler messageScheduler = new MessageScheduler();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public final StatusBarTracker statusBarTracker = new StatusBarTracker();
 
@@ -66,20 +69,24 @@ public class SkyblockerMod implements ClientModInitializer {
         ChatMessageListener.init();
         UpdateChecker.init();
         DiscordRPCManager.init();
+        LividColor.init();
         FishingHelper.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
+        scheduler.scheduleCyclic(LividColor::update, 10);
         scheduler.scheduleCyclic(BackpackPreview::tick, 50);
         scheduler.scheduleCyclic(DwarvenHud::update, 40);
     }
 
     /**
      * Ticks the scheduler. Called once at the end of every client tick through {@link ClientTickEvents#END_CLIENT_TICK}.
+     *
      * @param client the Minecraft client.
      */
     public void tick(MinecraftClient client) {
         scheduler.tick();
+        messageScheduler.tick();
     }
 }
