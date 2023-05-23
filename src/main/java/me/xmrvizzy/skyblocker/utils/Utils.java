@@ -1,13 +1,21 @@
 package me.xmrvizzy.skyblocker.utils;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -21,6 +29,14 @@ public class Utils {
     private static boolean isOnSkyblock = false;
     private static boolean isInDungeons = false;
     private static boolean isInjected = false;
+    private static String profile = "";
+    private static String server = "";
+    private static String gameType = "";
+    private static String locationRaw = "";
+    private static String map = "";
+    private static long clientWorldJoinTime = 0;
+    private static boolean sentLocRaw = false;
+    private static long lastLocRaw = 0;
 
     public static boolean isOnSkyblock() {
         return isOnSkyblock;
@@ -32,6 +48,31 @@ public class Utils {
 
     public static boolean isInjected() {
         return isInjected;
+    }
+
+    public static String getProfile() {
+        return profile;
+    }
+
+    public static String getServer() {
+        return server;
+    }
+
+    public static String getGameType() {
+        return gameType;
+    }
+
+    public static String getLocationRaw() {
+        return locationRaw;
+    }
+
+    public static String getMap() {
+        return map;
+    }
+
+    public static void init() {
+        ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
     }
 
     public static void sbChecker() {
@@ -61,13 +102,14 @@ public class Utils {
             SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
         }
         isInDungeons = isOnSkyblock && string.contains("The Catacombs");
+        updateLocRaw();
     }
 
     public static String getLocation() {
         String location = null;
         List<String> sidebarLines = getSidebar();
         try {
-            if( sidebarLines != null) {
+            if (sidebarLines != null) {
                 for (String sidebarLine : sidebarLines) {
                     if (sidebarLine.contains("⏣")) location = sidebarLine;
                 }
@@ -148,5 +190,52 @@ public class Utils {
         } catch (NullPointerException e) {
             return null;
         }
+    }
+
+    public static void onClientWorldJoin(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
+        clientWorldJoinTime = System.currentTimeMillis();
+        resetLocRawInfo();
+    }
+
+    private static void updateLocRaw() {
+        if (isOnSkyblock) {
+            long currentTime = System.currentTimeMillis();
+            if (!sentLocRaw && currentTime > clientWorldJoinTime + 1000 && currentTime > lastLocRaw + 15000) {
+                SkyblockerMod.getInstance().messageScheduler.sendMessageAfterCooldown("/locraw");
+                sentLocRaw = true;
+                lastLocRaw = currentTime;
+            }
+        } else {
+            resetLocRawInfo();
+        }
+    }
+
+    public static boolean onChatMessage(Text text, boolean overlay) {
+        String message = text.getString();
+        if (message.startsWith("{\"server\":") && message.endsWith("}")) {
+            JsonObject locRaw = JsonParser.parseString(message).getAsJsonObject();
+            if (locRaw.has("server")) {
+                server = locRaw.get("server").getAsString();
+                if (locRaw.has("gameType")) {
+                    gameType = locRaw.get("gameType").getAsString();
+                }
+                if (locRaw.has("mode")) {
+                    locationRaw = locRaw.get("mode").getAsString();
+                }
+                if (locRaw.has("map")) {
+                    map = locRaw.get("map").getAsString();
+                }
+                return !sentLocRaw;
+            }
+        }
+        return true;
+    }
+
+    private static void resetLocRawInfo() {
+        sentLocRaw = false;
+        server = "";
+        gameType = "";
+        locationRaw = "";
+        map = "";
     }
 }

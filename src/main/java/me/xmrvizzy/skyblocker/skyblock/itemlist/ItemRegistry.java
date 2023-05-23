@@ -2,32 +2,23 @@ package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import me.xmrvizzy.skyblocker.skyblock.api.RepositoryUpdate;
-import net.fabricmc.loader.api.FabricLoader;
+import me.xmrvizzy.skyblocker.utils.NEURepo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PullResult;
-import org.eclipse.jgit.errors.RepositoryNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ItemRegistry {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemRegistry.class);
-    protected static final String REMOTE_ITEM_REPO = "https://github.com/NotEnoughUpdates/NotEnoughUpdates-REPO";
-    public static final Path LOCAL_ITEM_REPO_DIR = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/item-repo");
-
-    protected static final Path ITEM_LIST_DIR = LOCAL_ITEM_REPO_DIR.resolve("items");
+    protected static final Path ITEM_LIST_DIR = NEURepo.LOCAL_REPO_DIR.resolve("items");
 
     protected static final List<ItemStack> items = new ArrayList<>();
     protected static final Map<String, ItemStack> itemsMap = new HashMap<>();
@@ -36,52 +27,8 @@ public class ItemRegistry {
     public static boolean filesImported = false;
 
     public static void init() {
-        CompletableFuture.runAsync(ItemRegistry::updateItemRepo)
-                .whenComplete((result, ex) -> {
-                    if (ex == null) {
-                        ItemStackBuilder.init();
-                        importItemFiles();
-                    }
-                    else {
-                        LOGGER.error("[Skyblocker-ItemRegistry] " + ex);
-                    }
-                });
-    }
-
-    private static void updateItemRepo() {
-        Git git;
-        if (!Files.isDirectory(LOCAL_ITEM_REPO_DIR)) {
-            try {
-                git = Git.cloneRepository()
-                        .setURI(REMOTE_ITEM_REPO)
-                        .setDirectory(LOCAL_ITEM_REPO_DIR.toFile())
-                        .setBranchesToClone(List.of("refs/heads/master"))
-                        .setBranch("refs/heads/master")
-                        .call();
-                git.close();
-                LOGGER.info("[Skyblocker Repository Update] Repository updated.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                git = Git.open(LOCAL_ITEM_REPO_DIR.toFile());
-                PullResult pull = git.pull().setRebase(true).call();
-                git.close();
-
-                if (pull.getRebaseResult() == null) {
-                    LOGGER.info("[Skyblocker Repository Update] No update result");
-                } else if (pull.getRebaseResult().getStatus().isSuccessful()) {
-                    LOGGER.info("[Skyblocker Repository Update] Status: " + pull.getRebaseResult().getStatus().name());
-                } else if (!pull.getRebaseResult().getStatus().isSuccessful()) {
-                    LOGGER.warn("[Skyblocker Repository Update] Status: " + pull.getRebaseResult().getStatus().name());
-                }
-            } catch (RepositoryNotFoundException e) {
-                RepositoryUpdate.updateRepository();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        NEURepo.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
+        NEURepo.runAsyncAfterLoad(ItemRegistry::importItemFiles);
     }
 
     private static void importItemFiles() {
@@ -119,8 +66,7 @@ public class ItemRegistry {
             if (lhsFamilyName.equals(rhsFamilyName)) {
                 if (lhsInternalName.length() != rhsInternalName.length())
                     return lhsInternalName.length() - rhsInternalName.length();
-                else
-                    return lhsInternalName.compareTo(rhsInternalName);
+                else return lhsInternalName.compareTo(rhsInternalName);
             }
             return lhsFamilyName.compareTo(rhsFamilyName);
         });
@@ -147,8 +93,7 @@ public class ItemRegistry {
     public static List<SkyblockCraftingRecipe> getRecipes(String internalName) {
         List<SkyblockCraftingRecipe> result = new ArrayList<>();
         for (SkyblockCraftingRecipe recipe : recipes)
-            if (getInternalName(recipe.result).equals(internalName))
-                result.add(recipe);
+            if (getInternalName(recipe.result).equals(internalName)) result.add(recipe);
         for (SkyblockCraftingRecipe recipe : recipes)
             for (ItemStack ingredient : recipe.grid)
                 if (!ingredient.getItem().equals(Items.AIR) && getInternalName(ingredient).equals(internalName)) {
