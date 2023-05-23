@@ -344,7 +344,7 @@ public class PriceInfoTooltip {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
 
             if (type.equals("lowest bins"))
-                lowestPricesJson = downloadPrices("lowest bins backup");
+                return downloadPrices("lowest bins backup");
 
             return null;
         }
