@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -26,6 +27,7 @@ import java.util.List;
  * Utility variables and methods for retrieving Skyblock related information.
  */
 public class Utils {
+    private static final String PROFILE_PREFIX = "§r§e§lProfile: §r§a";
     private static boolean isOnSkyblock = false;
     private static boolean isInDungeons = false;
     private static boolean isInjected = false;
@@ -102,6 +104,7 @@ public class Utils {
             SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
         }
         isInDungeons = isOnSkyblock && string.contains("The Catacombs");
+        updateFromPlayerList(client);
         updateLocRaw();
     }
 
@@ -189,6 +192,21 @@ public class Utils {
             return lines;
         } catch (NullPointerException e) {
             return null;
+        }
+    }
+
+    private static void updateFromPlayerList(MinecraftClient client) {
+        if (client.getNetworkHandler() == null) {
+            return;
+        }
+        for (PlayerListEntry playerListEntry : client.getNetworkHandler().getPlayerList()) {
+            if (playerListEntry.getDisplayName() == null) {
+                continue;
+            }
+            String name = playerListEntry.getDisplayName().getString();
+            if (name.startsWith(PROFILE_PREFIX)) {
+                profile = name.substring(PROFILE_PREFIX.length());
+            }
         }
     }
 
