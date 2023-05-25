@@ -17,6 +17,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Initializes the NEU repo, which contains item metadata and fairy souls location data. Clones the repo if it does not exist and checks for updates. Use {@link #runAsyncAfterLoad(Runnable)} to run code after the repo is initialized.
+ */
 public class NEURepo {
     private static final Logger LOGGER = LoggerFactory.getLogger(NEURepo.class);
     public static final String REMOTE_REPO_URL = "https://github.com/NotEnoughUpdates/NotEnoughUpdates-REPO.git";
@@ -84,6 +87,11 @@ public class NEURepo {
         dir.delete();
     }
 
+    /**
+     * Runs the given runnable after the NEU repo is initialized.
+     * @param runnable the runnable to run
+     * @return a completable future of the given runnable
+     */
     public static CompletableFuture<Void> runAsyncAfterLoad(Runnable runnable) {
         return REPO_INITIALIZED.thenRunAsync(runnable);
     }

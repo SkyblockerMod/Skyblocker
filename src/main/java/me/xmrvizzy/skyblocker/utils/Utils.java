@@ -31,6 +31,10 @@ public class Utils {
     private static boolean isOnSkyblock = false;
     private static boolean isInDungeons = false;
     private static boolean isInjected = false;
+    /**
+     * The following fields store data returned from /locraw: {@link #profile}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     */
+    @SuppressWarnings("JavadocDeclaration")
     private static String profile = "";
     private static String server = "";
     private static String gameType = "";
@@ -52,22 +56,37 @@ public class Utils {
         return isInjected;
     }
 
+    /**
+     * @return the profile parsed from the player list.
+     */
     public static String getProfile() {
         return profile;
     }
 
+    /**
+     * @return the server parsed from /locraw.
+     */
     public static String getServer() {
         return server;
     }
 
+    /**
+     * @return the game type parsed from /locraw.
+     */
     public static String getGameType() {
         return gameType;
     }
 
+    /**
+     * @return the location raw parsed from /locraw.
+     */
     public static String getLocationRaw() {
         return locationRaw;
     }
 
+    /**
+     * @return the map parsed from /locraw.
+     */
     public static String getMap() {
         return map;
     }
@@ -77,6 +96,9 @@ public class Utils {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
     }
 
+    /**
+     * Updates all the fields stored in this class from the sidebar, player list, and /locraw.
+     */
     public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
         updateFromScoreboard(client);
@@ -84,6 +106,9 @@ public class Utils {
         updateLocRaw();
     }
 
+    /**
+     * Updates {@link #isOnSkyblock}, {@link #isInDungeons}, and {@link #isInjected} from the scoreboard.
+     */
     public static void updateFromScoreboard(MinecraftClient client) {
         List<String> sidebar;
 
@@ -219,6 +244,9 @@ public class Utils {
         resetLocRawInfo();
     }
 
+    /**
+     * Sends /locraw to the server if the player is on skyblock and on a new island.
+     */
     private static void updateLocRaw() {
         if (isOnSkyblock) {
             long currentTime = System.currentTimeMillis();
@@ -232,6 +260,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Parses the /locraw reply from the server
+     *
+     * @return not display the message in chat is the command is sent by the mod
+     */
     public static boolean onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
         if (message.startsWith("{\"server\":") && message.endsWith("}")) {
