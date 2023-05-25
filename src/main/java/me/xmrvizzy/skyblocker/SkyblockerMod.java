@@ -81,9 +81,9 @@ public class SkyblockerMod implements ClientModInitializer {
         FishingHelper.init();
         FairySouls.init();
         TabHud.init();
-        containerSolverManager.init();
         DungeonMap.init();
-        scheduler.scheduleCyclic(Utils::sbChecker, 20);
+        containerSolverManager.init();
+        scheduler.scheduleCyclic(Utils::update, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
         scheduler.scheduleCyclic(LividColor::update, 10);

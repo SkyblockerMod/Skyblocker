@@ -77,8 +77,14 @@ public class Utils {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
     }
 
-    public static void sbChecker() {
+    public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
+        updateFromScoreboard(client);
+        updateFromPlayerList(client);
+        updateLocRaw();
+    }
+
+    public static void updateFromScoreboard(MinecraftClient client) {
         List<String> sidebar;
 
         if (client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null) {
@@ -104,8 +110,6 @@ public class Utils {
             SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
         }
         isInDungeons = isOnSkyblock && string.contains("The Catacombs");
-        updateFromPlayerList(client);
-        updateLocRaw();
     }
 
     public static String getLocation() {
