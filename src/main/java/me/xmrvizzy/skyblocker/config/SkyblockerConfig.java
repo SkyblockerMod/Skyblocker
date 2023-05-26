@@ -142,6 +142,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Bars bars = new Bars();
 
+        @ConfigEntry.Category("fishing")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Fishing fishing = new Fishing();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -197,6 +201,10 @@ public class SkyblockerConfig implements ConfigData {
                 case NONE -> -1;
             };
         }
+    }
+
+    public static class Fishing {
+        public boolean enableFishingHelper = true;
     }
 
     public static class Hitbox {
