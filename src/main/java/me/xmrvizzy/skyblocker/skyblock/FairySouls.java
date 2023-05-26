@@ -114,7 +114,7 @@ public class FairySouls {
     }
 
     public static void render(WorldRenderContext context) {
-        if (!SkyblockerConfig.get().general.fairySouls.enableFairySouls) {
+        if (!SkyblockerConfig.get().general.fairySouls.enableFairySoulsHelper) {
             return;
         }
         if (!fairySoulsLoaded.isDone()) {

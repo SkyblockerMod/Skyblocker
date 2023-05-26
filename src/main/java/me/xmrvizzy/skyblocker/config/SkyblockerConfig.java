@@ -224,7 +224,7 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class FairySouls {
-        public boolean enableFairySouls = true;
+        public boolean enableFairySoulsHelper = false;
     }
 
     public static class Hitbox {
