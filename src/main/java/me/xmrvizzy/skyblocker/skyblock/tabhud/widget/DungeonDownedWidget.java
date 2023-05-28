@@ -3,7 +3,6 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -18,15 +17,22 @@ public class DungeonDownedWidget extends Widget {
 
     public DungeonDownedWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
-        Formatting format = Formatting.RED;
+
         String down = PlayerListMgr.strAt(21);
-        if (down != null && down.endsWith("NONE")) {
-            format = Formatting.GRAY;
+        if (down == null) {
+            this.addComponent(new IcoTextComponent());
+        } else {
+
+            Formatting format = Formatting.RED;
+            if (down.endsWith("NONE")) {
+                format = Formatting.GRAY;
+            }
+            int idx = down.indexOf(": ");
+            Text downed = (idx == -1) ? null
+                    : Widget.simpleEntryText(down.substring(idx + 2), "Downed: ", format);
+            IcoTextComponent d = new IcoTextComponent(Ico.SKULL, downed);
+            this.addComponent(d);
         }
-        int idx = down.indexOf(": ");
-        Text downed = (down == null || idx== -1) ? null : Widget.simpleEntryText(down.substring(idx + 2), "Downed: ", format);
-        IcoTextComponent d = new IcoTextComponent(Ico.SKULL, downed);
-        this.addComponent(d);
 
         this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GRAY, 22);
         this.addSimpleIcoText(Ico.POTION, "Revive:", Formatting.GRAY, 23);
