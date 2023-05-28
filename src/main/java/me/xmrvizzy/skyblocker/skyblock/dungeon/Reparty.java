@@ -63,9 +63,9 @@ public class Reparty extends ChatPatternListener {
             this.repartying = false;
             return;
         }
-        sendCommand("p disband", 1);
+        sendCommand("/p disband", 1);
         for (int i = 0; i < this.players.length; ++i) {
-            String command = "p invite " + this.players[i];
+            String command = "/p invite " + this.players[i];
             sendCommand(command, i + 2);
         }
         skyblocker.scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
