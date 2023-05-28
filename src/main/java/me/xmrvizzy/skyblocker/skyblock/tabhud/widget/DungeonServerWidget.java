@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -34,7 +33,8 @@ public class DungeonServerWidget extends Widget {
         if (m == null) {
             this.addComponent(new ProgressComponent());
         } else {
-            ProgressComponent scp = new ProgressComponent(Ico.CHEST, Text.of("Secrets found:"), Float.parseFloat(m.group("secnum")),
+            ProgressComponent scp = new ProgressComponent(Ico.CHEST, Text.of("Secrets found:"),
+                    Float.parseFloat(m.group("secnum")),
                     Formatting.DARK_PURPLE.getColorValue());
             this.addComponent(scp);
         }

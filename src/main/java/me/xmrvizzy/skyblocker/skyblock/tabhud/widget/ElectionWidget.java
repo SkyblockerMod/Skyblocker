@@ -8,7 +8,6 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;

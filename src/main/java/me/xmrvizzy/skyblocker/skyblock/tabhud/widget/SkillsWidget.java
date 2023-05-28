@@ -10,7 +10,6 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoFatTextCompone
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.TableComponent;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;

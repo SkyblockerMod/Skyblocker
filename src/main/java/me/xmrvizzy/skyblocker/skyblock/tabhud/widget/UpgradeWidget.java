@@ -19,7 +19,6 @@ public class UpgradeWidget extends Widget {
 
     public UpgradeWidget(String footertext) {
         super(TITLE, Formatting.GOLD.getColorValue());
-
         if (footertext == null || !footertext.contains("Upgrades")) {
             this.addComponent(new PlainTextComponent(Text.literal("No data").formatted(Formatting.GRAY)));
             this.pack();

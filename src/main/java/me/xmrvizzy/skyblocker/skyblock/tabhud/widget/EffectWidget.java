@@ -3,7 +3,6 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -20,7 +19,7 @@ public class EffectWidget extends Widget {
     public EffectWidget(String footertext) {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
 
-        if (footertext == null ||!footertext.contains("Active Effects")) {
+        if (footertext == null || !footertext.contains("Active Effects")) {
             this.addComponent(new IcoTextComponent());
             this.pack();
             return;
@@ -46,13 +45,14 @@ public class EffectWidget extends Widget {
         } else {
             String number = lines[1].substring("You have ".length());
             int idx = number.indexOf(' ');
-            if (idx == -1 ||lines.length < 4) {
+            if (idx == -1 || lines.length < 4) {
                 this.addComponent(new IcoFatTextComponent());
                 this.pack();
                 return;
             }
             number = number.substring(0, idx);
-            Text active = Text.literal("Active Effects: ").append(Text.literal(number).formatted(Formatting.YELLOW));
+            Text active = Text.literal("Active Effects: ")
+                    .append(Text.literal(number).formatted(Formatting.YELLOW));
 
             IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, active,
                     Text.literal(lines[3]).formatted(Formatting.AQUA));

@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;

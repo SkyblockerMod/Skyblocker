@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -51,7 +50,6 @@ public class DungeonPuzzleWidget extends Widget {
                     new IcoTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
         }
         this.pack();
-
     }
 
 }

@@ -1,16 +1,13 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList;
 
-
-
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
-
-
 import net.minecraft.text.Text;
 
 public class DungeonPlayerScreen extends Screen {
 
     public DungeonPlayerScreen(int w, int h, Text footer) {
+
         super(w, h);
 
         DungeonPlayerWidget dpw1 = new DungeonPlayerWidget(1);

@@ -1,7 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo;
 
-
-
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CookieWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EffectWidget;
@@ -10,7 +8,6 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EventWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.ProfileWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.SkillsWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.UpgradeWidget;
-
 
 import net.minecraft.text.Text;
 
