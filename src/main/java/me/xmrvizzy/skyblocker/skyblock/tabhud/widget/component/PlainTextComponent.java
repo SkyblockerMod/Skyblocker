@@ -4,8 +4,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// widget component that consists of a line of text
-
+/**
+ * Component that consists of a line of text.
+ */
 public class PlainTextComponent extends Component {
 
     private Text text;

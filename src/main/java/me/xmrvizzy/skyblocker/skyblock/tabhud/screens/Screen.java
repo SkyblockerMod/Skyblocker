@@ -82,10 +82,16 @@ public class Screen {
         };
     }
 
+    /**
+     * Add a widget to this screen
+     */
     public void addWidget(Widget w) {
         widgets.add(w);
     }
 
+    /**
+     * Add many widgets to this screen
+     */
     public void addWidgets(Widget... ws) {
         for (Widget w : ws) {
             widgets.add(w);
@@ -98,6 +104,9 @@ public class Screen {
         }
     }
 
+    /**
+     * Stack these widgets on top of each other as determined by the lists's order
+     */
     public void stackWidgetsH(Widget... list) {
         int compHeight = -5;
         for (Widget wid : list) {
@@ -111,6 +120,9 @@ public class Screen {
         }
     }
 
+    /**
+     * Arrange these widgets next to each other as determined by the lists's order
+     */
     public void stackWidgetsW(Widget... list) {
         // TODO not centered
         int compWidth = -5;
@@ -125,24 +137,39 @@ public class Screen {
         }
     }
 
+    /**
+     * Center a widget vertically, keeping X pos
+     */
     public void centerH(Widget wid) {
         wid.setY((h - wid.getHeight()) / 2);
     }
 
+    /**
+     * Center a widget horizontally, keeping Y pos
+     */
     public void centerW(Widget wid) {
         wid.setX((w - wid.getWidth()) / 2);
     }
 
+    /**
+     * Center a widget vertically and horizontally
+     */
     public void center(Widget wid) {
         this.centerH(wid);
         this.centerW(wid);
     }
 
+    /**
+     * Let a widget's left border be on the screen's center, keeping Y pos
+     */
     public void offCenterL(Widget wid) {
         int wHalf = this.w / 2;
         wid.setX(wHalf - 3 - wid.getWidth());
     }
 
+    /**
+     * Let a widget's right border be on the screen's center, keeping Y pos
+     */
     public void offCenterR(Widget wid) {
         int wHalf = this.w / 2;
         wid.setX(wHalf + 3);

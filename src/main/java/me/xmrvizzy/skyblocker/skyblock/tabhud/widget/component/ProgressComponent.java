@@ -7,10 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// widget component that consists of an icon, some text and a progress bar
-// progress bar either shows percentage or custom text
-// NOTICE: pcnt is 0-100, not 0-1!
 
+/**
+ * Component that consists of an icon, some text and a progress bar.
+ * The progress bar either shows the fill percentage or custom text.
+ * NOTICE: pcnt is 0-100, not 0-1!
+ */
 public class ProgressComponent extends Component {
 
     private static final int BAR_WIDTH = 100;

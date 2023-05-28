@@ -2,6 +2,9 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.util;
 
 import me.xmrvizzy.skyblocker.utils.Utils;
 
+/**
+ * Uses data from the player list to determine the area the player is in.
+ */
 public class PlayerLocator {
 
     public static enum Location {
@@ -28,10 +31,6 @@ public class PlayerLocator {
 
         if (!Utils.isOnSkyblock) {
             return Location.UNKNOWN;
-        }
-
-        if (Utils.isInDungeons) {
-            return Location.DUNGEON;
         }
 
         String areaDesciptor = PlayerListMgr.strAt(41);
@@ -76,6 +75,8 @@ public class PlayerLocator {
                 return Location.JERRY;
             case "Garden":
                 return Location.GARDEN;
+            case "Catacombs":
+                return Location.DUNGEON;
             default:
                 return Location.UNKNOWN;
         }

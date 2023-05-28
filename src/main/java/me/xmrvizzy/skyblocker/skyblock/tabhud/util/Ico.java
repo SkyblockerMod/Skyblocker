@@ -3,6 +3,9 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
+/**
+ * Stores convenient shorthands for common ItemStack definitions
+ */
 public class Ico {
     public static final ItemStack MAP = new ItemStack(Items.FILLED_MAP);
     public static final ItemStack NTAG = new ItemStack(Items.NAME_TAG);

@@ -5,6 +5,9 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
+/**
+ * Abstract base class for a component that may be added to a Widget.
+ */
 public abstract class Component {
 
     static final int ICO_DIM = 16;

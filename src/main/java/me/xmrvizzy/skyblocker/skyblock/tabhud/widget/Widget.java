@@ -17,6 +17,12 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+/**
+ * Abstract base class for a Widget.
+ * Widgets are containers for components with a border and a title.
+ * Their size is dependent on the components inside,
+ * the position may be changed after construction.
+ */
 public abstract class Widget {
 
     private ArrayList<Component> components = new ArrayList<>();
@@ -42,11 +48,20 @@ public abstract class Widget {
         components.add(c);
     }
 
+    /**
+     * Shorthand function for simple components.
+     * If the entry at idx has the format "<textA>: <textB>", an IcoTextComponent is added as such:
+     * [ico] [string] [textB.formatted(fmt)]
+     */
     public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, int idx) {
         Text txt = Widget.simpleEntryText(idx, string, fmt);
         this.addComponent(new IcoTextComponent(ico, txt));
     }
 
+    /**
+     * Calculate the size of this widget.
+     * <b>Must be called before returning from the widget constructor and after all components are added!</b>
+     */
     public final void pack() {
         for (Component c : components) {
             h += c.getHeight() + Component.PAD_L;
@@ -85,10 +100,16 @@ public abstract class Widget {
         return this.h;
     }
 
+    /**
+     * Draw this widget with a background
+     */
     public final void render(MatrixStack ms) {
         this.render(ms, true);
     }
 
+    /**
+     * Draw this widget, possibly with a background
+     */
     public final void render(MatrixStack ms, boolean hasBG) {
 
         // not sure if this is the way to go, but it fixes Z-layer issues
@@ -140,6 +161,10 @@ public abstract class Widget {
         DrawableHelper.fill(ms, xpos, ypos, xpos + 1, ypos + height, this.color);
     }
 
+    /**
+     * If the entry at idx has the format "[textA]: [textB]", the following is returned:
+     * [entryName] [textB.formatted(contentFmt)]
+    */
     public static Text simpleEntryText(int idx, String entryName, Formatting contentFmt) {
 
         String src = PlayerListMgr.strAt(idx);
@@ -157,10 +182,16 @@ public abstract class Widget {
         return Widget.simpleEntryText(src, entryName, contentFmt);
     }
 
+    /**
+     * @return [entryName] [entryContent.formatted(contentFmt)]
+    */
     public static Text simpleEntryText(String entryContent, String entryName, Formatting contentFmt) {
         return Text.literal(entryName).append(Text.literal(entryContent).formatted(contentFmt));
     }
 
+    /**
+     * @return the entry at idx as unformatted Text
+     */
     public static Text plainEntryText(int idx) {
         String str = PlayerListMgr.strAt(idx);
         if (str == null) {

@@ -6,8 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-// widget component that consists of an icon and a line of text
-
+/**
+ * Component that consists of an icon and a line of text.
+ */
 public class IcoTextComponent extends Component {
 
     private ItemStack ico;

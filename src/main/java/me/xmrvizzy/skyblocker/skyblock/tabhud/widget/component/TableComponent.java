@@ -3,11 +3,10 @@ package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
-// widget component that consists of a grid of other components
-// grid cols are separated by lines
-
-// FIXME: table isn't wide enough sometimes
-// FIXME: dividers drift when there are >2 cols
+/**
+ * Meta-Component that consists of a grid of other components
+ * Grid cols are separated by lines.
+ */
 public class TableComponent extends Component {
 
     private Component[][] comps;
