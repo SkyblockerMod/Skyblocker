@@ -22,6 +22,12 @@ public class CookieWidget extends Widget {
     public CookieWidget(String footertext) {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
 
+        if (footertext == null || !footertext.contains("Cookie Buff")) {
+            this.addComponent(new IcoTextComponent());
+            this.pack();
+            return;
+        }
+
         Matcher m = COOKIE_PATTERN.matcher(footertext);
         if (!m.find() || m.group("buff") == null) {
             this.addComponent(new IcoTextComponent());
