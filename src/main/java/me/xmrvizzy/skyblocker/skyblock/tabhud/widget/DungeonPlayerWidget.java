@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -68,23 +69,31 @@ public class DungeonPlayerWidget extends Widget {
             this.addComponent(new IcoTextComponent(Ico.PLAYER, name));
 
             String cl = m.group("class");
-            Formatting clf = Formatting.GRAY;
-            ItemStack cli = Ico.BARRIER;
-            if (!cl.equals("EMPTY")) {
-                cli = ICOS.get(cl);
-                clf = Formatting.LIGHT_PURPLE;
-                cl += " " + m.group("level");
-            }
+            String level = m.group("level");
 
-            Text clazz = Text.literal("Class: ").append(Text.literal(cl).formatted(clf));
-            IcoTextComponent itclass = new IcoTextComponent(cli, clazz);
-            this.addComponent(itclass);
+            if (level == null) {
+                PlainTextComponent ptc = new PlainTextComponent(
+                        Text.literal("Player is dead").formatted(Formatting.RED));
+                this.addComponent(ptc);
+            } else {
+
+                Formatting clf = Formatting.GRAY;
+                ItemStack cli = Ico.BARRIER;
+                if (!cl.equals("EMPTY")) {
+                    cli = ICOS.get(cl);
+                    clf = Formatting.LIGHT_PURPLE;
+                    cl += " " + m.group("level");
+                }
+
+                Text clazz = Text.literal("Class: ").append(Text.literal(cl).formatted(clf));
+                IcoTextComponent itclass = new IcoTextComponent(cli, clazz);
+                this.addComponent(itclass);
+            }
         }
 
         this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
         this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
 
         this.pack();
-
     }
 }
