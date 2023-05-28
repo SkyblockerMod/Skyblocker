@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -26,12 +25,12 @@ public class DungeonDeathWidget extends Widget {
     public DungeonDeathWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
 
-        Matcher m = PlayerListMgr.regexAt( 25, DEATH_PATTERN);
+        Matcher m = PlayerListMgr.regexAt(25, DEATH_PATTERN);
         if (m == null) {
             this.addComponent(new IcoTextComponent());
         } else {
             Formatting f = (m.group("deathnum").equals("0")) ? Formatting.GREEN : Formatting.RED;
-            Text d = Text.literal("Deaths: ").append(Text.literal(m.group("deathnum")).formatted(f));
+            Text d = Widget.simpleEntryText(m.group("deathnum"), "Deaths: ", f);
             IcoTextComponent deaths = new IcoTextComponent(Ico.SKULL, d);
             this.addComponent(deaths);
         }
@@ -41,7 +40,6 @@ public class DungeonDeathWidget extends Widget {
         this.addSimpleIcoText(Ico.NTAG, "Milestone:", Formatting.YELLOW, 28);
 
         this.pack();
-
     }
 
 }
