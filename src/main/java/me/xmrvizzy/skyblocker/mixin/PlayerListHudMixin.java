@@ -1,5 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,9 +52,8 @@ public class PlayerListHudMixin {
             screen.render(ms);
             info.cancel();
         } catch (Exception e) {
-            e.printStackTrace();
+            TabHud.LOGGER.error("Drawing default hud. Reason: Screen exception {}", e);
         }
-
     }
 
 }
