@@ -39,6 +39,10 @@ public class PlayerLocator {
             return Location.UNKNOWN;
         }
 
+        if (areaDesciptor.startsWith("Dungeon")) {
+            return Location.DUNGEON;
+        }
+
         switch (areaDesciptor.substring(6)) {
             case "Private Island":
                 String islandType = PlayerListMgr.strAt(44);
@@ -75,8 +79,6 @@ public class PlayerLocator {
                 return Location.JERRY;
             case "Garden":
                 return Location.GARDEN;
-            case "Catacombs":
-                return Location.DUNGEON;
             default:
                 return Location.UNKNOWN;
         }
