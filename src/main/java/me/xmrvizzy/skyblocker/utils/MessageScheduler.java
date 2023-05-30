@@ -14,7 +14,7 @@ public class MessageScheduler extends Scheduler {
             sendMessage(message);
             lastMessage = System.currentTimeMillis();
         } else {
-            tasks.add(new ScheduledTask(() -> sendMessage(message), 0));
+            queueMessage(message, 0);
         }
     }
 
@@ -34,10 +34,12 @@ public class MessageScheduler extends Scheduler {
     }
 
     @Override
-    protected void runTask(Runnable task) {
+    protected boolean runTask(Runnable task) {
         if (lastMessage + 200 < System.currentTimeMillis()) {
             task.run();
             lastMessage = System.currentTimeMillis();
+            return true;
         }
+        return false;
     }
 }

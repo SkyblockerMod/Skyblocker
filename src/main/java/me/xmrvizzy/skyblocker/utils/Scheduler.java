@@ -51,13 +51,14 @@ public class Scheduler {
     public void tick() {
         currentTick += 1;
         ScheduledTask task;
-        while ((task = tasks.peek()) != null && task.schedule <= currentTick) {
-            runTask(tasks.poll());
+        while ((task = tasks.peek()) != null && task.schedule <= currentTick && runTask(task)) {
+            tasks.poll();
         }
     }
 
-    protected void runTask(Runnable task){
+    protected boolean runTask(Runnable task) {
         task.run();
+        return true;
     }
 
     /**
