@@ -12,7 +12,7 @@ import java.util.PriorityQueue;
 public class Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
     private int currentTick;
-    protected final PriorityQueue<ScheduledTask> tasks;
+    private final PriorityQueue<ScheduledTask> tasks;
 
     /**
      * Do not instantiate this class. Use {@link SkyblockerMod#scheduler} instead.

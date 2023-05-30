@@ -30,7 +30,7 @@ public class MessageScheduler extends Scheduler {
     }
 
     public void queueMessage(String message, int delay) {
-        tasks.add(new ScheduledTask(() -> sendMessage(message), delay));
+        schedule(() -> sendMessage(message), delay);
     }
 
     @Override
