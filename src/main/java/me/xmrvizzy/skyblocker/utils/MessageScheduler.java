@@ -7,10 +7,22 @@ import net.minecraft.client.MinecraftClient;
  */
 @SuppressWarnings("deprecation")
 public class MessageScheduler extends Scheduler {
+    /**
+     * The minimum delay that the server will accept between chat messages.
+     */
+    private static final int MIN_DELAY = 200;
+    /**
+     * The timestamp of the last message send,
+     */
     private long lastMessage = 0;
 
+    /**
+     * Sends a chat message or command after the minimum cooldown. Prefer this method to send messages or commands to the server.
+     *
+     * @param message the message to send
+     */
     public void sendMessageAfterCooldown(String message) {
-        if (lastMessage + 200 < System.currentTimeMillis()) {
+        if (lastMessage + MIN_DELAY < System.currentTimeMillis()) {
             sendMessage(message);
             lastMessage = System.currentTimeMillis();
         } else {
@@ -29,13 +41,19 @@ public class MessageScheduler extends Scheduler {
         }
     }
 
+    /**
+     * Queues a chat message or command to send in {@code delay} ticks. Use this method to send messages or commands a set time in the future. The minimum cooldown is still respected.
+     *
+     * @param message the message to send
+     * @param delay   the delay before sending the message in ticks
+     */
     public void queueMessage(String message, int delay) {
         schedule(() -> sendMessage(message), delay);
     }
 
     @Override
     protected boolean runTask(Runnable task) {
-        if (lastMessage + 200 < System.currentTimeMillis()) {
+        if (lastMessage + MIN_DELAY < System.currentTimeMillis()) {
             task.run();
             lastMessage = System.currentTimeMillis();
             return true;

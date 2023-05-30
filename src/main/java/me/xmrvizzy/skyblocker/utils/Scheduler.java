@@ -11,8 +11,8 @@ import java.util.PriorityQueue;
  */
 public class Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
-    private int currentTick;
-    private final PriorityQueue<ScheduledTask> tasks;
+    private int currentTick = 0;
+    private final PriorityQueue<ScheduledTask> tasks = new PriorityQueue<>();
 
     /**
      * Do not instantiate this class. Use {@link SkyblockerMod#scheduler} instead.
@@ -20,32 +20,34 @@ public class Scheduler {
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public Scheduler() {
-        currentTick = 0;
-        tasks = new PriorityQueue<>();
     }
 
     /**
      * Schedules a task to run after a delay.
-     * @param task the task to run
+     *
+     * @param task  the task to run
      * @param delay the delay in ticks
      */
     public void schedule(Runnable task, int delay) {
-        if (delay < 0)
+        if (delay < 0) {
             LOGGER.warn("Scheduled a task with negative delay");
+        }
         ScheduledTask tmp = new ScheduledTask(task, currentTick + delay);
         tasks.add(tmp);
     }
 
     /**
      * Schedules a task to run every period ticks.
-     * @param task the task to run
+     *
+     * @param task   the task to run
      * @param period the period in ticks
      */
     public void scheduleCyclic(Runnable task, int period) {
-        if (period <= 0)
+        if (period <= 0) {
             LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
-        else
+        } else {
             new CyclicTask(task, period).run();
+        }
     }
 
     public void tick() {
@@ -56,6 +58,12 @@ public class Scheduler {
         }
     }
 
+    /**
+     * Runs the task if able.
+     *
+     * @param task the task to run
+     * @return {@code true} if the task is run, and {@link false} if task is not run.
+     */
     protected boolean runTask(Runnable task) {
         task.run();
         return true;
@@ -63,7 +71,8 @@ public class Scheduler {
 
     /**
      * A task that runs every period ticks. More specifically, this task reschedules itself to run again after period ticks every time it runs.
-     * @param inner the task to run
+     *
+     * @param inner  the task to run
      * @param period the period in ticks
      */
     protected record CyclicTask(Runnable inner, int period) implements Runnable {
@@ -76,7 +85,8 @@ public class Scheduler {
 
     /**
      * A task that runs at a specific tick, relative to {@link #currentTick}.
-     * @param inner the task to run
+     *
+     * @param inner    the task to run
      * @param schedule the tick to run at
      */
     protected record ScheduledTask(Runnable inner, int schedule) implements Comparable<ScheduledTask>, Runnable {
