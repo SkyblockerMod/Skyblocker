@@ -36,7 +36,9 @@ public class ItemRegistry {
 
         File dir = ITEM_LIST_DIR.toFile();
         File[] files = dir.listFiles();
-        assert files != null;
+        if (files == null) {
+            return;
+        }
         for (File file : files) {
             Path path = ITEM_LIST_DIR.resolve(file.getName());
             try {

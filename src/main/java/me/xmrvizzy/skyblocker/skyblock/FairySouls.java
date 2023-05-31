@@ -63,10 +63,9 @@ public class FairySouls {
                 }
                 reader.close();
             } catch (IOException e) {
-                e.printStackTrace();
-                LOGGER.error("Failed to load found fairy souls.");
+                LOGGER.error("Failed to load found fairy souls", e);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Encountered unknown exception loading fairy souls", e);
             }
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);

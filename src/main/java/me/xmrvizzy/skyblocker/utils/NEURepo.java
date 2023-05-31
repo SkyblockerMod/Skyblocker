@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,11 +53,13 @@ public class NEURepo {
                     Git.cloneRepository().setURI(REMOTE_REPO_URL).setDirectory(NEURepo.LOCAL_REPO_DIR.toFile()).setBranchesToClone(List.of("refs/heads/master")).setBranch("refs/heads/master").call().close();
                     LOGGER.info("[Skyblocker] NEU Repository Downloaded");
                 }
+            } catch (TransportException e){
+                LOGGER.error("[Skyblocker] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
             } catch (RepositoryNotFoundException e) {
-                LOGGER.warn("Local NEU Repository not found or corrupted, downloading new one", e);
+                LOGGER.warn("[Skyblocker] Local NEU Repository not found or corrupted, downloading new one", e);
                 deleteAndDownloadRepository();
             } catch (Exception e) {
-                LOGGER.error("Encountered unknown exception while initializing NEU Repository", e);
+                LOGGER.error("[Skyblocker] Encountered unknown exception while initializing NEU Repository", e);
             }
         });
     }
