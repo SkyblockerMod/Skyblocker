@@ -190,5 +190,8 @@
     "text.autoconfig.skyblocker.option.quickNav.button6.item.nbt": "物品NBT",
     "text.autoconfig.skyblocker.option.quickNav.button7.clickEvent": "点击时所执行的命令",
     "text.autoconfig.skyblocker.option.quickNav.button9.item.itemName": "物品ID",
-    "text.autoconfig.skyblocker.option.quickNav.button10.clickEvent": "点击时所执行的命令"
+    "text.autoconfig.skyblocker.option.quickNav.button10.clickEvent": "点击时所执行的命令",
+    "text.autoconfig.skyblocker.option.general.fishing": "钓鱼助手",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "启用钓鱼助手",
+    "skyblocker.fishing.reelNow": "收竿！"
 }
