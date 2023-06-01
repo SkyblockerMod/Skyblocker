@@ -269,8 +269,17 @@ public class SkyblockerConfig implements ConfigData {
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
+        @ConfigEntry.Gui.CollapsibleObject
+        public LividColor lividColor = new LividColor();
         @ConfigEntry.Gui.CollapsibleObject()
         public Terminals terminals = new Terminals();
+    }
+
+    public static class LividColor {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableLividColor = true;
+        @ConfigEntry.Gui.Tooltip()
+        public String lividColorText = "The livid color is [color]";
     }
 
     public static class Terminals {

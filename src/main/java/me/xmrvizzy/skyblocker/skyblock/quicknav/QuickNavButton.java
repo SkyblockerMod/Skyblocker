@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.quicknav;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.mixin.HandledScreenAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -57,7 +58,7 @@ public class QuickNavButton extends ClickableWidget {
     public void onClick(double mouseX, double mouseY) {
         if (!this.toggled) {
             this.toggled = true;
-            CLIENT.player.networkHandler.sendCommand(command.replace("/", ""));
+            SkyblockerMod.getInstance().messageScheduler.sendMessageAfterCooldown(command);
             // TODO : add null check with log error
         }
     }
