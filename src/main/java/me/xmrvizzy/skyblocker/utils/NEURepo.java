@@ -41,7 +41,7 @@ public class NEURepo {
                         }))));
     }
 
-    public static CompletableFuture<Void> initRepository() {
+    private static CompletableFuture<Void> initRepository() {
         return CompletableFuture.runAsync(() -> {
             try {
                 if (Files.isDirectory(NEURepo.LOCAL_REPO_DIR)) {
@@ -64,7 +64,7 @@ public class NEURepo {
         });
     }
 
-    public static void deleteAndDownloadRepository() {
+    private static void deleteAndDownloadRepository() {
         CompletableFuture.runAsync(() -> {
             try {
                 ItemRegistry.filesImported = false;
