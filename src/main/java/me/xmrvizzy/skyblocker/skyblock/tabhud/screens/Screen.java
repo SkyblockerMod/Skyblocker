@@ -68,10 +68,10 @@ public class Screen {
     private static Screen correctMainScrn(int w, int h, Text footer) {
         return switch (PlayerLocator.getPlayerLocation()) {
             case PARK -> new ParkServerScreen(w, h, footer); // ok
-            case HUB -> new HubServerScreen(w, h, footer); // ok when fire sale incoming, TODO active fs, no fs
+            case HUB -> new HubServerScreen(w, h, footer); // ok when fire sale incoming
             case HOME_ISLAND -> new HomeServerScreen(w, h, footer); // ok
             case GUEST_ISLAND -> new GuestServerScreen(w, h, footer); // ok
-            case CRYSTAL_HOLLOWS, DWARVEN_MINES -> new MineServerScreen(w, h, footer); // ok, TODO 4 comms, active forge
+            case CRYSTAL_HOLLOWS, DWARVEN_MINES -> new MineServerScreen(w, h, footer); // ok, TODO active forge
             case FARMING_ISLAND -> new FarmingServerScreen(w, h, footer);
             case DUNGEON_HUB -> new DungeonHubScreen(w, h, footer); // ok
             case DUNGEON -> new DungeonScreen(w, h, footer); // ok
