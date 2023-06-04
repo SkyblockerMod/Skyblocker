@@ -19,22 +19,27 @@ public class UpgradeWidget extends Widget {
 
     public UpgradeWidget(String footertext) {
         super(TITLE, Formatting.GOLD.getColorValue());
-        if (footertext == null || !footertext.contains("Upgrades")) {
+        if (footertext == null) {
             this.addComponent(new PlainTextComponent(Text.literal("No data").formatted(Formatting.GRAY)));
             this.pack();
             return;
         }
 
-        String[] interesting = footertext.split("Upgrades");
-        this.addComponent(new PlainTextComponent(Text.of("Currently no upgrades...")));
-        this.pack();
+        if (!footertext.contains("Upgrades")) {
+            this.addComponent(new PlainTextComponent(Text.of("Currently no upgrades...")));
+            this.pack();
+            return;
+        }
 
-        String[] lines = interesting[1].split("\n");
-        IcoTextComponent u1 = new IcoTextComponent(Ico.SIGN, Text.of(lines[1]));
-        this.addComponent(u1);
-        if (lines.length == 5) { // ??? no idea how this works, but it does. don't touch until understood...
-            IcoTextComponent u2 = new IcoTextComponent(Ico.SIGN, Text.of(lines[2]));
-            this.addComponent(u2);
+        String interesting = footertext.split("Upgrades")[1];
+        String[] lines = interesting.split("\n");
+
+        for (int i = 1; i < lines.length; i++) {
+            if (lines[i].trim().length() < 3) { // empty line is §s
+                break;
+            }
+            IcoTextComponent itc = new IcoTextComponent(Ico.SIGN, Text.of(lines[i]));
+            this.addComponent(itc);
         }
         this.pack();
     }
