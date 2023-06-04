@@ -342,10 +342,6 @@ public class PriceInfoTooltip {
             return new Gson().fromJson(reader, JsonObject.class);
         } catch (IOException e) {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
-
-            if (type.equals("lowest bins"))
-                return downloadPrices("lowest bins backup");
-
             return null;
         }
     }
@@ -356,7 +352,6 @@ public class PriceInfoTooltip {
         apiAddresses.put("3 day avg", "https://moulberry.codes/auction_averages_lbin/3day.json.gz");
         apiAddresses.put("bazaar", "https://hysky.de/api/bazaar");
         apiAddresses.put("lowest bins", "https://lb.tricked.pro/lowestbins");
-        apiAddresses.put("lowest bins backup", "https://lb2.tricked.pro/lowestbins");
         apiAddresses.put("npc", "https://hysky.de/api/npcprice");
         apiAddresses.put("museum", "https://hysky.de/api/museum");
     }
