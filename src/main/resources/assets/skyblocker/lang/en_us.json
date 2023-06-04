@@ -20,6 +20,8 @@
   "text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition": "Mana Bar Position",
   "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "Defence Bar Position",
   "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "Experience Bar Position",
+  "text.autoconfig.skyblocker.option.general.fishing": "Fishing Helper",
+  "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "Enable Fishing Helper",
   "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
@@ -165,6 +167,11 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Solve Blaze Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Solve Trivia Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "Livid Color",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "Enable Livid Color",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip": "Send the livid color in the chat during the Livid boss fight.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Livid Color Text",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid color.",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Terminal Solvers",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Colored",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder": "Solve Click In Order",
@@ -208,5 +215,7 @@
 
   "skyblocker.updaterepository.failed":  "§b[§6Skyblocker§b] §cUpdating local repository failed. Remove files manually and restart game.",
 
-  "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Automatically set your API key!"
+  "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Automatically set your API key!",
+
+  "skyblocker.fishing.reelNow": "Reel in now!"
 }

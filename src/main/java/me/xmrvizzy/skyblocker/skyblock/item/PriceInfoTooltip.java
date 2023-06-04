@@ -45,7 +45,7 @@ public class PriceInfoTooltip {
     private static final Map<String, String> apiAddresses;
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
-        if (!Utils.isOnSkyblock || client.player == null) return;
+        if (!Utils.isOnSkyblock() || client.player == null) return;
 
         String name = getInternalNameFromNBT(stack);
         if (name == null) return;
@@ -295,7 +295,7 @@ public class PriceInfoTooltip {
     public static int minute = -1;
     public static void init() {
         skyblocker.scheduler.scheduleCyclic(() -> {
-            if (!Utils.isOnSkyblock && 0 < minute++) {
+            if (!Utils.isOnSkyblock() && 0 < minute++) {
                 nullMsgSend = false;
                 return;
             }
@@ -344,7 +344,7 @@ public class PriceInfoTooltip {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
 
             if (type.equals("lowest bins"))
-                lowestPricesJson = downloadPrices("lowest bins backup");
+                return downloadPrices("lowest bins backup");
 
             return null;
         }

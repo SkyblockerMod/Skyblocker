@@ -30,7 +30,7 @@ public class PlayerLocator {
 
     public static Location getPlayerLocation() {
 
-        if (!Utils.isOnSkyblock) {
+        if (!Utils.isOnSkyblock()) {
             return Location.UNKNOWN;
         }
 

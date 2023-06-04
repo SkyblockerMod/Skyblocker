@@ -27,9 +27,9 @@ public class Reparty extends ChatPatternListener {
         super("^(?:You are not currently in a party\\.|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*)))$");
         this.repartying = false;
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
-            if (!Utils.isOnSkyblock || this.repartying || client.player == null) return 0;
+            if (!Utils.isOnSkyblock() || this.repartying || client.player == null) return 0;
             this.repartying = true;
-            client.player.networkHandler.sendCommand("p list");
+            SkyblockerMod.getInstance().messageScheduler.sendMessageAfterCooldown("/p list");
             return 0;
         })));
     }
@@ -63,16 +63,15 @@ public class Reparty extends ChatPatternListener {
             this.repartying = false;
             return;
         }
-        sendCommand(playerEntity, "p disband", 1);
+        sendCommand("/p disband", 1);
         for (int i = 0; i < this.players.length; ++i) {
-            String command = "p invite " + this.players[i];
-            sendCommand(playerEntity, command, i + 2);
+            String command = "/p invite " + this.players[i];
+            sendCommand(command, i + 2);
         }
         skyblocker.scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
     }
 
-    private void sendCommand(ClientPlayerEntity player, String command, int delay) {
-        // skyblocker.scheduler.schedule(() -> player.sendChatMessage(command, Text.of(command)), delay * BASE_DELAY);
-        skyblocker.scheduler.schedule(() -> player.networkHandler.sendCommand(command), delay * BASE_DELAY);
+    private void sendCommand(String command, int delay) {
+        skyblocker.messageScheduler.queueMessage(command, delay * BASE_DELAY);
     }
 }

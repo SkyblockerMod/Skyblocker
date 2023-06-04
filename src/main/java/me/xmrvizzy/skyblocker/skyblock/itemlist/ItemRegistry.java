@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.itemlist;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import me.xmrvizzy.skyblocker.skyblock.api.RepositoryUpdate;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -10,6 +11,7 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,20 +49,26 @@ public class ItemRegistry {
     }
 
     private static void updateItemRepo() {
+        Git git;
         if (!Files.isDirectory(LOCAL_ITEM_REPO_DIR)) {
             try {
-                Git.cloneRepository()
+                git = Git.cloneRepository()
                         .setURI(REMOTE_ITEM_REPO)
                         .setDirectory(LOCAL_ITEM_REPO_DIR.toFile())
                         .setBranchesToClone(List.of("refs/heads/master"))
                         .setBranch("refs/heads/master")
                         .call();
+                git.close();
+                LOGGER.info("[Skyblocker Repository Update] Repository updated.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                PullResult pull = Git.open(LOCAL_ITEM_REPO_DIR.toFile()).pull().setRebase(true).call();
+                git = Git.open(LOCAL_ITEM_REPO_DIR.toFile());
+                PullResult pull = git.pull().setRebase(true).call();
+                git.close();
+
                 if (pull.getRebaseResult() == null) {
                     LOGGER.info("[Skyblocker Repository Update] No update result");
                 } else if (pull.getRebaseResult().getStatus().isSuccessful()) {
@@ -68,6 +76,8 @@ public class ItemRegistry {
                 } else if (!pull.getRebaseResult().getStatus().isSuccessful()) {
                     LOGGER.warn("[Skyblocker Repository Update] Status: " + pull.getRebaseResult().getStatus().name());
                 }
+            } catch (RepositoryNotFoundException e) {
+                RepositoryUpdate.updateRepository();
             } catch (Exception e) {
                 e.printStackTrace();
             }

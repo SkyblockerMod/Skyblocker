@@ -29,7 +29,7 @@ public class PlayerListMgr {
 
     public static void updateList() {
 
-        if (!Utils.isOnSkyblock) {
+        if (!Utils.isOnSkyblock()) {
             return;
         }
 

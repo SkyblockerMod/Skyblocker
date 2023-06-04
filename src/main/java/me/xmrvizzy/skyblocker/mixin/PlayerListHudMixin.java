@@ -1,7 +1,5 @@
 package me.xmrvizzy.skyblocker.mixin;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,7 +31,7 @@ public class PlayerListHudMixin {
     public void skyblocker$renderTabHud(MatrixStack ms, int scaledW, Scoreboard sb, ScoreboardObjective sbo,
             CallbackInfo info) {
 
-        if (!Utils.isOnSkyblock
+        if (!Utils.isOnSkyblock()
                 || !SkyblockerConfig.get().general.tabHud.tabHudEnabled
                 || TabHud.defaultTgl.isPressed()) {
             return;

@@ -1,10 +1,13 @@
 package me.xmrvizzy.skyblocker.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.xmrvizzy.skyblocker.mixin.HandledScreenAccessor;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.CroesusHelper;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -35,6 +38,22 @@ public class ContainerSolverManager extends DrawableHelper {
                 new StartsWithTerminal(),
                 new CroesusHelper()
         };
+    }
+
+    public void init() {
+        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
+                ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, delta) -> {
+                    matrices.push();
+                    matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);
+                    onDraw(matrices, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
+                    matrices.pop();
+                });
+                onSetScreen(genericContainerScreen);
+            } else {
+                clearScreen();
+            }
+        });
     }
 
     public void onSetScreen(@NotNull GenericContainerScreen screen) {
@@ -69,7 +88,7 @@ public class ContainerSolverManager extends DrawableHelper {
             return;
         if (highlights == null)
             highlights = currentSolver.getColors(groups, slotMap(slots));
-        RenderSystem.disableDepthTest();
+        RenderSystem.enableDepthTest();
         RenderSystem.colorMask(true, true, true, false);
         for (ColorHighlight highlight : highlights) {
             Slot slot = slots.get(highlight.slot());
@@ -77,7 +96,6 @@ public class ContainerSolverManager extends DrawableHelper {
             fillGradient(matrices, slot.x, slot.y, slot.x + 16, slot.y + 16, color, color);
         }
         RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.enableDepthTest();
     }
 
     private Map<Integer, ItemStack> slotMap(List<Slot> slots) {
