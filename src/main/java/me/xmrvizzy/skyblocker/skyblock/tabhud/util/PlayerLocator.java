@@ -24,6 +24,7 @@ public class PlayerLocator {
         SPIDER_DEN,
         JERRY,
         GARDEN,
+        INSTANCED,
         UNKNOWN
     }
 
@@ -79,6 +80,8 @@ public class PlayerLocator {
                 return Location.JERRY;
             case "Garden":
                 return Location.GARDEN;
+            case "Instanced":
+                return Location.INSTANCED;
             default:
                 return Location.UNKNOWN;
         }
