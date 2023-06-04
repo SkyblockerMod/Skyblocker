@@ -18,23 +18,35 @@ public class IslandOwnersWidget extends Widget {
             Formatting.BOLD);
 
     // matches an owner
-    // group 1: player name (cut off by hypixel for some reason)
-    // group 2: last seem
-    // TODO: test with owner online
-    private static final Pattern OWNER_PATTERN = Pattern.compile("(?<name>.*) \\((?<lastseen>.*)\\)");
+    // group 1: player name
+    // group 2: last seen, if owner not online
+    private static final Pattern OWNER_PATTERN = Pattern
+            .compile("^(?<nameA>.*) \\((?<lastseen>.*)?\\)$|^\\[\\d*\\] (?<nameB>.*)$");
 
     public IslandOwnersWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
         for (int i = 1; i < 20; i++) {
-            Matcher m = PlayerListMgr.regexAt( i, OWNER_PATTERN);
+            Matcher m = PlayerListMgr.regexAt(i, OWNER_PATTERN);
             if (m == null) {
                 break;
             }
 
-            Text entry = Text.literal(m.group("name"))
+            String name = null, lastseen = null;
+            Formatting format = null;
+            if (m.group("nameA") != null) {
+                name = m.group("nameA");
+                lastseen = m.group("lastseen");
+                format = Formatting.GRAY;
+            } else {
+                name = m.group("nameB");
+                lastseen = "Online";
+                format = Formatting.WHITE;
+            }
+
+            Text entry = Text.literal(name)
                     .append(
-                            Text.literal(" (" + m.group("lastseen") + ")")
-                                    .formatted(Formatting.GRAY));
+                            Text.literal(" (" + lastseen + ")")
+                                    .formatted(format));
             PlainTextComponent ptc = new PlainTextComponent(entry);
             this.addComponent(ptc);
         }
