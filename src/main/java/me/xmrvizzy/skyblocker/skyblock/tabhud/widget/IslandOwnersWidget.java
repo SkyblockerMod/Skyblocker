@@ -21,7 +21,7 @@ public class IslandOwnersWidget extends Widget {
     // group 1: player name
     // group 2: last seen, if owner not online
     private static final Pattern OWNER_PATTERN = Pattern
-            .compile("^(?<nameA>.*) \\((?<lastseen>.*)?\\)$|^\\[\\d*\\] (?<nameB>.*)$");
+            .compile("^(?<nameA>.*) \\((?<lastseen>.*)\\)$|^\\[\\d*\\] (?<nameB>.*)$|^(?<nameC>.*)$");
 
     public IslandOwnersWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
@@ -37,8 +37,12 @@ public class IslandOwnersWidget extends Widget {
                 name = m.group("nameA");
                 lastseen = m.group("lastseen");
                 format = Formatting.GRAY;
-            } else {
+            } else if (m.group("nameB")!=null){
                 name = m.group("nameB");
+                lastseen = "Online";
+                format = Formatting.WHITE;
+            } else {
+                name = m.group("nameC");
                 lastseen = "Online";
                 format = Formatting.WHITE;
             }
