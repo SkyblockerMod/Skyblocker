@@ -278,6 +278,8 @@ public class SkyblockerConfig implements ConfigData {
         public boolean croesusHelper = true;
         public boolean enableMap = true;
         public float mapScaling = 1f;
+        public int mapX = 2;
+        public int mapY = 2;
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
