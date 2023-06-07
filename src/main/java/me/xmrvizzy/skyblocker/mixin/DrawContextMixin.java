@@ -18,6 +18,7 @@ import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -56,8 +57,8 @@ public abstract class DrawContextMixin {
                         float hue = Math.max(0.0F, 1.0F - (max - current) / max);
                         int width = Math.round(current / max * 13.0F);
                         Color color = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
-                        context.fill(x + 2, y + 13, x + 15, y + 15, 0xFF000000);
-                        context.fill(x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
+                        context.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 15, y + 15, 0xFF000000);
+                        context.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
                         
                         matrices.pop();
                         RenderSystem.enableDepthTest();
