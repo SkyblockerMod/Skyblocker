@@ -28,6 +28,10 @@ import net.minecraft.util.math.ColorHelper;
 public abstract class DrawContextMixin {
 	@Shadow @Final private MatrixStack matrices;
 	
+	@Shadow
+	public void fill(RenderLayer layer, int x1, int x2, int y1, int y2, int color) {
+    }
+	
     @Inject(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
     public void skyblocker$renderItemBar(TextRenderer textRenderer, ItemStack stack, int x, int y, @Nullable String countOverride, CallbackInfo ci) {
 
@@ -49,7 +53,6 @@ public abstract class DrawContextMixin {
                             }
                         }
                         
-                        DrawContext context = ((DrawContext) (Object) this);
                         matrices.push();
                         matrices.translate(0f, 0f, 200f);
                         RenderSystem.disableDepthTest();
@@ -57,8 +60,8 @@ public abstract class DrawContextMixin {
                         float hue = Math.max(0.0F, 1.0F - (max - current) / max);
                         int width = Math.round(current / max * 13.0F);
                         Color color = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
-                        context.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 15, y + 15, 0xFF000000);
-                        context.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
+                        this.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 15, y + 15, 0xFF000000);
+                        this.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
                         
                         matrices.pop();
                         RenderSystem.enableDepthTest();
