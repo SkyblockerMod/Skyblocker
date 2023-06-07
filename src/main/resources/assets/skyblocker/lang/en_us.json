@@ -152,6 +152,9 @@
   "text.autoconfig.skyblocker.option.general.itemList.enableItemList": "Enable Item List",
 
   "text.autoconfig.skyblocker.category.locations": "Locations",
+  "text.autoconfig.skyblocker.option.locations.barn": "Barn",
+  "text.autoconfig.skyblocker.option.locations.barn.solveHungryHiker": "Solve Hungry Hiker",
+  "text.autoconfig.skyblocker.option.locations.barn.solveTreasureHunter": "Solve Treasure Hunter",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
   "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Croesus Helper",
   "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
