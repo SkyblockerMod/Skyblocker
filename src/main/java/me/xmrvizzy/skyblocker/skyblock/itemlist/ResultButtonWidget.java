@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.GameRenderer;
@@ -52,14 +53,14 @@ public class ResultButtonWidget extends ClickableWidget {
 
     public void renderTooltip(DrawContext context, int mouseX, int mouseY) {
         MinecraftClient client = MinecraftClient.getInstance();
-        List<Text> tooltip = client.currentScreen.getTooltipFromItem(client, this.itemStack);
+        List<Text> tooltip = Screen.getTooltipFromItem(client, this.itemStack);
         List<OrderedText> orderedTooltip = new ArrayList<>();
-        
-        for(int i = 0; i < tooltip.size(); i++) orderedTooltip.add(tooltip.get(i).asOrderedText());
-        
-        // TODO : add null check with log error
+            
+        for(int i = 0; i < tooltip.size(); i++) {
+        	orderedTooltip.add(tooltip.get(i).asOrderedText());
+        }
+                        
         client.currentScreen.setTooltip(orderedTooltip);
-        client.currentScreen.renderWithTooltip(context, mouseX, mouseY, mouseY);
     }
 
 	@Override
