@@ -50,15 +50,17 @@ public class DwarvenHud {
                                 })))));
 
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
-            if (!SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled || client.player == null || commissionList.isEmpty()) return;
+            if (!SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled
+                || client.options.playerListKey.isPressed()
+                || client.player == null
+                || commissionList.isEmpty()) {
+                return;
+            }
             render(matrixStack, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
         });
     }
 
     public static void render(MatrixStack matrixStack, int hudX, int hudY, List<Commission> commissions) {
-        if (commissions.size() <= 0) {
-            return;
-        }
 
         switch(SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
             case SIMPLE -> renderSimple(matrixStack, hudX, hudY, commissions);
