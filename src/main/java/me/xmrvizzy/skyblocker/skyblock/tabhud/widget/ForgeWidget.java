@@ -21,7 +21,7 @@ public class ForgeWidget extends Widget {
     public ForgeWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
         int forgestart = 54;
-        // why is it forges and not fabrics >:(
+        // why is it forges and not looms >:(
         String pos = PlayerListMgr.strAt(53);
         if (pos == null) {
             this.addComponent(new IcoTextComponent());
@@ -65,8 +65,8 @@ public class ForgeWidget extends Widget {
                     if (parts.length != 2) {
                         c = new IcoFatTextComponent();
                     } else {
-                        l1 = Text.of(parts[0]);
-                        l2 = Text.literal(parts[1]).formatted(Formatting.YELLOW);
+                        l1 = Text.literal(parts[0].substring(3)).formatted(Formatting.YELLOW);
+                        l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
                         c = new IcoFatTextComponent(Ico.FIRE, l1, l2);
                     }
                     break;
