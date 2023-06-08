@@ -37,8 +37,8 @@ public class EffectWidget extends Widget {
             Text txt = Text.literal("No effects active").formatted(Formatting.GRAY);
             this.addComponent(new IcoTextComponent(Ico.POTION, txt));
         } else if (lines[1].contains("God")) {
-            String timeleft = lines[1].split("! ")[0];
-            Text godpot = Text.literal("God potion!").formatted(Formatting.RED, Formatting.BOLD);
+            String timeleft = lines[1].split("! ")[1];
+            Text godpot = Text.literal("God potion!").formatted(Formatting.RED);
             Text txttleft = Text.literal(timeleft).formatted(Formatting.LIGHT_PURPLE);
             IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, godpot, txttleft);
             this.addComponent(iftc);
