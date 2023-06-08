@@ -24,7 +24,7 @@ public class PlainTextComponent extends Component {
 
     @Override
     public void render(MatrixStack ms, int x, int y) {
-        txtRend.draw(ms, text, x, y, 0xffffffff);
+        txtRend.draw(ms, text, x + PAD_S, y, 0xffffffff);
     }
 
 }
