@@ -190,5 +190,13 @@
     "text.autoconfig.skyblocker.option.quickNav.button6.item.nbt": "物品NBT",
     "text.autoconfig.skyblocker.option.quickNav.button7.clickEvent": "点击时所执行的命令",
     "text.autoconfig.skyblocker.option.quickNav.button9.item.itemName": "物品ID",
-    "text.autoconfig.skyblocker.option.quickNav.button10.clickEvent": "点击时所执行的命令"
+    "text.autoconfig.skyblocker.option.quickNav.button10.clickEvent": "点击时所执行的命令",
+    "text.autoconfig.skyblocker.option.general.fishing": "钓鱼助手",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "启用钓鱼助手",
+    "skyblocker.fishing.reelNow": "收竿！",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "启用真 Livid 的颜色提示",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "提示真 Livid 的颜色",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip": "将真 Livid 的颜色发送到聊天栏",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "真 Livid 颜色提示信息",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Livid Boss战时发送到聊天栏的信息， 字段 “[color]” 将被替换为真 Livid 的颜色"
 }
