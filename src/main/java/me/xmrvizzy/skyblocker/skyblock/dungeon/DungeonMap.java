@@ -51,8 +51,10 @@ public class DungeonMap {
     }
     
     public static void renderHUDMap(MatrixStack matrices, int x, int y) {
+    	float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
+    	int size = (int) (128 * scaling);
     	RenderSystem.setShaderTexture(0, MAP_BACKGROUND);
-    	DrawableHelper.drawTexture(matrices, x, y, 0, 0, 64, 64, 64, 64);
+    	DrawableHelper.drawTexture(matrices, x, y, 0, 0, size, size, size, size);
     }
     
     public static void init() {

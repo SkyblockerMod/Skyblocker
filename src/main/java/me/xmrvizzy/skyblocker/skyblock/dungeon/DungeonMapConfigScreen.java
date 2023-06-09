@@ -28,9 +28,11 @@ public class DungeonMapConfigScreen extends Screen {
 	
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-		if(RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, hudX, hudY, hudX + 64, hudY + 64) && button == 0) {
-			hudX = (int) Math.max(Math.min(mouseX - 32, this.width - 64), 0);
-			hudY = (int) Math.max(Math.min(mouseY - 32, this.height - 64), 0);
+		float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
+    	int size = (int) (128 * scaling);
+		if(RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, hudX, hudY, hudX + size, hudY + size) && button == 0) {
+			hudX = (int) Math.max(Math.min(mouseX - (size / 2), this.width - size), 0);
+			hudY = (int) Math.max(Math.min(mouseY - (size / 2), this.height - size), 0);
 		}
 		return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
 	}
