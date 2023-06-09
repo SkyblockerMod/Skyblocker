@@ -1,27 +1,14 @@
 {
-    "text.autoconfig.skyblocker.option.general.bars.barpositions": "",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "",
-    "text.autoconfig.skyblocker.option.richPresence.info.PURSE": "",
     "text.autoconfig.skyblocker.option.quickNav.enableQuickNav": "",
-    "text.autoconfig.skyblocker.option.quickNav.button1.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button2.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button3.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button4.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button5.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button6.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button7.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button8.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button9.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button10.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button11.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button12.clickEvent": "",
-    "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines": "",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "",
-    "text.autoconfig.skyblocker.option.messages.hideImplosion": "",
-    "skyblocker.update.update_message": "",
-    "skyblocker.fishing.reelNow": ""
+    "skyblocker.update.update_message": ""
 }
