@@ -53,5 +53,8 @@
     "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Ключ API установлен автоматически!",
     "key.wikiLookup": "Быстрый переход на вики",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "Описание предметов",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Показать цены у NPC"
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Показать цены у NPC",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions": "Настроить позиции полосок",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER1": "Слой 1",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER2": "Слой 2"
 }
