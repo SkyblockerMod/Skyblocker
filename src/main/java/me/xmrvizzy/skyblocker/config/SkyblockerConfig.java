@@ -135,6 +135,10 @@ public class SkyblockerConfig implements ConfigData {
         public boolean backpackPreviewWithoutShift = false;
         public boolean hideEmptyTooltips = true;
 
+        @ConfigEntry.Category("tabHud")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TabHudConf tabHud = new TabHudConf();
+
         @ConfigEntry.Gui.Excluded
         public String apiKey;
 
@@ -160,6 +164,14 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
+    }
+
+    public static class TabHudConf {
+        public boolean tabHudEnabled = true;
+
+        @ConfigEntry.BoundedDiscrete(min=10, max=200)
+        @ConfigEntry.Gui.Tooltip()
+        public int tabHudScale = 100;
     }
 
     public static class Bars {
@@ -298,9 +310,27 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class DwarvenHud {
         public boolean enabled = true;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip(count = 3)
+        public Style style = Style.SIMPLE;
         public boolean enableBackground = true;
         public int x = 10;
         public int y = 10;
+    }
+
+    public enum Style {
+        SIMPLE,
+        FANCY,
+        CLASSIC;
+
+        @Override
+		public String toString() {
+            return switch (this) {
+                case SIMPLE -> "Simple";
+                case FANCY -> "Fancy";
+                case CLASSIC -> "Classic";
+            };
+        }
     }
 
     public static class Barn {

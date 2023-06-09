@@ -17,6 +17,8 @@ import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.MessageScheduler;
 import me.xmrvizzy.skyblocker.utils.Scheduler;
 import me.xmrvizzy.skyblocker.utils.UpdateChecker;
@@ -26,7 +28,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 
 /**
- * Main class for Skyblocker which initializes features, registers events, and manages ticks. This class will be instantiated by Fabric. Do not instantiate this class.
+ * Main class for Skyblocker which initializes features, registers events, and
+ * manages ticks. This class will be instantiated by Fabric. Do not instantiate
+ * this class.
  */
 public class SkyblockerMod implements ClientModInitializer {
     public static final String NAMESPACE = "skyblocker";
@@ -51,7 +55,9 @@ public class SkyblockerMod implements ClientModInitializer {
     }
 
     /**
-     * Register {@link #tick(MinecraftClient)} to {@link ClientTickEvents#END_CLIENT_TICK}, initialize all features, and schedule tick events.
+     * Register {@link #tick(MinecraftClient)} to
+     * {@link ClientTickEvents#END_CLIENT_TICK}, initialize all features, and
+     * schedule tick events.
      */
     @Override
     public void onInitializeClient() {
@@ -71,6 +77,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();
+        TabHud.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
@@ -78,10 +85,12 @@ public class SkyblockerMod implements ClientModInitializer {
         scheduler.scheduleCyclic(LividColor::update, 10);
         scheduler.scheduleCyclic(BackpackPreview::tick, 50);
         scheduler.scheduleCyclic(DwarvenHud::update, 40);
+        scheduler.scheduleCyclic(PlayerListMgr::updateList, 20);
     }
 
     /**
-     * Ticks the scheduler. Called once at the end of every client tick through {@link ClientTickEvents#END_CLIENT_TICK}.
+     * Ticks the scheduler. Called once at the end of every client tick through
+     * {@link ClientTickEvents#END_CLIENT_TICK}.
      *
      * @param client the Minecraft client.
      */

@@ -16,6 +16,9 @@
     "LeverBlockMixin",
     "MinecraftClientMixin",
     "RecipeBookWidgetAccessor",
+    "HandledScreenAccessor",
+    "PlayerListHudAccessor",
+    "PlayerListHudMixin",
     "ScreenMixin"
   ],
   "injectors": {
