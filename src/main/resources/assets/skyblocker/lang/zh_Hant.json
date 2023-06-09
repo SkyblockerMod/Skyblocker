@@ -1,14 +1,8 @@
 {
-    "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "",
-    "text.autoconfig.skyblocker.option.quickNav.enableQuickNav": "",
     "text.autoconfig.skyblocker.option.quickNav.button2.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button4.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button6.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button8.clickEvent": "",
     "text.autoconfig.skyblocker.option.quickNav.button10.clickEvent": "",
-    "text.autoconfig.skyblocker.option.quickNav.button12.clickEvent": "",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "",
     "skyblocker.update.update_message": ""
 }
