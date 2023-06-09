@@ -11,6 +11,7 @@ import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
 import me.xmrvizzy.skyblocker.skyblock.api.RepositoryUpdate;
 import me.xmrvizzy.skyblocker.skyblock.api.StatsCommand;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.LividColor;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
@@ -79,6 +80,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FishingHelper.init();
         TabHud.init();
         containerSolverManager.init();
+        DungeonMap.init();
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
