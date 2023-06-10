@@ -97,7 +97,7 @@
     "text.autoconfig.skyblocker.option.messages.hideCombo": "隐藏连杀消息",
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "隐藏自动宠物消息",
     "text.autoconfig.skyblocker.option.messages.hideMana": "在动作栏中隐藏法力消耗信息",
-    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "被已经提供了更好方案的属性条代替",
+    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "已被更好的属性条代替",
     "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2有新版本可用！",
     "skyblocker.update.update_link": " §2§n点击这里§r",
     "skyblocker.update.update_message_end": " §a来了解最新功能",
@@ -198,5 +198,8 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "提示真 Livid 的颜色",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip": "将真 Livid 的颜色发送到聊天栏",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "真 Livid 颜色提示信息",
-    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Livid Boss战时发送到聊天栏的信息， 字段 “[color]” 将被替换为真 Livid 的颜色"
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Livid Boss战时发送到聊天栏的信息， 字段 “[color]” 将被替换为真 Livid 的颜色",
+    "key.skyblocker.playerTgl": "将tab键所显示的列表改为玩家列表",
+    "key.skyblocker.defaultTgl": "将tab键所显示的列表改为默认空岛生存列表",
+    "key.skyblocker.genericTgl": "将tab键所显示的列表改为通用信息列表"
 }
