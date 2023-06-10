@@ -84,5 +84,12 @@
     "text.autoconfig.skyblocker.option.quickNav.enableQuickNav": "Включить быстрый доступ",
     "text.autoconfig.skyblocker.option.quickNav.button1": "Кнопка 1",
     "text.autoconfig.skyblocker.option.quickNav.button2": "Кнопка 2",
-    "text.autoconfig.skyblocker.option.quickNav.button3": "Кнопка 3"
+    "text.autoconfig.skyblocker.option.quickNav.button3": "Кнопка 3",
+    "text.autoconfig.skyblocker.option.general.tabHud": "Красивое TAB меню",
+    "key.skyblocker.defaultTgl": "Показывать стандартное меню TAB",
+    "key.skyblocker.playerTgl": "Показывать список игроков в меню TAB",
+    "key.skyblocker.genericTgl": "Показывать общую информацию в меню TAB",
+    "text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled": "Включить красивое TAB меню",
+    "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale": "Размер TAB меню",
+    "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip": "Значение в %, по отношению к размеру интерфейса игры"
 }
