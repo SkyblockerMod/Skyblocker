@@ -1,0 +1,11 @@
+{
+  "text.autoconfig.skyblocker.option.general.bars": "Health, Mana, Defence & XP Bars",
+
+  "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Grey out chests that have already been opened.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "Livid Colour",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "Enable Livid Colour",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip": "Send the livid colour in the chat during the Livid boss fight.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Livid Colour Text",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid colour.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Coloured"
+}
