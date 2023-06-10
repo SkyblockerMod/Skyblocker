@@ -281,6 +281,7 @@ public class SkyblockerConfig implements ConfigData {
         public int mapX = 2;
         public int mapY = 2;
         public boolean solveThreeWeirdos = true;
+        public boolean repartyRejoin = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
         @ConfigEntry.Gui.CollapsibleObject

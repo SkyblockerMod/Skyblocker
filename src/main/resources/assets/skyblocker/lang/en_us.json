@@ -169,6 +169,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "Map Scaling",
   "text.autoconfig.skyblocker.option.locations.dungeons.mapX": "Map X",
   "text.autoconfig.skyblocker.option.locations.dungeons.mapY": "Map Y",
+  "text.autoconfig.skyblocker.option.locations.dungeons.repartyRejoin": "Auto Rejoin Reparty",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Solve Blaze Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Solve Trivia Puzzle",
