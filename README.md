@@ -120,4 +120,5 @@ Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
 Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
 Norwegian Nynorsk ([KdGaming0](https://github.com/KdGaming0)) \
 Turkish ([Fix3dll](https://github.com/Fix3dll)) \
-Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD))
+Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD)) \
+Canadian English ([AzureAaron](https://github.com/AzureAaron))
