@@ -53,11 +53,13 @@ jobs:
           script: |
             const fs = require("fs")
             return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0]
+
       - name: Release
         id: uploadrelease
         uses: softprops/action-gh-release@v1
         with:
           body: ${{ steps.read_changelog.outputs.changelog }}
+          token: ${{ secrets.GH_RELEASE }}
           files: build/libs/${{ steps.fname.outputs.result }}
 
       - name: Publish to Modrinth
