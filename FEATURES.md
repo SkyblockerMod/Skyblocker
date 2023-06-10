@@ -5,9 +5,12 @@
   * Three Weirdos
   * Blaze
   * Croesus
-  * F7 Terminal: Order, Color, Name
+  * Terminal: 
+    * Order
+    * Coloured Items
+    * Item Name
 * Dwarven Mines Solver: Fetchur, Puzzler
-* Barn Solver: Treasurehunter, Hungry Hiker
+* Barn Solver: Treasure Hunter, Hungry Hiker
 * Drill Fuel in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
 * Price tooltip: npc, bazaar (avg, lbin), ah, museum
