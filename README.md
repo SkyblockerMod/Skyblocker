@@ -21,14 +21,18 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
 * Dungeon Puzzle Solver:
-    * Three Weirdos
-    * Blaze
-    * Croesus
-    * F7 Terminal: Order, Color, Name
+  * Three Weirdos
+  * Blaze
+  * Croesus
+  * Terminal:
+    * Order
+    * Coloured Items
+    * Item Name
 * Dwarven Mines Solver: Fetchur, Puzzler
+* Barn Solver: Treasure Hunter, Hungry Hiker
 * Drill Fuel in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
-* price tooltip: npc, bazaar (avg, lbin), ah, museum
+* Price tooltip: npc, bazaar (avg, lbin), ah, museum
 * reparty: write /rp to reparty
 * Wiki Lookup: press f4 to open the wiki page about the held item
 * Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
@@ -40,11 +44,22 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Update notification
 * Commission HUD: Dwarven Mines quests
 * 1.8 hitbox for lever and farmland
+* Custom Tab HUD
+* Roughly enough items (REI) Support
+* Fishing Helper
 
 </details>
 
 ___
+## Commands
 
+|           command            |        option        | comment                               |
+|:----------------------------:|:--------------------:|:--------------------------------------|
+|      /skyblocker config      |                      | open config menu (modMenu not needed) |
+|        /skyblocker options   |                      | open config menu (modMenu not needed) |
+|       /skyblocker hud        | dwarven / dungeonmap | move dwarven or dungeonmap            |
+
+---
 ## Images
 
 <details open>
@@ -81,18 +96,29 @@ information.
 |                                [Zailer43](https://github.com/Zailer43)                                |                                  [TacoMonkey11](https://github.com/TacoMonkey11)                                  |                                 [KonaeAkira](https://github.com/KonaeAkira)                                 |                               [Fix3dll](https://github.com/Fix3dll)                                |
 
 | [<img alt="ADON15c" src="https://github.com/ADON15c.png" width="100">](https://github.com/ADON15c) | [<img alt="TheColdPot" src="https://github.com/TheColdPot.png" width="100">](https://github.com/TheColdPot) | [<img alt="Julienraptor01" src="https://github.com/Julienraptor01.png" width="100">](https://github.com/Julienraptor01) | [<img alt="MiraculixxT" src="https://github.com/MiraculixxT.png" width="100">](https://github.com/MiraculixxT) |
-|:--------------------------------------------------------------------------------------------------:|-------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-|                               [ADON15c](https://github.com/ADON15c)                                | [TheColdPot](https://github.com/TheColdPot)                                                                 | [Julienraptor01](https://github.com/Julienraptor01)                                                                     | [ADON15c](https://github.com/MiraculixxT)                                                                      |
+|:--------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+|                               [ADON15c](https://github.com/ADON15c)                                |                                 [TheColdPot](https://github.com/TheColdPot)                                 |                                   [Julienraptor01](https://github.com/Julienraptor01)                                   |                                 [MiraculixxT](https://github.com/MiraculixxT)                                  |
 
-| [<img alt="catandA" src="https://github.com/catandA.png" width="100">](https://github.com/catandA) | [<img alt="kevinthegreat1" src="https://github.com/kevinthegreat1.png" width="100">](https://github.com/kevinthegreat1) | [<img alt="AzureAaron" src="https://github.com/AzureAaron.png" width="100">](https://github.com/AzureAaron) |
-|:--------------------------------------------------------------------------------------------------:|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
-|                               [catandA](https://github.com/catandA)                                | [kevinthegreat1](https://github.com/kevinthegreat1)                                                                     | [AzureAaron](https://github.com/AzureAaron)                                                                 |
+| [<img alt="catandA" src="https://github.com/catandA.png" width="100">](https://github.com/catandA) | [<img alt="kevinthegreat1" src="https://github.com/kevinthegreat1.png" width="100">](https://github.com/kevinthegreat1) | [<img alt="AzureAaron" src="https://github.com/AzureAaron.png" width="100">](https://github.com/AzureAaron) | [<img alt="msg-programs" src="https://github.com/msg-programs.png" width="100">](https://github.com/msg-programs) |
+|:--------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
+|                               [catandA](https://github.com/catandA)                                |                                   [kevinthegreat1](https://github.com/kevinthegreat1)                                   |                                 [AzureAaron](https://github.com/AzureAaron)                                 |                                  [msg-programs](https://github.com/msg-programs)                                  |
+
+| [<img alt="lantice3720" src="https://github.com/lantice3720.png" width="100">](https://github.com/lantice3720)   |
+|:-----------------------------------------------------------------------------------------------------|
+| [lantice3720](https://github.com/lantice3720)                                                                |
 
 ### Translators
 
-German ([LifeIsAParadox](https://github.com/LifeIsAParadox)) \
+German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](https://github.com/msg-programs)) \
 Indonesian ([null2264](https://github.com/null2264)) \
-Russian ([HyperSoop](https://github.com/HyperSoop)) \
+Russian ([HyperSoop](https://github.com/HyperSoop) & [Azuremane](https://github.com/Azuremane)) \
 French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01)) \
-Japanese ([hirochisan](https://github.com/@irochisan)) \
-Chinese ([catandA](https://github.com/catandA))
+Japanese ([hirochisan](https://github.com/hirochisan)) \
+Chinese ([catandA](https://github.com/catandA)) \
+Korean ([lantice3720](https://github.com/lantice3720)) \
+Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
+Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
+Norwegian Nynorsk ([KdGaming0](https://github.com/KdGaming0)) \
+Turkish ([Fix3dll](https://github.com/Fix3dll)) \
+Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD)) \
+Canadian English ([AzureAaron](https://github.com/AzureAaron))
