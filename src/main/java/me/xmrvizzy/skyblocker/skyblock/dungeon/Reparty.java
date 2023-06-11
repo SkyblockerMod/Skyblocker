@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -16,7 +17,7 @@ import java.util.regex.Pattern;
 public class Reparty extends ChatPatternListener {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
-    public static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
+    public static final Pattern PLAYER_IN_LIST = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
     private static final int BASE_DELAY = 10;
 
     private String[] players;
@@ -24,7 +25,7 @@ public class Reparty extends ChatPatternListener {
     private boolean repartying;
 
     public Reparty() {
-        super("^(?:You are not currently in a party\\.|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*)))$");
+        super("^(?:You are not currently in a party\\.|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*))|That party has been disbanded\\.|([\\[A-z+\\]]* )?(?<name>[A-z0-9_]*) has disbanded the party!)$");
         this.repartying = false;
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
             if (!Utils.isOnSkyblock() || this.repartying || client.player == null) return 0;
@@ -36,24 +37,27 @@ public class Reparty extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return this.repartying ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return (SkyblockerConfig.get().locations.dungeons.repartyRejoin || this.repartying) ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override
     public boolean onMatch(Text message, Matcher matcher) {
-        if (matcher.group(1) != null) {
+        if (matcher.group(1) != null && repartying) {
             this.playersSoFar = 0;
             this.players = new String[Integer.parseInt(matcher.group(1)) - 1];
-        } else if (matcher.group(2) != null) {
-            Matcher m = PLAYER.matcher(matcher.group(2));
+        } else if (matcher.group(2) != null && repartying) {
+            Matcher m = PLAYER_IN_LIST.matcher(matcher.group(2));
             while (m.find()) {
                 this.players[playersSoFar++] = m.group(1);
             }
+        }else if (matcher.group("name") != null && !matcher.group("name").equals(client.getSession().getUsername())){
+            join(matcher.group("name"));
+            return false;
         } else {
             this.repartying = false;
             return false;
         }
-        if (this.playersSoFar == this.players.length) reparty();
+        if (this.playersSoFar == this.players.length && repartying) reparty();
         return false;
     }
 
@@ -69,6 +73,12 @@ public class Reparty extends ChatPatternListener {
             sendCommand(command, i + 2);
         }
         skyblocker.scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
+    }
+
+    private void join(String player){
+        String command = "/party accept " + player;
+        skyblocker.messageScheduler.queueMessage(command, 15);
+
     }
 
     private void sendCommand(String command, int delay) {
