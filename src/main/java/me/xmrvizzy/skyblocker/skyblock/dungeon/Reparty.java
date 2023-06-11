@@ -27,7 +27,6 @@ public class Reparty extends ChatPatternListener {
     public Reparty() {
         super("^(?:You are not currently in a party\\." +
                 "|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*))" +
-                "|That party has been disbanded\\." +
                 "|([\\[A-z+\\]]* )?(?<name>[A-z0-9_]*) has disbanded the party!)$");
 
         this.repartying = false;
@@ -54,14 +53,16 @@ public class Reparty extends ChatPatternListener {
             while (m.find()) {
                 this.players[playersSoFar++] = m.group(1);
             }
-        }else if (matcher.group("name") != null && !matcher.group("name").equals(client.getSession().getUsername())){
+        } else if (matcher.group("name") != null && !matcher.group("name").equals(client.getSession().getUsername())) {
             join(matcher.group("name"));
             return false;
         } else {
             this.repartying = false;
             return false;
         }
-        if (this.playersSoFar == this.players.length && repartying) reparty();
+        if (this.playersSoFar == this.players.length && repartying) {
+            reparty();
+        }
         return false;
     }
 
@@ -79,10 +80,9 @@ public class Reparty extends ChatPatternListener {
         skyblocker.scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
     }
 
-    private void join(String player){
+    private void join(String player) {
         String command = "/party accept " + player;
         skyblocker.messageScheduler.queueMessage(command, 15);
-
     }
 
     private void sendCommand(String command, int delay) {
