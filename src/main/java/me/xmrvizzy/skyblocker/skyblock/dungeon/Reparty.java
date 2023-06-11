@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Reparty extends ChatPatternListener {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
-    public static final Pattern PLAYER_IN_LIST = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
+    public static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
     private static final int BASE_DELAY = 10;
 
     private String[] players;
@@ -25,7 +25,11 @@ public class Reparty extends ChatPatternListener {
     private boolean repartying;
 
     public Reparty() {
-        super("^(?:You are not currently in a party\\.|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*))|That party has been disbanded\\.|([\\[A-z+\\]]* )?(?<name>[A-z0-9_]*) has disbanded the party!)$");
+        super("^(?:You are not currently in a party\\." +
+                "|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*))" +
+                "|That party has been disbanded\\." +
+                "|([\\[A-z+\\]]* )?(?<name>[A-z0-9_]*) has disbanded the party!)$");
+
         this.repartying = false;
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
             if (!Utils.isOnSkyblock() || this.repartying || client.player == null) return 0;
@@ -46,7 +50,7 @@ public class Reparty extends ChatPatternListener {
             this.playersSoFar = 0;
             this.players = new String[Integer.parseInt(matcher.group(1)) - 1];
         } else if (matcher.group(2) != null && repartying) {
-            Matcher m = PLAYER_IN_LIST.matcher(matcher.group(2));
+            Matcher m = PLAYER.matcher(matcher.group(2));
             while (m.find()) {
                 this.players[playersSoFar++] = m.group(1);
             }
