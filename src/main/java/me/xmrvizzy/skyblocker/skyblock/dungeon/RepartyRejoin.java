@@ -5,6 +5,7 @@ import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import java.util.regex.Matcher;
@@ -12,6 +13,7 @@ import java.util.regex.Matcher;
 public class RepartyRejoin extends ChatPatternListener {
 
     private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
+    private static final MinecraftClient client = MinecraftClient.getInstance();
 
     private boolean repartying;
 
@@ -28,7 +30,7 @@ public class RepartyRejoin extends ChatPatternListener {
 
     @Override
     protected boolean onMatch(Text message, Matcher matcher) {
-        if (matcher.group("name")!=null) {
+        if (matcher.group("name") != null && !matcher.group("name").equals(client.getSession().getUsername())) {
             this.repartying = true;
             join(matcher.group("name"));
             return false;
@@ -42,7 +44,7 @@ public class RepartyRejoin extends ChatPatternListener {
     private void join(String player){
         String command = "/party accept " + player;
         sendCommand(command);
-
+        skyblocker.scheduler.schedule(() -> this.repartying = false, 150);
     }
 
     private void sendCommand(String command) {
