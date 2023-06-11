@@ -132,6 +132,7 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class General {
         public boolean enableUpdateNotification = true;
+        public boolean acceptReparty = true;
         public boolean backpackPreviewWithoutShift = false;
         public boolean hideEmptyTooltips = true;
 
@@ -281,7 +282,6 @@ public class SkyblockerConfig implements ConfigData {
         public int mapX = 2;
         public int mapY = 2;
         public boolean solveThreeWeirdos = true;
-        public boolean repartyRejoin = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
         @ConfigEntry.Gui.CollapsibleObject
