@@ -32,7 +32,7 @@ public class AcceptReparty extends ChatPatternListener {
                 skyblocker.messageScheduler.sendMessageAfterCooldown("/party accept " + partyLeader);
             }
         } catch (NullPointerException e) {
-            //in case if block executes after setting "partyLeader" variable to null
+            // In case if block executes after setting "partyLeader" variable to null
         }
         partyLeader = null;
         return false;
