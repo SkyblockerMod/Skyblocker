@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.skyblock.dungeon;
+package me.xmrvizzy.skyblocker.skyblock.dungeon.reparty;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
@@ -20,6 +20,7 @@ public class Reparty extends ChatPatternListener {
     public static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
     private static final int BASE_DELAY = 10;
 
+    public static String partyLeader;
     private String[] players;
     private int playersSoFar;
     private boolean repartying;
@@ -54,7 +55,8 @@ public class Reparty extends ChatPatternListener {
                 this.players[playersSoFar++] = m.group(1);
             }
         } else if (matcher.group("name") != null && !matcher.group("name").equals(client.getSession().getUsername())) {
-            join(matcher.group("name"));
+            partyLeader = matcher.group("name");
+            skyblocker.scheduler.schedule(() -> partyLeader = null, 20);
             return false;
         } else {
             this.repartying = false;
@@ -78,11 +80,6 @@ public class Reparty extends ChatPatternListener {
             sendCommand(command, i + 2);
         }
         skyblocker.scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
-    }
-
-    private void join(String player) {
-        String command = "/party accept " + player;
-        skyblocker.messageScheduler.queueMessage(command, 15);
     }
 
     private void sendCommand(String command, int delay) {
