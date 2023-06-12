@@ -8,7 +8,7 @@
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
 [![modrinth statistic](https://img.shields.io/badge/buy%20me%20coffee-skyblocker?color=434B57&logo=kofi)](https://ko-fi.com/wohlhabend)
 
-Hypixel Skyblock Mod for Minecraft 1.17.x + 1.18.x + 1.19.x + 1.20
+Hypixel Skyblock Mod for Minecraft 1.17.x + 1.18.x + 1.19.x + 1.20.x
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation)
 
