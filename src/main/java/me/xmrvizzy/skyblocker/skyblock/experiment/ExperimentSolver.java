@@ -15,8 +15,8 @@ public abstract class ExperimentSolver extends ContainerSolver {
         REMEMBER, WAIT, SHOW, END
     }
 
-    protected State state = State.REMEMBER;
-    protected final Map<Integer, ItemStack> slots = new HashMap<>();
+    private State state = State.REMEMBER;
+    private final Map<Integer, ItemStack> slots = new HashMap<>();
 
     protected ExperimentSolver(String containerName) {
         super(containerName);

@@ -58,7 +58,7 @@ public class ChronomatronSolver extends ExperimentSolver {
     @Override
     protected void tick(Screen screen) {
         if (isEnabled() && screen instanceof GenericContainerScreen genericContainerScreen && genericContainerScreen.getTitle().getString().startsWith("Chronomatron (")) {
-            switch (state) {
+            switch (getState()) {
                 case REMEMBER -> {
                     Inventory inventory = genericContainerScreen.getScreenHandler().getInventory();
                     if (chronomatronCurrentSlot == 0) {
@@ -66,7 +66,7 @@ public class ChronomatronSolver extends ExperimentSolver {
                             if (inventory.getStack(index).hasEnchantments()) {
                                 if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
                                     chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(inventory.getStack(index).getItem()));
-                                    state = State.WAIT;
+                                    setState(State.WAIT);
                                 } else {
                                     chronomatronChainLengthCount++;
                                 }
@@ -80,7 +80,7 @@ public class ChronomatronSolver extends ExperimentSolver {
                 }
                 case WAIT -> {
                     if (genericContainerScreen.getScreenHandler().getInventory().getStack(49).getName().getString().startsWith("Timer: ")) {
-                        state = State.SHOW;
+                        setState(State.SHOW);
                     }
                 }
                 case END -> {
@@ -89,7 +89,7 @@ public class ChronomatronSolver extends ExperimentSolver {
                         if (name.equals("Remember the pattern!")) {
                             chronomatronChainLengthCount = 0;
                             chronomatronCurrentOrdinal = 0;
-                            state = State.REMEMBER;
+                            setState(State.REMEMBER);
                         } else {
                             reset();
                         }

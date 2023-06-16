@@ -32,16 +32,22 @@ public class SuperpairsSolver extends ExperimentSolver {
     }
 
     @Override
+    protected void start(GenericContainerScreen screen) {
+        super.start(screen);
+        setState(State.SHOW);
+    }
+
+    @Override
     protected void tick(Screen screen) {
         if (isEnabled() && screen instanceof GenericContainerScreen genericContainerScreen && genericContainerScreen.getTitle().getString().startsWith("Superpairs (")) {
-            if (state == State.SHOW) {
+            if (getState() == State.SHOW) {
                 if (genericContainerScreen.getScreenHandler().getInventory().getStack(4).isOf(Items.CAULDRON)) {
                     reset();
-                } else if (slots.get(superpairsPrevClickedSlot) == null) {
+                } else if (getSlots().get(superpairsPrevClickedSlot) == null) {
                     ItemStack itemStack = genericContainerScreen.getScreenHandler().getInventory().getStack(superpairsPrevClickedSlot);
                     if (!(itemStack.isOf(Items.CYAN_STAINED_GLASS) || itemStack.isOf(Items.BLACK_STAINED_GLASS_PANE) || itemStack.isOf(Items.AIR))) {
-                        slots.entrySet().stream().filter((entry -> ItemStack.areEqual(entry.getValue(), itemStack))).findAny().ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getKey()));
-                        slots.put(superpairsPrevClickedSlot, itemStack);
+                        getSlots().entrySet().stream().filter((entry -> ItemStack.areEqual(entry.getValue(), itemStack))).findAny().ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getKey()));
+                        getSlots().put(superpairsPrevClickedSlot, itemStack);
                         superpairsCurrentSlot = itemStack;
                     }
                 }
@@ -57,7 +63,7 @@ public class SuperpairsSolver extends ExperimentSolver {
         for (Map.Entry<Integer, ItemStack> indexStack : displaySlots.entrySet()){
             int index = indexStack.getKey();
             ItemStack displayStack = indexStack.getValue();
-            ItemStack stack = slots.get(index);
+            ItemStack stack = getSlots().get(index);
             if (stack != null && !ItemStack.areEqual(stack, displayStack)) {
                 if (ItemStack.areEqual(superpairsCurrentSlot, stack) && displayStack.getName().getString().equals("Click a second button!")) {
                     highlights.add(ColorHighlight.green(index));

@@ -34,7 +34,7 @@ public class UltrasequencerSolver extends ExperimentSolver {
     @Override
     protected void tick(Screen screen) {
         if (isEnabled() && screen instanceof GenericContainerScreen genericContainerScreen && genericContainerScreen.getTitle().getString().startsWith("Ultrasequencer (")) {
-            switch (state) {
+            switch (getState()) {
                 case REMEMBER -> {
                     Inventory inventory = genericContainerScreen.getScreenHandler().getInventory();
                     if (inventory.getStack(49).getName().getString().equals("Remember the pattern!")) {
@@ -45,23 +45,23 @@ public class UltrasequencerSolver extends ExperimentSolver {
                                 if (name.equals("1")) {
                                     ultrasequencerNextSlot = index;
                                 }
-                                slots.put(index, itemStack);
+                                getSlots().put(index, itemStack);
                             }
                         }
-                        state = State.WAIT;
+                        setState(State.WAIT);
                     }
                 }
                 case WAIT -> {
                     if (genericContainerScreen.getScreenHandler().getInventory().getStack(49).getName().getString().startsWith("Timer: ")) {
-                        state = State.SHOW;
+                        setState(State.SHOW);
                     }
                 }
                 case END -> {
                     String name = genericContainerScreen.getScreenHandler().getInventory().getStack(49).getName().getString();
                     if (!name.startsWith("Timer: ")) {
                         if (name.equals("Remember the pattern!")) {
-                            slots.clear();
-                            state = State.REMEMBER;
+                            getSlots().clear();
+                            setState(State.REMEMBER);
                         } else {
                             reset();
                         }
