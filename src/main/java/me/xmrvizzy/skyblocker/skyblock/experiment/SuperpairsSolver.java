@@ -3,12 +3,11 @@ package me.xmrvizzy.skyblocker.skyblock.experiment;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.gui.ColorHighlight;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SuperpairsSolver extends ExperimentSolver {
     private int superpairsPrevClickedSlot;
@@ -34,11 +33,41 @@ public class SuperpairsSolver extends ExperimentSolver {
 
     @Override
     protected void tick(Screen screen) {
-
+        if (isEnabled() && screen instanceof GenericContainerScreen genericContainerScreen && genericContainerScreen.getTitle().getString().startsWith("Superpairs (")) {
+            if (state == State.SHOW) {
+                if (genericContainerScreen.getScreenHandler().getInventory().getStack(4).isOf(Items.CAULDRON)) {
+                    reset();
+                } else if (slots.get(superpairsPrevClickedSlot) == null) {
+                    ItemStack itemStack = genericContainerScreen.getScreenHandler().getInventory().getStack(superpairsPrevClickedSlot);
+                    if (!(itemStack.isOf(Items.CYAN_STAINED_GLASS) || itemStack.isOf(Items.BLACK_STAINED_GLASS_PANE) || itemStack.isOf(Items.AIR))) {
+                        slots.entrySet().stream().filter((entry -> ItemStack.areEqual(entry.getValue(), itemStack))).findAny().ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getKey()));
+                        slots.put(superpairsPrevClickedSlot, itemStack);
+                        superpairsCurrentSlot = itemStack;
+                    }
+                }
+            }
+        } else {
+            reset();
+        }
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
-        return null;
+    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> displaySlots) {
+        List<ColorHighlight> highlights = new ArrayList<>();
+        for (Map.Entry<Integer, ItemStack> indexStack : displaySlots.entrySet()){
+            int index = indexStack.getKey();
+            ItemStack displayStack = indexStack.getValue();
+            ItemStack stack = slots.get(index);
+            if (stack != null && !ItemStack.areEqual(stack, displayStack)) {
+                if (ItemStack.areEqual(superpairsCurrentSlot, stack) && displayStack.getName().getString().equals("Click a second button!")) {
+                    highlights.add(ColorHighlight.green(index));
+                } else if (superpairsDuplicatedSlots.contains(index)) {
+                    highlights.add(ColorHighlight.yellow(index));
+                } else {
+                    highlights.add(ColorHighlight.red(index));
+                }
+            }
+        }
+        return highlights;
     }
 }
