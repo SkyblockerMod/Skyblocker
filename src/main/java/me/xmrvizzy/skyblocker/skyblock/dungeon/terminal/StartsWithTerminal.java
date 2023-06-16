@@ -15,12 +15,12 @@ public class StartsWithTerminal extends ContainerSolver {
     }
 
     @Override
-    public boolean isEnabled() {
+    protected boolean isEnabled() {
         return SkyblockerConfig.get().locations.dungeons.terminals.solveStartsWith;
     }
 
     @Override
-    public List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
         trimEdges(slots, 6);
         String prefix = groups[0];
         List<ColorHighlight> highlights = new ArrayList<>();

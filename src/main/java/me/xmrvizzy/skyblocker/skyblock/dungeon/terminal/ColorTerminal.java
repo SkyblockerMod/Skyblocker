@@ -27,13 +27,13 @@ public class ColorTerminal extends ContainerSolver {
     }
 
     @Override
-    public boolean isEnabled() {
+    protected boolean isEnabled() {
         targetColor = null;
         return SkyblockerConfig.get().locations.dungeons.terminals.solveColor;
     }
 
     @Override
-    public List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
         trimEdges(slots, 6);
         List<ColorHighlight> highlights = new ArrayList<>();
         String colorString = groups[0];

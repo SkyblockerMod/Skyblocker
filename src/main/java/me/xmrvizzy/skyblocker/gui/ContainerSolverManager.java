@@ -6,6 +6,9 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.CroesusHelper;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
+import me.xmrvizzy.skyblocker.skyblock.experiment.ChronomatronSolver;
+import me.xmrvizzy.skyblocker.skyblock.experiment.SuperpairsSolver;
+import me.xmrvizzy.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawContext;
@@ -36,8 +39,15 @@ public class ContainerSolverManager {
                 new ColorTerminal(),
                 new OrderTerminal(),
                 new StartsWithTerminal(),
-                new CroesusHelper()
+                new CroesusHelper(),
+                new ChronomatronSolver(),
+                new SuperpairsSolver(),
+                new UltrasequencerSolver()
         };
+    }
+
+    public ContainerSolver getCurrentSolver() {
+        return currentSolver;
     }
 
     public void init() {
@@ -50,6 +60,7 @@ public class ContainerSolverManager {
                     onDraw(context, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
                     matrices.pop();
                 });
+                ScreenEvents.remove(screen).register(screen1 -> clearScreen());
                 onSetScreen(genericContainerScreen);
             } else {
                 clearScreen();
@@ -67,16 +78,19 @@ public class ContainerSolverManager {
                 if (matcher.matches()) {
                     currentSolver = solver;
                     groups = new String[matcher.groupCount()];
-                    for (int i = 0; i < groups.length; i++)
+                    for (int i = 0; i < groups.length; i++) {
                         groups[i] = matcher.group(i + 1);
+                    }
+                    currentSolver.start(screen);
                     return;
                 }
             }
         }
-        currentSolver = null;
+        clearScreen();
     }
 
     public void clearScreen() {
+        currentSolver.reset();
         currentSolver = null;
     }
 

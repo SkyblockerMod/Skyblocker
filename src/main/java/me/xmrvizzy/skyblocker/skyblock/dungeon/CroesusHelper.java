@@ -14,12 +14,12 @@ public class CroesusHelper extends ContainerSolver {
     public CroesusHelper() { super("^Croesus$"); }
 
     @Override
-    public boolean isEnabled() {
+    protected boolean isEnabled() {
         return SkyblockerConfig.get().locations.dungeons.croesusHelper;
     }
 
     @Override
-    public List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
             ItemStack stack = entry.getValue();
