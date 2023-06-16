@@ -27,7 +27,7 @@ import java.util.List;
  * Utility variables and methods for retrieving Skyblock related information.
  */
 public class Utils {
-    private static final String PROFILE_PREFIX = "§r§e§lProfile: §r§a";
+    private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnSkyblock = false;
     private static boolean isInDungeons = false;
     private static boolean isInjected = false;
