@@ -90,8 +90,10 @@ public class ContainerSolverManager {
     }
 
     public void clearScreen() {
-        currentSolver.reset();
-        currentSolver = null;
+        if (currentSolver != null) {
+            currentSolver.reset();
+            currentSolver = null;
+        }
     }
 
     public void markDirty() {

@@ -19,8 +19,10 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -62,7 +64,17 @@ public abstract class HandledScreenMixin extends Screen {
         }
     }
 
-    @Redirect(method = {"drawSlot", "drawMouseoverTooltip"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;getStack()Lnet/minecraft/item/ItemStack;", ordinal = 0))
+    @Redirect(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;getStack()Lnet/minecraft/item/ItemStack;", ordinal = 0))
+    private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(Slot slot) {
+        return skyblocker$experimentSolvers$getStack(slot);
+    }
+
+    @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 10), ordinal = 0)
+    private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, MatrixStack matrices, Slot slot) {
+        return skyblocker$experimentSolvers$getStack(slot);
+    }
+
+    @Unique
     private ItemStack skyblocker$experimentSolvers$getStack(Slot slot) {
         ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
         if ((currentSolver instanceof SuperpairsSolver || currentSolver instanceof UltrasequencerSolver) && ((ExperimentSolver) currentSolver).getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
