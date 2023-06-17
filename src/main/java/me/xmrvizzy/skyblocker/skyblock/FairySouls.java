@@ -113,19 +113,11 @@ public class FairySouls {
     }
 
     public static void render(WorldRenderContext context) {
-        if (!SkyblockerConfig.get().general.fairySouls.enableFairySoulsHelper) {
-            return;
-        }
-        if (!fairySoulsLoaded.isDone()) {
-            LOGGER.warn("Fairy souls are not loaded yet.");
-            return;
-        }
-        if (!fairySouls.containsKey(Utils.getLocationRaw())) {
-            return;
-        }
-        for (BlockPos fairySoul : fairySouls.get(Utils.getLocationRaw())) {
-            float[] colorComponents = isFairySoulNotFound(fairySoul) ? DyeColor.GREEN.getColorComponents() : DyeColor.RED.getColorComponents();
-            RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoul, colorComponents, 0.5F);
+        if (SkyblockerConfig.get().general.fairySouls.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
+            for (BlockPos fairySoul : fairySouls.get(Utils.getLocationRaw())) {
+                float[] colorComponents = isFairySoulNotFound(fairySoul) ? DyeColor.GREEN.getColorComponents() : DyeColor.RED.getColorComponents();
+                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoul, colorComponents, 0.5F);
+            }
         }
     }
 
