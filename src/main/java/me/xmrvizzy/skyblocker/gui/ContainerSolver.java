@@ -11,20 +11,16 @@ import java.util.regex.Pattern;
  * Abstract class for gui solvers. Extend this class to add a new gui solver, like terminal solvers or experiment solvers.
  */
 public abstract class ContainerSolver {
-    private final Pattern CONTAINER_NAME;
-    protected static final int RED_HIGHLIGHT = 64 << 24 | 255 << 16;
-    protected static final int YELLOW_HIGHLIGHT = 128 << 24 | 255 << 16 | 255 << 8;
-    protected static final int GREEN_HIGHLIGHT = 128 << 24 | 64 << 16 | 196 << 8 | 64;
-    protected static final int GRAY_HIGHLIGHT = 128 << 24 | 64 << 16 | 64 << 8 | 64;
+    private final Pattern containerName;
 
     protected ContainerSolver(String containerName) {
-        CONTAINER_NAME = Pattern.compile(containerName);
+        this.containerName = Pattern.compile(containerName);
     }
 
     protected abstract boolean isEnabled();
 
     public Pattern getName() {
-        return CONTAINER_NAME;
+        return containerName;
     }
 
     protected void start(GenericContainerScreen screen) {

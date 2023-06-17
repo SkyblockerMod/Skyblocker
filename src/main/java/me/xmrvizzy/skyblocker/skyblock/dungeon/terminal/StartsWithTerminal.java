@@ -24,10 +24,11 @@ public class StartsWithTerminal extends ContainerSolver {
         trimEdges(slots, 6);
         String prefix = groups[0];
         List<ColorHighlight> highlights = new ArrayList<>();
-        for(Map.Entry<Integer, ItemStack> slot : slots.entrySet()) {
+        for (Map.Entry<Integer, ItemStack> slot : slots.entrySet()) {
             ItemStack stack = slot.getValue();
-            if(!stack.hasEnchantments() && stack.getName().getString().startsWith(prefix))
-                highlights.add(new ColorHighlight(slot.getKey(), GREEN_HIGHLIGHT));
+            if (!stack.hasEnchantments() && stack.getName().getString().startsWith(prefix)) {
+                highlights.add(ColorHighlight.green(slot.getKey()));
+            }
         }
         return highlights;
     }

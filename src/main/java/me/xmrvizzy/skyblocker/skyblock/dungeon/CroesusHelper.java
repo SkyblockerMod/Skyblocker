@@ -11,7 +11,9 @@ import java.util.Map;
 
 public class CroesusHelper extends ContainerSolver {
 
-    public CroesusHelper() { super("^Croesus$"); }
+    public CroesusHelper() {
+        super("^Croesus$");
+    }
 
     @Override
     protected boolean isEnabled() {
@@ -23,8 +25,9 @@ public class CroesusHelper extends ContainerSolver {
         List<ColorHighlight> highlights = new ArrayList<>();
         for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null && stack.getNbt().toString().contains("opened"))
-                highlights.add(new ColorHighlight(entry.getKey(), GRAY_HIGHLIGHT));
+            if (stack != null && stack.getNbt() != null && stack.getNbt().toString().contains("opened")) {
+                highlights.add(ColorHighlight.gray(entry.getKey()));
+            }
         }
         return highlights;
     }
