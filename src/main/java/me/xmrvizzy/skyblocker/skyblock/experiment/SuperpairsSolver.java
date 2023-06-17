@@ -15,7 +15,7 @@ public class SuperpairsSolver extends ExperimentSolver {
     private final Set<Integer> superpairsDuplicatedSlots = new HashSet<>();
 
     public SuperpairsSolver() {
-        super("^Superpairs \\(");
+        super("^Superpairs \\(\\w+\\)$");
     }
 
     public void setSuperpairsPrevClickedSlot(int superpairsPrevClickedSlot) {
@@ -60,17 +60,19 @@ public class SuperpairsSolver extends ExperimentSolver {
     @Override
     protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> displaySlots) {
         List<ColorHighlight> highlights = new ArrayList<>();
-        for (Map.Entry<Integer, ItemStack> indexStack : displaySlots.entrySet()){
-            int index = indexStack.getKey();
-            ItemStack displayStack = indexStack.getValue();
-            ItemStack stack = getSlots().get(index);
-            if (stack != null && !ItemStack.areEqual(stack, displayStack)) {
-                if (ItemStack.areEqual(superpairsCurrentSlot, stack) && displayStack.getName().getString().equals("Click a second button!")) {
-                    highlights.add(ColorHighlight.green(index));
-                } else if (superpairsDuplicatedSlots.contains(index)) {
-                    highlights.add(ColorHighlight.yellow(index));
-                } else {
-                    highlights.add(ColorHighlight.red(index));
+        if (getState() == State.SHOW) {
+            for (Map.Entry<Integer, ItemStack> indexStack : displaySlots.entrySet()) {
+                int index = indexStack.getKey();
+                ItemStack displayStack = indexStack.getValue();
+                ItemStack stack = getSlots().get(index);
+                if (stack != null && !ItemStack.areEqual(stack, displayStack)) {
+                    if (ItemStack.areEqual(superpairsCurrentSlot, stack) && displayStack.getName().getString().equals("Click a second button!")) {
+                        highlights.add(ColorHighlight.green(index));
+                    } else if (superpairsDuplicatedSlots.contains(index)) {
+                        highlights.add(ColorHighlight.yellow(index));
+                    } else {
+                        highlights.add(ColorHighlight.red(index));
+                    }
                 }
             }
         }

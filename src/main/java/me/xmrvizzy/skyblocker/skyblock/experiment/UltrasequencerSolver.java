@@ -15,7 +15,7 @@ public class UltrasequencerSolver extends ExperimentSolver {
     private int ultrasequencerNextSlot;
 
     public UltrasequencerSolver() {
-        super("^Ultrasequencer \\(");
+        super("^Ultrasequencer \\(\\w+\\)$");
     }
 
     public int getUltrasequencerNextSlot() {
@@ -75,13 +75,6 @@ public class UltrasequencerSolver extends ExperimentSolver {
 
     @Override
     protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
-        List<ColorHighlight> highlights = new ArrayList<>();
-        for (Map.Entry<Integer, ItemStack> indexStack : slots.entrySet()) {
-            int index = indexStack.getKey();
-            if (index == ultrasequencerNextSlot) {
-                highlights.add(ColorHighlight.green(index));
-            }
-        }
-        return highlights;
+        return getState() == State.SHOW && ultrasequencerNextSlot != 0 ? List.of(ColorHighlight.green(ultrasequencerNextSlot)) : new ArrayList<>();
     }
 }

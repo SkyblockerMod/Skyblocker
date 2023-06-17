@@ -35,7 +35,7 @@ public class ChronomatronSolver extends ExperimentSolver {
     private int chronomatronCurrentOrdinal;
 
     public ChronomatronSolver() {
-        super("^Chronomatron \\(");
+        super("^Chronomatron \\(\\w+\\)$");
     }
 
     public List<Item> getChronomatronSlots() {
@@ -104,12 +104,14 @@ public class ChronomatronSolver extends ExperimentSolver {
     @Override
     protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
-        for (Map.Entry<Integer, ItemStack> indexStack : slots.entrySet()) {
-            int index = indexStack.getKey();
-            ItemStack stack = indexStack.getValue();
-            Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
-            if (stack.isOf(item) || TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) {
-                highlights.add(ColorHighlight.green(index));
+        if (getState() == State.SHOW && chronomatronSlots.size() > chronomatronCurrentOrdinal) {
+            for (Map.Entry<Integer, ItemStack> indexStack : slots.entrySet()) {
+                int index = indexStack.getKey();
+                ItemStack stack = indexStack.getValue();
+                Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
+                if (stack.isOf(item) || TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) {
+                    highlights.add(ColorHighlight.green(index));
+                }
             }
         }
         return highlights;
