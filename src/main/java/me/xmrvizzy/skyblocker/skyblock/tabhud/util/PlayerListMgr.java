@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 /**
@@ -92,6 +94,41 @@ public class PlayerListMgr {
             return null;
         }
         return str;
+    }
+    
+    /**
+     * Gets the display name at some index of the player list
+     * 
+     * @return the text or null, if the display name is null
+     * 
+     * @implNote currently designed specifically for crimson isles faction quests widget, might not work correctly without modification
+     * for other stuff. you've been warned!
+     */
+    public static Text textAt4FactionQuests(int idx) {
+    	
+    	if(playerList == null) {
+    		return null;
+    	}
+    	
+    	if(playerList.size() <= idx) {
+    		return null;
+    	}
+    	
+    	Text txt = playerList.get(idx).getDisplayName();
+    	if(txt == null) {
+    		return null;
+    	}
+    	
+    	//Rebuild the text object to remove beginning space thats in all faction quest stuff
+    	MutableText newTxt = Text.empty();
+    	
+    	for(int i = 0; i < txt.getSiblings().size(); i++) {
+    		Text current = txt.getSiblings().get(i);
+    		String textToAppend = current.getString();
+    		newTxt.append(Text.literal((i == 0) ? StringUtils.removeStart(textToAppend, " ") : textToAppend ).setStyle(current.getStyle()));
+    	}
+    	
+    	return newTxt;
     }
 
     /**
