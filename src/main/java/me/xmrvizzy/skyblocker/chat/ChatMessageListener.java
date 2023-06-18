@@ -4,8 +4,7 @@ import me.xmrvizzy.skyblocker.chat.filters.*;
 import me.xmrvizzy.skyblocker.skyblock.api.ApiKeyListener;
 import me.xmrvizzy.skyblocker.skyblock.barn.HungryHiker;
 import me.xmrvizzy.skyblocker.skyblock.barn.TreasureHunter;
-import me.xmrvizzy.skyblocker.skyblock.dungeon.reparty.AcceptReparty;
-import me.xmrvizzy.skyblocker.skyblock.dungeon.reparty.Reparty;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.Reparty;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.ThreeWeirdos;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Trivia;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.Fetchur;
@@ -42,7 +41,6 @@ public interface ChatMessageListener {
                 new Fetchur(),
                 new Puzzler(),
                 new Reparty(),
-                new AcceptReparty(),
                 new ThreeWeirdos(),
                 new Trivia(),
                 new TreasureHunter(),

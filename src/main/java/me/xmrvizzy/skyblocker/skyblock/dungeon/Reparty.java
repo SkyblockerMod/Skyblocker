@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.skyblock.dungeon.reparty;
+package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
@@ -20,15 +20,17 @@ public class Reparty extends ChatPatternListener {
     public static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
     private static final int BASE_DELAY = 10;
 
-    public static String partyLeader;
     private String[] players;
     private int playersSoFar;
     private boolean repartying;
+    private String partyLeader;
 
     public Reparty() {
         super("^(?:You are not currently in a party\\." +
                 "|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*))" +
-                "|([\\[A-z+\\]]* )?(?<name>[A-z0-9_]*) has disbanded the party!)$");
+                "|([\\[A-z+\\]]* )?(?<disband>[A-z0-9_]*) has disbanded .*" +
+                "|.*\n([\\[A-z+\\]]* )?(?<invite>[A-z0-9_]*) has invited you to join their party!" +
+                "\nYou have 60 seconds to accept. Click here to join!\n.*)$");
 
         this.repartying = false;
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
@@ -54,15 +56,19 @@ public class Reparty extends ChatPatternListener {
             while (m.find()) {
                 this.players[playersSoFar++] = m.group(1);
             }
-        } else if (matcher.group("name") != null && !matcher.group("name").equals(client.getSession().getUsername())) {
-            partyLeader = matcher.group("name");
-            skyblocker.scheduler.schedule(() -> partyLeader = null, 20);
+        } else if (matcher.group("disband") != null && !matcher.group("disband").equals(client.getSession().getUsername())) {
+            partyLeader = matcher.group("disband");
+            skyblocker.scheduler.schedule(() -> partyLeader = null, 21);
+            return false;
+        } else if (matcher.group("invite") != null && matcher.group("invite").equals(partyLeader)) {
+            String command = "/party accept " + partyLeader;
+            sendCommand(command, 0);
             return false;
         } else {
             this.repartying = false;
             return false;
         }
-        if (this.playersSoFar == this.players.length && repartying) {
+        if (this.playersSoFar == this.players.length) {
             reparty();
         }
         return false;
