@@ -14,23 +14,12 @@ public class QuestWidget extends Widget {
 
     private static final MutableText TITLE = Text.literal("Faction Quests").formatted(Formatting.AQUA,
             Formatting.BOLD);
-    
-    /**
-     * @return the entry at idx with it's formatting preserved
-     */
-    public static Text passthroughEntryText(int idx) {
-    	Text txt = PlayerListMgr.textAt4FactionQuests(idx);
-    	if(txt == null) {
-    		return null;
-    	}
-    	return txt;
-    }
 
     public QuestWidget() {
         super(TITLE, Formatting.AQUA.getColorValue());
 
         for (int i = 51; i < 56; i++) {
-            Text q = passthroughEntryText(i);
+            Text q = PlayerListMgr.textAt(i);
             IcoTextComponent itc = new IcoTextComponent(Ico.BOOK, q);
             this.addComponent(itc);
         }

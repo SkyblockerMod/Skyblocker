@@ -104,7 +104,7 @@ public class PlayerListMgr {
      * @implNote currently designed specifically for crimson isles faction quests widget, might not work correctly without modification
      * for other stuff. you've been warned!
      */
-    public static Text textAt4FactionQuests(int idx) {
+    public static Text textAt(int idx) {
     	
     	if(playerList == null) {
     		return null;
