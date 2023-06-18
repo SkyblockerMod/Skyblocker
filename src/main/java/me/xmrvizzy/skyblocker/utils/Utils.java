@@ -94,6 +94,7 @@ public class Utils {
     public static void init() {
         ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
+        ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
     }
 
     /**
