@@ -6,20 +6,18 @@
     "AccessorWorldRenderer",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
+    "DrawContextMixin",
     "FarmlandBlockMixin",
     "GenericContainerScreenHandlerMixin",
     "HandledScreenAccessor",
     "HandledScreenMixin",
     "InGameHudMixin",
     "InventoryScreenMixin",
-    "ItemRendererMixin",
     "LeverBlockMixin",
     "MinecraftClientMixin",
-    "RecipeBookWidgetAccessor",
-    "HandledScreenAccessor",
     "PlayerListHudAccessor",
     "PlayerListHudMixin",
-    "ScreenMixin"
+    "RecipeBookWidgetAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

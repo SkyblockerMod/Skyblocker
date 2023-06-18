@@ -1,15 +1,13 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
-public class FancyStatusBars extends DrawableHelper {
+public class FancyStatusBars {
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/bars.png");
 
     private final MinecraftClient client = MinecraftClient.getInstance();
@@ -39,7 +37,7 @@ public class FancyStatusBars extends DrawableHelper {
         return (100 * value) / max;
     }
 
-    public boolean render(MatrixStack matrices, int scaledWidth, int scaledHeight) {
+    public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
         if (!SkyblockerConfig.get().general.bars.enableBars || player == null)
             return false;
@@ -72,11 +70,10 @@ public class FancyStatusBars extends DrawableHelper {
                 moveBar(i, configAnchorNum);
         }
 
-        RenderSystem.setShaderTexture(0, BARS);
         for (var bar : bars)
-            bar.draw(matrices);
+            bar.draw(context);
         for (var bar : bars)
-            bar.drawText(matrices);
+            bar.drawText(context);
         return true;
     }
 
@@ -143,32 +140,32 @@ public class FancyStatusBars extends DrawableHelper {
             this.text = val;
         }
 
-        public void draw(MatrixStack matrices) {
+        public void draw(DrawContext context) {
             // Dont draw if anchorNum is outside of range
             if (anchorNum < 0 || anchorNum > 2) return;
 
             // Draw the icon for the bar
-            drawTexture(matrices, anchorsX[anchorNum] + offsetX, anchorsY[anchorNum], 0, v, 9, 9);
+            context.drawTexture(BARS, anchorsX[anchorNum] + offsetX, anchorsY[anchorNum], 0, v, 9, 9);
 
             // Draw the background for the bar
-            drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10, anchorsY[anchorNum], 10, v, 2, 9);
+            context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 10, anchorsY[anchorNum], 10, v, 2, 9);
             for (int i = 2; i < bar_width - 2; i += 58)
-                drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10 + i, anchorsY[anchorNum], 12, v, Math.min(58, bar_width - 2 - i), 9);
-            drawTexture(matrices, anchorsX[anchorNum] + offsetX + 10 + bar_width - 2, anchorsY[anchorNum], 70, v, 2, 9);
+                context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 10 + i, anchorsY[anchorNum], 12, v, Math.min(58, bar_width - 2 - i), 9);
+            context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 10 + bar_width - 2, anchorsY[anchorNum], 70, v, 2, 9);
 
             // Draw the filled part of the bar
             for (int i = 0; i < fill.length; i++) {
                 int fill_width = this.fill[i] * (bar_width - 2) / 100;
                 if (fill_width >= 1)
-                    drawTexture(matrices, anchorsX[anchorNum] + offsetX + 11, anchorsY[anchorNum], 72 + i*60, v, 1, 9);
+                	context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 11, anchorsY[anchorNum], 72 + i*60, v, 1, 9);
                 for (int j = 1; j < fill_width - 1; j += 58)
-                    drawTexture(matrices, anchorsX[anchorNum] + offsetX + 11 + j, anchorsY[anchorNum], 73 + i*60, v, Math.min(58, fill_width - 1 - j), 9);
+                	context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 11 + j, anchorsY[anchorNum], 73 + i*60, v, Math.min(58, fill_width - 1 - j), 9);
                 if (fill_width == bar_width - 2)
-                    drawTexture(matrices, anchorsX[anchorNum] + offsetX + 11 + fill_width - 1, anchorsY[anchorNum], 131 + i*60, v, 1, 9);
+                	context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 11 + fill_width - 1, anchorsY[anchorNum], 131 + i*60, v, 1, 9);
             }
         }
 
-        public void drawText(MatrixStack matrices) {
+        public void drawText(DrawContext context) {
             // Dont draw if anchorNum is outside of range
             if (anchorNum < 0 || anchorNum > 2) return;
 
@@ -179,10 +176,10 @@ public class FancyStatusBars extends DrawableHelper {
 
             final int[] offsets = new int[]{-1, 1};
             for (int i : offsets) {
-                textRenderer.draw(matrices, text, (float) (x + i), (float) y, 0);
-                textRenderer.draw(matrices, text, (float) x, (float) (y + i), 0);
+                context.drawText(textRenderer, text, x + i, y, 0, false);
+                context.drawText(textRenderer, text, x, y + i, 0, false);
             }
-            textRenderer.draw(matrices, text, (float) x, (float) y, text_color);
+            context.drawText(textRenderer, text, x, y, text_color, false);
         }
     }
 }

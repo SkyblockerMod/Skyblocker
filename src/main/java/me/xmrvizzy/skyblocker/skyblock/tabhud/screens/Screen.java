@@ -23,6 +23,7 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.HomePlayerScree
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.PlayerListScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -98,9 +99,9 @@ public class Screen {
         }
     }
 
-    public void render(MatrixStack ms) {
+    public void render(DrawContext context) {
         for (Widget w : widgets) {
-            w.render(ms);
+            w.render(context);
         }
     }
 

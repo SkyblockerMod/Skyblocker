@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -23,8 +23,8 @@ public class PlainTextComponent extends Component {
     }
 
     @Override
-    public void render(MatrixStack ms, int x, int y) {
-        txtRend.draw(ms, text, x + PAD_S, y, 0xffffffff);
+    public void render(DrawContext context, int x, int y) {
+        context.drawText(txtRend, text, x + PAD_S, y, 0xffffffff, false);
     }
 
 }

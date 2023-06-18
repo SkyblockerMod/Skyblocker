@@ -2,6 +2,8 @@ package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -106,32 +108,33 @@ public class SearchResultsWidget implements Drawable {
         this.nextPageButton.active = this.currentPage < this.pageCount - 1;
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    	TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
             String craftText = this.recipeResults.get(this.currentPage).craftText;
-            this.client.textRenderer.drawWithShadow(matrices, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
+            context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
-            this.client.textRenderer.drawWithShadow(matrices, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
-            this.client.textRenderer.drawWithShadow(matrices, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
+            context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
+            context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
         }
         for (ResultButtonWidget button : resultButtons)
-            button.render(matrices, mouseX, mouseY, delta);
+            button.render(context, mouseX, mouseY, delta);
         if (this.pageCount > 1) {
             String string = (this.currentPage + 1) + "/" + this.pageCount;
             int dx = this.client.textRenderer.getWidth(string) / 2;
-            this.client.textRenderer.draw(matrices, string, this.parentX - dx + 73, this.parentY + 141, -1);
+            context.drawText(textRenderer, string, this.parentX - dx + 73, this.parentY + 141, -1, false);
         }
-        if (this.prevPageButton.active) this.prevPageButton.render(matrices, mouseX, mouseY, delta);
-        if (this.nextPageButton.active) this.nextPageButton.render(matrices, mouseX, mouseY, delta);
+        if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
+        if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
         RenderSystem.enableDepthTest();
     }
 
-    public void drawTooltip(MatrixStack matrices, int mouseX, int mouseY) {
+    public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
         RenderSystem.disableDepthTest();
         for (ResultButtonWidget button : resultButtons)
             if (button.isMouseOver(mouseX, mouseY))
-                button.renderTooltip(matrices, mouseX, mouseY);
+                button.renderTooltip(context, mouseX, mouseY);
         RenderSystem.enableDepthTest();
     }
 

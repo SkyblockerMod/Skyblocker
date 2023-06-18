@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -36,10 +36,10 @@ public class IcoFatTextComponent extends Component {
     }
 
     @Override
-    public void render(MatrixStack ms, int x, int y) {
-        itmRend.renderGuiItemIcon(ms, ico, x, y + ICO_OFFS);
-        txtRend.draw(ms, line1, x + ICO_DIM + PAD_L, y, 0xffffffff);
-        txtRend.draw(ms, line2, x + ICO_DIM + PAD_L, y + txtRend.fontHeight + PAD_S, 0xffffffff);
+    public void render(DrawContext context, int x, int y) {
+        context.drawItem(ico, x, y + ICO_OFFS);
+        context.drawText(txtRend, line1, x + ICO_DIM + PAD_L, y, 0xffffffff, false);
+        context.drawText(txtRend, line2, x + ICO_DIM + PAD_L, y + txtRend.fontHeight + PAD_S, 0xffffffff, false);
     }
 
 }
