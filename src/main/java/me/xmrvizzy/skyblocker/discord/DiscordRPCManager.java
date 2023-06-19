@@ -18,26 +18,30 @@ public class DiscordRPCManager {
     public static long startTimeStamp;
     public static int cycleCount;
 
-    public static void init(){
+    public static void init() {
         SkyblockEvents.LEAVE.register(DiscordIPC::stop);
         SkyblockEvents.JOIN.register(() -> {
             startTimeStamp = System.currentTimeMillis();
             if (DiscordIPC.start(934607927837356052L, null)) {
-                DiscordIPC.setActivity(buildPresence());
-                LOGGER.info("Discord RPC started");
+                if (SkyblockerConfig.get().richPresence.enableRichPresence) {
+                    DiscordIPC.setActivity(buildPresence());
+                    LOGGER.info("Discord RPC started successfully");
+                } else {
+                    LOGGER.info("Discord RPC started successfully but is currently disabled");
+                }
             } else {
                 LOGGER.error("Discord RPC failed to start");
             }
         });
     }
 
-    public static void update(){
+    public static void update() {
         // If the custom message is empty, discord will keep the last message, this is can serve as a default if the user doesn't want a custom message
         if (SkyblockerConfig.get().richPresence.customMessage.isEmpty()) {
             SkyblockerConfig.get().richPresence.customMessage = "Playing Skyblock";
             AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
         }
-        if ((!Utils.isOnSkyblock() || !SkyblockerConfig.get().richPresence.enableRichPresence) && DiscordIPC.isConnected()){
+        if ((!Utils.isOnSkyblock() || !SkyblockerConfig.get().richPresence.enableRichPresence) && DiscordIPC.isConnected()) {
             DiscordIPC.stop();
             LOGGER.info("Discord RPC stopped");
             return;
@@ -46,7 +50,7 @@ public class DiscordRPCManager {
         DiscordIPC.setActivity(buildPresence());
     }
 
-    public static RichPresence buildPresence(){
+    public static RichPresence buildPresence() {
         RichPresence presence = new RichPresence();
         presence.setLargeImage("skyblocker-default", null);
         presence.setStart(startTimeStamp);
@@ -55,16 +59,16 @@ public class DiscordRPCManager {
         return presence;
     }
 
-    public static String getInfo(){
+    public static String getInfo() {
         String info = null;
-        if (!SkyblockerConfig.get().richPresence.cycleMode){
-            switch (SkyblockerConfig.get().richPresence.info){
+        if (!SkyblockerConfig.get().richPresence.cycleMode) {
+            switch (SkyblockerConfig.get().richPresence.info) {
                 case BITS -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case PURSE -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
                 case LOCATION -> info = "⏣ " + Utils.getLocation();
             }
-        } else if (SkyblockerConfig.get().richPresence.cycleMode){
-            switch (cycleCount){
+        } else if (SkyblockerConfig.get().richPresence.cycleMode) {
+            switch (cycleCount) {
                 case 0 -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case 1 -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
                 case 2 -> info = "⏣ " + Utils.getLocation();
