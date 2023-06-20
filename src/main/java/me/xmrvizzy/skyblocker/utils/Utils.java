@@ -52,13 +52,13 @@ public class Utils {
                     isInjected = true;
                     ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
                 }
-                SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 isOnSkyblock = true;
+                SkyblockEvents.JOIN.invoker().onSkyblockJoin();
             }
         } else if (isOnSkyblock) {
-            SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
             isOnSkyblock = false;
             isInDungeons = false;
+            SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
         }
         isInDungeons = isOnSkyblock && string.contains("The Catacombs");
     }
