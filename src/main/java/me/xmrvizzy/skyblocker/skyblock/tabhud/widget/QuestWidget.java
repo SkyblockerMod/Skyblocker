@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 
 import net.minecraft.text.MutableText;
@@ -18,7 +19,7 @@ public class QuestWidget extends Widget {
         super(TITLE, Formatting.AQUA.getColorValue());
 
         for (int i = 51; i < 56; i++) {
-            Text q = Widget.plainEntryText(i);
+            Text q = PlayerListMgr.textAt(i);
             IcoTextComponent itc = new IcoTextComponent(Ico.BOOK, q);
             this.addComponent(itc);
         }
