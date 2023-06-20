@@ -119,16 +119,22 @@ public class PlayerListMgr {
     		return null;
     	}
     	
-    	//Rebuild the text object to remove beginning space thats in all faction quest stuff
-    	MutableText newTxt = Text.empty();
+    	//Rebuild the text object to remove leading space thats in all faction quest stuff (also removes trailing space just in case)
+    	MutableText newText = Text.empty();
+    	int size = txt.getSiblings().size();
     	
-    	for(int i = 0; i < txt.getSiblings().size(); i++) {
+    	for(int i = 0; i < size; i++) {
     		Text current = txt.getSiblings().get(i);
     		String textToAppend = current.getString();
-    		newTxt.append(Text.literal((i == 0) ? StringUtils.removeStart(textToAppend, " ") : textToAppend ).setStyle(current.getStyle()));
+    		
+    		//Trim leading & trailing space - this can only be done at the start and end otherwise it'll produce malformed results
+    		if(i == 0) textToAppend = StringUtils.removeStart(textToAppend, " ");
+    		if(i == size - 1) textToAppend = StringUtils.removeEnd(textToAppend, " ");
+    		
+    		newText.append(Text.literal(textToAppend).setStyle(current.getStyle()));
     	}
     	
-    	return newTxt;
+    	return newText;
     }
 
     /**
