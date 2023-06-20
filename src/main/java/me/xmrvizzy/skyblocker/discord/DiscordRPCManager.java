@@ -13,9 +13,15 @@ import org.slf4j.LoggerFactory;
 import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Manages the discord rich presence. Automatically connects to discord and displays a customizable activity when playing Skyblock.
+ */
 public class DiscordRPCManager {
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###,###.##");
     public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Discord RPC");
+    /**
+     * The update task used to avoid multiple update tasks running simultaneously.
+     */
     public static CompletableFuture<Void> updateTask;
     public static long startTimeStamp;
     public static int cycleCount;
@@ -28,6 +34,9 @@ public class DiscordRPCManager {
         });
     }
 
+    /**
+     * Checks the {@link SkyblockerConfig.RichPresence#customMessage custom message}, updates {@link #cycleCount} if enabled, and updates rich presence.
+     */
     public static void updateDataAndPresence() {
         // If the custom message is empty, discord will keep the last message, this is can serve as a default if the user doesn't want a custom message
         if (SkyblockerConfig.get().richPresence.customMessage.isEmpty()) {
@@ -38,6 +47,9 @@ public class DiscordRPCManager {
         initAndUpdatePresence();
     }
 
+    /**
+     * @see #initAndUpdatePresence(boolean)
+     */
     private static void initAndUpdatePresence() {
         initAndUpdatePresence(false);
     }
