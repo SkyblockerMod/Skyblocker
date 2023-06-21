@@ -42,29 +42,22 @@ public abstract class HandledScreenMixin extends Screen {
 
     @Inject(at = @At("HEAD"), method = "keyPressed")
     public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-        if (this.client != null && this.focusedSlot != null) {
-            if (keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
-                if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) WikiLookup.openWiki(this.focusedSlot);
-            }
+        if (this.client != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
+            WikiLookup.openWiki(this.focusedSlot);
         }
     }
 
     @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci) {
         // Hide Empty Tooltips
-        if (this.focusedSlot != null) {
-            Text stackName = focusedSlot.getStack().getName();
-            String strName = stackName.getString();
-            if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" "))
-                ci.cancel();
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && this.focusedSlot != null && focusedSlot.getStack().getName().getString().equals(" ")) {
+            ci.cancel();
         }
 
         // Backpack Preview
-        String title = this.getTitle().getString();
         boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-        if (this.client != null && this.client.player != null && this.focusedSlot != null && shiftDown && title.equals("Storage")) {
-            if (this.focusedSlot.inventory == this.client.player.getInventory()) return;
-            if (BackpackPreview.renderPreview(context, this.focusedSlot.getIndex(), x, y)) ci.cancel();
+        if (this.client != null && this.client.player != null && this.focusedSlot != null && shiftDown && this.getTitle().getString().equals("Storage") && this.focusedSlot.inventory != this.client.player.getInventory() && BackpackPreview.renderPreview(context, this.focusedSlot.getIndex(), x, y)) {
+            ci.cancel();
         }
     }
 
@@ -93,21 +86,17 @@ public abstract class HandledScreenMixin extends Screen {
         if (slot != null) {
             ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
             if (currentSolver instanceof ExperimentSolver experimentSolver && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-                if (currentSolver instanceof ChronomatronSolver chronomatronSolver) {
+                if (experimentSolver instanceof ChronomatronSolver chronomatronSolver) {
                     Item item = chronomatronSolver.getChronomatronSlots().get(chronomatronSolver.getChronomatronCurrentOrdinal());
-                    if (slot.getStack().isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(slot.getStack().getItem()) == item) {
-                        if (chronomatronSolver.incrementChronomatronCurrentOrdinal() >= chronomatronSolver.getChronomatronSlots().size()) {
-                            chronomatronSolver.setState(ExperimentSolver.State.END);
-                        }
+                    if ((slot.getStack().isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(slot.getStack().getItem()) == item) && chronomatronSolver.incrementChronomatronCurrentOrdinal() >= chronomatronSolver.getChronomatronSlots().size()) {
+                        chronomatronSolver.setState(ExperimentSolver.State.END);
                     }
-                } else if (currentSolver instanceof SuperpairsSolver superpairsSolver) {
+                } else if (experimentSolver instanceof SuperpairsSolver superpairsSolver) {
                     superpairsSolver.setSuperpairsPrevClickedSlot(slot.getIndex());
                     superpairsSolver.setSuperpairsCurrentSlot(ItemStack.EMPTY);
-                } else if (currentSolver instanceof UltrasequencerSolver ultrasequencerSolver) {
-                    if (slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot()) {
-                        int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
-                        ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().ifPresentOrElse((entry) -> ultrasequencerSolver.setUltrasequencerNextSlot(entry.getKey()), () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
-                    }
+                } else if (experimentSolver instanceof UltrasequencerSolver ultrasequencerSolver && slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot()) {
+                    int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
+                    ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().ifPresentOrElse((entry) -> ultrasequencerSolver.setUltrasequencerNextSlot(entry.getKey()), () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
                 }
             }
         }
