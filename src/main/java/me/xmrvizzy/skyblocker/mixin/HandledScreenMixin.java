@@ -42,7 +42,7 @@ public abstract class HandledScreenMixin extends Screen {
 
     @Inject(at = @At("HEAD"), method = "keyPressed")
     public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-        if (this.focusedSlot != null) {
+        if (this.client != null && this.focusedSlot != null) {
             if (keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
                 if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) WikiLookup.openWiki(this.focusedSlot);
             }
@@ -62,7 +62,7 @@ public abstract class HandledScreenMixin extends Screen {
         // Backpack Preview
         String title = this.getTitle().getString();
         boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-        if (shiftDown && title.equals("Storage") && this.focusedSlot != null) {
+        if (this.client != null && this.client.player != null && this.focusedSlot != null && shiftDown && title.equals("Storage")) {
             if (this.focusedSlot.inventory == this.client.player.getInventory()) return;
             if (BackpackPreview.renderPreview(context, this.focusedSlot.getIndex(), x, y)) ci.cancel();
         }
