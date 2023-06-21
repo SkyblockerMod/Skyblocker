@@ -13,6 +13,9 @@ import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
@@ -48,14 +51,15 @@ public abstract class HandledScreenMixin extends Screen {
 
     @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci) {
-    	//Hide Empty Tooltips
-    	if(this.focusedSlot != null) {
+        // Hide Empty Tooltips
+        if (this.focusedSlot != null) {
             Text stackName = focusedSlot.getStack().getName();
             String strName = stackName.getString();
-    		if(Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" ")) ci.cancel();
-    	}
+            if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && strName.equals(" "))
+                ci.cancel();
+        }
 
-    	//Backpack Preview
+        // Backpack Preview
         String title = this.getTitle().getString();
         boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
         if (shiftDown && title.equals("Storage") && this.focusedSlot != null) {
@@ -69,8 +73,8 @@ public abstract class HandledScreenMixin extends Screen {
         return skyblocker$experimentSolvers$getStack(slot);
     }
 
-    @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 10), ordinal = 0)
-    private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, MatrixStack matrices, Slot slot) {
+    @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 4), ordinal = 0)
+    private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, DrawContext context, Slot slot) {
         return skyblocker$experimentSolvers$getStack(slot);
     }
 
