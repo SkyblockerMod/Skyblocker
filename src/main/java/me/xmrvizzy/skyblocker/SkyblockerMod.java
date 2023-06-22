@@ -82,7 +82,7 @@ public class SkyblockerMod implements ClientModInitializer {
         containerSolverManager.init();
         DungeonMap.init();
         scheduler.scheduleCyclic(Utils::sbChecker, 20);
-        scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
+        scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
         scheduler.scheduleCyclic(LividColor::update, 10);
         scheduler.scheduleCyclic(BackpackPreview::tick, 50);
