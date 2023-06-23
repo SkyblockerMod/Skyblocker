@@ -145,9 +145,10 @@ public class Utils {
             if (sidebarLines != null) {
                 for (String sidebarLine : sidebarLines) {
                     if (sidebarLine.contains("⏣")) location = sidebarLine;
+                    if (sidebarLine.contains("ф")) location = sidebarLine; //Rift
                 }
                 if (location == null) location = "Unknown";
-                location = location.replace('⏣', ' ').strip();
+                location = location.strip();
             }
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();

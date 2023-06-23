@@ -98,8 +98,8 @@ public class PlayerListMgr {
 	 * @return the text or null, if the display name is null
 	 * 
 	 * @implNote currently designed specifically for crimson isles faction quests
-	 *           widget, might not work correctly without modification for other
-	 *           stuff. you've been warned!
+	 *           widget and the rift widgets, might not work correctly without
+	 *           modification for other stuff. you've been warned!
 	 */
 	public static Text textAt(int idx) {
 
@@ -128,11 +128,16 @@ public class PlayerListMgr {
 			// Trim leading & trailing space - this can only be done at the start and end
 			// otherwise it'll produce malformed results
 			if (i == 0)
-				textToAppend = StringUtils.removeStart(textToAppend, " ");
+				textToAppend = textToAppend.stripLeading();
 			if (i == size - 1)
-				textToAppend = StringUtils.removeEnd(textToAppend, " ");
+				textToAppend = textToAppend.stripTrailing();
 
 			newText.append(Text.literal(textToAppend).setStyle(current.getStyle()));
+		}
+
+		// Avoid returning an empty component - Rift advertisements needed this
+		if (newText.getString().length() == 0) {
+			return null;
 		}
 
 		return newText;

@@ -1,0 +1,26 @@
+package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.rift;
+
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+public class AdvertisementWidget extends Widget {
+	
+	private static final MutableText TITLE = Text.literal("Advertisement").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
+
+	public AdvertisementWidget() {
+		super(TITLE, Formatting.DARK_AQUA.getColorValue());
+		
+				
+		for(int i = 73; i < 80; i++) {
+			Text text = PlayerListMgr.textAt(i);
+			if(text != null) this.addComponent(new PlainTextComponent(text));
+		}
+		
+		this.pack();
+	}
+
+}

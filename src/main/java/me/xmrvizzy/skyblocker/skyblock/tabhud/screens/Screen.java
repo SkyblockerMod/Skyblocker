@@ -6,6 +6,7 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.GardenInfoScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.GenericInfoScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.genericInfo.GenericRiftInfoScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.CrimsonIsleScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.DungeonHubScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.DungeonScreen;
@@ -17,6 +18,7 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.HomeServerScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.HubServerScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.MineServerScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.ParkServerScreen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.main.RiftScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.DungeonPlayerScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.GuestPlayerScreen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.HomePlayerScreen;
@@ -51,6 +53,7 @@ public class Screen {
     private static Screen correctGenericScrn(int w, int h, Text footer) {
         return switch (PlayerLocator.getPlayerLocation()) {
             case GARDEN -> new GardenInfoScreen(w, h, footer); // ok
+            case THE_RIFT -> new GenericRiftInfoScreen(w, h, footer);
             case UNKNOWN -> new EmptyScreen(w, h, footer); // ok
             default -> new GenericInfoScreen(w, h, footer); // ok
         };
@@ -78,6 +81,7 @@ public class Screen {
             case DUNGEON -> new DungeonScreen(w, h, footer); // ok
             case CRIMSON_ISLE -> new CrimsonIsleScreen(w, h, footer);
             case GARDEN -> new GardenScreen(w, h, footer); // ok
+            case THE_RIFT -> new RiftScreen(w, h, footer);
             case UNKNOWN -> new EmptyScreen(w, h, footer); // ok
             default -> new GenericServerScreen(w, h, footer); // ok
         };

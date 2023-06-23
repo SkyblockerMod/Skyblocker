@@ -52,4 +52,9 @@ public class Ico {
     public static final ItemStack SAPLING = new ItemStack(Items.OAK_SAPLING);
     public static final ItemStack MILESTONE = new ItemStack(Items.LODESTONE);
     public static final ItemStack PICKAXE = new ItemStack(Items.IRON_PICKAXE);
+    public static final ItemStack NETHER_STAR = new ItemStack(Items.NETHER_STAR);
+    public static final ItemStack HEART_OF_THE_SEA = new ItemStack(Items.HEART_OF_THE_SEA);
+    public static final ItemStack EXPERIENCE_BOTTLE = new ItemStack(Items.EXPERIENCE_BOTTLE);
+    public static final ItemStack PINK_DYE = new ItemStack(Items.PINK_DYE);
+    public static final ItemStack ENCHANTED_BOOK = new ItemStack(Items.ENCHANTED_BOOK);
 }
