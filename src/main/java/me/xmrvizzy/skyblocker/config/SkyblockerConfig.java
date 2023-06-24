@@ -150,6 +150,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Fishing fishing = new Fishing();
 
+        @ConfigEntry.Category("fairySouls")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public FairySouls fairySouls = new FairySouls();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -217,6 +221,10 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class Fishing {
         public boolean enableFishingHelper = true;
+    }
+
+    public static class FairySouls {
+        public boolean enableFairySoulsHelper = false;
     }
 
     public static class Hitbox {

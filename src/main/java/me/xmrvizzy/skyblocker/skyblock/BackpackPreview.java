@@ -50,7 +50,7 @@ public class BackpackPreview {
     }
 
     public static void tick() {
-        Utils.sbChecker(); // force update isOnSkyblock to prevent crash on disconnect
+        Utils.update(); // force update isOnSkyblock to prevent crash on disconnect
         if (Utils.isOnSkyblock()) {
             // save all dirty storages
             saveStorage();

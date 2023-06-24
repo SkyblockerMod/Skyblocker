@@ -17,7 +17,8 @@
     "MinecraftClientMixin",
     "PlayerListHudAccessor",
     "PlayerListHudMixin",
-    "RecipeBookWidgetAccessor"
+    "RecipeBookWidgetAccessor",
+    "accessor.BeaconBlockEntityRendererInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

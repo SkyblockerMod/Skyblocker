@@ -22,6 +22,8 @@
   "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "Experience Bar Position",
   "text.autoconfig.skyblocker.option.general.fishing": "Fishing Helper",
   "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "Enable Fishing Helper",
+  "text.autoconfig.skyblocker.option.general.fairySouls": "Fairy Souls Helper",
+  "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "Enable Fairy Souls Helper",
   "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
@@ -222,5 +224,7 @@
 
   "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Automatically set your API key!",
 
-  "skyblocker.fishing.reelNow": "Reel in now!"
+  "skyblocker.fishing.reelNow": "Reel in now!",
+  "skyblocker.fairySouls.markAllFound": "Marked all fairy souls in the current island as found",
+  "skyblocker.fairySouls.markAllMissing": "Marked all fairy souls in the current island as missing"
 }
