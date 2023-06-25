@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.gui;
 
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -10,23 +11,27 @@ import java.util.regex.Pattern;
  * Abstract class for gui solvers. Extend this class to add a new gui solver, like terminal solvers or experiment solvers.
  */
 public abstract class ContainerSolver {
-    private final Pattern CONTAINER_NAME;
-    protected final static int GREEN_HIGHLIGHT = 128 << 24 | 64 << 16 | 196 << 8 | 64;
-    protected final static int GRAY_HIGHLIGHT = 128 << 24 | 64 << 16 | 64 << 8 | 64;
+    private final Pattern containerName;
 
-    public ContainerSolver(String containerName) {
-        CONTAINER_NAME = Pattern.compile(containerName);
+    protected ContainerSolver(String containerName) {
+        this.containerName = Pattern.compile(containerName);
     }
 
-    public abstract boolean isEnabled();
+    protected abstract boolean isEnabled();
 
     public Pattern getName() {
-        return CONTAINER_NAME;
+        return containerName;
     }
 
-    public abstract List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots);
+    protected void start(GenericContainerScreen screen) {
+    }
 
-    public void trimEdges(Map<Integer, ItemStack> slots, int rows) {
+    protected void reset() {
+    }
+
+    protected abstract List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots);
+
+    protected void trimEdges(Map<Integer, ItemStack> slots, int rows) {
         for (int i = 0; i < rows; i++) {
             slots.remove(9 * i);
             slots.remove(9 * i + 8);

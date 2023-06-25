@@ -13,9 +13,9 @@ import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
@@ -27,8 +27,8 @@ public class PlayerListHudMixin {
     @Shadow
     private Text footer;
 
-    @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", cancellable = true)
-    public void skyblocker$renderTabHud(MatrixStack ms, int scaledW, Scoreboard sb, ScoreboardObjective sbo,
+    @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", cancellable = true)
+    public void skyblocker$renderTabHud(DrawContext context, int scaledW, Scoreboard sb, ScoreboardObjective sbo,
             CallbackInfo info) {
 
         if (!Utils.isOnSkyblock()
@@ -47,7 +47,7 @@ public class PlayerListHudMixin {
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
         try {
             Screen screen = Screen.getCorrect(w, h, footer);
-            screen.render(ms);
+            screen.render(context);
             info.cancel();
         } catch (Exception e) {
             TabHud.LOGGER.error("Drawing default hud. Reason: Screen exception {}", e);

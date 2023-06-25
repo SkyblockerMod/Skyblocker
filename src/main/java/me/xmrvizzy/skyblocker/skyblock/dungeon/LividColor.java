@@ -11,11 +11,10 @@ public class LividColor {
     private static int tenTicks = 0;
 
     public static void init() {
-        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             if (SkyblockerConfig.get().locations.dungeons.lividColor.enableLividColor && message.getString().equals("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) {
                 tenTicks = 8;
             }
-            return true;
         });
     }
 

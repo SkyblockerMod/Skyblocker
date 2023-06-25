@@ -1,14 +1,12 @@
 package me.xmrvizzy.skyblocker;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.xmrvizzy.skyblocker.chat.ChatMessageListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.gui.ContainerSolverManager;
-import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
-import me.xmrvizzy.skyblocker.skyblock.FishingHelper;
-import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
-import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
-import me.xmrvizzy.skyblocker.skyblock.api.RepositoryUpdate;
+import me.xmrvizzy.skyblocker.skyblock.*;
 import me.xmrvizzy.skyblocker.skyblock.api.StatsCommand;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
@@ -20,13 +18,13 @@ import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
-import me.xmrvizzy.skyblocker.utils.MessageScheduler;
-import me.xmrvizzy.skyblocker.utils.Scheduler;
-import me.xmrvizzy.skyblocker.utils.UpdateChecker;
-import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+
+import java.nio.file.Path;
 
 /**
  * Main class for Skyblocker which initializes features, registers events, and
@@ -35,6 +33,8 @@ import net.minecraft.client.MinecraftClient;
  */
 public class SkyblockerMod implements ClientModInitializer {
     public static final String NAMESPACE = "skyblocker";
+    public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static SkyblockerMod INSTANCE;
 
     @SuppressWarnings("deprecation")
@@ -63,12 +63,13 @@ public class SkyblockerMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
+        Utils.init();
         HotbarSlotLock.init();
         SkyblockerConfig.init();
         PriceInfoTooltip.init();
         WikiLookup.init();
         ItemRegistry.init();
-        RepositoryUpdate.init();
+        NEURepo.init();
         BackpackPreview.init();
         QuickNav.init();
         StatsCommand.init();
@@ -78,11 +79,12 @@ public class SkyblockerMod implements ClientModInitializer {
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();
+        FairySouls.init();
         TabHud.init();
-        containerSolverManager.init();
         DungeonMap.init();
-        scheduler.scheduleCyclic(Utils::sbChecker, 20);
-        scheduler.scheduleCyclic(DiscordRPCManager::update, 100);
+        containerSolverManager.init();
+        scheduler.scheduleCyclic(Utils::update, 20);
+        scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);
         scheduler.scheduleCyclic(DungeonBlaze::update, 4);
         scheduler.scheduleCyclic(LividColor::update, 10);
         scheduler.scheduleCyclic(BackpackPreview::tick, 50);

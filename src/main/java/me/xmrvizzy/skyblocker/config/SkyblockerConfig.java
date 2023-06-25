@@ -147,9 +147,17 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Bars bars = new Bars();
 
+        @ConfigEntry.Category("experiments")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Experiments experiments = new Experiments();
+
         @ConfigEntry.Category("fishing")
         @ConfigEntry.Gui.CollapsibleObject()
         public Fishing fishing = new Fishing();
+
+        @ConfigEntry.Category("fairySouls")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public FairySouls fairySouls = new FairySouls();
 
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -216,8 +224,18 @@ public class SkyblockerConfig implements ConfigData {
         }
     }
 
+    public static class Experiments {
+        public boolean enableChronomatronSolver = true;
+        public boolean enableSuperpairsSolver = true;
+        public boolean enableUltrasequencerSolver = true;
+    }
+
     public static class Fishing {
         public boolean enableFishingHelper = true;
+    }
+
+    public static class FairySouls {
+        public boolean enableFairySoulsHelper = false;
     }
 
     public static class Hitbox {

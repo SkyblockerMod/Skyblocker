@@ -54,8 +54,9 @@ public class ReputationWidget extends Widget {
             this.addComponent(new ProgressComponent());
         } else {
             float pcnt = Float.parseFloat(prog.group("prog"));
+            Text reputationText = state.group("from").equals("Max") ? Text.literal("Max Reputation") : Text.literal(state.group("from") + " -> " + state.group("to"));
             ProgressComponent pc = new ProgressComponent(Ico.LANTERN,
-                    Text.of(state.group("from") + " -> " + state.group("to")), rep, pcnt,
+                    reputationText, rep, pcnt,
                     Formatting.AQUA.getColorValue());
             this.addComponent(pc);
         }

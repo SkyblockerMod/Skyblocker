@@ -3,11 +3,10 @@ package me.xmrvizzy.skyblocker.utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 @Environment(value= EnvType.CLIENT)
@@ -21,14 +20,13 @@ public class ToastBuilder implements Toast {
     }
 
     @Override
-    public Toast.Visibility draw(MatrixStack matrices, ToastManager manager, long startTime) {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    public Toast.Visibility draw(DrawContext context, ToastManager manager, long startTime) {
+    	TextRenderer textRenderer = manager.getClient().textRenderer;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        DrawableHelper.drawTexture(matrices, 0, 0, 0, 0, this.getWidth(), this.getHeight());
-        manager.getClient().textRenderer.draw(matrices, title, 7.0f, 7.0f, -11534256);
-        manager.getClient().textRenderer.draw(matrices, description, 7.0f, 18.0f, -16777216);
+        context.drawTexture(TEXTURE, 0, 0, 0, 0, this.getWidth(), this.getHeight());
+        context.drawText(textRenderer, title, 7, 7, -11534256, false);
+        context.drawText(textRenderer, description, 7, 18, -16777216, false);
         return startTime >= 3000L ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
     }
 }

@@ -25,6 +25,7 @@ public class PlayerLocator {
         JERRY,
         GARDEN,
         INSTANCED,
+        THE_RIFT,
         UNKNOWN
     }
 
@@ -82,6 +83,8 @@ public class PlayerLocator {
                 return Location.GARDEN;
             case "Instanced":
                 return Location.INSTANCED;
+            case "The Rift":
+            	return Location.THE_RIFT;
             default:
                 return Location.UNKNOWN;
         }

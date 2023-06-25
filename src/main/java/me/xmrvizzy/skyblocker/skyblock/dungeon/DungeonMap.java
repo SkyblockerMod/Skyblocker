@@ -2,14 +2,13 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.Command;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -50,11 +49,10 @@ public class DungeonMap {
         }
     }
     
-    public static void renderHUDMap(MatrixStack matrices, int x, int y) {
+    public static void renderHUDMap(DrawContext context, int x, int y) {
     	float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
     	int size = (int) (128 * scaling);
-    	RenderSystem.setShaderTexture(0, MAP_BACKGROUND);
-    	DrawableHelper.drawTexture(matrices, x, y, 0, 0, size, size, size, size);
+    	context.drawTexture(MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
     }
     
     public static void init() {

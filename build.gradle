@@ -60,6 +60,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit used pull data from the NEU item repo
 	include(implementation("org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r"))
 
+	// Renderer (https://github.com/0x3C50/Renderer)
+	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}")
+
 	include(modImplementation ("meteordevelopment:discord-ipc:1.1"))
 }
 

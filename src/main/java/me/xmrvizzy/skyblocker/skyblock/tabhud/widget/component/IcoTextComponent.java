@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -32,9 +32,9 @@ public class IcoTextComponent extends Component {
     }
 
     @Override
-    public void render(MatrixStack ms, int x, int y) {
-        itmRend.renderGuiItemIcon(ms, ico, x, y);
-        txtRend.draw(ms, text, x + ICO_DIM + PAD_L, y + 5, 0xffffffff);
+    public void render(DrawContext context, int x, int y) {
+        context.drawItem(ico, x, y);
+        context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 5, 0xffffffff, false);
     }
 
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.xmrvizzy.skyblocker.utils.NEURepo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
@@ -16,10 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemStackBuilder {
-    private final static Path PETNUMS_PATH = ItemRegistry.LOCAL_ITEM_REPO_DIR.resolve("constants/petnums.json");
+    private final static Path PETNUMS_PATH = NEURepo.LOCAL_REPO_DIR.resolve("constants/petnums.json");
     private static JsonObject petNums;
 
-    public static void init() {
+    public static void loadPetNums() {
         try {
             petNums = JsonParser.parseString(Files.readString(PETNUMS_PATH)).getAsJsonObject();
         } catch (Exception e) {

@@ -5,8 +5,8 @@ import java.awt.Color;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderUtils;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 public class DungeonMapConfigScreen extends Screen {
@@ -19,11 +19,11 @@ public class DungeonMapConfigScreen extends Screen {
 	}
 	
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		super.render(matrices, mouseX, mouseY, delta);
-		renderBackground(matrices);
-		DungeonMap.renderHUDMap(matrices, hudX, hudY);
-		drawCenteredTextWithShadow(matrices, textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		super.render(context, mouseX, mouseY, delta);
+		renderBackground(context);
+		DungeonMap.renderHUDMap(context, hudX, hudY);
+		context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
 	}
 	
 	@Override
