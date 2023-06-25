@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 public class Reparty extends ChatPatternListener {
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
     public static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
     private static final int BASE_DELAY = 10;
 
@@ -58,7 +57,7 @@ public class Reparty extends ChatPatternListener {
             }
         } else if (matcher.group("disband") != null && !matcher.group("disband").equals(client.getSession().getUsername())) {
             partyLeader = matcher.group("disband");
-            skyblocker.scheduler.schedule(() -> partyLeader = null, 21);
+            SkyblockerMod.getInstance().scheduler.schedule(() -> partyLeader = null, 21);
             return false;
         } else if (matcher.group("invite") != null && matcher.group("invite").equals(partyLeader)) {
             String command = "/party accept " + partyLeader;
@@ -85,10 +84,10 @@ public class Reparty extends ChatPatternListener {
             String command = "/p invite " + this.players[i];
             sendCommand(command, i + 2);
         }
-        skyblocker.scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
+        SkyblockerMod.getInstance().scheduler.schedule(() -> this.repartying = false, this.players.length + 2);
     }
 
     private void sendCommand(String command, int delay) {
-        skyblocker.messageScheduler.queueMessage(command, delay * BASE_DELAY);
+        SkyblockerMod.getInstance().messageScheduler.queueMessage(command, delay * BASE_DELAY);
     }
 }
