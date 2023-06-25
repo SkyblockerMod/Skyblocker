@@ -116,7 +116,7 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Включить",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "Y",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Dwarven HUD (Интерфейс Гномьих Шахт)",
-    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Выглядит лучше если включены полоски (здоровья, маны и т.д.)",
+    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Выглядит лучше, когда включены полоски Skyblocker (здоровья, маны и т.д.)",
     "text.autoconfig.skyblocker.option.quickNav.button1.clickEvent": "Команда по щелчку",
     "text.autoconfig.skyblocker.option.locations.barn": "Barn (Ферма)",
     "text.autoconfig.skyblocker.option.quickNav.button1.item.itemName": "ID Предмета",
@@ -206,5 +206,13 @@
     "text.autoconfig.skyblocker.option.quickNav.button12.item.count": "Количество",
     "text.autoconfig.skyblocker.option.quickNav.button12.item.nbt": "NBT",
     "text.autoconfig.skyblocker.option.quickNav.button12.uiTitle": "Название Кнопки",
-    "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Помощь в меню Croesus"
+    "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Помощь в меню Croesus",
+    "text.autoconfig.skyblocker.option.general.experiments": "Помощь в Экспериментах",
+    "text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver": "Решать Ultrasequencer",
+    "skyblocker.fairySouls.markAllFound": "Все души фей (fairy souls), которые есть на этом острове, теперь отмечены как найденные",
+    "text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver": "Решать Chronomatron",
+    "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "Подсвечивать Пары Superpairs",
+    "skyblocker.fairySouls.markAllMissing": "Все души фей (fairy souls), которые есть на этом острове, теперь отмечены как еще не найденные",
+    "text.autoconfig.skyblocker.option.general.fairySouls": "Помощь В Нахождении Fairy Souls (Душ Фей)",
+    "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "Включить Помощь В Поиске Fairy Souls"
 }
