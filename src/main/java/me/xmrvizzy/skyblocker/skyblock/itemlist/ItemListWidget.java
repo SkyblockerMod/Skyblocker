@@ -91,8 +91,10 @@ public class ItemListWidget extends RecipeBookWidget implements Drawable, Select
         if (this.isOpen() && !this.client.player.isSpectator() && ItemRegistry.filesImported && results != null) {
             if (this.searchField != null && this.searchField.mouseClicked(mouseX, mouseY, button)) {
                 this.results.closeRecipeView();
+                this.searchField.setFocused(true);
                 return true;
             } else
+            	this.searchField.setFocused(false);
                 return this.results.mouseClicked(mouseX, mouseY, button);
         } else
             return false;
