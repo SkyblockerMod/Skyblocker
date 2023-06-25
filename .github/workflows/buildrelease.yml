@@ -39,11 +39,51 @@ jobs:
         id: read_changelog
         shell: bash
         run: |
-          CHANGELOG=$(sed '/___/Q' CHANGELOG.md | grep -v '# ')
+          CHANGELOG=$(sed '/___/Q' CHANGELOG.md)
           echo "Changelog:\n$CHANGELOG"
+
+          changelog="${CHANGELOG}"
+
+          # Because of the 2000 char limit in Discord shorten the changelog
+
+          # Calculate the number of characters to delete
+          delete_chars=$((${#changelog} + 350 - 2000 - 15))
+          
+          # Check if delete_chars is greater than 0
+          if [ $delete_chars -gt 0 ]; then
+
+              # Extract the "What's Changed" section from the changelog
+              changed_section=$(echo "$changelog" | awk '/## What'\''s Changed/{flag=1;next}/^$/{flag=0}flag')
+
+              # Trim the changed_section based on the delete_chars value and remove the last line
+              modified_section="${changed_section::-delete_chars}"
+              modified_section=$(echo "$modified_section" | sed '$d')
+
+              # Add "[...] and more" at the end of modified_section
+              modified_section+="\n[...] and more"
+
+              # Format modified_section with printf
+              modified_section=$(printf "%s" "$modified_section")
+
+              # Generate the modified_changelog by inserting modified_section after the "What's Changed" section
+              modified_changelog=$(awk -v modified_section="$modified_section" '
+                      /^## What'\''s Changed/ { print; print modified_section; f=1; next }
+                      f && /^$/ { f=0 }
+                      !f { print }
+                      END { if (f) print "" }
+                  ' ORS='\n' <<< "$changelog")
+
+              # Format the modified_changelog by removing "@" characters and enclosing URLs in "<>"
+              modified_changelog=$(echo "$modified_changelog" | sed -e 's/@//g' -e 's|https\?://[^[:space:]]*|<\0>|g')
+          
+          # Store the modified_changelog in the CHANGELOG variable
+          CHANGELOG=$(echo -n "$modified_changelog")
+          fi
+          
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
           CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
           CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          
           echo "::set-output name=changelog::$CHANGELOG"
 
       - uses: actions/github-script@v2
