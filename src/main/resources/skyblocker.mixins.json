@@ -18,7 +18,8 @@
     "PlayerListHudAccessor",
     "PlayerListHudMixin",
     "RecipeBookWidgetAccessor",
-    "accessor.BeaconBlockEntityRendererInvoker"
+    "accessor.BeaconBlockEntityRendererInvoker",
+    "accessor.FrustumInvoker"
   ],
   "injectors": {
     "defaultRequire": 1
