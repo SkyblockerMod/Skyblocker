@@ -6,6 +6,7 @@ import me.xmrvizzy.skyblocker.skyblock.FancyStatusBars;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.StatusBarTracker;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
+import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -53,7 +54,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
     private void skyblocker$onSetOverlayMessage(Text message, boolean tinted, CallbackInfo ci) {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfig.get().general.bars.enableBars)
+        if (!Utils.isOnSkyblock() || !SkyblockerConfig.get().general.bars.enableBars || Utils.getLocationRaw().equals(TheRift.LOCATION))
             return;
         String msg = message.getString();
         String res = statusBarTracker.update(msg, SkyblockerConfig.get().messages.hideMana);
@@ -84,7 +85,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderExperienceBar(DrawContext context, int x, CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars)
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.getLocationRaw().equals(TheRift.LOCATION))
             ci.cancel();
     }
 
@@ -103,7 +104,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderMountHealth(DrawContext context, CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars)
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.getLocationRaw().equals(TheRift.LOCATION))
             ci.cancel();
     }
 }

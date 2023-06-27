@@ -2,6 +2,8 @@ package me.xmrvizzy.skyblocker.skyblock;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -9,6 +11,7 @@ import net.minecraft.util.Identifier;
 
 public class FancyStatusBars {
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/bars.png");
+    private static final String RIFT_LOCATION = "rift";
 
     private final MinecraftClient client = MinecraftClient.getInstance();
     private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
@@ -39,7 +42,7 @@ public class FancyStatusBars {
 
     public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
-        if (!SkyblockerConfig.get().general.bars.enableBars || player == null)
+        if (!SkyblockerConfig.get().general.bars.enableBars || player == null || Utils.getLocationRaw().equals(TheRift.LOCATION))
             return false;
         anchorsX[0] = scaledWidth / 2 - 91;
         anchorsY[0] = scaledHeight - 33;

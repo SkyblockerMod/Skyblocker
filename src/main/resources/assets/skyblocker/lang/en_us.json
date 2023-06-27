@@ -200,6 +200,9 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Enable Background",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.x": "X",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "Y",
+  
+  "text.autoconfig.skyblocker.option.locations.rift": "The Rift",
+  "text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints": "Enable Mirrorverse Waypoints",
 
   "text.autoconfig.skyblocker.category.messages": "Messages",
   "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "Disabled",
