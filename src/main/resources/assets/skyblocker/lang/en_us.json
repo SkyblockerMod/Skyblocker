@@ -234,6 +234,9 @@
   "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Automatically set your API key!",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
+  "skyblocker.rift.healNow": "Heal now!",
+  "skyblocker.rift.iceNow": "Ice now!",
+  "skyblocker.rift.stakeNow": "Stake now!",
   "skyblocker.fairySouls.markAllFound": "Marked all fairy souls in the current island as found",
   "skyblocker.fairySouls.markAllMissing": "Marked all fairy souls in the current island as missing"
 }

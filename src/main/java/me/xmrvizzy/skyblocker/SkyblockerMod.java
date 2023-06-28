@@ -17,6 +17,9 @@ import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.rift.EffigyWaypoints;
+import me.xmrvizzy.skyblocker.skyblock.rift.HealingMelonIndicator;
+import me.xmrvizzy.skyblocker.skyblock.rift.StakeIndicator;
+import me.xmrvizzy.skyblocker.skyblock.rift.TwinClawsIndicator;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.*;
@@ -84,6 +87,9 @@ public class SkyblockerMod implements ClientModInitializer {
         TabHud.init();
         DungeonMap.init();
         EffigyWaypoints.init();
+        HealingMelonIndicator.init();
+        StakeIndicator.init();
+        TwinClawsIndicator.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::update, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);
@@ -92,6 +98,7 @@ public class SkyblockerMod implements ClientModInitializer {
         scheduler.scheduleCyclic(BackpackPreview::tick, 50);
         scheduler.scheduleCyclic(DwarvenHud::update, 40);
         scheduler.scheduleCyclic(PlayerListMgr::updateList, 20);
+        scheduler.scheduleCyclic(EffigyWaypoints::updateEffigies, 5);
     }
 
     /**
