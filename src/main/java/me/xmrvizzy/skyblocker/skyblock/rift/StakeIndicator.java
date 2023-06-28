@@ -53,7 +53,7 @@ public class StakeIndicator {
     public static void UpdateStake(MinecraftClient client) {
         if(!Utils.isOnSkyblock()) return;
         if(!(Utils.getLocation().contains("Stillgore Château"))) return;
-        //if(!SlayerUtils.getIsInSlayer()) return;
+        if(!SlayerUtils.getIsInSlayer()) return;
         var slayerEntity = SlayerUtils.GetSlayerEntity();
         if(slayerEntity != null) {
             LOGGER.info(slayerEntity.getDisplayName().toString());

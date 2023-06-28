@@ -91,6 +91,7 @@ public class EffigyWaypoints {
     }
     public static void updateEffigies()
     {
+        if(!SkyblockerConfig.get().slayer.vamp.enableEffigyWaypoints) return;
         if(!Utils.isOnSkyblock()) return;
         if(!(Utils.getLocation().contains("Stillgore Château"))) return;
         unBrokenEffigies.clear();       
@@ -121,7 +122,7 @@ public class EffigyWaypoints {
     }
 
     public static void render(WorldRenderContext context) {
-        if (SkyblockerConfig.get().locations.rift.effigyWaypoints && (Utils.getLocation().contains("Stillgore Château"))) {
+        if (SkyblockerConfig.get().slayer.vamp.enableEffigyWaypoints && (Utils.getLocation().contains("Stillgore Château"))) {
             for (BlockPos effigy : unBrokenEffigies) {
                 float[] colorComponents = DyeColor.RED.getColorComponents();
                 RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, effigy, colorComponents, 0.5F);

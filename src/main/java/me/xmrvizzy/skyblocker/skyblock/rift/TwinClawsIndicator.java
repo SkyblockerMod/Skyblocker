@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.SlayerUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -21,9 +22,10 @@ public class TwinClawsIndicator {
     private static long lastDisplayTime = 0;
     public static void updateIce(MinecraftClient client)
     {
+        if(!SkyblockerConfig.get().slayer.vamp.enableHolyIceIndicator) return;
         if(!Utils.isOnSkyblock()) return;
         if(!(Utils.getLocation().contains("Stillgore Château"))) return;
-        //if(!SlayerUtils.getIsInSlayer()) return;
+        if(!SlayerUtils.getIsInSlayer()) return;
         var slayerEntity = SlayerUtils.GetSlayerEntity();
         if(slayerEntity == null) return;
         //TODO: Cache this, probably included in Packet system

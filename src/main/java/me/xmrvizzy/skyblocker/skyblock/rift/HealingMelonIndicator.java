@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
@@ -18,6 +19,7 @@ public class HealingMelonIndicator {
     }
     private static long lastDisplayTime = 0;
     public static void UpdateHealth(MinecraftClient client) {
+        if(!SkyblockerConfig.get().slayer.vamp.enableHealingMelonIndicator) return;
         if(!Utils.isOnSkyblock()) return;
         if(!(Utils.getLocation().contains("Stillgore Château"))) return;
         var playerEntity = client.player;
