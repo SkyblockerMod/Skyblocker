@@ -19,7 +19,7 @@ public class HealingMelonIndicator {
     }
     private static long lastDisplayTime = 0;
     public static void UpdateHealth(MinecraftClient client) {
-        if(!SkyblockerConfig.get().slayer.vamp.enableHealingMelonIndicator) return;
+        if(!SkyblockerConfig.get().slayer.vampireSlayer.enableHealingMelonIndicator) return;
         if(!Utils.isOnSkyblock()) return;
         if(!(Utils.getLocation().contains("Stillgore Château"))) return;
         var playerEntity = client.player;

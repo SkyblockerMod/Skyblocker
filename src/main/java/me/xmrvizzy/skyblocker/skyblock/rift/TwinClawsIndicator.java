@@ -6,7 +6,6 @@ import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -22,7 +21,7 @@ public class TwinClawsIndicator {
     private static long lastDisplayTime = 0;
     public static void updateIce(MinecraftClient client)
     {
-        if(!SkyblockerConfig.get().slayer.vamp.enableHolyIceIndicator) return;
+        if(!SkyblockerConfig.get().slayer.vampireSlayer.enableHolyIceIndicator) return;
         if(!Utils.isOnSkyblock()) return;
         if(!(Utils.getLocation().contains("Stillgore Château"))) return;
         if(!SlayerUtils.getIsInSlayer()) return;

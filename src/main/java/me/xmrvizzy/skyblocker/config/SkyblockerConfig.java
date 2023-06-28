@@ -396,7 +396,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class Slayer {
         @ConfigEntry.Category("vampire")
         @ConfigEntry.Gui.CollapsibleObject()
-        public VampireSlayer vamp = new VampireSlayer();
+        public VampireSlayer vampireSlayer = new VampireSlayer();
     }
 
     public static class VampireSlayer {
