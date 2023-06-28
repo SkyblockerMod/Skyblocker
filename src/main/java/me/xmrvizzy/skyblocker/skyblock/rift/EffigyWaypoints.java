@@ -1,8 +1,10 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -17,6 +19,12 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
+
+import me.xmrvizzy.skyblocker.utils.SlayerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class EffigyWaypoints {
     private static final List<BlockPos> effigies = new ArrayList<>();

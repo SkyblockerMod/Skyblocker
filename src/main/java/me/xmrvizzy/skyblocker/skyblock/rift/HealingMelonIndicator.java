@@ -8,11 +8,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HealingMelonIndicator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HealingMelonIndicator.class);
 
     public static void init() {
         ClientTickEvents.END_CLIENT_TICK.register(HealingMelonIndicator::UpdateHealth);
