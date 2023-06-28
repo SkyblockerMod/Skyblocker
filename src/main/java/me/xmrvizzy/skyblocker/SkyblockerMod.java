@@ -20,6 +20,7 @@ import me.xmrvizzy.skyblocker.skyblock.rift.EffigyWaypoints;
 import me.xmrvizzy.skyblocker.skyblock.rift.HealingMelonIndicator;
 import me.xmrvizzy.skyblocker.skyblock.rift.StakeIndicator;
 import me.xmrvizzy.skyblocker.skyblock.rift.TwinClawsIndicator;
+import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.*;
@@ -86,6 +87,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FairySouls.init();
         TabHud.init();
         DungeonMap.init();
+        TheRift.init();
         EffigyWaypoints.init();
         HealingMelonIndicator.init();
         StakeIndicator.init();
