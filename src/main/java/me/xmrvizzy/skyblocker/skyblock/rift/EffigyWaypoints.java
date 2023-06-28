@@ -1,10 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -17,15 +15,10 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
 public class EffigyWaypoints {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EffigyWaypoints.class);
     private static final List<BlockPos> effigies = new ArrayList<>();
     private static final List<BlockPos> unBrokenEffigies = new ArrayList<>();
 
@@ -37,39 +30,6 @@ public class EffigyWaypoints {
         effigies.add(new BlockPos(262,99,94)); //Effigy 5
         effigies.add(new BlockPos(240,129,118)); //Effigy 6
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-                .then(literal("vampire")
-                        .then(literal("logEffigies").executes(context -> {
-                            if(!Utils.isOnSkyblock()) return 1;
-                            if(!(Utils.getLocation().contains("Stillgore Château"))) return 1;
-                            for (var eff : effigies)
-                            {
-                                LOGGER.info(eff.toString());
-                            }
-                            unBrokenEffigies.clear();
-                            try {
-                                ClientPlayerEntity client = MinecraftClient.getInstance().player;
-                                if (client == null) return 1;
-                                Scoreboard scoreboard = MinecraftClient.getInstance().player.getScoreboard();
-                                ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
-                                for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
-                                    Team team = scoreboard.getPlayerTeam(score.getPlayerName());
-                                    if (team != null) {
-                                        String line = team.getPrefix().getString() + team.getSuffix().getString();
-                                        if(line.contains("Effigies"))
-                                        {
-                                            List<Text> newList = new ArrayList<Text>(team.getPrefix().getSiblings());
-                                            newList.addAll(team.getSuffix().getSiblings());
-                                            for (int i = 1; i < newList.size(); i++) {
-                                                LOGGER.info((i-1) + newList.get(i).toString() + effigies.toArray()[i-1]);
-                                            }
-                                        }
-                                    }
-                                }
-                            } catch (NullPointerException e) {
-                            }
-                            return 1;
-                        })))));
 
     }
     public static void updateEffigies()
