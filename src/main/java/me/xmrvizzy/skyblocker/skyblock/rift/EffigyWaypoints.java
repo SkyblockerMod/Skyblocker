@@ -49,7 +49,7 @@ public class EffigyWaypoints {
                     String line = team.getPrefix().getString() + team.getSuffix().getString();
                     if(line.contains("Effigies"))
                     {
-                        List<Text> newList = new ArrayList<Text>(team.getPrefix().getSiblings());
+                        List<Text> newList = new ArrayList<>(team.getPrefix().getSiblings());
                         newList.addAll(team.getSuffix().getSiblings());
                         for (int i = 1; i < newList.size(); i++) {
                             if(newList.get(i).getStyle().getColor() == TextColor.parse("gray"))
@@ -60,7 +60,7 @@ public class EffigyWaypoints {
                     }
                 }
             }
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
     }
 
