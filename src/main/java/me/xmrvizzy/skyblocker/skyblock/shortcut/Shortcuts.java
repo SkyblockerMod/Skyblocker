@@ -32,6 +32,10 @@ public class Shortcuts {
     public static final Map<String, String> commands = new HashMap<>();
     public static final Map<String, String> commandArgs = new HashMap<>();
 
+    public static boolean isShortcutsLoaded() {
+        return shortcutsLoaded.isDone();
+    }
+
     public static void init() {
         shortcutsLoaded = CompletableFuture.runAsync(Shortcuts::loadShortcuts);
         ClientLifecycleEvents.CLIENT_STOPPING.register(Shortcuts::saveShortcuts);
@@ -195,6 +199,10 @@ public class Shortcuts {
             for (String command : dispatcher.getSmartUsage(dispatcher.getRoot().getChild(SkyblockerMod.NAMESPACE), source).values()) {
                 source.sendFeedback(Text.of("§7/" + SkyblockerMod.NAMESPACE + " " + command));
             }
+            return Command.SINGLE_SUCCESS;
+        })).then(literal("shortcuts").executes(context -> {
+            // Queue the screen or else the screen will be immediately closed after executing this command
+            SkyblockerMod.getInstance().scheduler.queueOpenScreen(ShortcutsConfigScreen::new);
             return Command.SINGLE_SUCCESS;
         })));
     }

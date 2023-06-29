@@ -272,5 +272,10 @@
   "skyblocker.rift.mania": "Mania!",
   "skyblocker.rift.stakeNow": "Stake now!",
   "skyblocker.fairySouls.markAllFound": "Marked all fairy souls in the current island as found",
-  "skyblocker.fairySouls.markAllMissing": "Marked all fairy souls in the current island as missing"
+  "skyblocker.fairySouls.markAllMissing": "Marked all fairy souls in the current island as missing",
+  "skyblocker.shortcuts.config": "Shortcuts Config",
+  "skyblocker.shortcuts.targetCommand": "Target Command",
+  "skyblocker.shortcuts.replacementCommand": "Replacement Command",
+  "skyblocekr.shortcuts.targetCommandArg": "Target Command Argument",
+  "skyblocker.shortcuts.replacementCommandArg": "Replacement Command Argument"
 }
