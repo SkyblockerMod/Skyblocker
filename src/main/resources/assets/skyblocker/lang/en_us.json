@@ -226,9 +226,13 @@
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableHolyIceIndicator": "Enable Holy Ice Indicator",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceIndicatorTickDelay": "Holy Ice Indicator Delay (Ticks)",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency": "Holy Ice Indicator Update Frequency (Ticks)",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableHealingMelonIndicator": "Enable Healing Melon Indicator",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.healingMelonHealthThreshold": "Healing Melon Indicator Threshold (Hearts)",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableSteakStakeIndicator": "Enable Steak Stake Indicator",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency": "Steak Stake Indicator Update Frequency (Ticks)",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
 
   "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
   "skyblocker.update.update_link": " §2§nClick here§r",
