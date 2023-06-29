@@ -26,10 +26,10 @@ public class AcceptRepartyTest extends ChatPatternListenerTest<Reparty> {
     @Test
     void testInvite() {
         assertGroup("-----------------------------------------------------" +
-                        "\nStefan has invited you to join their party!" +
+                        "\n[MVP+] 1wolvesgaming has invited you to join their party!" +
                         "\nYou have 60 seconds to accept. Click here to join!" +
                         "\n-----------------------------------------------------",
                 /* group: */ "invite",
-                /* expect: */ "Stefan");
+                /* expect: */ "1wolvesgaming");
     }
 }
