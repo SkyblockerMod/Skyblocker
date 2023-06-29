@@ -27,8 +27,8 @@ public class Reparty extends ChatPatternListener {
     public Reparty() {
         super("^(?:You are not currently in a party\\." +
                 "|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*))" +
-                "|([\\[A-z+\\]]* )?(?<disband>[A-z0-9_]*) has disbanded .*" +
-                "|.*\n([\\[A-z+\\]]* )?(?<invite>[A-z0-9_]*) has invited you to join their party!" +
+                "|([\\[A-z+\\]]* )?(?<disband>.*) has disbanded .*" +
+                "|.*\n([\\[A-z+\\]]* )?(?<invite>.*) has invited you to join their party!" +
                 "\nYou have 60 seconds to accept. Click here to join!\n.*)$");
 
         this.repartying = false;
