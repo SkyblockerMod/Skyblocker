@@ -57,7 +57,7 @@ public class Reparty extends ChatPatternListener {
             }
         } else if (matcher.group("disband") != null && !matcher.group("disband").equals(client.getSession().getUsername())) {
             partyLeader = matcher.group("disband");
-            SkyblockerMod.getInstance().scheduler.schedule(() -> partyLeader = null, 21);
+            SkyblockerMod.getInstance().scheduler.schedule(() -> partyLeader = null, 61);
             return false;
         } else if (matcher.group("invite") != null && matcher.group("invite").equals(partyLeader)) {
             String command = "/party accept " + partyLeader;
