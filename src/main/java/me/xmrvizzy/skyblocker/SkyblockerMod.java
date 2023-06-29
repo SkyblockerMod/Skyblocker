@@ -16,6 +16,7 @@ import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
+import me.xmrvizzy.skyblocker.skyblock.shortcut.Shortcuts;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.*;
@@ -76,6 +77,7 @@ public class SkyblockerMod implements ClientModInitializer {
         QuickNav.init();
         DwarvenHud.init();
         ChatMessageListener.init();
+        Shortcuts.init();
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();

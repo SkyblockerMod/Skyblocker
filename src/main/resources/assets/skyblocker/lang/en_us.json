@@ -29,6 +29,13 @@
   "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "Enable Fishing Helper",
   "text.autoconfig.skyblocker.option.general.fairySouls": "Fairy Souls Helper",
   "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "Enable Fairy Souls Helper",
+  "text.autoconfig.skyblocker.option.general.shortcuts": "Shortcuts",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Enable Shortcuts",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Only works on Hypixel. Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "Enable Command Shortcuts",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts.@Tooltip": "Shortcuts for commands consisting of only one word. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts": "Enable Command Argument Shortcuts",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Shortcuts that replace an argument/word of a command with multiple arguments/words. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
   "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
@@ -214,7 +221,7 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Enable Background",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.x": "X",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "Y",
-  
+
   "text.autoconfig.skyblocker.option.locations.rift": "The Rift",
   "text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints": "Enable Mirrorverse Waypoints",
   "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks": "McGrubber Stacks",

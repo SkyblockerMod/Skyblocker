@@ -161,6 +161,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public FairySouls fairySouls = new FairySouls();
 
+        @ConfigEntry.Category("shortcuts")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Shortcuts shortcuts = new Shortcuts();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -262,6 +266,15 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class FairySouls {
         public boolean enableFairySoulsHelper = false;
+    }
+
+    public static class Shortcuts {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableShortcuts = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableCommandShortcuts = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableCommandArgShortcuts = true;
     }
 
     public static class Hitbox {
