@@ -13,7 +13,8 @@ public class TheRift {
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MirrorverseWaypoints::render);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
-        SkyblockerMod.getInstance().scheduler.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfig.get().slayer.vampireSlayer.steakStakeUpdateFrequency);
+        SkyblockerMod.getInstance().scheduler.scheduleCyclic(EffigyWaypoints::updateEffigies, SkyblockerConfig.get().slayer.vampireSlayer.effigyUpdateFrequency);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfig.get().slayer.vampireSlayer.holyIceUpdateFrequency);
+        SkyblockerMod.getInstance().scheduler.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfig.get().slayer.vampireSlayer.steakStakeUpdateFrequency);
     }
 }

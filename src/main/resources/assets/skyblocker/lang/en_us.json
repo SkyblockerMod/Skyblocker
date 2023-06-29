@@ -224,6 +224,8 @@
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer": "Vampire Slayer",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableEffigyWaypoints": "Enable Effigy Waypoints",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.effigyUpdateFrequency": "Holy Ice Indicator Update Frequency (Ticks)",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.effigyUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableHolyIceIndicator": "Enable Holy Ice Indicator",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceIndicatorTickDelay": "Holy Ice Indicator Delay (Ticks)",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency": "Holy Ice Indicator Update Frequency (Ticks)",

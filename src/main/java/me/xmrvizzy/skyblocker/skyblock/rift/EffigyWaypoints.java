@@ -62,8 +62,7 @@ public class EffigyWaypoints {
     }
 
     public static void render(WorldRenderContext context) {
-        if (SkyblockerConfig.get().slayer.vampireSlayer.enableEffigyWaypoints && (Utils.getLocation().contains("Stillgore Château"))) {
-            updateEffigies();
+        if (SkyblockerConfig.get().slayer.vampireSlayer.enableEffigyWaypoints && Utils.getLocation().contains("Stillgore Château")) {
             for (BlockPos effigy : unBrokenEffigies) {
                 float[] colorComponents = DyeColor.RED.getColorComponents();
                 if (SkyblockerConfig.get().slayer.vampireSlayer.compactEffigyWaypoints) {

@@ -379,6 +379,9 @@ public class SkyblockerConfig implements ConfigData {
     public static class VampireSlayer {
         public boolean enableEffigyWaypoints = true;
         public boolean compactEffigyWaypoints;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int effigyUpdateFrequency = 5;
         public boolean enableHolyIceIndicator = true;
         public int holyIceIndicatorTickDelay = 10;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
