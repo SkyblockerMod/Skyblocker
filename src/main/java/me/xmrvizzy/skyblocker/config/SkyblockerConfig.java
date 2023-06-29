@@ -30,6 +30,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public Locations locations = new Locations();
 
+    @ConfigEntry.Category("slayer")
+    @ConfigEntry.Gui.TransitiveObject
+    public Slayer slayer = new Slayer();
+
     @ConfigEntry.Category("quickNav")
     @ConfigEntry.Gui.TransitiveObject
     public QuickNav quickNav = new QuickNav();
@@ -177,7 +181,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class TabHudConf {
         public boolean tabHudEnabled = true;
 
-        @ConfigEntry.BoundedDiscrete(min=10, max=200)
+        @ConfigEntry.BoundedDiscrete(min = 10, max = 200)
         @ConfigEntry.Gui.Tooltip()
         public int tabHudScale = 100;
     }
@@ -289,7 +293,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("dwarvenmines")
         @ConfigEntry.Gui.CollapsibleObject()
         public DwarvenMines dwarvenMines = new DwarvenMines();
-        
+
         @ConfigEntry.Category("rift")
         @ConfigEntry.Gui.CollapsibleObject()
         public Rift rift = new Rift();
@@ -348,7 +352,7 @@ public class SkyblockerConfig implements ConfigData {
         CLASSIC;
 
         @Override
-		public String toString() {
+        public String toString() {
             return switch (this) {
                 case SIMPLE -> "Simple";
                 case FANCY -> "Fancy";
@@ -361,9 +365,34 @@ public class SkyblockerConfig implements ConfigData {
         public boolean solveHungryHiker = true;
         public boolean solveTreasureHunter = true;
     }
-    
+
     public static class Rift {
-    	public boolean mirrorverseWaypoints = true;
+        public boolean mirrorverseWaypoints = true;
+    }
+
+    public static class Slayer {
+        @ConfigEntry.Category("vampire")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public VampireSlayer vampireSlayer = new VampireSlayer();
+    }
+
+    public static class VampireSlayer {
+        public boolean enableEffigyWaypoints = true;
+        public boolean compactEffigyWaypoints;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int effigyUpdateFrequency = 5;
+        public boolean enableHolyIceIndicator = true;
+        public int holyIceIndicatorTickDelay = 10;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int holyIceUpdateFrequency = 5;
+        public boolean enableHealingMelonIndicator = true;
+        public float healingMelonHealthThreshold = 4F;
+        public boolean enableSteakStakeIndicator = true;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int steakStakeUpdateFrequency = 5;
     }
 
     public static class Messages {

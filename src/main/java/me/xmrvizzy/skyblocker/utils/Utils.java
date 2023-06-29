@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
+import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -50,6 +51,10 @@ public class Utils {
 
     public static boolean isInDungeons() {
         return isInDungeons;
+    }
+
+    public static boolean isInTheRift() {
+        return getLocationRaw().equals(TheRift.LOCATION);
     }
 
     public static boolean isInjected() {
