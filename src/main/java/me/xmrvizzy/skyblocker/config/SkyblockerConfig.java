@@ -42,6 +42,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public RichPresence richPresence = new RichPresence();
 
+    @ConfigEntry.Category("slayer")
+    @ConfigEntry.Gui.TransitiveObject
+    public Slayer slayer = new Slayer();
+
     public static class QuickNav {
         public boolean enableQuickNav = true;
 
@@ -387,6 +391,22 @@ public class SkyblockerConfig implements ConfigData {
         public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
         @ConfigEntry.Gui.Tooltip()
         public boolean hideMana = false;
+    }
+
+    public static class Slayer {
+        @ConfigEntry.Category("vampire")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public VampireSlayer vampireSlayer = new VampireSlayer();
+    }
+
+    public static class VampireSlayer {
+        public boolean enableEffigyWaypoints = true;
+        public boolean compactEffigyWaypoints;
+        public boolean enableHolyIceIndicator = true;
+        public int holyIceIndicatorTickDelay = 10;
+        public boolean enableHealingMelonIndicator = true;
+        public float healingMelonHealthThreshold = 4F;
+        public boolean enableSteakStakeIndicator = true;
     }
 
     public enum Info {
