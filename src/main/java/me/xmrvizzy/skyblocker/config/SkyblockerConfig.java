@@ -30,6 +30,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public Locations locations = new Locations();
 
+    @ConfigEntry.Category("slayer")
+    @ConfigEntry.Gui.TransitiveObject
+    public Slayer slayer = new Slayer();
+
     @ConfigEntry.Category("quickNav")
     @ConfigEntry.Gui.TransitiveObject
     public QuickNav quickNav = new QuickNav();
@@ -41,10 +45,6 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Category("richPresence")
     @ConfigEntry.Gui.TransitiveObject
     public RichPresence richPresence = new RichPresence();
-
-    @ConfigEntry.Category("slayer")
-    @ConfigEntry.Gui.TransitiveObject
-    public Slayer slayer = new Slayer();
 
     public static class QuickNav {
         public boolean enableQuickNav = true;
@@ -370,6 +370,28 @@ public class SkyblockerConfig implements ConfigData {
         public boolean mirrorverseWaypoints = true;
     }
 
+    public static class Slayer {
+        @ConfigEntry.Category("vampire")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public VampireSlayer vampireSlayer = new VampireSlayer();
+    }
+
+    public static class VampireSlayer {
+        public boolean enableEffigyWaypoints = true;
+        public boolean compactEffigyWaypoints;
+        public boolean enableHolyIceIndicator = true;
+        public int holyIceIndicatorTickDelay = 10;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int holyIceUpdateFrequency = 5;
+        public boolean enableHealingMelonIndicator = true;
+        public float healingMelonHealthThreshold = 4F;
+        public boolean enableSteakStakeIndicator = true;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int steakStakeUpdateFrequency = 5;
+    }
+
     public static class Messages {
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public ChatFilterResult hideAbility = ChatFilterResult.PASS;
@@ -391,28 +413,6 @@ public class SkyblockerConfig implements ConfigData {
         public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
         @ConfigEntry.Gui.Tooltip()
         public boolean hideMana = false;
-    }
-
-    public static class Slayer {
-        @ConfigEntry.Category("vampire")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public VampireSlayer vampireSlayer = new VampireSlayer();
-    }
-
-    public static class VampireSlayer {
-        public boolean enableEffigyWaypoints = true;
-        public boolean compactEffigyWaypoints;
-        public boolean enableHolyIceIndicator = true;
-        public int holyIceIndicatorTickDelay = 10;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        @ConfigEntry.Gui.Tooltip()
-        public int holyIceUpdateFrequency = 5;
-        public boolean enableHealingMelonIndicator = true;
-        public float healingMelonHealthThreshold = 4F;
-        public boolean enableSteakStakeIndicator = true;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        @ConfigEntry.Gui.Tooltip()
-        public int steakStakeUpdateFrequency = 5;
     }
 
     public enum Info {
