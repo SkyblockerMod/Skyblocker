@@ -3,7 +3,12 @@ package me.xmrvizzy.skyblocker.utils;
 import me.x150.renderer.render.Renderer3d;
 import me.xmrvizzy.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -38,5 +43,17 @@ public class RenderHelper {
         context.matrixStack().translate(pos.getX() - context.camera().getPos().x, pos.getY() - context.camera().getPos().y, pos.getZ() - context.camera().getPos().z);
         BeaconBlockEntityRendererInvoker.renderBeam(context.matrixStack(), context.consumers(), context.tickDelta(), context.world().getTime(), 0, BeaconBlockEntityRenderer.MAX_BEAM_HEIGHT, colorComponents);
         context.matrixStack().pop();
+    }
+
+    public static void displayTitleAndPlaySound(int stayTicks, int fadeOutTicks, String titleKey, Formatting formatting) {
+        MinecraftClient.getInstance().inGameHud.setTitleTicks(0, stayTicks, fadeOutTicks);
+        MinecraftClient.getInstance().inGameHud.setTitle(Text.translatable(titleKey).formatted(formatting));
+        playNotificationSound();
+    }
+
+    private static void playNotificationSound() {
+        if (MinecraftClient.getInstance().player != null) {
+            MinecraftClient.getInstance().player.playSound(SoundEvent.of(new Identifier("entity.experience_orb.pickup")), 100f, 0.1f);
+        }
     }
 }

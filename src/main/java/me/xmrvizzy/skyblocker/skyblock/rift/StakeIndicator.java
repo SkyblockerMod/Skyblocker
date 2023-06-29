@@ -1,38 +1,21 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.SlayerUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 public class StakeIndicator {
     private static long lastDisplayTime = 0;
 
     public static void updateStake() {
-        if (!SkyblockerConfig.get().slayer.vampireSlayer.enableSteakStakeIndicator) return;
-        if (!Utils.isOnSkyblock()) return;
-        if (!(Utils.getLocation().contains("Stillgore Château"))) return;
-
-        var client = MinecraftClient.getInstance();
-
-        if (!SlayerUtils.getIsInSlayer()) return;
-        var slayerEntity = SlayerUtils.GetSlayerEntity();
-
-        if (slayerEntity != null) {
-            if (slayerEntity.getDisplayName().toString().contains("҉")) {
-                if (System.currentTimeMillis() - lastDisplayTime > 2500) {
-                    lastDisplayTime = System.currentTimeMillis();
-                    client.inGameHud.setTitleTicks(0, 25, 5);
-                    client.inGameHud.setTitle(Text.translatable("skyblocker.rift.stakeNow").formatted(Formatting.RED));
-                    if (client.player != null) {
-                        client.player.playSound(SoundEvent.of(new Identifier("minecraft", "entity.experience_orb.pickup")), 100f, 0.1f);
-                    }
-                }
-            }
+        if (!SkyblockerConfig.get().slayer.vampireSlayer.enableSteakStakeIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château") || !SlayerUtils.isInSlayer()) return;
+        Entity slayerEntity = SlayerUtils.getSlayerEntity();
+        if (slayerEntity != null && slayerEntity.getDisplayName().toString().contains("҉") && System.currentTimeMillis() - lastDisplayTime > 2500) {
+            lastDisplayTime = System.currentTimeMillis();
+            RenderHelper.displayTitleAndPlaySound(25, 5, "skyblocker.rift.stakeNow", Formatting.RED);
         }
     }
 }

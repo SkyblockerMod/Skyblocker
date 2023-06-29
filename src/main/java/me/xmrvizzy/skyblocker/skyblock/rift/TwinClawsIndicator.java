@@ -2,38 +2,27 @@ package me.xmrvizzy.skyblocker.skyblock.rift;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.SlayerUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 public class TwinClawsIndicator {
     private static long lastDisplayTime = 0;
 
     public static void updateIce() {
-        if (!SkyblockerConfig.get().slayer.vampireSlayer.enableHolyIceIndicator) return;
-        if (!Utils.isOnSkyblock()) return;
-        if (!(Utils.getLocation().contains("Stillgore Château"))) return;
-        if (!SlayerUtils.getIsInSlayer()) return;
+        if (!SkyblockerConfig.get().slayer.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getLocation().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) return;
 
-        var client = MinecraftClient.getInstance();
-
-        var slayerEntity = SlayerUtils.GetSlayerEntity();
+        Entity slayerEntity = SlayerUtils.getSlayerEntity();
         if (slayerEntity == null) return;
 
-        for (var entity : SlayerUtils.GetEntityArmorStands(slayerEntity)) {
+        for (Entity entity : SlayerUtils.getEntityArmorStands(slayerEntity)) {
             if (entity.getDisplayName().toString().contains("TWINCLAWS")) {
                 SkyblockerMod.getInstance().scheduler.schedule(() -> {
                     if (System.currentTimeMillis() - lastDisplayTime > 2500) {
                         lastDisplayTime = System.currentTimeMillis();
-                        client.inGameHud.setTitleTicks(0, 40, 5);
-                        client.inGameHud.setTitle(Text.translatable("skyblocker.rift.iceNow").formatted(Formatting.AQUA));
-                        if (client.player != null) {
-                            client.player.playSound(SoundEvent.of(new Identifier("minecraft", "entity.experience_orb.pickup")), 100f, 0.1f);
-                        }
+                        RenderHelper.displayTitleAndPlaySound(40, 5, "skyblocker.rift.iceNow", Formatting.AQUA);
                     }
                 }, SkyblockerConfig.get().slayer.vampireSlayer.holyIceIndicatorTickDelay);
             }

@@ -4,6 +4,9 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class TheRift {
+    /**
+     * @see me.xmrvizzy.skyblocker.utils.Utils#isInTheRift() Utils#isInTheRift().
+     */
     public static final String LOCATION = "rift";
 
     public static void init() {
@@ -11,6 +14,5 @@ public class TheRift {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(StakeIndicator::updateStake, 10);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(TwinClawsIndicator::updateIce, 10);
-        EffigyWaypoints.init();
     }
 }
