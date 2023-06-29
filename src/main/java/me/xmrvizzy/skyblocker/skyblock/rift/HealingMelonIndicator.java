@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 public class HealingMelonIndicator {
     private static long lastDisplayTime = 0;
 
-    public static void UpdateHealth(MinecraftClient client) {
+    public static void updateHealth(MinecraftClient client) {
         if (!SkyblockerConfig.get().slayer.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château")) return;
         ClientPlayerEntity player = client.player;
         if (player != null && player.getHealth() <= SkyblockerConfig.get().slayer.vampireSlayer.healingMelonHealthThreshold * 2F && System.currentTimeMillis() - lastDisplayTime > 2500) {

@@ -27,6 +27,6 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
     @Inject(method = "updateHealth", at = @At("HEAD"))
     public void skyblocker$updateHealth(float health, CallbackInfo info) {
-        HealingMelonIndicator.UpdateHealth(MinecraftClient.getInstance());
+        HealingMelonIndicator.updateHealth(MinecraftClient.getInstance());
     }
 }
