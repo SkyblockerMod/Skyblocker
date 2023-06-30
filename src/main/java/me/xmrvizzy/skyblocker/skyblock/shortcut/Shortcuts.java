@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,37 +29,48 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class Shortcuts {
     private static final Logger LOGGER = LoggerFactory.getLogger(Shortcuts.class);
     private static final File SHORTCUTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("shortcuts.json").toFile();
+    @Nullable
     private static CompletableFuture<Void> shortcutsLoaded;
     public static final Map<String, String> commands = new HashMap<>();
     public static final Map<String, String> commandArgs = new HashMap<>();
 
     public static boolean isShortcutsLoaded() {
-        return shortcutsLoaded.isDone();
+        return shortcutsLoaded != null && shortcutsLoaded.isDone();
     }
 
     public static void init() {
-        shortcutsLoaded = CompletableFuture.runAsync(Shortcuts::loadShortcuts);
+        loadShortcuts();
         ClientLifecycleEvents.CLIENT_STOPPING.register(Shortcuts::saveShortcuts);
         ClientCommandRegistrationCallback.EVENT.register(Shortcuts::registerCommands);
         ClientSendMessageEvents.MODIFY_COMMAND.register(Shortcuts::modifyCommand);
     }
 
-    private static void loadShortcuts() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(SHORTCUTS_FILE))) {
-            Type shortcutsType = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
-            Map<String, Map<String, String>> shortcuts = SkyblockerMod.GSON.fromJson(reader, shortcutsType);
-            commands.putAll(shortcuts.get("commands"));
-            commandArgs.putAll(shortcuts.get("commandArgs"));
-            LOGGER.info("[Skyblocker] Loaded {} command shortcuts and {} command argument shortcuts", commands.size(), commandArgs.size());
-        } catch (FileNotFoundException e) {
-            registerDefaultShortcuts();
-            LOGGER.warn("[Skyblocker] Shortcuts file not found, using default shortcuts. This is normal when using for the first time.", e);
-        } catch (IOException e) {
-            LOGGER.error("[Skyblocker] Failed to load shortcuts file", e);
+    protected static void loadShortcuts() {
+        if (shortcutsLoaded != null && !isShortcutsLoaded()) {
+            return;
         }
+        shortcutsLoaded = CompletableFuture.runAsync(() -> {
+            try (BufferedReader reader = new BufferedReader(new FileReader(SHORTCUTS_FILE))) {
+                Type shortcutsType = new TypeToken<Map<String, Map<String, String>>>() {
+                }.getType();
+                Map<String, Map<String, String>> shortcuts = SkyblockerMod.GSON.fromJson(reader, shortcutsType);
+                commands.clear();
+                commandArgs.clear();
+                commands.putAll(shortcuts.get("commands"));
+                commandArgs.putAll(shortcuts.get("commandArgs"));
+                LOGGER.info("[Skyblocker] Loaded {} command shortcuts and {} command argument shortcuts", commands.size(), commandArgs.size());
+            } catch (FileNotFoundException e) {
+                registerDefaultShortcuts();
+                LOGGER.warn("[Skyblocker] Shortcuts file not found, using default shortcuts. This is normal when using for the first time.", e);
+            } catch (IOException e) {
+                LOGGER.error("[Skyblocker] Failed to load shortcuts file", e);
+            }
+        });
     }
 
     private static void registerDefaultShortcuts() {
+        commands.clear();
+        commandArgs.clear();
         commands.put("/s", "/skyblock");
         commands.put("/sk", "/skyblock");
         commands.put("/sky", "/skyblock");
@@ -156,7 +168,7 @@ public class Shortcuts {
         commands.put("/visit p", "/visit portalhub");
     }
 
-    private static void saveShortcuts(MinecraftClient client) {
+    protected static void saveShortcuts(MinecraftClient client) {
         JsonObject shortcutsJson = new JsonObject();
         shortcutsJson.add("commands", SkyblockerMod.GSON.toJsonTree(commands));
         shortcutsJson.add("commandArgs", SkyblockerMod.GSON.toJsonTree(commandArgs));
@@ -183,15 +195,15 @@ public class Shortcuts {
             FabricClientCommandSource source = context.getSource();
             String status = SkyblockerConfig.get().general.shortcuts.enableShortcuts && SkyblockerConfig.get().general.shortcuts.enableCommandShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
             source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Shortcuts" + status));
-            if (!shortcutsLoaded.isDone()) {
-                source.sendFeedback(Text.of("§c§lShortcuts not loaded yet"));
+            if (!isShortcutsLoaded()) {
+                source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
             } else for (Map.Entry<String, String> command : commands.entrySet()) {
                 source.sendFeedback(Text.of("§7" + command.getKey() + " §f→ §7" + command.getValue()));
             }
             status = SkyblockerConfig.get().general.shortcuts.enableShortcuts && SkyblockerConfig.get().general.shortcuts.enableCommandArgShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
             source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Argument Shortcuts" + status));
-            if (!shortcutsLoaded.isDone()) {
-                source.sendFeedback(Text.of("§c§lShortcuts not loaded yet"));
+            if (!isShortcutsLoaded()) {
+                source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
             } else for (Map.Entry<String, String> commandArg : commandArgs.entrySet()) {
                 source.sendFeedback(Text.of("§7" + commandArg.getKey() + " §f→ §7" + commandArg.getValue()));
             }
@@ -209,7 +221,7 @@ public class Shortcuts {
 
     private static String modifyCommand(String command) {
         if (Utils.isOnHypixel() && SkyblockerConfig.get().general.shortcuts.enableShortcuts) {
-            if (!shortcutsLoaded.isDone()) {
+            if (!isShortcutsLoaded()) {
                 LOGGER.warn("[Skyblocker] Shortcuts not loaded yet, skipping shortcut for command: {}", command);
                 return command;
             }

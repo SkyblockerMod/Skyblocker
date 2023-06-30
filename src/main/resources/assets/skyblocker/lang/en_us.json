@@ -35,7 +35,7 @@
   "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "Enable Command Shortcuts",
   "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts.@Tooltip": "Shortcuts for commands consisting of only one word. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
   "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts": "Enable Command Argument Shortcuts",
-  "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Shortcuts that replace an argument/word of a command with multiple arguments/words. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Shortcuts that replace one or more word(s)/argument(s) of a command which has multiple words/arguments. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
   "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
   "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
@@ -274,8 +274,14 @@
   "skyblocker.fairySouls.markAllFound": "Marked all fairy souls in the current island as found",
   "skyblocker.fairySouls.markAllMissing": "Marked all fairy souls in the current island as missing",
   "skyblocker.shortcuts.config": "Shortcuts Config",
-  "skyblocker.shortcuts.targetCommand": "Target Command",
-  "skyblocker.shortcuts.replacementCommand": "Replacement Command",
-  "skyblocekr.shortcuts.targetCommandArg": "Target Command Argument",
-  "skyblocker.shortcuts.replacementCommandArg": "Replacement Command Argument"
+  "skyblocker.shortcuts.notLoaded": "§c§lShortcuts not loaded yet",
+  "skyblocker.shortcuts.command.target": "Target Command",
+  "skyblocker.shortcuts.command.replacement": "Replacement Command",
+  "skyblocker.shortcuts.commandArg.target": "Target Command Argument",
+  "skyblocker.shortcuts.commandArg.replacement": "Replacement Command Argument",
+  "skyblocker.shortcuts.commandArg.tooltip": "Replace one or more word(s)/argument(s) of a command which has multiple words/arguments instead of matching the entire command.",
+  "skyblocker.shortcuts.deleteQuestion": "Are you sure you want to remove this shortcut?",
+  "skyblocker.shortcuts.deleteWarning": "Shortcut '%s' will be lost forever! (A long time!)",
+  "skyblocker.shortcuts.new": "New Shortcut",
+  "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after a restart of the game."
 }
