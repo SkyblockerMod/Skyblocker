@@ -273,6 +273,8 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class ItemTooltip {
         public boolean enableNPCPrice = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean enableMotesPrice = true;
         public boolean enableAvgBIN = true;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         @ConfigEntry.Gui.Tooltip()
