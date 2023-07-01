@@ -136,6 +136,7 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class General {
         public boolean enableUpdateNotification = true;
+        public boolean acceptReparty = true;
         public boolean backpackPreviewWithoutShift = false;
         public boolean hideEmptyTooltips = true;
 

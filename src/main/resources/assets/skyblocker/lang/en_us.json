@@ -24,6 +24,7 @@
   "text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
   "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "Enable Superpairs Solver",
   "text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver": "Enable Ultrasequencer Solver",
+  "text.autoconfig.skyblocker.option.general.acceptReparty": "Auto accept Reparty",
   "text.autoconfig.skyblocker.option.general.fishing": "Fishing Helper",
   "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "Enable Fishing Helper",
   "text.autoconfig.skyblocker.option.general.fairySouls": "Fairy Souls Helper",
