@@ -38,6 +38,8 @@
   "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip": "Value in %, relative to your vanilla GUI scale",
   "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice": "Enable Motes Price",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice.@Tooltip": "Displays the Motes sell price of an item while in The Rift.",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.avg": "Average Type",
   "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "You can choose how many days of average price to be",
@@ -204,6 +206,8 @@
   
   "text.autoconfig.skyblocker.option.locations.rift": "The Rift",
   "text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints": "Enable Mirrorverse Waypoints",
+  "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks": "McGrubber Stacks",
+  "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip": "Used for calculating Motes sell prices.",
 
   "text.autoconfig.skyblocker.category.messages": "Messages",
   "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "Disabled",

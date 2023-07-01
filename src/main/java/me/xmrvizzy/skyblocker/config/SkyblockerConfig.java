@@ -273,6 +273,8 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class ItemTooltip {
         public boolean enableNPCPrice = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean enableMotesPrice = true;
         public boolean enableAvgBIN = true;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         @ConfigEntry.Gui.Tooltip()
@@ -369,6 +371,9 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class Rift {
         public boolean mirrorverseWaypoints = true;
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 5)
+        @ConfigEntry.Gui.Tooltip
+        public int mcGrubberStacks = 0;
     }
 
     public static class Slayer {

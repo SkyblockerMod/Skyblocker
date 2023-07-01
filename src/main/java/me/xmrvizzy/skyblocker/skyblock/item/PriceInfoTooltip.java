@@ -40,6 +40,7 @@ public class PriceInfoTooltip {
     private static JsonObject threeDayAvgPricesJson;
     private static JsonObject lowestPricesJson;
     private static JsonObject isMuseumJson;
+    private static JsonObject motesPricesJson;
     private static boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
@@ -62,6 +63,17 @@ public class PriceInfoTooltip {
                         .formatted(Formatting.YELLOW)
                         .append(getCoinsMessage(npcPricesJson.get(name).getAsDouble(), count)));
             }
+        }
+        
+        if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && Utils.isInTheRift()) {
+            if(motesPricesJson == null) {
+        		nullWarning();
+        	}
+        	else if (motesPricesJson.has(name)) {
+        		lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
+        				.formatted(Formatting.LIGHT_PURPLE)
+        				.append(getMotesMessage(motesPricesJson.get(name).getAsInt(), count)));
+        	}
         }
 
         boolean bazaarExist = false;
@@ -289,6 +301,23 @@ public class PriceInfoTooltip {
             return priceTextTotal.append(priceTextEach);
         }
     }
+    
+    private static Text getMotesMessage(int price, int count) {
+        float motesMultiplier = SkyblockerConfig.get().locations.rift.mcGrubberStacks * 0.05f + 1;
+        if (count == 1) {
+            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price * motesMultiplier).replace(".0", "");
+            return Text.literal(priceString + " Motes").formatted(Formatting.DARK_AQUA);
+        }
+        else {
+            String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", price * count * motesMultiplier).replace(".0", "");
+            MutableText priceTextTotal = Text.literal(priceStringTotal + " Motes ").formatted(Formatting.DARK_AQUA);
+
+            String priceStringEach = String.format(Locale.ENGLISH, "%1$,.1f", price * motesMultiplier).replace(".0", "");
+            MutableText priceTextEach =  Text.literal( "(" + priceStringEach + " each)").formatted(Formatting.GRAY);
+
+            return priceTextTotal.append(priceTextEach);
+        }
+    }
 
     // If these options is true beforehand, the client will get first data of these options while loading.
     // After then, it will only fetch the data if it is on Skyblock.
@@ -326,6 +355,9 @@ public class PriceInfoTooltip {
 
             if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && isMuseumJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> isMuseumJson = downloadPrices("museum")));
+            
+            if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && motesPricesJson == null)
+            	futureList.add(CompletableFuture.runAsync(() -> motesPricesJson = downloadPrices("motes")));
 
             minute++;
             CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
@@ -354,5 +386,6 @@ public class PriceInfoTooltip {
         apiAddresses.put("lowest bins", "https://lb.tricked.pro/lowestbins");
         apiAddresses.put("npc", "https://hysky.de/api/npcprice");
         apiAddresses.put("museum", "https://hysky.de/api/museum");
+        apiAddresses.put("motes", "https://hysky.de/api/motesprice");
     }
 }
