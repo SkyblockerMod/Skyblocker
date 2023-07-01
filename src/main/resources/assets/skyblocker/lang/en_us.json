@@ -206,6 +206,8 @@
   
   "text.autoconfig.skyblocker.option.locations.rift": "The Rift",
   "text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints": "Enable Mirrorverse Waypoints",
+  "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks": "McGrubber Stacks",
+  "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip": "Used for calculating Motes sell prices.",
 
   "text.autoconfig.skyblocker.category.messages": "Messages",
   "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "Disabled",

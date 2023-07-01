@@ -66,7 +66,7 @@ public class PriceInfoTooltip {
         }
         
         if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && Utils.isInTheRift()) {
-        	if(motesPricesJson == null) {
+            if(motesPricesJson == null) {
         		nullWarning();
         	}
         	else if (motesPricesJson.has(name)) {
@@ -303,15 +303,16 @@ public class PriceInfoTooltip {
     }
     
     private static Text getMotesMessage(int price, int count) {
+        float motesMultiplier = SkyblockerConfig.get().locations.rift.mcGrubberStacks * 0.05f + 1;
         if (count == 1) {
-            String priceString = String.format(Locale.ENGLISH, "%1$,d", price);
+            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price * motesMultiplier).replace(".0", "");
             return Text.literal(priceString + " Motes").formatted(Formatting.DARK_AQUA);
         }
         else {
-            String priceStringTotal = String.format(Locale.ENGLISH, "%1$,d", price * count);
+            String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", price * count * motesMultiplier).replace(".0", "");
             MutableText priceTextTotal = Text.literal(priceStringTotal + " Motes ").formatted(Formatting.DARK_AQUA);
 
-            String priceStringEach = String.format(Locale.ENGLISH, "%1$,d", price);
+            String priceStringEach = String.format(Locale.ENGLISH, "%1$,.1f", price * motesMultiplier).replace(".0", "");
             MutableText priceTextEach =  Text.literal( "(" + priceStringEach + " each)").formatted(Formatting.GRAY);
 
             return priceTextTotal.append(priceTextEach);
