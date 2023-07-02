@@ -74,6 +74,7 @@ public class MinionWidget extends Widget {
         MIN_ICOS.put("Inferno", new ItemStack(Items.BLAZE_SPAWN_EGG));
         MIN_ICOS.put("Revenant", new ItemStack(Items.ZOMBIE_SPAWN_EGG));
         MIN_ICOS.put("Tarantula", new ItemStack(Items.SPIDER_SPAWN_EGG));
+        MIN_ICOS.put("Vampire", new ItemStack(Items.REDSTONE));
         MIN_ICOS.put("Voidling", new ItemStack(Items.ENDERMAN_SPAWN_EGG));
         MIN_ICOS.put("Acacia", new ItemStack(Items.ACACIA_LOG));
         MIN_ICOS.put("Birch", new ItemStack(Items.BIRCH_LOG));
