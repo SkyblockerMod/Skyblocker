@@ -63,22 +63,22 @@ public abstract class HandledScreenMixin extends Screen {
 
     @Redirect(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;getStack()Lnet/minecraft/item/ItemStack;", ordinal = 0))
     private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(Slot slot) {
-        return skyblocker$experimentSolvers$getStack(slot);
+        return skyblocker$experimentSolvers$getStack(slot, null);
     }
 
     @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 4), ordinal = 0)
     private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, DrawContext context, Slot slot) {
-        return skyblocker$experimentSolvers$getStack(slot);
+        return skyblocker$experimentSolvers$getStack(slot, stack);
     }
 
     @Unique
-    private ItemStack skyblocker$experimentSolvers$getStack(Slot slot) {
+    private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, ItemStack stack) {
         ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
         if ((currentSolver instanceof SuperpairsSolver || currentSolver instanceof UltrasequencerSolver) && ((ExperimentSolver) currentSolver).getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
             ItemStack itemStack = ((ExperimentSolver) currentSolver).getSlots().get(slot.getIndex());
             return itemStack == null ? slot.getStack() : itemStack;
         }
-        return slot.getStack();
+        return (stack != null) ? stack : slot.getStack();
     }
 
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"))
