@@ -115,6 +115,7 @@ public class SearchResultsWidget implements Drawable {
             String craftText = this.recipeResults.get(this.currentPage).craftText;
             context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
+            if(textRenderer.getWidth(resultText) > 126) resultText = Text.literal(textRenderer.trimToWidth(resultText.getString(), 132) + "...").setStyle(resultText.getStyle());
             context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
             context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
         }
