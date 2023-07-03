@@ -16,6 +16,7 @@ public class ShortcutsConfigScreen extends Screen {
     private ButtonWidget buttonDelete;
     private ButtonWidget buttonNew;
     private ButtonWidget buttonDone;
+    private boolean initialized;
     private double scrollAmount;
 
     public ShortcutsConfigScreen() {
@@ -30,7 +31,12 @@ public class ShortcutsConfigScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height, 32, height - 64, 25);
+        if (initialized) {
+            shortcutsConfigListWidget.updateSize(width, height, 32, height - 64);
+        } else {
+            shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height, 32, height - 64, 25);
+            initialized = true;
+        }
         addDrawableChild(shortcutsConfigListWidget);
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().marginX(5).marginY(2);
@@ -48,12 +54,11 @@ public class ShortcutsConfigScreen extends Screen {
             if (client != null) {
                 client.setScreen(null);
             }
-            Shortcuts.loadShortcuts(); // Cancel changes by reloading shortcuts from disk
         }).build());
         buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
+            shortcutsConfigListWidget.saveShortcuts();
             if (client != null) {
                 client.setScreen(null);
-                Shortcuts.saveShortcuts(client); // Save shortcuts to disk
             }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.shortcuts.commandSuggestionTooltip"))).build();
         adder.add(buttonDone);
@@ -66,7 +71,7 @@ public class ShortcutsConfigScreen extends Screen {
     private void deleteEntry(boolean confirmedAction) {
         if (client != null) {
             if (confirmedAction && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
-                shortcutsConfigListWidget.getShortcutsMap(shortcutEntry.category).remove(shortcutEntry.target.getText());
+                shortcutsConfigListWidget.removeEntry(shortcutEntry);
             }
             client.setScreen(this); // Re-inits the screen and creates a new instance of ShortcutsConfigListWidget
             shortcutsConfigListWidget.setScrollAmount(scrollAmount);
