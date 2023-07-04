@@ -71,101 +71,66 @@ public class Shortcuts {
     private static void registerDefaultShortcuts() {
         commands.clear();
         commandArgs.clear();
+
+        // Skyblock
         commands.put("/s", "/skyblock");
-        commands.put("/sk", "/skyblock");
-        commands.put("/sky", "/skyblock");
         commands.put("/i", "/is");
         commands.put("/h", "/hub");
-        commands.put("/hu", "/hub");
 
+        // Dungeon
         commands.put("/d", "/warp dungeon_hub");
-        commands.put("/dn", "/warp dungeon_hub");
-        commands.put("/dun", "/warp dungeon_hub");
-        commands.put("/dungeon", "/warp dungeon_hub");
 
-        commands.put("/bl", "/warp nether");
-        commands.put("/blazing", "/warp nether");
-        commands.put("/fortress", "/warp nether");
-        commands.put("/crimson", "/warp nether");
-        commands.put("/isles", "/warp nether");
-        commands.put("/ci", "/warp nether");
-        commands.put("/crimson isles", "/warp nether");
-        commands.put("/n", "/warp nether");
-        commands.put("/nether", "/warp nether");
-
-        commands.put("/deep", "/warp deep");
-        commands.put("/cavern", "/warp deep");
-        commands.put("/caverns", "/warp deep");
-
-        commands.put("/dw", "/warp mines");
-        commands.put("/dwarven", "/warp mines");
-        commands.put("/mi", "/warp mines");
-        commands.put("/mines", "/warp mines");
-
-        commands.put("/fo", "/warp forge");
-        commands.put("/for", "/warp forge");
-        commands.put("/forge", "/warp forge");
-
-        commands.put("/cry", "/warp crystals");
-        commands.put("/crystal", "/warp crystals");
-        commands.put("/ho", "/warp crystals");
-        commands.put("/hollows", "/warp crystals");
-        commands.put("/ch", "/warp crystals");
-        commands.put("/crystal hollows", "/warp crystals");
-
-        commands.put("/ga", "/warp garden");
-        commands.put("/garden", "/warp garden");
-        commands.put("/go", "/warp gold");
-        commands.put("/gold", "/warp gold");
-
-        commands.put("/des", "/warp desert");
-        commands.put("/desert", "/warp desert");
-        commands.put("/mu", "/warp desert");
-        commands.put("/mushroom", "/warp desert");
-
-        commands.put("/sp", "/warp spider");
-        commands.put("/spider", "/warp spider");
-        commands.put("/spiders", "/warp spider");
-
-        commands.put("/ba", "/warp barn");
-        commands.put("/barn", "/warp barn");
-
-        commands.put("/e", "/warp end");
-        commands.put("/end", "/warp end");
-
-        commands.put("/park", "/warp park");
-
-        commands.put("/castle", "/warp castle");
-        commands.put("/museum", "/warp museum");
-        commands.put("/da", "/warp da");
-        commands.put("/dark", "/warp da");
-        commands.put("/crypt", "/warp crypt");
-        commands.put("/crypts", "/warp crypt");
-        commands.put("/nest", "/warp nest");
-        commands.put("/magma", "/warp magma");
-        commands.put("/void", "/warp void");
-        commands.put("/drag", "/warp drag");
-        commands.put("/dragon", "/warp drag");
-        commands.put("/jungle", "/warp jungle");
-        commands.put("/howl", "/warp howl");
-
+        // Chat channels
         commands.put("/ca", "/chat all");
         commands.put("/cp", "/chat party");
         commands.put("/cg", "/chat guild");
         commands.put("/co", "/chat officer");
         commands.put("/cc", "/chat coop");
 
+        // Message
         commandArgs.put("/m", "/msg");
 
+        // Party
         commandArgs.put("/pa", "/p accept");
         commands.put("/pv", "/p leave");
         commands.put("/pd", "/p disband");
         commands.put("/rp", "/reparty");
-        commands.put("/pr", "/reparty");
 
+        // Visit
         commandArgs.put("/v", "/visit");
         commands.put("/vp", "/visit portalhub");
-        commands.put("/visit p", "/visit portalhub");
+    }
+
+    private static void registerMoreDefaultShortcuts() {
+        // Combat
+        commands.put("/spider", "/warp spider");
+        commands.put("/crimson", "/warp nether");
+        commands.put("/end", "/warp end");
+
+        // Mining
+        commands.put("/gold", "/warp gold");
+        commands.put("/cavern", "/warp deep");
+        commands.put("/dwarven", "/warp mines");
+        commands.put("/fo", "/warp forge");
+        commands.put("/ch", "/warp crystals");
+
+        // Foraging & Farming
+        commands.put("/park", "/warp park");
+        commands.put("/barn", "/warp barn");
+        commands.put("/desert", "/warp desert");
+        commands.put("/ga", "/warp garden");
+
+        // Other warps
+        commands.put("/castle", "/warp castle");
+        commands.put("/museum", "/warp museum");
+        commands.put("/da", "/warp da");
+        commands.put("/crypt", "/warp crypt");
+        commands.put("/nest", "/warp nest");
+        commands.put("/magma", "/warp magma");
+        commands.put("/void", "/warp void");
+        commands.put("/drag", "/warp drag");
+        commands.put("/jungle", "/warp jungle");
+        commands.put("/howl", "/warp howl");
     }
 
     protected static void saveShortcuts(MinecraftClient client) {
