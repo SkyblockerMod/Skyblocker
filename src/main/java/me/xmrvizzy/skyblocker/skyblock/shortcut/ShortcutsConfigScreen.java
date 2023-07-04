@@ -17,7 +17,6 @@ public class ShortcutsConfigScreen extends Screen {
     private ButtonWidget buttonNew;
     private ButtonWidget buttonDone;
     private boolean initialized;
-    private boolean saved;
     private double scrollAmount;
 
     public ShortcutsConfigScreen() {
@@ -45,7 +44,7 @@ public class ShortcutsConfigScreen extends Screen {
         buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.delete"), button -> {
             if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
                 scrollAmount = shortcutsConfigListWidget.getScrollAmount();
-                client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", shortcutEntry.target.getText() + " → " + shortcutEntry.replacement.getText()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+                client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
             }
         }).build();
         adder.add(buttonDelete);
@@ -58,7 +57,6 @@ public class ShortcutsConfigScreen extends Screen {
         }).build());
         buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
             shortcutsConfigListWidget.saveShortcuts();
-            saved = true;
             if (client != null) {
                 close();
             }
@@ -88,7 +86,7 @@ public class ShortcutsConfigScreen extends Screen {
 
     @Override
     public void close() {
-        if (!saved && client != null) {
+        if (client != null && shortcutsConfigListWidget.hasChanges()) {
             client.setScreen(new ConfirmScreen(confirmedAction -> {
                 if (confirmedAction) {
                     super.close();
