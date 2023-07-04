@@ -17,6 +17,7 @@ public class ShortcutsConfigScreen extends Screen {
     private ButtonWidget buttonNew;
     private ButtonWidget buttonDone;
     private boolean initialized;
+    private boolean saved;
     private double scrollAmount;
 
     public ShortcutsConfigScreen() {
@@ -52,13 +53,14 @@ public class ShortcutsConfigScreen extends Screen {
         adder.add(buttonNew);
         adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> {
             if (client != null) {
-                client.setScreen(null);
+                close();
             }
         }).build());
         buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
             shortcutsConfigListWidget.saveShortcuts();
+            saved = true;
             if (client != null) {
-                client.setScreen(null);
+                close();
             }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.shortcuts.commandSuggestionTooltip"))).build();
         adder.add(buttonDone);
@@ -73,7 +75,7 @@ public class ShortcutsConfigScreen extends Screen {
             if (confirmedAction && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
                 shortcutsConfigListWidget.removeEntry(shortcutEntry);
             }
-            client.setScreen(this); // Re-inits the screen and creates a new instance of ShortcutsConfigListWidget
+            client.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
             shortcutsConfigListWidget.setScrollAmount(scrollAmount);
         }
     }
@@ -82,6 +84,21 @@ public class ShortcutsConfigScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, 0xFFFFFF);
+    }
+
+    @Override
+    public void close() {
+        if (!saved && client != null) {
+            client.setScreen(new ConfirmScreen(confirmedAction -> {
+                if (confirmedAction) {
+                    super.close();
+                } else {
+                    client.setScreen(this);
+                }
+            }, Text.translatable("text.cloth-config.quit_config"), Text.translatable("text.cloth-config.quit_config_sure"), Text.translatable("text.cloth-config.quit_discard"), ScreenTexts.CANCEL));
+        } else {
+            super.close();
+        }
     }
 
     protected void updateButtons() {
