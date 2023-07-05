@@ -20,6 +20,7 @@ import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.*;
+import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -84,6 +85,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TabHud.init();
         DungeonMap.init();
         TheRift.init();
+        TitleContainer.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::update, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);

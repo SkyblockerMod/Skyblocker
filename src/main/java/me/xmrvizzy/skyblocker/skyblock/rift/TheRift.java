@@ -15,6 +15,7 @@ public class TheRift {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(EffigyWaypoints::updateEffigies, SkyblockerConfig.get().slayer.vampireSlayer.effigyUpdateFrequency);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfig.get().slayer.vampireSlayer.holyIceUpdateFrequency);
+        SkyblockerMod.getInstance().scheduler.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfig.get().slayer.vampireSlayer.maniaUpdateFrequency);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfig.get().slayer.vampireSlayer.steakStakeUpdateFrequency);
     }
 }

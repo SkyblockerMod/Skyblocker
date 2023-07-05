@@ -2,6 +2,8 @@ package me.xmrvizzy.skyblocker.utils;
 
 import me.x150.renderer.render.Renderer3d;
 import me.xmrvizzy.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
+import me.xmrvizzy.skyblocker.utils.title.Title;
+import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
@@ -48,6 +50,11 @@ public class RenderHelper {
     public static void displayTitleAndPlaySound(int stayTicks, int fadeOutTicks, String titleKey, Formatting formatting) {
         MinecraftClient.getInstance().inGameHud.setTitleTicks(0, stayTicks, fadeOutTicks);
         MinecraftClient.getInstance().inGameHud.setTitle(Text.translatable(titleKey).formatted(formatting));
+        playNotificationSound();
+    }
+
+    public static void displayInTitleContainerAndPlaySound(Title title) {
+        TitleContainer.addTitle(title);
         playNotificationSound();
     }
 

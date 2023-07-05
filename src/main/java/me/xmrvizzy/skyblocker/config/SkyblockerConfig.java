@@ -399,6 +399,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
         @ConfigEntry.Gui.Tooltip()
         public int steakStakeUpdateFrequency = 5;
+        public boolean enableManiaIndicator = true;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int maniaUpdateFrequency = 5;
     }
 
     public static class Messages {
