@@ -175,6 +175,11 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Hitbox hitbox = new Hitbox();
 
+        @ConfigEntry.Gui.Tooltip()
+        @ConfigEntry.Category("titleContainer")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TitleContainer titleContainer = new TitleContainer();
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
     }
@@ -245,6 +250,11 @@ public class SkyblockerConfig implements ConfigData {
     public static class Hitbox {
         public boolean oldFarmlandHitbox = true;
         public boolean oldLeverHitbox = false;
+    }
+
+    public static class TitleContainer {
+        @ConfigEntry.BoundedDiscrete(min = 30, max = 140)
+        public float titleContainerScale = 100;
     }
 
     public static class RichPresence {
