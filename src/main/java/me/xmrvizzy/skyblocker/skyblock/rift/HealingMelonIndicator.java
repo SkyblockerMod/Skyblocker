@@ -8,7 +8,6 @@ import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class HealingMelonIndicator {

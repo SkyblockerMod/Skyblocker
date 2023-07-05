@@ -9,7 +9,6 @@ import me.xmrvizzy.skyblocker.utils.title.Title;
 import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class TwinClawsIndicator {

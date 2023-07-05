@@ -1,13 +1,11 @@
 package me.xmrvizzy.skyblocker.utils.title;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.skyblock.FairySouls;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.decoration.DisplayEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
@@ -24,21 +22,6 @@ public class TitleContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
     public static void init() {
         HudRenderCallback.EVENT.register(TitleContainer::draw);
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-                .then(literal("title")
-                        .then(literal("ice").executes(context -> {
-                            titles.add(new Title(Text.translatable("skyblocker.rift.iceNow").getString(), Formatting.AQUA.getColorValue()));
-                            return 1;
-                        }))
-                        .then(literal("stake").executes(context -> {
-                            titles.add(new Title("Stake", Formatting.RED.getColorValue()));
-                            return 1;
-                        }))
-                        .then(literal("heal").executes(context -> {
-                            titles.add(new Title("Heal", Formatting.DARK_RED.getColorValue()));
-                            return 1;
-                        }))
-                )));
     }
     public static void addTitle(Title title)
     {
