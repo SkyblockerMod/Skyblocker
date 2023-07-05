@@ -65,7 +65,7 @@ public class TitleContainer {
 
         for (Title title : titles) {
             context.getMatrices().push();
-            context.getMatrices().translate(title.lastX, client.getWindow().getScaledHeight() * 0.6F, 0);
+            context.getMatrices().translate(title.lastX, client.getWindow().getScaledHeight() * 0.7F, 0);
             context.getMatrices().scale(3.0F, 3.0F, 3.0F);
 
             title.lastX = MathHelper.lerp(tickDelta * 0.5F, title.lastX, x);
