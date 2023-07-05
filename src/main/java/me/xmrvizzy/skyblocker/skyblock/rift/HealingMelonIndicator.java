@@ -15,7 +15,7 @@ public class HealingMelonIndicator {
     private static Title title = null;
     public static void updateHealth(MinecraftClient client) {
         if(title == null)
-            new Title(I18n.translate("skyblocker.rift.healNow"), Formatting.DARK_RED.getColorValue());
+            title = new Title(I18n.translate("skyblocker.rift.healNow"), Formatting.DARK_RED.getColorValue());
 
         if (!SkyblockerConfig.get().slayer.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château")) {
             title.active = false;
