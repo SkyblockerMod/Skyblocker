@@ -205,5 +205,14 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style": "HUD风格",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]": "简约：仅显示委托及其进度百分比",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[1]": "精致：显示委托名，进度百分比与进度条以及图标",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]": "极简：仅在简单的方框内显示委托及其进度"
+    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]": "极简：仅在简单的方框内显示委托及其进度",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice": "启用 Motes 价格显示",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice.@Tooltip": "显示 Rift 中的物品售价，以Mote为单位",
+    "text.autoconfig.skyblocker.option.general.experiments": "实验台助手",
+    "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "启用超级配对实验助手",
+    "text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver": "启用序列记忆实验助手",
+    "text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver": "启用超级序列实验助手",
+    "text.autoconfig.skyblocker.option.general.acceptReparty": "自动接受重新组队",
+    "text.autoconfig.skyblocker.option.general.fairySouls": "仙女之魂助手",
+    "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "启用仙女之魂助手"
 }
