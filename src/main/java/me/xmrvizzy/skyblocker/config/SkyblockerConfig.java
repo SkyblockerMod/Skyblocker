@@ -255,6 +255,40 @@ public class SkyblockerConfig implements ConfigData {
     public static class TitleContainer {
         @ConfigEntry.BoundedDiscrete(min = 30, max = 140)
         public float titleContainerScale = 100;
+        public int x = 540;
+        public int y = 10;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public Direction direction = Direction.HORIZONTAL;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+        public Alignment alignment = Alignment.MIDDLE;
+    }
+
+    public enum Direction {
+        HORIZONTAL,
+        VERTICAL;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case HORIZONTAL -> "Horizontal";
+                case VERTICAL -> "Vertical";
+            };
+        }
+    }
+
+    public enum Alignment {
+        LEFT,
+        RIGHT,
+        MIDDLE;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case LEFT -> "Left";
+                case RIGHT -> "Right";
+                case MIDDLE -> "Middle";
+            };
+        }
     }
 
     public static class RichPresence {

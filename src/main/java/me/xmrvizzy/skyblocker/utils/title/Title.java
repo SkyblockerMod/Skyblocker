@@ -5,6 +5,7 @@ public class Title {
     public boolean active = true;
     public int color;
     public float lastX = 0;
+    public float lastY = 0;
 
     public Title(String text, int color) {
         this.text = text;

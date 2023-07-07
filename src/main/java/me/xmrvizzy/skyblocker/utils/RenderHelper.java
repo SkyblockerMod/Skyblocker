@@ -58,6 +58,11 @@ public class RenderHelper {
         playNotificationSound();
     }
 
+    public static void displayInTitleContainerWDismissAndPlaySound(Title title, int ticks) {
+        TitleContainer.addTitleWithDismiss(title, ticks);
+        playNotificationSound();
+    }
+
     private static void playNotificationSound() {
         if (MinecraftClient.getInstance().player != null) {
             MinecraftClient.getInstance().player.playSound(SoundEvent.of(new Identifier("entity.experience_orb.pickup")), 100f, 0.1f);
