@@ -10,6 +10,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyCodes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.Box;
+import org.joml.Vector4i;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -40,6 +42,28 @@ public class TitleContainerConfigScreen extends Screen {
         context.drawText(client.textRenderer, "Press Q/E to change Alignment: " + alignment.toString(), (width / 2) - width1 / 2, client.textRenderer.fontHeight * 2, Color.GRAY.getRGB(), true);
         context.drawText(client.textRenderer, "Press R to change Direction: " + direction.toString(), (width / 2) - width2 / 2, client.textRenderer.fontHeight * 3 + 5, Color.GRAY.getRGB(), true);
 
+        int x1;
+        int x2;
+        int y1;
+        int y2;
+
+        var vec = getSelectionBounding();
+        x1 = vec.x;
+        x2 = vec.y;
+        y1 = vec.z;
+        y2 = vec.w;
+
+        context.drawHorizontalLine(x1, x2, y1, Color.RED.getRGB());
+        context.drawHorizontalLine(x1, x2, y2, Color.RED.getRGB());
+        context.drawVerticalLine(x1, y1, y2, Color.RED.getRGB());
+        context.drawVerticalLine(x2, y1, y2, Color.RED.getRGB());
+    }
+
+    public Vector4i getSelectionBounding()
+    {
+        var direction = SkyblockerConfig.get().general.titleContainer.direction;
+        var alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+
         int midWidth = getSelectionWidth() / 2;
         int midHeight = getSelectionHeight() / 2;
         int x1 = 0;
@@ -89,10 +113,7 @@ public class TitleContainerConfigScreen extends Screen {
                     break;
             }
         }
-        context.drawHorizontalLine(x1, x2, y1, Color.RED.getRGB());
-        context.drawHorizontalLine(x1, x2, y2, Color.RED.getRGB());
-        context.drawVerticalLine(x1, y1, y2, Color.RED.getRGB());
-        context.drawVerticalLine(x2, y1, y2, Color.RED.getRGB());
+        return new Vector4i(x1, x2, y1, y2);
     }
 
     public int getSelectionHeight()
@@ -115,55 +136,19 @@ public class TitleContainerConfigScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         int midWidth = getSelectionWidth() / 2;
         int midHeight = getSelectionHeight() / 2;
-        var direction = SkyblockerConfig.get().general.titleContainer.direction;
         var alignment = SkyblockerConfig.get().general.titleContainer.alignment;
-        int x1 = 0;
-        int x2 = 0;
-        int y1 = 0;
-        int y2 = 0;
-        if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
-            switch (alignment) {
-                case RIGHT:
-                    x1 = hudX - midWidth * 2;
-                    x2 = hudX;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-                case MIDDLE:
-                    x1 = hudX - midWidth;
-                    x2 = hudX + midWidth;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-                case LEFT:
-                    x1 = hudX;
-                    x2 = hudX + midWidth * 2;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-            }
-        } else {
-            switch (alignment) {
-                case RIGHT:
-                    x1 = hudX - midWidth * 2;
-                    x2 = hudX;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-                case MIDDLE:
-                    x1 = hudX - midWidth;
-                    x2 = hudX + midWidth;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-                case LEFT:
-                    x1 = hudX;
-                    x2 = hudX + midWidth * 2;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-            }
-        }
+
+        int x1;
+        int x2;
+        int y1;
+        int y2;
+
+        var vec = getSelectionBounding();
+        x1 = vec.x;
+        x2 = vec.y;
+        y1 = vec.z;
+        y2 = vec.w;
+
         if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, x1, y1, x2, y2) && button == 0) {
             hudX = alignment == SkyblockerConfig.Alignment.RIGHT ?
                     (int) mouseX + midWidth :
