@@ -118,7 +118,7 @@ public class TitleContainerConfigScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 1) {
             hudX = this.width / 2;
-            hudY = this.height / 2;
+            hudY = this.height * 0.6F;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
