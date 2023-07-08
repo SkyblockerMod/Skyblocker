@@ -55,6 +55,10 @@
   "text.autoconfig.skyblocker.option.general.titleContainer": "Title Container",
   "text.autoconfig.skyblocker.option.general.titleContainer.@Tooltip": "Used to display multiple titles at once, Example use: Vampire Slayer",
   "text.autoconfig.skyblocker.option.general.titleContainer.titleContainerScale": "Title Container Scale",
+  "text.autoconfig.skyblocker.option.general.titleContainer.x": "Title Container X Position",
+  "text.autoconfig.skyblocker.option.general.titleContainer.y": "Title Container Y Position",
+  "text.autoconfig.skyblocker.option.general.titleContainer.direction": "Title Container Orientation",
+  "text.autoconfig.skyblocker.option.general.titleContainer.alignment": "Title Container Horizontal Alignment",
   "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
   "skyblocker.itemTooltip.noData": "§cNo Data",
 

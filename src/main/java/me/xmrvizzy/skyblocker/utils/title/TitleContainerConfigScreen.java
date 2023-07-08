@@ -39,8 +39,8 @@ public class TitleContainerConfigScreen extends Screen {
         var alignment = SkyblockerConfig.get().general.titleContainer.alignment;
         int width1 = client.textRenderer.getWidth("Press Q/E to change Alignment: " + alignment.toString());
         int width2 = client.textRenderer.getWidth("Press R to change Direction: " + direction.toString());
-        context.drawText(client.textRenderer, "Press Q/E to change Alignment: " + alignment.toString(), (width / 2) - width1 / 2, client.textRenderer.fontHeight * 2, Color.GRAY.getRGB(), true);
-        context.drawText(client.textRenderer, "Press R to change Direction: " + direction.toString(), (width / 2) - width2 / 2, client.textRenderer.fontHeight * 3 + 5, Color.GRAY.getRGB(), true);
+        context.drawText(client.textRenderer, "Press Q/E to change Alignment: " + alignment.toString(), (width / 2) - width1 / 2, client.textRenderer.fontHeight * 2, Color.WHITE.getRGB(), true);
+        context.drawText(client.textRenderer, "Press R to change Direction: " + direction.toString(), (width / 2) - width2 / 2, client.textRenderer.fontHeight * 3 + 5, Color.WHITE.getRGB(), true);
 
         int x1;
         int x2;
@@ -70,48 +70,21 @@ public class TitleContainerConfigScreen extends Screen {
         int x2 = 0;
         int y1 = 0;
         int y2 = 0;
-        if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
-            switch (alignment) {
-                case RIGHT:
-                    x1 = hudX - midWidth * 2;
-                    x2 = hudX;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-                case MIDDLE:
-                    x1 = hudX - midWidth;
-                    x2 = hudX + midWidth;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-                case LEFT:
-                    x1 = hudX;
-                    x2 = hudX + midWidth * 2;
-                    y1 = hudY + 0;
-                    y2 = hudY + midHeight * 2;
-                    break;
-            }
-        } else {
-            switch (alignment) {
-                case RIGHT:
-                    x1 = hudX - midWidth * 2;
-                    x2 = hudX;
-                    y1 = hudY;
-                    y2 = hudY + midHeight;
-                    break;
-                case MIDDLE:
-                    x1 = hudX - midWidth;
-                    x2 = hudX + midWidth;
-                    y1 = hudY;
-                    y2 = hudY + midHeight;
-                    break;
-                case LEFT:
-                    x1 = hudX;
-                    x2 = hudX + midWidth * 2;
-                    y1 = hudY;
-                    y2 = hudY + midHeight;
-                    break;
-            }
+        y1 = hudY;
+        y2 = hudY + midHeight * 2;
+        switch (alignment) {
+            case RIGHT:
+                x1 = hudX - midWidth * 2;
+                x2 = hudX;
+                break;
+            case MIDDLE:
+                x1 = hudX - midWidth;
+                x2 = hudX + midWidth;
+                break;
+            case LEFT:
+                x1 = hudX;
+                x2 = hudX + midWidth * 2;
+                break;
         }
         return new Vector4i(x1, x2, y1, y2);
     }
