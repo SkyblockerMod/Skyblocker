@@ -53,14 +53,29 @@ public class RenderHelper {
         playNotificationSound();
     }
 
+    /**
+     * Adds the title to {@link TitleContainer} and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
+     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
+     *
+     * @param title the title
+     */
     public static void displayInTitleContainerAndPlaySound(Title title) {
-        TitleContainer.addTitle(title);
-        playNotificationSound();
+        if (TitleContainer.addTitle(title)) {
+            playNotificationSound();
+        }
     }
 
-    public static void displayInTitleContainerWDismissAndPlaySound(Title title, int ticks) {
-        TitleContainer.addTitleWithDismiss(title, ticks);
-        playNotificationSound();
+    /**
+     * Adds the title to {@link TitleContainer} for a set number of ticks and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
+     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
+     *
+     * @param title the title
+     * @param ticks the number of ticks the title will remain
+     */
+    public static void displayInTitleContainerAndPlaySound(Title title, int ticks) {
+        if (TitleContainer.addTitle(title, ticks)) {
+            playNotificationSound();
+        }
     }
 
     private static void playNotificationSound() {

@@ -7,19 +7,17 @@ import me.xmrvizzy.skyblocker.utils.SlayerUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.title.Title;
 import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class TwinClawsIndicator {
-    private static Title title = null;
-    public static boolean scheduling = false;
-    public static void updateIce() {
-        if(title == null)
-            title = new Title("b", Formatting.AQUA.getColorValue());
+    private static final Title title = new Title("skyblocker.rift.iceNow",Formatting.AQUA);
+    private static boolean scheduled = false;
 
+    protected static void updateIce() {
         if (!SkyblockerConfig.get().slayer.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getLocation().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
-            title.active = false;
+            TitleContainer.removeTitle(title);
             return;
         }
 
@@ -30,18 +28,17 @@ public class TwinClawsIndicator {
         for (Entity entity : SlayerUtils.getEntityArmorStands(slayerEntity)) {
             if (entity.getDisplayName().toString().contains("TWINCLAWS")) {
                 anyClaws = true;
-                title.active = true;
-                if(!TitleContainer.titles.contains(title) && !scheduling) {
-                    scheduling = true;
+                if (!TitleContainer.containsTitle(title) && !scheduled) {
+                    scheduled = true;
                     SkyblockerMod.getInstance().scheduler.schedule(() -> {
-                        title.text = I18n.translate("skyblocker.rift.iceNow");
                         RenderHelper.displayInTitleContainerAndPlaySound(title);
-                        scheduling = false;
+                        scheduled = false;
                     }, SkyblockerConfig.get().slayer.vampireSlayer.holyIceIndicatorTickDelay);
                 }
             }
         }
-        if(!anyClaws)
-            title.active = false;
+        if (!anyClaws) {
+            TitleContainer.removeTitle(title);
+        }
     }
 }

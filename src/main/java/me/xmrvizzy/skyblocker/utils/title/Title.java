@@ -1,14 +1,31 @@
 package me.xmrvizzy.skyblocker.utils.title;
 
-public class Title {
-    public String text = "";
-    public boolean active = true;
-    public int color;
-    public float lastX = 0;
-    public float lastY = 0;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
-    public Title(String text, int color) {
+public class Title {
+    private MutableText text;
+    protected float lastX = 0;
+    protected float lastY = 0;
+
+    public MutableText getText() {
+        return text;
+    }
+
+    public void setText(MutableText text) {
         this.text = text;
-        this.color = color;
+    }
+
+    public void setFormatting(Formatting formatting) {
+        this.text.formatted(formatting);
+    }
+
+    public Title(String textKey, Formatting formatting) {
+        this(Text.translatable(textKey).formatted(formatting));
+    }
+
+    public Title(MutableText text) {
+        this.text = text;
     }
 }

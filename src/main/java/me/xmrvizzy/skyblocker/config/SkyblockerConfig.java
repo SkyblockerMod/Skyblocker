@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.config;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -10,8 +11,6 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.ArrayList;
@@ -500,11 +499,8 @@ public class SkyblockerConfig implements ConfigData {
     private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
         return literal(name).executes(context -> {
             // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-            SkyblockerMod.getInstance().scheduler.schedule(() -> {
-                Screen a = AutoConfig.getConfigScreen(SkyblockerConfig.class, null).get();
-                MinecraftClient.getInstance().setScreen(a);
-            }, 0);
-            return 1;
+            SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null));
+            return Command.SINGLE_SUCCESS;
         });
     }
 

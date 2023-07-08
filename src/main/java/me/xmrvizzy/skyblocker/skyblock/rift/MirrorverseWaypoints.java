@@ -34,7 +34,7 @@ public class MirrorverseWaypoints {
 	/**
 	 * Loads the waypoint locations into memory
 	 */
-	public static void loadWaypoints() {
+	private static void loadWaypoints() {
 		try (BufferedReader reader = CLIENT.getResourceManager().openAsReader(WAYPOINTS_JSON)) {
 			JsonObject file = JsonParser.parseReader(reader).getAsJsonObject();
 			JsonArray sections = file.get("sections").getAsJsonArray();
@@ -69,7 +69,7 @@ public class MirrorverseWaypoints {
 		}
 	}
 
-	public static void render(WorldRenderContext wrc) {
+	protected static void render(WorldRenderContext wrc) {
 		//I would also check for the mirrorverse location but the scoreboard stuff is not performant at all...
 		if (Utils.isInTheRift() && SkyblockerConfig.get().locations.rift.mirrorverseWaypoints) {
 			for (BlockPos pos : LAVA_PATH_WAYPOINTS) {
