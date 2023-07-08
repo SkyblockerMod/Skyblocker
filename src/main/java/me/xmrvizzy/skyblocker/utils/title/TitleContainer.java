@@ -60,24 +60,17 @@ public class TitleContainer {
         for (Title title : titlesToDraw) {
             width += textRenderer.getWidth(title.text) * scale + 10;
         }
-        if (alignment == SkyblockerConfig.Alignment.MIDDLE) {
-            if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
-                x = xPos - width / 2;
-            } else {
-                if (titlesToDraw.size() > 0) {
-                    if (titlesToDraw.size() > 0) {
-                        x = xPos - (textRenderer.getWidth(titlesToDraw.get(0).text) / 2 * scale);
-                    }
-                }
+        if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
+            if (alignment == SkyblockerConfig.Alignment.MIDDLE) {
+                x = xPos - (width / 2);
             }
         } else {
-            if (alignment == SkyblockerConfig.Alignment.LEFT) {
+            if (alignment == SkyblockerConfig.Alignment.MIDDLE) {
                 x = xPos;
-            } else {
-                if (titlesToDraw.size() > 0) {
-                    x = xPos - (textRenderer.getWidth(titlesToDraw.get(0).text) * scale);
-                }
             }
+        }
+        if(alignment == SkyblockerConfig.Alignment.LEFT || alignment == SkyblockerConfig.Alignment.RIGHT) {
+            x = xPos;
         }
         y = yPos;
 
@@ -86,22 +79,30 @@ public class TitleContainer {
             context.getMatrices().translate(title.lastX, title.lastY, 200);
             context.getMatrices().scale(scale, scale, scale);
 
-            title.lastX = MathHelper.lerp(tickDelta * 0.5F, title.lastX, x);
+            float xToUse = 0;
+            if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
+                xToUse = alignment == SkyblockerConfig.Alignment.RIGHT ?
+                        x - (textRenderer.getWidth(title.text) * scale) :
+                        x;
+            } else {
+                xToUse = alignment == SkyblockerConfig.Alignment.MIDDLE ?
+                        x - (textRenderer.getWidth(title.text) * scale) / 2 :
+                        alignment == SkyblockerConfig.Alignment.RIGHT ?
+                                x - (textRenderer.getWidth(title.text) * scale) :
+                                x;
+            }
+            title.lastX = MathHelper.lerp(tickDelta * 0.5F, title.lastX, xToUse);
             title.lastY = MathHelper.lerp(tickDelta * 0.5F, title.lastY, y);
 
             if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
-                switch (alignment) {
-                    case LEFT -> x += textRenderer.getWidth(title.text) * scale + 10;
-                    case RIGHT -> x -= (textRenderer.getWidth(title.text) * scale + 10);
-                    case MIDDLE -> x += textRenderer.getWidth(title.text) * scale + 10;
+                if (alignment == SkyblockerConfig.Alignment.MIDDLE || alignment == SkyblockerConfig.Alignment.LEFT) {
+                    x += textRenderer.getWidth(title.text) * scale + 10;
                 }
-                y = yPos;
+
+                if (alignment == SkyblockerConfig.Alignment.RIGHT) {
+                    x -= textRenderer.getWidth(title.text) * scale + 10;
+                }
             } else {
-                switch (alignment) {
-                    case LEFT -> x = xPos;
-                    case RIGHT -> x = xPos - (textRenderer.getWidth(title.text) * scale);
-                    case MIDDLE -> x = xPos - ((textRenderer.getWidth(title.text) * scale));
-                }
                 y += textRenderer.fontHeight * scale + 10;
             }
 

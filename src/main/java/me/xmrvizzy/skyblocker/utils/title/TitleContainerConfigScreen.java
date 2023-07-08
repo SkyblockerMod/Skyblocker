@@ -20,7 +20,7 @@ public class TitleContainerConfigScreen extends Screen {
 
     private final Title example1 = new Title("Test1", Formatting.RED.getColorValue());
     private final Title example2 = new Title("Test23", Formatting.AQUA.getColorValue());
-    private final Title example3 = new Title("Testing123456", Formatting.DARK_GREEN.getColorValue());
+    private final Title example3 = new Title("Testing1234", Formatting.DARK_GREEN.getColorValue());
     private int hudX = SkyblockerConfig.get().general.titleContainer.x;
     private int hudY = SkyblockerConfig.get().general.titleContainer.y;
     protected TitleContainerConfigScreen(Text title) {
@@ -33,17 +33,142 @@ public class TitleContainerConfigScreen extends Screen {
         renderBackground(context);
         TitleContainer.draw(List.of(example1, example2, example3), hudX, hudY, context, delta, true);
         context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
-        int width1 = client.textRenderer.getWidth("Press Q/E to change Alignment");
-        int width2 = client.textRenderer.getWidth("Press R to change Direction");
-        context.drawText(client.textRenderer, "Press Q/E to change Alignment", (width / 2) - width1 / 2, client.textRenderer.fontHeight * 2, Color.GRAY.getRGB(), true);
-        context.drawText(client.textRenderer, "Press R to change Direction", (width / 2) - width2 / 2, client.textRenderer.fontHeight * 3 + 5, Color.GRAY.getRGB(), true);
+        var direction = SkyblockerConfig.get().general.titleContainer.direction;
+        var alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+        int width1 = client.textRenderer.getWidth("Press Q/E to change Alignment: " + alignment.toString());
+        int width2 = client.textRenderer.getWidth("Press R to change Direction: " + direction.toString());
+        context.drawText(client.textRenderer, "Press Q/E to change Alignment: " + alignment.toString(), (width / 2) - width1 / 2, client.textRenderer.fontHeight * 2, Color.GRAY.getRGB(), true);
+        context.drawText(client.textRenderer, "Press R to change Direction: " + direction.toString(), (width / 2) - width2 / 2, client.textRenderer.fontHeight * 3 + 5, Color.GRAY.getRGB(), true);
+
+        int midWidth = getSelectionWidth() / 2;
+        int midHeight = getSelectionHeight() / 2;
+        int x1 = 0;
+        int x2 = 0;
+        int y1 = 0;
+        int y2 = 0;
+        if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
+            switch (alignment) {
+                case RIGHT:
+                    x1 = hudX - midWidth * 2;
+                    x2 = hudX;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+                case MIDDLE:
+                    x1 = hudX - midWidth;
+                    x2 = hudX + midWidth;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+                case LEFT:
+                    x1 = hudX;
+                    x2 = hudX + midWidth * 2;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+            }
+        } else {
+            switch (alignment) {
+                case RIGHT:
+                    x1 = hudX - midWidth * 2;
+                    x2 = hudX;
+                    y1 = hudY;
+                    y2 = hudY + midHeight;
+                    break;
+                case MIDDLE:
+                    x1 = hudX - midWidth;
+                    x2 = hudX + midWidth;
+                    y1 = hudY;
+                    y2 = hudY + midHeight;
+                    break;
+                case LEFT:
+                    x1 = hudX;
+                    x2 = hudX + midWidth * 2;
+                    y1 = hudY;
+                    y2 = hudY + midHeight;
+                    break;
+            }
+        }
+        context.drawHorizontalLine(x1, x2, y1, Color.RED.getRGB());
+        context.drawHorizontalLine(x1, x2, y2, Color.RED.getRGB());
+        context.drawVerticalLine(x1, y1, y2, Color.RED.getRGB());
+        context.drawVerticalLine(x2, y1, y2, Color.RED.getRGB());
+    }
+
+    public int getSelectionHeight()
+    {
+        int scale = (int) (3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F));
+        return SkyblockerConfig.get().general.titleContainer.direction == SkyblockerConfig.Direction.HORIZONTAL ?
+                textRenderer.fontHeight * scale :
+                (textRenderer.fontHeight + 10) * 3 * scale;
+    }
+
+    public int getSelectionWidth()
+    {
+        int scale = (int) (3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F));
+        return SkyblockerConfig.get().general.titleContainer.direction == SkyblockerConfig.Direction.HORIZONTAL ?
+                (textRenderer.getWidth("Test1") + 10 + textRenderer.getWidth("Test23") + 10 + textRenderer.getWidth("Testing1234")) * scale :
+                textRenderer.getWidth("Testing1234") * scale;
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, hudX - 100, hudY - 20, hudX + 110, hudY + 30) && button == 0) {
-            hudX = (int) Math.max(Math.min(mouseX, this.width - 100), 110);
-            hudY = (int) Math.max(Math.min(mouseY, this.height - 30), 0);
+        int midWidth = getSelectionWidth() / 2;
+        int midHeight = getSelectionHeight() / 2;
+        var direction = SkyblockerConfig.get().general.titleContainer.direction;
+        var alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+        int x1 = 0;
+        int x2 = 0;
+        int y1 = 0;
+        int y2 = 0;
+        if(direction == SkyblockerConfig.Direction.HORIZONTAL) {
+            switch (alignment) {
+                case RIGHT:
+                    x1 = hudX - midWidth * 2;
+                    x2 = hudX;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+                case MIDDLE:
+                    x1 = hudX - midWidth;
+                    x2 = hudX + midWidth;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+                case LEFT:
+                    x1 = hudX;
+                    x2 = hudX + midWidth * 2;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+            }
+        } else {
+            switch (alignment) {
+                case RIGHT:
+                    x1 = hudX - midWidth * 2;
+                    x2 = hudX;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+                case MIDDLE:
+                    x1 = hudX - midWidth;
+                    x2 = hudX + midWidth;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+                case LEFT:
+                    x1 = hudX;
+                    x2 = hudX + midWidth * 2;
+                    y1 = hudY + 0;
+                    y2 = hudY + midHeight * 2;
+                    break;
+            }
+        }
+        if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, x1, y1, x2, y2) && button == 0) {
+            hudX = alignment == SkyblockerConfig.Alignment.RIGHT ?
+                    (int) mouseX + midWidth :
+                    (int) mouseX - (midWidth / 2);
+            hudY = (int) mouseY - (midHeight);
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
