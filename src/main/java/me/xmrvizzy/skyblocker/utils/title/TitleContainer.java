@@ -94,62 +94,76 @@ public class TitleContainer {
         var client = MinecraftClient.getInstance();
         TextRenderer textRenderer = client.textRenderer;
 
+        // Calculate Scale to use
         float scale = 3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F);
 
+        // Grab direction and alignment values
         SkyblockerConfig.Direction direction = SkyblockerConfig.get().general.titleContainer.direction;
         SkyblockerConfig.Alignment alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+        // x/y refer to the starting position for the text
+        // y always starts at yPos
         float x = 0;
-        float y;
+        float y = yPos;
+
+        //Calculate the width of combined text
         float width = 0;
         for (Title title : titles) {
             width += textRenderer.getWidth(title.getText()) * scale + 10;
         }
-        if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
-            if (alignment == SkyblockerConfig.Alignment.MIDDLE) {
+
+        if (alignment == SkyblockerConfig.Alignment.MIDDLE) {
+            if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
+                //If middle aligned horizontally, start the xPosition at half of the width to the left.
                 x = xPos - (width / 2);
-            }
-        } else {
-            if (alignment == SkyblockerConfig.Alignment.MIDDLE) {
+            } else {
+                //If middle aligned vertically, start at xPos, we will shift each text to the left later
                 x = xPos;
             }
         }
         if (alignment == SkyblockerConfig.Alignment.LEFT || alignment == SkyblockerConfig.Alignment.RIGHT) {
+            //If left or right aligned, start at xPos, we will shift each text later
             x = xPos;
         }
-        y = yPos;
 
         for (Title title : titles) {
+            //Translate the matrix to the texts position and scale
             context.getMatrices().push();
             context.getMatrices().translate(title.lastX, title.lastY, 200);
             context.getMatrices().scale(scale, scale, scale);
 
+            //Calculate which x the text should use
             float xToUse;
             if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
                 xToUse = alignment == SkyblockerConfig.Alignment.RIGHT ?
-                        x - (textRenderer.getWidth(title.getText()) * scale) :
+                        x - (textRenderer.getWidth(title.getText()) * scale) : //if right aligned we need the text position to be aligned on the right side.
                         x;
             } else {
                 xToUse = alignment == SkyblockerConfig.Alignment.MIDDLE ?
-                        x - (textRenderer.getWidth(title.getText()) * scale) / 2 :
+                        x - (textRenderer.getWidth(title.getText()) * scale) / 2 : //if middle aligned we need the text position to be aligned in the middle.
                         alignment == SkyblockerConfig.Alignment.RIGHT ?
-                                x - (textRenderer.getWidth(title.getText()) * scale) :
+                                x - (textRenderer.getWidth(title.getText()) * scale) : //if right aligned we need the text position to be aligned on the right side.
                                 x;
             }
+            //Lerp the texts x and y variables
             title.lastX = MathHelper.lerp(tickDelta * 0.5F, title.lastX, xToUse);
             title.lastY = MathHelper.lerp(tickDelta * 0.5F, title.lastY, y);
 
             if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
                 if (alignment == SkyblockerConfig.Alignment.MIDDLE || alignment == SkyblockerConfig.Alignment.LEFT) {
+                    //Move to the right if middle or left aligned
                     x += textRenderer.getWidth(title.getText()) * scale + 10;
                 }
 
                 if (alignment == SkyblockerConfig.Alignment.RIGHT) {
+                    //Move to the left if right aligned
                     x -= textRenderer.getWidth(title.getText()) * scale + 10;
                 }
             } else {
+                //Y always moves by the same amount if vertical
                 y += textRenderer.fontHeight * scale + 10;
             }
 
+            //Draw text
             context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, 0xFFFFFF);
             context.getMatrices().pop();
         }

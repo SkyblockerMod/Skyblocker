@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TitleContainerConfigScreen extends Screen {
     private final Title example1 = new Title(Text.literal("Test1").formatted(Formatting.RED));
@@ -33,9 +34,10 @@ public class TitleContainerConfigScreen extends Screen {
         TitleContainer.render(context, Set.of(example1, example2, example3), hudX, hudY, delta);
         SkyblockerConfig.Direction direction = SkyblockerConfig.get().general.titleContainer.direction;
         SkyblockerConfig.Alignment alignment = SkyblockerConfig.get().general.titleContainer.alignment;
-        context.drawCenteredTextWithShadow(client.textRenderer, "Press Q/E to change Alignment: " + alignment, width / 2, client.textRenderer.fontHeight * 2, Color.WHITE.getRGB());
-        context.drawCenteredTextWithShadow(client.textRenderer, "Press R to change Direction: " + direction, width / 2, client.textRenderer.fontHeight * 3 + 5, Color.WHITE.getRGB());
-        context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, client.textRenderer.fontHeight * 4 + 10, Color.GRAY.getRGB());
+        context.drawCenteredTextWithShadow(textRenderer, "Press Q/E to change Alignment: " + alignment, width / 2, textRenderer.fontHeight * 2, Color.WHITE.getRGB());
+        context.drawCenteredTextWithShadow(textRenderer, "Press R to change Direction: " + direction, width / 2, textRenderer.fontHeight * 3 + 5, Color.WHITE.getRGB());
+        context.drawCenteredTextWithShadow(textRenderer, "Press +/- to change Scale", width / 2, textRenderer.fontHeight * 4 + 10, Color.WHITE.getRGB());
+        context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, textRenderer.fontHeight * 5 + 15, Color.GRAY.getRGB());
 
         Pair<Vector2i, Vector2i> boundingBox = getSelectionBoundingBox();
         int x1 = boundingBox.getLeft().x;
@@ -101,9 +103,11 @@ public class TitleContainerConfigScreen extends Screen {
         int y2 = boundingBox.getRight().y;
 
         if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, x1, y1, x2, y2) && button == 0) {
-            hudX = alignment == SkyblockerConfig.Alignment.RIGHT ?
-                    (int) mouseX + midWidth :
-                    (int) mouseX - (midWidth / 2);
+            hudX = switch (alignment) {
+                case LEFT ->(int) mouseX - midWidth;
+                case MIDDLE -> (int) mouseX;
+                case RIGHT -> (int) mouseX + midWidth;
+            };
             hudY = (int) mouseY - (midHeight);
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
@@ -142,6 +146,12 @@ public class TitleContainerConfigScreen extends Screen {
                 case HORIZONTAL -> SkyblockerConfig.Direction.VERTICAL;
                 case VERTICAL -> SkyblockerConfig.Direction.HORIZONTAL;
             };
+        }
+        if (keyCode == GLFW.GLFW_KEY_EQUAL) {
+            SkyblockerConfig.get().general.titleContainer.titleContainerScale += 10;
+        }
+        if (keyCode == GLFW.GLFW_KEY_MINUS) {
+            SkyblockerConfig.get().general.titleContainer.titleContainerScale -= 10;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
