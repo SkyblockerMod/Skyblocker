@@ -1,10 +1,13 @@
 package me.xmrvizzy.skyblocker.utils;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.PriorityQueue;
+import java.util.function.Supplier;
 
 /**
  * A scheduler for running tasks at a later time. Tasks will be run synchronously on the main client thread. Use the instance stored in {@link SkyblockerMod#scheduler}. Do not instantiate this class.
@@ -48,6 +51,24 @@ public class Scheduler {
         } else {
             new CyclicTask(task, period).run();
         }
+    }
+
+    /**
+     * Schedules a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
+     *
+     * @param screenSupplier the supplier of the screen to open
+     */
+    public void queueOpenScreen(Supplier<Screen> screenSupplier) {
+        queueOpenScreen(screenSupplier.get());
+    }
+
+    /**
+     * Schedules a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
+     *
+     * @param screen the supplier of the screen to open
+     */
+    public void queueOpenScreen(Screen screen) {
+        MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
     }
 
     public void tick() {

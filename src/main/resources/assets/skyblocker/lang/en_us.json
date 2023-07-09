@@ -52,6 +52,13 @@
   "text.autoconfig.skyblocker.option.general.hitbox": "Hitboxes",
   "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
+  "text.autoconfig.skyblocker.option.general.titleContainer": "Title Container",
+  "text.autoconfig.skyblocker.option.general.titleContainer.@Tooltip": "Used to display multiple titles at once, Example use: Vampire Slayer",
+  "text.autoconfig.skyblocker.option.general.titleContainer.titleContainerScale": "Title Container Scale",
+  "text.autoconfig.skyblocker.option.general.titleContainer.x": "Title Container X Position",
+  "text.autoconfig.skyblocker.option.general.titleContainer.y": "Title Container Y Position",
+  "text.autoconfig.skyblocker.option.general.titleContainer.direction": "Title Container Orientation",
+  "text.autoconfig.skyblocker.option.general.titleContainer.alignment": "Title Container Horizontal Alignment",
   "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
   "skyblocker.itemTooltip.noData": "§cNo Data",
 
@@ -240,6 +247,9 @@
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableSteakStakeIndicator": "Enable Steak Stake Indicator",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency": "Steak Stake Indicator Update Frequency (Ticks)",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableManiaIndicator": "Enable Mania Block Indicator",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency": "Mania Indicator Update Frequency (Ticks)",
+  "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
 
   "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2There is a new version available!",
   "skyblocker.update.update_link": " §2§nClick here§r",
@@ -255,6 +265,7 @@
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",
+  "skyblocker.rift.mania": "Mania!",
   "skyblocker.rift.stakeNow": "Stake now!",
   "skyblocker.fairySouls.markAllFound": "Marked all fairy souls in the current island as found",
   "skyblocker.fairySouls.markAllMissing": "Marked all fairy souls in the current island as missing"

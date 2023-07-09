@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderHelper;
+import me.xmrvizzy.skyblocker.utils.title.Title;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class FishingHelper {
+    private static final Title title = new Title("skyblocker.fishing.reelNow", Formatting.GREEN);
     private static long startTime;
     private static Vec3d normalYawVector;
 
@@ -49,7 +51,7 @@ public class FishingHelper {
             if (player != null && player.fishHook != null) {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
                 if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.getPos().squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
-                    RenderHelper.displayTitleAndPlaySound(10, 5, "skyblocker.fishing.reelNow", Formatting.GREEN);
+                    RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
                     reset();
                 }
             } else {

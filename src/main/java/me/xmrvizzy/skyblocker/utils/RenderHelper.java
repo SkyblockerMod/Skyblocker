@@ -2,6 +2,8 @@ package me.xmrvizzy.skyblocker.utils;
 
 import me.x150.renderer.render.Renderer3d;
 import me.xmrvizzy.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
+import me.xmrvizzy.skyblocker.utils.title.Title;
+import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
@@ -49,6 +51,31 @@ public class RenderHelper {
         MinecraftClient.getInstance().inGameHud.setTitleTicks(0, stayTicks, fadeOutTicks);
         MinecraftClient.getInstance().inGameHud.setTitle(Text.translatable(titleKey).formatted(formatting));
         playNotificationSound();
+    }
+
+    /**
+     * Adds the title to {@link TitleContainer} and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
+     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
+     *
+     * @param title the title
+     */
+    public static void displayInTitleContainerAndPlaySound(Title title) {
+        if (TitleContainer.addTitle(title)) {
+            playNotificationSound();
+        }
+    }
+
+    /**
+     * Adds the title to {@link TitleContainer} for a set number of ticks and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
+     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
+     *
+     * @param title the title
+     * @param ticks the number of ticks the title will remain
+     */
+    public static void displayInTitleContainerAndPlaySound(Title title, int ticks) {
+        if (TitleContainer.addTitle(title, ticks)) {
+            playNotificationSound();
+        }
     }
 
     private static void playNotificationSound() {
