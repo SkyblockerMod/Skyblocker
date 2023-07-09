@@ -11,8 +11,8 @@ import net.minecraft.util.Formatting;
  */
 public class Title {
     private MutableText text;
-    protected float lastX = 0;
-    protected float lastY = 0;
+    protected float x = -1;
+    protected float y = -1;
 
     /**
      * Constructs a new title with the given translation key and formatting to be applied.
@@ -44,5 +44,14 @@ public class Title {
 
     public void setFormatting(Formatting formatting) {
         this.text.formatted(formatting);
+    }
+
+    protected boolean isDefaultPos() {
+        return x == -1 && y == -1;
+    }
+
+    protected void resetPos() {
+        this.x = -1;
+        this.y = -1;
     }
 }

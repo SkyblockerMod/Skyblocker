@@ -55,8 +55,7 @@ public class TitleContainer {
      */
     public static boolean addTitle(Title title) {
         if (titles.add(title)) {
-            title.lastX = 0;
-            title.lastY = SkyblockerConfig.get().general.titleContainer.y;
+            title.resetPos();
             return true;
         }
         return false;
@@ -126,10 +125,6 @@ public class TitleContainer {
         }
 
         for (Title title : titles) {
-            //Translate the matrix to the texts position and scale
-            context.getMatrices().push();
-            context.getMatrices().translate(title.lastX, title.lastY, 200);
-            context.getMatrices().scale(scale, scale, scale);
 
             //Calculate which x the text should use
             float xToUse;
@@ -144,10 +139,27 @@ public class TitleContainer {
                                 x - (textRenderer.getWidth(title.getText()) * scale) : //if right aligned we need the text position to be aligned on the right side.
                                 x;
             }
-            //Lerp the texts x and y variables
-            title.lastX = MathHelper.lerp(tickDelta * 0.5F, title.lastX, xToUse);
-            title.lastY = MathHelper.lerp(tickDelta * 0.5F, title.lastY, y);
 
+            //Start displaying the title at the correct position, not at the default position
+            if (title.isDefaultPos()) {
+                title.x = xToUse;
+                title.y = y;
+            }
+
+            //Lerp the texts x and y variables
+            title.x = MathHelper.lerp(tickDelta * 0.5F, title.x, xToUse);
+            title.y = MathHelper.lerp(tickDelta * 0.5F, title.y, y);
+
+            //Translate the matrix to the texts position and scale
+            context.getMatrices().push();
+            context.getMatrices().translate(title.x, title.y, 200);
+            context.getMatrices().scale(scale, scale, scale);
+
+            //Draw text
+            context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, 0xFFFFFF);
+            context.getMatrices().pop();
+
+            //Calculate the x and y positions for the next title
             if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
                 if (alignment == SkyblockerConfig.Alignment.MIDDLE || alignment == SkyblockerConfig.Alignment.LEFT) {
                     //Move to the right if middle or left aligned
@@ -162,10 +174,6 @@ public class TitleContainer {
                 //Y always moves by the same amount if vertical
                 y += textRenderer.fontHeight * scale + 10;
             }
-
-            //Draw text
-            context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, 0xFFFFFF);
-            context.getMatrices().pop();
         }
     }
 }
