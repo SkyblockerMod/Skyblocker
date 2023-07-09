@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.config;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -10,8 +11,6 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.ArrayList;
@@ -175,6 +174,11 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Hitbox hitbox = new Hitbox();
 
+        @ConfigEntry.Gui.Tooltip()
+        @ConfigEntry.Category("titleContainer")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TitleContainer titleContainer = new TitleContainer();
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
     }
@@ -245,6 +249,45 @@ public class SkyblockerConfig implements ConfigData {
     public static class Hitbox {
         public boolean oldFarmlandHitbox = true;
         public boolean oldLeverHitbox = false;
+    }
+
+    public static class TitleContainer {
+        @ConfigEntry.BoundedDiscrete(min = 30, max = 140)
+        public float titleContainerScale = 100;
+        public int x = 540;
+        public int y = 10;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public Direction direction = Direction.HORIZONTAL;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+        public Alignment alignment = Alignment.MIDDLE;
+    }
+
+    public enum Direction {
+        HORIZONTAL,
+        VERTICAL;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case HORIZONTAL -> "Horizontal";
+                case VERTICAL -> "Vertical";
+            };
+        }
+    }
+
+    public enum Alignment {
+        LEFT,
+        RIGHT,
+        MIDDLE;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case LEFT -> "Left";
+                case RIGHT -> "Right";
+                case MIDDLE -> "Middle";
+            };
+        }
     }
 
     public static class RichPresence {
@@ -399,6 +442,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
         @ConfigEntry.Gui.Tooltip()
         public int steakStakeUpdateFrequency = 5;
+        public boolean enableManiaIndicator = true;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int maniaUpdateFrequency = 5;
     }
 
     public static class Messages {
@@ -452,11 +499,8 @@ public class SkyblockerConfig implements ConfigData {
     private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
         return literal(name).executes(context -> {
             // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-            SkyblockerMod.getInstance().scheduler.schedule(() -> {
-                Screen a = AutoConfig.getConfigScreen(SkyblockerConfig.class, null).get();
-                MinecraftClient.getInstance().setScreen(a);
-            }, 0);
-            return 1;
+            SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null));
+            return Command.SINGLE_SUCCESS;
         });
     }
 
