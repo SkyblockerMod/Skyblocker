@@ -19,6 +19,7 @@ public class SearchResultsWidget implements Drawable {
     private static final Identifier TEXTURE = new Identifier("textures/gui/recipe_book.png");
     private static final int COLS = 5;
     private static final int MAX_TEXT_WIDTH = 126;
+    private static final String ELLIPSIS = "...";
 
     private final MinecraftClient client;
     private final int parentX;
@@ -114,10 +115,10 @@ public class SearchResultsWidget implements Drawable {
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
             String craftText = this.recipeResults.get(this.currentPage).craftText;
-            if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + "...";
+            if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS;
             context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
-            if (textRenderer.getWidth(resultText) > MAX_TEXT_WIDTH) resultText = Text.literal(textRenderer.trimToWidth(resultText.getString(), MAX_TEXT_WIDTH) + "...").setStyle(resultText.getStyle());
+            if (textRenderer.getWidth(resultText) > MAX_TEXT_WIDTH) resultText = Text.literal(textRenderer.trimToWidth(resultText.getString(), MAX_TEXT_WIDTH) + ELLIPSIS).setStyle(resultText.getStyle());
             context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
             context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
         }
