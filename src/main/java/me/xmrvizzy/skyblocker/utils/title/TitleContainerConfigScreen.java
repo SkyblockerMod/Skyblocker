@@ -3,19 +3,16 @@ package me.xmrvizzy.skyblocker.utils.title;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderUtils;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
-import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TitleContainerConfigScreen extends Screen {
     private final Title example1 = new Title(Text.literal("Test1").formatted(Formatting.RED));
@@ -52,7 +49,7 @@ public class TitleContainerConfigScreen extends Screen {
         context.drawVerticalLine(x2, y1, y2, Color.RED.getRGB());
     }
 
-    public Pair<Vector2f, Vector2f> getSelectionBoundingBox() {
+    private Pair<Vector2f, Vector2f> getSelectionBoundingBox() {
         SkyblockerConfig.Alignment alignment = SkyblockerConfig.get().general.titleContainer.alignment;
 
         float midWidth = getSelectionWidth() / 2F;
@@ -77,14 +74,14 @@ public class TitleContainerConfigScreen extends Screen {
         return new Pair<>(new Vector2f(x1, y1), new Vector2f(x2, y2));
     }
 
-    public float getSelectionHeight() {
+    private float getSelectionHeight() {
         float scale = (3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F));
         return SkyblockerConfig.get().general.titleContainer.direction == SkyblockerConfig.Direction.HORIZONTAL ?
                 (textRenderer.fontHeight * scale) :
                 (textRenderer.fontHeight + 10F) * 3F * scale;
     }
 
-    public float getSelectionWidth() {
+    private float getSelectionWidth() {
         float scale = (3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F));
         return SkyblockerConfig.get().general.titleContainer.direction == SkyblockerConfig.Direction.HORIZONTAL ?
                 (textRenderer.getWidth("Test1") + 10 + textRenderer.getWidth("Test23") + 10 + textRenderer.getWidth("Testing1234")) * scale :
@@ -105,7 +102,7 @@ public class TitleContainerConfigScreen extends Screen {
 
         if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, (int) x1, (int) y1, (int) x2, (int) y2) && button == 0) {
             hudX = switch (alignment) {
-                case LEFT ->(int) mouseX - midWidth;
+                case LEFT -> (int) mouseX - midWidth;
                 case MIDDLE -> (int) mouseX;
                 case RIGHT -> (int) mouseX + midWidth;
             };
@@ -117,7 +114,7 @@ public class TitleContainerConfigScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 1) {
-            hudX = this.width / 2;
+            hudX = (float) this.width / 2;
             hudY = this.height * 0.6F;
         }
         return super.mouseClicked(mouseX, mouseY, button);
