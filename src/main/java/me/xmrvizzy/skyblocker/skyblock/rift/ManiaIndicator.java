@@ -9,6 +9,7 @@ import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
@@ -30,7 +31,7 @@ public class ManiaIndicator {
                 anyMania = true;
                 BlockPos pos = MinecraftClient.getInstance().player.getBlockPos().down();
                 boolean isGreen = MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
-                title.setFormatting(isGreen ? Formatting.GREEN : Formatting.RED);
+                title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
                 RenderHelper.displayInTitleContainerAndPlaySound(title);
             }
         }

@@ -42,10 +42,6 @@ public class Title {
         this.text = text;
     }
 
-    public void setFormatting(Formatting formatting) {
-        this.text.formatted(formatting);
-    }
-
     protected boolean isDefaultPos() {
         return x == -1 && y == -1;
     }
