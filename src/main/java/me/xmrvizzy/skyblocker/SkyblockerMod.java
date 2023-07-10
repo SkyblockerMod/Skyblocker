@@ -7,7 +7,6 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.gui.ContainerSolverManager;
 import me.xmrvizzy.skyblocker.skyblock.*;
-import me.xmrvizzy.skyblocker.skyblock.api.StatsCommand;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.LividColor;
@@ -74,10 +73,8 @@ public class SkyblockerMod implements ClientModInitializer {
         NEURepo.init();
         BackpackPreview.init();
         QuickNav.init();
-        StatsCommand.init();
         DwarvenHud.init();
         ChatMessageListener.init();
-        UpdateChecker.init();
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();
