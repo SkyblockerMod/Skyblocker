@@ -1,0 +1,890 @@
+{
+  "copyright":"Copyright 2021 Quantizr(_risk)",
+  "license":"GPL-3.0 License <https://www.gnu.org/licenses/>",
+  "Entrance Room": {
+    "category": "General",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "null"
+  },
+  "Fairy Room": {
+    "category": "General",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "null"
+  },
+  "Miniboss Room": {
+    "category": "General",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "null"
+  },
+  "Blood Room": {
+    "category": "General",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "null"
+  },
+  "Boss Room": {
+    "category": "General",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "null"
+  },
+  "Trivia-Room": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/739026749781835786/769725317274140733"
+  },
+  "Three-Chests": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732032683890311260/734367658476044289"
+  },
+  "Water Puzzle": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "null"
+  },
+  "Blaze-Room-1-Low": {
+    "category": "Puzzle",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732386618056638576/732409365872508938",
+    "sbp": "blaze"
+  },
+  "Blaze-Room-1-High": {
+    "category": "Puzzle",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732386618056638576/732409365872508938",
+    "sbp": "blaze"
+  },
+  "Boxes-Room": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732393810750865468/796097575710883920"
+  },
+  "Ice-Silverfish-Room": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732392830437294162/734613698194440232"
+  },
+  "Creeper-Room": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732393043679903864/734613061125799967"
+  },
+  "Defusal": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/779899404453806120/779899693210927145"
+  },
+  "Ice-Path": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732392995051143188/732796910229913670"
+  },
+  "Teleport-Pad-Room": {
+    "category": "Puzzle",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732393155017834616/732393341374824488"
+  },
+  "Tic-Tac-Toe-1": {
+    "category": "Puzzle",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732386638214332517/733858846048518215",
+    "sbp": "tictactoe"
+  },
+  "Trap-Hard-4": {
+    "category": "Trap",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733916299964710933/733922649360695366",
+    "sbp": "arrow"
+  },
+  "Trap-Very-Hard-3": {
+    "category": "Trap",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750984996155686912/756322825350152242",
+    "sbp": "crusher"
+  },
+  "Admin-0": {
+    "category": "1x1",
+    "secrets": 0,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/750984974794227844/752939761534238880"
+  },
+  "Banners-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733845562000146552/733846122761682954",
+    "sbp": "banners"
+  },
+  "Basement-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368906472488990/823744642846818314",
+    "sbp": "basement"
+  },
+  "Blue-Skulls-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733898880655294516/733899092597669891",
+    "sbp": "blue-skulls"
+  },
+  "Cage-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733879290353025055/733879414399434773",
+    "sbp": "cage"
+  },
+  "Arrow-Trap-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/761340021344567317/766954830027423764",
+    "sbp": "arrow-trap"
+  },
+  "Carpets-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368732333637672/793225115340505099",
+    "sbp": "carpets"
+  },
+  "Golden-Oasis-1": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750952925248880640/750955896707874846",
+    "sbp": "golden-oasis"
+  },
+  "Jumping-Skulls-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/741109587108823088/741110218015899648",
+    "sbp": "jumping-skulls"
+  },
+  "Duncan-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750985143325294672/766951315715653634",
+    "sbp": "duncan"
+  },
+  "Leaves-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/734299006246846514/734299567599648840",
+    "sbp": "leaves"
+  },
+  "Mirror-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733906682408730676/733906866769231960",
+    "sbp": "mirror"
+  },
+  "Mural-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733927175492993064/733928355807756308",
+    "sbp": "mural"
+  },
+  "Sanctuary-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750985107640156210/769371253869248532",
+    "sbp": "sanctuary"
+  },
+  "Sand-Dragon-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750985055026806865/759159016211087401",
+    "sbp": "sand-dragon"
+  },
+  "Hanging-Vines-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750985016443404339/756992222234280045",
+    "sbp": "hanging-vines"
+  },
+  "Silvers-Sword-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368880295444500/791782731498520597",
+    "sbp": "silvers-sword"
+  },
+  "Sloth-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732404646529859614/733866850353676399",
+    "sbp": "sloth"
+  },
+  "Steps-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733981651469598781/733982190412627988",
+    "sbp": "steps"
+  },
+  "Hall-0": {
+    "category": "1x1",
+    "secrets": 0,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750985072399614012/760732650653614100"
+  },
+  "Tomioka-0": {
+    "category": "1x1",
+    "secrets": 0,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/733858157008388157/733858193695834133"
+  },
+  "Cell-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/741308041378398309/744400045188579461",
+    "sbp": "cell"
+  },
+  "Locked-Away-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368759085039618/791687775674040320",
+    "sbp": "locked-away"
+  },
+  "Mushroom-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732499836091367467/733871633688690749",
+    "sbp": "mushroom"
+  },
+  "Prison-Cell-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732199219619692574/732399578942275634",
+    "sbp": "prison-cell"
+  },
+  "Andesite-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750970140652208228/750976087143481376",
+    "sbp": "andesite"
+  },
+  "Scaffolding-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732794387016319017/759325264848617482",
+    "sbp": "scaffolding"
+  },
+  "Multicolored-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733822576194879509/733904367844851752",
+    "sbp": "multicolored"
+  },
+  "Cobble-Wall-Pillar-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/737685130449125509/737686110523752508",
+    "sbp": "cobble-wall-pillar"
+  },
+  "Quad-Lava-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/727426780381577291/734721591648452628/734948461794820196",
+    "sbp": "quad-lava"
+  },
+  "Beams-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368654315389009/779118152176762911",
+    "sbp": "beams"
+  },
+  "Big-Red-Flag-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733854519934451732/733854644564131902",
+    "sbp": "big-red-flag"
+  },
+  "Cages-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879793359709933618/879804036449194014",
+    "sbp": "cages"
+  },
+  "Chains-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733456615927185439/733460684851118080",
+    "sbp": "chains"
+  },
+  "Dip-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733823742274175016/733901751471570954",
+    "sbp": "dip"
+  },
+  "Dome-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368678352814131/779904763823128577",
+    "sbp": "dome"
+  },
+  "Drop-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733828110432206899/733829191270793216",
+    "sbp": "drop"
+  },
+  "End-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879929045641465857/879929282141491292",
+    "sbp": "end"
+  },
+  "Granite-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733907465011200001/733907705361858582",
+    "sbp": "granite"
+  },
+  "Overgrown-Chains-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879792534841344082/879962065371021322",
+    "sbp": "overgrown-chains"
+  },
+  "Painting-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368462421786655/783514346479157268",
+    "sbp": "painting"
+  },
+  "Perch-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733839339427201135/733841512420605973",
+    "sbp": "perch"
+  },
+  "Slabs-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/735238062187085984/735238264591482880",
+    "sbp": "slabs"
+  },
+  "Small-Stairs-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368511872237599/789160479125012531",
+    "sbp": "small-stairs"
+  },
+  "Tombstone-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368894225121280/793146978712289290",
+    "sbp": "tombstone"
+  },
+  "Double-Diamond-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/880155380058046474/880155606240100402",
+    "sbp": "double-diamond"
+  },
+  "Water-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733522388377141289/733985939843579916",
+    "sbp": "water"
+  },
+  "Waterfall-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733536654639235083/734330554870399048",
+    "sbp": "waterfall"
+  },
+  "Raccoon-4": {
+    "category": "1x1",
+    "secrets": 4,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/733927767502225409/733928650755407933",
+    "sbp": "raccoon"
+  },
+  "Black-Flag-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368576175374346/803798156818120704",
+    "sbp": "black-flag"
+  },
+  "Dueces-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/736416554215800873/736416920416419961",
+    "sbp": "dueces"
+  },
+  "Knight-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/739944030825087117/741310655583486033",
+    "sbp": "knight"
+  },
+  "Pillars-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750985035418566706/757896936274657340",
+    "sbp": "pillars"
+  },
+  "Lava-Pool-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/750985126506266636/762941546084564993",
+    "sbp": "lava-pool"
+  },
+  "Lava-Skull-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368436408188938/776261030211747891",
+    "sbp": "lava-skull"
+  },
+  "Long-Hall-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879896823026831401/879897603091869697",
+    "sbp": "long-hall"
+  },
+  "Mini-Rail-Track-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/761340120141791272/767639390896914442",
+    "sbp": "mini-rail-track"
+  },
+  "Trinity-4": {
+    "category": "1x1",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/761340075111088149/771204594017370122",
+    "sbp": "trinity"
+  },
+  "Lots-Of-Floors-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733856132086628459/733856220544368720",
+    "sbp": "lots-of-floors"
+  },
+  "Overgrown-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368622778286111/779264739544662016",
+    "sbp": "overgrown"
+  },
+  "Red-Green-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879828980935577610/879921473542828082",
+    "sbp": "red-green"
+  },
+  "Redstone-Key-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733879689533456484/733880517736398900",
+    "sbp": "redstone-key"
+  },
+  "Sarcophagus-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/734660581004673075/734661195663015967",
+    "sbp": "sarcophagus"
+  },
+  "Spikes-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733868639572197459/733868731297431660",
+    "sbp": "spikes"
+  },
+  "Stone-Window-2": {
+    "category": "1x1",
+    "secrets": 2,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/769368930724610070/802218309969903646",
+    "sbp": "stone-window"
+  },
+  "Temple-3": {
+    "category": "1x1",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/769368563160317972/778664588996509706",
+    "sbp": "temple"
+  },
+  "Logs-4": {
+    "category": "1x1",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/734220175800401970/734297922153218068",
+    "sbp": "logs"
+  },
+  "Gold-1": {
+    "category": "1x2",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732406315137368126/733900679181238343",
+    "sbp": "gold"
+  },
+  "Skull-2": {
+    "category": "1x2",
+    "secrets": 2,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732805467721695292/732807820776439818",
+    "sbp": "skull"
+  },
+  "Archway-3": {
+    "category": "1x2",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733909034654236742/733909154254815305",
+    "sbp": "archway"
+  },
+  "Grass-Ruin-3": {
+    "category": "1x2",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879932963939307551/879933264696082432",
+    "sbp": "grass-ruin"
+  },
+  "Redstone-Warrior-3": {
+    "category": "1x2",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/737886448740728965/737887558591053936",
+    "sbp": "redstone-warrior"
+  },
+  "Balcony-4": {
+    "category": "1x2",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733845349164122146/733845463152984114",
+    "sbp": "balcony"
+  },
+  "Grand-Library-4": {
+    "category": "1x2",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879896240836456458/879900771699794013",
+    "sbp": "grand-library"
+  },
+  "Mage-4": {
+    "category": "1x2",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732835428377296937/733823880753578075",
+    "sbp": "mage"
+  },
+  "Crypt-5": {
+    "category": "1x2",
+    "secrets": 5,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/733455710578409592/733856625802346562",
+    "sbp": "crypt"
+  },
+  "Doors-5": {
+    "category": "1x2",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732810268568059937/732811162986479656",
+    "sbp": "doors"
+  },
+  "Pedestal-5": {
+    "category": "1x2",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733033960342290533/733914274157822062",
+    "sbp": "pedestal"
+  },
+  "Purple-Flags-5": {
+    "category": "1x2",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732416718244151398/733876200761458699",
+    "sbp": "purple-flags"
+  },
+  "Bridges-6": {
+    "category": "1x2",
+    "secrets": 6,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/739403470494498896/739406168253792306",
+    "sbp": "bridges"
+  },
+  "Pressure-Plates-6": {
+    "category": "1x2",
+    "secrets": 6,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/761340150789308446/766599389463707668",
+    "sbp": "pressure-plate"
+  },
+  "Diagonal-4": {
+    "category": "1x3",
+    "secrets": 4,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/733846259936526356/733848085549285436",
+    "sbp": "diagonal"
+  },
+  "Red-Blue-4": {
+    "category": "1x3",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733825061726715904/733825904354001038",
+    "sbp": "red-blue"
+  },
+  "Wizard-4": {
+    "category": "1x3",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/739247421917364324/739249863845478493",
+    "sbp": "wizard"
+  },
+  "Catwalk-6": {
+    "category": "1x3",
+    "secrets": 6,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732389363031474226/733856410579763372",
+    "sbp": "catwalk"
+  },
+  "Deathmite-6": {
+    "category": "1x3",
+    "secrets": 6,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/734266445869088808/734267107880992848",
+    "sbp": "deathmite"
+  },
+  "Gravel-6": {
+    "category": "1x3",
+    "secrets": 6,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733874409089138778/733877168752295986",
+    "sbp": "gravel"
+  },
+  "Hallway-3": {
+    "category": "1x4",
+    "secrets": 3,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732407914333077616/733909116866527243",
+    "sbp": "hallway"
+  },
+  "Mossy-4": {
+    "category": "1x4",
+    "secrets": 4,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/733881124173905930/733885339369865288",
+    "sbp": "mossy"
+  },
+  "Pit-5": {
+    "category": "1x4",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733831210870243348/733831342793556038",
+    "sbp": "pit"
+  },
+  "Quartz-Knight-7": {
+    "category": "1x4",
+    "secrets": 7,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732199310690746368/733869839680012370",
+    "sbp": "quartz-knight"
+  },
+  "Waterfall-8": {
+    "category": "1x4",
+    "secrets": 8,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879791869821849620/879904013309591612",
+    "sbp": "waterfall"
+  },
+  "Stairs-4": {
+    "category": "2x2",
+    "secrets": 4,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/733291327470698546/734217944040734851",
+    "sbp": "stairs"
+  },
+  "Buttons-5": {
+    "category": "2x2",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/761340098864087110/762900777571319818",
+    "sbp": "buttons"
+  },
+  "Museum-5": {
+    "category": "2x2",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/737882727130595390/739341655530012764",
+    "sbp": "museum"
+  },
+  "Atlas-6": {
+    "category": "2x2",
+    "secrets": 6,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/737877644107841637/737879380189249588",
+    "sbp": "atlas"
+  },
+  "Super-Tall-6": {
+    "category": "2x2",
+    "secrets": 6,
+    "fairysoul": true,
+    "dsg": "/channels/727426780381577291/739237284385128600/739242994385027234",
+    "sbp": "super-tall"
+  },
+  "Flags-7": {
+    "category": "2x2",
+    "secrets": 7,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733046323556777988/733827872740999189",
+    "sbp": "flags"
+  },
+  "Mithril-Cave-10": {
+    "category": "2x2",
+    "secrets": 10,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879793274766913616/879813440057798697",
+    "sbp": "mithril-cave"
+  },
+  "Cathedral-8": {
+    "category": "2x2",
+    "secrets": 8,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733869699305046067/733871215797731480",
+    "sbp": "cathedral"
+  },
+  "Rail-Track-9": {
+    "category": "2x2",
+    "secrets": 9,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732199320048369754/733842101976170556",
+    "sbp": "rail-track"
+  },
+  "Dino-Dig-Site-4": {
+    "category": "L-shape",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/756412502996287539/756498573536788550",
+    "sbp": "dino-dig-site"
+  },
+  "Chambers-5": {
+    "category": "L-shape",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732407775468191846/733855957934669845",
+    "sbp": "chambers"
+  },
+  "Market-5": {
+    "category": "L-shape",
+    "secrets": 5,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/733840047941353562/733845015960354876",
+    "sbp": "market"
+  },
+  "Withermancers-4": {
+    "category": "L-shape",
+    "secrets": 4,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/756271429153980477/756414928142860308",
+    "sbp": "withermancers"
+  },
+  "Lava-Ravine-6": {
+    "category": "L-shape",
+    "secrets": 6,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/739254148024893522/739261066667884544",
+    "sbp": "lava-ravine"
+  },
+  "Melon-7": {
+    "category": "L-shape",
+    "secrets": 7,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732813026830319659/732814245045075980",
+    "sbp": "melon"
+  },
+  "Well-7": {
+    "category": "L-shape",
+    "secrets": 7,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732809439371067466/733912767811027046",
+    "sbp": "well"
+  },
+  "Layers-8": {
+    "category": "L-shape",
+    "secrets": 8,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/879905397031440394/879905775072460800",
+    "sbp": "layers"
+  },
+  "Spider-9": {
+    "category": "L-shape",
+    "secrets": 9,
+    "fairysoul": false,
+    "dsg": "/channels/727426780381577291/732154637506969650/733875583536201820",
+    "sbp": "spider"
+  }
+}

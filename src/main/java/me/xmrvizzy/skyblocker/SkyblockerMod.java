@@ -11,6 +11,7 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.LividColor;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.TicTacToe;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorDyeColors;
 import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
@@ -88,6 +89,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FishingHelper.init();
         TabHud.init();
         DungeonMap.init();
+        DungeonSecrets.init();
         TheRift.init();
         TitleContainer.init();
         OcclusionCulling.init();
