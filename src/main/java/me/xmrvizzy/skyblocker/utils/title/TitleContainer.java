@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.utils.title;
 
-import com.mojang.brigadier.Command;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -9,7 +8,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.LinkedHashSet;
@@ -31,10 +29,7 @@ public class TitleContainer {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("titleContainer")
-                                .executes(context -> {
-                                    SkyblockerMod.getInstance().scheduler.queueOpenScreen(new TitleContainerConfigScreen(Text.of("Title Container HUD Config")));
-                                    return Command.SINGLE_SUCCESS;
-                                })))));
+                                .executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(TitleContainerConfigScreen::new))))));
     }
 
     /**

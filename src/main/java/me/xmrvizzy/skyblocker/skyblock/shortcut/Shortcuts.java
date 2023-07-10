@@ -177,11 +177,8 @@ public class Shortcuts {
                 source.sendFeedback(Text.of("§7/" + SkyblockerMod.NAMESPACE + " " + command));
             }
             return Command.SINGLE_SUCCESS;
-        })).then(literal("shortcuts").executes(context -> {
             // Queue the screen or else the screen will be immediately closed after executing this command
-            SkyblockerMod.getInstance().scheduler.queueOpenScreen(ShortcutsConfigScreen::new);
-            return Command.SINGLE_SUCCESS;
-        })));
+        })).then(literal("shortcuts").executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(ShortcutsConfigScreen::new))));
     }
 
     private static String modifyCommand(String command) {
