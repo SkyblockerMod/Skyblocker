@@ -3,10 +3,11 @@ package me.xmrvizzy.skyblocker.skyblock;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.PlayerListEntry;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BackpackPreview extends DrawableHelper {
+public class BackpackPreview {
     private static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/inventory_background.png");
     private static final BackpackPreview instance = new BackpackPreview();
     private static final Pattern PROFILE_PATTERN = Pattern.compile("Profile: ([a-zA-Z]+)");
@@ -40,9 +41,17 @@ public class BackpackPreview extends DrawableHelper {
     private static String loaded = ""; // uuid + sb profile currently loaded
     private static Path save_dir = null;
 
+    public static void init() {
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof HandledScreen<?> handledScreen) {
+                updateStorage(handledScreen);
+            }
+        });
+    }
+
     public static void tick() {
-        Utils.sbChecker(); // force update isOnSkyblock to prevent crash on disconnect
-        if (Utils.isOnSkyblock) {
+        Utils.update(); // force update isOnSkyblock to prevent crash on disconnect
+        if (Utils.isOnSkyblock()) {
             // save all dirty storages
             saveStorage();
             // update save dir based on uuid and sb profile
@@ -126,7 +135,7 @@ public class BackpackPreview extends DrawableHelper {
         }
     }
 
-    public static boolean renderPreview(MatrixStack matrices, int index, int mouseX, int mouseY) {
+    public static boolean renderPreview(DrawContext context, int index, int mouseX, int mouseY) {
         if (index >= 9 && index < 18) index -= 9;
         else if (index >= 27 && index < 45) index -= 18;
         else return false;
@@ -140,12 +149,13 @@ public class BackpackPreview extends DrawableHelper {
 
         RenderSystem.disableDepthTest();
         RenderSystem.setShaderTexture(0, TEXTURE);
-        BackpackPreview.drawTexture(matrices, x, y, 0, 0, 176, 7);
+        context.drawTexture(TEXTURE, x, y, 0, 0, 176, 7);
         for (int i = 0; i < rows; ++i)
-            BackpackPreview.drawTexture(matrices, x, y + i * 18 + 7, 0, 7, 176, 18);
-        BackpackPreview.drawTexture(matrices, x, y + rows * 18 + 7, 0, 25, 176, 7);
+            context.drawTexture(TEXTURE, x, y + i * 18 + 7, 0, 7, 176, 18);
+        context.drawTexture(TEXTURE, x, y + rows * 18 + 7, 0, 25, 176, 7);
         RenderSystem.enableDepthTest();
 
+        MatrixStack matrices = context.getMatrices();
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         for (int i = 9; i < storage[index].size(); ++i) {
@@ -153,8 +163,8 @@ public class BackpackPreview extends DrawableHelper {
             int itemY = y + (i - 9) / 9 * 18 + 8;
             matrices.push();
             matrices.translate(0, 0, 200);
-            itemRenderer.renderInGui(matrices, storage[index].getStack(i), itemX, itemY);
-            itemRenderer.renderGuiItemOverlay(matrices, textRenderer, storage[index].getStack(i), itemX, itemY);
+            context.drawItem(storage[index].getStack(i), itemX, itemY);
+            context.drawItemInSlot(textRenderer, storage[index].getStack(i), itemX, itemY);
             matrices.pop();
         }
 

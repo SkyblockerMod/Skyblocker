@@ -2,11 +2,12 @@ package me.xmrvizzy.skyblocker.skyblock.quicknav;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.mixin.HandledScreenAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -57,47 +58,47 @@ public class QuickNavButton extends ClickableWidget {
     public void onClick(double mouseX, double mouseY) {
         if (!this.toggled) {
             this.toggled = true;
-            CLIENT.player.networkHandler.sendCommand(command.replace("/", ""));
+            SkyblockerMod.getInstance().messageScheduler.sendMessageAfterCooldown(command);
             // TODO : add null check with log error
         }
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
         this.updateCoordinates();
-        RenderSystem.setShaderTexture(0, BUTTON_TEXTURE);
+        MatrixStack matrices = context.getMatrices();
         RenderSystem.disableDepthTest();
         // render button background
         if (!this.toggled) {
             if (this.index >= 6)
                 // this.drawTexture(matrices, this.x, this.y + 4, this.u, this.v + 4, this.width, this.height - 4);
-                DrawableHelper.drawTexture(matrices, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
+                context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
             else
                 // this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
-                DrawableHelper.drawTexture(matrices, this.getX(), this.getY() - 2, this.u, this.v, this.width, this.height - 4);
+                context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY() - 2, this.u, this.v, this.width, this.height - 4);
         // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
         } else {
         	matrices.push();
         	//Move the top buttons 2 pixels up if they're selected
         	if (this.index < 6) matrices.translate(0f, -2f, 0f);
-            DrawableHelper.drawTexture(matrices, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
+            context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
         	matrices.pop();
         }
         // render button icon
         if (!this.toggled) {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 6);
+                context.drawItem(this.icon,this.getX() + 5, this.getY() + 6);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 7);
+                context.drawItem(this.icon,this.getX() + 5, this.getY() + 7);
         } else {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 9);
+                context.drawItem(this.icon,this.getX() + 5, this.getY() + 9);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                CLIENT.getItemRenderer().renderInGui(matrices, this.icon,this.getX() + 5, this.getY() + 6);
+                context.drawItem(this.icon,this.getX() + 5, this.getY() + 6);
         }
         RenderSystem.enableDepthTest();
     }

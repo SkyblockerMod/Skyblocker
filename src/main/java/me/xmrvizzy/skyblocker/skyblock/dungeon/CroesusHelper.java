@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.container.ColorHighlight;
-import me.xmrvizzy.skyblocker.container.ContainerSolver;
+import me.xmrvizzy.skyblocker.gui.ColorHighlight;
+import me.xmrvizzy.skyblocker.gui.ContainerSolver;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -11,20 +11,23 @@ import java.util.Map;
 
 public class CroesusHelper extends ContainerSolver {
 
-    public CroesusHelper() { super("^Croesus$"); }
+    public CroesusHelper() {
+        super("^Croesus$");
+    }
 
     @Override
-    public boolean isEnabled() {
+    protected boolean isEnabled() {
         return SkyblockerConfig.get().locations.dungeons.croesusHelper;
     }
 
     @Override
-    public List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null && stack.getNbt().toString().contains("opened"))
-                highlights.add(new ColorHighlight(entry.getKey(), GRAY_HIGHLIGHT));
+            if (stack != null && stack.getNbt() != null && stack.getNbt().toString().contains("opened")) {
+                highlights.add(ColorHighlight.gray(entry.getKey()));
+            }
         }
         return highlights;
     }

@@ -1,15 +1,22 @@
 package me.xmrvizzy.skyblocker.config;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 @Config(name = "skyblocker")
 public class SkyblockerConfig implements ConfigData {
@@ -21,6 +28,10 @@ public class SkyblockerConfig implements ConfigData {
     @ConfigEntry.Category("locations")
     @ConfigEntry.Gui.TransitiveObject
     public Locations locations = new Locations();
+
+    @ConfigEntry.Category("slayer")
+    @ConfigEntry.Gui.TransitiveObject
+    public Slayer slayer = new Slayer();
 
     @ConfigEntry.Category("quickNav")
     @ConfigEntry.Gui.TransitiveObject
@@ -59,7 +70,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button6")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"),  "Storage", "/storage");
+        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"), "Storage", "/storage");
 
         @ConfigEntry.Category("button7")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -124,8 +135,13 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class General {
         public boolean enableUpdateNotification = true;
+        public boolean acceptReparty = true;
         public boolean backpackPreviewWithoutShift = false;
         public boolean hideEmptyTooltips = true;
+
+        @ConfigEntry.Category("tabHud")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TabHudConf tabHud = new TabHudConf();
 
         @ConfigEntry.Gui.Excluded
         public String apiKey;
@@ -133,7 +149,19 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("bars")
         @ConfigEntry.Gui.CollapsibleObject()
         public Bars bars = new Bars();
-      
+
+        @ConfigEntry.Category("experiments")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Experiments experiments = new Experiments();
+
+        @ConfigEntry.Category("fishing")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Fishing fishing = new Fishing();
+
+        @ConfigEntry.Category("fairySouls")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public FairySouls fairySouls = new FairySouls();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -146,8 +174,21 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Hitbox hitbox = new Hitbox();
 
+        @ConfigEntry.Gui.Tooltip()
+        @ConfigEntry.Category("titleContainer")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TitleContainer titleContainer = new TitleContainer();
+
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
+    }
+
+    public static class TabHudConf {
+        public boolean tabHudEnabled = true;
+
+        @ConfigEntry.BoundedDiscrete(min = 10, max = 200)
+        @ConfigEntry.Gui.Tooltip()
+        public int tabHudScale = 100;
     }
 
     public static class Bars {
@@ -177,7 +218,7 @@ public class SkyblockerConfig implements ConfigData {
         NONE;
 
         @Override
-		public String toString() {
+        public String toString() {
             return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
         }
 
@@ -191,9 +232,62 @@ public class SkyblockerConfig implements ConfigData {
         }
     }
 
+    public static class Experiments {
+        public boolean enableChronomatronSolver = true;
+        public boolean enableSuperpairsSolver = true;
+        public boolean enableUltrasequencerSolver = true;
+    }
+
+    public static class Fishing {
+        public boolean enableFishingHelper = true;
+    }
+
+    public static class FairySouls {
+        public boolean enableFairySoulsHelper = false;
+    }
+
     public static class Hitbox {
         public boolean oldFarmlandHitbox = true;
         public boolean oldLeverHitbox = false;
+    }
+
+    public static class TitleContainer {
+        @ConfigEntry.BoundedDiscrete(min = 30, max = 140)
+        public float titleContainerScale = 100;
+        public int x = 540;
+        public int y = 10;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public Direction direction = Direction.HORIZONTAL;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+        public Alignment alignment = Alignment.MIDDLE;
+    }
+
+    public enum Direction {
+        HORIZONTAL,
+        VERTICAL;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case HORIZONTAL -> "Horizontal";
+                case VERTICAL -> "Vertical";
+            };
+        }
+    }
+
+    public enum Alignment {
+        LEFT,
+        RIGHT,
+        MIDDLE;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case LEFT -> "Left";
+                case RIGHT -> "Right";
+                case MIDDLE -> "Middle";
+            };
+        }
     }
 
     public static class RichPresence {
@@ -215,13 +309,15 @@ public class SkyblockerConfig implements ConfigData {
         BOTH;
 
         @Override
-		public String toString() {
+        public String toString() {
             return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
         }
     }
 
     public static class ItemTooltip {
         public boolean enableNPCPrice = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean enableMotesPrice = true;
         public boolean enableAvgBIN = true;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         @ConfigEntry.Gui.Tooltip()
@@ -243,6 +339,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("dwarvenmines")
         @ConfigEntry.Gui.CollapsibleObject()
         public DwarvenMines dwarvenMines = new DwarvenMines();
+
+        @ConfigEntry.Category("rift")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Rift rift = new Rift();
     }
 
     public static class Dungeons {
@@ -250,11 +350,22 @@ public class SkyblockerConfig implements ConfigData {
         public boolean croesusHelper = true;
         public boolean enableMap = true;
         public float mapScaling = 1f;
+        public int mapX = 2;
+        public int mapY = 2;
         public boolean solveThreeWeirdos = true;
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
+        @ConfigEntry.Gui.CollapsibleObject
+        public LividColor lividColor = new LividColor();
         @ConfigEntry.Gui.CollapsibleObject()
         public Terminals terminals = new Terminals();
+    }
+
+    public static class LividColor {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableLividColor = true;
+        @ConfigEntry.Gui.Tooltip()
+        public String lividColorText = "The livid color is [color]";
     }
 
     public static class Terminals {
@@ -273,14 +384,68 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class DwarvenHud {
         public boolean enabled = true;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip(count = 3)
+        public Style style = Style.SIMPLE;
         public boolean enableBackground = true;
         public int x = 10;
         public int y = 10;
     }
 
+    public enum Style {
+        SIMPLE,
+        FANCY,
+        CLASSIC;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case SIMPLE -> "Simple";
+                case FANCY -> "Fancy";
+                case CLASSIC -> "Classic";
+            };
+        }
+    }
+
     public static class Barn {
         public boolean solveHungryHiker = true;
         public boolean solveTreasureHunter = true;
+    }
+
+    public static class Rift {
+        public boolean mirrorverseWaypoints = true;
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 5)
+        @ConfigEntry.Gui.Tooltip
+        public int mcGrubberStacks = 0;
+    }
+
+    public static class Slayer {
+        @ConfigEntry.Category("vampire")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public VampireSlayer vampireSlayer = new VampireSlayer();
+    }
+
+    public static class VampireSlayer {
+        public boolean enableEffigyWaypoints = true;
+        public boolean compactEffigyWaypoints;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int effigyUpdateFrequency = 5;
+        public boolean enableHolyIceIndicator = true;
+        public int holyIceIndicatorTickDelay = 10;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int holyIceUpdateFrequency = 5;
+        public boolean enableHealingMelonIndicator = true;
+        public float healingMelonHealthThreshold = 4F;
+        public boolean enableSteakStakeIndicator = true;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int steakStakeUpdateFrequency = 5;
+        public boolean enableManiaIndicator = true;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
+        @ConfigEntry.Gui.Tooltip()
+        public int maniaUpdateFrequency = 5;
     }
 
     public static class Messages {
@@ -310,14 +475,33 @@ public class SkyblockerConfig implements ConfigData {
         PURSE,
         BITS,
         LOCATION;
+
         @Override
         public String toString() {
             return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
         }
     }
 
+    /**
+     * Registers the config to AutoConfig and register commands to open the config screen.
+     */
     public static void init() {
         AutoConfig.register(SkyblockerConfig.class, GsonConfigSerializer::new);
+        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal("skyblocker").then(optionsLiteral("config")).then(optionsLiteral("options")))));
+    }
+
+    /**
+     * Registers an options command with the given name. Used for registering both options and config as valid commands.
+     *
+     * @param name the name of the command node
+     * @return the command builder
+     */
+    private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
+        return literal(name).executes(context -> {
+            // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
+            SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null));
+            return Command.SINGLE_SUCCESS;
+        });
     }
 
     public static SkyblockerConfig get() {

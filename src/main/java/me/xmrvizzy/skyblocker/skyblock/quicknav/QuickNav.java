@@ -1,9 +1,11 @@
 package me.xmrvizzy.skyblocker.skyblock.quicknav;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-
+import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.StringNbtReader;
 
@@ -14,6 +16,17 @@ import java.util.Locale;
 public class QuickNav {
     private static final String skyblockHubIconNbt = "{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}";
     private static final String dungeonHubIconNbt = "{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;1605800870,415127827,-1236127084,15358548],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}}}}";
+
+    public static void init() {
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (Utils.isOnSkyblock() && SkyblockerConfig.get().quickNav.enableQuickNav && screen instanceof HandledScreen<?>) {
+                String screenTitle = screen.getTitle().getString().trim();
+                List<QuickNavButton> buttons = QuickNav.init(screenTitle);
+                for (QuickNavButton button : buttons) Screens.getButtons(screen).add(button);
+            }
+        });
+    }
+
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
         SkyblockerConfig.QuickNav data = SkyblockerConfig.get().quickNav;

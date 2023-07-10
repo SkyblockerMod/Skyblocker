@@ -1,17 +1,22 @@
 package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.ArrayList;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -36,23 +41,26 @@ public class ResultButtonWidget extends ClickableWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
         MinecraftClient client = MinecraftClient.getInstance();
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
         // this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
-        DrawableHelper.drawTexture(matrices, this.getX(), this.getY(), 29, 206, this.getWidth(), this.getHeight());
+        context.drawTexture(BACKGROUND_TEXTURE, this.getX(), this.getY(), 29, 206, this.getWidth(), this.getHeight());
         // client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
-        client.getItemRenderer().renderInGui(matrices, this.itemStack, this.getX() + 4, this.getY() + 4);
+        context.drawItem(this.itemStack, this.getX() + 4, this.getY() + 4);
         // client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
-        client.getItemRenderer().renderGuiItemOverlay(matrices, client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
+        context.drawItemInSlot(client.textRenderer, itemStack, this.getX() + 4, this.getY() + 4);
     }
 
-    public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
+    public void renderTooltip(DrawContext context, int mouseX, int mouseY) {
         MinecraftClient client = MinecraftClient.getInstance();
-        List<Text> tooltip = client.currentScreen.getTooltipFromItem(this.itemStack);
-        // TODO : add null check with log error
-        client.currentScreen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        List<Text> tooltip = Screen.getTooltipFromItem(client, this.itemStack);
+        List<OrderedText> orderedTooltip = new ArrayList<>();
+            
+        for(int i = 0; i < tooltip.size(); i++) {
+        	orderedTooltip.add(tooltip.get(i).asOrderedText());
+        }
+                        
+        client.currentScreen.setTooltip(orderedTooltip);
     }
 
 	@Override

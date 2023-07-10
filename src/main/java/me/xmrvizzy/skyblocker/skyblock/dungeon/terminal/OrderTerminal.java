@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.terminal;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.container.ColorHighlight;
-import me.xmrvizzy.skyblocker.container.ContainerSolver;
+import me.xmrvizzy.skyblocker.gui.ColorHighlight;
+import me.xmrvizzy.skyblocker.gui.ContainerSolver;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
@@ -21,14 +21,14 @@ public class OrderTerminal extends ContainerSolver {
     }
 
     @Override
-    public boolean isEnabled() {
+    protected boolean isEnabled() {
         orderedSlots = null;
         currentNum = 0;
         return SkyblockerConfig.get().locations.dungeons.terminals.solveOrder;
     }
 
     @Override
-    public List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
         if(orderedSlots == null && !orderSlots(slots))
             return Collections.emptyList();
         while(currentNum < PANES_NUM && Items.LIME_STAINED_GLASS_PANE.equals(slots.get(orderedSlots[currentNum]).getItem()))
