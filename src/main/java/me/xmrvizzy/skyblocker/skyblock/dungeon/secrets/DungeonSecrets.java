@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +13,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.InflaterInputStream;
 
@@ -29,10 +33,17 @@ public class DungeonSecrets {
         return roomsLoaded != null && roomsLoaded.isDone();
     }
 
+    /**
+     * Loads the dungeon secrets asynchronously from {@code /assets/skyblocker/dungeons}.
+     * Use {@link #isRoomsLoaded()} to check for completion of loading.
+     */
     public static void init() {
+        if (SkyblockerConfig.get().locations.dungeons.noLoadSecretWaypoints) {
+            return;
+        }
         CompletableFuture.runAsync(() -> {
-            List<CompletableFuture<Void>> dungeonFutures = Collections.synchronizedList(new ArrayList<>());
             try {
+                List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
                 //noinspection DataFlowIssue
                 File dungeons = new File(SkyblockerMod.class.getResource(DUNGEONS_DATA_DIR).getFile());
                 int resourcePathIndex = dungeons.getPath().indexOf(DUNGEONS_DATA_DIR);
@@ -53,17 +64,20 @@ public class DungeonSecrets {
                     }
                     dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.debug("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getName(), ROOMS.get(dungeon.getName()).size(), ROOMS.get(dungeon.getName()).values().stream().mapToInt(HashMap::size).sum())));
                 }
-            } catch (NullPointerException e) {
+                // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
+                dungeonFutures.add(CompletableFuture.runAsync(() -> {
+                    try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
+                        roomsJson = SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class);
+                        waypointsJson = SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class);
+                        LOGGER.debug("Loaded dungeon secrets json");
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to load dungeon secrets json", e);
+                    }
+                }, MinecraftClient.getInstance()));
+                roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
+            } catch (Exception e) {
                 LOGGER.error("Failed to load dungeon secrets", e);
             }
-            try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
-                roomsJson = SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class);
-                waypointsJson = SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class);
-                LOGGER.debug("Loaded dungeon secrets json");
-            } catch (IOException e) {
-                LOGGER.error("Failed to load dungeon secrets json", e);
-            }
-            roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
         });
     }
 

@@ -407,6 +407,8 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Dungeons {
+        public boolean secretWaypoints = true;
+        public boolean noLoadSecretWaypoints = false;
         @ConfigEntry.Gui.Tooltip()
         public boolean croesusHelper = true;
         public boolean enableMap = true;
