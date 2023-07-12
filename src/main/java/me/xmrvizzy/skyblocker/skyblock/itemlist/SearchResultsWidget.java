@@ -119,7 +119,7 @@ public class SearchResultsWidget implements Drawable {
     	TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
-        	//Craft text - usually a requirement for the recipe
+            //Craft text - usually a requirement for the recipe
             String craftText = this.recipeResults.get(this.currentPage).craftText;
             if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) {
             	drawTooltip(textRenderer, context, craftText, this.parentX + 11, this.parentY + 31, mouseX, mouseY);
