@@ -73,13 +73,5 @@
   "text.autoconfig.skyblocker.option.messages.hideCombo": "Cacher les messages de combo",
   "text.autoconfig.skyblocker.option.messages.hideAutopet": "Cacher les messages de l'auto-familier",
   "text.autoconfig.skyblocker.option.messages.hideMana": "Cacher les messages de consommation de mana de la barre d'action",
-  "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Permet une meilleure expérience avec les barres",
-
-  "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2Une nouvelle version est disponible !",
-  "skyblocker.update.update_link": " §2§nCliquez ici§r",
-  "skyblocker.update.update_message_end": " §apour découvrir les dernières fonctionnalités.",
-  "skyblocker.update.hover_text": "Ouvrir Modrinth",
-  "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "Notification de mise à jour",
-
-  "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2Votre clé d'API a été automatiquement définie!"
+  "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Permet une meilleure expérience avec les barres"
 }

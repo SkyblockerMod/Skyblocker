@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.chat;
 
 import me.xmrvizzy.skyblocker.chat.filters.*;
-import me.xmrvizzy.skyblocker.skyblock.api.ApiKeyListener;
 import me.xmrvizzy.skyblocker.skyblock.barn.HungryHiker;
 import me.xmrvizzy.skyblocker.skyblock.barn.TreasureHunter;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.Reparty;
@@ -37,7 +36,6 @@ public interface ChatMessageListener {
     static void init() {
         ChatMessageListener[] listeners = new ChatMessageListener[]{
                 // Features
-                new ApiKeyListener(),
                 new Fetchur(),
                 new Puzzler(),
                 new Reparty(),

@@ -180,10 +180,4 @@
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "Autopet 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideMana": "액션바에서 마나 사용 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBar 로 더 나은 기능을 사용합니다",
-    "skyblocker.update.update_message": "§b[§6Skyblocker§b] §2새로운 버전이 사용 가능합니다!",
-    "skyblocker.update.update_link": " §2§n여기§r",
-    "skyblocker.update.update_message_end": " §a를 클릭하여 최신 기능에 대해 알아보세요.",
-    "skyblocker.update.hover_text": "Modrinth 열기",
-    "text.autoconfig.skyblocker.option.general.enableUpdateNotification": "업데이트 알림",
-    "skyblocker.api.got_key": "§b[§6Skyblocker§b] §2자동으로 API 키를 설정했습니다!"
 }
