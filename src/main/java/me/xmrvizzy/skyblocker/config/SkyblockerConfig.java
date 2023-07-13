@@ -188,6 +188,25 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(min = 10, max = 200)
         @ConfigEntry.Gui.Tooltip()
         public int tabHudScale = 100;
+        @ConfigEntry.Gui.Tooltip
+        public boolean plainPlayerNames = false;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip
+        public NameSorting nameSorting = NameSorting.DEFAULT;
+        
+    }
+    
+    public enum NameSorting {
+    	DEFAULT,
+        ALPHABETICAL;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case DEFAULT -> "Default";
+                case ALPHABETICAL -> "Alphabetical";
+            };
+        }
     }
 
     public static class Bars {

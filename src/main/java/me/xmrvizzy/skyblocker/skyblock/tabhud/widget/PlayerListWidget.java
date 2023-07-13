@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
@@ -48,13 +49,15 @@ public class PlayerListWidget extends Widget {
         for (int i = 80; i < listlen; i++) {
             list.add(PlayerListMgr.getRaw(i));
         }
-
-        Collections.sort(list, new Comparator<PlayerListEntry>() {
-            @Override
-            public int compare(PlayerListEntry o1, PlayerListEntry o2) {
-                return o1.getProfile().getName().toLowerCase().compareTo(o2.getProfile().getName().toLowerCase());
-            }
-        });
+        
+        if (SkyblockerConfig.get().general.tabHud.nameSorting == SkyblockerConfig.NameSorting.ALPHABETICAL) {
+            Collections.sort(list, new Comparator<PlayerListEntry>() {
+                @Override
+                public int compare(PlayerListEntry o1, PlayerListEntry o2) {
+                    return o1.getProfile().getName().toLowerCase().compareTo(o2.getProfile().getName().toLowerCase());
+                }
+            });
+        }
 
         int x = 0, y = 0;
 
