@@ -18,8 +18,8 @@ public class AdFilter extends ChatPatternListener {
 		// Groups:
 		// 1. Player name
 		// 2. Message
-		// (?:§8\[[§fadbc0-9]+§8\] )?§[67abc](?:\[[§A-Za-z0-9+]+\] )?([A-Za-z0-9_]+)§[f7]: (.+)
-		super("(?:§8\\[[§fadbc0-9]+§8\\] )?§[67abc](?:\\[[§A-Za-z0-9+]+\\] )?([A-Za-z0-9_]+)§[f7]: (.+)");
+		// (?:§8\[[§feadbc0-9]+§8\] )?(?:.+ )?§[67abc](?:\[[§A-Za-z0-9+]+\] )?([A-Za-z0-9_]+)§[f7]: (.+)
+		super("(?:§8\\[[§feadbc0-9]+§8\\] )?(?:.+ )?§[67abc](?:\\[[§A-Za-z0-9+]+\\] )?([A-Za-z0-9_]+)§[f7]: (.+)");
 	}
 
 	@Override

@@ -24,7 +24,7 @@ class AdFilterTest extends ChatPatternListenerTest<AdFilter> {
 
     @Test
     void mvp() {
-        assertMatches("§8[§d256§8] §b[MVP§c+§b] Advertiser§f: advertisement");
+        assertMatches("§8[§d256§8] §6§l⚡ §b[MVP§c+§b] Advertiser§f: advertisement");
     }
 
     @Test
@@ -39,7 +39,7 @@ class AdFilterTest extends ChatPatternListenerTest<AdFilter> {
 
     @Test
     void simpleAd() {
-        assertFilters("§8[§c320§8] §b[MVP§c+§b] b2dderr§f: buying prismapump");
+        assertFilters("§8[§e320§8] §b[MVP§c+§b] b2dderr§f: buying prismapump");
     }
 
     @Test
