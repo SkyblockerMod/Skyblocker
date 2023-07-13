@@ -25,10 +25,10 @@ public class DungeonPlayerWidget extends Widget {
     // group 1: name
     // group 2: class (or literal "EMPTY" pre dungeon start)
     // group 3: level (or nothing, if pre dungeon start)
-    // as a side effect, this regex keeps the iron man icon in the name
-    // not sure if that should be
+    // this regex filters out the ironman icon as well as rank prefixes and emblems
+    // \[\d*\] (?:\[[A-Za-z]+\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\((?<class>\S*) ?(?<level>[LXVI]*)\)
     private static final Pattern PLAYER_PATTERN = Pattern
-            .compile("\\[\\d*\\] (?<name>.*) \\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
+            .compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
 
     private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
     private static final ArrayList<String> MSGS = new ArrayList<>();

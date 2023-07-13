@@ -20,8 +20,9 @@ public class IslandOwnersWidget extends Widget {
     // matches an owner
     // group 1: player name
     // group 2: last seen, if owner not online
+    // ^(?<nameA>.*) \((?<lastseen>.*)\)$|^\[\d*\] (?:\[[A-Za-z]+\] )?(?<nameB>[A-Za-z0-9_]*)(?: .*)?$|^(?<nameC>.*)$
     private static final Pattern OWNER_PATTERN = Pattern
-            .compile("^(?<nameA>.*) \\((?<lastseen>.*)\\)$|^\\[\\d*\\] (?<nameB>.*)$|^(?<nameC>.*)$");
+            .compile("^(?<nameA>.*) \\((?<lastseen>.*)\\)$|^\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<nameB>[A-Za-z0-9_]*)(?: .*)?$|^(?<nameC>.*)$");
 
     public IslandOwnersWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
