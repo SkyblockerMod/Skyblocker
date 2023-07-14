@@ -1,19 +1,17 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.TableComponent;
-
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 
 // this widget shows a list of players with their skins.
 // responsible for non-private-island areas
@@ -23,7 +21,7 @@ public class PlayerListWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Players").formatted(Formatting.GREEN,
             Formatting.BOLD);
 
-    private ArrayList<PlayerListEntry> list = new ArrayList<>();
+    private final ArrayList<PlayerListEntry> list = new ArrayList<>();
 
     public PlayerListWidget() {
         super(TITLE, Formatting.GREEN.getColorValue());
@@ -43,20 +41,14 @@ public class PlayerListWidget extends Widget {
         // https://stackoverflow.com/questions/7139382/java-rounding-up-to-an-int-using-math-ceil#21830188
         int tblW = ((listlen - 80) - 1) / 20 + 1;
 
-        TableComponent tc = new TableComponent(tblW, (listlen - 80 >= 20) ? 20 : listlen - 80,
-                Formatting.GREEN.getColorValue());
+        TableComponent tc = new TableComponent(tblW, Math.min(listlen - 80, 20), Formatting.GREEN.getColorValue());
 
         for (int i = 80; i < listlen; i++) {
             list.add(PlayerListMgr.getRaw(i));
         }
-        
+
         if (SkyblockerConfig.get().general.tabHud.nameSorting == SkyblockerConfig.NameSorting.ALPHABETICAL) {
-            Collections.sort(list, new Comparator<PlayerListEntry>() {
-                @Override
-                public int compare(PlayerListEntry o1, PlayerListEntry o2) {
-                    return o1.getProfile().getName().toLowerCase().compareTo(o2.getProfile().getName().toLowerCase());
-                }
-            });
+            list.sort(Comparator.comparing(o -> o.getProfile().getName().toLowerCase()));
         }
 
         int x = 0, y = 0;

@@ -31,8 +31,7 @@ public class IslandSelfWidget extends Widget {
             }
             
             Text entry = (m.group(1) != null) ? Text.of(m.group(1)) : Text.of(m.group(2));
-            PlainTextComponent ptc = new PlainTextComponent(entry);
-            this.addComponent(ptc);
+            this.addComponent(new PlainTextComponent(entry));
         }
         this.pack();
     }
