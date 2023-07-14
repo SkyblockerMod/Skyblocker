@@ -19,7 +19,8 @@ public class IslandSelfWidget extends Widget {
 
     // matches an owner
     // group 1: player name, optionally offline time
-    private static final Pattern OWNER_PATTERN = Pattern.compile("^\\[\\d*\\] (.*)$|^(.*)$");
+    // ^\[\d*\] (?:\[[A-Za-z]+\] )?([A-Za-z0-9_() ]*)(?: .*)?$|^(.*)$
+    private static final Pattern OWNER_PATTERN = Pattern.compile("^\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?([A-Za-z0-9_() ]*)(?: .*)?$|^(.*)$");
 
     public IslandSelfWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
@@ -28,8 +29,9 @@ public class IslandSelfWidget extends Widget {
             if (m == null) {
                 break;
             }
-            PlainTextComponent ptc = new PlainTextComponent(Text.of(m.group(1)));
-            this.addComponent(ptc);
+            
+            Text entry = (m.group(1) != null) ? Text.of(m.group(1)) : Text.of(m.group(2));
+            this.addComponent(new PlainTextComponent(entry));
         }
         this.pack();
     }
