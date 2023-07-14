@@ -5,6 +5,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 // this widget shows a list of obtained dungeon buffs
 // TODO: could be more pretty, can't be arsed atm
 
@@ -31,14 +34,32 @@ public class DungeonBuffWidget extends Widget {
             return;
         }
 
-        for (int i = 1; i < lines.length; i++) {
-            if (lines[i].length() < 3) { // empty line is §s
+        //Filter out text unrelated to blessings
+        lines = Arrays.stream(lines).filter(s -> s.contains("Blessing")).toArray(String[]::new);
+
+        //Alphabetically sort the blessings
+        Arrays.sort(lines, Comparator.comparing(String::toLowerCase));
+
+        for (String line : lines) {
+            if (line.length() < 3) { // empty line is §s
                 break;
             }
-            this.addComponent(new PlainTextComponent(Text.of(lines[i])));
+            int color = getBlessingColor(line);
+            this.addComponent(new PlainTextComponent(Text.literal(line).styled(style -> style.withColor(color))));
         }
 
         this.pack();
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    public int getBlessingColor(String blessing) {
+        if (blessing.contains("Life")) return Formatting.LIGHT_PURPLE.getColorValue();
+        if (blessing.contains("Power")) return Formatting.RED.getColorValue();
+        if (blessing.contains("Stone")) return Formatting.GREEN.getColorValue();
+        if (blessing.contains("Time")) return 0xafb8c1;
+        if (blessing.contains("Wisdom")) return Formatting.AQUA.getColorValue();
+
+        return 0xffffff;
     }
 
 }
