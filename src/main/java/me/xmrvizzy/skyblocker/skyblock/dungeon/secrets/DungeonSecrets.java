@@ -19,17 +19,42 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.InflaterInputStream;
 
 public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
     private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
-    private static final HashMap<String, HashMap<String, HashMap<String, long[]>>> ROOMS = new HashMap<>();
+    private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS = new HashMap<>();
+    /**
+     * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
+     * @implNote Not using {@link net.minecraft.registry.Registry#getId(Object) Registry#getId(Block)} and {@link net.minecraft.block.Blocks Blocks} since this is also used by {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
+     */
+    @SuppressWarnings("JavadocReference")
+    protected static final Map<String, Byte> NUMERIC_ID = Map.ofEntries(
+            Map.entry("minecraft:stone", (byte) 1),
+            Map.entry("minecraft:diorite", (byte) 2),
+            Map.entry("minecraft:polished_diorite", (byte) 3),
+            Map.entry("minecraft:andesite", (byte) 4),
+            Map.entry("minecraft:polished_andesite", (byte) 5),
+            Map.entry("minecraft:grass_block", (byte) 6),
+            Map.entry("minecraft:dirt", (byte) 7),
+            Map.entry("minecraft:coarse_dirt", (byte) 8),
+            Map.entry("minecraft:cobblestone", (byte) 9),
+            Map.entry("minecraft:bedrock", (byte) 10),
+            Map.entry("minecraft:oak_leaves", (byte) 11),
+            Map.entry("minecraft:gray_wool", (byte) 12),
+            Map.entry("minecraft:double_stone_slab", (byte) 13),
+            Map.entry("minecraft:mossy_cobblestone", (byte) 14),
+            Map.entry("minecraft:clay", (byte) 15),
+            Map.entry("minecraft:stone_bricks", (byte) 16),
+            Map.entry("minecraft:mossy_stone_bricks", (byte) 17),
+            Map.entry("minecraft:chiseled_stone_bricks", (byte) 18),
+            Map.entry("minecraft:gray_terracotta", (byte) 19),
+            Map.entry("minecraft:cyan_terracotta", (byte) 20),
+            Map.entry("minecraft:black_terracotta", (byte) 21)
+    );
     private static JsonObject roomsJson;
     private static JsonObject waypointsJson;
     @Nullable
@@ -92,8 +117,8 @@ public class DungeonSecrets {
         }
     }
 
-    private static HashMap<String, long[]> readRooms(File roomShape, int resourcePathIndex) {
-        HashMap<String, long[]> data = new HashMap<>();
+    private static HashMap<String, int[]> readRooms(File roomShape, int resourcePathIndex) {
+        HashMap<String, int[]> data = new HashMap<>();
         File[] rooms = roomShape.listFiles();
         if (rooms == null) {
             LOGGER.error("Failed to load dungeon secrets room shape {}", roomShape.getName());
@@ -103,7 +128,7 @@ public class DungeonSecrets {
             String name = room.getName();
             //noinspection DataFlowIssue
             try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(SkyblockerMod.class.getResourceAsStream(room.getPath().substring(resourcePathIndex))))) {
-                data.put(name.substring(0, name.length() - 9), (long[]) in.readObject());
+                data.put(name.substring(0, name.length() - 9), (int[]) in.readObject());
                 LOGGER.debug("Loaded dungeon secrets room {}", name);
             } catch (NullPointerException | IOException | ClassNotFoundException e) {
                 LOGGER.error("Failed to load dungeon secrets room " + name, e);
