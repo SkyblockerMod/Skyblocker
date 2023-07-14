@@ -174,6 +174,7 @@ public class ItemFixerUpper {
     };
 
     private final static Map<Integer, String> SPAWN_EGG_VARIANTS = Map.ofEntries(
+            //This entry 0 is technically not right but Hypixel decided to make it polar bear so well we use that
             Map.entry(0, "minecraft:polar_bear_spawn_egg"),
             Map.entry(50, "minecraft:creeper_spawn_egg"),
             Map.entry(51, "minecraft:skeleton_spawn_egg"),
@@ -238,6 +239,7 @@ public class ItemFixerUpper {
             ":dark_oak_"
     };
 
+    //this is the map of all renames
     private final static Map<String, String> RENAMED = Map.ofEntries(
             Map.entry("minecraft:bed", "minecraft:red_bed"),
             Map.entry("minecraft:boat", "minecraft:oak_boat"),
@@ -292,9 +294,11 @@ public class ItemFixerUpper {
     );
 
     //TODO : Add mushroom block variants
+    //i'll do it later because it isn't used and unlike the other, it's not just a rename or a separate, it's a separate and a merge
 
     public static String convertItemId(String id, int damage) {
         return switch (id) {
+            //all the case are simple separate
             case "minecraft:anvil" -> ANVIL_VARIANTS[damage];
             case "minecraft:coal" -> COAL_VARIANTS[damage];
             case "minecraft:cobblestone_wall" -> COBBLESTONE_WALL_VARIANTS[damage];
@@ -317,13 +321,20 @@ public class ItemFixerUpper {
             case "minecraft:stone_slab" -> STONE_SLAB_VARIANTS[damage];
             case "minecraft:stonebrick" -> STONEBRICK_VARIANTS[damage];
             case "minecraft:tallgrass" -> TALLGRASS_VARIANTS[damage];
+            //we use a Map from int to str instead of an array because numbers are not consecutive
             case "minecraft:spawn_egg" -> SPAWN_EGG_VARIANTS.get(damage);
+            //when we use the generalized variant we need to replaceFirst
             case "minecraft:sandstone", "minecraft:red_sandstone" -> id.replaceFirst(":", SANDSTONE_VARIANTS[damage]);
+            //to use the general color variants we need to reverse the order because Minecraft decided so for some reason
             case "minecraft:banner" -> id.replaceFirst(":", COLOR_VARIANTS[15 - damage]);
             case "minecraft:carpet", "minecraft:stained_glass", "minecraft:stained_glass_pane", "minecraft:wool" -> id.replaceFirst(":", COLOR_VARIANTS[damage]);
+            //for the terracotta we need to replace the "stained_hardened_clay" with "terracotta" as well as doing the color separation
             case "minecraft:stained_hardened_clay" -> id.replaceFirst(":", COLOR_VARIANTS[damage]).replaceFirst("stained_hardened_clay", "terracotta");
+            //for the wooden slab we need to remove the "wooden_" prefix, but otherwise it's the same, so I just combined them anyway
             case "minecraft:leaves", "minecraft:planks", "minecraft:sapling", "minecraft:wooden_slab" -> id.replaceFirst(":", WOOD_VARIANTS[damage]).replaceFirst("wooden_", "");
-            case "minecraft:leaves2" -> id.replaceFirst(":", WOOD_VARIANTS[damage + 4]).replaceFirst("2", "");
+            //here we strip the last character which is 2 because we need leaves2 to be leaves
+            case "minecraft:leaves2" -> id.replaceFirst(":", WOOD_VARIANTS[damage + 4]).substring(0, id.length() - 1);
+            //the default case is just a rename or no change
             default -> RENAMED.getOrDefault(id, id);
         };
     }
