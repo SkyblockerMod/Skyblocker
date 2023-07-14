@@ -9,8 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
@@ -33,66 +38,67 @@ public class DungeonRoomsDFU {
     public static void main(String[] args) {
         load().join();
         updateRooms();
+        save().join();
     }
 
     private static CompletableFuture<Void> load() {
-        try {
-            List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
-            //noinspection DataFlowIssue
-            File dungeons = new File(DungeonRoomsDFU.class.getResource(DUNGEON_ROOMS_DATA_DIR).getFile());
-            int resourcePathIndex = dungeons.getPath().indexOf(DUNGEON_ROOMS_DATA_DIR);
-            //noinspection DataFlowIssue
-            for (File dungeon : dungeons.listFiles()) {
-                if (!dungeon.isDirectory()) {
-                    continue;
-                }
-                File[] roomShapes = dungeon.listFiles();
-                if (roomShapes == null) {
-                    LOGGER.error("Failed to load dungeon secrets for dungeon {}", dungeon.getName());
-                    continue;
-                }
-                OLD_ROOMS.put(dungeon.getName(), new HashMap<>());
-                List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
-                for (File roomShape : roomShapes) {
-                    roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> OLD_ROOMS.get(dungeon.getName()).put(roomShape.getName(), rooms)));
-                }
-                dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getName(), OLD_ROOMS.get(dungeon.getName()).size(), OLD_ROOMS.get(dungeon.getName()).values().stream().mapToInt(HashMap::size).sum())));
-            }
-            dungeonFutures.add(CompletableFuture.runAsync(() -> {
-                //noinspection DataFlowIssue
-                try (BufferedReader roomsReader = new BufferedReader(new InputStreamReader(DungeonRoomsDFU.class.getResourceAsStream(DUNGEONS_DATA_DIR + "/dungeonrooms.json"))); BufferedReader waypointsReader = new BufferedReader(new InputStreamReader(DungeonRoomsDFU.class.getResourceAsStream(DUNGEONS_DATA_DIR + "/secretlocations.json")))) {
-                    roomsJson = GSON.fromJson(roomsReader, JsonObject.class);
-                    waypointsJson = GSON.fromJson(waypointsReader, JsonObject.class);
-                    LOGGER.info("Loaded dungeon secrets json");
-                } catch (Exception e) {
-                    LOGGER.error("Failed to load dungeon secrets json", e);
-                }
-            }));
-            return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", OLD_ROOMS.size(), OLD_ROOMS.values().stream().mapToInt(HashMap::size).sum(), OLD_ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load dungeon secrets", e);
+        List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
+        URL dungeonsURL = DungeonRoomsDFU.class.getResource(DUNGEON_ROOMS_DATA_DIR);
+        if (dungeonsURL == null) {
+            LOGGER.error("Failed to load dungeon secrets, unable to find dungeon rooms data directory");
+            return CompletableFuture.completedFuture(null);
         }
+        Path dungeonsDir = Path.of(dungeonsURL.getPath());
+        int resourcePathIndex = dungeonsDir.toString().indexOf(DUNGEON_ROOMS_DATA_DIR);
+        try (DirectoryStream<Path> dungeons = Files.newDirectoryStream(dungeonsDir, Files::isDirectory)) {
+            for (Path dungeon : dungeons) {
+                try (DirectoryStream<Path> roomShapes = Files.newDirectoryStream(dungeon, Files::isDirectory)) {
+                    List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
+                    HashMap<String, HashMap<String, long[]>> roomShapesMap = new HashMap<>();
+                    for (Path roomShape : roomShapes) {
+                        roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString(), rooms)));
+                    }
+                    OLD_ROOMS.put(dungeon.getFileName().toString(), roomShapesMap);
+                    dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
+                } catch (IOException e) {
+                    LOGGER.error("Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error("Failed to load dungeon secrets", e);
+        }
+        dungeonFutures.add(CompletableFuture.runAsync(() -> {
+            //noinspection DataFlowIssue
+            try (BufferedReader roomsReader = new BufferedReader(new InputStreamReader(DungeonRoomsDFU.class.getResourceAsStream(DUNGEONS_DATA_DIR + "/dungeonrooms.json"))); BufferedReader waypointsReader = new BufferedReader(new InputStreamReader(DungeonRoomsDFU.class.getResourceAsStream(DUNGEONS_DATA_DIR + "/secretlocations.json")))) {
+                roomsJson = GSON.fromJson(roomsReader, JsonObject.class);
+                waypointsJson = GSON.fromJson(waypointsReader, JsonObject.class);
+                LOGGER.info("Loaded dungeon secrets json");
+            } catch (Exception e) {
+                LOGGER.error("Failed to load dungeon secrets json", e);
+            }
+        }));
+        return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", OLD_ROOMS.size(), OLD_ROOMS.values().stream().mapToInt(HashMap::size).sum(), OLD_ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
     }
 
-    private static HashMap<String, long[]> readRooms(File roomShape, int resourcePathIndex) {
-        HashMap<String, long[]> data = new HashMap<>();
-        File[] rooms = roomShape.listFiles();
-        if (rooms == null) {
-            LOGGER.error("Failed to load dungeon secrets room shape {}", roomShape.getName());
-            return data;
-        }
-        for (File room : rooms) {
-            String name = room.getName();
-            //noinspection DataFlowIssue
-            try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(DungeonRoomsDFU.class.getResourceAsStream(room.getPath().substring(resourcePathIndex))))) {
-                data.put(name.substring(0, name.length() - 9), (long[]) in.readObject());
-                LOGGER.info("Loaded dungeon secrets room {}", name);
-            } catch (NullPointerException | IOException | ClassNotFoundException e) {
-                LOGGER.error("Failed to load dungeon secrets room " + name, e);
+    private static HashMap<String, long[]> readRooms(Path roomShape, int resourcePathIndex) {
+        try (DirectoryStream<Path> rooms = Files.newDirectoryStream(roomShape, Files::isRegularFile)) {
+            HashMap<String, long[]> roomsData = new HashMap<>();
+            for (Path room : rooms) {
+                String name = room.getFileName().toString();
+                //noinspection DataFlowIssue
+                try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(DungeonRoomsDFU.class.getResourceAsStream(room.toString().substring(resourcePathIndex))))) {
+                    roomsData.put(name.substring(0, name.length() - 9), (long[]) in.readObject());
+                    LOGGER.info("Loaded dungeon secrets room {}", name);
+                } catch (NullPointerException | IOException | ClassNotFoundException e) {
+                    LOGGER.error("Failed to load dungeon secrets room " + name, e);
+                }
             }
+            LOGGER.info("Loaded dungeon secrets room shape {} with {} rooms", roomShape.getFileName(), roomsData.size());
+            return roomsData;
+        } catch (IOException e) {
+            LOGGER.error("Failed to load dungeon secrets room shape " + roomShape.getFileName(), e);
         }
-        LOGGER.info("Loaded dungeon secrets room shape {} with {} rooms", roomShape.getName(), data.size());
-        return data;
+        return null;
     }
 
     private static void updateRooms() {
@@ -138,5 +144,36 @@ public class DungeonRoomsDFU {
             newId = ItemIdFix.fromId(oldId / 100);
         }
         return (x << 24) | (y << 16) | (z << 8) | DungeonSecrets.NUMERIC_ID.get(newId);
+    }
+
+    private static CompletableFuture<Void> save() {
+        List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
+        for (Map.Entry<String, HashMap<String, HashMap<String, int[]>>> dungeon : ROOMS.entrySet()) {
+            Path dungeonDir = Path.of("out", "dungeons", dungeon.getKey());
+            List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
+            for (Map.Entry<String, HashMap<String, int[]>> roomShape : dungeon.getValue().entrySet()) {
+                Path roomShapeDir = dungeonDir.resolve(roomShape.getKey());
+                roomShapeFutures.add(CompletableFuture.runAsync(() -> saveRooms(roomShapeDir, roomShape)));
+            }
+            dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Saved dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getKey(), dungeon.getValue().size(), dungeon.getValue().values().stream().mapToInt(HashMap::size).sum())));
+        }
+        return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Saved dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
+    }
+
+    private static void saveRooms(Path roomShapeDir, Map.Entry<String, HashMap<String, int[]>> roomShape) {
+        try {
+            Files.createDirectories(roomShapeDir);
+        } catch (IOException e) {
+            LOGGER.error("Failed to save dungeon secrets: failed to create dungeon secrets room shape directory " + roomShapeDir, e);
+        }
+        for (Map.Entry<String, int[]> room : roomShape.getValue().entrySet()) {
+            try (ObjectOutputStream out = new ObjectOutputStream(new DeflaterOutputStream(Files.newOutputStream(roomShapeDir.resolve(room.getKey() + ".skeleton"))))) {
+                out.writeObject(room.getValue());
+                LOGGER.info("Saved dungeon secrets room {}", room.getKey());
+            } catch (IOException e) {
+                LOGGER.error("Failed to save dungeon secrets room " + room.getKey(), e);
+            }
+        }
+        LOGGER.info("Saved dungeon secrets room shape {} with {} rooms", roomShape.getKey(), roomShape.getValue().size());
     }
 }

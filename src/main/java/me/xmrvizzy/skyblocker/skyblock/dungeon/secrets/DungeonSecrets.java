@@ -16,9 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.InflaterInputStream;
@@ -29,6 +32,7 @@ public class DungeonSecrets {
     private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS = new HashMap<>();
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
+     *
      * @implNote Not using {@link net.minecraft.registry.Registry#getId(Object) Registry#getId(Block)} and {@link net.minecraft.block.Blocks Blocks} since this is also used by {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
      */
     @SuppressWarnings("JavadocReference")
@@ -79,63 +83,63 @@ public class DungeonSecrets {
     }
 
     private static void load() {
-        try {
-            List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
-            //noinspection DataFlowIssue
-            File dungeons = new File(SkyblockerMod.class.getResource(DUNGEONS_DATA_DIR).getFile());
-            int resourcePathIndex = dungeons.getPath().indexOf(DUNGEONS_DATA_DIR);
-            //noinspection DataFlowIssue
-            for (File dungeon : dungeons.listFiles()) {
-                if (!dungeon.isDirectory()) {
-                    continue;
+        List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
+        URL dungeonsURL = SkyblockerMod.class.getResource(DUNGEONS_DATA_DIR);
+        if (dungeonsURL == null) {
+            LOGGER.error("Failed to load dungeon secrets, unable to find dungeon rooms data directory");
+            return;
+        }
+        Path dungeonsDir = Path.of(dungeonsURL.getPath());
+        int resourcePathIndex = dungeonsDir.toString().indexOf(DUNGEONS_DATA_DIR);
+        try (DirectoryStream<Path> dungeons = Files.newDirectoryStream(dungeonsDir, Files::isDirectory)) {
+            for (Path dungeon : dungeons) {
+                try (DirectoryStream<Path> roomShapes = Files.newDirectoryStream(dungeon, Files::isDirectory)) {
+                    List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
+                    HashMap<String, HashMap<String, int[]>> roomShapesMap = new HashMap<>();
+                    for (Path roomShape : roomShapes) {
+                        roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString(), rooms)));
+                    }
+                    ROOMS.put(dungeon.getFileName().toString(), roomShapesMap);
+                    dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
+                } catch (IOException e) {
+                    LOGGER.error("Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
                 }
-                File[] roomShapes = dungeon.listFiles();
-                if (roomShapes == null) {
-                    LOGGER.error("Failed to load dungeon secrets for dungeon {}", dungeon.getName());
-                    continue;
-                }
-                ROOMS.put(dungeon.getName(), new HashMap<>());
-                List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
-                for (File roomShape : roomShapes) {
-                    roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> ROOMS.get(dungeon.getName()).put(roomShape.getName(), rooms)));
-                }
-                dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.debug("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getName(), ROOMS.get(dungeon.getName()).size(), ROOMS.get(dungeon.getName()).values().stream().mapToInt(HashMap::size).sum())));
             }
-            // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
-            dungeonFutures.add(CompletableFuture.runAsync(() -> {
-                try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
-                    roomsJson = SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class);
-                    waypointsJson = SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class);
-                    LOGGER.debug("Loaded dungeon secrets json");
-                } catch (Exception e) {
-                    LOGGER.error("Failed to load dungeon secrets json", e);
-                }
-            }, MinecraftClient.getInstance()));
-            roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOGGER.error("Failed to load dungeon secrets", e);
         }
+        // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
+        dungeonFutures.add(CompletableFuture.runAsync(() -> {
+            try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
+                roomsJson = SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class);
+                waypointsJson = SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class);
+                LOGGER.debug("Loaded dungeon secrets json");
+            } catch (Exception e) {
+                LOGGER.error("Failed to load dungeon secrets json", e);
+            }
+        }, MinecraftClient.getInstance()));
+        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
     }
 
-    private static HashMap<String, int[]> readRooms(File roomShape, int resourcePathIndex) {
-        HashMap<String, int[]> data = new HashMap<>();
-        File[] rooms = roomShape.listFiles();
-        if (rooms == null) {
-            LOGGER.error("Failed to load dungeon secrets room shape {}", roomShape.getName());
-            return data;
-        }
-        for (File room : rooms) {
-            String name = room.getName();
-            //noinspection DataFlowIssue
-            try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(SkyblockerMod.class.getResourceAsStream(room.getPath().substring(resourcePathIndex))))) {
-                data.put(name.substring(0, name.length() - 9), (int[]) in.readObject());
-                LOGGER.debug("Loaded dungeon secrets room {}", name);
-            } catch (NullPointerException | IOException | ClassNotFoundException e) {
-                LOGGER.error("Failed to load dungeon secrets room " + name, e);
+    private static HashMap<String, int[]> readRooms(Path roomShape, int resourcePathIndex) {
+        try (DirectoryStream<Path> rooms = Files.newDirectoryStream(roomShape, Files::isRegularFile)) {
+            HashMap<String, int[]> roomsData = new HashMap<>();
+            for (Path room : rooms) {
+                String name = room.getFileName().toString();
+                //noinspection DataFlowIssue
+                try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(SkyblockerMod.class.getResourceAsStream(room.toString().substring(resourcePathIndex))))) {
+                    roomsData.put(name.substring(0, name.length() - 9), (int[]) in.readObject());
+                    LOGGER.info("Loaded dungeon secrets room {}", name);
+                } catch (NullPointerException | IOException | ClassNotFoundException e) {
+                    LOGGER.error("Failed to load dungeon secrets room " + name, e);
+                }
             }
+            LOGGER.info("Loaded dungeon secrets room shape {} with {} rooms", roomShape.getFileName(), roomsData.size());
+            return roomsData;
+        } catch (IOException e) {
+            LOGGER.error("Failed to load dungeon secrets room shape " + roomShape.getFileName(), e);
         }
-        LOGGER.debug("Loaded dungeon secrets room shape {} with {} rooms", roomShape.getName(), data.size());
-        return data;
+        return null;
     }
 
     private static void update() {
