@@ -1,39 +1,45 @@
 package me.xmrvizzy.skyblocker.skyblock.itemlist;
 
-import net.minecraft.item.Items;
-// import net.minecraft.registry.Registry;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import java.util.Map;
 
 public class ItemFixerUpper {
-    private final static Map<String, String> MAPPING = Map.ofEntries(
-            Map.entry("minecraft:golden_rail", "minecraft:powered_rail"),
-            Map.entry("minecraft:lit_pumpkin", "minecraft:jack_o_lantern"),
-            Map.entry("minecraft:snow_layer", "minecraft:snow"),
-            Map.entry("minecraft:hardened_clay", "minecraft:terracotta"),
-            Map.entry("minecraft:speckled_melon", "minecraft:glistering_melon_slice"),
-            Map.entry("minecraft:mob_spawner", "minecraft:spawner"),
-            Map.entry("minecraft:brick_block", "minecraft:bricks"),
-            Map.entry("minecraft:deadbush", "minecraft:dead_bush"),
-            Map.entry("minecraft:slime", "minecraft:slime_block"),
-            Map.entry("minecraft:melon_block", "minecraft:melon"),
-            Map.entry("minecraft:reeds", "minecraft:sugar_cane"),
-            Map.entry("minecraft:yellow_flower", "minecraft:dandelion"),
-            Map.entry("minecraft:firework_charge", "minecraft:firework_star"),
-            Map.entry("minecraft:noteblock", "minecraft:note_block"),
-            Map.entry("minecraft:web", "minecraft:cobweb"),
-            Map.entry("minecraft:fireworks", "minecraft:firework_rocket"),
-            Map.entry("minecraft:netherbrick", "minecraft:nether_brick"),
-            Map.entry("minecraft:stained_hardened_clay", "minecraft:terracotta"),
-            Map.entry("minecraft:quartz_ore", "minecraft:nether_quartz_ore"),
-            Map.entry("minecraft:tallgrass", "minecraft:grass"),
-            Map.entry("minecraft:stone_slab2", "minecraft:red_sandstone_slab"),
-            Map.entry("minecraft:waterlily", "minecraft:lily_pad"),
-            Map.entry("minecraft:stone_stairs", "minecraft:cobblestone_stairs")
-    );
+    private final static String[] ANVIL_VARIANTS = {
+            "minecraft:anvil",
+            "minecraft:chipped_anvil",
+            "minecraft:damaged_anvil"
+    };
 
-    private final static String[] DYE_COLORS = {
+    private final static String[] COAL_VARIANTS = {
+            "minecraft:coal",
+            "minecraft:charcoal"
+    };
+
+    private final static String[] COBBLESTONE_WALL_VARIANTS = {
+            "minecraft:cobblestone_wall",
+            "minecraft:mossy_cobblestone_wall"
+    };
+
+    private final static String[] COOKED_FISH_VARIANTS = {
+            "minecraft:cooked_cod",
+            "minecraft:cooked_salmon"
+    };
+
+    private final static String[] DIRT_VARIANTS = {
+            "minecraft:dirt",
+            "minecraft:coarse_dirt",
+            "minecraft:podzol"
+    };
+
+    private final static String[] DOUBLE_PLANT_VARIANTS = {
+            "minecraft:sunflower",
+            "minecraft:lilac",
+            "minecraft:tall_grass",
+            "minecraft:large_fern",
+            "minecraft:rose_bush",
+            "minecraft:peony"
+    };
+
+    private final static String[] DYE_VARIANTS = {
             "minecraft:ink_sac",
             "minecraft:red_dye",
             "minecraft:green_dye",
@@ -52,39 +58,55 @@ public class ItemFixerUpper {
             "minecraft:bone_meal"
     };
 
-    private final static String[] BLOCK_COLORS = {
-            "white_",
-            "orange_",
-            "magenta_",
-            "light_blue_",
-            "yellow_",
-            "lime_",
-            "pink_",
-            "gray_",
-            "light_gray_",
-            "cyan_",
-            "purple_",
-            "blue_",
-            "brown_",
-            "green_",
-            "red_",
-            "black_"
+    private final static String[] FISH_VARIANTS = {
+            "minecraft:cod",
+            "minecraft:salmon",
+            "minecraft:tropical_fish",
+            "minecraft:pufferfish"
     };
 
-    private final static String[] TREE_VARIANTS = {
-            "oak_",
-            "spruce_",
-            "birch_",
-            "jungle_",
-            "acacia_",
-            "dark_oak_"
+    private final static String[] GOLDEN_APPLE_VARIANTS = {
+            "minecraft:golden_apple",
+            "minecraft:enchanted_golden_apple"
     };
 
-    private final static String[] STONE_BRICK_VARIANTS = {
-            "minecraft:stone_bricks",
-            "minecraft:mossy_stone_bricks",
-            "minecraft:cracked_stone_bricks",
-            "minecraft:chiseled_stone_bricks"
+    private final static String[] LOG_VARIANTS = {
+            "minecraft:oak_log",
+            "minecraft:spruce_log",
+            "minecraft:birch_log",
+            "minecraft:jungle_log",
+            "minecraft:oak_wood",
+            "minecraft:spruce_wood",
+            "minecraft:birch_wood",
+            "minecraft:jungle_wood",
+    };
+
+    private final static String[] LOG2_VARIANTS = {
+            "minecraft:acacia_log",
+            "minecraft:dark_oak_log",
+            "minecraft:acacia_wood",
+            "minecraft:dark_oak_wood"
+    };
+
+    private final static String[] MONSTER_EGG_VARIANTS = {
+            "minecraft:infested_stone",
+            "minecraft:infested_cobblestone",
+            "minecraft:infested_stone_bricks",
+            "minecraft:infested_mossy_stone_bricks",
+            "minecraft:infested_cracked_stone_bricks",
+            "minecraft:infested_chiseled_stone_bricks"
+    };
+
+    private final static String[] PRISMARINE_VARIANTS = {
+            "minecraft:prismarine",
+            "minecraft:prismarine_bricks",
+            "minecraft:dark_prismarine"
+    };
+
+    private final static String[] QUARTZ_BLOCK_VARIANTS = {
+            "minecraft:quartz_block",
+            "minecraft:chiseled_quartz_block",
+            "minecraft:quartz_pillar"
     };
 
     private final static String[] RED_FLOWER_VARIANTS = {
@@ -99,16 +121,60 @@ public class ItemFixerUpper {
             "minecraft:oxeye_daisy"
     };
 
-    private final static String[] DOUBLE_PLANT_VARIANTS = {
-            "minecraft:sunflower",
-            "minecraft:lilac",
-            "minecraft:tall_grass",
-            "minecraft:large_fern",
-            "minecraft:rose_bush",
-            "minecraft:peony"
+    private final static String[] SAND_VARIANTS = {
+            "minecraft:sand",
+            "minecraft:red_sand"
+    };
+
+    private final static String[] SKULL_VARIANTS = {
+            "minecraft:skeleton_skull",
+            "minecraft:wither_skeleton_skull",
+            "minecraft:zombie_head",
+            "minecraft:player_head",
+            "minecraft:creeper_head"
+    };
+
+    private final static String[] SPONGE_VARIANTS = {
+            "minecraft:sponge",
+            "minecraft:wet_sponge"
+    };
+
+    private final static String[] STONE_VARIANTS = {
+            "minecraft:stone",
+            "minecraft:granite",
+            "minecraft:polished_granite",
+            "minecraft:diorite",
+            "minecraft:polished_diorite",
+            "minecraft:andesite",
+            "minecraft:polished_andesite"
+    };
+
+    private final static String[] STONE_SLAB_VARIANTS = {
+            "minecraft:smooth_stone_slab",
+            "minecraft:sandstone_slab",
+            "minecraft:petrified_oak_slab",
+            "minecraft:cobblestone_slab",
+            "minecraft:brick_slab",
+            "minecraft:stone_brick_slab",
+            "minecraft:nether_brick_slab",
+            "minecraft:quartz_slab"
+    };
+
+    private final static String[] STONEBRICK_VARIANTS = {
+            "minecraft:stone_bricks",
+            "minecraft:mossy_stone_bricks",
+            "minecraft:cracked_stone_bricks",
+            "minecraft:chiseled_stone_bricks"
+    };
+
+    private final static String[] TALLGRASS_VARIANTS = {
+            "minecraft:dead_bush",
+            "minecraft:grass",
+            "minecraft:fern"
     };
 
     private final static Map<Integer, String> SPAWN_EGG_VARIANTS = Map.ofEntries(
+            Map.entry(0, "minecraft:polar_bear_spawn_egg"),
             Map.entry(50, "minecraft:creeper_spawn_egg"),
             Map.entry(51, "minecraft:skeleton_spawn_egg"),
             Map.entry(52, "minecraft:spider_spawn_egg"),
@@ -138,104 +204,127 @@ public class ItemFixerUpper {
             Map.entry(120, "minecraft:villager_spawn_egg")
     );
 
-    private final static String[] SKULL_VARIANTS = {
-            "minecraft:skeleton_skull",
-            "minecraft:wither_skeleton_skull",
-            "minecraft:zombie_head",
-            "minecraft:player_head",
-            "minecraft:creeper_head"
+    private final static String[] SANDSTONE_VARIANTS = {
+            ":",
+            ":chiseled_",
+            ":cut_"
     };
 
-    private final static String[] FISH_VARIANTS = {
-            "minecraft:cod",
-            "minecraft:salmon",
-            "minecraft:tropical_fish",
-            "minecraft:pufferfish"
+    private final static String[] COLOR_VARIANTS = {
+            ":white_",
+            ":orange_",
+            ":magenta_",
+            ":light_blue_",
+            ":yellow_",
+            ":lime_",
+            ":pink_",
+            ":gray_",
+            ":light_gray_",
+            ":cyan_",
+            ":purple_",
+            ":blue_",
+            ":brown_",
+            ":green_",
+            ":red_",
+            ":black_"
     };
 
-    private final static String[] COOKED_FISH_VARIANTS = {
-            "minecraft:cooked_cod",
-            "minecraft:cooked_salmon"
+    private final static String[] WOOD_VARIANTS = {
+            ":oak_",
+            ":spruce_",
+            ":birch_",
+            ":jungle_",
+            ":acacia_",
+            ":dark_oak_"
     };
 
-    private final static String[] STONE_VARIANTS = {
-            "minecraft:stone",
-            "minecraft:granite",
-            "minecraft:polished_granite",
-            "minecraft:diorite",
-            "minecraft:polished_diorite",
-            "minecraft:andesite",
-            "minecraft:polished_andesite"
-    };
+    private final static Map<String, String> RENAMED = Map.ofEntries(
+            Map.entry("minecraft:bed", "minecraft:red_bed"),
+            Map.entry("minecraft:boat", "minecraft:oak_boat"),
+            Map.entry("minecraft:brick_block", "minecraft:bricks"),
+            Map.entry("minecraft:deadbush", "minecraft:dead_bush"),
+            Map.entry("minecraft:fence_gate", "minecraft:oak_fence_gate"),
+            Map.entry("minecraft:fence", "minecraft:oak_fence"),
+            Map.entry("minecraft:firework_charge", "minecraft:firework_star"),
+            Map.entry("minecraft:fireworks", "minecraft:firework_rocket"),
+            Map.entry("minecraft:golden_rail", "minecraft:powered_rail"),
+            Map.entry("minecraft:grass", "minecraft:grass_block"),
+            Map.entry("minecraft:hardened_clay", "minecraft:terracotta"),
+            Map.entry("minecraft:lit_pumpkin", "minecraft:jack_o_lantern"),
+            Map.entry("minecraft:melon_block", "minecraft:melon"),
+            Map.entry("minecraft:melon", "minecraft:melon_slice"),
+            Map.entry("minecraft:mob_spawner", "minecraft:spawner"),
+            Map.entry("minecraft:nether_brick", "minecraft:nether_bricks"),
+            Map.entry("minecraft:netherbrick", "minecraft:nether_brick"),
+            Map.entry("minecraft:noteblock", "minecraft:note_block"),
+            Map.entry("minecraft:piston_extension", "minecraft:moving_piston"),
+            Map.entry("minecraft:portal", "minecraft:nether_portal"),
+            Map.entry("minecraft:pumpkin", "minecraft:carved_pumpkin"),
+            Map.entry("minecraft:quartz_ore", "minecraft:nether_quartz_ore"),
+            Map.entry("minecraft:record_11", "minecraft:music_disc_11"),
+            Map.entry("minecraft:record_13", "minecraft:music_disc_13"),
+            Map.entry("minecraft:record_blocks", "minecraft:music_disc_blocks"),
+            Map.entry("minecraft:record_cat", "minecraft:music_disc_cat"),
+            Map.entry("minecraft:record_chirp", "minecraft:music_disc_chirp"),
+            Map.entry("minecraft:record_far", "minecraft:music_disc_far"),
+            Map.entry("minecraft:record_mall", "minecraft:music_disc_mall"),
+            Map.entry("minecraft:record_mellohi", "minecraft:music_disc_mellohi"),
+            Map.entry("minecraft:record_stal", "minecraft:music_disc_stal"),
+            Map.entry("minecraft:record_strad", "minecraft:music_disc_strad"),
+            Map.entry("minecraft:record_wait", "minecraft:music_disc_wait"),
+            Map.entry("minecraft:record_ward", "minecraft:music_disc_ward"),
+            Map.entry("minecraft:red_nether_brick", "minecraft:red_nether_bricks"),
+            Map.entry("minecraft:reeds", "minecraft:sugar_cane"),
+            Map.entry("minecraft:sign", "minecraft:oak_sign"),
+            Map.entry("minecraft:slime", "minecraft:slime_block"),
+            Map.entry("minecraft:snow_layer", "minecraft:snow"),
+            Map.entry("minecraft:snow", "minecraft:snow_block"),
+            Map.entry("minecraft:speckled_melon", "minecraft:glistering_melon_slice"),
+            Map.entry("minecraft:stone_slab2", "minecraft:red_sandstone_slab"),
+            Map.entry("minecraft:stone_stairs", "minecraft:cobblestone_stairs"),
+            Map.entry("minecraft:trapdoor", "minecraft:oak_trapdoor"),
+            Map.entry("minecraft:waterlily", "minecraft:lily_pad"),
+            Map.entry("minecraft:web", "minecraft:cobweb"),
+            Map.entry("minecraft:wooden_button", "minecraft:oak_button"),
+            Map.entry("minecraft:wooden_door", "minecraft:oak_door"),
+            Map.entry("minecraft:wooden_pressure_plate", "minecraft:oak_pressure_plate"),
+            Map.entry("minecraft:yellow_flower", "minecraft:dandelion")
+    );
 
-    private final static String[] STONE_SLAB_VARIANTS = {
-            "minecraft:smooth_stone_slab",
-            "minecraft:sandstone_slab",
-            "minecraft:barrier", // doesn't exist
-            "minecraft:cobblestone_slab",
-            "minecraft:brick_slab",
-            "minecraft:stone_brick_slab",
-            "minecraft:nether_brick_slab",
-            "minecraft:quartz_slab"
-    };
-
-    private final static String[] COBBLESTONE_WALL_VARIANTS = {
-            "minecraft:cobblestone_wall",
-            "minecraft:mossy_cobblestone_wall"
-    };
-
-    private final static String[] DIRT_VARIANTS = {
-            "minecraft:dirt",
-            "minecraft:coarse_dirt",
-            "minecraft:podzol"
-    };
-
-    private final static String[] SPONGE_VARIANTS = {
-            "minecraft:sponge",
-            "minecraft:wet_sponge"
-    };
-
-    private final static String[] PRISMARINE_VARIANTS = {
-            "minecraft:prismarine",
-            "minecraft:prismarine_bricks",
-            "minecraft:dark_prismarine"
-    };
-
-    // TODO: map potions to their correct colors
+    //TODO : Add mushroom block variants
 
     public static String convertItemId(String id, int damage) {
-        if (id.equals("minecraft:dye")) return DYE_COLORS[damage];
-        if (id.equals("minecraft:log2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "log";
-        if (id.equals("minecraft:leaves2")) return "minecraft:" + TREE_VARIANTS[damage + 4] + "leaves";
-        if (id.equals("minecraft:stonebrick")) return STONE_BRICK_VARIANTS[damage];
-        if (id.equals("minecraft:red_flower")) return RED_FLOWER_VARIANTS[damage];
-        if (id.equals("minecraft:double_plant")) return DOUBLE_PLANT_VARIANTS[damage];
-        if (id.equals("minecraft:spawn_egg")) return SPAWN_EGG_VARIANTS.getOrDefault(damage, "minecraft:ghast_spawn_egg");
-        if (id.equals("minecraft:banner")) return "minecraft:" + BLOCK_COLORS[15 - damage] + "banner";
-        if (id.equals("minecraft:skull")) return SKULL_VARIANTS[damage];
-        if (id.equals("minecraft:fish")) return FISH_VARIANTS[damage];
-        if (id.equals("minecraft:cooked_fish")) return COOKED_FISH_VARIANTS[damage];
-        if (id.equals("minecraft:stone")) return STONE_VARIANTS[damage];
-        if (id.equals("minecraft:stone_slab")) return STONE_SLAB_VARIANTS[damage];
-        if (id.equals("minecraft:cobblestone_wall")) return COBBLESTONE_WALL_VARIANTS[damage];
-        if (id.equals("minecraft:dirt")) return DIRT_VARIANTS[damage];
-        if (id.equals("minecraft:sponge")) return SPONGE_VARIANTS[damage];
-        if (id.equals("minecraft:prismarine")) return PRISMARINE_VARIANTS[damage];
-
-        id = MAPPING.getOrDefault(id, id);
-        // if (Registry.ITEM.get(new Identifier(id)).equals(Items.AIR)) {
-        if (Registries.ITEM.get(new Identifier(id)).equals(Items.AIR)) {
-            String shortId = id.split(":")[1];
-            // if (damage < BLOCK_COLORS.length && !Registry.ITEM.get(new Identifier("minecraft:" + BLOCK_COLORS[damage] + shortId)).equals(Items.AIR))
-            if (damage < BLOCK_COLORS.length && !Registries.ITEM.get(new Identifier("minecraft:" + BLOCK_COLORS[damage] + shortId)).equals(Items.AIR))
-                return "minecraft:" + BLOCK_COLORS[damage] + shortId;
-            // if (damage < TREE_VARIANTS.length && !Registry.ITEM.get(new Identifier("minecraft:" + TREE_VARIANTS[damage] + shortId)).equals(Items.AIR))
-            if (damage < TREE_VARIANTS.length && !Registries.ITEM.get(new Identifier("minecraft:" + TREE_VARIANTS[damage] + shortId)).equals(Items.AIR))
-                return "minecraft:" + TREE_VARIANTS[damage] + shortId;
-
-            if (id.contains("wooden_")) return id.replaceFirst("wooden_", TREE_VARIANTS[damage]);
-            if (id.contains("minecraft:record")) return id.replaceFirst("minecraft:record", "minecraft:music_disc");
-        }
-        return id;
+        return switch (id) {
+            case "minecraft:anvil" -> ANVIL_VARIANTS[damage];
+            case "minecraft:coal" -> COAL_VARIANTS[damage];
+            case "minecraft:cobblestone_wall" -> COBBLESTONE_WALL_VARIANTS[damage];
+            case "minecraft:cooked_fish" -> COOKED_FISH_VARIANTS[damage];
+            case "minecraft:dirt" -> DIRT_VARIANTS[damage];
+            case "minecraft:double_plant" -> DOUBLE_PLANT_VARIANTS[damage];
+            case "minecraft:dye" -> DYE_VARIANTS[damage];
+            case "minecraft:fish" -> FISH_VARIANTS[damage];
+            case "minecraft:golden_apple" -> GOLDEN_APPLE_VARIANTS[damage];
+            case "minecraft:log" -> LOG_VARIANTS[damage];
+            case "minecraft:log2" -> LOG2_VARIANTS[damage];
+            case "minecraft:monster_egg" -> MONSTER_EGG_VARIANTS[damage];
+            case "minecraft:prismarine" -> PRISMARINE_VARIANTS[damage];
+            case "minecraft:quartz_block" -> QUARTZ_BLOCK_VARIANTS[damage];
+            case "minecraft:red_flower" -> RED_FLOWER_VARIANTS[damage];
+            case "minecraft:sand" -> SAND_VARIANTS[damage];
+            case "minecraft:skull" -> SKULL_VARIANTS[damage];
+            case "minecraft:sponge" -> SPONGE_VARIANTS[damage];
+            case "minecraft:stone" -> STONE_VARIANTS[damage];
+            case "minecraft:stone_slab" -> STONE_SLAB_VARIANTS[damage];
+            case "minecraft:stonebrick" -> STONEBRICK_VARIANTS[damage];
+            case "minecraft:tallgrass" -> TALLGRASS_VARIANTS[damage];
+            case "minecraft:spawn_egg" -> SPAWN_EGG_VARIANTS.get(damage);
+            case "minecraft:sandstone", "minecraft:red_sandstone" -> id.replaceFirst(":", SANDSTONE_VARIANTS[damage]);
+            case "minecraft:banner" -> id.replaceFirst(":", COLOR_VARIANTS[15 - damage]);
+            case "minecraft:carpet", "minecraft:stained_glass", "minecraft:stained_glass_pane", "minecraft:wool" -> id.replaceFirst(":", COLOR_VARIANTS[damage]);
+            case "minecraft:stained_hardened_clay" -> id.replaceFirst(":", COLOR_VARIANTS[damage]).replaceFirst("stained_hardened_clay", "terracotta");
+            case "minecraft:leaves", "minecraft:planks", "minecraft:sapling", "minecraft:wooden_slab" -> id.replaceFirst(":", WOOD_VARIANTS[damage]).replaceFirst("wooden_", "");
+            case "minecraft:leaves2" -> id.replaceFirst(":", WOOD_VARIANTS[damage + 4]).replaceFirst("2", "");
+            default -> RENAMED.getOrDefault(id, id);
+        };
     }
 }
