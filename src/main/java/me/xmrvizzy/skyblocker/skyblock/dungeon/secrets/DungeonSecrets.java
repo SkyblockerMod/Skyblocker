@@ -18,8 +18,10 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -36,29 +38,7 @@ public class DungeonSecrets {
      * @implNote Not using {@link net.minecraft.registry.Registry#getId(Object) Registry#getId(Block)} and {@link net.minecraft.block.Blocks Blocks} since this is also used by {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
      */
     @SuppressWarnings("JavadocReference")
-    protected static final Map<String, Byte> NUMERIC_ID = Map.ofEntries(
-            Map.entry("minecraft:stone", (byte) 1),
-            Map.entry("minecraft:diorite", (byte) 2),
-            Map.entry("minecraft:polished_diorite", (byte) 3),
-            Map.entry("minecraft:andesite", (byte) 4),
-            Map.entry("minecraft:polished_andesite", (byte) 5),
-            Map.entry("minecraft:grass_block", (byte) 6),
-            Map.entry("minecraft:dirt", (byte) 7),
-            Map.entry("minecraft:coarse_dirt", (byte) 8),
-            Map.entry("minecraft:cobblestone", (byte) 9),
-            Map.entry("minecraft:bedrock", (byte) 10),
-            Map.entry("minecraft:oak_leaves", (byte) 11),
-            Map.entry("minecraft:gray_wool", (byte) 12),
-            Map.entry("minecraft:double_stone_slab", (byte) 13),
-            Map.entry("minecraft:mossy_cobblestone", (byte) 14),
-            Map.entry("minecraft:clay", (byte) 15),
-            Map.entry("minecraft:stone_bricks", (byte) 16),
-            Map.entry("minecraft:mossy_stone_bricks", (byte) 17),
-            Map.entry("minecraft:chiseled_stone_bricks", (byte) 18),
-            Map.entry("minecraft:gray_terracotta", (byte) 19),
-            Map.entry("minecraft:cyan_terracotta", (byte) 20),
-            Map.entry("minecraft:black_terracotta", (byte) 21)
-    );
+    protected static final Map<String, Byte> NUMERIC_ID = Map.ofEntries(Map.entry("minecraft:stone", (byte) 1), Map.entry("minecraft:diorite", (byte) 2), Map.entry("minecraft:polished_diorite", (byte) 3), Map.entry("minecraft:andesite", (byte) 4), Map.entry("minecraft:polished_andesite", (byte) 5), Map.entry("minecraft:grass_block", (byte) 6), Map.entry("minecraft:dirt", (byte) 7), Map.entry("minecraft:coarse_dirt", (byte) 8), Map.entry("minecraft:cobblestone", (byte) 9), Map.entry("minecraft:bedrock", (byte) 10), Map.entry("minecraft:oak_leaves", (byte) 11), Map.entry("minecraft:gray_wool", (byte) 12), Map.entry("minecraft:double_stone_slab", (byte) 13), Map.entry("minecraft:mossy_cobblestone", (byte) 14), Map.entry("minecraft:clay", (byte) 15), Map.entry("minecraft:stone_bricks", (byte) 16), Map.entry("minecraft:mossy_stone_bricks", (byte) 17), Map.entry("minecraft:chiseled_stone_bricks", (byte) 18), Map.entry("minecraft:gray_terracotta", (byte) 19), Map.entry("minecraft:cyan_terracotta", (byte) 20), Map.entry("minecraft:black_terracotta", (byte) 21));
     private static JsonObject roomsJson;
     private static JsonObject waypointsJson;
     @Nullable
@@ -90,6 +70,14 @@ public class DungeonSecrets {
             return;
         }
         Path dungeonsDir = Path.of(dungeonsURL.getPath());
+        if ("jar".equals(dungeonsURL.getProtocol())) {
+            try {
+                dungeonsDir = FileSystems.getFileSystem(dungeonsURL.toURI()).getPath(DUNGEONS_DATA_DIR);
+            } catch (URISyntaxException e) {
+                LOGGER.error("Failed to load dungeon secrets, unable to open dungeon rooms data directory", e);
+                return;
+            }
+        }
         int resourcePathIndex = dungeonsDir.toString().indexOf(DUNGEONS_DATA_DIR);
         try (DirectoryStream<Path> dungeons = Files.newDirectoryStream(dungeonsDir, Files::isDirectory)) {
             for (Path dungeon : dungeons) {
@@ -100,7 +88,7 @@ public class DungeonSecrets {
                         roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString(), rooms)));
                     }
                     ROOMS.put(dungeon.getFileName().toString(), roomShapesMap);
-                    dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
+                    dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.debug("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
                 } catch (IOException e) {
                     LOGGER.error("Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
                 }
@@ -129,12 +117,12 @@ public class DungeonSecrets {
                 //noinspection DataFlowIssue
                 try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(SkyblockerMod.class.getResourceAsStream(room.toString().substring(resourcePathIndex))))) {
                     roomsData.put(name.substring(0, name.length() - 9), (int[]) in.readObject());
-                    LOGGER.info("Loaded dungeon secrets room {}", name);
+                    LOGGER.debug("Loaded dungeon secrets room {}", name);
                 } catch (NullPointerException | IOException | ClassNotFoundException e) {
                     LOGGER.error("Failed to load dungeon secrets room " + name, e);
                 }
             }
-            LOGGER.info("Loaded dungeon secrets room shape {} with {} rooms", roomShape.getFileName(), roomsData.size());
+            LOGGER.debug("Loaded dungeon secrets room shape {} with {} rooms", roomShape.getFileName(), roomsData.size());
             return roomsData;
         } catch (IOException e) {
             LOGGER.error("Failed to load dungeon secrets room shape " + roomShape.getFileName(), e);
