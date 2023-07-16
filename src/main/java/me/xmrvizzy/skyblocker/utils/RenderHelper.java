@@ -2,22 +2,29 @@ package me.xmrvizzy.skyblocker.utils;
 
 import me.x150.renderer.render.Renderer3d;
 import me.xmrvizzy.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
+import me.xmrvizzy.skyblocker.utils.culling.OcclusionCulling;
 import me.xmrvizzy.skyblocker.utils.title.Title;
 import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
 import java.awt.*;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 
 public class RenderHelper {
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
+    private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
 
     public static void renderFilledThroughWallsWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         renderFilledThroughWalls(context, pos, colorComponents, alpha);
@@ -25,26 +32,40 @@ public class RenderHelper {
     }
 
     public static void renderFilledThroughWalls(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
-        Renderer3d.renderThroughWalls();
-        renderFilled(context, pos, colorComponents, alpha);
-        Renderer3d.stopRenderThroughWalls();
+        if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
+            Renderer3d.renderThroughWalls();
+    	    renderFilled(context, pos, colorComponents, alpha);
+    	    Renderer3d.stopRenderThroughWalls();
+        }
     }
 
     public static void renderFilledIfVisible(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
-        if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
+        if (OcclusionCulling.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
             renderFilled(context, pos, colorComponents, alpha);
         }
     }
 
-    public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
+    private static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         Renderer3d.renderFilled(context.matrixStack(), new Color(colorComponents[0], colorComponents[1], colorComponents[2], alpha), Vec3d.of(pos), ONE);
     }
 
-    public static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
-        context.matrixStack().push();
-        context.matrixStack().translate(pos.getX() - context.camera().getPos().x, pos.getY() - context.camera().getPos().y, pos.getZ() - context.camera().getPos().z);
-        BeaconBlockEntityRendererInvoker.renderBeam(context.matrixStack(), context.consumers(), context.tickDelta(), context.world().getTime(), 0, BeaconBlockEntityRenderer.MAX_BEAM_HEIGHT, colorComponents);
-        context.matrixStack().pop();
+    private static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
+        if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, MAX_OVERWORLD_BUILD_HEIGHT, pos.getZ() + 1)) {
+            MatrixStack matrices = context.matrixStack();
+            Vec3d camera = context.camera().getPos();
+            
+            matrices.push();
+            matrices.translate(pos.getX() - camera.x, pos.getY() - camera.y, pos.getZ() - camera.z);
+            
+            Tessellator tessellator = RenderSystem.renderThreadTesselator();
+            BufferBuilder buffer = tessellator.getBuffer();
+            VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(buffer);
+            
+            BeaconBlockEntityRendererInvoker.renderBeam(matrices, consumer, context.tickDelta(), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, colorComponents);
+            
+            consumer.draw();
+            matrices.pop();
+        }
     }
 
     public static void displayTitleAndPlaySound(int stayTicks, int fadeOutTicks, String titleKey, Formatting formatting) {

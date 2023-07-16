@@ -19,6 +19,7 @@ import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.*;
+import me.xmrvizzy.skyblocker.utils.culling.OcclusionCulling;
 import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -83,6 +84,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DungeonMap.init();
         TheRift.init();
         TitleContainer.init();
+        OcclusionCulling.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::update, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);

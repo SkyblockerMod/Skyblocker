@@ -29,6 +29,7 @@ repositories {
 		url = "https://maven.meteordev.org/releases"
 	}
 	maven {url "https://jitpack.io"}
+	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
 }
 
 dependencies {
@@ -63,6 +64,9 @@ dependencies {
 	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}")
 
 	include(modImplementation ("meteordevelopment:discord-ipc:1.1"))
+	
+	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
+	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 }
 
 base {
