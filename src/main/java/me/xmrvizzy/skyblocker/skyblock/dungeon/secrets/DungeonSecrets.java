@@ -5,6 +5,7 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -32,7 +33,7 @@ import java.util.zip.InflaterInputStream;
 public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
     private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
-    private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS = new HashMap<>();
+    private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS_DATA = new HashMap<>();
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -44,9 +45,19 @@ public class DungeonSecrets {
     private static JsonObject waypointsJson;
     @Nullable
     private static CompletableFuture<Void> roomsLoaded;
+    /**
+     * The map position of the top left corner of the entrance room.
+     */
     private static Vector2ic mapEntrancePos;
+    /**
+     * The width of a room on the map.
+     */
     private static int mapRoomWidth;
+    /**
+     * The physical position of the northwest corner of the entrance room.
+     */
     private static Vector2ic physicalEntrancePos;
+    private static final Map<Vector2ic, Room> rooms = new HashMap<>();
     private static Room currentRoom;
 
     public static boolean isRoomsLoaded() {
@@ -90,7 +101,7 @@ public class DungeonSecrets {
                     for (Path roomShape : roomShapes) {
                         roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString(), rooms)));
                     }
-                    ROOMS.put(dungeon.getFileName().toString(), roomShapesMap);
+                    ROOMS_DATA.put(dungeon.getFileName().toString(), roomShapesMap);
                     dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.debug("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
                 } catch (IOException e) {
                     LOGGER.error("Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
@@ -109,7 +120,7 @@ public class DungeonSecrets {
                 LOGGER.error("Failed to load dungeon secrets json", e);
             }
         }, MinecraftClient.getInstance()));
-        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
+        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(HashMap::size).sum(), ROOMS_DATA.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
     }
 
     private static HashMap<String, int[]> readRooms(Path roomShape, int resourcePathIndex) {
@@ -138,10 +149,11 @@ public class DungeonSecrets {
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.world == null) {
+        ClientPlayerEntity player = client.player;
+        if (player == null || client.world == null) {
             return;
         }
-        ItemStack stack = client.player.getInventory().main.get(8);
+        ItemStack stack = player.getInventory().main.get(8);
         if (!stack.isOf(Items.FILLED_MAP)) {
             return;
         }
@@ -155,10 +167,32 @@ public class DungeonSecrets {
         if (mapRoomWidth == 0 && (mapRoomWidth = DungeonMapUtils.getMapRoomWidth(map, mapEntrancePos)) == 0) {
             return;
         }
-        if (physicalEntrancePos == null && (physicalEntrancePos = DungeonMapUtils.getPhysicalEntrancePos(map, client.player.getPos())) == null) {
-            client.player.sendMessage(Text.translatable("skyblocker.dungeons.secrets.physicalEntranceNotFound"));
-            return;
+        if (physicalEntrancePos == null) {
+            physicalEntrancePos = DungeonMapUtils.getPhysicalEntrancePos(map, player.getPos());
+            if (physicalEntrancePos == null) {
+                player.sendMessage(Text.translatable("skyblocker.dungeons.secrets.physicalEntranceNotFound"));
+                return;
+            } else {
+                currentRoom = newRoom(Room.RoomType.ENTRANCE, physicalEntrancePos);
+                LOGGER.info("[Skyblocker] Started dungeon with map room width {} and entrance at map pos {} and physical pos {}", mapRoomWidth, mapEntrancePos, physicalEntrancePos);
+            }
+        } else {
+            LOGGER.info("[Skyblocker] Processing dungeon with map room width {} and entrance at map pos {} and physical pos {}", mapRoomWidth, mapEntrancePos, physicalEntrancePos);
         }
-        LOGGER.info("[Skyblocker] Detected dungeon with map room width {} and entrance at map pos {} and physical pos {}", mapRoomWidth, mapEntrancePos, physicalEntrancePos);
+    }
+
+    /**
+     * Creates a new room with the given type and physical positions,
+     * adds the room to {@link #rooms}, and sets {@link #currentRoom} to the new room.
+     *
+     * @param type              the type of room to create
+     * @param physicalPositions the physical positions of the room
+     */
+    private static Room newRoom(Room.RoomType type, Vector2ic... physicalPositions) {
+        Room newRoom = new Room(type, physicalPositions);
+        for (Vector2ic physicalPos : physicalPositions) {
+            rooms.put(physicalPos, newRoom);
+        }
+        return newRoom;
     }
 }
