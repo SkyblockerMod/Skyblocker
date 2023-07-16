@@ -14,7 +14,11 @@ public class EmptyWidget extends Widget {
 
     public EmptyWidget() {
         super(TITLE, Formatting.RED.getColorValue());
+    }
 
+    @Override
+    public void update() {
+        super.update();
         Text info = Text.of("No info for this area!");
         PlainTextComponent inf = new PlainTextComponent(info);
         this.addComponent(inf);

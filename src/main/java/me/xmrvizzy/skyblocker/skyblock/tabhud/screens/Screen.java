@@ -26,13 +26,12 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.playerList.PlayerListScree
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 public class Screen {
 
     private ArrayList<Widget> widgets = new ArrayList<>();
-    private int w, h;
+    public int w, h;
 
     public Screen(int w, int h) {
         float scale = SkyblockerConfig.get().general.tabHud.tabHudScale / 100f;
@@ -41,6 +40,7 @@ public class Screen {
     }
 
     public static Screen getCorrect(int w, int h, Text footer) {
+
         if (TabHud.genericTgl.isPressed()) {
             return Screen.correctGenericScrn(w, h, footer);
         } else if (TabHud.playerTgl.isPressed()) {

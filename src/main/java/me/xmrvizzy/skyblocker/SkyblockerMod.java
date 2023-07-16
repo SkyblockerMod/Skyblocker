@@ -17,6 +17,7 @@ import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.ScreenMaster;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.*;
 import me.xmrvizzy.skyblocker.utils.title.TitleContainer;

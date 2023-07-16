@@ -45,12 +45,17 @@ public abstract class Widget {
     }
 
     public final void addComponent(Component c) {
-        components.add(c);
+        this.components.add(c);
+    }
+
+    public void update() {
+        this.components.clear();
     }
 
     /**
      * Shorthand function for simple components.
-     * If the entry at idx has the format "<textA>: <textB>", an IcoTextComponent is added as such:
+     * If the entry at idx has the format "<textA>: <textB>", an IcoTextComponent is
+     * added as such:
      * [ico] [string] [textB.formatted(fmt)]
      */
     public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, int idx) {
@@ -60,9 +65,12 @@ public abstract class Widget {
 
     /**
      * Calculate the size of this widget.
-     * <b>Must be called before returning from the widget constructor and after all components are added!</b>
+     * <b>Must be called before returning from the widget constructor and after all
+     * components are added!</b>
      */
     public final void pack() {
+        h = 0;
+        w = 0;
         for (Component c : components) {
             h += c.getHeight() + Component.PAD_L;
             w = Math.max(w, c.getWidth() + Component.PAD_S);
@@ -111,7 +119,7 @@ public abstract class Widget {
      * Draw this widget, possibly with a background
      */
     public final void render(DrawContext context, boolean hasBG) {
-    	MatrixStack ms = context.getMatrices();
+        MatrixStack ms = context.getMatrices();
 
         // not sure if this is the way to go, but it fixes Z-layer issues
         // like blocks being rendered behind the BG and the hotbar clipping into things
@@ -124,9 +132,9 @@ public abstract class Widget {
         // move above other UI elements
         ms.translate(0, 0, 200);
         if (hasBG) {
-        	context.fill(x + 1, y, x + w - 1, y + h, COL_BG_BOX);
-        	context.fill(x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
-        	context.fill(x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
+            context.fill(x + 1, y, x + w - 1, y + h, COL_BG_BOX);
+            context.fill(x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
+            context.fill(x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
         }
         // move above background (if exists)
         ms.translate(0, 0, 100);
@@ -163,9 +171,10 @@ public abstract class Widget {
     }
 
     /**
-     * If the entry at idx has the format "[textA]: [textB]", the following is returned:
+     * If the entry at idx has the format "[textA]: [textB]", the following is
+     * returned:
      * [entryName] [textB.formatted(contentFmt)]
-    */
+     */
     public static Text simpleEntryText(int idx, String entryName, Formatting contentFmt) {
 
         String src = PlayerListMgr.strAt(idx);
@@ -185,7 +194,7 @@ public abstract class Widget {
 
     /**
      * @return [entryName] [entryContent.formatted(contentFmt)]
-    */
+     */
     public static Text simpleEntryText(String entryContent, String entryName, Formatting contentFmt) {
         return Text.literal(entryName).append(Text.literal(entryContent).formatted(contentFmt));
     }

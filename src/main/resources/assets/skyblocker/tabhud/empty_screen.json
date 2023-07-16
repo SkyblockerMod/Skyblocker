@@ -1,0 +1,17 @@
+{
+    "widgets": [
+        {
+            "name": "EmptyWidget",
+            "alias": "ew"
+        }
+    ],
+    "layout": [
+        {
+            "op": "place",
+            "where": "center",
+            "apply_to": [
+                "ew"
+            ]
+        }
+    ]
+}

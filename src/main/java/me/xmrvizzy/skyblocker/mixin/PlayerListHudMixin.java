@@ -9,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.ScreenBuilder;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.ScreenMaster;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -45,9 +47,14 @@ public class PlayerListHudMixin {
 
         int w = scaledW;
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
+        float scale = SkyblockerConfig.get().general.tabHud.tabHudScale / 100f;
+        w = (int) (w / scale);
+        h = (int) (h / scale);
+
         try {
-            Screen screen = Screen.getCorrect(w, h, footer);
-            screen.render(context);
+            ScreenMaster.render(context, w,h,footer);
+            // Screen screen = Screen.getCorrect(w, h, footer);
+            // screen.render(context);
             info.cancel();
         } catch (Exception e) {
             TabHud.LOGGER.error("Drawing default hud. Reason: Screen exception {}", e);

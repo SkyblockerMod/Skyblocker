@@ -1,0 +1,11 @@
+{
+    "screenA": {
+        "default": "generic_info_screen"
+    },
+    "screenB": {
+        "default": "empty_screen"
+    },
+    "screenC": {
+        "default": "empty_screen"
+    }
+}
