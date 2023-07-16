@@ -283,6 +283,8 @@
 
   "skyblocker.updaterepository.failed":  "§b[§6Skyblocker§b] §cUpdating local repository failed. Remove files manually and restart game.",
 
+  "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§b[§6Skyblocker§b] §cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
+
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",

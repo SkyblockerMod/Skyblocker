@@ -9,9 +9,10 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +44,10 @@ public class DungeonSecrets {
     private static JsonObject waypointsJson;
     @Nullable
     private static CompletableFuture<Void> roomsLoaded;
-    private static Vector2i mapEntrancePos;
+    private static Vector2ic mapEntrancePos;
     private static int mapRoomWidth;
+    private static Vector2ic physicalEntrancePos;
+    private static Room currentRoom;
 
     public static boolean isRoomsLoaded() {
         return roomsLoaded != null && roomsLoaded.isDone();
@@ -106,7 +109,7 @@ public class DungeonSecrets {
                 LOGGER.error("Failed to load dungeon secrets json", e);
             }
         }, MinecraftClient.getInstance()));
-        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
+        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
     }
 
     private static HashMap<String, int[]> readRooms(Path roomShape, int resourcePathIndex) {
@@ -146,11 +149,16 @@ public class DungeonSecrets {
         if (map == null) {
             return;
         }
-        if (mapEntrancePos == null && (mapEntrancePos = DungeonMapUtils.getEntrancePos(map)) == null) {
+        if (mapEntrancePos == null && (mapEntrancePos = DungeonMapUtils.getMapEntrancePos(map)) == null) {
             return;
         }
-        if (mapRoomWidth == 0 && (mapRoomWidth = DungeonMapUtils.getRoomWidth(map, mapEntrancePos)) == 0) {
+        if (mapRoomWidth == 0 && (mapRoomWidth = DungeonMapUtils.getMapRoomWidth(map, mapEntrancePos)) == 0) {
             return;
         }
+        if (physicalEntrancePos == null && (physicalEntrancePos = DungeonMapUtils.getPhysicalEntrancePos(map, client.player.getPos())) == null) {
+            client.player.sendMessage(Text.translatable("skyblocker.dungeons.secrets.physicalEntranceNotFound"));
+            return;
+        }
+        LOGGER.info("[Skyblocker] Detected dungeon with map room width {} and entrance at map pos {} and physical pos {}", mapRoomWidth, mapEntrancePos, physicalEntrancePos);
     }
 }
