@@ -28,8 +28,8 @@ repositories {
 		name = "meteor-maven"
 		url = "https://maven.meteordev.org/releases"
 	}
-	maven {url "https://jitpack.io"}
 	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
+	maven {url "https://jitpack.io"}
 }
 
 dependencies {
