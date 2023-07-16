@@ -1,8 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import net.minecraft.datafixer.fix.ItemIdFix;
 import net.minecraft.datafixer.fix.ItemInstanceTheFlatteningFix;
 import org.slf4j.Logger;
@@ -29,11 +26,8 @@ public class DungeonRoomsDFU {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonRoomsDFU.class);
     private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
     private static final String DUNGEON_ROOMS_DATA_DIR = DUNGEONS_DATA_DIR + "/dungeonrooms";
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final HashMap<String, HashMap<String, HashMap<String, long[]>>> OLD_ROOMS = new HashMap<>();
     private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS = new HashMap<>();
-    private static JsonObject roomsJson;
-    private static JsonObject waypointsJson;
 
     public static void main(String[] args) {
         load().join();
@@ -67,16 +61,6 @@ public class DungeonRoomsDFU {
         } catch (IOException e) {
             LOGGER.error("Failed to load dungeon secrets", e);
         }
-        dungeonFutures.add(CompletableFuture.runAsync(() -> {
-            //noinspection DataFlowIssue
-            try (BufferedReader roomsReader = new BufferedReader(new InputStreamReader(DungeonRoomsDFU.class.getResourceAsStream(DUNGEONS_DATA_DIR + "/dungeonrooms.json"))); BufferedReader waypointsReader = new BufferedReader(new InputStreamReader(DungeonRoomsDFU.class.getResourceAsStream(DUNGEONS_DATA_DIR + "/secretlocations.json")))) {
-                roomsJson = GSON.fromJson(roomsReader, JsonObject.class);
-                waypointsJson = GSON.fromJson(waypointsReader, JsonObject.class);
-                LOGGER.info("Loaded dungeon secrets json");
-            } catch (Exception e) {
-                LOGGER.error("Failed to load dungeon secrets json", e);
-            }
-        }));
         return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", OLD_ROOMS.size(), OLD_ROOMS.values().stream().mapToInt(HashMap::size).sum(), OLD_ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
     }
 
