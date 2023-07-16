@@ -200,7 +200,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.noLoadSecretWaypoints": "Not Load Secret Waypoints",
-  "text.autoconfig.skyblocker.option.locations.dungeons.noLoadSecretWaypoints.@Tooltip": "This option can save around 40 MB of ram if enabled, but Secret Waypoint will require a restart after turning off this option to work.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.noLoadSecretWaypoints.@Tooltip": "This option can save around 20 MB of ram if enabled, but Secret Waypoint will require a restart after turning off this option to work.",
   "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Croesus Helper",
   "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
   "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Enable Map",
