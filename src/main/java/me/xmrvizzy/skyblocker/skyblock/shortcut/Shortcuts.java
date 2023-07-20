@@ -4,9 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Shortcuts {
@@ -153,7 +154,7 @@ public class Shortcuts {
         }
         for (String key : commandArgs.keySet()) {
             if (key.startsWith("/")) {
-                dispatcher.register(literal(key.substring(1)));
+                dispatcher.register(literal(key.substring(1)).then(argument("args", StringArgumentType.greedyString())));
             }
         }
         dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("help").executes(context -> {
@@ -182,7 +183,7 @@ public class Shortcuts {
     }
 
     private static String modifyCommand(String command) {
-        if (Utils.isOnHypixel() && SkyblockerConfig.get().general.shortcuts.enableShortcuts) {
+        if (SkyblockerConfig.get().general.shortcuts.enableShortcuts) {
             if (!isShortcutsLoaded()) {
                 LOGGER.warn("[Skyblocker] Shortcuts not loaded yet, skipping shortcut for command: {}", command);
                 return command;
