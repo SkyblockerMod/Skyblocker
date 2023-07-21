@@ -5,7 +5,6 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -15,8 +14,9 @@ public class DwarvenHudConfigScreen extends Screen {
 
     private int hudX = SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x;
     private int hudY = SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y;
-    protected DwarvenHudConfigScreen(Text title) {
-        super(title);
+
+    protected DwarvenHudConfigScreen() {
+        super(Text.of("Dwarven HUD Config"));
     }
 
     @Override

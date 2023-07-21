@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class Utils {
     private static final String PROFILE_PREFIX = "Profile: ";
+    private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
     private static boolean isInDungeons = false;
     private static boolean isInjected = false;
@@ -44,6 +45,10 @@ public class Utils {
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
     private static long lastLocRaw = 0;
+
+    public static boolean isOnHypixel() {
+        return isOnHypixel;
+    }
 
     public static boolean isOnSkyblock() {
         return isOnSkyblock;
@@ -126,21 +131,35 @@ public class Utils {
         String string = sidebar.toString();
 
         if (sidebar.isEmpty()) return;
-        if (sidebar.get(0).contains("SKYBLOCK") || sidebar.get(0).contains("SKIBLOCK")) {
-            if (!isOnSkyblock) {
-                if (!isInjected) {
-                    isInjected = true;
-                    ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
-                }
-                isOnSkyblock = true;
-                SkyblockEvents.JOIN.invoker().onSkyblockJoin();
+        if (sidebar.get(sidebar.size() - 1).equals("www.hypixel.net")) {
+            if (!isOnHypixel) {
+                isOnHypixel = true;
             }
-        } else if (isOnSkyblock) {
+            if (sidebar.get(0).contains("SKYBLOCK") || sidebar.get(0).contains("SKIBLOCK")) {
+                if (!isOnSkyblock) {
+                    if (!isInjected) {
+                        isInjected = true;
+                        ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+                    }
+                    isOnSkyblock = true;
+                    SkyblockEvents.JOIN.invoker().onSkyblockJoin();
+                }
+            } else {
+                leaveSkyblock();
+            }
+            isInDungeons = isOnSkyblock && string.contains("The Catacombs");
+        } else if (isOnHypixel) {
+            isOnHypixel = false;
+            leaveSkyblock();
+        }
+    }
+
+    private static void leaveSkyblock() {
+        if (isOnSkyblock) {
             isOnSkyblock = false;
             isInDungeons = false;
             SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
         }
-        isInDungeons = isOnSkyblock && string.contains("The Catacombs");
     }
 
     public static String getLocation() {

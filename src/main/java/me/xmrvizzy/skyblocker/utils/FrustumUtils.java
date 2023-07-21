@@ -17,6 +17,6 @@ public class FrustumUtils {
     }
 
     public static boolean isVisible(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return ((FrustumInvoker) getFrustum()).isVisible(minX, minY, minZ, maxX, maxY, maxZ);
+        return ((FrustumInvoker) getFrustum()).invokeIsVisible(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

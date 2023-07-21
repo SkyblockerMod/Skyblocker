@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.config;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -161,6 +160,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public FairySouls fairySouls = new FairySouls();
 
+        @ConfigEntry.Category("shortcuts")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Shortcuts shortcuts = new Shortcuts();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -262,6 +265,15 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class FairySouls {
         public boolean enableFairySoulsHelper = false;
+    }
+
+    public static class Shortcuts {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableShortcuts = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableCommandShortcuts = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableCommandArgShortcuts = true;
     }
 
     public static class Hitbox {
@@ -505,7 +517,7 @@ public class SkyblockerConfig implements ConfigData {
      */
     public static void init() {
         AutoConfig.register(SkyblockerConfig.class, GsonConfigSerializer::new);
-        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal("skyblocker").then(optionsLiteral("config")).then(optionsLiteral("options")))));
+        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
     }
 
     /**
@@ -515,11 +527,8 @@ public class SkyblockerConfig implements ConfigData {
      * @return the command builder
      */
     private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
-        return literal(name).executes(context -> {
-            // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-            SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null));
-            return Command.SINGLE_SUCCESS;
-        });
+        // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
+        return literal(name).executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null)));
     }
 
     public static SkyblockerConfig get() {

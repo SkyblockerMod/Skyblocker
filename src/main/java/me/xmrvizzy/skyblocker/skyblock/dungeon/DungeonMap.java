@@ -1,9 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.mojang.brigadier.Command;
-
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -16,11 +13,11 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.StringUtils;
 
 public class DungeonMap {
-	private static final Identifier MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
+    private static final Identifier MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
 
     public static void render(MatrixStack matrices) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -36,36 +33,29 @@ public class DungeonMap {
             MapRenderer map = client.gameRenderer.getMapRenderer();
             MapState state = FilledMapItem.getMapState(mapid, client.world);
             float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
-        	int x = SkyblockerConfig.get().locations.dungeons.mapX;
-        	int y = SkyblockerConfig.get().locations.dungeons.mapY;
+            int x = SkyblockerConfig.get().locations.dungeons.mapX;
+            int y = SkyblockerConfig.get().locations.dungeons.mapY;
 
             if (state == null) return;
             matrices.push();
             matrices.translate(x, y, 0);
             matrices.scale(scaling, scaling, 0f);
-            map.draw( matrices, vertices, mapid, state, false, 15728880);
+            map.draw(matrices, vertices, mapid, state, false, 15728880);
             vertices.draw();
             matrices.pop();
         }
     }
-    
+
     public static void renderHUDMap(DrawContext context, int x, int y) {
-    	float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
-    	int size = (int) (128 * scaling);
-    	context.drawTexture(MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
+        float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
+        int size = (int) (128 * scaling);
+        context.drawTexture(MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
     }
-    
+
     public static void init() {
-    	ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-    		dispatcher.register(ClientCommandManager.literal("skyblocker")
-    				.then(ClientCommandManager.literal("hud")
-    						.then(ClientCommandManager.literal("dungeonmap")
-    								.executes(context -> {
-    									MinecraftClient client = context.getSource().getClient();
-    									client.send(() -> client.setScreen(new DungeonMapConfigScreen(Text.literal("Dungeon Map Config"))));
-    									
-    									return Command.SINGLE_SUCCESS;
-    								}))));
-    	});
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
+                .then(ClientCommandManager.literal("hud")
+                        .then(ClientCommandManager.literal("dungeonmap")
+                                .executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(DungeonMapConfigScreen::new))))));
     }
 }
