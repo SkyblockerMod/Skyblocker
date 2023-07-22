@@ -1,6 +1,6 @@
-package me.xmrvizzy.skyblocker.chat.filters;
+package me.xmrvizzy.skyblocker.skyblock.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatPatternListenerTest;
+import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
 class AutopetFilterTest extends ChatPatternListenerTest<AutopetFilter> {

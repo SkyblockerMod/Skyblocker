@@ -1,8 +1,8 @@
-package me.xmrvizzy.skyblocker.chat.filters;
+package me.xmrvizzy.skyblocker.skyblock.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
-import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
 import net.minecraft.text.Text;
 
 import java.util.regex.Matcher;

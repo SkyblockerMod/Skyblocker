@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.discord;
+package me.xmrvizzy.skyblocker.utils.discord;
 
 
 import me.shedaniel.autoconfig.AutoConfig;

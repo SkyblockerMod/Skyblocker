@@ -1,11 +1,12 @@
-package me.xmrvizzy.skyblocker.chat.filters;
+package me.xmrvizzy.skyblocker.skyblock.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatPatternListenerTest;
+import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AdFilterTest extends ChatPatternListenerTest<AdFilter> {
     public AdFilterTest() {

@@ -1,7 +1,7 @@
-package me.xmrvizzy.skyblocker.chat.filters;
+package me.xmrvizzy.skyblocker.skyblock.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 
 public class TeleportPadFilter extends SimpleChatFilter {
     public TeleportPadFilter() {

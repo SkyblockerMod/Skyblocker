@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
-import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.skyblock.FairySouls;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;

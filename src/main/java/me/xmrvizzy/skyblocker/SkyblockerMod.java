@@ -2,9 +2,7 @@ package me.xmrvizzy.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.xmrvizzy.skyblocker.chat.ChatMessageListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.skyblock.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
@@ -23,6 +21,8 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.NEURepo;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.chat.ChatMessageListener;
+import me.xmrvizzy.skyblocker.utils.discord.DiscordRPCManager;
 import me.xmrvizzy.skyblocker.utils.render.culling.OcclusionCulling;
 import me.xmrvizzy.skyblocker.utils.render.gui.ContainerSolverManager;
 import me.xmrvizzy.skyblocker.utils.render.title.TitleContainer;

@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.chat;
+package me.xmrvizzy.skyblocker.utils.chat;
 
 import net.minecraft.text.Text;
 

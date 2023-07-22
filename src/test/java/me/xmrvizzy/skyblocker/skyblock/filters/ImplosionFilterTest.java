@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.chat.filters;
+package me.xmrvizzy.skyblocker.skyblock.filters;
 
 import org.junit.jupiter.api.Test;
 
