@@ -30,6 +30,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Map;
+
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin extends Screen {
     protected HandledScreenMixin(Text title) {
@@ -96,7 +98,7 @@ public abstract class HandledScreenMixin extends Screen {
                     superpairsSolver.setSuperpairsCurrentSlot(ItemStack.EMPTY);
                 } else if (experimentSolver instanceof UltrasequencerSolver ultrasequencerSolver && slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot()) {
                     int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
-                    ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().ifPresentOrElse((entry) -> ultrasequencerSolver.setUltrasequencerNextSlot(entry.getKey()), () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
+                    ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().map(Map.Entry::getKey).ifPresentOrElse(ultrasequencerSolver::setUltrasequencerNextSlot, () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
                 }
             }
         }
