@@ -1,8 +1,8 @@
-package me.xmrvizzy.skyblocker.utils.title;
+package me.xmrvizzy.skyblocker.utils.render.title;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderUtils;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.Vector2f;
@@ -100,7 +100,7 @@ public class TitleContainerConfigScreen extends Screen {
         float x2 = boundingBox.getRight().getX();
         float y2 = boundingBox.getRight().getY();
 
-        if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, (int) x1, (int) y1, (int) x2, (int) y2) && button == 0) {
+        if (RenderHelper.pointIsInArea(mouseX, mouseY, x1, y1, x2, y2) && button == 0) {
             hudX = switch (alignment) {
                 case LEFT -> (int) mouseX - midWidth;
                 case MIDDLE -> (int) mouseX;

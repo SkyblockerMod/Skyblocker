@@ -1,7 +1,6 @@
-package me.xmrvizzy.skyblocker.utils.culling;
+package me.xmrvizzy.skyblocker.utils.render.culling;
 
 import com.logisticscraft.occlusionculling.DataProvider;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;

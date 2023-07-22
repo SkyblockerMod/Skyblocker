@@ -1,10 +1,9 @@
-package me.xmrvizzy.skyblocker.utils.culling;
+package me.xmrvizzy.skyblocker.utils.render.culling;
 
 import com.logisticscraft.occlusionculling.OcclusionCullingInstance;
 import com.logisticscraft.occlusionculling.cache.ArrayOcclusionCache;
 import com.logisticscraft.occlusionculling.util.Vec3d;
-
-import me.xmrvizzy.skyblocker.utils.FrustumUtils;
+import me.xmrvizzy.skyblocker.utils.render.FrustumUtils;
 import net.minecraft.client.MinecraftClient;
 
 public class OcclusionCulling {
@@ -13,9 +12,9 @@ public class OcclusionCulling {
 	private static OcclusionCullingInstance instance = null;
 
 	// Reused objects to reduce allocation overhead
-	private static Vec3d cameraPos = new Vec3d(0, 0, 0);
-	private static Vec3d min = new Vec3d(0, 0, 0);
-	private static Vec3d max = new Vec3d(0, 0, 0);
+	private static final Vec3d cameraPos = new Vec3d(0, 0, 0);
+	private static final Vec3d min = new Vec3d(0, 0, 0);
+	private static final Vec3d max = new Vec3d(0, 0, 0);
 
 	/**
 	 * Initializes the occlusion culling instance

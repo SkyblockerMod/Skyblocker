@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.gui;
+package me.xmrvizzy.skyblocker.utils.render.gui;
 
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;

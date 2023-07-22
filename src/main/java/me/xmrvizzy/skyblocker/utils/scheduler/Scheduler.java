@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.utils;
+package me.xmrvizzy.skyblocker.utils.scheduler;
 
 import com.mojang.brigadier.Command;
 import me.xmrvizzy.skyblocker.SkyblockerMod;

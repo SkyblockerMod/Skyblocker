@@ -2,7 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderUtils;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -29,7 +29,7 @@ public class DwarvenHudConfigScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, hudX, hudY, hudX + 200, hudY + 40) && button == 0) {
+        if (RenderHelper.pointIsInArea(mouseX, mouseY, hudX, hudY, hudX + 200, hudY + 40) && button == 0) {
             hudX = (int) Math.max(Math.min(mouseX - 100, this.width - 200), 0);
             hudY = (int) Math.max(Math.min(mouseY - 20, this.height - 40), 0);
         }

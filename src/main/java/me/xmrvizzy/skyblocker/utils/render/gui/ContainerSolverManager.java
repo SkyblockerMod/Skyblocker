@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.gui;
+package me.xmrvizzy.skyblocker.utils.render.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.mixin.accessor.HandledScreenAccessor;

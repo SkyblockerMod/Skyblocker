@@ -11,16 +11,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class ItemUtils {
+    private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
 
     public static List<Text> getTooltip(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player != null && item != null)
-            // return item.getTooltip(client.player, TooltipContext.Default.NORMAL);
-            return item.getTooltip(client.player, TooltipContext.Default.BASIC);
-        return Collections.emptyList();
+        return client.player == null || item == null ? Collections.emptyList() : item.getTooltip(client.player, TooltipContext.Default.BASIC);
     }
-
-    private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
 
     public static List<String> getTooltipStrings(ItemStack item) {
         List<Text> lines = getTooltip(item);

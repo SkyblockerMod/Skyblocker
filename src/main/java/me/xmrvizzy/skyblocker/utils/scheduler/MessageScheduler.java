@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.utils;
+package me.xmrvizzy.skyblocker.utils.scheduler;
 
 import net.minecraft.client.MinecraftClient;
 

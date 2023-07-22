@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.gui;
+package me.xmrvizzy.skyblocker.utils.render.gui;
 
 public record ColorHighlight(int slot, int color) {
     private static final int RED_HIGHLIGHT = 64 << 24 | 255 << 16;

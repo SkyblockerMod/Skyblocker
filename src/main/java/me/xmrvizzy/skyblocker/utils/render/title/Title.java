@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.utils.title;
+package me.xmrvizzy.skyblocker.utils.render.title;
 
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
