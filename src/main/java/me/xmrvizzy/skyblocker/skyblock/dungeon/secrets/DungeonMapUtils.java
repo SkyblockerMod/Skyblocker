@@ -11,6 +11,8 @@ import org.joml.RoundingMode;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
+import java.util.*;
+
 public class DungeonMapUtils {
     public static final byte BLACK_COLOR = MapColor.BLACK.getRenderColorByte(MapColor.Brightness.LOWEST);
     public static final byte WHITE_COLOR = MapColor.WHITE.getRenderColorByte(MapColor.Brightness.HIGH);
@@ -34,16 +36,17 @@ public class DungeonMapUtils {
         // noinspection StatementWithEmptyBody, DataFlowIssue
         while (isEntranceColor(getColor(map, mapPos.sub(1, 0)))) {
         }
+        mapPos.add(1, 0);
         //noinspection StatementWithEmptyBody
         while (isEntranceColor(getColor(map, mapPos.sub(0, 1)))) {
         }
-        return mapPos;
+        return mapPos.add(0, 1);
     }
 
-    public static int getMapRoomWidth(MapState map, Vector2ic entrancePos) {
-        int i = 0;
+    public static int getMapRoomSize(MapState map, Vector2ic mapEntrancePos) {
+        int i = -1;
         //noinspection StatementWithEmptyBody
-        while (isEntranceColor(getColor(map, entrancePos.x() + i++, entrancePos.y()))) {
+        while (isEntranceColor(getColor(map, mapEntrancePos.x() + ++i, mapEntrancePos.y()))) {
         }
         return i;
     }
@@ -51,9 +54,9 @@ public class DungeonMapUtils {
     /**
      * Gets the map position of the top left corner of the room the player is in.
      *
-     * @param map          the map
-     * @param entrancePos  the map position of the top left corner of the entrance
-     * @param mapRoomWidth the width of a room on the map
+     * @param map            the map
+     * @param mapEntrancePos the map position of the top left corner of the entrance
+     * @param mapRoomSize    the size of a room on the map
      * @return the map position of the top left corner of the room the player is in
      * @implNote {@code mapPos} is shifted by 2 so room borders are evenly split.
      * {@code mapPos} is then shifted by {@code offset} to align the top left most room at (0, 0)
@@ -61,14 +64,14 @@ public class DungeonMapUtils {
      * Finally, {@code mapPos} is shifted back by {@code offset} to its intended position.
      */
     @Nullable
-    public static Vector2ic getMapRoomPos(MapState map, Vector2ic entrancePos, int mapRoomWidth) {
-        int mapRoomWidthWithGap = mapRoomWidth + 4;
+    public static Vector2ic getMapRoomPos(MapState map, Vector2ic mapEntrancePos, int mapRoomSize) {
+        int mapRoomSizeWithGap = mapRoomSize + 4;
         Vector2i mapPos = getMapPlayerPos(map);
         if (mapPos == null) {
             return null;
         }
-        Vector2ic offset = new Vector2i(entrancePos.x() % mapRoomWidthWithGap, entrancePos.y() % mapRoomWidthWithGap);
-        return mapPos.add(2, 2).sub(offset).sub(mapPos.x() % mapRoomWidthWithGap, mapPos.y() % mapRoomWidthWithGap).add(offset);
+        Vector2ic offset = new Vector2i(mapEntrancePos.x() % mapRoomSizeWithGap, mapEntrancePos.y() % mapRoomSizeWithGap);
+        return mapPos.add(2, 2).sub(offset).sub(mapPos.x() % mapRoomSizeWithGap, mapPos.y() % mapRoomSizeWithGap).add(offset);
     }
 
     /**
@@ -76,12 +79,12 @@ public class DungeonMapUtils {
      *
      * @param physicalEntrancePos the physical position of the northwest corner of the entrance room
      * @param mapEntrancePos      the map position of the top left corner of the entrance room
-     * @param mapRoomWidth        the width of a room on the map
+     * @param mapRoomSize         the size of a room on the map
      * @param physicalPos         the physical position of the northwest corner of the room
      * @return the map position of the top left corner of the room corresponding to the physical position of the northwest corner of a room
      */
-    public static Vector2ic getMapPosFromPhysical(Vector2ic physicalEntrancePos, Vector2ic mapEntrancePos, int mapRoomWidth, Vector2ic physicalPos) {
-        return new Vector2i(physicalPos).sub(physicalEntrancePos).div(32).mul(mapRoomWidth + 4).add(mapEntrancePos);
+    public static Vector2ic getMapPosFromPhysical(Vector2ic physicalEntrancePos, Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalPos) {
+        return new Vector2i(physicalPos).sub(physicalEntrancePos).div(32).mul(mapRoomSize + 4).add(mapEntrancePos);
     }
 
     @Nullable
@@ -107,31 +110,84 @@ public class DungeonMapUtils {
         return physicalPos.sub(MathHelper.floorMod(physicalPos.x(), 32), MathHelper.floorMod(physicalPos.y(), 32)).sub(8, 8);
     }
 
+    public static Vector2ic[] getPhysicalPosFromMap(Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalEntrancePos, Vector2ic... mapPositions) {
+        for (int i = 0; i < mapPositions.length; i++) {
+            mapPositions[i] = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, mapPositions[i]);
+        }
+        return mapPositions;
+    }
+
     /**
      * Gets the physical position of the northwest corner of the room corresponding to the map position of the top left corner of a room.
      *
      * @param mapEntrancePos      the map position of the top left corner of the entrance room
-     * @param mapRoomWidth        the width of a room on the map
+     * @param mapRoomSize         the size of a room on the map
      * @param physicalEntrancePos the physical position of the northwest corner of the entrance room
      * @param mapPos              the map position of the top left corner of the room
      * @return the physical position of the northwest corner of the room corresponding to the map position of the top left corner of a room
      */
-    public static Vector2ic getPhysicalPosFromMap(Vector2ic mapEntrancePos, int mapRoomWidth, Vector2ic physicalEntrancePos, Vector2ic mapPos) {
-        return new Vector2i(mapPos).sub(mapEntrancePos).div(mapRoomWidth + 4).mul(32).add(physicalEntrancePos);
+    public static Vector2ic getPhysicalPosFromMap(Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalEntrancePos, Vector2ic mapPos) {
+        return new Vector2i(mapPos).sub(mapEntrancePos).div(mapRoomSize + 4).mul(32).add(physicalEntrancePos);
     }
 
-    private static byte getColor(MapState map, @Nullable Vector2ic pos) {
+    public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {
+        return switch (getColor(map, mapPos)) {
+            case 30 -> Room.Type.ENTRANCE;
+            case 63 -> Room.Type.ROOM;
+            case 66 -> Room.Type.PUZZLE;
+            case 62 -> Room.Type.TRAP;
+            case 74 -> Room.Type.MINIBOSS;
+            case 82 -> Room.Type.FAIRY;
+            case 18 -> Room.Type.BLOOD;
+            case 85 -> Room.Type.UNKNOWN;
+            default -> null;
+        };
+    }
+
+    public static Vector2ic[] getRoomSegments(MapState map, Vector2ic mapPos, int mapRoomSize, byte color) {
+        Set<Vector2ic> segments = new HashSet<>();
+        Queue<Vector2ic> queue = new ArrayDeque<>();
+        segments.add(mapPos);
+        queue.add(mapPos);
+        while (!queue.isEmpty()) {
+            Vector2ic curMapPos = queue.poll();
+            Vector2i newMapPos = new Vector2i();
+            if (getColor(map, newMapPos.set(curMapPos).sub(1, 0)) == color && !segments.contains(newMapPos.sub(mapRoomSize + 3, 0))) {
+                segments.add(newMapPos);
+                queue.add(newMapPos);
+                newMapPos = new Vector2i();
+            }
+            if (getColor(map, newMapPos.set(curMapPos).sub(0, 1)) == color && !segments.contains(newMapPos.sub(0, mapRoomSize + 3))) {
+                segments.add(newMapPos);
+                queue.add(newMapPos);
+                newMapPos = new Vector2i();
+            }
+            if (getColor(map, newMapPos.set(curMapPos).add(mapRoomSize, 0)) == color && !segments.contains(newMapPos.add(4, 0))) {
+                segments.add(newMapPos);
+                queue.add(newMapPos);
+                newMapPos = new Vector2i();
+            }
+            if (getColor(map, newMapPos.set(curMapPos).add(0, mapRoomSize)) == color && !segments.contains(newMapPos.add(0, 4))) {
+                segments.add(newMapPos);
+                queue.add(newMapPos);
+            }
+        }
+        DungeonSecrets.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
+        return segments.toArray(Vector2ic[]::new);
+    }
+
+    public static byte getColor(MapState map, @Nullable Vector2ic pos) {
         return pos == null ? -1 : getColor(map, pos.x(), pos.y());
     }
 
-    private static byte getColor(MapState map, int x, int z) {
+    public static byte getColor(MapState map, int x, int z) {
         if (x < 0 || z < 0 || x >= 128 || z >= 128) {
             return -1;
         }
         return map.colors[x + (z << 7)];
     }
 
-    private static boolean isEntranceColor(byte color) {
-        return color == Room.RoomType.ENTRANCE.color;
+    public static boolean isEntranceColor(byte color) {
+        return color == Room.Type.ENTRANCE.color;
     }
 }

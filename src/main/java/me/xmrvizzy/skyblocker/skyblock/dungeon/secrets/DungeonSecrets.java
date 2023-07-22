@@ -33,6 +33,11 @@ import java.util.zip.InflaterInputStream;
 public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
     private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
+    /**
+     * Block data for dungeon rooms. See {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU} for format details and how it's generated.
+     * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
+     */
+    @SuppressWarnings("JavadocReference")
     private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS_DATA = new HashMap<>();
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
@@ -52,7 +57,7 @@ public class DungeonSecrets {
     /**
      * The width of a room on the map.
      */
-    private static int mapRoomWidth;
+    private static int mapRoomSize;
     /**
      * The physical position of the northwest corner of the entrance room.
      */
@@ -80,7 +85,7 @@ public class DungeonSecrets {
         List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
         URL dungeonsURL = SkyblockerMod.class.getResource(DUNGEONS_DATA_DIR);
         if (dungeonsURL == null) {
-            LOGGER.error("Failed to load dungeon secrets, unable to find dungeon rooms data directory");
+            LOGGER.error("[Skyblocker] Failed to load dungeon secrets, unable to find dungeon rooms data directory");
             return;
         }
         Path dungeonsDir = Path.of(dungeonsURL.getPath());
@@ -88,7 +93,7 @@ public class DungeonSecrets {
             try {
                 dungeonsDir = FileSystems.getFileSystem(dungeonsURL.toURI()).getPath(DUNGEONS_DATA_DIR);
             } catch (URISyntaxException e) {
-                LOGGER.error("Failed to load dungeon secrets, unable to open dungeon rooms data directory", e);
+                LOGGER.error("[Skyblocker] Failed to load dungeon secrets, unable to open dungeon rooms data directory", e);
                 return;
             }
         }
@@ -102,22 +107,22 @@ public class DungeonSecrets {
                         roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString(), rooms)));
                     }
                     ROOMS_DATA.put(dungeon.getFileName().toString(), roomShapesMap);
-                    dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.debug("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
+                    dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.debug("[Skyblocker] Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
                 } catch (IOException e) {
-                    LOGGER.error("Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
+                    LOGGER.error("[Skyblocker] Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("Failed to load dungeon secrets", e);
+            LOGGER.error("[Skyblocker] Failed to load dungeon secrets", e);
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
         dungeonFutures.add(CompletableFuture.runAsync(() -> {
             try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
                 roomsJson = SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class);
                 waypointsJson = SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class);
-                LOGGER.debug("Loaded dungeon secrets json");
+                LOGGER.debug("[Skyblocker] Loaded dungeon secrets json");
             } catch (Exception e) {
-                LOGGER.error("Failed to load dungeon secrets json", e);
+                LOGGER.error("[Skyblocker] Failed to load dungeon secrets json", e);
             }
         }, MinecraftClient.getInstance()));
         roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(HashMap::size).sum(), ROOMS_DATA.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
@@ -131,15 +136,15 @@ public class DungeonSecrets {
                 //noinspection DataFlowIssue
                 try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(SkyblockerMod.class.getResourceAsStream(room.toString().substring(resourcePathIndex))))) {
                     roomsData.put(name.substring(0, name.length() - 9), (int[]) in.readObject());
-                    LOGGER.debug("Loaded dungeon secrets room {}", name);
+                    LOGGER.debug("[Skyblocker] Loaded dungeon secrets room {}", name);
                 } catch (NullPointerException | IOException | ClassNotFoundException e) {
-                    LOGGER.error("Failed to load dungeon secrets room " + name, e);
+                    LOGGER.error("[Skyblocker] Failed to load dungeon secrets room " + name, e);
                 }
             }
-            LOGGER.debug("Loaded dungeon secrets room shape {} with {} rooms", roomShape.getFileName(), roomsData.size());
+            LOGGER.debug("[Skyblocker] Loaded dungeon secrets room shape {} with {} rooms", roomShape.getFileName(), roomsData.size());
             return roomsData;
         } catch (IOException e) {
-            LOGGER.error("Failed to load dungeon secrets room shape " + roomShape.getFileName(), e);
+            LOGGER.error("[Skyblocker] Failed to load dungeon secrets room shape " + roomShape.getFileName(), e);
         }
         return null;
     }
@@ -164,7 +169,7 @@ public class DungeonSecrets {
         if (mapEntrancePos == null && (mapEntrancePos = DungeonMapUtils.getMapEntrancePos(map)) == null) {
             return;
         }
-        if (mapRoomWidth == 0 && (mapRoomWidth = DungeonMapUtils.getMapRoomWidth(map, mapEntrancePos)) == 0) {
+        if (mapRoomSize == 0 && (mapRoomSize = DungeonMapUtils.getMapRoomSize(map, mapEntrancePos)) == 0) {
             return;
         }
         if (physicalEntrancePos == null) {
@@ -173,11 +178,26 @@ public class DungeonSecrets {
                 player.sendMessage(Text.translatable("skyblocker.dungeons.secrets.physicalEntranceNotFound"));
                 return;
             } else {
-                currentRoom = newRoom(Room.RoomType.ENTRANCE, physicalEntrancePos);
-                LOGGER.info("[Skyblocker] Started dungeon with map room width {} and entrance at map pos {} and physical pos {}", mapRoomWidth, mapEntrancePos, physicalEntrancePos);
+                currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
+                LOGGER.info("[Skyblocker] Started dungeon with map room width {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
             }
-        } else {
-            LOGGER.info("[Skyblocker] Processing dungeon with map room width {} and entrance at map pos {} and physical pos {}", mapRoomWidth, mapEntrancePos, physicalEntrancePos);
+        }
+
+        Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(client.player.getPos());
+        Vector2ic mapPos = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, physicalPos);
+        Room.Type type = DungeonMapUtils.getRoomType(map, mapPos);
+        if (type == null) {
+            return;
+        }
+        Room room = rooms.get(physicalPos);
+        if (room == null) {
+            switch (type) {
+                case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
+                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+            }
+        }
+        if (room != null && currentRoom != room) {
+            currentRoom = room;
         }
     }
 
@@ -188,7 +208,7 @@ public class DungeonSecrets {
      * @param type              the type of room to create
      * @param physicalPositions the physical positions of the room
      */
-    private static Room newRoom(Room.RoomType type, Vector2ic... physicalPositions) {
+    private static Room newRoom(Room.Type type, Vector2ic... physicalPositions) {
         Room newRoom = new Room(type, physicalPositions);
         for (Vector2ic physicalPos : physicalPositions) {
             rooms.put(physicalPos, newRoom);

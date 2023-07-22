@@ -3,19 +3,20 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 import net.minecraft.block.MapColor;
 import org.joml.Vector2ic;
 
+import java.util.Arrays;
 import java.util.Set;
 
 public class Room {
-    private final RoomType type;
+    private final Type type;
     private String name;
     private final Set<Vector2ic> segments;
 
-    public Room(RoomType type, Vector2ic... physicalPositions) {
+    public Room(Type type, Vector2ic... physicalPositions) {
         this.type = type;
         this.segments = Set.of(physicalPositions);
     }
 
-    public RoomType getType() {
+    public Type getType() {
         return type;
     }
 
@@ -23,17 +24,23 @@ public class Room {
         return segments.contains(segment);
     }
 
-    public enum RoomType {
+    @Override
+    public String toString() {
+        return "Room{type=" + type + ", name='" + name + "'" + ", segments=" + Arrays.toString(segments.toArray()) + "}";
+    }
+
+    public enum Type {
         ENTRANCE(MapColor.DARK_GREEN.getRenderColorByte(MapColor.Brightness.HIGH)),
         ROOM(MapColor.ORANGE.getRenderColorByte(MapColor.Brightness.LOWEST)),
         PUZZLE(MapColor.MAGENTA.getRenderColorByte(MapColor.Brightness.HIGH)),
+        TRAP(MapColor.ORANGE.getRenderColorByte(MapColor.Brightness.HIGH)),
         MINIBOSS(MapColor.YELLOW.getRenderColorByte(MapColor.Brightness.HIGH)),
         FAIRY(MapColor.PINK.getRenderColorByte(MapColor.Brightness.HIGH)),
         BLOOD(MapColor.BRIGHT_RED.getRenderColorByte(MapColor.Brightness.HIGH)),
         UNKNOWN(MapColor.GRAY.getRenderColorByte(MapColor.Brightness.NORMAL));
         final byte color;
 
-        RoomType(byte color) {
+        Type(byte color) {
             this.color = color;
         }
     }
