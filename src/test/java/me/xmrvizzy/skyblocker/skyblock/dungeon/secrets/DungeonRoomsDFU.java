@@ -104,6 +104,8 @@ public class DungeonRoomsDFU {
         for (int i = 0; i < oldRoom.length; i++) {
             room[i] = updateBlock(oldRoom[i]);
         }
+        // Technically not needed, as the long array should be sorted already.
+        Arrays.sort(room);
         return room;
     }
 
@@ -114,9 +116,9 @@ public class DungeonRoomsDFU {
      * @return the new block state in the new format
      */
     private static int updateBlock(long oldBlock) {
-        short x = (short) ((oldBlock >> 48) & 0xFFFF);
-        short y = (short) ((oldBlock >> 32) & 0xFFFF);
-        short z = (short) ((oldBlock >> 16) & 0xFFFF);
+        short x = (short) (oldBlock >> 48 & 0xFFFF);
+        short y = (short) (oldBlock >> 32 & 0xFFFF);
+        short z = (short) (oldBlock >> 16 & 0xFFFF);
         // Blocks should be within the range 0 to 256, since a dungeon room is at most around 128 blocks long and around 150 blocks tall.
         if (x < 0 || x > 0xFF || y < 0 || y > 0xFF || z < 0 || z > 0xFF) {
             throw new IllegalArgumentException("Invalid block: " + oldBlock);
@@ -127,7 +129,7 @@ public class DungeonRoomsDFU {
         if (newId == null) {
             newId = ItemIdFix.fromId(oldId / 100);
         }
-        return (x << 24) | (y << 16) | (z << 8) | DungeonSecrets.NUMERIC_ID.get(newId);
+        return x << 24 | y << 16 | z << 8 | DungeonSecrets.NUMERIC_ID.get(newId);
     }
 
     private static CompletableFuture<Void> save() {

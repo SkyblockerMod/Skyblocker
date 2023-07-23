@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -128,6 +129,24 @@ public class DungeonMapUtils {
      */
     public static Vector2ic getPhysicalPosFromMap(Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalEntrancePos, Vector2ic mapPos) {
         return new Vector2i(mapPos).sub(mapEntrancePos).div(mapRoomSize + 4).mul(32).add(physicalEntrancePos);
+    }
+
+    public static Vector2ic getPhysicalCornerPos(Room.Direction direction, SortedSet<Integer> segmentsX, SortedSet<Integer> segmentsY) {
+        return switch (direction) {
+            case NW -> new Vector2i(segmentsX.first(), segmentsY.first());
+            case NE -> new Vector2i(segmentsX.last() + 30, segmentsY.first());
+            case SW -> new Vector2i(segmentsX.first(), segmentsY.last() + 30);
+            case SE -> new Vector2i(segmentsX.last() + 30, segmentsY.last() + 30);
+        };
+    }
+
+    public static BlockPos actualToRelative(Vector2ic physicalCornerPos, Room.Direction direction, BlockPos pos) {
+        return switch (direction) {
+            case NW -> new BlockPos(pos.getX() - physicalCornerPos.x(), pos.getY(), pos.getZ() - physicalCornerPos.y());
+            case NE -> new BlockPos(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
+            case SW -> new BlockPos(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
+            case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+        };
     }
 
     public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {

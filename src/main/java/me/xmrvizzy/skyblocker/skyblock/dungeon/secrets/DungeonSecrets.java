@@ -38,14 +38,36 @@ public class DungeonSecrets {
      * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
      */
     @SuppressWarnings("JavadocReference")
-    private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS_DATA = new HashMap<>();
+    protected static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS_DATA = new HashMap<>();
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
      * @implNote Not using {@link net.minecraft.registry.Registry#getId(Object) Registry#getId(Block)} and {@link net.minecraft.block.Blocks Blocks} since this is also used by {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
      */
     @SuppressWarnings("JavadocReference")
-    protected static final Map<String, Byte> NUMERIC_ID = Map.ofEntries(Map.entry("minecraft:stone", (byte) 1), Map.entry("minecraft:diorite", (byte) 2), Map.entry("minecraft:polished_diorite", (byte) 3), Map.entry("minecraft:andesite", (byte) 4), Map.entry("minecraft:polished_andesite", (byte) 5), Map.entry("minecraft:grass_block", (byte) 6), Map.entry("minecraft:dirt", (byte) 7), Map.entry("minecraft:coarse_dirt", (byte) 8), Map.entry("minecraft:cobblestone", (byte) 9), Map.entry("minecraft:bedrock", (byte) 10), Map.entry("minecraft:oak_leaves", (byte) 11), Map.entry("minecraft:gray_wool", (byte) 12), Map.entry("minecraft:double_stone_slab", (byte) 13), Map.entry("minecraft:mossy_cobblestone", (byte) 14), Map.entry("minecraft:clay", (byte) 15), Map.entry("minecraft:stone_bricks", (byte) 16), Map.entry("minecraft:mossy_stone_bricks", (byte) 17), Map.entry("minecraft:chiseled_stone_bricks", (byte) 18), Map.entry("minecraft:gray_terracotta", (byte) 19), Map.entry("minecraft:cyan_terracotta", (byte) 20), Map.entry("minecraft:black_terracotta", (byte) 21));
+    protected static final Map<String, Byte> NUMERIC_ID = Map.ofEntries(
+            Map.entry("minecraft:stone", (byte) 1),
+            Map.entry("minecraft:diorite", (byte) 2),
+            Map.entry("minecraft:polished_diorite", (byte) 3),
+            Map.entry("minecraft:andesite", (byte) 4),
+            Map.entry("minecraft:polished_andesite", (byte) 5),
+            Map.entry("minecraft:grass_block", (byte) 6),
+            Map.entry("minecraft:dirt", (byte) 7),
+            Map.entry("minecraft:coarse_dirt", (byte) 8),
+            Map.entry("minecraft:cobblestone", (byte) 9),
+            Map.entry("minecraft:bedrock", (byte) 10),
+            Map.entry("minecraft:oak_leaves", (byte) 11),
+            Map.entry("minecraft:gray_wool", (byte) 12),
+            Map.entry("minecraft:double_stone_slab", (byte) 13),
+            Map.entry("minecraft:mossy_cobblestone", (byte) 14),
+            Map.entry("minecraft:clay", (byte) 15),
+            Map.entry("minecraft:stone_bricks", (byte) 16),
+            Map.entry("minecraft:mossy_stone_bricks", (byte) 17),
+            Map.entry("minecraft:chiseled_stone_bricks", (byte) 18),
+            Map.entry("minecraft:gray_terracotta", (byte) 19),
+            Map.entry("minecraft:cyan_terracotta", (byte) 20),
+            Map.entry("minecraft:black_terracotta", (byte) 21)
+    );
     private static JsonObject roomsJson;
     private static JsonObject waypointsJson;
     @Nullable
