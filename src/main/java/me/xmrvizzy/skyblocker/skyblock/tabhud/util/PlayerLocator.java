@@ -26,6 +26,7 @@ public class PlayerLocator {
         GARDEN,
         INSTANCED,
         THE_RIFT,
+        DARK_AUCTION,
         UNKNOWN
     }
 
@@ -85,6 +86,8 @@ public class PlayerLocator {
                 return Location.INSTANCED;
             case "The Rift":
             	return Location.THE_RIFT;
+            case "Dark Auction":
+            	return Location.DARK_AUCTION;
             default:
                 return Location.UNKNOWN;
         }
