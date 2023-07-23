@@ -20,32 +20,32 @@ public class GardenInfoScreen extends Screen {
 
         String f = footer.getString();
 
-        GardenSkillsWidget gsw = new GardenSkillsWidget();
-        EventWidget evw = new EventWidget(true);
-        UpgradeWidget uw = new UpgradeWidget(f);
+        // GardenSkillsWidget gsw = new GardenSkillsWidget();
+        // EventWidget evw = new EventWidget(true);
+        // // UpgradeWidget uw = new UpgradeWidget(f);
 
-        ProfileWidget pw = new ProfileWidget();
-        EffectWidget efw = new EffectWidget(f);
+        // ProfileWidget pw = new ProfileWidget();
+        // EffectWidget efw = new EffectWidget(f);
 
-        JacobsContestWidget jcw = new JacobsContestWidget();
-        CookieWidget cw = new CookieWidget(f);
+        // JacobsContestWidget jcw = new JacobsContestWidget();
+        // CookieWidget cw = new CookieWidget(f);
 
-        // layout code incoming
-        this.stackWidgetsH(gsw, evw, uw);
-        this.stackWidgetsH(pw, efw);
-        this.stackWidgetsH(jcw, cw);
+        // // layout code incoming
+        // this.stackWidgetsH(gsw, evw, uw);
+        // this.stackWidgetsH(pw, efw);
+        // this.stackWidgetsH(jcw, cw);
 
-        this.centerW(gsw);
-        this.centerW(evw);
-        this.centerW(uw);
+        // this.centerW(gsw);
+        // this.centerW(evw);
+        // this.centerW(uw);
 
-        this.collideAgainstL(pw, gsw, evw, uw);
-        this.collideAgainstL(efw, gsw, evw, uw);
+        // this.collideAgainstL(pw, gsw, evw, uw);
+        // this.collideAgainstL(efw, gsw, evw, uw);
 
-        this.collideAgainstR(jcw, gsw, evw, uw);
-        this.collideAgainstR(cw, gsw, evw, uw);
+        // this.collideAgainstR(jcw, gsw, evw, uw);
+        // this.collideAgainstR(cw, gsw, evw, uw);
 
-        this.addWidgets(gsw, evw, uw, pw, efw, jcw, cw);
+        // this.addWidgets(gsw, evw, uw, pw, efw, jcw, cw);
     }
 
 }

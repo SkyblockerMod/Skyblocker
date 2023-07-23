@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -18,10 +19,15 @@ public class DungeonBuffWidget extends Widget {
 
     public DungeonBuffWidget(String footertext) {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
+
+        String footertext = PlayerListMgr.getFooter();
 
         if (footertext == null || !footertext.contains("Dungeon Buffs")) {
             this.addComponent(new PlainTextComponent(Text.literal("No data").formatted(Formatting.GRAY)));
-            this.pack();
             return;
         }
 
@@ -30,7 +36,6 @@ public class DungeonBuffWidget extends Widget {
 
         if (!lines[1].startsWith("Blessing")) {
             this.addComponent(new PlainTextComponent(Text.literal("No buffs found!").formatted(Formatting.GRAY)));
-            this.pack();
             return;
         }
 
@@ -48,7 +53,6 @@ public class DungeonBuffWidget extends Widget {
             this.addComponent(new PlainTextComponent(Text.literal(line).styled(style -> style.withColor(color))));
         }
 
-        this.pack();
     }
 
     @SuppressWarnings("DataFlowIssue")

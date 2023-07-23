@@ -48,14 +48,16 @@ public class ElectionWidget extends Widget {
 
     public ElectionWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         String status = PlayerListMgr.strAt(76);
         if (status == null) {
             this.addComponent(new IcoTextComponent());
             this.addComponent(new IcoTextComponent());
             this.addComponent(new IcoTextComponent());
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
         }
 
@@ -97,7 +99,6 @@ public class ElectionWidget extends Widget {
                 }
             }
         }
-        this.pack();
     }
 
 }

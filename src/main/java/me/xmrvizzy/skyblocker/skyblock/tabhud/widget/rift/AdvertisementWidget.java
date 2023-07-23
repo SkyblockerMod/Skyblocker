@@ -14,14 +14,16 @@ public class AdvertisementWidget extends Widget {
 
 	public AdvertisementWidget() {
 		super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
 		for (int i = 73; i < 80; i++) {
 			Text text = PlayerListMgr.textAt(i);
 			if (text != null)
 				this.addComponent(new PlainTextComponent(text));
 		}
 
-		this.pack();
 	}
 
 }

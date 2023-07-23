@@ -6,11 +6,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import dev.architectury.event.events.common.TickEvent.Player;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.ScreenBuilder;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.ScreenMaster;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -51,8 +53,10 @@ public class PlayerListHudMixin {
         w = (int) (w / scale);
         h = (int) (h / scale);
 
+        PlayerListMgr.updateFooter(footer);
+
         try {
-            ScreenMaster.render(context, w,h,footer);
+            ScreenMaster.render(context, w,h);
             // Screen screen = Screen.getCorrect(w, h, footer);
             // screen.render(context);
             info.cancel();

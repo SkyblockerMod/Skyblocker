@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -19,19 +20,21 @@ public class CookieWidget extends Widget {
 
     private static final Pattern COOKIE_PATTERN = Pattern.compile(".*\\nCookie Buff\\n(?<buff>.*)\\n");
 
-    public CookieWidget(String footertext) {
+    public CookieWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
+        String footertext = PlayerListMgr.getFooter();
         if (footertext == null || !footertext.contains("Cookie Buff")) {
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
         }
 
         Matcher m = COOKIE_PATTERN.matcher(footertext);
         if (!m.find() || m.group("buff") == null) {
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
         }
 
@@ -42,7 +45,6 @@ public class CookieWidget extends Widget {
             Text cookie = Text.literal("Time Left: ").append(buff);
             this.addComponent(new IcoTextComponent(Ico.COOKIE, cookie));
         }
-        this.pack();
     }
 
 }

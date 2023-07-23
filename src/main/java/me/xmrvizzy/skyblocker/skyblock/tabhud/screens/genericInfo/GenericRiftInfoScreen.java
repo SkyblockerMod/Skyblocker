@@ -13,26 +13,26 @@ public class GenericRiftInfoScreen extends Screen {
 	public GenericRiftInfoScreen(int w, int h, Text footer) {
 		super(w, h);
 		
-		String f = footer.getString();
+		// String f = footer.getString();
 		
-		RiftProfileWidget profile = new RiftProfileWidget();
-		RiftStatsWidget stats = new RiftStatsWidget();
-		ShenWidget shen = new ShenWidget();
+		// RiftProfileWidget profile = new RiftProfileWidget();
+		// RiftStatsWidget stats = new RiftStatsWidget();
+		// ShenWidget shen = new ShenWidget();
 		
-		CookieWidget cookie = new CookieWidget(f);
-		AdvertisementWidget advertisement = new AdvertisementWidget();
+		// // CookieWidget cookie = new CookieWidget(f);
+		// AdvertisementWidget advertisement = new AdvertisementWidget();
 		
-		this.stackWidgetsH(stats, advertisement);
-		this.stackWidgetsH(profile, shen, cookie);
+		// this.stackWidgetsH(stats, advertisement);
+		// // this.stackWidgetsH(profile, shen, cookie);
 
-		this.offCenterL(stats);
-		this.offCenterL(advertisement);
+		// this.offCenterL(stats);
+		// this.offCenterL(advertisement);
 		
-		this.offCenterR(profile);
-		this.offCenterR(shen);
-		this.offCenterR(cookie);
+		// this.offCenterR(profile);
+		// this.offCenterR(shen);
+		// // this.offCenterR(cookie);
 		
-		this.addWidgets(profile, stats, shen, cookie, advertisement);
+		// // this.addWidgets(profile, stats, shen, cookie, advertisement);
 	}
 
 }

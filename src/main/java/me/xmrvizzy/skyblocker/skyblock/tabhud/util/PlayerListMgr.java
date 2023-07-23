@@ -27,6 +27,7 @@ public class PlayerListMgr {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 
 	private static List<PlayerListEntry> playerList;
+    private static String footer;
 
 	public static void updateList() {
 
@@ -41,6 +42,14 @@ public class PlayerListMgr {
 			playerList = cpnwh.getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList();
 		}
 	}
+
+    public static void updateFooter(Text f) {
+        footer = f.getString();
+    }
+
+    public static String getFooter() {
+        return footer;
+    }
 
 	/**
 	 * Get the display name at some index of the player list and apply a pattern to

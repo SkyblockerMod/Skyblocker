@@ -29,18 +29,19 @@ public class FireSaleWidget extends Widget {
 
     public FireSaleWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         String event = PlayerListMgr.strAt(46);
 
         if (event == null) {
             this.addComponent(new PlainTextComponent(Text.literal("No Fire Sale!").formatted(Formatting.GRAY)));
-            this.pack();
             return;
         }
 
         if (event.contains("Starts In")) {
             this.addSimpleIcoText(Ico.CLOCK, "Starts in:", Formatting.DARK_AQUA, 46);
-            this.pack();
             return;
         }
 
@@ -57,7 +58,6 @@ public class FireSaleWidget extends Widget {
             ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt, pcntToCol(pcnt));
             this.addComponent(pc);
         }
-        this.pack();
 
     }
 

@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.text.MutableText;
@@ -16,12 +17,17 @@ public class EffectWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Effect Info").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
 
-    public EffectWidget(String footertext) {
+    public EffectWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
+
+        String footertext = PlayerListMgr.getFooter();
 
         if (footertext == null || !footertext.contains("Active Effects")) {
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
 
         }
@@ -29,7 +35,6 @@ public class EffectWidget extends Widget {
         String[] lines = footertext.split("Active Effects")[1].split("\n");
         if (lines.length < 2) {
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
         }
 
@@ -47,7 +52,6 @@ public class EffectWidget extends Widget {
             int idx = number.indexOf(' ');
             if (idx == -1 || lines.length < 4) {
                 this.addComponent(new IcoFatTextComponent());
-                this.pack();
                 return;
             }
             number = number.substring(0, idx);
@@ -58,7 +62,6 @@ public class EffectWidget extends Widget {
                     Text.literal(lines[3]).formatted(Formatting.AQUA));
             this.addComponent(iftc);
         }
-        this.pack();
     }
 
 }

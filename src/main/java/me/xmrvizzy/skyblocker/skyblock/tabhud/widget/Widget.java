@@ -48,9 +48,13 @@ public abstract class Widget {
         this.components.add(c);
     }
 
-    public void update() {
+    public final void update() {
         this.components.clear();
+        this.updateContent();
+        this.pack();
     }
+
+    public abstract void updateContent();
 
     /**
      * Shorthand function for simple components.
@@ -68,7 +72,7 @@ public abstract class Widget {
      * <b>Must be called before returning from the widget constructor and after all
      * components are added!</b>
      */
-    public final void pack() {
+    private void pack() {
         h = 0;
         w = 0;
         for (Component c : components) {

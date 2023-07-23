@@ -1,12 +1,13 @@
 {
     "widgets":[
         {
-            "name": "SkillsWidget",
-            "alias": "sw"
+            "name": "GardenSkillsWidget",
+            "alias": "gsw"
         },
         {
             "name": "EventWidget",
-            "alias": "evw"
+            "alias": "evw",
+            "inGarden": true
         },
         {
             "name": "UpgradeWidget",
@@ -21,8 +22,8 @@
             "alias": "efw"
         },
         {
-            "name": "ElectionWidget",
-            "alias": "elw"
+            "name": "JacobsContestWidget",
+            "alias": "jcw"
         },
         {
             "name": "CookieWidget",
@@ -34,7 +35,7 @@
             "op": "stack",
             "direction": "vertical",
             "align": "center",
-            "apply_to": ["sw", "evw", "uw"]
+            "apply_to": ["gsw", "evw", "uw"]
         },
         {
             "op": "stack",
@@ -46,24 +47,24 @@
             "op": "stack",
             "direction": "vertical",
             "align": "center",
-            "apply_to": ["elw", "cw"]
+            "apply_to": ["jcw", "cw"]
         },
         {
             "op": "align",
             "reference": "horizontalCenter",
-            "apply_to": ["sw", "evw", "uw"]
+            "apply_to": ["gsw", "evw", "uw"]
         },
         {
             "op": "collideAgainst",
             "direction": "left",
             "widgets": ["pw", "efw"],
-            "colliders": ["sw", "evw", "uw"]
+            "colliders": ["gsw", "evw", "uw"]
         },
         {
             "op": "collideAgainst",
             "direction": "right",
-            "widgets": ["elw", "cw"],
-            "colliders": ["sw", "evw", "uw"]
+            "widgets": ["jcw", "cw"],
+            "colliders": ["gsw", "evw", "uw"]
         }
     ]
 }

@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.skyblock.tabhud.screens;
+package me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
 import java.util.ArrayList;
 

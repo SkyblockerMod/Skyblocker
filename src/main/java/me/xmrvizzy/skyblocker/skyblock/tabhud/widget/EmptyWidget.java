@@ -17,12 +17,10 @@ public class EmptyWidget extends Widget {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void updateContent() {
         Text info = Text.of("No info for this area!");
         PlainTextComponent inf = new PlainTextComponent(info);
         this.addComponent(inf);
-        this.pack();
     }
 
 }

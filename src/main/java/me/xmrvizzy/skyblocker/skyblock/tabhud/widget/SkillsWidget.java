@@ -30,6 +30,10 @@ public class SkillsWidget extends Widget {
     public SkillsWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
 
+    }
+
+    @Override
+    public void updateContent() {
         Matcher m = PlayerListMgr.regexAt(66, SKILL_PATTERN);
         Component progress;
         if (m == null) {
@@ -69,7 +73,6 @@ public class SkillsWidget extends Widget {
         tc.addToCell(1, 0, cdg);
         tc.addToCell(1, 1, cch);
         this.addComponent(tc);
-        this.pack();
     }
 
 }

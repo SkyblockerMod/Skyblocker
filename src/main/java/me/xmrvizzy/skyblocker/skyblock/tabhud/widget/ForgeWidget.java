@@ -20,12 +20,15 @@ public class ForgeWidget extends Widget {
 
     public ForgeWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
         int forgestart = 54;
         // why is it forges and not looms >:(
         String pos = PlayerListMgr.strAt(53);
         if (pos == null) {
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
         }
 
@@ -73,7 +76,6 @@ public class ForgeWidget extends Widget {
             }
             this.addComponent(c);
         }
-        this.pack();
     }
 
 }

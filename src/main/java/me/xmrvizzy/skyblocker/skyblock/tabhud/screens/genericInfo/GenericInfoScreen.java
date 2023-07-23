@@ -16,33 +16,33 @@ public class GenericInfoScreen extends Screen {
     public GenericInfoScreen(int w, int h, Text footer) {
         super(w, h);
 
-        String f = footer.getString();
+        // String f = footer.getString();
 
-        SkillsWidget sw = new SkillsWidget();
-        EventWidget evw = new EventWidget(false);
-        UpgradeWidget uw = new UpgradeWidget(f);
+        // SkillsWidget sw = new SkillsWidget();
+        // EventWidget evw = new EventWidget(false);
+        // UpgradeWidget uw = new UpgradeWidget(f);
 
-        ProfileWidget pw = new ProfileWidget();
-        EffectWidget efw = new EffectWidget(f);
+        // ProfileWidget pw = new ProfileWidget();
+        // EffectWidget efw = new EffectWidget(f);
 
-        ElectionWidget elw = new ElectionWidget();
-        CookieWidget cw = new CookieWidget(f);
+        // ElectionWidget elw = new ElectionWidget();
+        // CookieWidget cw = new CookieWidget(f);
 
-        this.stackWidgetsH(sw, evw, uw);
-        this.stackWidgetsH(pw, efw);
-        this.stackWidgetsH(elw, cw);
+        // this.stackWidgetsH(sw, evw, uw);
+        // this.stackWidgetsH(pw, efw);
+        // this.stackWidgetsH(elw, cw);
 
-        this.centerW(sw);
-        this.centerW(evw);
-        this.centerW(uw);
+        // this.centerW(sw);
+        // this.centerW(evw);
+        // this.centerW(uw);
 
-        this.collideAgainstL(pw, sw, evw, uw);
-        this.collideAgainstL(efw, sw, evw, uw);
+        // this.collideAgainstL(pw, sw, evw, uw);
+        // this.collideAgainstL(efw, sw, evw, uw);
 
-        this.collideAgainstR(elw, sw, evw, uw);
-        this.collideAgainstR(cw, sw, evw, uw);
+        // this.collideAgainstR(elw, sw, evw, uw);
+        // this.collideAgainstR(cw, sw, evw, uw);
 
-        this.addWidgets(sw, evw, uw, pw, efw, elw, cw);
+        // this.addWidgets(sw, evw, uw, pw, efw, elw, cw);
     }
 
 }

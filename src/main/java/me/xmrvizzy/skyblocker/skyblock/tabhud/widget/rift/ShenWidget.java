@@ -13,8 +13,10 @@ public class ShenWidget extends Widget {
 
 	public ShenWidget() {
 		super(TITLE, Formatting.DARK_AQUA.getColorValue());
-		
+    }
+
+    @Override
+    public void updateContent() {
 		this.addComponent(new PlainTextComponent(Text.literal(PlayerListMgr.strAt(70))));
-		this.pack();
 	}
 }

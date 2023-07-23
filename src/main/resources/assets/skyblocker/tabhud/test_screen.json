@@ -1,0 +1,122 @@
+{
+    "widgets": [
+        {
+            "name": "EmptyWidget",
+            "alias": "ew1"
+        },
+        {
+            "name": "EmptyWidget",
+            "alias": "ew2"
+        },
+        {
+            "name": "EffectWidget",
+            "alias": "ew3"
+        },
+        {
+            "name": "EffectWidget",
+            "alias": "ew4"
+        },
+        {
+            "name": "CookieWidget",
+            "alias": "ew5"
+        },
+        {
+            "name": "CookieWidget",
+            "alias": "ew6"
+        },
+        {
+            "name": "UpgradeWidget",
+            "alias": "ew7"
+        },
+        {
+            "name": "UpgradeWidget",
+            "alias": "ew8"
+        },
+        {
+            "name": "FireSaleWidget",
+            "alias": "ew9"
+        },
+        {
+            "name": "FireSaleWidget",
+            "alias": "ew10"
+        },
+        {
+            "name": "EventWidget",
+            "alias": "ew11",
+            "inGarden": true
+        },
+        {
+            "name": "EventWidget",
+            "alias": "ew12",
+            "inGarden": true
+        }
+    ],
+    "layout": [
+        {
+            "op": "stack",
+            "direction": "vertical",
+            "align": "top",
+            "apply_to": ["ew1", "ew2"]
+        },
+        {
+            "op": "align",
+            "reference": "leftOfCenter",
+            "apply_to": ["ew1", "ew2"]
+        },
+        {
+            "op": "stack",
+            "direction": "vertical",
+            "align": "center",
+            "apply_to": ["ew3", "ew4"]
+        },
+        {
+            "op": "align",
+            "reference": "horizontalCenter",
+            "apply_to": ["ew3", "ew4"]
+        },
+        {
+            "op": "stack",
+            "direction": "vertical",
+            "align": "bot",
+            "apply_to": ["ew5", "ew6"]
+        },
+        {
+            "op": "align",
+            "reference": "rightOfCenter",
+            "apply_to": ["ew5", "ew6"]
+        },
+        {
+            "op": "stack",
+            "direction": "horizontal",
+            "align": "left",
+            "apply_to": ["ew7", "ew8"]
+        },
+        {
+            "op": "align",
+            "reference": "topOfCenter",
+            "apply_to": ["ew7", "ew8"]
+        },
+        {
+            "op": "stack",
+            "direction": "horizontal",
+            "align": "center",
+            "apply_to": ["ew9", "ew10"]
+        },
+        {
+            "op": "align",
+            "reference": "verticalCenter",
+            "apply_to": ["ew9", "ew10"]
+        },
+        {
+            "op": "stack",
+            "direction": "horizontal",
+            "align": "right",
+            "apply_to": ["ew11", "ew12"]
+        },
+        {
+            "op": "align",
+            "reference": "botOfCenter",
+            "apply_to": ["ew11", "ew12"]
+        }
+    ]
+}

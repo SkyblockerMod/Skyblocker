@@ -14,7 +14,10 @@ public class GoodToKnowWidget extends Widget {
 
 	public GoodToKnowWidget() {
 		super(TITLE, Formatting.BLUE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
 		// After you progress further the tab adds more info so we need to be careful of
 		// that
 		// In beginning it only shows montezuma, then timecharms and enigma souls are
@@ -50,6 +53,5 @@ public class GoodToKnowWidget extends Widget {
 					new IcoTextComponent(Ico.PINK_DYE, Text.literal("Lifetime Earned: ").append(lifetimeMotesEarned)));
 		}
 
-		this.pack();
 	}
 }

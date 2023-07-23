@@ -22,7 +22,10 @@ public class RiftProgressWidget extends Widget {
 
 	public RiftProgressWidget() {
 		super(TITLE, Formatting.BLUE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
 		// After you progress further the tab adds more info so we need to be careful of
 		// that
 		// In beginning it only shows montezuma, then timecharms and enigma souls are
@@ -88,7 +91,6 @@ public class RiftProgressWidget extends Widget {
 			this.addComponent(pc);
 		}
 
-		this.pack();
 	}
 
 	private static int pcntToCol(float pcnt) {

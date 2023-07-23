@@ -16,13 +16,15 @@ public class ParkServerWidget extends Widget {
 
     public ParkServerWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.MAP, "Area:", Formatting.DARK_AQUA, 41);
         this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, 42);
         this.addSimpleIcoText(Ico.EMERALD, "Gems:", Formatting.GREEN, 43);
         this.addSimpleIcoText(Ico.WATER, "Rain:", Formatting.BLUE, 44);
 
-        this.pack();
     }
 
 }

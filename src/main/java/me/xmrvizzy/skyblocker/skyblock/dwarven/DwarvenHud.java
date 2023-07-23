@@ -1,16 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CommsWidget;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -18,12 +7,22 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CommsWidget;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.HudCommsWidget;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
 public class DwarvenHud {
 
 
     public static final MinecraftClient client = MinecraftClient.getInstance();
     public static List<Commission> commissionList = new ArrayList<>();
-
 
     public static final List<Pattern> COMMISSIONS = Stream.of(
             "(?:Titanium|Mithril|Hard Stone) Miner",
@@ -40,6 +39,7 @@ public class DwarvenHud {
             "Chest Looter"
             ).map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
             .collect(Collectors.toList());
+
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
@@ -88,17 +88,17 @@ public class DwarvenHud {
     }
 
     public static void renderSimple(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
-        CommsWidget cw = new CommsWidget(commissions, false);
-        cw.setX(hudX);
-        cw.setY(hudY);
-        cw.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+        HudCommsWidget.INSTANCE.updateData(commissions, false);
+        HudCommsWidget.INSTANCE.setX(hudX);
+        HudCommsWidget.INSTANCE.setY(hudY);
+        HudCommsWidget.INSTANCE.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
     public static void renderFancy(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
-        CommsWidget cw = new CommsWidget(commissions, true);
-        cw.setX(hudX);
-        cw.setY(hudY);
-        cw.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+        HudCommsWidget.INSTANCE.updateData(commissions, true);
+        HudCommsWidget.INSTANCE.setX(hudX);
+        HudCommsWidget.INSTANCE.setY(hudY);
+        HudCommsWidget.INSTANCE.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
     public static void update() {

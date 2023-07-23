@@ -24,7 +24,10 @@ public class DungeonServerWidget extends Widget {
 
     public DungeonServerWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.NTAG, "Name:", Formatting.AQUA, 41);
         this.addSimpleIcoText(Ico.SIGN, "Rooms Visited:", Formatting.DARK_PURPLE, 42);
         this.addSimpleIcoText(Ico.SIGN, "Rooms Completed:", Formatting.LIGHT_PURPLE, 43);
@@ -40,8 +43,6 @@ public class DungeonServerWidget extends Widget {
         }
 
         this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GOLD, 45);
-
-        this.pack();
     }
 
 }

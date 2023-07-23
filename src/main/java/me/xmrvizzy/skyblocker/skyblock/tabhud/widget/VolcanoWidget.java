@@ -42,6 +42,10 @@ public class VolcanoWidget extends Widget {
     public VolcanoWidget() {
         super(TITLE, Formatting.AQUA.getColorValue());
 
+    }
+
+    @Override
+    public void updateContent() {
         String s = PlayerListMgr.strAt(58);
         if (s == null) {
             this.addComponent(new IcoTextComponent());
@@ -49,8 +53,6 @@ public class VolcanoWidget extends Widget {
             Pair<ItemStack, Formatting> p = BOOM_TYPE.get(s);
             this.addComponent(new IcoTextComponent(p.getLeft(), Text.literal(s).formatted(p.getRight())));
         }
-
-        this.pack();
 
     }
 

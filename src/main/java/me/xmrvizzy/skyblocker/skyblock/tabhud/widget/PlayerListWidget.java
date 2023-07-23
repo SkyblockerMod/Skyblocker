@@ -26,6 +26,10 @@ public class PlayerListWidget extends Widget {
     public PlayerListWidget() {
         super(TITLE, Formatting.GREEN.getColorValue());
 
+    }
+
+    @Override
+    public void updateContent() {
         // hard cap to 4x20 entries.
         // 5x20 is too wide (and not possible in theory. in reality however...)
         int listlen = Math.min(PlayerListMgr.getSize(), 160);
@@ -33,7 +37,6 @@ public class PlayerListWidget extends Widget {
         // list isn't fully loaded, so our hack won't work...
         if (listlen < 80) {
             this.addComponent(new PlainTextComponent(Text.literal("List loading...").formatted(Formatting.GRAY)));
-            this.pack();
             return;
         }
 
@@ -63,6 +66,5 @@ public class PlayerListWidget extends Widget {
         }
 
         this.addComponent(tc);
-        this.pack();
     }
 }

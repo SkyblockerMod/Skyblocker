@@ -31,7 +31,10 @@ public class CommsWidget extends Widget {
 
     public CommsWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         for (int i = 50; i <= 53; i++) {
             Matcher m = PlayerListMgr.regexAt(i, COMM_PATTERN);
             // end of comms found?
@@ -55,33 +58,6 @@ public class CommsWidget extends Widget {
             }
             this.addComponent(pc);
         }
-        this.pack();
-    }
-
-    // for the dwarven hud
-    public CommsWidget(List<Commission> commissions, boolean isFancy) {
-        super(TITLE, Formatting.AQUA.getColorValue());
-        for (Commission comm : commissions) {
-
-            Text c = Text.literal(comm.commission());
-
-            float p = 100f;
-            if (!comm.progression().contains("DONE")) {
-                p = Float.parseFloat(comm.progression().substring(0, comm.progression().length() - 1));
-            }
-
-            Component comp;
-            if (isFancy) {
-                comp = new ProgressComponent(Ico.BOOK, c, p, pcntToCol(p));
-            } else {
-                comp = new PlainTextComponent(
-                        Text.literal(comm.commission() + ": ")
-                                .append(Text.literal(comm.progression()).formatted(Formatting.GREEN)));
-            }
-            this.addComponent(comp);
-        }
-        this.pack();
-
     }
 
     private int pcntToCol(float pcnt) {

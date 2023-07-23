@@ -11,9 +11,15 @@ import net.minecraft.util.Formatting;
 public class EventWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
 
+    private boolean isInGarden;
+
     public EventWidget(boolean isInGarden) {
         super(TITLE, Formatting.YELLOW.getColorValue());
+        this.isInGarden = isInGarden;
+    }
 
+    @Override
+    public void updateContent() {
         // hypixel devs carefully inserting the most random edge cases #317:
         // the event info is placed a bit differently when in the garden.
         int offset = (isInGarden) ? -1 : 0;
@@ -24,7 +30,6 @@ public class EventWidget extends Widget {
         Text time = Widget.plainEntryText(74 + offset);
         IcoTextComponent t = new IcoTextComponent(Ico.CLOCK, time);
         this.addComponent(t);
-        this.pack();
     }
 
 }

@@ -16,13 +16,15 @@ public class ComposterWidget extends Widget {
 
     public ComposterWidget() {
         super(TITLE, Formatting.GREEN.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.SAPLING, "Organic Matter:", Formatting.YELLOW, 48);
         this.addSimpleIcoText(Ico.FURNACE, "Fuel:", Formatting.BLUE, 49);
         this.addSimpleIcoText(Ico.CLOCK, "Time Left:", Formatting.RED, 50);
         this.addSimpleIcoText(Ico.COMPOSTER, "Stored Compost:", Formatting.DARK_GREEN, 51);
 
-        this.pack();
     }
 
 }
