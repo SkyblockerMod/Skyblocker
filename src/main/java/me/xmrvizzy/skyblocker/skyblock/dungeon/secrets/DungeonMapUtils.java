@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
@@ -131,12 +132,12 @@ public class DungeonMapUtils {
         return new Vector2i(mapPos).sub(mapEntrancePos).div(mapRoomSize + 4).mul(32).add(physicalEntrancePos);
     }
 
-    public static Vector2ic getPhysicalCornerPos(Room.Direction direction, SortedSet<Integer> segmentsX, SortedSet<Integer> segmentsY) {
+    public static Vector2ic getPhysicalCornerPos(Room.Direction direction, IntSortedSet segmentsX, IntSortedSet segmentsY) {
         return switch (direction) {
-            case NW -> new Vector2i(segmentsX.first(), segmentsY.first());
-            case NE -> new Vector2i(segmentsX.last() + 30, segmentsY.first());
-            case SW -> new Vector2i(segmentsX.first(), segmentsY.last() + 30);
-            case SE -> new Vector2i(segmentsX.last() + 30, segmentsY.last() + 30);
+            case NW -> new Vector2i(segmentsX.firstInt(), segmentsY.firstInt());
+            case NE -> new Vector2i(segmentsX.lastInt() + 30, segmentsY.firstInt());
+            case SW -> new Vector2i(segmentsX.firstInt(), segmentsY.lastInt() + 30);
+            case SE -> new Vector2i(segmentsX.lastInt() + 30, segmentsY.lastInt() + 30);
         };
     }
 

@@ -1,6 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.Object2ByteMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -45,7 +47,7 @@ public class DungeonSecrets {
      * @implNote Not using {@link net.minecraft.registry.Registry#getId(Object) Registry#getId(Block)} and {@link net.minecraft.block.Blocks Blocks} since this is also used by {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
      */
     @SuppressWarnings("JavadocReference")
-    protected static final Map<String, Byte> NUMERIC_ID = Map.ofEntries(
+    protected static final Object2ByteMap<String> NUMERIC_ID = new Object2ByteOpenHashMap<>(Map.ofEntries(
             Map.entry("minecraft:stone", (byte) 1),
             Map.entry("minecraft:diorite", (byte) 2),
             Map.entry("minecraft:polished_diorite", (byte) 3),
@@ -67,7 +69,7 @@ public class DungeonSecrets {
             Map.entry("minecraft:gray_terracotta", (byte) 19),
             Map.entry("minecraft:cyan_terracotta", (byte) 20),
             Map.entry("minecraft:black_terracotta", (byte) 21)
-    );
+    ));
     private static JsonObject roomsJson;
     private static JsonObject waypointsJson;
     @Nullable
@@ -221,6 +223,7 @@ public class DungeonSecrets {
         if (room != null && currentRoom != room) {
             currentRoom = room;
         }
+        currentRoom.update();
     }
 
     /**

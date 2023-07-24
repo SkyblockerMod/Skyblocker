@@ -129,7 +129,7 @@ public class DungeonRoomsDFU {
         if (newId == null) {
             newId = ItemIdFix.fromId(oldId / 100);
         }
-        return x << 24 | y << 16 | z << 8 | DungeonSecrets.NUMERIC_ID.get(newId);
+        return x << 24 | y << 16 | z << 8 | DungeonSecrets.NUMERIC_ID.getByte(newId);
     }
 
     private static CompletableFuture<Void> save() {
