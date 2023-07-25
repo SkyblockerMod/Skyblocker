@@ -44,10 +44,10 @@ public class FishingHelper {
         startTime = 0;
     }
 
-    public static void onSound(MinecraftClient client, PlaySoundS2CPacket packet) {
+    public static void onSound(PlaySoundS2CPacket packet) {
         String path = packet.getSound().value().getId().getPath();
         if (SkyblockerConfig.get().general.fishing.enableFishingHelper && startTime != 0 && System.currentTimeMillis() >= startTime + 2000 && ("entity.generic.splash".equals(path) || "entity.player.splash".equals(path))) {
-            ClientPlayerEntity player = client.player;
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.fishHook != null) {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
                 if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.getPos().squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
