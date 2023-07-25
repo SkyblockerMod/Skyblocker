@@ -24,8 +24,7 @@ public abstract class LeverBlockMixin extends WallMountedBlock {
     public void skyblocker$onGetOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
         if (Utils.isOnSkyblock()) {
             VoxelShape shape = OldLever.getShape(state.get(FACE), state.get(FACING));
-            if (shape != null)
-                cir.setReturnValue(shape);
+            if (shape != null) cir.setReturnValue(shape);
         }
     }
 }

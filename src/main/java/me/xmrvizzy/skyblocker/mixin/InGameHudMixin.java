@@ -27,7 +27,6 @@ public abstract class InGameHudMixin {
     @Unique
     private static final Identifier SLOT_LOCK = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png");
     @Unique
-
     private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
     @Unique
     private final FancyStatusBars statusBars = new FancyStatusBars();
@@ -38,8 +37,7 @@ public abstract class InGameHudMixin {
     private int scaledWidth;
 
     @Shadow
-    public void setOverlayMessage(Text message, boolean tinted) {
-    }
+    public abstract void setOverlayMessage(Text message, boolean tinted);
 
     @Inject(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
     private void skyblocker$onSetOverlayMessage(Text message, boolean tinted, CallbackInfo ci) {
@@ -76,8 +74,6 @@ public abstract class InGameHudMixin {
 
         if (Utils.isInDungeons() && SkyblockerConfig.get().locations.dungeons.enableMap)
             DungeonMap.render(context.getMatrices());
-
-        //RenderSystem.setShaderTexture(0, ICONS);
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)

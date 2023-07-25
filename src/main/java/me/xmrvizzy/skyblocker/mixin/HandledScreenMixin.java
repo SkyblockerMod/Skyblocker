@@ -34,13 +34,13 @@ import java.util.Map;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin extends Screen {
-    protected HandledScreenMixin(Text title) {
-        super(title);
-    }
-
     @Shadow
     @Nullable
     protected Slot focusedSlot;
+
+    protected HandledScreenMixin(Text title) {
+        super(title);
+    }
 
     @Inject(at = @At("HEAD"), method = "keyPressed")
     public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {

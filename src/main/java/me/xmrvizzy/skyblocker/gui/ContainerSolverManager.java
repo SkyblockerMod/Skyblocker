@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.xmrvizzy.skyblocker.mixin.HandledScreenAccessor;
+import me.xmrvizzy.skyblocker.mixin.accessor.HandledScreenAccessor;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.CroesusHelper;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.terminal.OrderTerminal;

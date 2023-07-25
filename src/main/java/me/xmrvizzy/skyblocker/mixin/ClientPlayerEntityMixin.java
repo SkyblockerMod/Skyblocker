@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.rift.HealingMelonIndicator;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -25,8 +24,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
         if (Utils.isOnSkyblock()) HotbarSlotLock.handleDropSelectedItem(this.getInventory().selectedSlot, cir);
     }
 
-    @Inject(method = "updateHealth", at = @At("HEAD"))
-    public void skyblocker$updateHealth(float health, CallbackInfo info) {
-        HealingMelonIndicator.updateHealth(MinecraftClient.getInstance());
+    @Inject(method = "updateHealth", at = @At("RETURN"))
+    public void skyblocker$updateHealth(CallbackInfo info) {
+        HealingMelonIndicator.updateHealth();
     }
 }

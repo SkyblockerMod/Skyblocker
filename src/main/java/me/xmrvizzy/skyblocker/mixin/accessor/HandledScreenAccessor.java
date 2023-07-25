@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.mixin;
+package me.xmrvizzy.skyblocker.mixin.accessor;
 
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import org.spongepowered.asm.mixin.Mixin;
