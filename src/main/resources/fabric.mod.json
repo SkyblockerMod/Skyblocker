@@ -18,6 +18,9 @@
     "client": [
       "me.xmrvizzy.skyblocker.SkyblockerMod"
     ],
+    "preLaunch": [
+      "dev.cbyrne.betterinject.BetterInject::initialize"
+    ],
     "modmenu": [
       "me.xmrvizzy.skyblocker.config.modmenu.ModMenuEntry"
     ],

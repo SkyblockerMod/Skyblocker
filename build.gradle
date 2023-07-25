@@ -71,6 +71,9 @@ dependencies {
 
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
 	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
+	
+	// BetterInject (https://github.com/caoimhebyrne/BetterInject)
+	include implementation(annotationProcessor("com.github.cbyrneee:BetterInject:${project.betterinject_version}"))
 }
 
 base {
