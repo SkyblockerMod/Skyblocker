@@ -18,6 +18,7 @@
     "PlayerListHudAccessor",
     "PlayerListHudMixin",
     "RecipeBookWidgetAccessor",
+    "ScoreboardMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
     "accessor.FrustumInvoker"
   ],
