@@ -18,17 +18,17 @@ public abstract class ClientPlayNetworkHandlerMixin {
         FishingHelper.onSound(packet);
     }
 
-    @WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V"))
+    @WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", remap = false))
     private boolean skyblocker$cancelEntityPassengersWarning(Logger instance, String msg) {
         return !Utils.isOnHypixel();
     }
 
-    @WrapWithCondition(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"))
+    @WrapWithCondition(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
     private boolean skyblocker$cancelPlayerListWarning(Logger instance, String format, Object arg) {
         return !Utils.isOnHypixel();
     }
 
-    @WrapWithCondition(method = "onTeam", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V"))
+    @WrapWithCondition(method = "onTeam", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
     private boolean skyblocker$cancelTeamWarning(Logger instance, String format, Object... arg) {
         return !Utils.isOnHypixel();
     }
