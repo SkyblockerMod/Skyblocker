@@ -10,14 +10,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import dev.cbyrne.betterinject.annotations.Arg;
+import dev.cbyrne.betterinject.annotations.Inject;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PlayerListHud.class)
@@ -26,7 +26,7 @@ public class PlayerListHudMixin {
     private Text footer;
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", cancellable = true)
-    public void skyblocker$renderTabHud(DrawContext context, int w, Scoreboard sb, ScoreboardObjective sbo, CallbackInfo info) {
+    public void skyblocker$renderTabHud(@Arg DrawContext context, @Arg int w, CallbackInfo info) {
         if (!Utils.isOnSkyblock() || !SkyblockerConfig.get().general.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
             return;
         }

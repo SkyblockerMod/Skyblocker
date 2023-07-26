@@ -60,7 +60,7 @@ public abstract class InGameHudMixin {
     }
 
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
-    private void skyblocker$renderExperienceBar(DrawContext context, int x, CallbackInfo ci) {
+    private void skyblocker$renderExperienceBar(CallbackInfo ci) {
         if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
@@ -77,7 +77,7 @@ public abstract class InGameHudMixin {
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
-    private void skyblocker$renderMountHealth(DrawContext context, CallbackInfo ci) {
+    private void skyblocker$renderMountHealth(CallbackInfo ci) {
         if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
