@@ -27,7 +27,7 @@ public abstract class FarmlandBlockMixin extends Block {
 
     @ModifyReturnValue(method = "getOutlineShape", at = @At("RETURN"))
     private VoxelShape skyblocker$replaceOutlineShape(VoxelShape original) {
-        return SkyblockerConfig.get().general.hitbox.oldFarmlandHitbox && Utils.isOnSkyblock() ? VoxelShapes.fullCube() : original;
+        return Utils.isOnSkyblock() && SkyblockerConfig.get().general.hitbox.oldFarmlandHitbox ? VoxelShapes.fullCube() : original;
     }
 
     @SuppressWarnings("deprecation")
