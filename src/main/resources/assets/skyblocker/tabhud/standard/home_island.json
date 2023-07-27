@@ -1,0 +1,29 @@
+{
+    "widgets":[
+        {
+            "name": "IslandServerWidget",
+            "alias": "isw"
+        },
+        {
+            "name": "MinionWidget",
+            "alias": "mw"
+        }
+    ],
+    "layout": [
+        {
+            "op": "align",
+            "reference": "leftOfCenter",
+            "apply_to": ["isw"]
+        },
+        {
+            "op": "align",
+            "reference": "rightOfCenter",
+            "apply_to": ["mw"]
+        },
+        {
+            "op": "align",
+            "reference": "verticalCenter",
+            "apply_to": ["isw", "mw"]
+        }
+    ]
+}

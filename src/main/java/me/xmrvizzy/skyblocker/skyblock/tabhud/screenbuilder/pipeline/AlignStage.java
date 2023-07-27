@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import com.google.gson.JsonObject;
@@ -12,6 +13,9 @@ public class AlignStage extends PipelineStage {
     private String reference;
 
     public AlignStage(ScreenBuilder builder, JsonObject descr) {
+        if (!descr.has("reference")) {
+            throw new InvalidParameterException("no reference in " + descr);
+        }
         this.reference = descr.get("reference").getAsString();
         this.primary = new ArrayList<Widget>(descr.getAsJsonArray("apply_to")
                 .asList()
@@ -45,6 +49,18 @@ public class AlignStage extends PipelineStage {
                 case "botOfCenter":
                     hHalf = screenH / 2;
                     wid.setY(hHalf + 3);
+                    break;
+                case "top":
+                    wid.setY(5);
+                    break;
+                case "bot":
+                    wid.setY(screenH - wid.getHeight() - 5);
+                    break;
+                case "left":
+                    wid.setX(5);
+                    break;
+                case "right":
+                    wid.setX(screenW - wid.getWidth() - 5);
                     break;
             }
         }

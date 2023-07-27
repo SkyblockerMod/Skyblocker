@@ -1,0 +1,25 @@
+{
+    "widgets":[
+        {
+            "name": "GardenServerWidget",
+            "alias": "gsw"
+        },
+        {
+            "name": "ComposterWidget",
+            "alias": "cw"
+        }
+    ],
+    "layout": [
+        {
+            "op": "stack",
+            "direction": "vertical",
+            "align": "top",
+            "apply_to": ["gsw", "cw"]
+        },
+        {
+            "op": "align",
+            "reference": "horizontalCenter",
+            "apply_to": ["gsw", "cw"]
+        }
+    ]
+}

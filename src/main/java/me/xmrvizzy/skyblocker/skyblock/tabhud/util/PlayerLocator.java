@@ -8,25 +8,33 @@ import me.xmrvizzy.skyblocker.utils.Utils;
 public class PlayerLocator {
 
     public static enum Location {
-        DUNGEON,
-        GUEST_ISLAND,
-        HOME_ISLAND,
-        CRIMSON_ISLE,
-        DUNGEON_HUB,
-        FARMING_ISLAND,
-        PARK,
-        DWARVEN_MINES,
-        CRYSTAL_HOLLOWS,
-        END,
-        GOLD_MINE,
-        DEEP_CAVERNS,
-        HUB,
-        SPIDER_DEN,
-        JERRY,
-        GARDEN,
-        INSTANCED,
-        THE_RIFT,
-        UNKNOWN
+        DUNGEON("dungeon"),
+        GUEST_ISLAND("guest_island"),
+        HOME_ISLAND("home_island"),
+        CRIMSON_ISLE("crimson_isle"),
+        DUNGEON_HUB("dungeon_hub"),
+        FARMING_ISLAND("farming_island"),
+        PARK("park"),
+        DWARVEN_MINES("dwarven_mines"),
+        CRYSTAL_HOLLOWS("crystal_hollows"),
+        END("end"),
+        GOLD_MINE("gold_mine"),
+        DEEP_CAVERNS("deep_caverns"),
+        HUB("hub"),
+        SPIDER_DEN("spider_den"),
+        JERRY("jerry_workshop"),
+        GARDEN("garden"),
+        INSTANCED("kuudra"),
+        THE_RIFT("rift"),
+        UNKNOWN("unknown");
+
+        public String internal;
+
+        private Location(String i) {
+            // as used internally by the mod, e.g. in the json
+            this.internal = i;
+        }
+
     }
 
     public static Location getPlayerLocation() {
@@ -84,7 +92,7 @@ public class PlayerLocator {
             case "Instanced":
                 return Location.INSTANCED;
             case "The Rift":
-            	return Location.THE_RIFT;
+                return Location.THE_RIFT;
             default:
                 return Location.UNKNOWN;
         }

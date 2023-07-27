@@ -23,9 +23,15 @@ public class PlaceStage extends PipelineStage {
 
     public void run(int screenW, int screenH) {
         Widget wid = primary.get(0);
-        if (where.equals("center")) {
-            wid.setY((screenH - wid.getHeight()) / 2);
-            wid.setX((screenW - wid.getWidth()) / 2);
+        switch (where) {
+            case "center":
+                wid.setY((screenH - wid.getHeight()) / 2);
+                wid.setX((screenW - wid.getWidth()) / 2);
+                break;
+            case "centerTop":
+                wid.setX((screenW - wid.getWidth()) / 2);
+                wid.setY(5);
+                break;
         }
     }
 }

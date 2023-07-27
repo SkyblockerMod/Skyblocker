@@ -1,0 +1,17 @@
+{
+    "widgets": [
+        {
+            "name": "GuestServerWidget",
+            "alias": "gsw"
+        }
+    ],
+    "layout": [
+        {
+            "op": "place",
+            "where": "centerTop",
+            "apply_to": [
+                "gsw"
+            ]
+        }
+    ]
+}

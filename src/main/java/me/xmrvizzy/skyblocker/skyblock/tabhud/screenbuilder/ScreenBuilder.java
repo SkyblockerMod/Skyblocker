@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -20,6 +21,7 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CollideStag
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PlaceStage;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.StackStage;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EmptyWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.EventWidget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
@@ -29,6 +31,9 @@ import net.minecraft.util.Identifier;
 
 public class ScreenBuilder {
 
+    // TODO: Let EmptyWidget contain an error message
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
     // layout pipeline
     private ArrayList<PipelineStage> layoutPipeline = new ArrayList<>();
 
@@ -37,12 +42,15 @@ public class ScreenBuilder {
     // maps alias -> widget instance
     private HashMap<String, Widget> objectMap = new HashMap<>();
 
+    private String builderName;
+
     /**
      * Create a ScreenBuilder from a json.
      */
-    public ScreenBuilder(String jsonfile) throws IOException {
+    public ScreenBuilder(Identifier ident) throws IOException {
 
-        Identifier ident = new Identifier(SkyblockerMod.NAMESPACE, "tabhud/" + jsonfile + ".json");
+        this.builderName = ident.getPath();
+
         BufferedReader reader = MinecraftClient.getInstance().getResourceManager().openAsReader(ident);
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
         reader.close();
@@ -61,7 +69,10 @@ public class ScreenBuilder {
         }
 
         for (JsonElement l : layout) {
-            layoutPipeline.add(createStage(l.getAsJsonObject()));
+            PipelineStage ps = createStage(l.getAsJsonObject());
+            if (ps != null) {
+                layoutPipeline.add(ps);
+            }
         }
 
     }
@@ -76,8 +87,11 @@ public class ScreenBuilder {
         switch (name) {
             case "EventWidget":
                 return new EventWidget(widget.get("inGarden").getAsBoolean());
+            case "DungeonPlayerWidget":
+                return new DungeonPlayerWidget(widget.get("player").getAsInt());
             case "Widget":
                 // clown case sanity check. don't instantiate the superclass >:|
+                LOGGER.error("Couldn't find class \"{}\"!", name);
                 return new EmptyWidget();
         }
 
@@ -85,13 +99,14 @@ public class ScreenBuilder {
         // TODO don't get package list for every widget; do it once and cache.
         // fine for now, as this would only shorten the load time anyways
 
-        // find all packages that might contain widget classes
-        Package[] packs = Package.getPackages();
-
-        List<String> packnames = Arrays.stream(packs)
-                .map(pack -> pack.getName())
-                .filter(s -> s.startsWith("me.xmrvizzy.skyblocker.skyblock.tabhud.widget"))
-                .toList();
+        // list all packages that might contain widget classes
+        // using Package isn't reliable, as some classes might not be loaded yet,
+        //   causing the packages not to show.
+        String packbase = "me.xmrvizzy.skyblocker.skyblock.tabhud.widget";
+        String[] packnames = {
+            packbase,
+            packbase + ".rift"
+        };
 
         // construct the full class name and try to load.
         Class<?> clazz = null;
@@ -105,6 +120,7 @@ public class ScreenBuilder {
 
         // load failed.
         if (clazz == null) {
+            LOGGER.error("Couldn't find class \"{}\"!", name);
             return new EmptyWidget();
         }
 
@@ -114,6 +130,7 @@ public class ScreenBuilder {
             return (Widget) ctor.newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
+            LOGGER.error("Failed to create instance of class {}!", clazz.getSimpleName());
             return new EmptyWidget();
         }
     }
@@ -134,14 +151,17 @@ public class ScreenBuilder {
                 return new AlignStage(this, descr);
             case "collideAgainst":
                 return new CollideStage(this, descr);
+            default:
+                LOGGER.error("No such op \"{}\" as requested by {}", op, this.builderName);
+                return null;
         }
-        return null;
     }
 
     /**
      * Lookup Widget instance from alias name
      */
     public Widget getInstance(String name) {
+        // TODO: filter null here or in stage classes
         return this.objectMap.get(name);
     }
 

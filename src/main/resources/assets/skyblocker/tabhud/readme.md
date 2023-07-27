@@ -1,9 +1,19 @@
-# assignment.json
-Assigns the screens to a type (standard, screenA, screenB). standard is shown when just pressing tab, A and B are shown when using other keys/the modifiers.
-For every type, the concrete screens are mapped to the areas they are supposed to be shown in. See Appendix A for a list of valid areas.
-To find the screen definition, ".json" is appended to the screen key, so specifying `"foo": "generic_info_screen"` will try to find `generic_info_screen.json` and assign this definition to the "foo" area.
+# Directory layout
+The resource pack should look like this:
+```
+my_pack
+├───pack.mcmeta
+└───assets
+    └───skyblocker
+        └───tabhud
+            ├───screenA
+            ├───screenB
+            └───standard
+```
+The three dirs `screenA`, `screenB` and `standard` contain the screen definition JSON files as described below. `standard` describes the screens shown when just the TAB key is pressed, while `screenA/B` describe the screens shown when using the modifier keys A and B (default binds: N and B).
+The file names are used to describe where a screen is shown. They are case sensitive. For a full list of possible names see Appendix A. While this necessitates duplicate file contents and results in similar file names in different directories, it also allows for much control both when creating a complete layout or when only overriding specific screens.
 
-# Screen definition JSON
+# Screen definition JSONs
 This file consists of one widgets section and one layout section.
 
 ## Widget section
@@ -16,7 +26,7 @@ The layout section defines how the widgets are arranged on the screen. This is d
 # Appendices
 
 ## Appendix A: Area identifiers
-- default: Any area not explicitly listed in the type.
+- default: Any area not explicitly listed.
 
 ## Appendix B: Widget identifiers and arguments
 
@@ -28,12 +38,13 @@ The layout section defines how the widgets are arranged on the screen. This is d
 - EffectWidget: Currently active effects
 - ElectionWidget: Info about the current mayor election
 - CookieWidget: Info about your super cookie
+- TODO: finish. see widgets package for possible values.
 
 ## Appendix C: Pipeline stages
 
 #### Align
 - op: `align`
-- reference: One of `horizontalCenter`, `verticalCenter`, `leftOfCenter`, `rightOfCenter`, `topOfCenter`, `botOfCenter`
+- reference: One of `horizontalCenter`, `verticalCenter`, `leftOfCenter`, `rightOfCenter`, `topOfCenter`, `botOfCenter`, `top`, `bot`, `left`, `right`
 - apply_to: List of widgets to individually apply this operation to.
 - Moves a widget in *one* direction (up/down OR left/right) until it's positioned in the way described by `reference`. This reference may be thought of as a straight line, with some describing the screen's borders and others referring to it's two center axis.
 
@@ -86,7 +97,7 @@ Example: Stack A, B, C vertically/center-aligned, then align with leftOfCenter
 
 #### Place
 - op: `place`
-- where: One of `center`
+- where: One of `center`, `centerTop`
 - apply_to: Widget to place an the indicated position.
 - Places a widget at some position, moving it in any direction as needed. Only makes sense to use on one widget at a time, as applying the same Place op to multiple widgtes causes them to be on top of each other.
 
