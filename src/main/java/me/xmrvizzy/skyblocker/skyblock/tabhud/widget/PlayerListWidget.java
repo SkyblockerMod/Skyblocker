@@ -21,8 +21,6 @@ public class PlayerListWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Players").formatted(Formatting.GREEN,
             Formatting.BOLD);
 
-    private final ArrayList<PlayerListEntry> list = new ArrayList<>();
-
     public PlayerListWidget() {
         super(TITLE, Formatting.GREEN.getColorValue());
 
@@ -30,6 +28,8 @@ public class PlayerListWidget extends Widget {
 
     @Override
     public void updateContent() {
+        ArrayList<PlayerListEntry> list = new ArrayList<>();
+
         // hard cap to 4x20 entries.
         // 5x20 is too wide (and not possible in theory. in reality however...)
         int listlen = Math.min(PlayerListMgr.getSize(), 160);

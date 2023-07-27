@@ -17,7 +17,7 @@ public class DungeonBuffWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Dungeon Buffs").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
 
-    public DungeonBuffWidget(String footertext) {
+    public DungeonBuffWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 

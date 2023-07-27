@@ -41,9 +41,9 @@ public class Screen {
 
     public static Screen getCorrect(int w, int h, Text footer) {
 
-        if (TabHud.genericTgl.isPressed()) {
+        if (TabHud.toggleA.isPressed()) {
             return Screen.correctGenericScrn(w, h, footer);
-        } else if (TabHud.playerTgl.isPressed()) {
+        } else if (TabHud.toggleB.isPressed()) {
             return Screen.correctPlayerScrn(w, h, footer);
         } else {
             return Screen.correctMainScrn(w, h, footer);

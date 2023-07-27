@@ -89,6 +89,7 @@ public class DwarvenHud {
 
     public static void renderSimple(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
         HudCommsWidget.INSTANCE.updateData(commissions, false);
+        HudCommsWidget.INSTANCE.update();
         HudCommsWidget.INSTANCE.setX(hudX);
         HudCommsWidget.INSTANCE.setY(hudY);
         HudCommsWidget.INSTANCE.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
@@ -96,6 +97,7 @@ public class DwarvenHud {
 
     public static void renderFancy(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
         HudCommsWidget.INSTANCE.updateData(commissions, true);
+        HudCommsWidget.INSTANCE.update();
         HudCommsWidget.INSTANCE.setX(hudX);
         HudCommsWidget.INSTANCE.setY(hudY);
         HudCommsWidget.INSTANCE.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);

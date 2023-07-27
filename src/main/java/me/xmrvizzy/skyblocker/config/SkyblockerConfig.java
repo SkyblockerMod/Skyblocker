@@ -193,9 +193,8 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         @ConfigEntry.Gui.Tooltip
         public NameSorting nameSorting = NameSorting.DEFAULT;
-        
     }
-    
+
     public enum NameSorting {
     	DEFAULT,
         ALPHABETICAL;
