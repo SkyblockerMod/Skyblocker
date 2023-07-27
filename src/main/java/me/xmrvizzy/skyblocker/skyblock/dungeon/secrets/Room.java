@@ -1,14 +1,19 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
+import me.xmrvizzy.skyblocker.utils.RenderHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Vector2i;
@@ -29,8 +34,10 @@ public class Room {
     private String name;
     private Direction direction;
     private Vector2ic corner;
+    private final List<Secret> secrets = new ArrayList<>();
 
     public Room(Type type, Vector2ic... physicalPositions) {
+        long startTime = System.currentTimeMillis();
         this.type = type;
         segments = Set.of(physicalPositions);
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
@@ -41,11 +48,16 @@ public class Room {
         for (Direction direction : getPossibleDirections(segmentsX, segmentsY)) {
             possibleRooms.add(MutableTriple.of(direction, DungeonMapUtils.getPhysicalCornerPos(direction, segmentsX, segmentsY), possibleDirectionRooms));
         }
-        DungeonSecrets.LOGGER.info("Created {}", this); // TODO change to debug
+        long endTime = System.currentTimeMillis();
+        DungeonSecrets.LOGGER.info("Created {} in {} ms", this, endTime - startTime); // TODO change to debug
     }
 
     public Type getType() {
         return type;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -116,7 +128,8 @@ public class Room {
         findRoom = CompletableFuture.runAsync(() -> {
             long startTime = System.currentTimeMillis();
             for (BlockPos pos : BlockPos.iterate(player.getBlockPos().add(-5, -5, -5), player.getBlockPos().add(5, 5, 5))) {
-                if (checkedBlocks.add(pos) && checkBlock(world, pos)) {
+                // TODO Check if pos is outside of room or part of doorway
+                if (segments.contains(DungeonMapUtils.getPhysicalRoomPos(pos)) && notInDoorway(pos) && checkedBlocks.add(pos) && checkBlock(world, pos)) {
                     reset();
                     break;
                 }
@@ -124,6 +137,15 @@ public class Room {
             long endTime = System.currentTimeMillis();
             DungeonSecrets.LOGGER.info("[Skyblocker] Processed room in {} ms", endTime - startTime); // TODO change to debug
         });
+    }
+
+    public static boolean notInDoorway(BlockPos pos) {
+        if (pos.getY() < 66 || pos.getY() > 73) {
+            return true;
+        }
+        int x = MathHelper.floorMod(pos.getX() - 8, 32);
+        int z = MathHelper.floorMod(pos.getZ() - 8, 32);
+        return x >= 13 && x <= 17 && (z <= 2 || z >= 28) || z >= 13 && z <= 17 && (x <= 2 || x >= 28);
     }
 
     private boolean checkBlock(ClientWorld world, BlockPos pos) {
@@ -152,9 +174,8 @@ public class Room {
         } else if (matchingRoomsSize == 1) {
             for (Triple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
                 if (directionRooms.getRight().size() == 1) {
-                    name = directionRooms.getRight().get(0);
-                    direction = directionRooms.getLeft();
-                    corner = directionRooms.getMiddle();
+                    roomMatched(directionRooms);
+                    break;
                 }
             }
             DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size()); // TODO change to debug
@@ -167,6 +188,41 @@ public class Room {
 
     private int posIdToInt(BlockPos pos, byte id) {
         return pos.getX() << 24 | pos.getY() << 16 | pos.getZ() << 8 | id;
+    }
+
+    private void roomMatched(Triple<Direction, Vector2ic, List<String>> directionRooms) {
+        name = directionRooms.getRight().get(0);
+        direction = directionRooms.getLeft();
+        corner = directionRooms.getMiddle();
+        for (JsonElement waypointElement : DungeonSecrets.getWaypointsJson().get(name).getAsJsonArray()) {
+            JsonObject waypoint = waypointElement.getAsJsonObject();
+            String name = waypoint.get("secretName").getAsString();
+            int index = Integer.parseInt(Character.isDigit(name.charAt(1)) ? name.substring(0, 2) : name.substring(0, 1));
+            secrets.add(new Secret(index, getCategory(waypoint), DungeonMapUtils.relativeToActual(corner, direction, waypoint), true));
+        }
+    }
+
+    private Category getCategory(JsonObject categoryJson) {
+        return switch (categoryJson.get("category").getAsString()) {
+            case "entrance" -> Category.ENTRANCE;
+            case "superboom" -> Category.SUPERBOOM;
+            case "chest" -> Category.CHEST;
+            case "item" -> Category.ITEM;
+            case "bat" -> Category.BAT;
+            case "wither" -> Category.WITHER;
+            case "lever" -> Category.LEVER;
+            case "fairysoul" -> Category.FAIRYSOUL;
+            case "stonk" -> Category.STONK;
+            default -> Category.DEFAULT;
+        };
+    }
+
+    protected void render(WorldRenderContext context) {
+        for (Secret secret : secrets) {
+            if (secret.missing()) {
+                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, secret.pos, secret.category.colorComponents, 0.5F);
+            }
+        }
     }
 
     /**
@@ -216,5 +272,26 @@ public class Room {
 
     public enum Direction {
         NW, NE, SW, SE
+    }
+
+    public record Secret(int index, Category category, BlockPos pos, boolean missing) {
+    }
+
+    public enum Category {
+        ENTRANCE(0, 255, 0),
+        SUPERBOOM(255, 0, 0),
+        CHEST(2, 213, 250),
+        ITEM(2, 64, 250),
+        BAT(142, 66, 0),
+        WITHER(30, 30, 30),
+        LEVER(250, 217, 2),
+        FAIRYSOUL(255, 85, 255),
+        STONK(146, 52, 235),
+        DEFAULT(190, 255, 252);
+        final float[] colorComponents;
+
+        Category(float... colorComponents) {
+            this.colorComponents = colorComponents;
+        }
     }
 }

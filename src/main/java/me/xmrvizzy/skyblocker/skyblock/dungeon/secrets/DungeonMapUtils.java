@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
@@ -7,6 +8,7 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
@@ -18,6 +20,25 @@ import java.util.*;
 public class DungeonMapUtils {
     public static final byte BLACK_COLOR = MapColor.BLACK.getRenderColorByte(MapColor.Brightness.LOWEST);
     public static final byte WHITE_COLOR = MapColor.WHITE.getRenderColorByte(MapColor.Brightness.HIGH);
+
+    public static byte getColor(MapState map, @Nullable Vector2ic pos) {
+        return pos == null ? -1 : getColor(map, pos.x(), pos.y());
+    }
+
+    public static byte getColor(MapState map, int x, int z) {
+        if (x < 0 || z < 0 || x >= 128 || z >= 128) {
+            return -1;
+        }
+        return map.colors[x + (z << 7)];
+    }
+
+    public static boolean isEntranceColor(MapState map, int x, int z) {
+        return getColor(map, x, z) == Room.Type.ENTRANCE.color;
+    }
+
+    public static boolean isEntranceColor(MapState map, @Nullable Vector2ic pos) {
+        return getColor(map, pos) == Room.Type.ENTRANCE.color;
+    }
 
     @Nullable
     private static Vector2i getMapPlayerPos(MapState map) {
@@ -32,15 +53,16 @@ public class DungeonMapUtils {
     @Nullable
     public static Vector2ic getMapEntrancePos(MapState map) {
         Vector2i mapPos = getMapPlayerPos(map);
-        if (!isEntranceColor(getColor(map, mapPos))) {
+        DungeonSecrets.LOGGER.info("[Skyblocker] Trying to get dungeon map entrance pos from map player pos at {}", mapPos); // TODO remove
+        if (!isEntranceColor(map, mapPos)) {
             return null;
         }
         // noinspection StatementWithEmptyBody, DataFlowIssue
-        while (isEntranceColor(getColor(map, mapPos.sub(1, 0)))) {
+        while (isEntranceColor(map, mapPos.sub(1, 0))) {
         }
         mapPos.add(1, 0);
         //noinspection StatementWithEmptyBody
-        while (isEntranceColor(getColor(map, mapPos.sub(0, 1)))) {
+        while (isEntranceColor(map, mapPos.sub(0, 1))) {
         }
         return mapPos.add(0, 1);
     }
@@ -48,7 +70,7 @@ public class DungeonMapUtils {
     public static int getMapRoomSize(MapState map, Vector2ic mapEntrancePos) {
         int i = -1;
         //noinspection StatementWithEmptyBody
-        while (isEntranceColor(getColor(map, mapEntrancePos.x() + ++i, mapEntrancePos.y()))) {
+        while (isEntranceColor(map, mapEntrancePos.x() + ++i, mapEntrancePos.y())) {
         }
         return i;
     }
@@ -91,7 +113,7 @@ public class DungeonMapUtils {
 
     @Nullable
     public static Vector2ic getPhysicalEntrancePos(MapState map, @NotNull Vec3d playerPos) {
-        if (isEntranceColor(getColor(map, getMapPlayerPos(map)))) {
+        if (isEntranceColor(map, getMapPlayerPos(map))) {
             return getPhysicalRoomPos(playerPos);
         }
         return null;
@@ -108,6 +130,15 @@ public class DungeonMapUtils {
      */
     @NotNull
     public static Vector2ic getPhysicalRoomPos(@NotNull Vec3d playerPos) {
+        Vector2i physicalPos = new Vector2i(playerPos.getX() + 8.5, playerPos.getZ() + 8.5, RoundingMode.TRUNCATE);
+        return physicalPos.sub(MathHelper.floorMod(physicalPos.x(), 32), MathHelper.floorMod(physicalPos.y(), 32)).sub(8, 8);
+    }
+
+    /**
+     * @see #getPhysicalRoomPos(Vec3d)
+     */
+    @NotNull
+    public static Vector2ic getPhysicalRoomPos(@NotNull Vec3i playerPos) {
         Vector2i physicalPos = new Vector2i(playerPos.getX() + 8.5, playerPos.getZ() + 8.5, RoundingMode.TRUNCATE);
         return physicalPos.sub(MathHelper.floorMod(physicalPos.x(), 32), MathHelper.floorMod(physicalPos.y(), 32)).sub(8, 8);
     }
@@ -146,6 +177,19 @@ public class DungeonMapUtils {
             case NW -> new BlockPos(pos.getX() - physicalCornerPos.x(), pos.getY(), pos.getZ() - physicalCornerPos.y());
             case NE -> new BlockPos(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
             case SW -> new BlockPos(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
+            case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+        };
+    }
+
+    public static BlockPos relativeToActual(Vector2ic physicalCornerPos, Room.Direction direction, JsonObject posJson) {
+        return relativeToActual(physicalCornerPos, direction, new BlockPos(posJson.get("x").getAsInt(), posJson.get("y").getAsInt(), posJson.get("z").getAsInt()));
+    }
+
+    public static BlockPos relativeToActual(Vector2ic physicalCornerPos, Room.Direction direction, BlockPos pos) {
+        return switch (direction) {
+            case NW -> new BlockPos(pos.getX() + physicalCornerPos.x(), pos.getY(), pos.getZ() + physicalCornerPos.y());
+            case NE -> new BlockPos(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
+            case SW -> new BlockPos(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
             case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
         };
     }
@@ -194,20 +238,5 @@ public class DungeonMapUtils {
         }
         DungeonSecrets.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
         return segments.toArray(Vector2ic[]::new);
-    }
-
-    public static byte getColor(MapState map, @Nullable Vector2ic pos) {
-        return pos == null ? -1 : getColor(map, pos.x(), pos.y());
-    }
-
-    public static byte getColor(MapState map, int x, int z) {
-        if (x < 0 || z < 0 || x >= 128 || z >= 128) {
-            return -1;
-        }
-        return map.colors[x + (z << 7)];
-    }
-
-    public static boolean isEntranceColor(byte color) {
-        return color == Room.Type.ENTRANCE.color;
     }
 }

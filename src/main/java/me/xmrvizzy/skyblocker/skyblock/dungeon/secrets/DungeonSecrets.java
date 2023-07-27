@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.FilledMapItem;
@@ -79,7 +81,7 @@ public class DungeonSecrets {
      */
     private static Vector2ic mapEntrancePos;
     /**
-     * The width of a room on the map.
+     * The size of a room on the map.
      */
     private static int mapRoomSize;
     /**
@@ -93,6 +95,14 @@ public class DungeonSecrets {
         return roomsLoaded != null && roomsLoaded.isDone();
     }
 
+    public static JsonObject getRoomsJson() {
+        return roomsJson;
+    }
+
+    public static JsonObject getWaypointsJson() {
+        return waypointsJson;
+    }
+
     /**
      * Loads the dungeon secrets asynchronously from {@code /assets/skyblocker/dungeons}.
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
@@ -103,6 +113,7 @@ public class DungeonSecrets {
         }
         CompletableFuture.runAsync(DungeonSecrets::load);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonSecrets::update, 10);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonSecrets::render);
     }
 
     private static void load() {
@@ -174,6 +185,7 @@ public class DungeonSecrets {
     }
 
     private static void update() {
+        long startTime = System.currentTimeMillis();
         if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints || !Utils.isInDungeons()) {
             return;
         }
@@ -203,7 +215,7 @@ public class DungeonSecrets {
                 return;
             } else {
                 currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
-                LOGGER.info("[Skyblocker] Started dungeon with map room width {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
+                LOGGER.info("[Skyblocker] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
             }
         }
 
@@ -217,13 +229,16 @@ public class DungeonSecrets {
         if (room == null) {
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM ->
+                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
             currentRoom = room;
         }
         currentRoom.update();
+        long endTime = System.currentTimeMillis();
+        LOGGER.debug("[Skyblocker] Updated dungeon secrets in {} ms", endTime - startTime); // TODO change to debug
     }
 
     /**
@@ -239,5 +254,12 @@ public class DungeonSecrets {
             rooms.put(physicalPos, newRoom);
         }
         return newRoom;
+    }
+
+    private static void render(WorldRenderContext context) {
+        if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints || !Utils.isInDungeons() || currentRoom.getName() == null) {
+            return;
+        }
+        currentRoom.render(context);
     }
 }
