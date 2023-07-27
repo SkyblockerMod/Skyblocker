@@ -66,14 +66,14 @@ dependencies {
 	// Mixin Extras (https://github.com/LlamaLad7/MixinExtras)
 	include implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}"))
 
+	// BetterInject (https://github.com/caoimhebyrne/BetterInject)
+	include implementation(annotationProcessor("com.github.cbyrneee:BetterInject:${project.betterinject_version}"))
+
 	// https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit used pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r")
 
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
 	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
-	
-	// BetterInject (https://github.com/caoimhebyrne/BetterInject)
-	include implementation(annotationProcessor("com.github.cbyrneee:BetterInject:${project.betterinject_version}"))
 }
 
 base {
