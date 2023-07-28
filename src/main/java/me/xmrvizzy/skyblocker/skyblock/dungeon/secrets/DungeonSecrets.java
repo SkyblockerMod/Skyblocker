@@ -238,7 +238,7 @@ public class DungeonSecrets {
         }
         currentRoom.update();
         long endTime = System.currentTimeMillis();
-        LOGGER.debug("[Skyblocker] Updated dungeon secrets in {} ms", endTime - startTime); // TODO change to debug
+        LOGGER.info("[Skyblocker] Updated dungeon secrets in {} ms", endTime - startTime); // TODO change to debug
     }
 
     /**
@@ -257,9 +257,8 @@ public class DungeonSecrets {
     }
 
     private static void render(WorldRenderContext context) {
-        if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints || !Utils.isInDungeons() || currentRoom.getName() == null) {
-            return;
+        if (SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons() && currentRoom != null && currentRoom.getName() != null) {
+            currentRoom.render(context);
         }
-        currentRoom.render(context);
     }
 }

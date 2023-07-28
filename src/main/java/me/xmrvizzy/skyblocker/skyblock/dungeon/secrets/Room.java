@@ -34,7 +34,7 @@ public class Room {
     private String name;
     private Direction direction;
     private Vector2ic corner;
-    private final List<Secret> secrets = new ArrayList<>();
+    private final List<SecretWaypoint> secretWaypoints = new ArrayList<>();
 
     public Room(Type type, Vector2ic... physicalPositions) {
         long startTime = System.currentTimeMillis();
@@ -114,7 +114,7 @@ public class Room {
         };
     }
 
-    public void update() {
+    protected void update() {
         // Logical AND has higher precedence than logical OR
         if (name != null || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
             return;
@@ -128,7 +128,6 @@ public class Room {
         findRoom = CompletableFuture.runAsync(() -> {
             long startTime = System.currentTimeMillis();
             for (BlockPos pos : BlockPos.iterate(player.getBlockPos().add(-5, -5, -5), player.getBlockPos().add(5, 5, 5))) {
-                // TODO Check if pos is outside of room or part of doorway
                 if (segments.contains(DungeonMapUtils.getPhysicalRoomPos(pos)) && notInDoorway(pos) && checkedBlocks.add(pos) && checkBlock(world, pos)) {
                     reset();
                     break;
@@ -139,13 +138,13 @@ public class Room {
         });
     }
 
-    public static boolean notInDoorway(BlockPos pos) {
+    private static boolean notInDoorway(BlockPos pos) {
         if (pos.getY() < 66 || pos.getY() > 73) {
             return true;
         }
         int x = MathHelper.floorMod(pos.getX() - 8, 32);
         int z = MathHelper.floorMod(pos.getZ() - 8, 32);
-        return x >= 13 && x <= 17 && (z <= 2 || z >= 28) || z >= 13 && z <= 17 && (x <= 2 || x >= 28);
+        return (x < 13 || x > 17 || z > 2 && z < 28) && (z < 13 || z > 17 || x > 2 && x < 28);
     }
 
     private boolean checkBlock(ClientWorld world, BlockPos pos) {
@@ -197,8 +196,8 @@ public class Room {
         for (JsonElement waypointElement : DungeonSecrets.getWaypointsJson().get(name).getAsJsonArray()) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String name = waypoint.get("secretName").getAsString();
-            int index = Integer.parseInt(Character.isDigit(name.charAt(1)) ? name.substring(0, 2) : name.substring(0, 1));
-            secrets.add(new Secret(index, getCategory(waypoint), DungeonMapUtils.relativeToActual(corner, direction, waypoint), true));
+            int secretIndex = Integer.parseInt(Character.isDigit(name.charAt(1)) ? name.substring(0, 2) : name.substring(0, 1));
+            secretWaypoints.add(new SecretWaypoint(secretIndex, getCategory(waypoint), DungeonMapUtils.relativeToActual(corner, direction, waypoint), true));
         }
     }
 
@@ -218,9 +217,9 @@ public class Room {
     }
 
     protected void render(WorldRenderContext context) {
-        for (Secret secret : secrets) {
-            if (secret.missing()) {
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, secret.pos, secret.category.colorComponents, 0.5F);
+        for (SecretWaypoint secretWaypoint : secretWaypoints) {
+            if (secretWaypoint.missing()) {
+                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, secretWaypoint.pos(), secretWaypoint.category().colorComponents, 0.5F);
             }
         }
     }
@@ -251,7 +250,7 @@ public class Room {
         }
     }
 
-    public enum Shape {
+    private enum Shape {
         ONE_BY_ONE("1x1"),
         ONE_BY_TWO("1x2"),
         ONE_BY_THREE("1x3"),
@@ -274,10 +273,10 @@ public class Room {
         NW, NE, SW, SE
     }
 
-    public record Secret(int index, Category category, BlockPos pos, boolean missing) {
+    private record SecretWaypoint(int secretIndex, Category category, BlockPos pos, boolean missing) {
     }
 
-    public enum Category {
+    private enum Category {
         ENTRANCE(0, 255, 0),
         SUPERBOOM(255, 0, 0),
         CHEST(2, 213, 250),
@@ -288,10 +287,13 @@ public class Room {
         FAIRYSOUL(255, 85, 255),
         STONK(146, 52, 235),
         DEFAULT(190, 255, 252);
-        final float[] colorComponents;
+        private final float[] colorComponents;
 
-        Category(float... colorComponents) {
-            this.colorComponents = colorComponents;
+        Category(int... intColorComponents) {
+            colorComponents = new float[intColorComponents.length];
+            for (int i = 0; i < intColorComponents.length; i++) {
+                colorComponents[i] = intColorComponents[i] / 255F;
+            }
         }
     }
 }
