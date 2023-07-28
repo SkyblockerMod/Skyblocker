@@ -40,6 +40,7 @@ jobs:
         shell: bash
         run: |
           CHANGELOG=$(sed '/___/Q' CHANGELOG.md)
+          CHANGELOG=$(echo "$CHANGELOG" | sed 1d)
           echo "Changelog:\n$CHANGELOG"
 
           changelog="${CHANGELOG}"
