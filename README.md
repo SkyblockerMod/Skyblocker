@@ -21,19 +21,22 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
 * Dungeon Puzzle Solver:
-  * Three Weirdos
-  * Blaze
-  * Croesus
-  * Terminal:
-    * Order
-    * Coloured Items
-    * Item Name
+    * Three Weirdos
+    * Blaze
+    * Croesus
+    * Terminal:
+        * Order
+        * Coloured Items
+        * Item Name
 * Dwarven Mines Solver: Fetchur, Puzzler
 * Barn Solver: Treasure Hunter, Hungry Hiker
+* Experiments Solvers
+* Slayer helper:
+    * Vampire : Effigy Waypoints, Healing Melon Indicator, Twinclaws Ice Indicator, Steak Stake Indicator
 * Drill Fuel in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
-* Price tooltip: npc, bazaar (avg, lbin), ah, museum
-* reparty: write /rp to reparty
+* Price tooltip: npc, motes, bazaar (avg, lbin), ah, museum
+* reparty: write /rp to reparty + auto rejoin
 * Wiki Lookup: press f4 to open the wiki page about the held item
 * Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
 * Quicknav: fast navigate between pets, armor, enderchest, skill, collection, crafting, enchant, envil, warp dungeon,
@@ -46,20 +49,24 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * 1.8 hitbox for lever and farmland
 * Custom Tab HUD
 * Roughly enough items (REI) Support
-* Fishing Helper
+* Fishing Helper + sound notification
+* Mirrorverse Waypoints
 
 </details>
 
 ___
+
 ## Commands
 
-|           command            |        option        | comment                               |
-|:----------------------------:|:--------------------:|:--------------------------------------|
-|      /skyblocker config      |                      | open config menu (modMenu not needed) |
-|        /skyblocker options   |                      | open config menu (modMenu not needed) |
-|       /skyblocker hud        | dwarven / dungeonmap | move dwarven or dungeonmap            |
+|        command        |         option          | comment                                    |
+|:---------------------:|:-----------------------:|:-------------------------------------------|
+|  /skyblocker config   |                         | open config menu (modMenu not needed)      |
+|  /skyblocker options  |                         | open config menu (modMenu not needed)      |
+|    /skyblocker hud    | dwarven / dungeonmap / titleContainer | move dwarven, dungeonmap or titleContainer |
+| /skyblocker shortcuts |                         | add/edit shortcuts                         |
 
 ---
+
 ## Images
 
 <details open>
@@ -103,16 +110,16 @@ information.
 |:--------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
 |                               [catandA](https://github.com/catandA)                                |                                   [kevinthegreat1](https://github.com/kevinthegreat1)                                   |                                 [AzureAaron](https://github.com/AzureAaron)                                 |                                  [msg-programs](https://github.com/msg-programs)                                  |
 
-| [<img alt="lantice3720" src="https://github.com/lantice3720.png" width="100">](https://github.com/lantice3720)   |
-|:-----------------------------------------------------------------------------------------------------|
-| [lantice3720](https://github.com/lantice3720)                                                                |
+| [<img alt="lantice3720" src="https://github.com/lantice3720.png" width="100">](https://github.com/lantice3720) | [<img alt="lantice3720" src="https://github.com/koloiyolo.png" width="100">](https://github.com/koloiyolo) | [<img alt="lantice3720" src="https://github.com/Futuremappermydud.png" width="100">](https://github.com/Futuremappermydud) |
+|:--------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|
+|                                 [lantice3720](https://github.com/lantice3720)                                  |                                 [koloiyolo](https://github.com/koloiyolo)                                  |                                 [Futuremappermydud](https://github.com/Futuremappermydud)                                  |
 
 ### Translators
 
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](https://github.com/msg-programs)) \
 Indonesian ([null2264](https://github.com/null2264)) \
-Russian ([HyperSoop](https://github.com/HyperSoop) & [Azuremane](https://github.com/Azuremane)) \
-French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01)) \
+Russian ([HyperSoop](https://github.com/HyperSoop) & [Azuremane](https://github.com/Azuremane) & [CrimsonIsle](https://github.com/CrimsonIsle))\
+French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat)) \
 Japanese ([hirochisan](https://github.com/hirochisan)) \
 Chinese ([catandA](https://github.com/catandA)) \
 Korean ([lantice3720](https://github.com/lantice3720)) \
