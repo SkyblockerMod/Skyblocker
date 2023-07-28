@@ -17,6 +17,7 @@
     "MinecraftClientMixin",
     "PlayerListHudAccessor",
     "PlayerListHudMixin",
+    "PlayerSkinProviderMixin",
     "RecipeBookWidgetAccessor",
     "ScoreboardMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
