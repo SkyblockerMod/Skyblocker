@@ -81,11 +81,12 @@ jobs:
           CHANGELOG=$(echo -n "$modified_changelog")
           fi
           
-          CHANGELOG="${CHANGELOG//'%'/'%25'}"
-          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          CHANGELOG-discord="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG-discord="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG-discord="${CHANGELOG//$'\r'/'%0D'}"
           
-          echo "::set-output name=changelog::$CHANGELOG"
+          echo "::set-output name=changelog::$changelog"
+          echo "::set-output name=changelog-discord::$CHANGELOG-discord"
 
       - uses: actions/github-script@v2
         id: fname
@@ -122,12 +123,12 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            "@here"
+            "@Update-Notification"
             "Skyblocker ${{ steps.version_tag.outputs.value }}"
             ""
             "Changelog"
             "```md"
-            "${{ steps.read_changelog.outputs.changelog }}"
+            "${{ steps.read_changelog.outputs.changelog-discord }}"
             "```"
             ":inbox_tray: Download latest version on Modrinth or Github:"
             "<:modrinth:900697862206287882> <${{ steps.modrinth.outputs.url }}>"

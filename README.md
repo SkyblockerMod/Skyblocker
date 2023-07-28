@@ -58,12 +58,12 @@ ___
 
 ## Commands
 
-|        command        |        option        | comment                               |
-|:---------------------:|:--------------------:|:--------------------------------------|
-|  /skyblocker config   |                      | open config menu (modMenu not needed) |
-|  /skyblocker options  |                      | open config menu (modMenu not needed) |
-|    /skyblocker hud    | dwarven / dungeonmap | move dwarven or dungeonmap            |
-| /skyblocker shortcuts |                      | add/edit shortcuts                    |
+|        command        |         option          | comment                                    |
+|:---------------------:|:-----------------------:|:-------------------------------------------|
+|  /skyblocker config   |                         | open config menu (modMenu not needed)      |
+|  /skyblocker options  |                         | open config menu (modMenu not needed)      |
+|    /skyblocker hud    | dwarven / dungeonmap / titleContainer | move dwarven, dungeonmap or titleContainer |
+| /skyblocker shortcuts |                         | add/edit shortcuts                         |
 
 ---
 
