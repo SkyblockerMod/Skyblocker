@@ -1,7 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
@@ -13,7 +11,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.BlockHitResult;
@@ -34,7 +31,7 @@ public class EtherwarpOverlay {
 			String itemId = PriceInfoTooltip.getInternalNameFromNBT(heldItem);
 			NbtCompound nbt = heldItem.getNbt();
 			
-			if (itemId != null && (itemId.equals("ASPECT_OF_THE_VOID") || itemId.equals("ASPECT_OF_THE_END")) && (nbt != null && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1) && InputUtil.isKeyPressed(CLIENT.getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			if (itemId != null && (itemId.equals("ASPECT_OF_THE_VOID") || itemId.equals("ASPECT_OF_THE_END")) && (nbt != null && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1) && CLIENT.options.sneakKey.isPressed()) {
 				HitResult result = CLIENT.player.raycast(61, wrc.tickDelta(), false);
 				
 				if (result instanceof BlockHitResult blockHit) {
