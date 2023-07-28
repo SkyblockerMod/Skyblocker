@@ -136,6 +136,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean acceptReparty = true;
         public boolean backpackPreviewWithoutShift = false;
         public boolean hideEmptyTooltips = true;
+        public boolean etherwarpOverlay = true;
 
         @ConfigEntry.Category("tabHud")
         @ConfigEntry.Gui.CollapsibleObject()
