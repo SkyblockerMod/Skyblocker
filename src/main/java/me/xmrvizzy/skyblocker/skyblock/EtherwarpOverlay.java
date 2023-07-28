@@ -15,6 +15,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -31,8 +32,9 @@ public class EtherwarpOverlay {
 		if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.etherwarpOverlay) {
 			ItemStack heldItem = CLIENT.player.getMainHandStack();
 			String itemId = PriceInfoTooltip.getInternalNameFromNBT(heldItem);
+			NbtCompound nbt = heldItem.getNbt();
 			
-			if (itemId != null && itemId.equals("ASPECT_OF_THE_VOID") && InputUtil.isKeyPressed(CLIENT.getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			if (itemId != null && (itemId.equals("ASPECT_OF_THE_VOID") || itemId.equals("ASPECT_OF_THE_END")) && (nbt != null && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1) && InputUtil.isKeyPressed(CLIENT.getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
 				HitResult result = CLIENT.player.raycast(61, wrc.tickDelta(), false);
 				
 				if (result instanceof BlockHitResult blockHit) {
