@@ -95,7 +95,6 @@
     "text.autoconfig.skyblocker.option.messages.hideAOTE": "Ocultar Mensajes de la AOTE",
     "text.autoconfig.skyblocker.option.messages.hideMana": "Ocultar los Mensajes del Consumo de Maná de la Barra de Acción",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Da una mejor experiencia con FancyBar",
-    "skyblocker.update.hover_text": "Abrir Modrinth",
     "skyblocker.updaterepository.failed": "§b[§6Skyblocker§b] §cLa actualización del repositorio local fallo. Elimina los archivos manualmente y reinicia el juego.",
     "text.autoconfig.skyblocker.option.quickNav.button11": "Botón 11",
     "text.autoconfig.skyblocker.option.quickNav.button9.item.itemName": "Nombre del objeto",
