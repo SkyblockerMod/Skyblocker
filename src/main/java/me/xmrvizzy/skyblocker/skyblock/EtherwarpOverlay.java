@@ -32,7 +32,8 @@ public class EtherwarpOverlay {
 			NbtCompound nbt = heldItem.getNbt();
 			
 			if (itemId != null && (itemId.equals("ASPECT_OF_THE_VOID") || itemId.equals("ASPECT_OF_THE_END")) && (nbt != null && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1) && CLIENT.options.sneakKey.isPressed()) {
-				HitResult result = CLIENT.player.raycast(61, wrc.tickDelta(), false);
+				int range = (nbt != null && nbt.getCompound("ExtraAttributes").contains("tuned_transmission")) ? 57 + nbt.getCompound("ExtraAttributes").getInt("tuned_transmission") : 61;
+				HitResult result = CLIENT.player.raycast(range, wrc.tickDelta(), false);
 				
 				if (result instanceof BlockHitResult blockHit) {
 					BlockPos pos = blockHit.getBlockPos();
