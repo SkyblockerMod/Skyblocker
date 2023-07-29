@@ -17,11 +17,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
+          distribution: 'microsoft'
           java-version: '17'
 
       - name: Grant execute permission for gradlew
@@ -30,7 +30,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Artifacts
           path: build/libs/
@@ -41,6 +41,13 @@ jobs:
         run: |
           CHANGELOG=$(sed '/___/Q' CHANGELOG.md)
           CHANGELOG=$(echo "$CHANGELOG" | sed 1d)
+          
+          CHANGELOGtmp="${CHANGELOG//'%'/'%25'}"
+          CHANGELOGtmp="${CHANGELOGtmp//$'\n'/'%0A'}"
+          CHANGELOGtmp="${CHANGELOGtmp//$'\r'/'%0D'}"
+          
+          echo "::set-output name=changelog::$CHANGELOGtmp"
+          
           echo "Changelog:\n$CHANGELOG"
 
           changelog="${CHANGELOG}"
@@ -81,14 +88,13 @@ jobs:
           CHANGELOG=$(echo -n "$modified_changelog")
           fi
           
-          CHANGELOG-discord="${CHANGELOG//'%'/'%25'}"
-          CHANGELOG-discord="${CHANGELOG//$'\n'/'%0A'}"
-          CHANGELOG-discord="${CHANGELOG//$'\r'/'%0D'}"
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
           
-          echo "::set-output name=changelog::$changelog"
-          echo "::set-output name=changelog-discord::$CHANGELOG-discord"
+          echo "::set-output name=changelog_discord::$CHANGELOG"
 
-      - uses: actions/github-script@v2
+      - uses: actions/github-script@v6
         id: fname
         with:
           result-encoding: string
@@ -124,12 +130,9 @@ jobs:
         with:
           args: |
             "@Update-Notification"
-            "Skyblocker ${{ steps.version_tag.outputs.value }}"
+            "## Skyblocker ${{ steps.version_tag.outputs.value }}"
             ""
-            "Changelog"
-            "```md"
-            "${{ steps.read_changelog.outputs.changelog-discord }}"
-            "```"
+            "${{ steps.read_changelog.outputs.changelog_discord }}"
             ":inbox_tray: Download latest version on Modrinth or Github:"
             "<:modrinth:900697862206287882> <${{ steps.modrinth.outputs.url }}>"
             "<:github:900697885706952725> <${{ steps.uploadrelease.outputs.url }}>"
