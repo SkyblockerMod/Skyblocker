@@ -136,7 +136,6 @@ public class SkyblockerConfig implements ConfigData {
         public boolean acceptReparty = true;
         public boolean backpackPreviewWithoutShift = false;
         public boolean hideEmptyTooltips = true;
-        public boolean etherwarpOverlay = true;
 
         @ConfigEntry.Category("tabHud")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -181,6 +180,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("titleContainer")
         @ConfigEntry.Gui.CollapsibleObject()
         public TitleContainer titleContainer = new TitleContainer();
+
+        @ConfigEntry.Category("Teleport Overlay")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TeleportOverlay teleportOverlay = new TeleportOverlay();
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
@@ -291,6 +294,15 @@ public class SkyblockerConfig implements ConfigData {
         public Direction direction = Direction.HORIZONTAL;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
         public Alignment alignment = Alignment.MIDDLE;
+    }
+
+    public static class TeleportOverlay {
+        public boolean enableTeleportOverlays = true;
+        public boolean enableWeirdTransmission = true;
+        public boolean enableInstantTransmission = true;
+        public boolean enableEtherTransmission = true;
+        public boolean enableSinrecallTransmission = true;
+        public boolean enableWitherImpact = true;
     }
 
     public enum Direction {
