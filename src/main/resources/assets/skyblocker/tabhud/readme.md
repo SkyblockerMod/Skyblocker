@@ -6,11 +6,11 @@ my_pack
 └───assets
     └───skyblocker
         └───tabhud
-            ├───screenA
-            ├───screenB
+            ├───screen_a
+            ├───screen_b
             └───standard
 ```
-The three dirs `screenA`, `screenB` and `standard` contain the screen definition JSON files as described below. `standard` describes the screens shown when just the TAB key is pressed, while `screenA/B` describe the screens shown when using the modifier keys A and B (default binds: N and B).
+The three dirs `screen_a`, `screen_b` and `standard` contain the screen definition JSON files as described below. `standard` describes the screens shown when just the TAB key is pressed, while `screen_a/b` describe the screens shown when using the modifier keys A and B (default binds: N and B).
 The file names are used to describe where a screen is shown. They are case sensitive. For a full list of possible names see Appendix A. While this scheme necessitates duplicate file contents and results in similar file names in different directories, it also allows for much control both when creating a complete layout or when only overriding specific screens.
 
 # Screen definition JSONs

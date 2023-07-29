@@ -42,11 +42,12 @@ public class ScreenMaster {
 
             if (screenType.equals("standard")) {
                 standardMap.put(location, new ScreenBuilder(ident));
-            } else if (screenType.equals("screenA")) {
+            } else if (screenType.equals("screen_a")) {
                 screenAMap.put(location, new ScreenBuilder(ident));
-            } else if (screenType.equals("screenB")) {
+            } else if (screenType.equals("screen_b")) {
                 screenBMap.put(location, new ScreenBuilder(ident));
             }
+
         } catch (IOException ioex) {
             LOGGER.error("Can't load screen definition from {}", path);
         }
