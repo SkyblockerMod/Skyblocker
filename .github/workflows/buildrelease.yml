@@ -41,6 +41,13 @@ jobs:
         run: |
           CHANGELOG=$(sed '/___/Q' CHANGELOG.md)
           CHANGELOG=$(echo "$CHANGELOG" | sed 1d)
+          
+          CHANGELOGtmp="${CHANGELOG//'%'/'%25'}"
+          CHANGELOGtmp="${CHANGELOGtmp//$'\n'/'%0A'}"
+          CHANGELOGtmp="${CHANGELOGtmp//$'\r'/'%0D'}"
+          
+          echo "::set-output name=changelog::$CHANGELOGtmp"
+          
           echo "Changelog:\n$CHANGELOG"
 
           changelog="${CHANGELOG}"
@@ -81,12 +88,11 @@ jobs:
           CHANGELOG=$(echo -n "$modified_changelog")
           fi
           
-          CHANGELOG-discord="${CHANGELOG//'%'/'%25'}"
-          CHANGELOG-discord="${CHANGELOG//$'\n'/'%0A'}"
-          CHANGELOG-discord="${CHANGELOG//$'\r'/'%0D'}"
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
           
-          echo "::set-output name=changelog::$changelog"
-          echo "::set-output name=changelog-discord::$CHANGELOG-discord"
+          echo "::set-output name=changelog_discord::CHANGELOG"
 
       - uses: actions/github-script@v2
         id: fname
@@ -124,12 +130,9 @@ jobs:
         with:
           args: |
             "@Update-Notification"
-            "Skyblocker ${{ steps.version_tag.outputs.value }}"
+            "## Skyblocker ${{ steps.version_tag.outputs.value }}"
             ""
-            "Changelog"
-            "```md"
-            "${{ steps.read_changelog.outputs.changelog-discord }}"
-            "```"
+            "${{ steps.read_changelog.outputs.changelog_discord }}"
             ":inbox_tray: Download latest version on Modrinth or Github:"
             "<:modrinth:900697862206287882> <${{ steps.modrinth.outputs.url }}>"
             "<:github:900697885706952725> <${{ steps.uploadrelease.outputs.url }}>"
