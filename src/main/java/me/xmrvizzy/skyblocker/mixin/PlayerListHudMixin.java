@@ -6,12 +6,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.architectury.event.events.common.TickEvent.Player;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;

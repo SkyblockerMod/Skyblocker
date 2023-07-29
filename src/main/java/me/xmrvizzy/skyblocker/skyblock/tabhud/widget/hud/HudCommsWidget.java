@@ -1,14 +1,11 @@
-package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
+package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;

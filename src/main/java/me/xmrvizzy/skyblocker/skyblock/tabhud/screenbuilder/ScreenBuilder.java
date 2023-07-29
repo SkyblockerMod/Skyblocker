@@ -15,7 +15,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.AlignStage;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CollideStage;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
@@ -169,8 +168,6 @@ public class ScreenBuilder {
      * Run the pipeline to build a Screen
      */
     public void run(DrawContext context, int screenW, int screenH) {
-        // TODO for future:
-        // no need to update and run pipeline if PlayerListMgr wasn't updated.
 
         for (Widget w : instances) {
             w.update();
