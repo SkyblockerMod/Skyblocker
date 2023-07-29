@@ -129,10 +129,11 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            "@Update-Notification"
+            "<@&1134565945482948638>"
             "## Skyblocker ${{ steps.version_tag.outputs.value }}"
             ""
             "${{ steps.read_changelog.outputs.changelog_discord }}"
+            ""
             ":inbox_tray: Download latest version on Modrinth or Github:"
             "<:modrinth:900697862206287882> <${{ steps.modrinth.outputs.url }}>"
             "<:github:900697885706952725> <${{ steps.uploadrelease.outputs.url }}>"
