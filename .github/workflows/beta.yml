@@ -15,9 +15,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/github-script@v2
+      - uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
@@ -38,7 +38,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - uses: actions/github-script@v2
+      - uses: actions/github-script@v6
         id: fname
         with:
           result-encoding: string
@@ -46,7 +46,7 @@ jobs:
             const fs = require("fs")
             return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0].replace(".jar", "");
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.fname.outputs.result }}
           path: build/libs/
