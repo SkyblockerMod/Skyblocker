@@ -92,7 +92,7 @@ jobs:
           CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
           CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
           
-          echo "::set-output name=changelog_discord::CHANGELOG"
+          echo "::set-output name=changelog_discord::$CHANGELOG"
 
       - uses: actions/github-script@v2
         id: fname
