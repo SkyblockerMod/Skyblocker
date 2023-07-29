@@ -31,7 +31,7 @@ public class EtherwarpOverlay {
 			String itemId = PriceInfoTooltip.getInternalNameFromNBT(heldItem);
 			NbtCompound nbt = heldItem.getNbt();
 			
-			if (itemId != null && (itemId.equals("ASPECT_OF_THE_VOID") || itemId.equals("ASPECT_OF_THE_END") || itemId.equals("ETHERWARP_CONDUIT")) && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1 && (CLIENT.options.sneakKey.isPressed() || itemId.equals("ETHERWARP_CONDUIT"))) {
+			if (itemId != null && (((itemId.equals("ASPECT_OF_THE_VOID") || itemId.equals("ASPECT_OF_THE_END")) && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1 && CLIENT.options.sneakKey.isPressed()) || itemId.equals("ETHERWARP_CONDUIT"))) {
 				int range = (nbt.getCompound("ExtraAttributes").contains("tuned_transmission")) ? 57 + nbt.getCompound("ExtraAttributes").getInt("tuned_transmission") : 57;
 				HitResult result = CLIENT.player.raycast(range, wrc.tickDelta(), false);
 				
