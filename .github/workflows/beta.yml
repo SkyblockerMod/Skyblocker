@@ -32,6 +32,17 @@ jobs:
           distribution: 'microsoft'
           java-version: '17'
 
+      - name: Initialize caches
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/loom-cache
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-build-external-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-build-external-
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
