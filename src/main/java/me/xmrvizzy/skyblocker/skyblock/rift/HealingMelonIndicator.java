@@ -12,12 +12,12 @@ import net.minecraft.util.Formatting;
 public class HealingMelonIndicator {
     private static final Title title = new Title("skyblocker.rift.healNow", Formatting.DARK_RED);
 
-    public static void updateHealth(MinecraftClient client) {
+    public static void updateHealth() {
         if (!SkyblockerConfig.get().slayer.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château")) {
             TitleContainer.removeTitle(title);
             return;
         }
-        ClientPlayerEntity player = client.player;
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null && player.getHealth() <= SkyblockerConfig.get().slayer.vampireSlayer.healingMelonHealthThreshold * 2F) {
             RenderHelper.displayInTitleContainerAndPlaySound(title);
         } else {
