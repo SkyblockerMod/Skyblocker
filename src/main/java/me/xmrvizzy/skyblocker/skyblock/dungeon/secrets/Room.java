@@ -116,7 +116,7 @@ public class Room {
 
     protected void update() {
         // Logical AND has higher precedence than logical OR
-        if (name != null || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
+        if (!type.needsScanning() || name != null || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
@@ -201,18 +201,18 @@ public class Room {
         }
     }
 
-    private Category getCategory(JsonObject categoryJson) {
+    private SecretWaypoint.Category getCategory(JsonObject categoryJson) {
         return switch (categoryJson.get("category").getAsString()) {
-            case "entrance" -> Category.ENTRANCE;
-            case "superboom" -> Category.SUPERBOOM;
-            case "chest" -> Category.CHEST;
-            case "item" -> Category.ITEM;
-            case "bat" -> Category.BAT;
-            case "wither" -> Category.WITHER;
-            case "lever" -> Category.LEVER;
-            case "fairysoul" -> Category.FAIRYSOUL;
-            case "stonk" -> Category.STONK;
-            default -> Category.DEFAULT;
+            case "entrance" -> SecretWaypoint.Category.ENTRANCE;
+            case "superboom" -> SecretWaypoint.Category.SUPERBOOM;
+            case "chest" -> SecretWaypoint.Category.CHEST;
+            case "item" -> SecretWaypoint.Category.ITEM;
+            case "bat" -> SecretWaypoint.Category.BAT;
+            case "wither" -> SecretWaypoint.Category.WITHER;
+            case "lever" -> SecretWaypoint.Category.LEVER;
+            case "fairysoul" -> SecretWaypoint.Category.FAIRYSOUL;
+            case "stonk" -> SecretWaypoint.Category.STONK;
+            default -> SecretWaypoint.Category.DEFAULT;
         };
     }
 
@@ -248,6 +248,13 @@ public class Room {
         Type(byte color) {
             this.color = color;
         }
+
+        private boolean needsScanning() {
+            return switch (this) {
+                case ROOM, PUZZLE, TRAP -> true;
+                default -> false;
+            };
+        }
     }
 
     private enum Shape {
@@ -271,29 +278,5 @@ public class Room {
 
     public enum Direction {
         NW, NE, SW, SE
-    }
-
-    private record SecretWaypoint(int secretIndex, Category category, BlockPos pos, boolean missing) {
-    }
-
-    private enum Category {
-        ENTRANCE(0, 255, 0),
-        SUPERBOOM(255, 0, 0),
-        CHEST(2, 213, 250),
-        ITEM(2, 64, 250),
-        BAT(142, 66, 0),
-        WITHER(30, 30, 30),
-        LEVER(250, 217, 2),
-        FAIRYSOUL(255, 85, 255),
-        STONK(146, 52, 235),
-        DEFAULT(190, 255, 252);
-        private final float[] colorComponents;
-
-        Category(int... intColorComponents) {
-            colorComponents = new float[intColorComponents.length];
-            for (int i = 0; i < intColorComponents.length; i++) {
-                colorComponents[i] = intColorComponents[i] / 255F;
-            }
-        }
     }
 }
