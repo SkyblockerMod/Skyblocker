@@ -1,6 +1,6 @@
-package me.xmrvizzy.skyblocker.chat.filters;
+package me.xmrvizzy.skyblocker.skyblock.filters;
 
-import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 
 public class ShowOffFilter extends SimpleChatFilter {
