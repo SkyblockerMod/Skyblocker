@@ -97,7 +97,7 @@ public class Room {
                 } else if (segmentsX.size() == 1 && segmentsY.size() > 1) {
                     yield new Direction[]{Direction.NE, Direction.SW};
                 }
-                throw new IllegalStateException("Shape " + shape.shape + " does not match segments: " + Arrays.toString(segments.toArray()));
+                throw new IllegalArgumentException("Shape " + shape.shape + " does not match segments: " + Arrays.toString(segments.toArray()));
             }
             case L_SHAPE -> {
                 if (!segments.contains(new Vector2i(segmentsX.firstInt(), segmentsY.firstInt()))) {

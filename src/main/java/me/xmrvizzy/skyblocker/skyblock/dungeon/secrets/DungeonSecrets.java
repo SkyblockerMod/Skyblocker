@@ -16,6 +16,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
 import org.slf4j.Logger;
@@ -79,6 +80,7 @@ public class DungeonSecrets {
     /**
      * The map position of the top left corner of the entrance room.
      */
+    @Nullable
     private static Vector2ic mapEntrancePos;
     /**
      * The size of a room on the map.
@@ -87,7 +89,9 @@ public class DungeonSecrets {
     /**
      * The physical position of the northwest corner of the entrance room.
      */
+    @Nullable
     private static Vector2ic physicalEntrancePos;
+    @NotNull
     private static final Map<Vector2ic, Room> rooms = new HashMap<>();
     private static Room currentRoom;
 
@@ -108,7 +112,7 @@ public class DungeonSecrets {
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
      */
     public static void init() {
-        if (SkyblockerConfig.get().locations.dungeons.noLoadSecretWaypoints) {
+        if (SkyblockerConfig.get().locations.dungeons.noInitSecretWaypoints) {
             return;
         }
         CompletableFuture.runAsync(DungeonSecrets::load);
@@ -186,7 +190,13 @@ public class DungeonSecrets {
 
     private static void update() {
         long startTime = System.currentTimeMillis();
-        if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints || !Utils.isInDungeons()) {
+        if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints) {
+            return;
+        }
+        if (!Utils.isInDungeons()) {
+            if (mapEntrancePos != null) {
+                reset();
+            }
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
@@ -229,8 +239,7 @@ public class DungeonSecrets {
         if (room == null) {
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM ->
-                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
@@ -248,17 +257,31 @@ public class DungeonSecrets {
      * @param type              the type of room to create
      * @param physicalPositions the physical positions of the room
      */
+    @Nullable
     private static Room newRoom(Room.Type type, Vector2ic... physicalPositions) {
-        Room newRoom = new Room(type, physicalPositions);
-        for (Vector2ic physicalPos : physicalPositions) {
-            rooms.put(physicalPos, newRoom);
+        try {
+            Room newRoom = new Room(type, physicalPositions);
+            for (Vector2ic physicalPos : physicalPositions) {
+                rooms.put(physicalPos, newRoom);
+            }
+            return newRoom;
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("[Skyblocker] Failed to create room", e);
         }
-        return newRoom;
+        return null;
     }
 
     private static void render(WorldRenderContext context) {
         if (SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons() && currentRoom != null && currentRoom.getName() != null) {
             currentRoom.render(context);
         }
+    }
+
+    private static void reset() {
+        mapEntrancePos = null;
+        mapRoomSize = 0;
+        physicalEntrancePos = null;
+        rooms.clear();
+        currentRoom = null;
     }
 }
