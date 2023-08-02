@@ -24,7 +24,7 @@ public class TeleportOverlay {
     }
 
     private static void render(WorldRenderContext wrc) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.teleportOverlay.enableTeleportOverlays && client.player != null) {
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
             String itemId = PriceInfoTooltip.getInternalNameFromNBT(heldItem);
             NbtCompound nbt = heldItem.getNbt();
@@ -77,11 +77,13 @@ public class TeleportOverlay {
 
     /**
      * Renders the teleport overlay with a given range. Uses {@link MinecraftClient#crosshairTarget} if it is a block and within range. Otherwise, raycasts from the player with the given range.
+     * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, int range) {
         if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.squaredDistanceTo(client.player) < range * range) {
             render(wrc, blockHitResult);
-        } else {
+        } else if (client.interactionManager != null && range > client.interactionManager.getReachDistance()) {
+            @SuppressWarnings("DataFlowIssue")
             HitResult result = client.player.raycast(range, wrc.tickDelta(), false);
             if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {
                 render(wrc, blockHitResult);
@@ -89,8 +91,13 @@ public class TeleportOverlay {
         }
     }
 
+    /**
+     * Renders the teleport overlay at the given {@link BlockHitResult}.
+     * @implNote {@link MinecraftClient#world} must not be null when calling this method.
+     */
     private static void render(WorldRenderContext wrc, BlockHitResult blockHitResult) {
         BlockPos pos = blockHitResult.getBlockPos();
+        @SuppressWarnings("DataFlowIssue")
         BlockState state = client.world.getBlockState(pos);
         if (!state.isAir() && client.world.getBlockState(pos.up()).isAir() && client.world.getBlockState(pos.up(2)).isAir()) {
             RenderSystem.polygonOffset(-1f, -10f);
