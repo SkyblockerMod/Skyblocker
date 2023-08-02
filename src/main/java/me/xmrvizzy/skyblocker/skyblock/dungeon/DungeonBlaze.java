@@ -48,8 +48,8 @@ public class DungeonBlaze {
                     int health = Integer.parseInt(blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1));
 
                 	blazes.add(ObjectIntPair.of(entity, health));
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
+                } catch (NumberFormatException e) {
+                    LOGGER.error("[Skyblocker DungeonBlazeSolver] Failed to parse blaze health: " + blazeName, e);
                 }
             }
         }
@@ -79,11 +79,11 @@ public class DungeonBlaze {
                 /* Outline */
                 if (highestBlaze.getY() < 69) {
                     Box blaze = highestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                    RenderHelper.renderBox(context, blaze, GREEN_COLOR_COMPONENTS);
+                    RenderHelper.renderOutline(context, blaze, GREEN_COLOR_COMPONENTS, 5f);
 
                     if (nextHighestBlaze != null && nextHighestBlaze.isAlive() && nextHighestBlaze != highestBlaze) {
                         Box nextBlaze = nextHighestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                        RenderHelper.renderBox(context, nextBlaze, WHITE_COLOR_COMPONENTS);
+                        RenderHelper.renderOutline(context, nextBlaze, WHITE_COLOR_COMPONENTS, 5f);
                         RenderHelper.renderLinesFromPoints(context, new Vec3d[] { blaze.getCenter(), nextBlaze.getCenter() }, WHITE_COLOR_COMPONENTS, 1f, 5f);
                     }
                 }
@@ -91,18 +91,17 @@ public class DungeonBlaze {
                 /* Outline */
                 if (lowestBlaze.getY() > 69) {
                     Box blaze = lowestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                    RenderHelper.renderBox(context, blaze, GREEN_COLOR_COMPONENTS);
+                    RenderHelper.renderOutline(context, blaze, GREEN_COLOR_COMPONENTS, 5f);
 
                     if (nextLowestBlaze != null && nextLowestBlaze.isAlive() && nextLowestBlaze != lowestBlaze) {
                         Box nextBlaze = nextLowestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                        RenderHelper.renderBox(context, nextBlaze, WHITE_COLOR_COMPONENTS);
+                        RenderHelper.renderOutline(context, nextBlaze, WHITE_COLOR_COMPONENTS, 5f);
                         RenderHelper.renderLinesFromPoints(context, new Vec3d[] { blaze.getCenter(), nextBlaze.getCenter() }, WHITE_COLOR_COMPONENTS, 1f, 5f);
                     }
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("[Skyblocker BlazeRenderer] " + e);
-            e.printStackTrace();
+            LOGGER.warn("[Skyblocker DungeonBlazeRenderer] Failed to render blaze boxes", e);
         }
     }
 }

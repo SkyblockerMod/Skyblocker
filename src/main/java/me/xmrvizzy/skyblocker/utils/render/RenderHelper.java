@@ -12,11 +12,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -73,16 +70,20 @@ public class RenderHelper {
         }
     }
 
-    public static void renderBox(WorldRenderContext wrc, Box box, float[] colorComponents) {
+    /**
+     * Renders the outline of a box with the specified color components and line width.
+     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
+     */
+    public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float lineWidth) {
         if (FrustumUtils.isVisible(box)) {
-            Vec3d camera = wrc.camera().getPos();
-            MatrixStack matrices = wrc.matrixStack();
+            MatrixStack matrices = context.matrixStack();
+            Vec3d camera = context.camera().getPos();
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
             BufferBuilder buffer = tessellator.getBuffer();
 
             RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            RenderSystem.lineWidth(2.5f);
+            RenderSystem.lineWidth(lineWidth);
             RenderSystem.disableCull();
             RenderSystem.enableDepthTest();
 
@@ -186,7 +187,7 @@ public class RenderHelper {
 
     private static void playNotificationSound() {
         if (MinecraftClient.getInstance().player != null) {
-            MinecraftClient.getInstance().player.playSound(SoundEvent.of(new Identifier("entity.experience_orb.pickup")), 100f, 0.1f);
+            MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
         }
     }
 
