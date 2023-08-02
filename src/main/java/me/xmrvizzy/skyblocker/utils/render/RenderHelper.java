@@ -10,10 +10,13 @@ import me.xmrvizzy.skyblocker.utils.render.title.Title;
 import me.xmrvizzy.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.OrderedText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -27,6 +30,7 @@ import java.awt.*;
 public class RenderHelper {
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     public static void renderFilledThroughWallsWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         renderFilledThroughWalls(context, pos, colorComponents, alpha);
@@ -158,6 +162,41 @@ public class RenderHelper {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableCull();
         RenderSystem.disableDepthTest();
+	}
+
+    /**
+     * Renders text in the world space.
+     *
+     * @param seeThrough Whether the text should be able to be seen through walls or not.
+     */
+    public static void renderText(WorldRenderContext context, Vec3d pos, OrderedText text, float scale, boolean seeThrough) {
+		Vec3d camera = context.camera().getPos();
+		MatrixStack matrices = context.matrixStack();
+		TextRenderer textRenderer = CLIENT.textRenderer;
+
+		Vec3d transformedPosition = pos.subtract(camera);
+		scale = 0.025f * scale;
+
+		matrices.push();
+		matrices.translate(transformedPosition.x, transformedPosition.y, transformedPosition.z);
+		matrices.peek().getPositionMatrix().mul(RenderSystem.getModelViewMatrix());
+		matrices.multiply(context.camera().getRotation());
+		matrices.scale(-scale, -scale, scale);
+
+		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+		float h = -textRenderer.getWidth(text) / 2f;
+
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder buffer = tessellator.getBuffer();
+		VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(buffer);
+
+		RenderSystem.depthFunc(seeThrough ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+
+		textRenderer.draw(text, h, 0, 0xFFFFFFFF, false, positionMatrix, consumers, TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+		consumers.draw();
+
+		RenderSystem.depthFunc(GL11.GL_LEQUAL);
+		matrices.pop();
     }
 
     /**
