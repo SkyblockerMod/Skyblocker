@@ -73,6 +73,7 @@ public class SkyblockerMod implements ClientModInitializer {
         WikiLookup.init();
         ItemRegistry.init();
         NEURepo.init();
+        FairySouls.init();
         BackpackPreview.init();
         QuickNav.init();
         DwarvenHud.init();
@@ -81,7 +82,6 @@ public class SkyblockerMod implements ClientModInitializer {
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();
-        FairySouls.init();
         TabHud.init();
         DungeonMap.init();
         TheRift.init();

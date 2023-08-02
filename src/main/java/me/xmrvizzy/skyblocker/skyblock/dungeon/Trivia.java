@@ -1,19 +1,18 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.skyblock.FairySouls;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.regex.Matcher;
 
 public class Trivia extends ChatPatternListener {
     private static final Map<String, String[]> answers;
@@ -38,8 +37,7 @@ public class Trivia extends ChatPatternListener {
                     MinecraftClient.getInstance().player.sendMessage(Text.of("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle), false);
                 return player != null;
             }
-        } else
-            updateSolutions(matcher.group(0));
+        } else updateSolutions(matcher.group(0));
         return false;
     }
 
@@ -56,7 +54,7 @@ public class Trivia extends ChatPatternListener {
     }
 
     static {
-        answers = new HashMap<>();
+        answers = Collections.synchronizedMap(new HashMap<>());
         answers.put("What is the status of The Watcher?", new String[]{"Stalker"});
         answers.put("What is the status of Bonzo?", new String[]{"New Necromancer"});
         answers.put("What is the status of Scarf?", new String[]{"Apprentice Necromancer"});
@@ -69,18 +67,6 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the status of Storm?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Necron?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Maxor, Storm, Goldor and Necron?", new String[]{"The Wither Lords"});
-        answers.put("How many total Fairy Souls are there?", new String[]{"242 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Spider's Den?", new String[]{"19 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in The End?", new String[]{"12 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in The Farming Islands?", new String[]{"20 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Crimson Isle?", new String[]{"29 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in The Park?", new String[]{"11 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Jerry's Workshop?", new String[]{"5 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Hub?", new String[]{"79 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in The Hub?", new String[]{"79 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Deep Caverns?", new String[]{"21 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Gold Mine?", new String[]{"12 Fairy Souls"});
-        answers.put("How many Fairy Souls are there in Dungeon Hub?", new String[]{"7 Fairy Souls"});
         answers.put("Which brother is on the Spider's Den?", new String[]{"Rick"});
         answers.put("What is the name of Rick's brother?", new String[]{"Pat"});
         answers.put("What is the name of the Painter in the Hub?", new String[]{"Marco"});
@@ -88,10 +74,27 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the name of the lady of the Nether?", new String[]{"Elle"});
         answers.put("Which villager in the Village gives you a Rogue Sword?", new String[]{"Jamie"});
         answers.put("How many unique minions are there?", new String[]{"59 Minions"});
-        answers.put("Which of these enemies does not spawn in the Spider's Den?", new String[]{"Zombie Spider", "Cave Spider", "Wither Skeleton",
-                "Dashing Spooder", "Broodfather", "Night Spider"});
+        answers.put("Which of these enemies does not spawn in the Spider's Den?", new String[]{"Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"});
         answers.put("Which of these monsters only spawns at night?", new String[]{"Zombie Villager", "Ghast"});
-        answers.put("Which of these is not a dragon in The End?", new String[]{"Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon",
-                "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"});
+        answers.put("Which of these is not a dragon in The End?", new String[]{"Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"});
+        FairySouls.runAsyncAfterFairySoulsLoad(() -> {
+            answers.put("How many total Fairy Souls are there?", getFairySoulsSizeString(null));
+            answers.put("How many Fairy Souls are there in Spider's Den?", getFairySoulsSizeString("combat_1"));
+            answers.put("How many Fairy Souls are there in The End?", getFairySoulsSizeString("combat_3"));
+            answers.put("How many Fairy Souls are there in The Farming Islands?", getFairySoulsSizeString("farming_1"));
+            answers.put("How many Fairy Souls are there in Crimson Isle?", getFairySoulsSizeString("crimson_isle"));
+            answers.put("How many Fairy Souls are there in The Park?", getFairySoulsSizeString("foraging_1"));
+            answers.put("How many Fairy Souls are there in Jerry's Workshop?", getFairySoulsSizeString("winter"));
+            answers.put("How many Fairy Souls are there in Hub?", getFairySoulsSizeString("hub"));
+            answers.put("How many Fairy Souls are there in The Hub?", getFairySoulsSizeString("hub"));
+            answers.put("How many Fairy Souls are there in Deep Caverns?", getFairySoulsSizeString("mining_2"));
+            answers.put("How many Fairy Souls are there in Gold Mine?", getFairySoulsSizeString("mining_1"));
+            answers.put("How many Fairy Souls are there in Dungeon Hub?", getFairySoulsSizeString("dungeon_hub"));
+        });
+    }
+
+    @NotNull
+    private static String[] getFairySoulsSizeString(@Nullable String location) {
+        return new String[]{"%d Fairy Souls".formatted(FairySouls.getFairySoulsSize(location))};
     }
 }
