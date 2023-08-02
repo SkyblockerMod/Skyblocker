@@ -30,7 +30,7 @@ import java.awt.*;
 public class RenderHelper {
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
-    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static final MinecraftClient client = MinecraftClient.getInstance();
 
     public static void renderFilledThroughWallsWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         renderFilledThroughWalls(context, pos, colorComponents, alpha);
@@ -61,7 +61,7 @@ public class RenderHelper {
             Vec3d camera = context.camera().getPos();
 
             matrices.push();
-            matrices.translate(pos.getX() - camera.x, pos.getY() - camera.y, pos.getZ() - camera.z);
+            matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
 
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
             BufferBuilder buffer = tessellator.getBuffer();
@@ -92,7 +92,7 @@ public class RenderHelper {
             RenderSystem.enableDepthTest();
 
             matrices.push();
-            matrices.translate(-camera.x, -camera.y, -camera.z);
+            matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
             buffer.begin(DrawMode.LINES, VertexFormats.LINES);
             WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0] * 255f, colorComponents[1] * 255f, colorComponents[2] * 255f, 1f);
@@ -162,7 +162,7 @@ public class RenderHelper {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableCull();
         RenderSystem.disableDepthTest();
-	}
+    }
 
     /**
      * Renders text in the world space.
@@ -170,33 +170,32 @@ public class RenderHelper {
      * @param seeThrough Whether the text should be able to be seen through walls or not.
      */
     public static void renderText(WorldRenderContext context, Vec3d pos, OrderedText text, float scale, boolean seeThrough) {
-		Vec3d camera = context.camera().getPos();
-		MatrixStack matrices = context.matrixStack();
-		TextRenderer textRenderer = CLIENT.textRenderer;
+        MatrixStack matrices = context.matrixStack();
+        Vec3d camera = context.camera().getPos();
+		TextRenderer textRenderer = client.textRenderer;
 
-		Vec3d transformedPosition = pos.subtract(camera);
-		scale = 0.025f * scale;
+		scale *= 0.025f;
 
-		matrices.push();
-		matrices.translate(transformedPosition.x, transformedPosition.y, transformedPosition.z);
-		matrices.peek().getPositionMatrix().mul(RenderSystem.getModelViewMatrix());
-		matrices.multiply(context.camera().getRotation());
-		matrices.scale(-scale, -scale, scale);
+        matrices.push();
+        matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
+        matrices.peek().getPositionMatrix().mul(RenderSystem.getModelViewMatrix());
+        matrices.multiply(context.camera().getRotation());
+        matrices.scale(-scale, -scale, scale);
 
-		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-		float h = -textRenderer.getWidth(text) / 2f;
+        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+		float xOffset = -textRenderer.getWidth(text) / 2f;
 
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder buffer = tessellator.getBuffer();
-		VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(buffer);
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder buffer = tessellator.getBuffer();
+        VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(buffer);
 
-		RenderSystem.depthFunc(seeThrough ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+        RenderSystem.depthFunc(seeThrough ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
-		textRenderer.draw(text, h, 0, 0xFFFFFFFF, false, positionMatrix, consumers, TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-		consumers.draw();
+		textRenderer.draw(text, xOffset, 0, 0xFFFFFFFF, false, positionMatrix, consumers, TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        consumers.draw();
 
-		RenderSystem.depthFunc(GL11.GL_LEQUAL);
-		matrices.pop();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        matrices.pop();
     }
 
     /**
