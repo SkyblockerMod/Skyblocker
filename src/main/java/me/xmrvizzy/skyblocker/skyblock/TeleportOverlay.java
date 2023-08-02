@@ -77,6 +77,7 @@ public class TeleportOverlay {
 
     /**
      * Renders the teleport overlay with a given range. Uses {@link MinecraftClient#crosshairTarget} if it is a block and within range. Otherwise, raycasts from the player with the given range.
+     *
      * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, int range) {
@@ -93,6 +94,7 @@ public class TeleportOverlay {
 
     /**
      * Renders the teleport overlay at the given {@link BlockHitResult}.
+     *
      * @implNote {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, BlockHitResult blockHitResult) {
