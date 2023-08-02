@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.x150.renderer.render.Renderer3d;
 import me.xmrvizzy.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
-import me.xmrvizzy.skyblocker.utils.Boxes;
 import me.xmrvizzy.skyblocker.utils.render.culling.OcclusionCulling;
 import me.xmrvizzy.skyblocker.utils.render.title.Title;
 import me.xmrvizzy.skyblocker.utils.render.title.TitleContainer;
@@ -13,6 +12,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -72,9 +73,30 @@ public class RenderHelper {
         }
     }
 
-    public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents) {
+    public static void renderBox(WorldRenderContext wrc, Box box, float[] colorComponents) {
         if (FrustumUtils.isVisible(box)) {
-            Renderer3d.renderOutline(context.matrixStack(), new Color(colorComponents[0], colorComponents[1], colorComponents[2]), Boxes.getMinVec(box), Boxes.getLengthVec(box));
+            Vec3d camera = wrc.camera().getPos();
+            MatrixStack matrices = wrc.matrixStack();
+            Tessellator tessellator = RenderSystem.renderThreadTesselator();
+            BufferBuilder buffer = tessellator.getBuffer();
+
+            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.lineWidth(2.5f);
+            RenderSystem.disableCull();
+            RenderSystem.enableDepthTest();
+
+            matrices.push();
+            matrices.translate(-camera.x, -camera.y, -camera.z);
+
+            buffer.begin(DrawMode.LINES, VertexFormats.LINES);
+            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0] * 255f, colorComponents[1] * 255f, colorComponents[2] * 255f, 1f);
+            tessellator.draw();
+
+            matrices.pop();
+            RenderSystem.lineWidth(1f);
+            RenderSystem.enableCull();
+            RenderSystem.disableDepthTest();
         }
     }
 
