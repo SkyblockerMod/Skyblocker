@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.utils;
 
 import com.mojang.brigadier.Command;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.slf4j.Logger;
@@ -54,10 +55,15 @@ public class Scheduler {
         }
     }
 
+    public static Command<FabricClientCommandSource> queueOpenScreenCommand(Supplier<Screen> screenSupplier) {
+        return context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(screenSupplier);
+    }
+
     /**
      * Schedules a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
      *
      * @param screenSupplier the supplier of the screen to open
+     * @see #queueOpenScreenCommand(Supplier)
      */
     public int queueOpenScreen(Supplier<Screen> screenSupplier) {
         MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screenSupplier.get()));

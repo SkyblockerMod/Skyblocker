@@ -8,6 +8,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.utils.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.resource.language.I18n;
@@ -544,7 +545,7 @@ public class SkyblockerConfig implements ConfigData {
      */
     private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
         // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-        return literal(name).executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null)));
+        return literal(name).executes(Scheduler.queueOpenScreenCommand(AutoConfig.getConfigScreen(SkyblockerConfig.class, null)));
     }
 
     public static SkyblockerConfig get() {
