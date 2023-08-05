@@ -272,7 +272,7 @@ public class DungeonSecrets {
     }
 
     private static void render(WorldRenderContext context) {
-        if (SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons() && currentRoom != null && currentRoom.getName() != null) {
+        if (SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons() && currentRoom != null && currentRoom.isMatched()) {
             currentRoom.render(context);
         }
     }
