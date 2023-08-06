@@ -169,7 +169,7 @@ Example: Stack A, B, C vertically/center-aligned, then align with leftOfCenter
 
 #### Place
 - op: `place`
-- where: One of `center`, `centerTop`
+- where: One of `center`, `centerTop`, `centerBot`, `centerLeft`, `centerRight`, `cornerTopRight`, `cornerTopLeft`, `cornerBotRight`, `cornerBotLeft`.
 - apply_to: Widget to place an the indicated position.
 - Places a widget at some position, moving it in any direction as needed. Only makes sense to use on one widget at a time, as applying the same Place op to multiple widgtes causes them to be on top of each other.
 

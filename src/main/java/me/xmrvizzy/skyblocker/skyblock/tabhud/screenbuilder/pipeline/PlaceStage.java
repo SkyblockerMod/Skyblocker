@@ -11,9 +11,17 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public class PlaceStage extends PipelineStage {
 
- private enum PlaceLocation {
+    private enum PlaceLocation {
         CENTER("center"),
-        TOPCENT("centerTop");
+        TOPCENT("centerTop"),
+        BOTCENT("centerBot"),
+        LEFTCENT("centerLeft"),
+        RIGHTCENT("centerRight"),
+        TRCORNER("cornerTopRight"),
+        TLCORNER("cornerTopLeft"),
+        BRCORNER("cornerBotRight"),
+        BLCORNER("cornerBotLeft"),
+        ;
 
         private String str;
 
@@ -31,7 +39,6 @@ public class PlaceStage extends PipelineStage {
         }
     }
 
-
     private PlaceLocation where;
 
     public PlaceStage(ScreenBuilder builder, JsonObject descr) {
@@ -48,12 +55,40 @@ public class PlaceStage extends PipelineStage {
         Widget wid = primary.get(0);
         switch (where) {
             case CENTER:
-                wid.setY((screenH - wid.getHeight()) / 2);
                 wid.setX((screenW - wid.getWidth()) / 2);
+                wid.setY((screenH - wid.getHeight()) / 2);
                 break;
             case TOPCENT:
                 wid.setX((screenW - wid.getWidth()) / 2);
                 wid.setY(ScreenConst.getScreenPad());
+                break;
+            case BOTCENT:
+                wid.setX((screenW - wid.getWidth()) / 2);
+                wid.setY((screenH - wid.getHeight()) - ScreenConst.getScreenPad());
+                break;
+            case LEFTCENT:
+                wid.setX(ScreenConst.getScreenPad());
+                wid.setY((screenH - wid.getHeight()) / 2);
+                break;
+            case RIGHTCENT:
+                wid.setX((screenW - wid.getWidth()) - ScreenConst.getScreenPad());
+                wid.setY((screenH - wid.getHeight()) / 2);
+                break;
+            case TLCORNER:
+                wid.setX(ScreenConst.getScreenPad());
+                wid.setY(ScreenConst.getScreenPad());
+                break;
+            case TRCORNER:
+                wid.setX((screenW - wid.getWidth()) - ScreenConst.getScreenPad());
+                wid.setY(ScreenConst.getScreenPad());
+                break;
+            case BLCORNER:
+                wid.setX(ScreenConst.getScreenPad());
+                wid.setY((screenH - wid.getHeight()) - ScreenConst.getScreenPad());
+                break;
+            case BRCORNER:
+                wid.setX((screenW - wid.getWidth()) - ScreenConst.getScreenPad());
+                wid.setY((screenH - wid.getHeight()) - ScreenConst.getScreenPad());
                 break;
         }
     }
