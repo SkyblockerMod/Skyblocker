@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.ScreenConst;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public class AlignStage extends PipelineStage {
@@ -61,31 +62,31 @@ public class AlignStage extends PipelineStage {
                     break;
                 case LEFTCENT:
                     wHalf = screenW / 2;
-                    wid.setX(wHalf - 3 - wid.getWidth());
+                    wid.setX(wHalf - ScreenConst.WIDGET_PAD_HALF - wid.getWidth());
                     break;
                 case RIGHTCENT:
                     wHalf = screenW / 2;
-                    wid.setX(wHalf + 3);
+                    wid.setX(wHalf + ScreenConst.WIDGET_PAD_HALF);
                     break;
                 case TOPCENT:
                     hHalf = screenH / 2;
-                    wid.setY(hHalf - 3 - wid.getHeight());
+                    wid.setY(hHalf - ScreenConst.WIDGET_PAD_HALF - wid.getHeight());
                     break;
                 case BOTCENT:
                     hHalf = screenH / 2;
-                    wid.setY(hHalf + 3);
+                    wid.setY(hHalf + ScreenConst.WIDGET_PAD_HALF);
                     break;
                 case TOP:
-                    wid.setY(5);
+                    wid.setY(ScreenConst.SCREEN_PAD);
                     break;
                 case BOT:
-                    wid.setY(screenH - wid.getHeight() - 5);
+                    wid.setY(screenH - wid.getHeight() - ScreenConst.SCREEN_PAD);
                     break;
                 case LEFT:
-                    wid.setX(5);
+                    wid.setX(ScreenConst.SCREEN_PAD);
                     break;
                 case RIGHT:
-                    wid.setX(screenW - wid.getWidth() - 5);
+                    wid.setX(screenW - wid.getWidth() - ScreenConst.SCREEN_PAD);
                     break;
             }
         }

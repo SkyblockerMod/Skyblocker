@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.ScreenConst;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public class StackStage extends PipelineStage {
@@ -78,41 +79,41 @@ public class StackStage extends PipelineStage {
     }
 
     public void stackWidgetsVert(int screenH) {
-        int compHeight = -5;
+        int compHeight = -ScreenConst.WIDGET_PAD;
         for (Widget wid : primary) {
             compHeight += wid.getHeight() + 5;
         }
 
         int y = switch (this.align) {
 
-            case TOP -> y = 5;
-            case BOT -> y = (screenH - compHeight) - 5;
+            case TOP -> y = ScreenConst.SCREEN_PAD;
+            case BOT -> y = (screenH - compHeight) - ScreenConst.SCREEN_PAD;
             default -> y = (screenH - compHeight) / 2;
         };
 
         for (Widget wid : primary) {
             wid.setY(y);
-            y += wid.getHeight() + 5;
+            y += wid.getHeight() + ScreenConst.WIDGET_PAD;
         }
     }
 
     public void stackWidgetsHoriz(int screenW) {
         // TODO not centered (?)
-        int compWidth = -5;
+        int compWidth = -ScreenConst.WIDGET_PAD;
         for (Widget wid : primary) {
-            compWidth += wid.getWidth() + 5;
+            compWidth += wid.getWidth() + ScreenConst.WIDGET_PAD;
         }
 
         int x = switch (this.align) {
 
-            case LEFT-> x = 5;
-            case RIGHT -> x = (screenW - compWidth) - 5;
+            case LEFT-> x = ScreenConst.SCREEN_PAD;
+            case RIGHT -> x = (screenW - compWidth) - ScreenConst.SCREEN_PAD;
             default -> x = (screenW - compWidth) / 2;
         };
 
         for (Widget wid : primary) {
             wid.setX(x);
-            x += wid.getWidth() + 5;
+            x += wid.getWidth() + ScreenConst.WIDGET_PAD;
         }
     }
 }

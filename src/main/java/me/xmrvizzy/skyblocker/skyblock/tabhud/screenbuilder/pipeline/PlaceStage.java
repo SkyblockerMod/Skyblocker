@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.ScreenConst;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public class PlaceStage extends PipelineStage {
@@ -52,7 +53,7 @@ public class PlaceStage extends PipelineStage {
                 break;
             case TOPCENT:
                 wid.setX((screenW - wid.getWidth()) / 2);
-                wid.setY(5);
+                wid.setY(ScreenConst.SCREEN_PAD);
                 break;
         }
     }

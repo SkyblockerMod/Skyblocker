@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

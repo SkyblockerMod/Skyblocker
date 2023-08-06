@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.ScreenConst;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public class CollideStage extends PipelineStage {
@@ -65,17 +66,17 @@ public class CollideStage extends PipelineStage {
 
         // assume others to be sorted top-bottom.
         for (Widget other : secondary) {
-            if (other.getY() + other.getHeight() + 5 < yMin) {
+            if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
                 // too high, next one
                 continue;
             }
 
-            if (other.getY() - 5 > yMax) {
+            if (other.getY() - ScreenConst.WIDGET_PAD > yMax) {
                 // too low, next
                 continue;
             }
 
-            int xPos = other.getX() - 5 - w.getWidth();
+            int xPos = other.getX() - ScreenConst.WIDGET_PAD - w.getWidth();
             xCor = Math.min(xCor, xPos);
         }
         w.setX(xCor);
@@ -89,17 +90,17 @@ public class CollideStage extends PipelineStage {
 
         // assume others to be sorted top-bottom.
         for (Widget other : secondary) {
-            if (other.getY() + other.getHeight() + 5 < yMin) {
+            if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
                 // too high, next one
                 continue;
             }
 
-            if (other.getY() - 5 > yMax) {
+            if (other.getY() - ScreenConst.WIDGET_PAD > yMax) {
                 // too low, next
                 continue;
             }
 
-            int xPos = other.getX() + other.getWidth() + 5;
+            int xPos = other.getX() + other.getWidth() + ScreenConst.WIDGET_PAD;
             xCor = Math.max(xCor, xPos);
         }
         w.setX(xCor);
