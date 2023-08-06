@@ -77,16 +77,16 @@ public class AlignStage extends PipelineStage {
                     wid.setY(hHalf + ScreenConst.WIDGET_PAD_HALF);
                     break;
                 case TOP:
-                    wid.setY(ScreenConst.SCREEN_PAD);
+                    wid.setY(ScreenConst.getScreenPad());
                     break;
                 case BOT:
-                    wid.setY(screenH - wid.getHeight() - ScreenConst.SCREEN_PAD);
+                    wid.setY(screenH - wid.getHeight() - ScreenConst.getScreenPad());
                     break;
                 case LEFT:
-                    wid.setX(ScreenConst.SCREEN_PAD);
+                    wid.setX(ScreenConst.getScreenPad());
                     break;
                 case RIGHT:
-                    wid.setX(screenW - wid.getWidth() - ScreenConst.SCREEN_PAD);
+                    wid.setX(screenW - wid.getWidth() - ScreenConst.getScreenPad());
                     break;
             }
         }

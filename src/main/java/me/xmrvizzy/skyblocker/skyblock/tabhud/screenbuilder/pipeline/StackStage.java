@@ -86,8 +86,8 @@ public class StackStage extends PipelineStage {
 
         int y = switch (this.align) {
 
-            case TOP -> y = ScreenConst.SCREEN_PAD;
-            case BOT -> y = (screenH - compHeight) - ScreenConst.SCREEN_PAD;
+            case TOP -> y = ScreenConst.getScreenPad();
+            case BOT -> y = (screenH - compHeight) - ScreenConst.getScreenPad();
             default -> y = (screenH - compHeight) / 2;
         };
 
@@ -106,8 +106,8 @@ public class StackStage extends PipelineStage {
 
         int x = switch (this.align) {
 
-            case LEFT-> x = ScreenConst.SCREEN_PAD;
-            case RIGHT -> x = (screenW - compWidth) - ScreenConst.SCREEN_PAD;
+            case LEFT-> x = ScreenConst.getScreenPad();
+            case RIGHT -> x = (screenW - compWidth) - ScreenConst.getScreenPad();
             default -> x = (screenW - compWidth) / 2;
         };
 

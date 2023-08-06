@@ -53,7 +53,7 @@ public class PlaceStage extends PipelineStage {
                 break;
             case TOPCENT:
                 wid.setX((screenW - wid.getWidth()) / 2);
-                wid.setY(ScreenConst.SCREEN_PAD);
+                wid.setY(ScreenConst.getScreenPad());
                 break;
         }
     }
