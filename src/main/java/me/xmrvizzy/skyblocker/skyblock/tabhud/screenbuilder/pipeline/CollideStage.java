@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import com.google.gson.JsonObject;
 
@@ -9,10 +10,30 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public class CollideStage extends PipelineStage {
 
-    private String direction;
+    private enum CollideDirection {
+        LEFT("left"),
+        RIGHT("right");
+
+        private String str;
+
+        private CollideDirection(String d) {
+            this.str = d;
+        }
+
+        public static CollideDirection parse(String s) throws NoSuchElementException {
+            for (CollideDirection d : CollideDirection.values()) {
+                if (d.str.equals(s)) {
+                    return d;
+                }
+            }
+            throw new NoSuchElementException("\"" + s + "\" is not a valid direction for a collide op!");
+        }
+    }
+
+    private CollideDirection direction;
 
     public CollideStage(ScreenBuilder builder, JsonObject descr) {
-        this.direction = descr.get("direction").getAsString();
+        this.direction = CollideDirection.parse(descr.get("direction").getAsString());
         this.primary = new ArrayList<Widget>(descr.getAsJsonArray("widgets")
                 .asList()
                 .stream()
@@ -26,10 +47,13 @@ public class CollideStage extends PipelineStage {
     }
 
     public void run(int screenW, int screenH) {
-        if (this.direction.equals("left")) {
-            primary.forEach(w -> collideAgainstL(screenW, w));
-        } else if (this.direction.equals("right")) {
-            primary.forEach(w -> collideAgainstR(screenW, w));
+        switch (this.direction) {
+            case LEFT:
+                primary.forEach(w -> collideAgainstL(screenW, w));
+                break;
+            case RIGHT:
+                primary.forEach(w -> collideAgainstR(screenW, w));
+                break;
         }
     }
 

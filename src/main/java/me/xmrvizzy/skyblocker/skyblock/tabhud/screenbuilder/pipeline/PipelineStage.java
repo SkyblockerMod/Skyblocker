@@ -6,8 +6,6 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public abstract class PipelineStage {
 
-    // TODO for all subclasses: error checking, use enums instead of strings
-
     protected ArrayList<Widget> primary = null;
     protected ArrayList<Widget> secondary = null;
 

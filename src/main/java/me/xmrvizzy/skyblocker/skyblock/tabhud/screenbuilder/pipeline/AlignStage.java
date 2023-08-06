@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import com.google.gson.JsonObject;
 
@@ -10,13 +10,38 @@ import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 
 public class AlignStage extends PipelineStage {
 
-    private String reference;
+    private enum AlignReference {
+        HORICENT("horizontalCenter"),
+        VERTCENT("verticalCenter"),
+        LEFTCENT("leftOfCenter"),
+        RIGHTCENT("rightOfCenter"),
+        TOPCENT("topOfCenter"),
+        BOTCENT("botOfCenter"),
+        TOP("top"),
+        BOT("bot"),
+        LEFT("left"),
+        RIGHT("right");
+
+        private String str;
+
+        private AlignReference(String d) {
+            this.str = d;
+        }
+
+        public static AlignReference parse(String s) throws NoSuchElementException {
+            for (AlignReference d : AlignReference.values()) {
+                if (d.str.equals(s)) {
+                    return d;
+                }
+            }
+            throw new NoSuchElementException("\"" + s + "\" is not a valid reference for an align op!");
+        }
+    }
+
+    private AlignReference reference;
 
     public AlignStage(ScreenBuilder builder, JsonObject descr) {
-        if (!descr.has("reference")) {
-            throw new InvalidParameterException("no reference in " + descr);
-        }
-        this.reference = descr.get("reference").getAsString();
+        this.reference = AlignReference.parse(descr.get("reference").getAsString());
         this.primary = new ArrayList<Widget>(descr.getAsJsonArray("apply_to")
                 .asList()
                 .stream()
@@ -28,38 +53,38 @@ public class AlignStage extends PipelineStage {
         int wHalf, hHalf;
         for (Widget wid : primary) {
             switch (this.reference) {
-                case "horizontalCenter":
+                case HORICENT:
                     wid.setX((screenW - wid.getWidth()) / 2);
                     break;
-                case "verticalCenter":
+                case VERTCENT:
                     wid.setY((screenH - wid.getHeight()) / 2);
                     break;
-                case "leftOfCenter":
+                case LEFTCENT:
                     wHalf = screenW / 2;
                     wid.setX(wHalf - 3 - wid.getWidth());
                     break;
-                case "rightOfCenter":
+                case RIGHTCENT:
                     wHalf = screenW / 2;
                     wid.setX(wHalf + 3);
                     break;
-                case "topOfCenter":
+                case TOPCENT:
                     hHalf = screenH / 2;
                     wid.setY(hHalf - 3 - wid.getHeight());
                     break;
-                case "botOfCenter":
+                case BOTCENT:
                     hHalf = screenH / 2;
                     wid.setY(hHalf + 3);
                     break;
-                case "top":
+                case TOP:
                     wid.setY(5);
                     break;
-                case "bot":
+                case BOT:
                     wid.setY(screenH - wid.getHeight() - 5);
                     break;
-                case "left":
+                case LEFT:
                     wid.setX(5);
                     break;
-                case "right":
+                case RIGHT:
                     wid.setX(screenW - wid.getWidth() - 5);
                     break;
             }

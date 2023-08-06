@@ -57,7 +57,7 @@ Grouped by themes (roughly)
 - EffectWidget: Currently active effects.
 - ElectionWidget: The current mayor election.
 - EssenceWidget: Your dungeon essences.
-- EmptyWidget: Generic "No data available" display.
+- ErrorWidget: Displays an error message, "No data available" by default. Optional arg `text`: The error to be displayed.
 - EventWidget: Current events. Arg `inGarden: true|false`: Is this widget displayed in the garden area?
 - FireSaleWidget: Ongoing fire sales.
 - MinionWidget: The minions on your island.

@@ -8,18 +8,24 @@ import net.minecraft.util.Formatting;
 
 // empty widget for when nothing can be shown
 
-public class EmptyWidget extends Widget {
-    private static final MutableText TITLE = Text.literal("Empty").formatted(Formatting.RED,
+public class ErrorWidget extends Widget {
+    private static final MutableText TITLE = Text.literal("Error").formatted(Formatting.RED,
             Formatting.BOLD);
 
-    public EmptyWidget() {
+    Text error = Text.of("No info available!");
+
+    public ErrorWidget() {
         super(TITLE, Formatting.RED.getColorValue());
+    }
+
+    public ErrorWidget(String error) {
+        super(TITLE, Formatting.RED.getColorValue());
+        this.error = Text.of(error);
     }
 
     @Override
     public void updateContent() {
-        Text info = Text.of("No info for this area!");
-        PlainTextComponent inf = new PlainTextComponent(info);
+        PlainTextComponent inf = new PlainTextComponent(this.error);
         this.addComponent(inf);
     }
 

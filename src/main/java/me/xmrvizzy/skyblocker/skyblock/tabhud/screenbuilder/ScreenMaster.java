@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class ScreenMaster {
     private static HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
 
     /**
-     * Load a screen mapping from
+     * Load a screen mapping from an identifier
      */
     public static void load(Identifier ident) {
 
@@ -38,20 +38,14 @@ public class ScreenMaster {
         String location = parts[parts.length - 1];
         location = location.replace(".json", "");
 
-        try {
-
-            if (screenType.equals("standard")) {
-                standardMap.put(location, new ScreenBuilder(ident));
-            } else if (screenType.equals("screen_a")) {
-                screenAMap.put(location, new ScreenBuilder(ident));
-            } else if (screenType.equals("screen_b")) {
-                screenBMap.put(location, new ScreenBuilder(ident));
-            }
-
-        } catch (IOException ioex) {
-            LOGGER.error("Can't load screen definition from {}", path);
+        ScreenBuilder sb = new ScreenBuilder(ident);
+        if (screenType.equals("standard")) {
+            standardMap.put(location, sb);
+        } else if (screenType.equals("screen_a")) {
+            screenAMap.put(location, sb);
+        } else if (screenType.equals("screen_b")) {
+            screenBMap.put(location, sb);
         }
-
     }
 
     /**
@@ -106,10 +100,21 @@ public class ScreenMaster {
                         screenAMap.clear();
                         screenBMap.clear();
 
+                        int ex = 0;
+
                         for (Map.Entry<Identifier, Resource> entry : manager
                                 .findResources("tabhud", path -> path.getPath().endsWith(".json"))
                                 .entrySet()) {
-                            load(entry.getKey());
+                            try {
+
+                                load(entry.getKey());
+                            } catch (Exception e) {
+                                LOGGER.error(e.getMessage());
+                                ex++;
+                            }
+                        }
+                        if (ex > 0) {
+                            throw new IllegalStateException("This screen definition isn't valid, see above");
                         }
                     }
                 });

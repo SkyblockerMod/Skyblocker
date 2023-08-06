@@ -1,7 +1,7 @@
 {
     "widgets": [
         {
-            "name": "EmptyWidget",
+            "name": "ErrorWidget",
             "alias": "ew"
         }
     ],
