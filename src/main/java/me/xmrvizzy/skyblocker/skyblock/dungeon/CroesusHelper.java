@@ -25,7 +25,7 @@ public class CroesusHelper extends ContainerSolver {
         List<ColorHighlight> highlights = new ArrayList<>();
         for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null && stack.getNbt().toString().contains("opened")) {
+            if (stack != null && stack.getNbt() != null && stack.getNbt().toString().contains("No more Chests to open!")) {
                 highlights.add(ColorHighlight.gray(entry.getKey()));
             }
         }
