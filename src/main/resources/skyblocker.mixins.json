@@ -3,23 +3,25 @@
   "package": "me.xmrvizzy.skyblocker.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "AccessorWorldRenderer",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "DrawContextMixin",
     "FarmlandBlockMixin",
     "GenericContainerScreenHandlerMixin",
-    "HandledScreenAccessor",
     "HandledScreenMixin",
     "InGameHudMixin",
     "InventoryScreenMixin",
     "LeverBlockMixin",
     "MinecraftClientMixin",
-    "PlayerListHudAccessor",
     "PlayerListHudMixin",
-    "RecipeBookWidgetAccessor",
+    "PlayerSkinProviderMixin",
+    "ScoreboardMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
-    "accessor.FrustumInvoker"
+    "accessor.FrustumInvoker",
+    "accessor.HandledScreenAccessor",
+    "accessor.PlayerListHudAccessor",
+    "accessor.RecipeBookWidgetAccessor",
+    "accessor.WorldRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.mixin;
+package me.xmrvizzy.skyblocker.mixin.accessor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -7,7 +7,7 @@ import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.WorldRenderer;
 
 @Mixin(WorldRenderer.class)
-public interface AccessorWorldRenderer {
+public interface WorldRendererAccessor {
     @Accessor
     Frustum getFrustum();
 }

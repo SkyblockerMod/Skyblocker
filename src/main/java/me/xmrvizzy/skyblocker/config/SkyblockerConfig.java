@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.config;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -161,6 +160,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public FairySouls fairySouls = new FairySouls();
 
+        @ConfigEntry.Category("shortcuts")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Shortcuts shortcuts = new Shortcuts();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -177,6 +180,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("titleContainer")
         @ConfigEntry.Gui.CollapsibleObject()
         public TitleContainer titleContainer = new TitleContainer();
+
+        @ConfigEntry.Category("Teleport Overlay")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public TeleportOverlay teleportOverlay = new TeleportOverlay();
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
@@ -263,6 +270,15 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableFairySoulsHelper = false;
     }
 
+    public static class Shortcuts {
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableShortcuts = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableCommandShortcuts = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableCommandArgShortcuts = true;
+    }
+
     public static class Hitbox {
         public boolean oldFarmlandHitbox = true;
         public boolean oldLeverHitbox = false;
@@ -277,6 +293,15 @@ public class SkyblockerConfig implements ConfigData {
         public Direction direction = Direction.HORIZONTAL;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
         public Alignment alignment = Alignment.MIDDLE;
+    }
+
+    public static class TeleportOverlay {
+        public boolean enableTeleportOverlays = true;
+        public boolean enableWeirdTransmission = true;
+        public boolean enableInstantTransmission = true;
+        public boolean enableEtherTransmission = true;
+        public boolean enableSinrecallTransmission = true;
+        public boolean enableWitherImpact = true;
     }
 
     public enum Direction {
@@ -484,6 +509,9 @@ public class SkyblockerConfig implements ConfigData {
         public ChatFilterResult hideCombo = ChatFilterResult.PASS;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip
+        public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
         @ConfigEntry.Gui.Tooltip()
         public boolean hideMana = false;
     }
@@ -504,7 +532,7 @@ public class SkyblockerConfig implements ConfigData {
      */
     public static void init() {
         AutoConfig.register(SkyblockerConfig.class, GsonConfigSerializer::new);
-        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal("skyblocker").then(optionsLiteral("config")).then(optionsLiteral("options")))));
+        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
     }
 
     /**
@@ -514,11 +542,8 @@ public class SkyblockerConfig implements ConfigData {
      * @return the command builder
      */
     private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
-        return literal(name).executes(context -> {
-            // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-            SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null));
-            return Command.SINGLE_SUCCESS;
-        });
+        // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
+        return literal(name).executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(AutoConfig.getConfigScreen(SkyblockerConfig.class, null)));
     }
 
     public static SkyblockerConfig get() {

@@ -21,8 +21,8 @@ public class TitleContainerConfigScreen extends Screen {
     private float hudX = SkyblockerConfig.get().general.titleContainer.x;
     private float hudY = SkyblockerConfig.get().general.titleContainer.y;
 
-    protected TitleContainerConfigScreen(Text title) {
-        super(title);
+    protected TitleContainerConfigScreen() {
+        super(Text.of("Title Container HUD Config"));
     }
 
     @Override

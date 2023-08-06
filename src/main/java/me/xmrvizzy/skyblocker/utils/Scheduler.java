@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.utils;
 
+import com.mojang.brigadier.Command;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -58,17 +59,9 @@ public class Scheduler {
      *
      * @param screenSupplier the supplier of the screen to open
      */
-    public void queueOpenScreen(Supplier<Screen> screenSupplier) {
-        queueOpenScreen(screenSupplier.get());
-    }
-
-    /**
-     * Schedules a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
-     *
-     * @param screen the supplier of the screen to open
-     */
-    public void queueOpenScreen(Screen screen) {
-        MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
+    public int queueOpenScreen(Supplier<Screen> screenSupplier) {
+        MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screenSupplier.get()));
+        return Command.SINGLE_SUCCESS;
     }
 
     public void tick() {

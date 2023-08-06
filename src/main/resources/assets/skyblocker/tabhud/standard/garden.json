@@ -7,6 +7,14 @@
         {
             "name": "ComposterWidget",
             "alias": "cw"
+        },
+        {
+            "name": "GardenVisitorsWidget",
+            "alias": "vw"
+        },
+        {
+            "name": "CameraPositionWidget",
+            "alias": "cpw"
         }
     ],
     "layout": [
@@ -14,12 +22,23 @@
             "op": "stack",
             "direction": "vertical",
             "align": "center",
-            "apply_to": ["gsw", "cw"]
+            "apply_to": ["gsw", "vw"]
+        },
+        {
+            "op": "stack",
+            "direction": "vertical",
+            "align": "center",
+            "apply_to": ["cw", "cpw"]
         },
         {
             "op": "align",
-            "reference": "horizontalCenter",
-            "apply_to": ["gsw", "cw"]
+            "reference": "leftOfCenter",
+            "apply_to": ["gsw", "vw"]
+        },
+        {
+            "op": "align",
+            "reference": "rightOfCenter",
+            "apply_to": ["cw", "cpw"]
         }
     ]
 }

@@ -8,8 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.cbyrne.betterinject.annotations.Inject;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
@@ -18,7 +17,7 @@ public abstract class MinecraftClientMixin {
     public ClientPlayerEntity player;
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
-    public void skyblocker$handleInputEvents(CallbackInfo ci) {
+    public void skyblocker$handleInputEvents() {
         if (Utils.isOnSkyblock()) {
             HotbarSlotLock.handleInputEvents(player);
         }

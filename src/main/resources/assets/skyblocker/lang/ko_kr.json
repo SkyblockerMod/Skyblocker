@@ -179,5 +179,5 @@
     "text.autoconfig.skyblocker.option.messages.hideCombo": "콤보 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "Autopet 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideMana": "액션바에서 마나 사용 메시지 가리기",
-    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBar 로 더 나은 기능을 사용합니다",
+    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBar 로 더 나은 기능을 사용합니다"
 }

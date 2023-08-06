@@ -28,6 +28,7 @@ repositories {
 		name = "meteor-maven"
 		url = "https://maven.meteordev.org/releases"
 	}
+	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
 	maven {url "https://jitpack.io"}
 }
 
@@ -39,12 +40,14 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
 	// Cloth config
-	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}") {
+	include modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}") {
 		exclude group: "net.fabricmc.fabric-api"
 		exclude module: "modmenu"
 	}
-	include "me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}"
 
 	// Mod Menu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
@@ -53,16 +56,24 @@ dependencies {
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	// Renderer (https://github.com/0x3C50/Renderer)
+	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}"){
+		exclude group: "io.github.ladysnake" exclude module: "satin"
+	}
+
+	include modImplementation("meteordevelopment:discord-ipc:1.1")
+
+	// Mixin Extras (https://github.com/LlamaLad7/MixinExtras)
+	include implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}"))
+
+	// BetterInject (https://github.com/caoimhebyrne/BetterInject)
+	include implementation(annotationProcessor("com.github.cbyrneee:BetterInject:${project.betterinject_version}"))
 
 	// https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit used pull data from the NEU item repo
-	include(implementation("org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r"))
+	include implementation("org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r")
 
-	// Renderer (https://github.com/0x3C50/Renderer)
-	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}")
-
-	include(modImplementation ("meteordevelopment:discord-ipc:1.1"))
+	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
+	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 }
 
 base {

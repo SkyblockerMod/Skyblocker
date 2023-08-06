@@ -3,7 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.quicknav;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.mixin.HandledScreenAccessor;
+import me.xmrvizzy.skyblocker.mixin.accessor.HandledScreenAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -19,7 +19,6 @@ import net.minecraft.util.Identifier;
 
 @Environment(value=EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
-    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final Identifier BUTTON_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
 
     private final int index;
@@ -42,12 +41,9 @@ public class QuickNavButton extends ClickableWidget {
         if (screen instanceof HandledScreen<?> handledScreen) {
             int x = ((HandledScreenAccessor)handledScreen).getX();
             int y = ((HandledScreenAccessor)handledScreen).getY();
-            int w = ((HandledScreenAccessor)handledScreen).getBackgroundWidth();
             int h = ((HandledScreenAccessor)handledScreen).getBackgroundHeight();
             if (h > 166) --h; // why is this even a thing
-            // this.x = x + this.index % 6 * 28 + 4;
             this.setX(x + this.index % 6 * 26 + 4);
-            // this.y = this.index < 6 ? y - 28 : y + h - 4;
             this.setY(this.index < 6 ? y - 26 : y + h - 4);
             this.u = 26;
             this.v = (index < 6 ? 0 : 64) + (toggled ? 32 : 0);

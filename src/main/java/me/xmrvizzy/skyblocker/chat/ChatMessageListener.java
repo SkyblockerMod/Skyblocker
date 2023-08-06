@@ -53,6 +53,7 @@ public interface ChatMessageListener {
                 new MoltenWaveFilter(),
                 new TeleportPadFilter(),
                 new AutopetFilter(),
+                new ShowOffFilter()
         };
         // Register all listeners to EVENT
         for (ChatMessageListener listener : listeners) {

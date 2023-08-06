@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.xmrvizzy.skyblocker.mixin.PlayerListHudAccessor;
+import me.xmrvizzy.skyblocker.mixin.accessor.PlayerListHudAccessor;
 
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;

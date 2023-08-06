@@ -2,19 +2,22 @@
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
 * Dungeon Puzzle Solver:
-  * Three Weirdos
-  * Blaze
-  * Croesus
-  * Terminal: 
-    * Order
-    * Coloured Items
-    * Item Name
+    * Three Weirdos
+    * Blaze
+    * Croesus
+    * Terminal:
+        * Order
+        * Coloured Items
+        * Item Name
 * Dwarven Mines Solver: Fetchur, Puzzler
 * Barn Solver: Treasure Hunter, Hungry Hiker
+* Experiments Solvers
+* Slayer helper:
+    * Vampire : Effigy Waypoints, Healing Melon Indicator, Twinclaws Ice Indicator, Steak Stake Indicator
 * Drill Fuel in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
-* Price tooltip: npc, bazaar (avg, lbin), ah, museum
-* reparty: write /rp to reparty
+* Price tooltip: npc, motes, bazaar (avg, lbin), ah, museum
+* reparty: write /rp to reparty + auto rejoin
 * Wiki Lookup: press f4 to open the wiki page about the held item
 * Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
 * Quicknav: fast navigate between pets, armor, enderchest, skill, collection, crafting, enchant, envil, warp dungeon,
@@ -27,4 +30,5 @@
 * 1.8 hitbox for lever and farmland
 * Custom Tab HUD
 * Roughly enough items (REI) Support
-* Fishing Helper
+* Fishing Helper + sound notification
+* Mirrorverse Waypoints
