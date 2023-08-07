@@ -37,6 +37,10 @@ public class FairySouls {
     private static final Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
 
     public static CompletableFuture<Void> runAsyncAfterFairySoulsLoad(Runnable runnable) {
+        if (fairySoulsLoaded == null) {
+            LOGGER.error("Fairy Souls have not being initialized yet! Please ensure the Fairy Souls module is initialized before modules calling this method in SkyblockerMod#onInitializeClient. This error can be safely ignore in a test environment.");
+            return CompletableFuture.completedFuture(null);
+        }
         return fairySoulsLoaded.thenRunAsync(runnable);
     }
 
