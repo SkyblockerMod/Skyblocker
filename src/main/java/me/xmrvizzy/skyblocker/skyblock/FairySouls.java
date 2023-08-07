@@ -20,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,18 @@ public class FairySouls {
     private static CompletableFuture<Void> fairySoulsLoaded;
     private static final Map<String, Set<BlockPos>> fairySouls = new HashMap<>();
     private static final Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
+
+    public static CompletableFuture<Void> runAsyncAfterFairySoulsLoad(Runnable runnable) {
+        if (fairySoulsLoaded == null) {
+            LOGGER.error("Fairy Souls have not being initialized yet! Please ensure the Fairy Souls module is initialized before modules calling this method in SkyblockerMod#onInitializeClient. This error can be safely ignore in a test environment.");
+            return CompletableFuture.completedFuture(null);
+        }
+        return fairySoulsLoaded.thenRunAsync(runnable);
+    }
+
+    public static int getFairySoulsSize(@Nullable String location) {
+        return location == null ? fairySouls.values().stream().mapToInt(Set::size).sum() : fairySouls.get(location).size();
+    }
 
     public static void init() {
         fairySoulsLoaded = NEURepo.runAsyncAfterLoad(() -> {
