@@ -129,9 +129,10 @@ public class Utils {
             return;
         }
         String string = sidebar.toString();
+        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address : "";
 
         if (sidebar.isEmpty()) return;
-        if (sidebar.get(sidebar.size() - 1).equals("www.hypixel.net")) {
+        if (serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io")) {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
