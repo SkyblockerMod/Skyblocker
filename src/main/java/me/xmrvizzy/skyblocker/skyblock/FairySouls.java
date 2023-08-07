@@ -33,6 +33,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class FairySouls {
     private static final Logger LOGGER = LoggerFactory.getLogger(FairySouls.class);
     private static CompletableFuture<Void> fairySoulsLoaded;
+    private static int maxSouls = 0;
     private static final Map<String, Set<BlockPos>> fairySouls = new HashMap<>();
     private static final Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
 
@@ -45,7 +46,7 @@ public class FairySouls {
     }
 
     public static int getFairySoulsSize(@Nullable String location) {
-        return location == null ? fairySouls.values().stream().mapToInt(Set::size).sum() : fairySouls.get(location).size();
+        return location == null ? maxSouls : fairySouls.get(location).size();
     }
 
     public static void init() {
@@ -54,6 +55,9 @@ public class FairySouls {
                 BufferedReader reader = new BufferedReader(new FileReader(NEURepo.LOCAL_REPO_DIR.resolve("constants").resolve("fairy_souls.json").toFile()));
                 for (Map.Entry<String, JsonElement> fairySoulJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     if (fairySoulJson.getKey().equals("//") || fairySoulJson.getKey().equals("Max Souls")) {
+                        if (fairySoulJson.getKey().equals("Max Souls")) {
+                            maxSouls = fairySoulJson.getValue().getAsInt();
+                        }
                         continue;
                     }
                     ImmutableSet.Builder<BlockPos> fairySoulsForLocation = ImmutableSet.builder();

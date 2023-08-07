@@ -1,3 +1,22 @@
+# Release 1.11.1
+
+## Highlight
+* Fixes made to the mod to ensure it works with the latest Hypixel changes by @AzureAaron
+* Overlay for all TP items by @Julienraptor01 and @kevinthegreat1
+
+## What's Changed
+* Update buildrelease.yml by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/223
+* Mixins refactor by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/213
+* add cache for beta builds by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/224
+* Add Overlays for ALL forms of TP by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/220
+* Fix Croesus Helper by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/226
+* Fix broken Hypixel detection by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/231
+* Random refactors by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/229
+* Fix dungeons death counter in the tab hud by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/233
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.11.0...v1.11.1
+___
 # Release 1.11.0
 
 ## Highlight
