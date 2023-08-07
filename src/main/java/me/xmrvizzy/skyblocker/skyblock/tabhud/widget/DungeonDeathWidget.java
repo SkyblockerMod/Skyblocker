@@ -20,7 +20,7 @@ public class DungeonDeathWidget extends Widget {
 
     // match the deaths entry
     // group 1: amount of deaths
-    private static final Pattern DEATH_PATTERN = Pattern.compile("\\S*: \\((?<deathnum>\\d+)\\).*");
+    private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
     public DungeonDeathWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
