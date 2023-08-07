@@ -12,6 +12,7 @@
 * Fix Croesus Helper by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/226
 * Fix broken Hypixel detection by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/231
 * Random refactors by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/229
+* Fix dungeons death counter in the tab hud by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/233
 
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.11.0...v1.11.1
