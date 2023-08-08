@@ -21,7 +21,7 @@ public class DungeonMap {
 
     public static void render(MatrixStack matrices) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null && client.world == null) return;
+        if (client.player == null || client.world == null) return;
         ItemStack item = client.player.getInventory().main.get(8);
         NbtCompound tag = item.getNbt();
 

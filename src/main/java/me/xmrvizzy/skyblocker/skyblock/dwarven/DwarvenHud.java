@@ -101,7 +101,7 @@ public class DwarvenHud {
 
     public static void update() {
         commissionList = new ArrayList<>();
-        if (client.player == null || !SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled) return;
+        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled) return;
 
         client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
             if (playerListEntry.getDisplayName() != null) {

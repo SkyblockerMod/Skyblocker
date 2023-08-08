@@ -103,6 +103,7 @@ public class Shortcuts {
         commands.put("/vp", "/visit portalhub");
     }
 
+    @SuppressWarnings("unused")
     private static void registerMoreDefaultShortcuts() {
         // Combat
         commands.put("/spider", "/warp spider");
