@@ -37,6 +37,9 @@
     "cloth-config2": "*",
     "minecraft": "~1.20"
   },
+  "conflicts": {
+    "immediatelyfast": "<=1.1.26+1.20.1"
+  },
   "custom": {
     "modmenu": {
       "links": {
