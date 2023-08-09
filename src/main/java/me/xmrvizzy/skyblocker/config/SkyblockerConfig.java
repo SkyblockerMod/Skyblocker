@@ -1,10 +1,15 @@
 package me.xmrvizzy.skyblocker.config;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
@@ -12,9 +17,11 @@ import me.xmrvizzy.skyblocker.utils.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -188,6 +195,8 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
+        
+        public Map<String, Text> customItemNames = new Object2ObjectLinkedOpenHashMap<>();
     }
 
     public static class TabHudConf {
@@ -530,10 +539,18 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     /**
-     * Registers the config to AutoConfig and register commands to open the config screen.
+     * Registers the config to AutoConfig and registers commands to open the config screen.
      */
     public static void init() {
-        AutoConfig.register(SkyblockerConfig.class, GsonConfigSerializer::new);
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
+                .registerTypeHierarchyAdapter(net.minecraft.text.Style.class, new net.minecraft.text.Style.Serializer())
+                .create();
+        
+        ConfigSerializer.Factory<SkyblockerConfig> serializer = (cfg, cfgClass) -> new GsonConfigSerializer<SkyblockerConfig>(cfg, cfgClass, gson);
+        
+        AutoConfig.register(SkyblockerConfig.class, serializer);
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
     }
 
@@ -550,5 +567,9 @@ public class SkyblockerConfig implements ConfigData {
 
     public static SkyblockerConfig get() {
         return AutoConfig.getConfigHolder(SkyblockerConfig.class).getConfig();
+    }
+    
+    public static void save() {
+        AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
     }
 }

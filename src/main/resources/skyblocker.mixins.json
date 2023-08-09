@@ -11,6 +11,7 @@
     "HandledScreenMixin",
     "InGameHudMixin",
     "InventoryScreenMixin",
+    "ItemStackMixin",
     "LeverBlockMixin",
     "MinecraftClientMixin",
     "PlayerListHudMixin",

@@ -292,5 +292,10 @@
   "skyblocker.shortcuts.deleteQuestion": "Are you sure you want to remove this shortcut?",
   "skyblocker.shortcuts.deleteWarning": "Shortcut '%s' will be lost forever! (A long time!)",
   "skyblocker.shortcuts.new": "New Shortcut",
-  "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after a restart of the game."
+  "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after a restart of the game.",
+  
+  "skyblocker.customItemNames.removed": "§b[§6Skyblocker§b] §fRemoved this item's custom name.",
+  "skyblocker.customItemNames.added": "§b[§6Skyblocker§b] §fAdded a custom name for your currently held item!",
+  "skyblocker.customItemNames.noItemUuid": "§b[§6Skyblocker§b] §cYou must be holding an item that has a uuid in order to set a custom name!",
+  "skyblocker.customItemNames.unableToSetName": "§b[§6Skyblocker§b] §cUnable to set custom item name :( (Are you in skyblock?, are you holding an item?)"
 }
