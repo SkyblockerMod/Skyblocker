@@ -295,7 +295,16 @@
   "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after a restart of the game.",
   
   "skyblocker.customItemNames.removed": "§b[§6Skyblocker§b] §fRemoved this item's custom name.",
-  "skyblocker.customItemNames.added": "§b[§6Skyblocker§b] §fAdded a custom name for your currently held item!",
+  "skyblocker.customItemNames.neverHad": "§b[§6Skyblocker§b] §fThis item doesn't have a custom name set, but why not add one? ;)",
+  "skyblocker.customItemNames.added": "§b[§6Skyblocker§b] §fSet a custom name for your currently held item!",
   "skyblocker.customItemNames.noItemUuid": "§b[§6Skyblocker§b] §cYou must be holding an item that has a uuid in order to set a custom name!",
-  "skyblocker.customItemNames.unableToSetName": "§b[§6Skyblocker§b] §cUnable to set custom item name :( (Are you in skyblock?, are you holding an item?)"
+  "skyblocker.customItemNames.unableToSetName": "§b[§6Skyblocker§b] §cUnable to set a custom item name :( (Are you in skyblock?, are you holding an item?)",
+  
+  "skyblocker.customDyeColors.invalidHex": "§b[§6Skyblocker§b] §cInvalid HEX color code!",
+  "skyblocker.customDyeColors.notDyeable": "§b[§6Skyblocker§b] §cThis item isn't a dyeable armor piece!",
+  "skyblocker.customDyeColors.removed": "§b[§6Skyblocker§b] §fRemoved this item's custom dye color.",
+  "skyblocker.customDyeColors.neverHad": "§b[§6Skyblocker§b] §fThis item doesn't have a custom dye color set, but why not add one? ;)",
+  "skyblocker.customDyeColors.added": "§b[§6Skyblocker§b] §fSet a custom dye color for your currently held item!",
+  "skyblocker.customDyeColors.noItemUuid": "§b[§6Skyblocker§b] §cYou must be holding an item that has a uuid in order to set a custom dye color!",
+  "skyblocker.customDyeColors.unableToSetColor": "§b[§6Skyblocker§b] §cUnable to set a custom dye color :( (Are you in skyblock?)"
 }

@@ -6,6 +6,7 @@
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "DrawContextMixin",
+    "DyeableItemMixin",
     "FarmlandBlockMixin",
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",

@@ -1,10 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
-import java.util.Map;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -17,10 +16,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 
-public class ItemRenaming {
+public class CustomItemNames {
 
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register(ItemRenaming::registerCommands);
+		ClientCommandRegistrationCallback.EVENT.register(CustomItemNames::registerCommands);
 	}
 	
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -41,13 +40,17 @@ public class ItemRenaming {
 			String itemUuid =  extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 			
 			if (itemUuid != null) {
-				Map<String, Text> customItemNames = SkyblockerConfig.get().general.customItemNames;
+				Object2ObjectOpenHashMap<String, Text> customItemNames = SkyblockerConfig.get().general.customItemNames;
 				
 				if (text == null) {
-					//Remove custom item name when the text argument isn't passed
-					customItemNames.remove(itemUuid);
-					SkyblockerConfig.save();
-					source.sendFeedback(Text.translatable("skyblocker.customItemNames.removed"));
+					if (customItemNames.containsKey(itemUuid)) {
+						//Remove custom item name when the text argument isn't passed
+						customItemNames.remove(itemUuid);
+						SkyblockerConfig.save();
+						source.sendFeedback(Text.translatable("skyblocker.customItemNames.removed"));
+					} else {
+						source.sendFeedback(Text.translatable("skyblocker.customItemNames.neverHad"));
+					}
 				} else {
 					//If the text is provided then set the item's custom name to it
 					customItemNames.put(itemUuid, text);
