@@ -14,20 +14,20 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 
 @Mixin(ItemStack.class)
-public class ItemStackMixin {
+public abstract class ItemStackMixin {
 	@Shadow
 	@Nullable
 	private NbtCompound nbt;
 
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
-	public Text skyblocker$customItemNames(Text original) {
+	private Text skyblocker$customItemNames(Text original) {
 		if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes"))  {
 			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid =  extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
-			
+			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
+
 			return SkyblockerConfig.get().general.customItemNames.getOrDefault(itemUuid, original);
 		}
-		
+
 		return original;
 	}
 }

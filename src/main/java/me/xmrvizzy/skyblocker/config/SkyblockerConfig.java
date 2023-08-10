@@ -551,7 +551,7 @@ public class SkyblockerConfig implements ConfigData {
                 .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
                 .create();
         
-        ConfigSerializer.Factory<SkyblockerConfig> serializer = (cfg, cfgClass) -> new GsonConfigSerializer<SkyblockerConfig>(cfg, cfgClass, gson);
+        ConfigSerializer.Factory<SkyblockerConfig> serializer = (cfg, cfgClass) -> new GsonConfigSerializer<>(cfg, cfgClass, gson);
         
         AutoConfig.register(SkyblockerConfig.class, serializer);
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
