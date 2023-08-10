@@ -133,7 +133,7 @@ Example: align A and B with "horizontalCenter"
 
 #### Collide
 - op: `collideAgainst`
-- direction: One of `left`, `right`
+- direction: One of `left`, `right`, `top`, `bot`
 - widgets: List of widgets to individually move.
 - colliders: List static reference widgets to "collide against".
 - Moves a widget in the `direction` until it would overlap with any one of the colliders. Doesn't move the widget in the other direction, doesn't move the widget if it wouldn't collide with anything.

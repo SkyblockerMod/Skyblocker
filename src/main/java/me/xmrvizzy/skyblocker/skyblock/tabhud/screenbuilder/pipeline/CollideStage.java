@@ -13,7 +13,9 @@ public class CollideStage extends PipelineStage {
 
     private enum CollideDirection {
         LEFT("left"),
-        RIGHT("right");
+        RIGHT("right"),
+        TOP("top"),
+        BOT("bot");
 
         private String str;
 
@@ -55,6 +57,12 @@ public class CollideStage extends PipelineStage {
             case RIGHT:
                 primary.forEach(w -> collideAgainstR(screenW, w));
                 break;
+            case TOP:
+                primary.forEach(w -> collideAgainstT(screenH, w));
+                break;
+            case BOT:
+                primary.forEach(w -> collideAgainstB(screenH, w));
+                break;
         }
     }
 
@@ -64,7 +72,6 @@ public class CollideStage extends PipelineStage {
 
         int xCor = screenW / 2;
 
-        // assume others to be sorted top-bottom.
         for (Widget other : secondary) {
             if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
                 // too high, next one
@@ -88,7 +95,6 @@ public class CollideStage extends PipelineStage {
 
         int xCor = screenW / 2;
 
-        // assume others to be sorted top-bottom.
         for (Widget other : secondary) {
             if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
                 // too high, next one
@@ -104,6 +110,52 @@ public class CollideStage extends PipelineStage {
             xCor = Math.max(xCor, xPos);
         }
         w.setX(xCor);
+    }
+
+    public void collideAgainstT(int screenH, Widget w) {
+        int xMin = w.getX();
+        int xMax = w.getX() + w.getWidth();
+
+        int yCor = screenH / 2;
+
+        for (Widget other : secondary) {
+            if (other.getX() + other.getWidth() + ScreenConst.WIDGET_PAD < xMin) {
+                // too far left, next one
+                continue;
+            }
+
+            if (other.getX() - ScreenConst.WIDGET_PAD > xMax) {
+                // too far right, next
+                continue;
+            }
+
+            int yPos = other.getY() - ScreenConst.WIDGET_PAD - w.getHeight();
+            yCor = Math.min(yCor, yPos);
+        }
+        w.setY(yCor);
+    }
+
+    public void collideAgainstB(int screenH, Widget w) {
+        int xMin = w.getX();
+        int xMax = w.getX() + w.getWidth();
+
+        int yCor = screenH / 2;
+
+        for (Widget other : secondary) {
+            if (other.getX() + other.getWidth() + ScreenConst.WIDGET_PAD < xMin) {
+                // too far left, next one
+                continue;
+            }
+
+            if (other.getX() - ScreenConst.WIDGET_PAD > xMax) {
+                // too far right, next
+                continue;
+            }
+
+            int yPos = other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD;
+            yCor = Math.max(yCor, yPos);
+        }
+        w.setY(yCor);
     }
 
 }
