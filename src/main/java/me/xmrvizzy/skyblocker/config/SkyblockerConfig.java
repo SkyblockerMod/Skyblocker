@@ -200,6 +200,8 @@ public class SkyblockerConfig implements ConfigData {
         public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
         
         public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
+        
+        public Object2ObjectOpenHashMap<String, String> customArmorTrims = new Object2ObjectOpenHashMap<>();
     }
 
     public static class TabHudConf {

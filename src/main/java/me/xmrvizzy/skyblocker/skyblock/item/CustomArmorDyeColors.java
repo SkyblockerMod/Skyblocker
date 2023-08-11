@@ -22,10 +22,11 @@ public class CustomArmorDyeColors {
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 		dispatcher.register(ClientCommandManager.literal("skyblocker")
-				.then(ClientCommandManager.literal("dyeColor")
-						.executes(context -> customizeDyeColor(context.getSource(), null))
-						.then(ClientCommandManager.argument("hexCode", StringArgumentType.string())
-								.executes(context -> customizeDyeColor(context.getSource(), StringArgumentType.getString(context, "hexCode"))))));
+				.then(ClientCommandManager.literal("custom")
+						.then(ClientCommandManager.literal("dyeColor")
+								.executes(context -> customizeDyeColor(context.getSource(), null))
+								.then(ClientCommandManager.argument("hexCode", StringArgumentType.string())
+										.executes(context -> customizeDyeColor(context.getSource(), StringArgumentType.getString(context, "hexCode")))))));
 	}
 
 	@SuppressWarnings("SameReturnValue")
