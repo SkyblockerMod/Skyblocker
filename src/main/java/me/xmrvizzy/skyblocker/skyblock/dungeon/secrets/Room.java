@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.MapColor;
@@ -185,30 +184,15 @@ public class Room {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
             int secretIndex = Integer.parseInt(secretName.substring(0, Character.isDigit(secretName.charAt(1)) ? 2 : 1));
-            secretWaypoints.add(new SecretWaypoint(secretIndex, getCategory(waypoint), DungeonMapUtils.relativeToActual(directionRooms.getMiddle(), directionRooms.getLeft(), waypoint), true));
+            secretWaypoints.add(new SecretWaypoint(secretIndex, waypoint, secretName, DungeonMapUtils.relativeToActual(directionRooms.getMiddle(), directionRooms.getLeft(), waypoint)));
         }
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size()); // TODO change to debug
-    }
-
-    private SecretWaypoint.Category getCategory(JsonObject categoryJson) {
-        return switch (categoryJson.get("category").getAsString()) {
-            case "entrance" -> SecretWaypoint.Category.ENTRANCE;
-            case "superboom" -> SecretWaypoint.Category.SUPERBOOM;
-            case "chest" -> SecretWaypoint.Category.CHEST;
-            case "item" -> SecretWaypoint.Category.ITEM;
-            case "bat" -> SecretWaypoint.Category.BAT;
-            case "wither" -> SecretWaypoint.Category.WITHER;
-            case "lever" -> SecretWaypoint.Category.LEVER;
-            case "fairysoul" -> SecretWaypoint.Category.FAIRYSOUL;
-            case "stonk" -> SecretWaypoint.Category.STONK;
-            default -> SecretWaypoint.Category.DEFAULT;
-        };
     }
 
     protected void render(WorldRenderContext context) {
         for (SecretWaypoint secretWaypoint : secretWaypoints) {
             if (secretWaypoint.missing()) {
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, secretWaypoint.pos(), secretWaypoint.category().colorComponents, 0.5F);
+                secretWaypoint.render(context);
             }
         }
     }

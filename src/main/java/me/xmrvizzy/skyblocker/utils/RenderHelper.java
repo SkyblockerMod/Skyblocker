@@ -16,6 +16,7 @@ import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -71,6 +72,18 @@ public class RenderHelper {
             consumer.draw();
             matrices.pop();
         }
+    }
+
+    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean seeThrough) {
+        renderText(context, text, pos, 1, seeThrough);
+    }
+
+    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, float scale, boolean seeThrough) {
+        renderText(context, text, pos, scale, 0, seeThrough);
+    }
+
+    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, float scale, float yOffset, boolean seeThrough) {
+        renderText(context, text.asOrderedText(), pos, scale, yOffset, seeThrough);
     }
 
     /**
@@ -133,7 +146,7 @@ public class RenderHelper {
      *
      * @param seeThrough Whether the text should be able to be seen through walls or not.
      */
-    public static void renderText(WorldRenderContext context, Vec3d pos, OrderedText text, float scale, boolean seeThrough) {
+    public static void renderText(WorldRenderContext context, OrderedText text, Vec3d pos, float scale, float yOffset, boolean seeThrough) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
         TextRenderer textRenderer = client.textRenderer;
@@ -155,7 +168,7 @@ public class RenderHelper {
 
         RenderSystem.depthFunc(seeThrough ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
-        textRenderer.draw(text, xOffset, 0, 0xFFFFFFFF, false, positionMatrix, consumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         consumers.draw();
 
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
