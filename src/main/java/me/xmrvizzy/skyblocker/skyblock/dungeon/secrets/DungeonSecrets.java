@@ -6,16 +6,23 @@ import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
@@ -37,7 +44,6 @@ import java.util.zip.InflaterInputStream;
 
 public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
-    private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
     /**
      * Block data for dungeon rooms. See {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU} for format details and how it's generated.
      * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
@@ -73,6 +79,9 @@ public class DungeonSecrets {
             Map.entry("minecraft:cyan_terracotta", (byte) 20),
             Map.entry("minecraft:black_terracotta", (byte) 21)
     ));
+    private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
+    @NotNull
+    private static final Map<Vector2ic, Room> rooms = new HashMap<>();
     private static JsonObject roomsJson;
     private static JsonObject waypointsJson;
     @Nullable
@@ -91,14 +100,13 @@ public class DungeonSecrets {
      */
     @Nullable
     private static Vector2ic physicalEntrancePos;
-    @NotNull
-    private static final Map<Vector2ic, Room> rooms = new HashMap<>();
     private static Room currentRoom;
 
     public static boolean isRoomsLoaded() {
         return roomsLoaded != null && roomsLoaded.isDone();
     }
 
+    @SuppressWarnings("unused")
     public static JsonObject getRoomsJson() {
         return roomsJson;
     }
@@ -118,6 +126,9 @@ public class DungeonSecrets {
         CompletableFuture.runAsync(DungeonSecrets::load);
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonSecrets::update, 10);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonSecrets::render);
+        ClientReceiveMessageEvents.GAME.register(DungeonSecrets::onChatMessage);
+        ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonSecrets::onChatMessage);
+        UseBlockCallback.EVENT.register((world, hand, hitResult, hitResult2) -> onUseBlock(hand, hitResult2));
     }
 
     private static void load() {
@@ -272,9 +283,32 @@ public class DungeonSecrets {
     }
 
     private static void render(WorldRenderContext context) {
-        if (SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons() && currentRoom != null && currentRoom.isMatched()) {
+        if (isCurrentRoomMatched()) {
             currentRoom.render(context);
         }
+    }
+
+    private static void onChatMessage(Text text, boolean overlay) {
+        if (overlay && isCurrentRoomMatched()) {
+            currentRoom.onChatMessage(text.getString());
+        }
+    }
+
+    private static ActionResult onUseBlock(World world, BlockHitResult hitResult) {
+        if (isCurrentRoomMatched()) {
+            currentRoom.onUseBlock(world, hitResult);
+        }
+        return ActionResult.PASS;
+    }
+
+    public static void onItemPickup(ItemEntity itemEntity, LivingEntity collector) {
+        if (isCurrentRoomMatched()) {
+            currentRoom.onItemPickup(itemEntity, collector);
+        }
+    }
+
+    private static boolean isCurrentRoomMatched() {
+        return SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons() && currentRoom != null && currentRoom.isMatched();
     }
 
     private static void reset() {

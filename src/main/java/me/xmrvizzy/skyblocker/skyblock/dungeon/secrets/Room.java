@@ -1,5 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
@@ -7,13 +10,19 @@ import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Vector2i;
@@ -37,7 +46,7 @@ public class Room {
      * <li>{@link TriState#TRUE} means that the room has been checked and there is a match.
      */
     private TriState matched = TriState.DEFAULT;
-    private List<SecretWaypoint> secretWaypoints;
+    private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
 
     public Room(Type type, Vector2ic... physicalPositions) {
         long startTime = System.currentTimeMillis();
@@ -178,23 +187,56 @@ public class Room {
 
     private void roomMatched(Triple<Direction, Vector2ic, List<String>> directionRooms) {
         matched = TriState.TRUE;
-        secretWaypoints = new ArrayList<>();
+        Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
         String name = directionRooms.getRight().get(0);
         for (JsonElement waypointElement : DungeonSecrets.getWaypointsJson().get(name).getAsJsonArray()) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
             int secretIndex = Integer.parseInt(secretName.substring(0, Character.isDigit(secretName.charAt(1)) ? 2 : 1));
-            secretWaypoints.add(new SecretWaypoint(secretIndex, waypoint, secretName, DungeonMapUtils.relativeToActual(directionRooms.getMiddle(), directionRooms.getLeft(), waypoint)));
+            BlockPos pos = DungeonMapUtils.relativeToActual(directionRooms.getMiddle(), directionRooms.getLeft(), waypoint);
+            secretWaypointsMutable.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
+        secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size()); // TODO change to debug
     }
 
     protected void render(WorldRenderContext context) {
-        for (SecretWaypoint secretWaypoint : secretWaypoints) {
-            if (secretWaypoint.missing()) {
+        for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
+            if (secretWaypoint.isMissing()) {
                 secretWaypoint.render(context);
             }
         }
+    }
+
+    protected void onChatMessage(String message) {
+        if (message.toLowerCase().contains("secret")) { // TODO for dev purposes only
+            DungeonSecrets.LOGGER.info(message);
+        }
+    }
+
+    protected void onUseBlock(World world, BlockHitResult hitResult) {
+        BlockState state = world.getBlockState(hitResult.getBlockPos());
+        DungeonSecrets.LOGGER.info(state.getBlock().toString()); // TODO for dev purposes only
+        if (!state.isOf(Blocks.CHEST) && !state.isOf(Blocks.PLAYER_HEAD) && !state.isOf(Blocks.PLAYER_WALL_HEAD)) {
+            return;
+        }
+        secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(secretWaypoint -> secretWaypoint.category.needsInteraction()).findAny()
+                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
+    }
+
+    protected void onItemPickup(ItemEntity itemEntity, LivingEntity collector) {
+        String name = itemEntity.getName().getString();
+        DungeonSecrets.LOGGER.info(name); // TODO for dev purposes only
+        if (Arrays.stream(SecretWaypoint.SECRET_ITEMS).noneMatch(name::contains)) {
+            return;
+        }
+        secretWaypoints.values().stream().filter(secretWaypoint -> secretWaypoint.category.needsItemPickup()).min(Comparator.comparingDouble(secretWaypoint -> collector.squaredDistanceTo(secretWaypoint.centerPos))).filter(secretWaypoint -> collector.squaredDistanceTo(secretWaypoint.centerPos) <= 36D)
+                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} picked up a {} from a {} secret, setting secret #{} as found", collector.getName().getString(), itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
+    }
+
+    private void onSecretFound(SecretWaypoint secretWaypoint, String msg, Object... args) {
+        secretWaypoints.row(secretWaypoint.secretIndex).values().forEach(SecretWaypoint::setFound);
+        DungeonSecrets.LOGGER.info(msg, args);
     }
 
     /**
