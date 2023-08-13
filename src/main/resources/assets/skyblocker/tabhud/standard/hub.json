@@ -11,18 +11,14 @@
     ],
     "layout": [
         {
-            "op": "align",
-            "reference": "leftOfCenter",
-            "apply_to": ["sw"]
+            "op": "stack",
+            "direction": "vertical",
+            "align": "center",
+            "apply_to": ["sw", "fsw"]
         },
         {
             "op": "align",
-            "reference": "rightOfCenter",
-            "apply_to": ["fsw"]
-        },
-        {
-            "op": "align",
-            "reference": "verticalCenter",
+            "reference": "horizontalCenter",
             "apply_to": ["sw", "fsw"]
         }
     ]
