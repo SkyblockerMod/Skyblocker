@@ -314,5 +314,5 @@
   "skyblocker.customArmorTrims.neverHad": "§b[§6Skyblocker§b] §fThis item doesn't have a armor trim set, but why not add one? ;)",
   "skyblocker.customArmorTrims.added": "§b[§6Skyblocker§b] §fSet a custom armor trim for your currently held item!",
   "skyblocker.customArmorTrims.noItemUuid": "§b[§6Skyblocker§b] §cYou must be holding an item that has a uuid in order to set a custom armor trim!",
-  "skyblocker.customArmorTrims.unableToSetColor": "§b[§6Skyblocker§b] §cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)"
+  "skyblocker.customArmorTrims.unableToSetTrim": "§b[§6Skyblocker§b] §cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)"
 }
