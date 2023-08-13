@@ -28,6 +28,11 @@
     "layout": [
         {
             "op": "align",
+            "reference": "top",
+            "apply_to": ["death", "downed", "server", "secret"]
+        },
+        {
+            "op": "align",
             "reference": "leftOfCenter",
             "apply_to": ["death", "buffs"]
         },
