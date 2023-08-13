@@ -11,15 +11,20 @@
     ],
     "layout": [
         {
-            "op": "stack",
-            "direction": "vertical",
-            "align": "top",
-            "apply_to": ["sw", "ew"]
+            "op": "align",
+            "reference": "leftOfCenter",
+            "apply_to": ["sw"]
         },
         {
             "op": "align",
-            "reference": "horizontalCenter",
+            "reference": "rightOfCenter",
+            "apply_to": ["ew"]
+        },
+        {
+            "op": "align",
+            "reference": "top",
             "apply_to": ["sw", "ew"]
         }
+
     ]
 }
