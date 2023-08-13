@@ -29,25 +29,26 @@
     "layout": [
         {
             "op": "stack",
-            "direction": "vertical",
-            "align": "top",
+            "direction": "horizontal",
+            "align": "center",
             "apply_to": ["dpw1", "dpw2", "dpw3"]
         },
         {
             "op": "stack",
-            "direction": "vertical",
-            "align": "top",
+            "direction": "horizontal",
+            "align": "center",
             "apply_to": ["dpw4", "dpw5"]
         },
         {
             "op": "align",
-            "reference": "leftOfCenter",
+            "reference": "top",
             "apply_to": ["dpw1", "dpw2", "dpw3"]
         },
         {
-            "op": "align",
-            "reference": "rightOfCenter",
-            "apply_to": ["dpw4", "dpw5"]
+            "op": "collideAgainst",
+            "direction": "bot",
+            "widgets": ["dpw4", "dpw5"],
+            "colliders": ["dpw1", "dpw2", "dpw3"]
         }
     ]
 }

@@ -2,51 +2,63 @@
     "widgets":[
         {
             "name": "DungeonDownedWidget",
-            "alias": "ddow"
+            "alias": "downed"
         },
         {
             "name": "DungeonDeathWidget",
-            "alias": "ddew"
+            "alias": "death"
         },
         {
             "name": "DungeonSecretWidget",
-            "alias": "dscw"
+            "alias": "secret"
         },
         {
             "name": "DungeonServerWidget",
-            "alias": "dsrw"
+            "alias": "server"
         },
         {
             "name": "DungeonPuzzleWidget",
-            "alias": "dpuw"
+            "alias": "puzzle"
         },
         {
             "name": "DungeonBuffWidget",
-            "alias": "dbw"
+            "alias": "buffs"
         }
     ],
     "layout": [
         {
-            "op": "stack",
-            "direction": "vertical",
-            "align": "top",
-            "apply_to": ["ddow", "ddew", "dbw"]
-        },
-        {
-            "op": "stack",
-            "direction": "vertical",
-            "align": "top",
-            "apply_to": ["dsrw", "dpuw", "dscw"]
-        },
-        {
             "op": "align",
             "reference": "leftOfCenter",
-            "apply_to": ["ddow", "ddew", "dbw"]
+            "apply_to": ["death", "buffs"]
         },
         {
             "op": "align",
             "reference": "rightOfCenter",
-            "apply_to": ["dsrw", "dpuw", "dscw"]
+            "apply_to": ["server", "puzzle"]
+        },
+        {
+            "op": "collideAgainst",
+            "direction": "left",
+            "widgets": ["downed"],
+            "colliders": ["death"]
+        },
+        {
+            "op": "collideAgainst",
+            "direction": "right",
+            "widgets": ["secret"],
+            "colliders": ["server"]
+        },
+        {
+            "op": "collideAgainst",
+            "direction": "bot",
+            "widgets": ["buffs"],
+            "colliders": ["death", "downed"]
+        },
+        {
+            "op": "collideAgainst",
+            "direction": "bot",
+            "widgets": ["puzzle"],
+            "colliders": ["secret", "server"]
         }
     ]
 }

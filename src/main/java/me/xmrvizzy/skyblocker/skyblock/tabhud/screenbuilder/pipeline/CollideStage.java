@@ -70,7 +70,7 @@ public class CollideStage extends PipelineStage {
         int yMin = w.getY();
         int yMax = w.getY() + w.getHeight();
 
-        int xCor = screenW / 2;
+        int xCor = screenW;
 
         for (Widget other : secondary) {
             if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
@@ -93,7 +93,7 @@ public class CollideStage extends PipelineStage {
         int yMin = w.getY();
         int yMax = w.getY() + w.getHeight();
 
-        int xCor = screenW / 2;
+        int xCor = 0;
 
         for (Widget other : secondary) {
             if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
@@ -116,7 +116,7 @@ public class CollideStage extends PipelineStage {
         int xMin = w.getX();
         int xMax = w.getX() + w.getWidth();
 
-        int yCor = screenH / 2;
+        int yCor = screenH;
 
         for (Widget other : secondary) {
             if (other.getX() + other.getWidth() + ScreenConst.WIDGET_PAD < xMin) {
@@ -139,7 +139,7 @@ public class CollideStage extends PipelineStage {
         int xMin = w.getX();
         int xMax = w.getX() + w.getWidth();
 
-        int yCor = screenH / 2;
+        int yCor = 0;
 
         for (Widget other : secondary) {
             if (other.getX() + other.getWidth() + ScreenConst.WIDGET_PAD < xMin) {
