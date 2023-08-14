@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
@@ -56,6 +56,6 @@ public class DungeonMap {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("dungeonmap")
-                                .executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(DungeonMapConfigScreen::new))))));
+                                .executes(Scheduler.queueOpenScreenCommand(DungeonMapConfigScreen::new))))));
     }
 }

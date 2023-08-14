@@ -7,6 +7,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -179,7 +180,7 @@ public class Shortcuts {
             }
             return Command.SINGLE_SUCCESS;
             // Queue the screen or else the screen will be immediately closed after executing this command
-        })).then(literal("shortcuts").executes(context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(ShortcutsConfigScreen::new))));
+        })).then(literal("shortcuts").executes(Scheduler.queueOpenScreenCommand(ShortcutsConfigScreen::new))));
     }
 
     private static String modifyCommand(String command) {

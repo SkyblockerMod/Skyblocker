@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
+import me.xmrvizzy.skyblocker.utils.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -39,12 +39,10 @@ public class DwarvenHud {
             .collect(Collectors.toList());
 
     public static void init() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher,
-                registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
-                        .then(ClientCommandManager.literal("hud")
-                                .then(ClientCommandManager.literal("dwarven")
-                                        .executes(context -> SkyblockerMod.getInstance().scheduler
-                                                .queueOpenScreen(DwarvenHudConfigScreen::new))))));
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
+                .then(ClientCommandManager.literal("hud")
+                        .then(ClientCommandManager.literal("dwarven")
+                                .executes(Scheduler.queueOpenScreenCommand(DwarvenHudConfigScreen::new))))));
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
             if (!SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled

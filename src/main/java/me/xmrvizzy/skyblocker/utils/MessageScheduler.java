@@ -32,10 +32,10 @@ public class MessageScheduler extends Scheduler {
 
     private void sendMessage(String message) {
         if (MinecraftClient.getInstance().player != null) {
-            MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(message);
             if (message.startsWith("/")) {
                 MinecraftClient.getInstance().player.networkHandler.sendCommand(message.substring(1));
             } else {
+                MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(message);
                 MinecraftClient.getInstance().player.networkHandler.sendChatMessage(message);
             }
         }

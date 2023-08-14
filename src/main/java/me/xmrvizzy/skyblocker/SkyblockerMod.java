@@ -11,6 +11,8 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonBlaze;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.LividColor;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
+import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorDyeColors;
+import me.xmrvizzy.skyblocker.skyblock.item.CustomItemNames;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
@@ -74,6 +76,7 @@ public class SkyblockerMod implements ClientModInitializer {
         WikiLookup.init();
         ItemRegistry.init();
         NEURepo.init();
+        FairySouls.init();
         BackpackPreview.init();
         QuickNav.init();
         DwarvenHud.init();
@@ -82,7 +85,6 @@ public class SkyblockerMod implements ClientModInitializer {
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();
-        FairySouls.init();
         TabHud.init();
         DungeonMap.init();
         TheRift.init();
@@ -90,6 +92,8 @@ public class SkyblockerMod implements ClientModInitializer {
         ScreenMaster.init();
         OcclusionCulling.init();
         TeleportOverlay.init();
+        CustomItemNames.init();
+        CustomArmorDyeColors.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::update, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);
