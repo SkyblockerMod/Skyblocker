@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,16 +52,34 @@ public class DwarvenHud {
                     || commissionList.isEmpty()) {
                 return;
             }
-            render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x,
+            render(HudCommsWidget.INSTANCE, context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x,
                     SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
         });
     }
 
-    public static void render(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
+    public static Pair<Integer, Integer> getDimForConfig(List<Commission> commissions) {
+        switch (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
+            case SIMPLE:
+                HudCommsWidget.INSTANCE_CFG.updateData(commissions, false);
+                return new Pair<Integer, Integer>(
+                    HudCommsWidget.INSTANCE_CFG.getWidth(),
+                    HudCommsWidget.INSTANCE_CFG.getHeight());
+            case FANCY :
+                HudCommsWidget.INSTANCE_CFG.updateData(commissions, true);
+                return new Pair<Integer, Integer>(
+                    HudCommsWidget.INSTANCE_CFG.getWidth(),
+                    HudCommsWidget.INSTANCE_CFG.getHeight());
+            case CLASSIC:
+            default:
+                return new Pair<Integer, Integer>(200, 20 * commissions.size());
+        }
+    }
+
+    public static void render(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
 
         switch (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
-            case SIMPLE -> renderSimple(context, hudX, hudY, commissions);
-            case FANCY -> renderFancy(context, hudX, hudY, commissions);
+            case SIMPLE -> renderSimple(hcw, context, hudX, hudY, commissions);
+            case FANCY -> renderFancy(hcw, context, hudX, hudY, commissions);
             case CLASSIC -> renderClassic(context, hudX, hudY, commissions);
         }
     }
@@ -83,21 +102,21 @@ public class DwarvenHud {
         }
     }
 
-    public static void renderSimple(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
-        HudCommsWidget.INSTANCE.updateData(commissions, false);
-        HudCommsWidget.INSTANCE.update();
-        HudCommsWidget.INSTANCE.setX(hudX);
-        HudCommsWidget.INSTANCE.setY(hudY);
-        HudCommsWidget.INSTANCE.render(context,
+    public static void renderSimple(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
+        hcw.updateData(commissions, false);
+        hcw.update();
+        hcw.setX(hudX);
+        hcw.setY(hudY);
+        hcw.render(context,
                 SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
-    public static void renderFancy(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
-        HudCommsWidget.INSTANCE.updateData(commissions, true);
-        HudCommsWidget.INSTANCE.update();
-        HudCommsWidget.INSTANCE.setX(hudX);
-        HudCommsWidget.INSTANCE.setY(hudY);
-        HudCommsWidget.INSTANCE.render(context,
+    public static void renderFancy(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
+        hcw.updateData(commissions, true);
+        hcw.update();
+        hcw.setX(hudX);
+        hcw.setY(hudY);
+        hcw.render(context,
                 SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 

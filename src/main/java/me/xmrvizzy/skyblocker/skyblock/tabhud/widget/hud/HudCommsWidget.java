@@ -30,6 +30,7 @@ public class HudCommsWidget extends Widget {
     //   when called before the client window is created (roughly).
     // the rebdering god 2 from the fabricord explained that detail, thanks!
     public static HudCommsWidget INSTANCE = new HudCommsWidget();
+    public static HudCommsWidget INSTANCE_CFG = new HudCommsWidget();
 
     // another repulsive hack to make this widget-like hud element work with the new widget class
     // DON'T USE WITH THE WIDGET SYSTEM, ONLY USE FOR DWARVENHUD!
