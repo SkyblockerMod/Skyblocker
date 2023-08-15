@@ -12,6 +12,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 public class CustomItemNames {
@@ -21,10 +23,11 @@ public class CustomItemNames {
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 		dispatcher.register(ClientCommandManager.literal("skyblocker")
-				.then(ClientCommandManager.literal("renameItem")
-						.executes(context -> renameItem(context.getSource(), null))
-						.then(ClientCommandManager.argument("textComponent", TextArgumentType.text())
-								.executes(context -> renameItem(context.getSource(), context.getArgument("textComponent", Text.class))))));
+				.then(ClientCommandManager.literal("custom")
+						.then(ClientCommandManager.literal("renameItem")
+								.executes(context -> renameItem(context.getSource(), null))
+								.then(ClientCommandManager.argument("textComponent", TextArgumentType.text())
+										.executes(context -> renameItem(context.getSource(), context.getArgument("textComponent", Text.class)))))));
 	}
 
 	@SuppressWarnings("SameReturnValue")
@@ -50,6 +53,11 @@ public class CustomItemNames {
 					}
 				} else {
 					//If the text is provided then set the item's custom name to it
+					
+					//Set italic to false if it hasn't been changed (or was already false)
+					Style currentStyle = text.getStyle();
+					((MutableText) text).setStyle(currentStyle.withItalic((currentStyle.isItalic() ? true : false)));
+					
 					customItemNames.put(itemUuid, text);
 					SkyblockerConfig.save();
 					source.sendFeedback(Text.translatable("skyblocker.customItemNames.added"));

@@ -12,6 +12,7 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.LividColor;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorDyeColors;
+import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
 import me.xmrvizzy.skyblocker.skyblock.item.CustomItemNames;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
@@ -92,6 +93,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TeleportOverlay.init();
         CustomItemNames.init();
         CustomArmorDyeColors.init();
+        CustomArmorTrims.init();
         containerSolverManager.init();
         scheduler.scheduleCyclic(Utils::update, 20);
         scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);

@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.DyeableArmorItem;
+import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
@@ -22,10 +22,11 @@ public class CustomArmorDyeColors {
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 		dispatcher.register(ClientCommandManager.literal("skyblocker")
-				.then(ClientCommandManager.literal("dyeColor")
-						.executes(context -> customizeDyeColor(context.getSource(), null))
-						.then(ClientCommandManager.argument("hexCode", StringArgumentType.string())
-								.executes(context -> customizeDyeColor(context.getSource(), StringArgumentType.getString(context, "hexCode"))))));
+				.then(ClientCommandManager.literal("custom")
+						.then(ClientCommandManager.literal("dyeColor")
+								.executes(context -> customizeDyeColor(context.getSource(), null))
+								.then(ClientCommandManager.argument("hexCode", StringArgumentType.string())
+										.executes(context -> customizeDyeColor(context.getSource(), StringArgumentType.getString(context, "hexCode")))))));
 	}
 
 	@SuppressWarnings("SameReturnValue")
@@ -39,7 +40,7 @@ public class CustomArmorDyeColors {
 		}
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
-			if (heldItem.getItem() instanceof DyeableArmorItem) {
+			if (heldItem.getItem() instanceof DyeableItem) {
 				if (nbt != null && nbt.contains("ExtraAttributes")) {
 					NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
 					String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
