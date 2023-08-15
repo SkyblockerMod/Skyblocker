@@ -8,6 +8,7 @@
 * Separate commands sent by skyblocker from the chat history by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/235
 * Make IF a conflict by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/237
 * Custom Armour Trims by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/238
+* Lowercased server ip by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/244
 
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.11.1...v1.12.0
