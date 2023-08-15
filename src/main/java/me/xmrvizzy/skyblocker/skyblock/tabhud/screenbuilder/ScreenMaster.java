@@ -1,17 +1,26 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder;
 
+import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerLocator;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -21,6 +30,8 @@ import net.minecraft.util.Identifier;
 public class ScreenMaster {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
+
+    private static final int VERSION = 1;
 
     private static HashMap<String, ScreenBuilder> standardMap = new HashMap<>();
     private static HashMap<String, ScreenBuilder> screenAMap = new HashMap<>();
@@ -99,20 +110,37 @@ public class ScreenMaster {
                         screenAMap.clear();
                         screenBMap.clear();
 
-                        int ex = 0;
+                        int excnt = 0;
 
                         for (Map.Entry<Identifier, Resource> entry : manager
-                                .findResources("tabhud", path -> path.getPath().endsWith(".json"))
+                                .findResources("tabhud", path -> path.getPath().endsWith("version.json"))
+                                .entrySet()) {
+
+                            try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager()
+                                    .openAsReader(entry.getKey());) {
+                                JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+                                 if (json.get("format_version").getAsInt() != VERSION) {
+                                    throw new IllegalStateException(String.format("Resource pack isn't compatible! Expected version %d, got %d", VERSION, json.get("format_version").getAsInt()));
+                                 }
+
+                            } catch (Exception ex) {
+                                throw new IllegalStateException(
+                                        "Rejected this resource pack. Reason: " + ex.getMessage());
+                            }
+                        }
+
+                        for (Map.Entry<Identifier, Resource> entry : manager
+                                .findResources("tabhud", path -> path.getPath().endsWith(".json") && !path.getPath().endsWith("version.json"))
                                 .entrySet()) {
                             try {
 
                                 load(entry.getKey());
                             } catch (Exception e) {
                                 LOGGER.error(e.getMessage());
-                                ex++;
+                                excnt++;
                             }
                         }
-                        if (ex > 0) {
+                        if (excnt > 0) {
                             throw new IllegalStateException("This screen definition isn't valid, see above");
                         }
                     }

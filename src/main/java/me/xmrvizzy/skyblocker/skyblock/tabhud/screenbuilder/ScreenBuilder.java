@@ -66,7 +66,7 @@ public class ScreenBuilder {
             }
         } catch (Exception ex) {
             // rethrow as unchecked exception so that I don't have to catch anything in the ScreenMaster
-            throw new IllegalStateException("Failed to load file " + ident + "Reason: " + ex.getMessage());
+            throw new IllegalStateException("Failed to load file " + ident + ". Reason: " + ex.getMessage());
         }
     }
 
