@@ -11,8 +11,7 @@
 
 Hypixel Skyblock Mod for Minecraft 1.17.x + 1.18.x + 1.19.x + 1.20.x
 
-Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation)
-
+Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features
 
 <details open>
