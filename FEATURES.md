@@ -32,3 +32,7 @@
 * Roughly enough items (REI) Support
 * Fishing Helper + sound notification
 * Mirrorverse Waypoints
+* Item and Armour customisation:
+    * Item Renaming
+    * Custom Armour Dye Colours
+    * Custom Armour Trims

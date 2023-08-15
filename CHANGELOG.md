@@ -1,3 +1,17 @@
+# Release 1.12.0
+
+## Highlight
+* Item and Armour customisation, see [#commands](https://github.com/SkyblockerMod/Skyblocker#commands) for more details by @AzureAaron
+
+## What's Changed
+* Add Item Renaming & Custom Armour Dye Colours by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/234
+* Separate commands sent by skyblocker from the chat history by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/235
+* Make IF a conflict by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/237
+* Custom Armour Trims by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/238
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.11.1...v1.12.0
+___
 # Release 1.11.1
 
 ## Highlight

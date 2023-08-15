@@ -7,6 +7,7 @@
 [![Build Beta](https://img.shields.io/github/actions/workflow/status/SkyblockerMod/Skyblocker/beta.yml?labelColor=cecece&label=beta&logo=github&logoColor=black)](https://github.com/SkyblockerMod/Skyblocker/actions/workflows/beta.yml)
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
 [![modrinth statistic](https://img.shields.io/badge/buy%20me%20coffee-skyblocker?color=434B57&logo=kofi)](https://ko-fi.com/wohlhabend)
+[![Translated](https://translate.hysky.de/widgets/Skyblocker/-/skyblocker/svg-badge.svg)](https://translate.hysky.de/projects/Skyblocker/skyblocker/)
 
 Hypixel Skyblock Mod for Minecraft 1.17.x + 1.18.x + 1.19.x + 1.20.x
 
@@ -51,6 +52,10 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Roughly enough items (REI) Support
 * Fishing Helper + sound notification
 * Mirrorverse Waypoints
+* Item and Armour customisation:
+    * Item Renaming
+    * Custom Armour Dye Colours
+    * Custom Armour Trims
 
 </details>
 
@@ -58,12 +63,13 @@ ___
 
 ## Commands
 
-|        command        |         option          | comment                                    |
-|:---------------------:|:-----------------------:|:-------------------------------------------|
-|  /skyblocker config   |                         | open config menu (modMenu not needed)      |
-|  /skyblocker options  |                         | open config menu (modMenu not needed)      |
+|        command        |                option                 | comment                                    |
+|:---------------------:|:-------------------------------------:|:-------------------------------------------|
+|  /skyblocker config   |                                       | open config menu (modMenu not needed)      |
+|  /skyblocker options  |                                       | open config menu (modMenu not needed)      |
 |    /skyblocker hud    | dwarven / dungeonmap / titleContainer | move dwarven, dungeonmap or titleContainer |
-| /skyblocker shortcuts |                         | add/edit shortcuts                         |
+| /skyblocker shortcuts |                                       | add/edit shortcuts                         |
+|  /skyblocker custom   |  renameItem /  armorTrim / dyeColor   | Item and Armour customisation              |
 
 ---
 
@@ -80,7 +86,7 @@ ___
 <img padding="10px,0px" height="150" src="https://hysky.de/richpresencesmall.png" />
 <img padding="10px,0px" height="150" src="https://hysky.de/recipe.png" />
 <img padding="10px,0px" height="150" src="https://hysky.de/backpack-preview.png" />
-
+<img padding="10px,0px" height="150" src="https://hysky.de/armour_trim.png" />
 </details>
 
 ## Contribute
