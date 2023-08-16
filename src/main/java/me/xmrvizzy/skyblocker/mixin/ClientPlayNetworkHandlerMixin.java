@@ -31,9 +31,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "STORE", ordinal = 0))
     private ItemEntity skyblocker$onItemPickup(ItemEntity itemEntity, @Local LivingEntity collector) {
-        if (collector == client.player) {
-            DungeonSecrets.onItemPickup(itemEntity, collector);
-        }
+        DungeonSecrets.onItemPickup(itemEntity, collector, collector == client.player);
         return itemEntity;
     }
 

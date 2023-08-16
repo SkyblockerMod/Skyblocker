@@ -22,7 +22,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
@@ -301,14 +303,35 @@ public class DungeonSecrets {
         return ActionResult.PASS;
     }
 
-    public static void onItemPickup(ItemEntity itemEntity, LivingEntity collector) {
-        if (isCurrentRoomMatched()) {
-            currentRoom.onItemPickup(itemEntity, collector);
+    public static void onItemPickup(ItemEntity itemEntity, LivingEntity collector, boolean isPlayer) {
+        if (isPlayer) {
+            if (isCurrentRoomMatched()) {
+                currentRoom.onItemPickup(itemEntity, collector);
+            }
+        } else {
+            Room room = getRoomAtPhysical(collector.getPos());
+            if (isRoomMatched(room)) {
+                room.onItemPickup(itemEntity, collector);
+            }
         }
     }
 
+    @Nullable
+    private static Room getRoomAtPhysical(Vec3d pos) {
+        return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
+    }
+
     private static boolean isCurrentRoomMatched() {
-        return SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons() && currentRoom != null && currentRoom.isMatched();
+        return isRoomMatched(currentRoom);
+    }
+
+    @Contract("null -> false")
+    private static boolean isRoomMatched(@Nullable Room room) {
+        return shouldProcess() && room != null && room.isMatched();
+    }
+
+    private static boolean shouldProcess() {
+        return SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons();
     }
 
     private static void reset() {

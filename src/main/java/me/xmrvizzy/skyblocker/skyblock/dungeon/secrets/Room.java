@@ -25,15 +25,22 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Room {
+    private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
+    @NotNull
     private final Type type;
+    @NotNull
     private final Set<Vector2ic> segments;
+    @NotNull
     private final Shape shape;
     private HashMap<String, int[]> roomsData;
     private List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms = new ArrayList<>();
@@ -48,7 +55,7 @@ public class Room {
     private TriState matched = TriState.DEFAULT;
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
 
-    public Room(Type type, Vector2ic... physicalPositions) {
+    public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         long startTime = System.currentTimeMillis();
         this.type = type;
         segments = Set.of(physicalPositions);
@@ -64,6 +71,7 @@ public class Room {
         DungeonSecrets.LOGGER.info("Created {} in {} ms", this, endTime - startTime); // TODO change to debug
     }
 
+    @NotNull
     public Type getType() {
         return type;
     }
@@ -77,6 +85,7 @@ public class Room {
         return "Room{type=" + type + ", shape=" + shape + ", matched=" + matched + ", segments=" + Arrays.toString(segments.toArray()) + "}";
     }
 
+    @NotNull
     private Shape getShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
         return switch (segments.size()) {
             case 1 -> Shape.ONE_BY_ONE;
@@ -87,6 +96,7 @@ public class Room {
         };
     }
 
+    @NotNull
     private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
         return switch (shape) {
             case ONE_BY_ONE, TWO_BY_TWO -> Direction.values();
@@ -186,7 +196,6 @@ public class Room {
     }
 
     private void roomMatched(Triple<Direction, Vector2ic, List<String>> directionRooms) {
-        matched = TriState.TRUE;
         Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
         String name = directionRooms.getRight().get(0);
         for (JsonElement waypointElement : DungeonSecrets.getWaypointsJson().get(name).getAsJsonArray()) {
@@ -197,6 +206,7 @@ public class Room {
             secretWaypointsMutable.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
+        matched = TriState.TRUE;
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size()); // TODO change to debug
     }
 
@@ -209,14 +219,21 @@ public class Room {
     }
 
     protected void onChatMessage(String message) {
-        if (message.toLowerCase().contains("secret")) { // TODO for dev purposes only
-            DungeonSecrets.LOGGER.info(message);
+        if (isAllSecretsFound(message)) {
+            secretWaypoints.values().forEach(SecretWaypoint::setFound);
         }
+    }
+
+    protected static boolean isAllSecretsFound(String message) {
+        Matcher matcher = SECRETS.matcher(message);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1)) >= Integer.parseInt(matcher.group(2));
+        }
+        return false;
     }
 
     protected void onUseBlock(World world, BlockHitResult hitResult) {
         BlockState state = world.getBlockState(hitResult.getBlockPos());
-        DungeonSecrets.LOGGER.info(state.getBlock().toString()); // TODO for dev purposes only
         if (!state.isOf(Blocks.CHEST) && !state.isOf(Blocks.PLAYER_HEAD) && !state.isOf(Blocks.PLAYER_WALL_HEAD)) {
             return;
         }
@@ -225,9 +242,7 @@ public class Room {
     }
 
     protected void onItemPickup(ItemEntity itemEntity, LivingEntity collector) {
-        String name = itemEntity.getName().getString();
-        DungeonSecrets.LOGGER.info(name); // TODO for dev purposes only
-        if (Arrays.stream(SecretWaypoint.SECRET_ITEMS).noneMatch(name::contains)) {
+        if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getStack().getName().getString()::contains)) {
             return;
         }
         secretWaypoints.values().stream().filter(secretWaypoint -> secretWaypoint.category.needsItemPickup()).min(Comparator.comparingDouble(secretWaypoint -> collector.squaredDistanceTo(secretWaypoint.centerPos))).filter(secretWaypoint -> collector.squaredDistanceTo(secretWaypoint.centerPos) <= 36D)

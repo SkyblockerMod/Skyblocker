@@ -120,26 +120,34 @@ public class DungeonMapUtils {
     }
 
     /**
-     * Gets the physical position of the northwest corner of the room the player is in. Hypixel Skyblock Dungeons are aligned to a 32 by 32 blocks grid, allowing corners to be calculated through math.
+     * @see #getPhysicalRoomPos(double, double)
+     */
+    @NotNull
+    public static Vector2ic getPhysicalRoomPos(@NotNull Vec3d pos) {
+        return getPhysicalRoomPos(pos.getX(), pos.getZ());
+    }
+
+    /**
+     * @see #getPhysicalRoomPos(double, double)
+     */
+    @NotNull
+    public static Vector2ic getPhysicalRoomPos(@NotNull Vec3i pos) {
+        return getPhysicalRoomPos(pos.getX(), pos.getZ());
+    }
+
+    /**
+     * Gets the physical position of the northwest corner of the room the given coordinate is in. Hypixel Skyblock Dungeons are aligned to a 32 by 32 blocks grid, allowing corners to be calculated through math.
      *
-     * @param playerPos the position of the player
+     * @param x the x position of the coordinate to calculate
+     * @param z the z position of the coordinate to calculate
      * @return the physical position of the northwest corner of the room the player is in
      * @implNote {@code physicalPos} is shifted by 0.5 so room borders are evenly split.
      * {@code physicalPos} is further shifted by 8 because Hypixel offset dungeons by 8 blocks in Skyblock 0.12.3.
      * Subtracting the modulo gives the northwest corner of the room shifted by 8. Finally, {@code physicalPos} is shifted back by 8 to its intended position.
      */
     @NotNull
-    public static Vector2ic getPhysicalRoomPos(@NotNull Vec3d playerPos) {
-        Vector2i physicalPos = new Vector2i(playerPos.getX() + 8.5, playerPos.getZ() + 8.5, RoundingMode.TRUNCATE);
-        return physicalPos.sub(MathHelper.floorMod(physicalPos.x(), 32), MathHelper.floorMod(physicalPos.y(), 32)).sub(8, 8);
-    }
-
-    /**
-     * @see #getPhysicalRoomPos(Vec3d)
-     */
-    @NotNull
-    public static Vector2ic getPhysicalRoomPos(@NotNull Vec3i playerPos) {
-        Vector2i physicalPos = new Vector2i(playerPos.getX() + 8.5, playerPos.getZ() + 8.5, RoundingMode.TRUNCATE);
+    public static Vector2ic getPhysicalRoomPos(double x, double z) {
+        Vector2i physicalPos = new Vector2i(x + 8.5, z + 8.5, RoundingMode.TRUNCATE);
         return physicalPos.sub(MathHelper.floorMod(physicalPos.x(), 32), MathHelper.floorMod(physicalPos.y(), 32)).sub(8, 8);
     }
 
@@ -175,9 +183,12 @@ public class DungeonMapUtils {
     public static BlockPos actualToRelative(Vector2ic physicalCornerPos, Room.Direction direction, BlockPos pos) {
         return switch (direction) {
             case NW -> new BlockPos(pos.getX() - physicalCornerPos.x(), pos.getY(), pos.getZ() - physicalCornerPos.y());
-            case NE -> new BlockPos(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
-            case SW -> new BlockPos(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
-            case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+            case NE ->
+                    new BlockPos(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
+            case SW ->
+                    new BlockPos(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
+            case SE ->
+                    new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
         };
     }
 
@@ -188,9 +199,12 @@ public class DungeonMapUtils {
     public static BlockPos relativeToActual(Vector2ic physicalCornerPos, Room.Direction direction, BlockPos pos) {
         return switch (direction) {
             case NW -> new BlockPos(pos.getX() + physicalCornerPos.x(), pos.getY(), pos.getZ() + physicalCornerPos.y());
-            case NE -> new BlockPos(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
-            case SW -> new BlockPos(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
-            case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+            case NE ->
+                    new BlockPos(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
+            case SW ->
+                    new BlockPos(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
+            case SE ->
+                    new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
         };
     }
 
