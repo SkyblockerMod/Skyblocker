@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -43,7 +44,7 @@ public class Room {
     @NotNull
     private final Shape shape;
     private HashMap<String, int[]> roomsData;
-    private List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms = new ArrayList<>();
+    private List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
     private Set<BlockPos> checkedBlocks = new HashSet<>();
     private CompletableFuture<Void> findRoom;
     /**
@@ -56,19 +57,13 @@ public class Room {
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
-        long startTime = System.currentTimeMillis();
         this.type = type;
         segments = Set.of(physicalPositions);
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
         roomsData = DungeonSecrets.ROOMS_DATA.get("catacombs").get(shape.shape);
-        List<String> possibleDirectionRooms = new ArrayList<>(roomsData.keySet());
-        for (Direction direction : getPossibleDirections(segmentsX, segmentsY)) {
-            possibleRooms.add(MutableTriple.of(direction, DungeonMapUtils.getPhysicalCornerPos(direction, segmentsX, segmentsY), possibleDirectionRooms));
-        }
-        long endTime = System.currentTimeMillis();
-        DungeonSecrets.LOGGER.info("Created {} in {} ms", this, endTime - startTime); // TODO change to debug
+        possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
     @NotNull
@@ -94,6 +89,15 @@ public class Room {
             case 4 -> segmentsX.size() == 2 && segmentsY.size() == 2 ? Shape.TWO_BY_TWO : Shape.ONE_BY_FOUR;
             default -> throw new IllegalArgumentException("There are no matching room shapes with this set of physical positions: " + Arrays.toString(segments.toArray()));
         };
+    }
+
+    private List<MutableTriple<Direction, Vector2ic, List<String>>> getPossibleRooms(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+        List<String> possibleDirectionRooms = new ArrayList<>(roomsData.keySet());
+        List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms = new ArrayList<>();
+        for (Direction direction : getPossibleDirections(segmentsX, segmentsY)) {
+            possibleRooms.add(MutableTriple.of(direction, DungeonMapUtils.getPhysicalCornerPos(direction, segmentsX, segmentsY), possibleDirectionRooms));
+        }
+        return possibleRooms;
     }
 
     @NotNull
@@ -138,7 +142,6 @@ public class Room {
             long startTime = System.currentTimeMillis();
             for (BlockPos pos : BlockPos.iterate(player.getBlockPos().add(-5, -5, -5), player.getBlockPos().add(5, 5, 5))) {
                 if (segments.contains(DungeonMapUtils.getPhysicalRoomPos(pos)) && notInDoorway(pos) && checkedBlocks.add(pos) && checkBlock(world, pos)) {
-                    discard();
                     break;
                 }
             }
@@ -174,17 +177,22 @@ public class Room {
 
         int matchingRoomsSize = possibleRooms.stream().map(Triple::getRight).mapToInt(Collection::size).sum();
         if (matchingRoomsSize == 0) {
+            // If no rooms match, reset the fields and scan again after 50 ticks.
             matched = TriState.FALSE;
             DungeonSecrets.LOGGER.warn("[Skyblocker] No dungeon room matches after checking {} block(s)", checkedBlocks.size());
+            SkyblockerMod.getInstance().scheduler.schedule(() -> matched = TriState.DEFAULT, 50);
+            reset();
             return true;
         } else if (matchingRoomsSize == 1) {
+            // If one room matches, load the secrets for that room and discard the no longer needed fields.
             for (Triple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
                 if (directionRooms.getRight().size() == 1) {
                     roomMatched(directionRooms);
-                    break;
+                    discard();
+                    return true;
                 }
             }
-            return true;
+            return false; // This should never happen, we just checked that there is one possible room, and the return true in the loop should activate
         } else {
             DungeonSecrets.LOGGER.info("[Skyblocker] {} rooms remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size()); // TODO change to debug
             return false;
@@ -208,6 +216,26 @@ public class Room {
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size()); // TODO change to debug
+    }
+
+    /**
+     * Resets fields for another round of matching after room matching fails.
+     */
+    private void reset() {
+        IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
+        IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
+        possibleRooms = getPossibleRooms(segmentsX, segmentsY);
+        checkedBlocks = new HashSet<>();
+    }
+
+    /**
+     * Discards fields after room matching completes when a room is found.
+     * These fields are no longer needed and are discarded to save memory.
+     */
+    private void discard() {
+        roomsData = null;
+        possibleRooms = null;
+        checkedBlocks = null;
     }
 
     protected void render(WorldRenderContext context) {
@@ -252,16 +280,6 @@ public class Room {
     private void onSecretFound(SecretWaypoint secretWaypoint, String msg, Object... args) {
         secretWaypoints.row(secretWaypoint.secretIndex).values().forEach(SecretWaypoint::setFound);
         DungeonSecrets.LOGGER.info(msg, args);
-    }
-
-    /**
-     * Resets fields after room matching completes, where either a room is found or none matched.
-     * These fields are no longer needed and are discarded to save memory.
-     */
-    private void discard() {
-        roomsData = null;
-        possibleRooms = null;
-        checkedBlocks = null;
     }
 
     public enum Type {
