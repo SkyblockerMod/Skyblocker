@@ -201,8 +201,31 @@ public class DungeonSecrets {
         return null;
     }
 
+    /**
+     * Updates the dungeon. The general idea is similar to the Dungeon Rooms Mod.
+     * <p></p>
+     * When entering a new dungeon, this method:
+     * <ul>
+     *     <li> Gets the upper left corner of entrance room on the map and saves it in {@link #mapEntrancePos}. </li>
+     *     <li> Gets the size of a room on the map in pixels and saves it in {@link #mapRoomSize}. </li>
+     *     <li> Gets the physical northwest corner position of the entrance room and saves it in {@link #physicalEntrancePos}. </li>
+     *     <li> Creates a new {@link Room} with {@link Room.Type} {@link Room.Type.ENTRANCE ENTRANCE} and sets {@link #currentRoom}. </li>
+     * </ul>
+     * When processing an existing dungeon, this method:
+     * <ul>
+     *     <li> Calculates the physical northwest corner and upper left corner on the map of the room the player is currently in. </li>
+     *     <li> Gets the room type based on the map color. </li>
+     *     <li> If the room has not been created (when the physical northwest corner is not in {@link #rooms}):</li>
+     *     <ul>
+     *         <li> If the room type is {@link Room.Type.ROOM}, gets the northwest corner of all connected room segments with {@link DungeonMapUtils#getRoomSegments(MapState, Vector2ic, int, byte)}.  (For example, a 1x2 room has two room segments.) </li>
+     *         <li> Create a new room. </li>
+     *     </ul>
+     *     <li> Sets {@link #currentRoom} to the current room, either created from the previous step or from {@link #rooms}. </li>
+     *     <li> Calls {@link Room#update()} on {@link #currentRoom}. </li>
+     * </ul>
+     */
+    @SuppressWarnings("JavadocReference")
     private static void update() {
-        long startTime = System.currentTimeMillis();
         if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints) {
             return;
         }
@@ -259,8 +282,6 @@ public class DungeonSecrets {
             currentRoom = room;
         }
         currentRoom.update();
-        long endTime = System.currentTimeMillis();
-        LOGGER.info("[Skyblocker] Updated dungeon secrets in {} ms", endTime - startTime); // TODO change to debug
     }
 
     /**

@@ -41,11 +41,26 @@ public class Room {
     private final Type type;
     @NotNull
     private final Set<Vector2ic> segments;
+    /**
+     * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
+     */
     @NotNull
     private final Shape shape;
+    /**
+     * The room data containing all rooms for a specific dungeon and {@link #shape}.
+     */
     private HashMap<String, int[]> roomsData;
+    /**
+     * Contains all possible dungeon rooms for this room. The list is gradually shrunk by checking blocks until only one room is left.
+     */
     private List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
+    /**
+     * Contains all blocks that have been checked to prevent checking the same block multiple times.
+     */
     private Set<BlockPos> checkedBlocks = new HashSet<>();
+    /**
+     * The task that is used to check blocks. This is used to ensure only one such task can run at a time.
+     */
     private CompletableFuture<Void> findRoom;
     /**
      * Represents the matching state of the room with the following possible values:
@@ -127,6 +142,24 @@ public class Room {
         };
     }
 
+    /**
+     * Updates the room.
+     * <p></p>
+     * This method returns immediately if any of the following conditions are met:
+     * <ul>
+     *     <li> The room does not need to be scanned and matched. (When the room is not of type {@link Type.ROOM}, {@link Type.PUZZLE}, or {@link Type.TRAP}. See {@link Type#needsScanning()}) </li>
+     *     <li> The room has been matched or failed to match and is on cooldown. See {@link #matched}. </li>
+     *     <li> {@link #findRoom The previous update} has not completed. </li>
+     * </ul>
+     * Then this method tries to match this room through:
+     * <ul>
+     *     <li> Iterate over a 11 by 11 by 11 box around the player. </li>
+     *     <li> Check it the block is part of this room and not part of a doorway. See {@link #segments} and {@link #notInDoorway(BlockPos)}. </li>
+     *     <li> Checks if the position has been checked and adds it to {@link #checkedBlocks}. </li>
+     *     <li> Calls {@link #checkBlock(ClientWorld, BlockPos)} </li>
+     * </ul>
+     */
+    @SuppressWarnings("JavadocReference")
     protected void update() {
         // Logical AND has higher precedence than logical OR
         if (!type.needsScanning() || matched != TriState.DEFAULT || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
@@ -139,14 +172,11 @@ public class Room {
             return;
         }
         findRoom = CompletableFuture.runAsync(() -> {
-            long startTime = System.currentTimeMillis();
             for (BlockPos pos : BlockPos.iterate(player.getBlockPos().add(-5, -5, -5), player.getBlockPos().add(5, 5, 5))) {
                 if (segments.contains(DungeonMapUtils.getPhysicalRoomPos(pos)) && notInDoorway(pos) && checkedBlocks.add(pos) && checkBlock(world, pos)) {
                     break;
                 }
             }
-            long endTime = System.currentTimeMillis();
-            DungeonSecrets.LOGGER.info("[Skyblocker] Processed room in {} ms", endTime - startTime); // TODO change to debug
         });
     }
 
@@ -159,6 +189,43 @@ public class Room {
         return (x < 13 || x > 17 || z > 2 && z < 28) && (z < 13 || z > 17 || x > 2 && x < 28);
     }
 
+    /**
+     * Filters out dungeon rooms which does not contain the block at the given position.
+     * <p></p>
+     * This method:
+     * <ul>
+     *     <li> Checks if the block type is included in the dungeon rooms data. See {@link DungeonSecrets#NUMERIC_ID}. </li>
+     *     <li> For each possible direction: </li>
+     *     <ul>
+     *         <li> Rotate and convert the position to a relative position. See {@link DungeonMapUtils#actualToRelative(Vector2ic, Direction, BlockPos)}. </li>
+     *         <li> Encode the block based on the relative position and the custom numeric block id. See {@link #posIdToInt(BlockPos, byte)}. </li>
+     *         <li> For each possible room in the current direction: </li>
+     *         <ul>
+     *             <li> Check if {@link #roomsData} contains the encoded block. </li>
+     *             <li> If so, add the room to the new list of possible rooms for this direction. </li>
+     *         </ul>
+     *         <li> Replace the old possible room list for the current direction with the new one. </li>
+     *     </ul>
+     *     <li> If there are no matching rooms left: </li>
+     *     <ul>
+     *         <li> Terminate matching by setting {@link #matched} to {@link TriState#FALSE}. </li>
+     *         <li> Schedule another matching attempt in 50 ticks (2.5 seconds). </li>
+     *         <li> Reset {@link #possibleRooms} and {@link #checkedBlocks} with {@link #reset()}. </li>
+     *         <li> Return {@code true} </li>
+     *     </ul>
+     *     <li> If there are exactly one room matching: </li>
+     *     <ul>
+     *         <li> Call {@link #roomMatched(Triple)}. </li>
+     *         <li> Discard the no longer needed fields to save memory. </li>
+     *         <li> Return {@code true} </li>
+     *     </ul>
+     *     <li> Return {@code false} </li>
+     * </ul>
+     *
+     * @param world the world to get the block from
+     * @param pos   the position of the block to check
+     * @return whether room matching should end. Either a match is found or there are no valid rooms left
+     */
     private boolean checkBlock(ClientWorld world, BlockPos pos) {
         byte id = DungeonSecrets.NUMERIC_ID.getByte(Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).toString());
         if (id == 0) {
@@ -194,15 +261,29 @@ public class Room {
             }
             return false; // This should never happen, we just checked that there is one possible room, and the return true in the loop should activate
         } else {
-            DungeonSecrets.LOGGER.info("[Skyblocker] {} rooms remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size()); // TODO change to debug
+            DungeonSecrets.LOGGER.debug("[Skyblocker] {} rooms remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
             return false;
         }
     }
 
+    /**
+     * Encodes a {@link BlockPos} and the custom numeric block id into an integer.
+     *
+     * @param pos the position of the block
+     * @param id  the custom numeric block id
+     * @return the encoded integer
+     */
     private int posIdToInt(BlockPos pos, byte id) {
         return pos.getX() << 24 | pos.getY() << 16 | pos.getZ() << 8 | id;
     }
 
+    /**
+     * Loads the secret waypoints for the room from {@link DungeonSecrets#waypointsJson} once it has been matched
+     * and sets {@link #matched} to {@link TriState#TRUE}.
+     *
+     * @param directionRooms the direction, position, and name of the room
+     */
+    @SuppressWarnings("JavadocReference")
     private void roomMatched(Triple<Direction, Vector2ic, List<String>> directionRooms) {
         Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
         String name = directionRooms.getRight().get(0);
@@ -215,7 +296,7 @@ public class Room {
         }
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
-        DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size()); // TODO change to debug
+        DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());
     }
 
     /**
