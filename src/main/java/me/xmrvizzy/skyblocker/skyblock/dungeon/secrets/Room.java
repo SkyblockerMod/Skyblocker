@@ -319,6 +319,9 @@ public class Room {
         checkedBlocks = null;
     }
 
+    /**
+     * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints}.
+     */
     protected void render(WorldRenderContext context) {
         for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
             if (secretWaypoint.isMissing()) {
@@ -327,12 +330,21 @@ public class Room {
         }
     }
 
+    /**
+     * Sets all secrets as found if {@link #isAllSecretsFound(String)}.
+     */
     protected void onChatMessage(String message) {
         if (isAllSecretsFound(message)) {
             secretWaypoints.values().forEach(SecretWaypoint::setFound);
         }
     }
 
+    /**
+     * Checks if the number of found secrets is equals or greater than the total number of secrets in the room.
+     *
+     * @param message the message to check in
+     * @return whether the number of found secrets is equals or greater than the total number of secrets in the room
+     */
     protected static boolean isAllSecretsFound(String message) {
         Matcher matcher = SECRETS.matcher(message);
         if (matcher.find()) {
@@ -341,6 +353,14 @@ public class Room {
         return false;
     }
 
+    /**
+     * Marks the secret at the interaction position as found when the player interacts with a chest or a player head,
+     * if there is a secret at the interaction position.
+     *
+     * @param world     the world to get the block from
+     * @param hitResult the block being interacted with
+     * @see #onSecretFound(SecretWaypoint, String, Object...)
+     */
     protected void onUseBlock(World world, BlockHitResult hitResult) {
         BlockState state = world.getBlockState(hitResult.getBlockPos());
         if (!state.isOf(Blocks.CHEST) && !state.isOf(Blocks.PLAYER_HEAD) && !state.isOf(Blocks.PLAYER_WALL_HEAD)) {
@@ -350,6 +370,13 @@ public class Room {
                 .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
+    /**
+     * Marks the closest secret no greater than 6 blocks away as found when the player picks up a secret item.
+     *
+     * @param itemEntity the item entity being picked up
+     * @param collector  the collector of the item
+     * @see #onSecretFound(SecretWaypoint, String, Object...)
+     */
     protected void onItemPickup(ItemEntity itemEntity, LivingEntity collector) {
         if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getStack().getName().getString()::contains)) {
             return;
@@ -358,6 +385,13 @@ public class Room {
                 .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} picked up a {} from a {} secret, setting secret #{} as found", collector.getName().getString(), itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
+    /**
+     * Marks all secret waypoints with the same index as the given {@link SecretWaypoint} as found.
+     *
+     * @param secretWaypoint the secret waypoint to read the index from.
+     * @param msg            the message to log
+     * @param args           the args for the {@link org.slf4j.Logger#info(String, Object...) Logger#info(String, Object...)} call
+     */
     private void onSecretFound(SecretWaypoint secretWaypoint, String msg, Object... args) {
         secretWaypoints.row(secretWaypoint.secretIndex).values().forEach(SecretWaypoint::setFound);
         DungeonSecrets.LOGGER.info(msg, args);

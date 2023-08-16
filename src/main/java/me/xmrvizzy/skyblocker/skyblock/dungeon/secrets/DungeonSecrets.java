@@ -305,18 +305,32 @@ public class DungeonSecrets {
         return null;
     }
 
+    /**
+     * Renders the secret waypoints in {@link #currentRoom} if {@link #isCurrentRoomMatched()}.
+     */
     private static void render(WorldRenderContext context) {
         if (isCurrentRoomMatched()) {
             currentRoom.render(context);
         }
     }
 
+    /**
+     * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()}.
+     * Used to detect when all secrets in a room are found.
+     */
     private static void onChatMessage(Text text, boolean overlay) {
         if (overlay && isCurrentRoomMatched()) {
             currentRoom.onChatMessage(text.getString());
         }
     }
 
+    /**
+     * Calls {@link Room#onUseBlock(World, BlockHitResult)} on {@link #currentRoom} if {@link #isCurrentRoomMatched()}.
+     * Used to detect finding {@link SecretWaypoint.Category.CHEST} and {@link SecretWaypoint.Category.WITHER} secrets.
+     *
+     * @return {@link ActionResult#PASS}
+     */
+    @SuppressWarnings("JavadocReference")
     private static ActionResult onUseBlock(World world, BlockHitResult hitResult) {
         if (isCurrentRoomMatched()) {
             currentRoom.onUseBlock(world, hitResult);
@@ -324,6 +338,12 @@ public class DungeonSecrets {
         return ActionResult.PASS;
     }
 
+    /**
+     * Calls {@link Room#onItemPickup(ItemEntity, LivingEntity)} on the room the {@code collector} is in if that room {@link #isRoomMatched(Room)}.
+     * Used to detect finding {@link SecretWaypoint.Category.ITEM} and {@link SecretWaypoint.Category.BAT} secrets.
+     * If the collector is the player, {@link #currentRoom} is used as an optimization.
+     */
+    @SuppressWarnings("JavadocReference")
     public static void onItemPickup(ItemEntity itemEntity, LivingEntity collector, boolean isPlayer) {
         if (isPlayer) {
             if (isCurrentRoomMatched()) {
@@ -337,24 +357,51 @@ public class DungeonSecrets {
         }
     }
 
+    /**
+     * Gets the room at the given physical position.
+     *
+     * @param pos the physical position
+     * @return the room at the given physical position, or null if there is no room at the given physical position
+     * @see #rooms
+     * @see DungeonMapUtils#getPhysicalRoomPos(Vec3d)
+     */
     @Nullable
     private static Room getRoomAtPhysical(Vec3d pos) {
         return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
     }
 
+    /**
+     * Calls {@link #isRoomMatched(Room)} on {@link #currentRoom}.
+     *
+     * @return {@code true} if {@link #currentRoom} is not null and {@link #isRoomMatched(Room)}
+     */
     private static boolean isCurrentRoomMatched() {
         return isRoomMatched(currentRoom);
     }
 
+    /**
+     * Calls {@link #shouldProcess()} and {@link Room#isMatched()} on the given room.
+     *
+     * @param room the room to check
+     * @return {@code true} if {@link #shouldProcess()}, the given room is not null, and {@link Room#isMatched()} on the given room
+     */
     @Contract("null -> false")
     private static boolean isRoomMatched(@Nullable Room room) {
         return shouldProcess() && room != null && room.isMatched();
     }
 
+    /**
+     * Checks if the player is in a dungeon and {@link me.xmrvizzy.skyblocker.config.SkyblockerConfig.Dungeons#secretWaypoints Secret Waypoints} is enabled.
+     *
+     * @return whether dungeon secrets should be processed
+     */
     private static boolean shouldProcess() {
         return SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons();
     }
 
+    /**
+     * Resets fields when leaving a dungeon.
+     */
     private static void reset() {
         mapEntrancePos = null;
         mapRoomSize = 0;

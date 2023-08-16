@@ -37,6 +37,9 @@ public class SecretWaypoint {
         this.missing = false;
     }
 
+    /**
+     * Renders the secret waypoint, including a filled cube, a beacon beam, the name, and the distance from the player.
+     */
     void render(WorldRenderContext context) {
         RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
         Vec3d posUp = centerPos.add(0, 1, 0);
