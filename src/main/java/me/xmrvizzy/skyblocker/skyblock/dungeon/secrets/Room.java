@@ -49,7 +49,7 @@ public class Room {
     /**
      * The room data containing all rooms for a specific dungeon and {@link #shape}.
      */
-    private HashMap<String, int[]> roomsData;
+    private Map<String, int[]> roomsData;
     /**
      * Contains all possible dungeon rooms for this room. The list is gradually shrunk by checking blocks until only one room is left.
      */
@@ -77,7 +77,7 @@ public class Room {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
-        roomsData = DungeonSecrets.ROOMS_DATA.get("catacombs").get(shape.shape);
+        roomsData = DungeonSecrets.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape, Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
