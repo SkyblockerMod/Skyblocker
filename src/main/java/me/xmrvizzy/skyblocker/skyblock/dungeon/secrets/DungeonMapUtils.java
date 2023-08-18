@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
@@ -52,7 +52,7 @@ public class DungeonMapUtils {
     }
 
     @Nullable
-    public static Pair<Vector2ic, Integer> getMapEntrancePosAndRoomSize(@NotNull MapState map) {
+    public static ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSize(@NotNull MapState map) {
         Vector2ic mapPos = getMapPlayerPos(map);
         Queue<Vector2ic> posToCheck = new ArrayDeque<>();
         Set<Vector2ic> checked = new HashSet<>();
@@ -60,8 +60,8 @@ public class DungeonMapUtils {
         checked.add(mapPos);
         while ((mapPos = posToCheck.poll()) != null) {
             if (isEntranceColor(map, mapPos)) {
-                Pair<Vector2ic, Integer> mapEntranceAndRoomSizePos = getMapEntrancePosAndRoomSizeAt(map, mapPos);
-                if (mapEntranceAndRoomSizePos.right() > 0) {
+                ObjectIntPair<Vector2ic> mapEntranceAndRoomSizePos = getMapEntrancePosAndRoomSizeAt(map, mapPos);
+                if (mapEntranceAndRoomSizePos.rightInt() > 0) {
                     return mapEntranceAndRoomSizePos;
                 }
             }
@@ -85,7 +85,7 @@ public class DungeonMapUtils {
         return null;
     }
 
-    private static Pair<Vector2ic, Integer> getMapEntrancePosAndRoomSizeAt(MapState map, Vector2ic mapPosImmutable) {
+    private static ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSizeAt(MapState map, Vector2ic mapPosImmutable) {
         Vector2i mapPos = new Vector2i(mapPosImmutable);
         // noinspection StatementWithEmptyBody
         while (isEntranceColor(map, mapPos.sub(1, 0))) {
@@ -94,7 +94,7 @@ public class DungeonMapUtils {
         //noinspection StatementWithEmptyBody
         while (isEntranceColor(map, mapPos.sub(0, 1))) {
         }
-        return Pair.of(mapPos.add(0, 1), getMapRoomSize(map, mapPos));
+        return ObjectIntPair.of(mapPos.add(0, 1), getMapRoomSize(map, mapPos));
     }
 
     public static int getMapRoomSize(MapState map, Vector2ic mapEntrancePos) {

@@ -3,9 +3,9 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -238,12 +238,12 @@ public class DungeonSecrets {
             return;
         }
         if (mapEntrancePos == null || mapRoomSize == 0) {
-            Pair<Vector2ic, Integer> mapEntrancePosAndSize = DungeonMapUtils.getMapEntrancePosAndRoomSize(map);
+            ObjectIntPair<Vector2ic> mapEntrancePosAndSize = DungeonMapUtils.getMapEntrancePosAndRoomSize(map);
             if (mapEntrancePosAndSize == null) {
                 return;
             }
             mapEntrancePos = mapEntrancePosAndSize.left();
-            mapRoomSize = mapEntrancePosAndSize.right();
+            mapRoomSize = mapEntrancePosAndSize.rightInt();
             LOGGER.info("[Skyblocker] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
         }
 
