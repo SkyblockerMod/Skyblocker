@@ -1,5 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
@@ -18,6 +20,7 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
+import net.minecraft.resource.Resource;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -34,24 +37,13 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.InflaterInputStream;
 
 public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
-    /**
-     * Block data for dungeon rooms. See {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU} for format details and how it's generated.
-     * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
-     */
-    @SuppressWarnings("JavadocReference")
-    protected static final HashMap<String, Map<String, Map<String, int[]>>> ROOMS_DATA = new HashMap<>();
+    private static final String DUNGEONS_PATH = "dungeons";
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -81,11 +73,16 @@ public class DungeonSecrets {
             Map.entry("minecraft:cyan_terracotta", (byte) 20),
             Map.entry("minecraft:black_terracotta", (byte) 21)
     ));
-    private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
+    /**
+     * Block data for dungeon rooms. See {@link me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU} for format details and how it's generated.
+     * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
+     */
+    @SuppressWarnings("JavadocReference")
+    protected static final HashMap<String, Map<String, Map<String, int[]>>> ROOMS_DATA = new HashMap<>();
     @NotNull
     private static final Map<Vector2ic, Room> rooms = new HashMap<>();
-    private static JsonObject roomsJson;
-    private static JsonObject waypointsJson;
+    private static final Map<String, JsonElement> roomsJson = new HashMap<>();
+    private static final Map<String, JsonElement> waypointsJson = new HashMap<>();
     @Nullable
     private static CompletableFuture<Void> roomsLoaded;
     /**
@@ -109,12 +106,12 @@ public class DungeonSecrets {
     }
 
     @SuppressWarnings("unused")
-    public static JsonObject getRoomsJson() {
-        return roomsJson;
+    public static JsonObject getRoomMetadata(String room) {
+        return roomsJson.get(room).getAsJsonObject();
     }
 
-    public static JsonObject getWaypointsJson() {
-        return waypointsJson;
+    public static JsonArray getRoomWaypoints(String room) {
+        return waypointsJson.get(room).getAsJsonArray();
     }
 
     /**
@@ -125,7 +122,8 @@ public class DungeonSecrets {
         if (SkyblockerConfig.get().locations.dungeons.noInitSecretWaypoints) {
             return;
         }
-        CompletableFuture.runAsync(DungeonSecrets::load).exceptionally(e -> {
+        // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
+        CompletableFuture.runAsync(DungeonSecrets::load, MinecraftClient.getInstance()).exceptionally(e -> {
             LOGGER.error("[Skyblocker] Failed to load dungeon secrets", e);
             return null;
         });
@@ -133,78 +131,56 @@ public class DungeonSecrets {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonSecrets::render);
         ClientReceiveMessageEvents.GAME.register(DungeonSecrets::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonSecrets::onChatMessage);
-        UseBlockCallback.EVENT.register((world, hand, hitResult, hitResult2) -> onUseBlock(hand, hitResult2));
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
     }
 
     private static void load() {
+        long startTime = System.currentTimeMillis();
         List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
-        URL dungeonsURL = SkyblockerMod.class.getResource(DUNGEONS_DATA_DIR);
-        if (dungeonsURL == null) {
-            LOGGER.error("[Skyblocker] Failed to load dungeon secrets, unable to find dungeon rooms data directory");
-            return;
-        }
-        Path dungeonsDir = Path.of(dungeonsURL.getPath());
-        if ("jar".equals(dungeonsURL.getProtocol())) {
-            try {
-                dungeonsDir = FileSystems.getFileSystem(dungeonsURL.toURI()).getPath(DUNGEONS_DATA_DIR);
-            } catch (URISyntaxException e) {
-                LOGGER.error("[Skyblocker] Failed to load dungeon secrets, unable to open dungeon rooms data directory", e);
-                return;
+        for (Map.Entry<Identifier, Resource> resourceEntry : MinecraftClient.getInstance().getResourceManager().findResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton")).entrySet()) {
+            String[] path = resourceEntry.getKey().getPath().split("/");
+            if (path.length != 4) {
+                LOGGER.error("[Skyblocker] Failed to load dungeon secrets, invalid resource identifier {}", resourceEntry.getKey());
+                break;
             }
-        }
-        int resourcePathIndex = dungeonsDir.toString().indexOf(DUNGEONS_DATA_DIR);
-        try (DirectoryStream<Path> dungeons = Files.newDirectoryStream(dungeonsDir, Files::isDirectory)) {
-            for (Path dungeon : dungeons) {
-                try (DirectoryStream<Path> roomShapes = Files.newDirectoryStream(dungeon, Files::isDirectory)) {
-                    List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
-                    HashMap<String, Map<String, int[]>> roomShapesMap = new HashMap<>();
-                    for (Path roomShape : roomShapes) {
-                        roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString(), rooms)));
-                    }
-                    ROOMS_DATA.put(dungeon.getFileName().toString(), roomShapesMap);
-                    dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(Map::size).sum()))); // TODO Change back to debug
-                } catch (IOException e) {
-                    LOGGER.error("[Skyblocker] Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
+            String dungeon = path[1];
+            String roomShape = path[2];
+            String room = path[3].substring(0, path[3].length() - ".skeleton".length());
+            ROOMS_DATA.computeIfAbsent(dungeon, dungeonKey -> new HashMap<>());
+            ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, roomShapeKey -> new HashMap<>());
+            dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue())).thenAcceptAsync(rooms -> {
+                Map<String, int[]> roomsMap = ROOMS_DATA.get(dungeon).get(roomShape);
+                synchronized (roomsMap) {
+                    roomsMap.put(room, rooms);
                 }
-            }
-        } catch (IOException e) {
-            LOGGER.error("[Skyblocker] Failed to load dungeon secrets", e);
+                LOGGER.debug("[Skyblocker] Loaded dungeon secrets dungeon {} room shape {} room {}", dungeon, roomShape, room);
+            }).exceptionally(e -> {
+                LOGGER.error("[Skyblocker] Failed to load dungeon secrets dungeon {} room shape {} room {}", dungeon, roomShape, room, e);
+                return null;
+            }));
         }
-        // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
         dungeonFutures.add(CompletableFuture.runAsync(() -> {
             try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
-                roomsJson = SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class);
-                waypointsJson = SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class);
-                LOGGER.info("[Skyblocker] Loaded dungeon secrets json"); // TODO Change back to debug
+                SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class).asMap().forEach((room, jsonElement) -> roomsJson.put(room.toLowerCase(), jsonElement));
+                SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class).asMap().forEach((room, jsonElement) -> waypointsJson.put(room.toLowerCase(), jsonElement));
+                LOGGER.debug("[Skyblocker] Loaded dungeon secrets json");
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to load dungeon secrets json", e);
             }
-        }, MinecraftClient.getInstance()));
-        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(Map::size).sum(), ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum())).exceptionally(e -> {
+        }));
+        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total in {} ms", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(Map::size).sum(), ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum(), System.currentTimeMillis() - startTime)).exceptionally(e -> {
             LOGGER.error("[Skyblocker] Failed to load dungeon secrets", e);
             return null;
         });
+        LOGGER.info("[Skyblocker] Started loading dungeon secrets in (blocked main thread for) {} ms", System.currentTimeMillis() - startTime);
     }
 
-    private static HashMap<String, int[]> readRooms(Path roomShape, int resourcePathIndex) {
-        try (DirectoryStream<Path> rooms = Files.newDirectoryStream(roomShape, Files::isRegularFile)) {
-            HashMap<String, int[]> roomsData = new HashMap<>();
-            for (Path room : rooms) {
-                String name = room.getFileName().toString();
-                //noinspection DataFlowIssue
-                try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(SkyblockerMod.class.getResourceAsStream(room.toString().substring(resourcePathIndex))))) {
-                    roomsData.put(name.substring(0, name.length() - 9), (int[]) in.readObject());
-                    LOGGER.info("[Skyblocker] Loaded dungeon secrets room {}", name); // TODO Change back to debug
-                } catch (NullPointerException | IOException | ClassNotFoundException e) {
-                    LOGGER.error("[Skyblocker] Failed to load dungeon secrets room " + name, e);
-                }
-            }
-            LOGGER.info("[Skyblocker] Loaded dungeon secrets room shape {} with {} rooms", roomShape.getFileName(), roomsData.size()); // TODO Change back to debug
-            return roomsData;
-        } catch (IOException e) {
-            LOGGER.error("[Skyblocker] Failed to load dungeon secrets room shape " + roomShape.getFileName(), e);
+    private static int[] readRoom(Resource resource) throws RuntimeException {
+        try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(resource.getInputStream()))) {
+            return (int[]) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**

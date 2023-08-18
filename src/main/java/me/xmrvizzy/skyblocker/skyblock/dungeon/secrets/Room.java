@@ -77,7 +77,7 @@ public class Room {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
-        roomsData = DungeonSecrets.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape, Collections.emptyMap());
+        roomsData = DungeonSecrets.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(), Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
@@ -287,7 +287,7 @@ public class Room {
     private void roomMatched(Triple<Direction, Vector2ic, List<String>> directionRooms) {
         Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
         String name = directionRooms.getRight().get(0);
-        for (JsonElement waypointElement : DungeonSecrets.getWaypointsJson().get(name).getAsJsonArray()) {
+        for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
             int secretIndex = Integer.parseInt(secretName.substring(0, Character.isDigit(secretName.charAt(1)) ? 2 : 1));
