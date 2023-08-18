@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
@@ -188,9 +189,10 @@ public class DungeonSecrets {
      * <p></p>
      * When entering a new dungeon, this method:
      * <ul>
+     *     <li> Gets the physical northwest corner position of the entrance room and saves it in {@link #physicalEntrancePos}. </li>
+     *     <li> Do nothing until the dungeon map exists. </li>
      *     <li> Gets the upper left corner of entrance room on the map and saves it in {@link #mapEntrancePos}. </li>
      *     <li> Gets the size of a room on the map in pixels and saves it in {@link #mapRoomSize}. </li>
-     *     <li> Gets the physical northwest corner position of the entrance room and saves it in {@link #physicalEntrancePos}. </li>
      *     <li> Creates a new {@link Room} with {@link Room.Type} {@link Room.Type.ENTRANCE ENTRANCE} and sets {@link #currentRoom}. </li>
      * </ul>
      * When processing an existing dungeon, this method:
@@ -222,6 +224,11 @@ public class DungeonSecrets {
         if (player == null || client.world == null) {
             return;
         }
+        if (physicalEntrancePos == null) {
+            Vec3d playerPos = player.getPos();
+            physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
+            currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
+        }
         ItemStack stack = player.getInventory().main.get(8);
         if (!stack.isOf(Items.FILLED_MAP)) {
             return;
@@ -230,31 +237,24 @@ public class DungeonSecrets {
         if (map == null) {
             return;
         }
-        if (mapEntrancePos == null && (mapEntrancePos = DungeonMapUtils.getMapEntrancePos(map)) == null) {
-            return;
-        }
-        if (mapRoomSize == 0 && (mapRoomSize = DungeonMapUtils.getMapRoomSize(map, mapEntrancePos)) == 0) {
-            return;
-        }
-        if (physicalEntrancePos == null) {
-            physicalEntrancePos = DungeonMapUtils.getPhysicalEntrancePos(map, player.getPos());
-            if (physicalEntrancePos == null) {
-                player.sendMessage(Text.translatable("skyblocker.dungeons.secrets.physicalEntranceNotFound"));
+        if (mapEntrancePos == null || mapRoomSize == 0) {
+            Pair<Vector2ic, Integer> mapEntrancePosAndSize = DungeonMapUtils.getMapEntrancePosAndRoomSize(map);
+            if (mapEntrancePosAndSize == null) {
                 return;
-            } else {
-                currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
-                LOGGER.info("[Skyblocker] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
             }
+            mapEntrancePos = mapEntrancePosAndSize.left();
+            mapRoomSize = mapEntrancePosAndSize.right();
+            LOGGER.info("[Skyblocker] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
         }
 
         Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(client.player.getPos());
         Vector2ic mapPos = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, physicalPos);
-        Room.Type type = DungeonMapUtils.getRoomType(map, mapPos);
-        if (type == null) {
-            return;
-        }
         Room room = rooms.get(physicalPos);
         if (room == null) {
+            Room.Type type = DungeonMapUtils.getRoomType(map, mapPos);
+            if (type == null || type == Room.Type.UNKNOWN) {
+                return;
+            }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
                 case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));

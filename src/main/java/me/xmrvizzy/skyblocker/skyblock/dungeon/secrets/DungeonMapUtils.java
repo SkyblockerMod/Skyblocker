@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
@@ -51,20 +52,49 @@ public class DungeonMapUtils {
     }
 
     @Nullable
-    public static Vector2ic getMapEntrancePos(MapState map) {
-        Vector2i mapPos = getMapPlayerPos(map);
-        DungeonSecrets.LOGGER.info("[Skyblocker] Trying to get dungeon map entrance pos from map player pos at {}", mapPos); // TODO remove
-        if (!isEntranceColor(map, mapPos)) {
-            return null;
+    public static Pair<Vector2ic, Integer> getMapEntrancePosAndRoomSize(@NotNull MapState map) {
+        Vector2ic mapPos = getMapPlayerPos(map);
+        Queue<Vector2ic> posToCheck = new ArrayDeque<>();
+        Set<Vector2ic> checked = new HashSet<>();
+        posToCheck.add(mapPos);
+        checked.add(mapPos);
+        while ((mapPos = posToCheck.poll()) != null) {
+            if (isEntranceColor(map, mapPos)) {
+                Pair<Vector2ic, Integer> mapEntranceAndRoomSizePos = getMapEntrancePosAndRoomSizeAt(map, mapPos);
+                if (mapEntranceAndRoomSizePos.right() > 0) {
+                    return mapEntranceAndRoomSizePos;
+                }
+            }
+            Vector2ic pos = new Vector2i(mapPos).sub(10, 0);
+            if (checked.add(pos)) {
+                posToCheck.add(pos);
+            }
+            pos = new Vector2i(mapPos).sub(0, 10);
+            if (checked.add(pos)) {
+                posToCheck.add(pos);
+            }
+            pos = new Vector2i(mapPos).add(10, 0);
+            if (checked.add(pos)) {
+                posToCheck.add(pos);
+            }
+            pos = new Vector2i(mapPos).add(0, 10);
+            if (checked.add(pos)) {
+                posToCheck.add(pos);
+            }
         }
-        // noinspection StatementWithEmptyBody, DataFlowIssue
+        return null;
+    }
+
+    private static Pair<Vector2ic, Integer> getMapEntrancePosAndRoomSizeAt(MapState map, Vector2ic mapPosImmutable) {
+        Vector2i mapPos = new Vector2i(mapPosImmutable);
+        // noinspection StatementWithEmptyBody
         while (isEntranceColor(map, mapPos.sub(1, 0))) {
         }
         mapPos.add(1, 0);
         //noinspection StatementWithEmptyBody
         while (isEntranceColor(map, mapPos.sub(0, 1))) {
         }
-        return mapPos.add(0, 1);
+        return Pair.of(mapPos.add(0, 1), getMapRoomSize(map, mapPos));
     }
 
     public static int getMapRoomSize(MapState map, Vector2ic mapEntrancePos) {
@@ -72,7 +102,7 @@ public class DungeonMapUtils {
         //noinspection StatementWithEmptyBody
         while (isEntranceColor(map, mapEntrancePos.x() + ++i, mapEntrancePos.y())) {
         }
-        return i;
+        return i > 5 ? i : 0;
     }
 
     /**
@@ -109,14 +139,6 @@ public class DungeonMapUtils {
      */
     public static Vector2ic getMapPosFromPhysical(Vector2ic physicalEntrancePos, Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalPos) {
         return new Vector2i(physicalPos).sub(physicalEntrancePos).div(32).mul(mapRoomSize + 4).add(mapEntrancePos);
-    }
-
-    @Nullable
-    public static Vector2ic getPhysicalEntrancePos(MapState map, @NotNull Vec3d playerPos) {
-        if (isEntranceColor(map, getMapPlayerPos(map))) {
-            return getPhysicalRoomPos(playerPos);
-        }
-        return null;
     }
 
     /**
