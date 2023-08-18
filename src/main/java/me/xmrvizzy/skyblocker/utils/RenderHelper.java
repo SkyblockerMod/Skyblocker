@@ -9,8 +9,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -20,6 +23,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import java.awt.*;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 public class RenderHelper {
@@ -67,6 +77,65 @@ public class RenderHelper {
             matrices.pop();
         }
     }
+    
+	/**
+	 * Draws lines from point to point.<br><br>
+	 * 
+	 * Tip: To draw lines from the center of a block, offset the X, Y and Z each by 0.5
+	 * 
+	 * @param context The WorldRenderContext which supplies the matrices and tick delta
+	 * @param points The points from which to draw lines between
+	 * @param colorComponents An array of R, G and B color components
+	 * @param alpha The alpha of the lines
+	 * @param lineWidth The width of the lines
+	 */
+	public static void renderLinesFromPoints(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, float lineWidth) {
+		Vec3d camera = context.camera().getPos();
+		MatrixStack matrices = context.matrixStack();
+		
+		matrices.push();
+		matrices.translate(-camera.x, -camera.y, -camera.z);
+		
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder buffer = tessellator.getBuffer();
+		Matrix4f projectionMatrix = matrices.peek().getPositionMatrix();
+		Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
+		
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+		
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderSystem.lineWidth(lineWidth);
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA);
+		RenderSystem.disableCull();
+		RenderSystem.enableDepthTest();
+				
+		buffer.begin(DrawMode.LINE_STRIP, VertexFormats.LINES);
+
+		for (int i = 0; i < points.length; i++) {
+			Vec3d point = points[i];
+			Vec3d nextPoint = (i + 1 == points.length) ? points[i - 1] : points[i + 1];
+			Vector3f normalVec = new Vector3f((float) nextPoint.getX(), (float) nextPoint.getY(), (float) nextPoint.getZ()).sub((float) point.getX(), (float) point.getY(), (float) point.getZ()).normalize();
+			
+			buffer
+			.vertex(projectionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
+			.color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
+			.normal(normalMatrix, normalVec.x, normalVec.y, normalVec.z)
+			.next();
+		}
+		
+		tessellator.draw();
+		
+		matrices.pop();
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		RenderSystem.lineWidth(1f);
+		RenderSystem.disableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.enableCull();
+		RenderSystem.disableDepthTest();
+	}
 
     public static void displayTitleAndPlaySound(int stayTicks, int fadeOutTicks, String titleKey, Formatting formatting) {
         MinecraftClient.getInstance().inGameHud.setTitleTicks(0, stayTicks, fadeOutTicks);

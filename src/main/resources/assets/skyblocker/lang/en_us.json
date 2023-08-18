@@ -206,6 +206,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.mapY": "Map Y",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Solve Blaze Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver.@Tooltip": "Boxes the correct blaze in green, also draws a line to and boxes the next blaze to kill in white.",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Solve Trivia Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "Livid Color",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "Enable Livid Color",
