@@ -1,12 +1,11 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.Utils;
-import me.xmrvizzy.skyblocker.utils.color.QuadColor;
 import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.RenderUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.color.QuadColor;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -17,7 +16,9 @@ import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class DungeonBlaze {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
@@ -37,7 +38,7 @@ public class DungeonBlaze {
             renderHooked = true;
         }
         Iterable<Entity> entities = world.getEntities();
-        List<ObjectIntPair<Entity>> blazes = new ArrayList<ObjectIntPair<Entity>>();
+        List<ObjectIntPair<Entity>> blazes = new ArrayList<>();
 
         for (Entity entity : entities) {
     		String blazeName = entity.getName().getString();
@@ -46,27 +47,27 @@ public class DungeonBlaze {
                 try {
                     int health = Integer.parseInt(blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1));
                     
-                	blazes.add(new ObjectIntImmutablePair<Entity>(entity, health));
+                	blazes.add(ObjectIntPair.of(entity, health));
                 } catch (NumberFormatException ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        
-        // Order the blazes in the list from highest health to lowest health
-        Collections.sort(blazes, Comparator.comparingInt(p -> -p.rightInt()));
-                
+
+        // Order the blazes in the list from the lowest health to the highest health
+        blazes.sort(Comparator.comparingInt(ObjectIntPair::rightInt));
+
         // Ensure that there are blazes in the list
-        if (blazes.size() >= 1) {
-            highestBlaze = blazes.get(0).left();
-            
-            int lowestIndex = blazes.size() - 1;
-            lowestBlaze = blazes.get(lowestIndex).left();
-            
+        if (!blazes.isEmpty()) {
+            lowestBlaze = blazes.get(0).left();
+
+            int highestIndex = blazes.size() - 1;
+            highestBlaze = blazes.get(highestIndex).left();
+
             // If there's more than 1 blaze
             if (blazes.size() > 1) {
-            	nextHighestBlaze = blazes.get(1).left();
-            	nextLowestBlaze = blazes.get(lowestIndex - 1).left();
+            	nextLowestBlaze = blazes.get(1).left();
+            	nextHighestBlaze = blazes.get(highestIndex - 1).left();
             }
         }
         
