@@ -53,13 +53,8 @@ public class DungeonBlaze {
             }
         }
         
-        // Order the blazes in the list from highest health to lowest health        
-        Collections.sort(blazes, new Comparator<>() {
-			@Override
-			public int compare(ObjectIntPair<Entity> o1, ObjectIntPair<Entity> o2) {
-				return -Integer.compare(o1.rightInt(), o2.rightInt());
-			}
-        });
+        // Order the blazes in the list from highest health to lowest health
+        Collections.sort(blazes, Comparator.comparingInt(p -> -p.rightInt()));
                 
         // Ensure that there are blazes in the list
         if (blazes.size() >= 1) {
