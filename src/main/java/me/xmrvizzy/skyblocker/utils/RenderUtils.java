@@ -41,6 +41,7 @@ public class RenderUtils {
         BufferBuilder buffer = tessellator.getBuffer();
 
         // Outline
+        RenderSystem.enableDepthTest();
         RenderSystem.disableCull();
         RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
         RenderSystem.lineWidth(lineWidth);
@@ -50,6 +51,7 @@ public class RenderUtils {
         tessellator.draw();
 
         RenderSystem.enableCull();
+        RenderSystem.disableDepthTest();
 
         cleanup();
     }

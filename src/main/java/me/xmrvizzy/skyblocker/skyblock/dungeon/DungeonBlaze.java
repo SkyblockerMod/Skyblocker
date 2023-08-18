@@ -1,8 +1,11 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.color.QuadColor;
+import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -10,70 +13,103 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.*;
+
 public class DungeonBlaze {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
+    private static final float[] WHITE_COLOR_COMPONENTS = { 1.0f, 1.0f, 1.0f };
     static Entity highestBlaze = null;
     static Entity lowestBlaze = null;
+    static Entity nextHighestBlaze = null;
+    static Entity nextLowestBlaze = null;
     static boolean renderHooked = false;
     
     public static void update() {
         ClientWorld world = MinecraftClient.getInstance().world;
         if (world == null || !Utils.isInDungeons()) return;
-        if(!renderHooked){
+        if (!renderHooked){
 
-            WorldRenderEvents.END.register(DungeonBlaze::blazeRenderer);
+            WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
             renderHooked = true;
         }
         Iterable<Entity> entities = world.getEntities();
-        int highestHealth = 0;
-        int lowestHealth = 99999999;
+        List<ObjectIntPair<Entity>> blazes = new ArrayList<ObjectIntPair<Entity>>();
 
         for (Entity entity : entities) {
-            if (entity.getName().getString().contains("Blaze") && entity.getName().getString().contains("/")) {
-        
-                String blazeName = entity.getName().getString();
+    		String blazeName = entity.getName().getString();
+    		
+            if (blazeName.contains("Blaze") && blazeName.contains("/")) {
                 try {
-                    
                     int health = Integer.parseInt(blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1));
-                  
-                    if (health > highestHealth) {
-                        highestHealth = health;
-                        
-                        highestBlaze = entity;
-                        
-                    }
-                    if (health < lowestHealth) {
-                        lowestHealth = health;
-                        lowestBlaze = entity;
-                    }
+                    
+                	blazes.add(new ObjectIntImmutablePair<Entity>(entity, health));
                 } catch (NumberFormatException ex) {
                     ex.printStackTrace();
                 }
             }
         }
+        
+        // Order the blazes in the list from highest health to lowest health        
+        Collections.sort(blazes, new Comparator<>() {
+			@Override
+			public int compare(ObjectIntPair<Entity> o1, ObjectIntPair<Entity> o2) {
+				return -Integer.compare(o1.rightInt(), o2.rightInt());
+			}
+        });
+                
+        // Ensure that there are blazes in the list
+        if (blazes.size() >= 1) {
+            highestBlaze = blazes.get(0).left();
+            
+            int lowestIndex = blazes.size() - 1;
+            lowestBlaze = blazes.get(lowestIndex).left();
+            
+            // If there's more than 1 blaze
+            if (blazes.size() > 1) {
+            	nextHighestBlaze = blazes.get(1).left();
+            	nextLowestBlaze = blazes.get(lowestIndex - 1).left();
+            }
+        }
+        
     }
     public static void blazeRenderer(WorldRenderContext wrc) {
         QuadColor outlineColorRed = QuadColor.single( 0.0F, 1.0F, 0.0F, 1f);
         QuadColor outlineColorGreen = QuadColor.single(1.0F, 0.0F, 0.0F, 1f);
+        QuadColor outlineColorWhite = QuadColor.single(1.0f, 1.0f, 1.0f, 1.0f);
+        
         try {
-            if(highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfig.get().locations.dungeons.blazesolver){
+            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfig.get().locations.dungeons.blazesolver){
                 /* Outline */
-                if(highestBlaze.getY() <69) {
+                if (highestBlaze.getY() < 69) {
                     Box blaze = highestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
                     RenderUtils.drawBoxOutline(blaze, outlineColorRed, 5f);
+                    
+                    if (nextHighestBlaze != null && nextHighestBlaze.isAlive() && nextHighestBlaze != highestBlaze) {
+                        Box nextBlaze = nextHighestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
+                        RenderUtils.drawBoxOutline(nextBlaze, outlineColorWhite, 5f);
+                        RenderHelper.renderLinesFromPoints(wrc, new Vec3d[] { blaze.getCenter(), nextBlaze.getCenter() }, WHITE_COLOR_COMPONENTS, 1f, 5f);
+                    }
                 }
 
                 /* Outline */
-                if(lowestBlaze.getY() >69) {
+                if (lowestBlaze.getY() > 69) {
                     Box blaze = lowestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
                     RenderUtils.drawBoxOutline(blaze, outlineColorRed, 5f);
+                    
+                    if (nextLowestBlaze != null && nextLowestBlaze.isAlive() && nextLowestBlaze != lowestBlaze) {
+                        Box nextBlaze = nextLowestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
+                        RenderUtils.drawBoxOutline(nextBlaze, outlineColorWhite, 5f);
+                        RenderHelper.renderLinesFromPoints(wrc, new Vec3d[] { blaze.getCenter(), nextBlaze.getCenter() }, WHITE_COLOR_COMPONENTS, 1f, 5f);
+                    }
                 }
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.warn("[Skyblocker BlazeRenderer] " + e);
+            e.printStackTrace();
         }
     }
 }
