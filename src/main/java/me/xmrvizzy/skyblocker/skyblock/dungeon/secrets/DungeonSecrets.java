@@ -3,12 +3,18 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -41,6 +47,9 @@ import java.io.ObjectInputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.InflaterInputStream;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
@@ -133,6 +142,9 @@ public class DungeonSecrets {
         ClientReceiveMessageEvents.GAME.register(DungeonSecrets::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonSecrets::onChatMessage);
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
+                .then(literal("markAsFound").then(markSecretsCommand(true)))
+                .then(literal("markAsMissing").then(markSecretsCommand(false)))))));
     }
 
     private static void load() {
@@ -182,6 +194,18 @@ public class DungeonSecrets {
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, Integer>> markSecretsCommand(boolean found) {
+        return argument("secret", IntegerArgumentType.integer()).executes(context -> {
+            int secretIndex = IntegerArgumentType.getInteger(context, "secret");
+            if (markSecrets(secretIndex, found)) {
+                context.getSource().sendFeedback(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex));
+            } else {
+                context.getSource().sendError(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex));
+            }
+            return Command.SINGLE_SUCCESS;
+        });
     }
 
     /**
@@ -337,6 +361,14 @@ public class DungeonSecrets {
                 room.onItemPickup(itemEntity, collector);
             }
         }
+    }
+
+    public static boolean markSecrets(int secretIndex, boolean found) {
+        if (isCurrentRoomMatched()) {
+            currentRoom.markSecrets(secretIndex, found);
+            return true;
+        }
+        return false;
     }
 
     /**

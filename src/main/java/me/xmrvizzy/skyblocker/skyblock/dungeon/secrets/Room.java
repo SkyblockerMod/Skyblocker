@@ -397,6 +397,10 @@ public class Room {
         DungeonSecrets.LOGGER.info(msg, args);
     }
 
+    protected void markSecrets(int secretIndex, boolean found) {
+        secretWaypoints.row(secretIndex).values().forEach(SecretWaypoint.getStatusSetter(found));
+    }
+
     public enum Type {
         ENTRANCE(MapColor.DARK_GREEN.getRenderColorByte(MapColor.Brightness.HIGH)),
         ROOM(MapColor.ORANGE.getRenderColorByte(MapColor.Brightness.LOWEST)),
