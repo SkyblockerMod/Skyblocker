@@ -138,7 +138,7 @@ public class DwarvenHud {
         });
     }
 
-    // steamroller tactics to get visibility from outside classes (CommsWidget)
+    // steamroller tactics to get visibility from outside classes (HudCommsWidget)
     public record Commission(String commission, String progression) {
     }
 }
