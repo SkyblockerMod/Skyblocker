@@ -23,7 +23,7 @@ public class AlignStage extends PipelineStage {
         LEFT("left"),
         RIGHT("right");
 
-        private String str;
+        private final String str;
 
         private AlignReference(String d) {
             this.str = d;

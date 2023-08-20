@@ -20,10 +20,9 @@ public class PlaceStage extends PipelineStage {
         TRCORNER("cornerTopRight"),
         TLCORNER("cornerTopLeft"),
         BRCORNER("cornerBotRight"),
-        BLCORNER("cornerBotLeft"),
-        ;
+        BLCORNER("cornerBotLeft");
 
-        private String str;
+        private final String str;
 
         private PlaceLocation(String d) {
             this.str = d;

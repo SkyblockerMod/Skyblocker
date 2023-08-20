@@ -15,7 +15,7 @@ public class StackStage extends PipelineStage {
         HORIZONTAL("horizontal"),
         VERTICAL("vertical");
 
-        private String str;
+        private final String str;
 
         private StackDirection(String d) {
             this.str = d;
@@ -38,7 +38,7 @@ public class StackStage extends PipelineStage {
         RIGHT("right"),
         CENTER("center");
 
-        private String str;
+        private final String str;
 
         private StackAlign(String d) {
             this.str = d;

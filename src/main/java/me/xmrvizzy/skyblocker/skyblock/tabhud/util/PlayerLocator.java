@@ -29,7 +29,7 @@ public class PlayerLocator {
         DARK_AUCTION("dark_auction"),
         UNKNOWN("unknown");
 
-        public String internal;
+        public final String internal;
 
         private Location(String i) {
             // as used internally by the mod, e.g. in the json

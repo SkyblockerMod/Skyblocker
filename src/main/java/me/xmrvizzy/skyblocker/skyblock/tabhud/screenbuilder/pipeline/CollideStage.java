@@ -17,7 +17,7 @@ public class CollideStage extends PipelineStage {
         TOP("top"),
         BOT("bot");
 
-        private String str;
+        private final String str;
 
         private CollideDirection(String d) {
             this.str = d;
