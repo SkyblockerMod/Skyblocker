@@ -324,7 +324,7 @@ public class Room {
      */
     protected void render(WorldRenderContext context) {
         for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
-            if (secretWaypoint.isMissing()) {
+            if (secretWaypoint.shouldRender()) {
                 secretWaypoint.render(context);
             }
         }

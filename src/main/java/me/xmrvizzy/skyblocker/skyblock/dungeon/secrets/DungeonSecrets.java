@@ -120,7 +120,7 @@ public class DungeonSecrets {
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
      */
     public static void init() {
-        if (SkyblockerConfig.get().locations.dungeons.noInitSecretWaypoints) {
+        if (SkyblockerConfig.get().locations.dungeons.secretWaypoints.noInitSecretWaypoints) {
             return;
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
@@ -210,7 +210,7 @@ public class DungeonSecrets {
      */
     @SuppressWarnings("JavadocReference")
     private static void update() {
-        if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints) {
+        if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints.enableSecretWaypoints) {
             return;
         }
         if (!Utils.isInDungeons()) {
@@ -378,7 +378,7 @@ public class DungeonSecrets {
      * @return whether dungeon secrets should be processed
      */
     private static boolean shouldProcess() {
-        return SkyblockerConfig.get().locations.dungeons.secretWaypoints && Utils.isInDungeons();
+        return SkyblockerConfig.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && Utils.isInDungeons();
     }
 
     /**

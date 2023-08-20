@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -10,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class SecretWaypoint {
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
@@ -29,8 +31,8 @@ public class SecretWaypoint {
         this.missing = true;
     }
 
-    public boolean isMissing() {
-        return missing;
+    public boolean shouldRender() {
+        return category.isEnabled() && missing;
     }
 
     public void setFound() {
@@ -49,19 +51,21 @@ public class SecretWaypoint {
     }
 
     enum Category {
-        ENTRANCE(0, 255, 0),
-        SUPERBOOM(255, 0, 0),
-        CHEST(2, 213, 250),
-        ITEM(2, 64, 250),
-        BAT(142, 66, 0),
-        WITHER(30, 30, 30),
-        LEVER(250, 217, 2),
-        FAIRYSOUL(255, 85, 255),
-        STONK(146, 52, 235),
-        DEFAULT(190, 255, 252);
+        ENTRANCE(secretWaypoints -> secretWaypoints.enableEntranceWaypoints, 0, 255, 0),
+        SUPERBOOM(secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, 255, 0, 0),
+        CHEST(secretWaypoints -> secretWaypoints.enableChestWaypoints, 2, 213, 250),
+        ITEM(secretWaypoints -> secretWaypoints.enableItemWaypoints, 2, 64, 250),
+        BAT(secretWaypoints -> secretWaypoints.enableBatWaypoints, 142, 66, 0),
+        WITHER(secretWaypoints -> secretWaypoints.enableWitherWaypoints, 30, 30, 30),
+        LEVER(secretWaypoints -> secretWaypoints.enableLeverWaypoints, 250, 217, 2),
+        FAIRYSOUL(secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, 255, 85, 255),
+        STONK(secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
+        DEFAULT(secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
+        private final Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate;
         private final float[] colorComponents;
 
-        Category(int... intColorComponents) {
+        Category(Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate, int... intColorComponents) {
+            this.enabledPredicate = enabledPredicate;
             colorComponents = new float[intColorComponents.length];
             for (int i = 0; i < intColorComponents.length; i++) {
                 colorComponents[i] = intColorComponents[i] / 255F;
@@ -89,6 +93,10 @@ public class SecretWaypoint {
 
         boolean needsItemPickup() {
             return this == ITEM || this == BAT;
+        }
+
+        boolean isEnabled() {
+            return enabledPredicate.test(SkyblockerConfig.get().locations.dungeons.secretWaypoints);
         }
     }
 }
