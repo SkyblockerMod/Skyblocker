@@ -5,6 +5,7 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -12,6 +13,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 
 public class SecretWaypoint {
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
@@ -31,8 +33,24 @@ public class SecretWaypoint {
         this.missing = true;
     }
 
+    static ToDoubleFunction<SecretWaypoint> getSquaredDistanceToFunction(Entity entity) {
+        return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos);
+    }
+
+    static Predicate<SecretWaypoint> getRangePredicate(Entity entity) {
+        return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos) <= 36D;
+    }
+
     public boolean shouldRender() {
         return category.isEnabled() && missing;
+    }
+
+    boolean needsInteraction() {
+        return category.needsInteraction();
+    }
+
+    boolean needsItemPickup() {
+        return category.needsItemPickup();
     }
 
     public void setFound() {

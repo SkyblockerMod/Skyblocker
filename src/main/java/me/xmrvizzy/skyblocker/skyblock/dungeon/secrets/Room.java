@@ -366,7 +366,7 @@ public class Room {
         if (!state.isOf(Blocks.CHEST) && !state.isOf(Blocks.PLAYER_HEAD) && !state.isOf(Blocks.PLAYER_WALL_HEAD)) {
             return;
         }
-        secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(secretWaypoint -> secretWaypoint.category.needsInteraction()).findAny()
+        secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
                 .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
@@ -381,7 +381,7 @@ public class Room {
         if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getStack().getName().getString()::contains)) {
             return;
         }
-        secretWaypoints.values().stream().filter(secretWaypoint -> secretWaypoint.category.needsItemPickup()).min(Comparator.comparingDouble(secretWaypoint -> collector.squaredDistanceTo(secretWaypoint.centerPos))).filter(secretWaypoint -> collector.squaredDistanceTo(secretWaypoint.centerPos) <= 36D)
+        secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(collector))).filter(SecretWaypoint.getRangePredicate(collector))
                 .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} picked up a {} from a {} secret, setting secret #{} as found", collector.getName().getString(), itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
