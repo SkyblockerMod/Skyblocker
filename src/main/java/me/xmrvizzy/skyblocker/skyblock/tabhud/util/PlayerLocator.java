@@ -7,7 +7,7 @@ import me.xmrvizzy.skyblocker.utils.Utils;
  */
 public class PlayerLocator {
 
-    public static enum Location {
+    public enum Location {
         DUNGEON("dungeon"),
         GUEST_ISLAND("guest_island"),
         HOME_ISLAND("home_island"),
@@ -31,7 +31,7 @@ public class PlayerLocator {
 
         public final String internal;
 
-        private Location(String i) {
+        Location(String i) {
             // as used internally by the mod, e.g. in the json
             this.internal = i;
         }
@@ -44,60 +44,44 @@ public class PlayerLocator {
             return Location.UNKNOWN;
         }
 
-        String areaDesciptor = PlayerListMgr.strAt(41);
+        String areaDescriptor = PlayerListMgr.strAt(41);
 
-        if (areaDesciptor == null || areaDesciptor.length() < 6) {
+        if (areaDescriptor == null || areaDescriptor.length() < 6) {
             return Location.UNKNOWN;
         }
 
-        if (areaDesciptor.startsWith("Dungeon")) {
+        if (areaDescriptor.startsWith("Dungeon")) {
             return Location.DUNGEON;
         }
 
-        switch (areaDesciptor.substring(6)) {
-            case "Private Island":
+        return switch (areaDescriptor.substring(6)) {
+            case "Private Island" -> {
                 String islandType = PlayerListMgr.strAt(44);
                 if (islandType == null) {
-                    return Location.UNKNOWN;
+                    yield Location.UNKNOWN;
                 } else if (islandType.endsWith("Guest")) {
-                    return Location.GUEST_ISLAND;
+                    yield Location.GUEST_ISLAND;
                 } else {
-                    return Location.HOME_ISLAND;
+                    yield Location.HOME_ISLAND;
                 }
-            case "Crimson Isle":
-                return Location.CRIMSON_ISLE;
-            case "Dungeon Hub":
-                return Location.DUNGEON_HUB;
-            case "The Farming Islands":
-                return Location.FARMING_ISLAND;
-            case "The Park":
-                return Location.PARK;
-            case "Dwarven Mines":
-                return Location.DWARVEN_MINES;
-            case "Crystal Hollows":
-                return Location.CRYSTAL_HOLLOWS;
-            case "The End":
-                return Location.END;
-            case "Gold Mine":
-                return Location.GOLD_MINE;
-            case "Deep Caverns":
-                return Location.DEEP_CAVERNS;
-            case "Hub":
-                return Location.HUB;
-            case "Spider's Den":
-                return Location.SPIDER_DEN;
-            case "Jerry's Workshop":
-                return Location.JERRY;
-            case "Garden":
-                return Location.GARDEN;
-            case "Instanced":
-                return Location.INSTANCED;
-            case "The Rift":
-            	return Location.THE_RIFT;
-            case "Dark Auction":
-            	return Location.DARK_AUCTION;
-            default:
-                return Location.UNKNOWN;
-        }
+            }
+            case "Crimson Isle" -> Location.CRIMSON_ISLE;
+            case "Dungeon Hub" -> Location.DUNGEON_HUB;
+            case "The Farming Islands" -> Location.FARMING_ISLAND;
+            case "The Park" -> Location.PARK;
+            case "Dwarven Mines" -> Location.DWARVEN_MINES;
+            case "Crystal Hollows" -> Location.CRYSTAL_HOLLOWS;
+            case "The End" -> Location.END;
+            case "Gold Mine" -> Location.GOLD_MINE;
+            case "Deep Caverns" -> Location.DEEP_CAVERNS;
+            case "Hub" -> Location.HUB;
+            case "Spider's Den" -> Location.SPIDER_DEN;
+            case "Jerry's Workshop" -> Location.JERRY;
+            case "Garden" -> Location.GARDEN;
+            case "Instanced" -> Location.INSTANCED;
+            case "The Rift" -> Location.THE_RIFT;
+            case "Dark Auction" -> Location.DARK_AUCTION;
+            default -> Location.UNKNOWN;
+        };
     }
 }

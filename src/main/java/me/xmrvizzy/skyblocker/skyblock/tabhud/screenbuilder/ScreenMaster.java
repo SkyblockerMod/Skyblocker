@@ -7,15 +7,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerLocator;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -33,9 +29,9 @@ public class ScreenMaster {
 
     private static final int VERSION = 1;
 
-    private static HashMap<String, ScreenBuilder> standardMap = new HashMap<>();
-    private static HashMap<String, ScreenBuilder> screenAMap = new HashMap<>();
-    private static HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
+    private static final HashMap<String, ScreenBuilder> standardMap = new HashMap<>();
+    private static final HashMap<String, ScreenBuilder> screenAMap = new HashMap<>();
+    private static final HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
 
     /**
      * Load a screen mapping from an identifier
@@ -49,12 +45,10 @@ public class ScreenMaster {
         location = location.replace(".json", "");
 
         ScreenBuilder sb = new ScreenBuilder(ident);
-        if (screenType.equals("standard")) {
-            standardMap.put(location, sb);
-        } else if (screenType.equals("screen_a")) {
-            screenAMap.put(location, sb);
-        } else if (screenType.equals("screen_b")) {
-            screenBMap.put(location, sb);
+        switch (screenType) {
+            case "standard" -> standardMap.put(location, sb);
+            case "screen_a" -> screenAMap.put(location, sb);
+            case "screen_b" -> screenBMap.put(location, sb);
         }
     }
 
@@ -117,7 +111,7 @@ public class ScreenMaster {
                                 .entrySet()) {
 
                             try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager()
-                                    .openAsReader(entry.getKey());) {
+                                    .openAsReader(entry.getKey())) {
                                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                                  if (json.get("format_version").getAsInt() != VERSION) {
                                     throw new IllegalStateException(String.format("Resource pack isn't compatible! Expected version %d, got %d", VERSION, json.get("format_version").getAsInt()));

@@ -25,13 +25,13 @@ import net.minecraft.util.Formatting;
  */
 public abstract class Widget {
 
-    private ArrayList<Component> components = new ArrayList<>();
+    private final ArrayList<Component> components = new ArrayList<>();
     private int w = 0, h = 0;
     private int x = 0, y = 0;
-    private int color;
-    private Text title;
+    private final int color;
+    private final Text title;
 
-    private static TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
+    private static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
 
     static final int BORDER_SZE_N = txtRend.fontHeight + 4;
     static final int BORDER_SZE_S = 4;

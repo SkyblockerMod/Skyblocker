@@ -13,7 +13,7 @@ public abstract class Component {
     public static final int PAD_S = 2;
     public static final int PAD_L = 4;
 
-    static TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
+    static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
 
     // these should always be the content dimensions without any padding.
     int width, height;

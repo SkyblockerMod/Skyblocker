@@ -19,7 +19,7 @@ public class CollideStage extends PipelineStage {
 
         private final String str;
 
-        private CollideDirection(String d) {
+        CollideDirection(String d) {
             this.str = d;
         }
 
@@ -33,16 +33,16 @@ public class CollideStage extends PipelineStage {
         }
     }
 
-    private CollideDirection direction;
+    private final CollideDirection direction;
 
     public CollideStage(ScreenBuilder builder, JsonObject descr) {
         this.direction = CollideDirection.parse(descr.get("direction").getAsString());
-        this.primary = new ArrayList<Widget>(descr.getAsJsonArray("widgets")
+        this.primary = new ArrayList<>(descr.getAsJsonArray("widgets")
                 .asList()
                 .stream()
                 .map(x -> builder.getInstance(x.getAsString()))
                 .toList());
-        this.secondary = new ArrayList<Widget>(descr.getAsJsonArray("colliders")
+        this.secondary = new ArrayList<>(descr.getAsJsonArray("colliders")
                 .asList()
                 .stream()
                 .map(x -> builder.getInstance(x.getAsString()))
@@ -51,18 +51,10 @@ public class CollideStage extends PipelineStage {
 
     public void run(int screenW, int screenH) {
         switch (this.direction) {
-            case LEFT:
-                primary.forEach(w -> collideAgainstL(screenW, w));
-                break;
-            case RIGHT:
-                primary.forEach(w -> collideAgainstR(screenW, w));
-                break;
-            case TOP:
-                primary.forEach(w -> collideAgainstT(screenH, w));
-                break;
-            case BOT:
-                primary.forEach(w -> collideAgainstB(screenH, w));
-                break;
+            case LEFT -> primary.forEach(w -> collideAgainstL(screenW, w));
+            case RIGHT -> primary.forEach(w -> collideAgainstR(screenW, w));
+            case TOP -> primary.forEach(w -> collideAgainstT(screenH, w));
+            case BOT -> primary.forEach(w -> collideAgainstB(screenH, w));
         }
     }
 

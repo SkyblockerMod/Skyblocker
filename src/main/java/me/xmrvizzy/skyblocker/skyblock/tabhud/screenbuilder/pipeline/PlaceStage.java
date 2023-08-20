@@ -24,7 +24,7 @@ public class PlaceStage extends PipelineStage {
 
         private final String str;
 
-        private PlaceLocation(String d) {
+        PlaceLocation(String d) {
             this.str = d;
         }
 
@@ -38,11 +38,11 @@ public class PlaceStage extends PipelineStage {
         }
     }
 
-    private PlaceLocation where;
+    private final PlaceLocation where;
 
     public PlaceStage(ScreenBuilder builder, JsonObject descr) {
         this.where = PlaceLocation.parse(descr.get("where").getAsString());
-        this.primary = new ArrayList<Widget>(descr.getAsJsonArray("apply_to")
+        this.primary = new ArrayList<>(descr.getAsJsonArray("apply_to")
                 .asList()
                 .stream()
                 .map(x -> builder.getInstance(x.getAsString()))
@@ -53,42 +53,42 @@ public class PlaceStage extends PipelineStage {
     public void run(int screenW, int screenH) {
         Widget wid = primary.get(0);
         switch (where) {
-            case CENTER:
+            case CENTER -> {
                 wid.setX((screenW - wid.getWidth()) / 2);
                 wid.setY((screenH - wid.getHeight()) / 2);
-                break;
-            case TOPCENT:
+            }
+            case TOPCENT -> {
                 wid.setX((screenW - wid.getWidth()) / 2);
                 wid.setY(ScreenConst.getScreenPad());
-                break;
-            case BOTCENT:
+            }
+            case BOTCENT -> {
                 wid.setX((screenW - wid.getWidth()) / 2);
                 wid.setY((screenH - wid.getHeight()) - ScreenConst.getScreenPad());
-                break;
-            case LEFTCENT:
+            }
+            case LEFTCENT -> {
                 wid.setX(ScreenConst.getScreenPad());
                 wid.setY((screenH - wid.getHeight()) / 2);
-                break;
-            case RIGHTCENT:
+            }
+            case RIGHTCENT -> {
                 wid.setX((screenW - wid.getWidth()) - ScreenConst.getScreenPad());
                 wid.setY((screenH - wid.getHeight()) / 2);
-                break;
-            case TLCORNER:
+            }
+            case TLCORNER -> {
                 wid.setX(ScreenConst.getScreenPad());
                 wid.setY(ScreenConst.getScreenPad());
-                break;
-            case TRCORNER:
+            }
+            case TRCORNER -> {
                 wid.setX((screenW - wid.getWidth()) - ScreenConst.getScreenPad());
                 wid.setY(ScreenConst.getScreenPad());
-                break;
-            case BLCORNER:
+            }
+            case BLCORNER -> {
                 wid.setX(ScreenConst.getScreenPad());
                 wid.setY((screenH - wid.getHeight()) - ScreenConst.getScreenPad());
-                break;
-            case BRCORNER:
+            }
+            case BRCORNER -> {
                 wid.setX((screenW - wid.getWidth()) - ScreenConst.getScreenPad());
                 wid.setY((screenH - wid.getHeight()) - ScreenConst.getScreenPad());
-                break;
+            }
         }
     }
 }

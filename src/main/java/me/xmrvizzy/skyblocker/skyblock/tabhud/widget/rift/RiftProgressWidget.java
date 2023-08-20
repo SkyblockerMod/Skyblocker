@@ -36,7 +36,7 @@ public class RiftProgressWidget extends Widget {
 
 		boolean hasTimecharms = false;
 		boolean hasEnigmaSouls = false;
-		int montezumaPos = 0;
+		int montezumaPos;
 
 		// Check each position to see what is or isn't there so we don't try adding
 		// invalid components

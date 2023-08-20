@@ -11,7 +11,7 @@ import net.minecraft.util.Formatting;
 public class EventWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
 
-    private boolean isInGarden;
+    private final boolean isInGarden;
 
     public EventWidget(boolean isInGarden) {
         super(TITLE, Formatting.YELLOW.getColorValue());

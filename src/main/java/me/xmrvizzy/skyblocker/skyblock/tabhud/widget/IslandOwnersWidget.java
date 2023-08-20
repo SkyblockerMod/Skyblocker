@@ -37,8 +37,8 @@ public class IslandOwnersWidget extends Widget {
                 break;
             }
 
-            String name = null, lastseen = null;
-            Formatting format = null;
+            String name, lastseen;
+            Formatting format;
             if (m.group("nameA") != null) {
                 name = m.group("nameA");
                 lastseen = m.group("lastseen");

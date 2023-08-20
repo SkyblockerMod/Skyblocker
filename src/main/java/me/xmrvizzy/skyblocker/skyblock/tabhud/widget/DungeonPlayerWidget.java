@@ -45,7 +45,7 @@ public class DungeonPlayerWidget extends Widget {
         MSGS.add("More is better!");
     }
 
-    private int player;
+    private final int player;
 
     // title needs to be changeable here
     public DungeonPlayerWidget(int player) {

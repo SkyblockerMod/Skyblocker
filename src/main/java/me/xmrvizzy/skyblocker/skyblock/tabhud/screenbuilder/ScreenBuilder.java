@@ -28,21 +28,21 @@ import net.minecraft.util.Identifier;
 public class ScreenBuilder {
 
     // layout pipeline
-    private ArrayList<PipelineStage> layoutPipeline = new ArrayList<>();
+    private final ArrayList<PipelineStage> layoutPipeline = new ArrayList<>();
 
     // all widget instances this builder knows
-    private ArrayList<Widget> instances = new ArrayList<>();
+    private final ArrayList<Widget> instances = new ArrayList<>();
     // maps alias -> widget instance
-    private HashMap<String, Widget> objectMap = new HashMap<>();
+    private final HashMap<String, Widget> objectMap = new HashMap<>();
 
-    private String builderName;
+    private final String builderName;
 
     /**
      * Create a ScreenBuilder from a json.
      */
     public ScreenBuilder(Identifier ident) {
 
-        try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager().openAsReader(ident);) {
+        try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager().openAsReader(ident)) {
             this.builderName = ident.getPath();
 
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
@@ -79,23 +79,23 @@ public class ScreenBuilder {
         // do widgets that require args the normal way
         JsonElement arg;
         switch (name) {
-            case "EventWidget":
+            case "EventWidget" -> {
                 return new EventWidget(widget.get("inGarden").getAsBoolean());
-
-            case "DungeonPlayerWidget":
+            }
+            case "DungeonPlayerWidget" -> {
                 return new DungeonPlayerWidget(widget.get("player").getAsInt());
-
-            case "ErrorWidget":
+            }
+            case "ErrorWidget" -> {
                 arg = widget.get("text");
                 if (arg == null) {
                     return new ErrorWidget();
                 } else {
                     return new ErrorWidget(arg.getAsString());
                 }
-
-            case "Widget":
+            }
+            case "Widget" ->
                 // clown case sanity check. don't instantiate the superclass >:|
-                throw new NoSuchElementException(builderName + "[ERROR]: No such Widget type \"Widget\"!");
+                    throw new NoSuchElementException(builderName + "[ERROR]: No such Widget type \"Widget\"!");
         }
 
         // reflect something together for the "normal" ones.
@@ -143,18 +143,13 @@ public class ScreenBuilder {
 
         String op = descr.get("op").getAsString();
 
-        switch (op) {
-            case "place":
-                return new PlaceStage(this, descr);
-            case "stack":
-                return new StackStage(this, descr);
-            case "align":
-                return new AlignStage(this, descr);
-            case "collideAgainst":
-                return new CollideStage(this, descr);
-            default:
-                throw new NoSuchElementException("No such op " + op + " as requested by " + this.builderName);
-        }
+        return switch (op) {
+            case "place" -> new PlaceStage(this, descr);
+            case "stack" -> new StackStage(this, descr);
+            case "align" -> new AlignStage(this, descr);
+            case "collideAgainst" -> new CollideStage(this, descr);
+            default -> throw new NoSuchElementException("No such op " + op + " as requested by " + this.builderName);
+        };
     }
 
     /**

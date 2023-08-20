@@ -22,21 +22,21 @@ public class VolcanoWidget extends Widget {
 
     static {
         BOOM_TYPE.put("INACTIVE",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.BARRIER), Formatting.DARK_GRAY));
+                new Pair<>(new ItemStack(Items.BARRIER), Formatting.DARK_GRAY));
         BOOM_TYPE.put("CHILL",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.ICE), Formatting.AQUA));
+                new Pair<>(new ItemStack(Items.ICE), Formatting.AQUA));
         BOOM_TYPE.put("LOW",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.FLINT_AND_STEEL), Formatting.GRAY));
+                new Pair<>(new ItemStack(Items.FLINT_AND_STEEL), Formatting.GRAY));
         BOOM_TYPE.put("DISRUPTIVE",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.CAMPFIRE), Formatting.WHITE));
+                new Pair<>(new ItemStack(Items.CAMPFIRE), Formatting.WHITE));
         BOOM_TYPE.put("MEDIUM",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.LAVA_BUCKET), Formatting.YELLOW));
+                new Pair<>(new ItemStack(Items.LAVA_BUCKET), Formatting.YELLOW));
         BOOM_TYPE.put("HIGH",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.FIRE_CHARGE), Formatting.GOLD));
+                new Pair<>(new ItemStack(Items.FIRE_CHARGE), Formatting.GOLD));
         BOOM_TYPE.put("EXPLOSIVE",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.TNT), Formatting.RED));
+                new Pair<>(new ItemStack(Items.TNT), Formatting.RED));
         BOOM_TYPE.put("CATACLYSMIC",
-                new Pair<ItemStack, Formatting>(new ItemStack(Items.SKELETON_SKULL), Formatting.DARK_RED));
+                new Pair<>(new ItemStack(Items.SKELETON_SKULL), Formatting.DARK_RED));
     }
 
     public VolcanoWidget() {

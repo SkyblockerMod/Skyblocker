@@ -25,7 +25,7 @@ public class AlignStage extends PipelineStage {
 
         private final String str;
 
-        private AlignReference(String d) {
+        AlignReference(String d) {
             this.str = d;
         }
 
@@ -39,11 +39,11 @@ public class AlignStage extends PipelineStage {
         }
     }
 
-    private AlignReference reference;
+    private final AlignReference reference;
 
     public AlignStage(ScreenBuilder builder, JsonObject descr) {
         this.reference = AlignReference.parse(descr.get("reference").getAsString());
-        this.primary = new ArrayList<Widget>(descr.getAsJsonArray("apply_to")
+        this.primary = new ArrayList<>(descr.getAsJsonArray("apply_to")
                 .asList()
                 .stream()
                 .map(x -> builder.getInstance(x.getAsString()))
@@ -54,40 +54,28 @@ public class AlignStage extends PipelineStage {
         int wHalf, hHalf;
         for (Widget wid : primary) {
             switch (this.reference) {
-                case HORICENT:
-                    wid.setX((screenW - wid.getWidth()) / 2);
-                    break;
-                case VERTCENT:
-                    wid.setY((screenH - wid.getHeight()) / 2);
-                    break;
-                case LEFTCENT:
+                case HORICENT -> wid.setX((screenW - wid.getWidth()) / 2);
+                case VERTCENT -> wid.setY((screenH - wid.getHeight()) / 2);
+                case LEFTCENT -> {
                     wHalf = screenW / 2;
                     wid.setX(wHalf - ScreenConst.WIDGET_PAD_HALF - wid.getWidth());
-                    break;
-                case RIGHTCENT:
+                }
+                case RIGHTCENT -> {
                     wHalf = screenW / 2;
                     wid.setX(wHalf + ScreenConst.WIDGET_PAD_HALF);
-                    break;
-                case TOPCENT:
+                }
+                case TOPCENT -> {
                     hHalf = screenH / 2;
                     wid.setY(hHalf - ScreenConst.WIDGET_PAD_HALF - wid.getHeight());
-                    break;
-                case BOTCENT:
+                }
+                case BOTCENT -> {
                     hHalf = screenH / 2;
                     wid.setY(hHalf + ScreenConst.WIDGET_PAD_HALF);
-                    break;
-                case TOP:
-                    wid.setY(ScreenConst.getScreenPad());
-                    break;
-                case BOT:
-                    wid.setY(screenH - wid.getHeight() - ScreenConst.getScreenPad());
-                    break;
-                case LEFT:
-                    wid.setX(ScreenConst.getScreenPad());
-                    break;
-                case RIGHT:
-                    wid.setX(screenW - wid.getWidth() - ScreenConst.getScreenPad());
-                    break;
+                }
+                case TOP -> wid.setY(ScreenConst.getScreenPad());
+                case BOT -> wid.setY(screenH - wid.getHeight() - ScreenConst.getScreenPad());
+                case LEFT -> wid.setX(ScreenConst.getScreenPad());
+                case RIGHT -> wid.setX(screenW - wid.getWidth() - ScreenConst.getScreenPad());
             }
         }
     }

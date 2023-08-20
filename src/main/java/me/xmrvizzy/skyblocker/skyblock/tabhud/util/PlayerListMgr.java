@@ -94,7 +94,7 @@ public class PlayerListMgr {
 			return null;
 		}
 		String str = txt.getString().trim();
-		if (str.length() == 0) {
+		if (str.isEmpty()) {
 			return null;
 		}
 		return str;
@@ -144,7 +144,7 @@ public class PlayerListMgr {
 		}
 
 		// Avoid returning an empty component - Rift advertisements needed this
-		if (newText.getString().length() == 0) {
+		if (newText.getString().isEmpty()) {
 			return null;
 		}
 
