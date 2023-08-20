@@ -1,5 +1,13 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import me.xmrvizzy.skyblocker.utils.Scheduler;
@@ -10,14 +18,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Pair;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DwarvenHud {
 
@@ -57,21 +57,21 @@ public class DwarvenHud {
         });
     }
 
-    public static Pair<Integer, Integer> getDimForConfig(List<Commission> commissions) {
+    public static IntIntPair getDimForConfig(List<Commission> commissions) {
         switch (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
             case SIMPLE:
                 HudCommsWidget.INSTANCE_CFG.updateData(commissions, false);
-                return new Pair<Integer, Integer>(
+                return IntIntPair.of(
                     HudCommsWidget.INSTANCE_CFG.getWidth(),
                     HudCommsWidget.INSTANCE_CFG.getHeight());
             case FANCY :
                 HudCommsWidget.INSTANCE_CFG.updateData(commissions, true);
-                return new Pair<Integer, Integer>(
+                return IntIntPair.of(
                     HudCommsWidget.INSTANCE_CFG.getWidth(),
                     HudCommsWidget.INSTANCE_CFG.getHeight());
             case CLASSIC:
             default:
-                return new Pair<Integer, Integer>(200, 20 * commissions.size());
+                return IntIntPair.of(200, 20 * commissions.size());
         }
     }
 

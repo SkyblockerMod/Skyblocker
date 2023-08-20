@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.dwarven;
 import java.awt.Color;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
@@ -11,7 +12,6 @@ import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.util.Pair;
 
 public class DwarvenHudConfigScreen extends Screen {
 
@@ -34,10 +34,10 @@ public class DwarvenHudConfigScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        Pair<Integer, Integer> dims = DwarvenHud.getDimForConfig(CFG_COMMS);
+        IntIntPair dims = DwarvenHud.getDimForConfig(CFG_COMMS);
         if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, hudX, hudY, hudX + 200, hudY + 40) && button == 0) {
-            hudX = (int) Math.max(Math.min(mouseX - dims.getLeft()/2, this.width - dims.getLeft()), 0);
-            hudY = (int) Math.max(Math.min(mouseY - dims.getRight()/2, this.height - dims.getRight()), 0);
+            hudX = (int) Math.max(Math.min(mouseX - dims.leftInt()/2, this.width - dims.leftInt()), 0);
+            hudY = (int) Math.max(Math.min(mouseY - dims.rightInt()/2, this.height - dims.rightInt()), 0);
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
@@ -45,9 +45,9 @@ public class DwarvenHudConfigScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 1) {
-            Pair<Integer, Integer> dims = DwarvenHud.getDimForConfig(CFG_COMMS);
-            hudX = this.width / 2 - dims.getLeft();
-            hudY = this.height / 2 - dims.getRight();
+            IntIntPair dims = DwarvenHud.getDimForConfig(CFG_COMMS);
+            hudX = this.width / 2 - dims.leftInt();
+            hudY = this.height / 2 - dims.rightInt();
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
