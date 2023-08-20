@@ -206,6 +206,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.mapY": "Map Y",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Solve Blaze Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver.@Tooltip": "Boxes the correct blaze in green, also draws a line to and boxes the next blaze to kill in white.",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Solve Trivia Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "Livid Color",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "Enable Livid Color",
@@ -306,5 +307,13 @@
   "skyblocker.customDyeColors.neverHad": "§b[§6Skyblocker§b] §fThis item doesn't have a custom dye color set, but why not add one? ;)",
   "skyblocker.customDyeColors.added": "§b[§6Skyblocker§b] §fSet a custom dye color for your currently held item!",
   "skyblocker.customDyeColors.noItemUuid": "§b[§6Skyblocker§b] §cYou must be holding an item that has a uuid in order to set a custom dye color!",
-  "skyblocker.customDyeColors.unableToSetColor": "§b[§6Skyblocker§b] §cUnable to set a custom dye color :( (Are you in skyblock?)"
+  "skyblocker.customDyeColors.unableToSetColor": "§b[§6Skyblocker§b] §cUnable to set a custom dye color :( (Are you in skyblock?, are you holding an item?)",
+  
+  "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§b[§6Skyblocker§b] §cYou supplied either an invalid material, or an invalid trim pattern!",
+  "skyblocker.customArmorTrims.notAnArmorPiece": "§b[§6Skyblocker§b] §cThis item isn't an armor piece!",
+  "skyblocker.customArmorTrims.removed": "§b[§6Skyblocker§b] §fRemoved this item's custom armor trim.",
+  "skyblocker.customArmorTrims.neverHad": "§b[§6Skyblocker§b] §fThis item doesn't have a armor trim set, but why not add one? ;)",
+  "skyblocker.customArmorTrims.added": "§b[§6Skyblocker§b] §fSet a custom armor trim for your currently held item!",
+  "skyblocker.customArmorTrims.noItemUuid": "§b[§6Skyblocker§b] §cYou must be holding an item that has a uuid in order to set a custom armor trim!",
+  "skyblocker.customArmorTrims.unableToSetTrim": "§b[§6Skyblocker§b] §cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)"
 }

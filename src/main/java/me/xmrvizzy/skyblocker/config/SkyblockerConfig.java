@@ -1,11 +1,10 @@
 package me.xmrvizzy.skyblocker.config;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -14,12 +13,14 @@ import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
 import me.xmrvizzy.skyblocker.utils.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,10 +197,15 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Gui.Excluded
         public List<Integer> lockedSlots = new ArrayList<>();
-        
+
+        @ConfigEntry.Gui.Excluded
         public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
-        
+
+        @ConfigEntry.Gui.Excluded
         public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
+
+        @ConfigEntry.Gui.Excluded
+        public Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customArmorTrims = new Object2ObjectOpenHashMap<>();
     }
 
     public static class TabHudConf {
@@ -216,7 +222,7 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public enum NameSorting {
-    	DEFAULT,
+        DEFAULT,
         ALPHABETICAL;
 
         @Override
@@ -408,6 +414,7 @@ public class SkyblockerConfig implements ConfigData {
         public int mapX = 2;
         public int mapY = 2;
         public boolean solveThreeWeirdos = true;
+        @ConfigEntry.Gui.Tooltip
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
         @ConfigEntry.Gui.CollapsibleObject
@@ -548,10 +555,11 @@ public class SkyblockerConfig implements ConfigData {
                 .setPrettyPrinting()
                 .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
                 .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
+                .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer())
                 .create();
-        
+
         ConfigSerializer.Factory<SkyblockerConfig> serializer = (cfg, cfgClass) -> new GsonConfigSerializer<>(cfg, cfgClass, gson);
-        
+
         AutoConfig.register(SkyblockerConfig.class, serializer);
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
     }
@@ -570,7 +578,7 @@ public class SkyblockerConfig implements ConfigData {
     public static SkyblockerConfig get() {
         return AutoConfig.getConfigHolder(SkyblockerConfig.class).getConfig();
     }
-    
+
     public static void save() {
         AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
     }

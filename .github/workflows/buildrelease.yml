@@ -82,7 +82,7 @@ jobs:
                   ' ORS='\n' <<< "$changelog")
 
               # Format the modified_changelog by removing "@" characters and enclosing URLs in "<>"
-              modified_changelog=$(echo "$modified_changelog" | sed -e 's/@//g' -e 's|https\?://[^[:space:]]*|<\0>|g')
+              # modified_changelog=$(echo "$modified_changelog" | sed -e 's/@//g' -e 's|https\?://[^[:space:]]*|<\0>|g')
           
           # Store the modified_changelog in the CHANGELOG variable
           CHANGELOG=$(echo -n "$modified_changelog")
@@ -124,18 +124,18 @@ jobs:
           echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
 
       - name: Discord notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: |
-            "<@&1134565945482948638>"
-            "## Skyblocker ${{ steps.version_tag.outputs.value }}"
-            ""
-            "${{ steps.read_changelog.outputs.changelog_discord }}"
-            ""
-            ":inbox_tray: Download latest version on Modrinth or Github:"
-            "<:modrinth:900697862206287882> <${{ steps.modrinth.outputs.url }}>"
-            "<:github:900697885706952725> <${{ steps.uploadrelease.outputs.url }}>"
-            ""
-            "<https://hysky.de/>"
+        shell: bash
+        run: |
+          OUTPUT="
+          <@&1134565945482948638>
+          ## Skyblocker ${{ steps.version_tag.outputs.value }}
+          
+          ${{ steps.read_changelog.outputs.changelog_discord }}
+          
+          :inbox_tray: Download latest version on Modrinth or Github:
+          <:modrinth:900697862206287882> ${{ steps.modrinth.outputs.url }}
+          <:github:900697885706952725> ${{ steps.uploadrelease.outputs.url }}
+          
+          https://hysky.de/"
+
+          curl -H "Content-Type: application/json" -d '{"content":"'"${OUTPUT//$'\n'/\\n}"'", "flags": 4}' "${{ secrets.DISCORD_WEBHOOK }}"
