@@ -205,5 +205,13 @@
     "text.autoconfig.skyblocker.option.quickNav.button12.item.count": "Nombre d'items",
     "text.autoconfig.skyblocker.option.quickNav.button12.item.nbt": "NBT",
     "text.autoconfig.skyblocker.option.quickNav.button12.uiTitle": "Titre du menu",
-    "text.autoconfig.skyblocker.option.quickNav.button12.clickEvent": "Evènement de clic"
+    "text.autoconfig.skyblocker.option.quickNav.button12.clickEvent": "Evènement de clic",
+    "text.autoconfig.skyblocker.option.general.experiments": "Aide aux expériences de la table d'expérimentation",
+    "text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver": "Activer l'aide au Chronomatron",
+    "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "Activer l'aide aux Superpairs",
+    "text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver": "Activer l'aide à l'Ultrasequencer",
+    "text.autoconfig.skyblocker.option.general.acceptReparty": "Accepter automatiquement les reparty (/rp)",
+    "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "Activer l'aide au Fairy Souls",
+    "text.autoconfig.skyblocker.option.general.fairySouls": "Aide aux Fairy Souls",
+    "text.autoconfig.skyblocker.option.general.shortcuts": "Raccourcis"
 }
