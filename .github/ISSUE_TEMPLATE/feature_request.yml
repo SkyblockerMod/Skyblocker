@@ -1,0 +1,21 @@
+name: Feature Request
+description: Ask for new feature
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please search for existing issues before submitting a new one.
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe the new feature.
+      description: Provide as much details as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: info
+    attributes:
+      label: Images
+      description: Upload any images to help describe your feature request here.
+      placeholder: You can add images by clicking on the button in the bar that will appear once you click this textbox.
