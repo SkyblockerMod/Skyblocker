@@ -363,11 +363,12 @@ public class Room {
      */
     protected void onUseBlock(World world, BlockHitResult hitResult) {
         BlockState state = world.getBlockState(hitResult.getBlockPos());
-        if (!state.isOf(Blocks.CHEST) && !state.isOf(Blocks.PLAYER_HEAD) && !state.isOf(Blocks.PLAYER_WALL_HEAD)) {
-            return;
+        if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
+            secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
+                    .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
+        } else if (state.isOf(Blocks.LEVER)) {
+            secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::isLever).forEach(SecretWaypoint::setFound);
         }
-        secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
-                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
     /**
@@ -398,7 +399,7 @@ public class Room {
     }
 
     protected void markSecrets(int secretIndex, boolean found) {
-        secretWaypoints.row(secretIndex).values().forEach(SecretWaypoint.getStatusSetter(found));
+        secretWaypoints.row(secretIndex).values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
     }
 
     public enum Type {

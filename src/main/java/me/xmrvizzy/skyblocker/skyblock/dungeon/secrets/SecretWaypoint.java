@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 
@@ -42,10 +41,6 @@ public class SecretWaypoint {
         return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos) <= 36D;
     }
 
-    static Consumer<SecretWaypoint> getStatusSetter(boolean found) {
-        return secretWaypoint -> secretWaypoint.missing = !found;
-    }
-
     boolean shouldRender() {
         return category.isEnabled() && missing;
     }
@@ -54,12 +49,20 @@ public class SecretWaypoint {
         return category.needsInteraction();
     }
 
+    boolean isLever() {
+        return category.isLever();
+    }
+
     boolean needsItemPickup() {
         return category.needsItemPickup();
     }
 
     void setFound() {
         this.missing = false;
+    }
+
+    void setMissing() {
+        this.missing = true;
     }
 
     /**
@@ -112,6 +115,10 @@ public class SecretWaypoint {
 
         boolean needsInteraction() {
             return this == CHEST || this == WITHER;
+        }
+
+        boolean isLever() {
+            return this == LEVER;
         }
 
         boolean needsItemPickup() {
