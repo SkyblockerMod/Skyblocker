@@ -54,6 +54,9 @@ public class DungeonMapUtils {
     @Nullable
     public static ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSize(@NotNull MapState map) {
         Vector2ic mapPos = getMapPlayerPos(map);
+        if (mapPos == null) {
+            return null;
+        }
         Queue<Vector2ic> posToCheck = new ArrayDeque<>();
         Set<Vector2ic> checked = new HashSet<>();
         posToCheck.add(mapPos);
