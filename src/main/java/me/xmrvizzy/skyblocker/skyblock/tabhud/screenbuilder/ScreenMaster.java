@@ -85,7 +85,7 @@ public class ScreenMaster {
         FabricLoader.getInstance()
                 .getModContainer("skyblocker")
                 .ifPresent(container -> ResourceManagerHelper.registerBuiltinResourcePack(
-                        new Identifier("skyblocker", "default_top"),
+                        new Identifier("skyblocker", "top_aligned"),
                         container,
                         ResourcePackActivationType.NORMAL));
 
