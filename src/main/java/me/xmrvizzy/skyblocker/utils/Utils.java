@@ -28,6 +28,7 @@ import java.util.List;
  * Utility variables and methods for retrieving Skyblock related information.
  */
 public class Utils {
+    private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
@@ -129,10 +130,9 @@ public class Utils {
             return;
         }
         String string = sidebar.toString();
-        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
 
         if (sidebar.isEmpty()) return;
-        if (serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io")) {
+        if (isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
@@ -153,6 +153,14 @@ public class Utils {
             isOnHypixel = false;
             leaveSkyblock();
         }
+    }
+    
+    private static boolean isConnectedToHypixel(MinecraftClient client) {
+    	String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+    	String serverBrand = (client.player != null && client.player.getServerBrand() != null) ? client.player.getServerBrand() : "";
+    	boolean isOnHypixel = (serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord"));
+    	
+    	return isOnHypixel;
     }
 
     private static void leaveSkyblock() {
