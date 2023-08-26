@@ -28,7 +28,7 @@ import java.util.List;
 public class DungeonBlaze {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
     private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
-    private static final QuadColor outlineColorGreen = QuadColor.single(0.0F, 1.0F, 0.0F, 1f);
+    private static final QuadColor outlineColorGreen = QuadColor.single(0.0F, 1.0f, 0.0f, 1f);
     private static final QuadColor outlineColorWhite = QuadColor.single(1.0f, 1.0f, 1.0f, 1.0f);
 
     private static ArmorStandEntity highestBlaze = null;
@@ -149,7 +149,6 @@ public class DungeonBlaze {
      * @param e The exception to handle.
      */
     private static void handleException(Exception e) {
-        LOGGER.warn("[Skyblocker BlazeRenderer] " + e);
-        e.printStackTrace();
+        LOGGER.warn("[Skyblocker BlazeRenderer] Encountered an unknown exception" + e);
     }
 }
