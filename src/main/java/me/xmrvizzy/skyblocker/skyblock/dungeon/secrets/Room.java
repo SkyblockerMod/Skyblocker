@@ -62,6 +62,7 @@ public class Room {
      * The task that is used to check blocks. This is used to ensure only one such task can run at a time.
      */
     private CompletableFuture<Void> findRoom;
+    private int doubleCheckBlocks;
     /**
      * Represents the matching state of the room with the following possible values:
      * <li>{@link TriState#DEFAULT} means that the room has not been checked, is being processed, or does not {@link Type#needsScanning() need to be processed}.
@@ -197,7 +198,7 @@ public class Room {
      *     <li> Checks if the block type is included in the dungeon rooms data. See {@link DungeonSecrets#NUMERIC_ID}. </li>
      *     <li> For each possible direction: </li>
      *     <ul>
-     *         <li> Rotate and convert the position to a relative position. See {@link DungeonMapUtils#actualToRelative(Vector2ic, Direction, BlockPos)}. </li>
+     *         <li> Rotate and convert the position to a relative position. See {@link DungeonMapUtils#actualToRelative(Direction, Vector2ic, BlockPos)}. </li>
      *         <li> Encode the block based on the relative position and the custom numeric block id. See {@link #posIdToInt(BlockPos, byte)}. </li>
      *         <li> For each possible room in the current direction: </li>
      *         <ul>
@@ -215,7 +216,7 @@ public class Room {
      *     </ul>
      *     <li> If there are exactly one room matching: </li>
      *     <ul>
-     *         <li> Call {@link #roomMatched(Triple)}. </li>
+     *         <li> Call {@link #roomMatched(String, Direction, Vector2ic)}. </li>
      *         <li> Discard the no longer needed fields to save memory. </li>
      *         <li> Return {@code true} </li>
      *     </ul>
@@ -232,7 +233,7 @@ public class Room {
             return false;
         }
         for (MutableTriple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
-            int block = posIdToInt(DungeonMapUtils.actualToRelative(directionRooms.getMiddle(), directionRooms.getLeft(), pos), id);
+            int block = posIdToInt(DungeonMapUtils.actualToRelative(directionRooms.getLeft(), directionRooms.getMiddle(), pos), id);
             List<String> possibleDirectionRooms = new ArrayList<>();
             for (String room : directionRooms.getRight()) {
                 if (Arrays.binarySearch(roomsData.get(room), block) >= 0) {
@@ -250,18 +251,18 @@ public class Room {
             SkyblockerMod.getInstance().scheduler.schedule(() -> matched = TriState.DEFAULT, 50);
             reset();
             return true;
-        } else if (matchingRoomsSize == 1) {
+        } else if (matchingRoomsSize == 1 && ++doubleCheckBlocks >= 10) {
             // If one room matches, load the secrets for that room and discard the no longer needed fields.
             for (Triple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
                 if (directionRooms.getRight().size() == 1) {
-                    roomMatched(directionRooms);
+                    roomMatched(directionRooms.getRight().get(0), directionRooms.getLeft(), directionRooms.getMiddle());
                     discard();
                     return true;
                 }
             }
             return false; // This should never happen, we just checked that there is one possible room, and the return true in the loop should activate
         } else {
-            DungeonSecrets.LOGGER.debug("[Skyblocker] {} rooms remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
+            DungeonSecrets.LOGGER.debug("[Skyblocker] {} room(s) remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
             return false;
         }
     }
@@ -284,14 +285,13 @@ public class Room {
      * @param directionRooms the direction, position, and name of the room
      */
     @SuppressWarnings("JavadocReference")
-    private void roomMatched(Triple<Direction, Vector2ic, List<String>> directionRooms) {
+    private void roomMatched(String name, Direction direction, Vector2ic physicalCornerPos) {
         Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
-        String name = directionRooms.getRight().get(0);
         for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
             int secretIndex = Integer.parseInt(secretName.substring(0, Character.isDigit(secretName.charAt(1)) ? 2 : 1));
-            BlockPos pos = DungeonMapUtils.relativeToActual(directionRooms.getMiddle(), directionRooms.getLeft(), waypoint);
+            BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
             secretWaypointsMutable.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
@@ -307,6 +307,7 @@ public class Room {
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
         checkedBlocks = new HashSet<>();
+        doubleCheckBlocks = 0;
     }
 
     /**
@@ -317,6 +318,7 @@ public class Room {
         roomsData = null;
         possibleRooms = null;
         checkedBlocks = null;
+        doubleCheckBlocks = 0;
     }
 
     /**
