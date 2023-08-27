@@ -12,7 +12,7 @@ public class TicTacToeUtils {
             for (int col = 0; col < board[row].length; col++) {
                 if (board[row][col] != '\0') continue;
                 board[row][col] = 'O';
-                int score = minimax(board, false, 0);
+                int score = alphabeta(board, Integer.MIN_VALUE, Integer.MAX_VALUE, false, 0);
                 board[row][col] = '\0';
                 moves.put(row * 3 + col + 1, score);
             }
@@ -66,37 +66,39 @@ public class TicTacToeUtils {
 
         return 0;
     }
-
-    public static int minimax(char[][] board, boolean max, int depth) {
+    public static int alphabeta(char[][] board, int alpha, int beta, boolean max, int depth) {
         int score = getBoardRanking(board);
         if (score == 10 || score == -10) return score;
         if (!hasMovesLeft(board)) return 0;
 
         if (max) {
-            int bestScore = -1000;
+            int bestScore = Integer.MIN_VALUE;
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
                     if (board[row][col] == '\0') {
                         board[row][col] = 'O';
-                        bestScore = Math.max(bestScore, minimax(board, false, depth + 1));
+                        bestScore = Math.max(bestScore, alphabeta(board, alpha, beta, false, depth + 1));
                         board[row][col] = '\0';
+                        alpha = Math.max(alpha, bestScore);
+                        if (beta <= alpha) break; // Pruning
                     }
                 }
             }
             return bestScore - depth;
         } else {
-            int bestScore = 1000;
+            int bestScore = Integer.MAX_VALUE;
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
                     if (board[row][col] == '\0') {
                         board[row][col] = 'X';
-                        bestScore = Math.min(bestScore, minimax(board, true, depth + 1));
+                        bestScore = Math.min(bestScore, alphabeta(board, alpha, beta, true, depth + 1));
                         board[row][col] = '\0';
+                        beta = Math.min(beta, bestScore);
+                        if (beta <= alpha) break; // Pruning
                     }
                 }
             }
             return bestScore + depth;
         }
     }
-
 }

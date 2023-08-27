@@ -46,7 +46,7 @@ public class TicTacToe {
 		
 		//Search within 21 blocks for item frames that contain maps
 		Box searchBox = new Box(player.getX() - 21, player.getY() - 21, player.getZ() - 21, player.getX() + 21, player.getY() + 21, player.getZ() + 21);
-		List<ItemFrameEntity> itemFramesThatHoldMaps = world.getEntitiesByClass(ItemFrameEntity.class, searchBox, frame -> frame.containsMap());
+		List<ItemFrameEntity> itemFramesThatHoldMaps = world.getEntitiesByClass(ItemFrameEntity.class, searchBox, ItemFrameEntity::containsMap);
 		
 		try {
 			//Only attempt to solve if its the player's turn
@@ -113,16 +113,15 @@ public class TicTacToe {
 					
 					if (leftmostRow != null) {
 						double drawX = facing == 'X' ? leftmostRow.getX() - sign * (bestMove % 3) : leftmostRow.getX();
-						double drawY = 72 - Math.floor(bestMove / 3);
+						double drawY = 72 - (double) (bestMove / 3);
 						double drawZ = facing == 'Z' ? leftmostRow.getZ() - sign * (bestMove % 3) : leftmostRow.getZ();
 						
 						nextBestMoveToMake = new Box(drawX, drawY, drawZ, drawX + 1, drawY + 1, drawZ + 1);
 					}
 				}
 			}
-		} catch (Throwable t) {
-			LOGGER.error("[Skyblocker Tic Tac Toe] An exception was encountered while determining a tic tac toe solution! " + t);
-			t.printStackTrace();
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while determining a tic tac toe solution!", e);
 		}
 	}
 	
@@ -133,9 +132,8 @@ public class TicTacToe {
 			if (SkyblockerConfig.get().locations.dungeons.solveTicTacToe && nextBestMoveToMake != null) {
 				RenderUtils.drawBoxOutline(nextBestMoveToMake, outlineColorRed, 5);
 			}
-		} catch (Throwable t) {
-			LOGGER.error("[Skyblocker Tic Tac Toe] An exception was encountered while rendering the tic tac toe solution! " + t);
-			t.printStackTrace();
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while rendering the tic tac toe solution!", e);
 		}
 	}
 }
