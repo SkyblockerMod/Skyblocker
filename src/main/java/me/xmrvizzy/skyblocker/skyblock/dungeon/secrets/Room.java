@@ -400,8 +400,14 @@ public class Room {
         DungeonSecrets.LOGGER.info(msg, args);
     }
 
-    protected void markSecrets(int secretIndex, boolean found) {
-        secretWaypoints.row(secretIndex).values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
+    protected boolean markSecrets(int secretIndex, boolean found) {
+        Map<BlockPos, SecretWaypoint> secret = secretWaypoints.row(secretIndex);
+        if (secret.isEmpty()) {
+            return false;
+        } else {
+            secret.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
+            return true;
+        }
     }
 
     public enum Type {

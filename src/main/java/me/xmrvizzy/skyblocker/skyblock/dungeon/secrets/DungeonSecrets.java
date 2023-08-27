@@ -367,8 +367,7 @@ public class DungeonSecrets {
 
     public static boolean markSecrets(int secretIndex, boolean found) {
         if (isCurrentRoomMatched()) {
-            currentRoom.markSecrets(secretIndex, found);
-            return true;
+            return currentRoom.markSecrets(secretIndex, found);
         }
         return false;
     }
