@@ -29,7 +29,8 @@ import net.minecraft.util.math.Direction;
  */
 public class TicTacToe {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToe.class);
-	static Box nextBestMoveToMake = null;
+	private static final QuadColor RED = QuadColor.single(1.0f, 0.0f, 0.0f, 1f);
+	private static Box nextBestMoveToMake = null;
 
 	public static void init() {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(TicTacToe::solutionRenderer);
@@ -125,12 +126,10 @@ public class TicTacToe {
 		}
 	}
 	
-	private static void solutionRenderer(WorldRenderContext context) {
-		QuadColor outlineColorRed = QuadColor.single(1.0F, 0.0F, 0.0F, 1f);
-		
+	private static void solutionRenderer(WorldRenderContext context) {		
 		try {
 			if (SkyblockerConfig.get().locations.dungeons.solveTicTacToe && nextBestMoveToMake != null) {
-				RenderUtils.drawBoxOutline(nextBestMoveToMake, outlineColorRed, 5);
+				RenderUtils.drawBoxOutline(nextBestMoveToMake, RED, 5);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while rendering the tic tac toe solution!", e);
