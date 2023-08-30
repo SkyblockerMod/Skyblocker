@@ -238,5 +238,10 @@
     "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableHolyIceIndicator": "Включить Индикатор Holy Ice",
     "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceIndicatorTickDelay": "Задержка Индикатора Holy Ice (в тиках)",
     "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency": "Частота Обновления Индикатора Holy Ice (в тиках)",
-    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip": "Чем ниже значение, тем чаще происходит обновление, это может вызвать лаги."
+    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip": "Чем ниже значение, тем чаще происходит обновление, это может вызвать лаги.",
+    "text.autoconfig.skyblocker.option.general.etherwarpOverlay": "Окрасить Выбранный Блок Etherwarp",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "Включить Сокращения Команд",
+    "text.autoconfig.skyblocker.option.general.shortcuts": "Сокращения",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Включить Сокращения",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Работает только на Хайпикселе. Сокращения можно редактировать при помощи \"/skyblocker shortcuts\". Хотя бы одна из опций должна быть включена, чтобы это работало."
 }
