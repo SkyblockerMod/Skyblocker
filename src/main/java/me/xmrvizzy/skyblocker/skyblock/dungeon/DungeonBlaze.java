@@ -149,6 +149,6 @@ public class DungeonBlaze {
      * @param e The exception to handle.
      */
     private static void handleException(Exception e) {
-        LOGGER.warn("[Skyblocker BlazeRenderer] Encountered an unknown exception" + e);
+        LOGGER.warn("[Skyblocker BlazeRenderer] Encountered an unknown exception", e);
     }
 }
