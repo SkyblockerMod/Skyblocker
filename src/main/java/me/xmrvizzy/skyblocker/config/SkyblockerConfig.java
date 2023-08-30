@@ -417,6 +417,8 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean solveTicTacToe = true;
         @ConfigEntry.Gui.CollapsibleObject
         public LividColor lividColor = new LividColor();
         @ConfigEntry.Gui.CollapsibleObject()
