@@ -12,12 +12,14 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.ColorHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import java.awt.*;
+
+import java.awt.Color;
 import java.util.regex.Pattern;
 
 @Mixin(DrawContext.class)
@@ -31,39 +33,58 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
     public void skyblocker$renderItemBar(@Arg ItemStack stack, @Arg(ordinal = 0) int x, @Arg(ordinal = 1) int y) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel) {
-            if (!stack.isEmpty()) {
-                NbtCompound tag = stack.getNbt();
-                if (tag != null && tag.contains("ExtraAttributes")) {
-                    if (tag.getCompound("ExtraAttributes").contains("drill_fuel")) {
-                        float current = 3000.0F;
-                        float max = 3000.0F;
+        if (!Utils.isOnSkyblock() || !SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel || stack.isEmpty()) {
+            return;
+        }
 
-                        for (String line : ItemUtils.getTooltipStrings(stack)) {
-                            if (line.contains("Fuel: ")) {
-                                String clear = Pattern.compile("[^0-9 /]").matcher(line).replaceAll("").trim();
-                                String[] split = clear.split("/");
-                                current = Integer.parseInt(split[0]);
-                                max = Integer.parseInt(split[1]) * 1000;
-                                break;
-                            }
-                        }
+        NbtCompound tag = stack.getNbt();
+        if (tag == null || !tag.contains("ExtraAttributes")) {
+            return;
+        }
 
-                        matrices.push();
-                        matrices.translate(0f, 0f, 200f);
-                        RenderSystem.disableDepthTest();
+        NbtCompound extraAttributes = tag.getCompound("ExtraAttributes");
+        if (!extraAttributes.contains("drill_fuel") && !extraAttributes.getString("id").equals("PICKONIMBUS")) {
+            return;
+        }
+        matrices.push();
+        matrices.translate(0f, 0f, 200f);
+        RenderSystem.disableDepthTest();
 
-                        float hue = Math.max(0.0F, 1.0F - (max - current) / max);
-                        int width = Math.round(current / max * 13.0F);
-                        Color color = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
-                        this.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 15, y + 15, 0xFF000000);
-                        this.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
+        float current = 0.0F;
+        float max = 0.0F;
+        String clearFormatting = "";
 
-                        matrices.pop();
-                        RenderSystem.enableDepthTest();
+        for (String line : ItemUtils.getTooltipStrings(stack)) {
+            clearFormatting = Formatting.strip(line);
+            if (line.contains("Fuel: ")) {
+                if (clearFormatting != null) {
+                    String clear = Pattern.compile("[^0-9 /]").matcher(clearFormatting).replaceAll("").trim();
+                    String[] split = clear.split("/");
+                    current = Integer.parseInt(split[0]);
+                    max = Integer.parseInt(split[1]) * 1000;
+                }
+                break;
+            } else if (line.contains("uses.")) {
+                if (clearFormatting != null) {
+                    int startIndex = clearFormatting.lastIndexOf("after") + 6;
+                    int endIndex = clearFormatting.indexOf("uses", startIndex);
+                    if (startIndex >= 0 && endIndex > startIndex) {
+                        String usesString = clearFormatting.substring(startIndex, endIndex).trim();
+                        current = Integer.parseInt(usesString);
+                        max = 5000;
                     }
                 }
+                break;
             }
         }
+
+        float hue = Math.max(0.0F, 1.0F - (max - current) / max);
+        int width = Math.round(current / max * 13.0F);
+        Color color = Color.getHSBColor(hue / 3.0F, 1.0F, 1.0F);
+        this.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 15, y + 15, 0xFF000000);
+        this.fill(RenderLayer.getGuiOverlay(), x + 2, y + 13, x + 2 + width, y + 14, ColorHelper.Argb.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
+
+        matrices.pop();
+        RenderSystem.enableDepthTest();
     }
 }
