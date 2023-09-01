@@ -1,0 +1,21 @@
+name: translate update
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - src/main/resources/assets/skyblocker/lang/en_us.json
+
+jobs:
+  your_job_name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_TRANSLATE_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            "<@&1134566053138145330>"
+            "New Strings available at <https://translate.hysky.de/projects/Skyblocker/skyblocker/>"
