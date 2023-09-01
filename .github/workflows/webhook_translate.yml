@@ -8,14 +8,14 @@ on:
       - src/main/resources/assets/skyblocker/lang/en_us.json
 
 jobs:
-  your_job_name:
+  webhook:
     runs-on: ubuntu-latest
     steps:
-      - name: Discord notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_TRANSLATE_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: |
-            "<@&1134566053138145330>"
-            "New Strings available at <https://translate.hysky.de/projects/Skyblocker/skyblocker/>"
+      - name: Translate notification
+        shell: bash
+        run: |
+          OUTPUT="
+          <@&1134566053138145330>
+          New Strings available at https://translate.hysky.de/projects/Skyblocker/skyblocker"
+
+          curl -H "Content-Type: application/json" -d '{"content":"'"${OUTPUT//$'\n'/\\n}"'", "flags": 4}' "${{ secrets.DISCORD_TRANSLATE_WEBHOOK }}"
