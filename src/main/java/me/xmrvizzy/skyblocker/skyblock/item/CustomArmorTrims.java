@@ -42,7 +42,10 @@ public class CustomArmorTrims {
 
 	private static void initializeTrimCache() {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		if (!trimsInitialized && player != null) {
+		if (trimsInitialized || player == null) {
+			return;
+		}
+		try {
 			TRIMS_CACHE.clear();
 			DynamicRegistryManager registryManager = player.networkHandler.getRegistryManager();
 			for (Identifier material : registryManager.get(RegistryKeys.TRIM_MATERIAL).getIds()) {
@@ -62,6 +65,8 @@ public class CustomArmorTrims {
 
 			LOGGER.info("[Skyblocker] Successfully cached all armor trims!");
 			trimsInitialized = true;
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker] Encountered an exception while caching armor trims", e);
 		}
 	}
 
