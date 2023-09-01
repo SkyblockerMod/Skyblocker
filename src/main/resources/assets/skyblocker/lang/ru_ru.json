@@ -81,7 +81,6 @@
     "text.autoconfig.skyblocker.option.quickNav.button3": "Кнопка 3",
     "text.autoconfig.skyblocker.option.general.tabHud": "Красивое TAB меню",
     "key.skyblocker.defaultTgl": "Показывать стандартное меню TAB",
-    "key.skyblocker.genericTgl": "Показывать общую информацию в меню TAB",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled": "Включить красивое TAB меню",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale": "Размер TAB меню",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip": "Значение в %, по отношению к размеру интерфейса игры",
