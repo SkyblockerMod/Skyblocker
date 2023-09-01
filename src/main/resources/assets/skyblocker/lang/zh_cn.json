@@ -220,7 +220,7 @@
     "text.autoconfig.skyblocker.option.general.teleportOverlay": "传送类技能目标位置显示",
     "text.autoconfig.skyblocker.option.general.teleportOverlay.enableTeleportOverlays": "启用传送类技能目标位置显示",
     "text.autoconfig.skyblocker.option.general.teleportOverlay.enableWeirdTransmission": "启用 Weird Transmission 目标位置显示",
-    "text.autoconfig.skyblocker.option.general.teleportOverlay.enableInstantTransmission": "启用瞬息折跃技能目标位置显示",
+    "text.autoconfig.skyblocker.option.general.teleportOverlay.enableInstantTransmission": "启用 Instant Transmission 技能目标位置显示",
     "text.autoconfig.skyblocker.option.general.teleportOverlay.enableEtherTransmission": "启用 Ether Transmission 技能目标位置显示",
     "text.autoconfig.skyblocker.option.general.teleportOverlay.enableSinrecallTransmission": "启用 Sinrecall Transmission 技能目标位置显示",
     "text.autoconfig.skyblocker.option.general.teleportOverlay.enableWitherImpact": "启用 Wither Impact 目标位置显示",
