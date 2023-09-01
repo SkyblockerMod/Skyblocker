@@ -16,14 +16,16 @@ public class IslandServerWidget extends Widget {
 
     public IslandServerWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.MAP, "Area:", Formatting.DARK_AQUA, 41);
         this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, 42);
         this.addSimpleIcoText(Ico.EMERALD, "Crystals:", Formatting.DARK_PURPLE, 43);
         this.addSimpleIcoText(Ico.CHEST, "Stash:", Formatting.GREEN, 44);
         this.addSimpleIcoText(Ico.COMMAND, "Minions:", Formatting.BLUE, 45);
 
-        this.pack();
 
     }
 

@@ -20,20 +20,24 @@ public class IslandSelfWidget extends Widget {
     // matches an owner
     // group 1: player name, optionally offline time
     // ^\[\d*\] (?:\[[A-Za-z]+\] )?([A-Za-z0-9_() ]*)(?: .*)?$|^(.*)$
-    private static final Pattern OWNER_PATTERN = Pattern.compile("^\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?([A-Za-z0-9_() ]*)(?: .*)?$|^(.*)$");
+    private static final Pattern OWNER_PATTERN = Pattern
+            .compile("^\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?([A-Za-z0-9_() ]*)(?: .*)?$|^(.*)$");
 
     public IslandSelfWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
         for (int i = 1; i < 20; i++) {
-            Matcher m = PlayerListMgr.regexAt( i, OWNER_PATTERN);
+            Matcher m = PlayerListMgr.regexAt(i, OWNER_PATTERN);
             if (m == null) {
                 break;
             }
-            
+
             Text entry = (m.group(1) != null) ? Text.of(m.group(1)) : Text.of(m.group(2));
             this.addComponent(new PlainTextComponent(entry));
         }
-        this.pack();
     }
 
 }

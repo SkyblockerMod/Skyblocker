@@ -26,14 +26,19 @@ public class IslandOwnersWidget extends Widget {
 
     public IslandOwnersWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
+
         for (int i = 1; i < 20; i++) {
             Matcher m = PlayerListMgr.regexAt(i, OWNER_PATTERN);
             if (m == null) {
                 break;
             }
 
-            String name = null, lastseen = null;
-            Formatting format = null;
+            String name, lastseen;
+            Formatting format;
             if (m.group("nameA") != null) {
                 name = m.group("nameA");
                 lastseen = m.group("lastseen");
@@ -55,7 +60,7 @@ public class IslandOwnersWidget extends Widget {
             PlainTextComponent ptc = new PlainTextComponent(entry);
             this.addComponent(ptc);
         }
-        this.pack();
+       
     }
 
 }

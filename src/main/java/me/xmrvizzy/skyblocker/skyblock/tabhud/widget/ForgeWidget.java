@@ -20,12 +20,15 @@ public class ForgeWidget extends Widget {
 
     public ForgeWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
         int forgestart = 54;
         // why is it forges and not looms >:(
         String pos = PlayerListMgr.strAt(53);
         if (pos == null) {
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
         }
 
@@ -45,22 +48,22 @@ public class ForgeWidget extends Widget {
             Text l1, l2;
 
             switch (fstr.substring(3)) {
-                case "LOCKED":
+                case "LOCKED" -> {
                     l1 = Text.literal("Locked").formatted(Formatting.RED);
                     l2 = switch (slot) {
                         case 3 -> Text.literal("Needs HotM 3").formatted(Formatting.GRAY);
                         case 4 -> Text.literal("Needs HotM 4").formatted(Formatting.GRAY);
                         case 5 -> Text.literal("Needs PotM 2").formatted(Formatting.GRAY);
                         default ->
-                            Text.literal("This message should not appear").formatted(Formatting.RED, Formatting.BOLD);
+                                Text.literal("This message should not appear").formatted(Formatting.RED, Formatting.BOLD);
                     };
                     c = new IcoFatTextComponent(Ico.BARRIER, l1, l2);
-                    break;
-                case "EMPTY":
+                }
+                case "EMPTY" -> {
                     l1 = Text.literal("Empty").formatted(Formatting.GRAY);
                     c = new IcoTextComponent(Ico.FURNACE, l1);
-                    break;
-                default:
+                }
+                default -> {
                     String[] parts = fstr.split(": ");
                     if (parts.length != 2) {
                         c = new IcoFatTextComponent();
@@ -69,11 +72,10 @@ public class ForgeWidget extends Widget {
                         l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
                         c = new IcoFatTextComponent(Ico.FIRE, l1, l2);
                     }
-                    break;
+                }
             }
             this.addComponent(c);
         }
-        this.pack();
     }
 
 }

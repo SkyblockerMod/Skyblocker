@@ -23,6 +23,10 @@ public class IslandGuestsWidget extends Widget {
 
     public IslandGuestsWidget() {
         super(TITLE, Formatting.AQUA.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
         for (int i = 21; i < 40; i++) {
             String str = PlayerListMgr.strAt(i);
             if (str == null) {
@@ -38,7 +42,6 @@ public class IslandGuestsWidget extends Widget {
                 this.addComponent(new PlainTextComponent(Text.of(m.group(1))));
             }
         }
-        this.pack();
     }
 
 }

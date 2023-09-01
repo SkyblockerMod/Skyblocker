@@ -19,6 +19,10 @@ public class EssenceWidget extends Widget {
 
     public EssenceWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
         wither = Widget.simpleEntryText(46, "Wither:", Formatting.DARK_PURPLE);
         spider = Widget.simpleEntryText(47, "Spider:", Formatting.DARK_PURPLE);
         undead = Widget.simpleEntryText(48, "Undead:", Formatting.DARK_PURPLE);
@@ -39,6 +43,5 @@ public class EssenceWidget extends Widget {
         tc.addToCell(1, 2, new IcoTextComponent(Ico.ICE, ice));
         tc.addToCell(1, 3, new IcoTextComponent(Ico.REDSTONE, crimson));
         this.addComponent(tc);
-        this.pack();
     }
 }

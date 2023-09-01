@@ -8,8 +8,10 @@ import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
@@ -19,89 +21,132 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * This class provides functionality to render outlines around Blaze entities
+ */
 public class DungeonBlaze {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
     private static final float[] GREEN_COLOR_COMPONENTS = {0.0F, 1.0F, 0.0F};
-    private static final float[] WHITE_COLOR_COMPONENTS = { 1.0f, 1.0f, 1.0f };
-    static Entity highestBlaze = null;
-    static Entity lowestBlaze = null;
-    static Entity nextHighestBlaze = null;
-    static Entity nextLowestBlaze = null;
+    private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
+
+    private static ArmorStandEntity highestBlaze = null;
+    private static ArmorStandEntity lowestBlaze = null;
+    private static ArmorStandEntity nextHighestBlaze = null;
+    private static ArmorStandEntity nextLowestBlaze = null;
 
     public static void init() {
         SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonBlaze::update, 10);
         WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
     }
 
+    /**
+     * Updates the state of Blaze entities and triggers the rendering process if necessary.
+     */
     public static void update() {
-        if (!SkyblockerConfig.get().locations.dungeons.blazesolver) return;
         ClientWorld world = MinecraftClient.getInstance().world;
-        if (world == null || !Utils.isInDungeons()) return;
-        Iterable<Entity> entities = world.getEntities();
-        List<ObjectIntPair<Entity>> blazes = new ArrayList<>();
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (world == null || player == null || !Utils.isInDungeons()) return;
+        List<ObjectIntPair<ArmorStandEntity>> blazes = getBlazesInWorld(world, player);
+        sortBlazes(blazes);
+        updateBlazeEntities(blazes);
+    }
 
-        for (Entity entity : entities) {
-    		String blazeName = entity.getName().getString();
-
+    /**
+     * Retrieves Blaze entities in the world and parses their health information.
+     *
+     * @param world The client world to search for Blaze entities.
+     * @return A list of Blaze entities and their associated health.
+     */
+    private static List<ObjectIntPair<ArmorStandEntity>> getBlazesInWorld(ClientWorld world, ClientPlayerEntity player) {
+        List<ObjectIntPair<ArmorStandEntity>> blazes = new ArrayList<>();
+        for (ArmorStandEntity blaze : world.getEntitiesByClass(ArmorStandEntity.class, player.getBoundingBox().expand(500D), EntityPredicates.NOT_MOUNTED)) {
+            String blazeName = blaze.getName().getString();
             if (blazeName.contains("Blaze") && blazeName.contains("/")) {
                 try {
                     int health = Integer.parseInt(blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1));
-
-                	blazes.add(ObjectIntPair.of(entity, health));
+                    blazes.add(ObjectIntPair.of(blaze, health));
                 } catch (NumberFormatException e) {
-                    LOGGER.error("[Skyblocker DungeonBlazeSolver] Failed to parse blaze health: " + blazeName, e);
+                    handleException(e);
                 }
             }
         }
-
-        // Order the blazes in the list from the lowest health to the highest health
-        blazes.sort(Comparator.comparingInt(ObjectIntPair::rightInt));
-
-        // Ensure that there are blazes in the list
-        if (!blazes.isEmpty()) {
-            lowestBlaze = blazes.get(0).left();
-
-            int highestIndex = blazes.size() - 1;
-            highestBlaze = blazes.get(highestIndex).left();
-
-            // If there's more than 1 blaze
-            if (blazes.size() > 1) {
-            	nextLowestBlaze = blazes.get(1).left();
-            	nextHighestBlaze = blazes.get(highestIndex - 1).left();
-            }
-        }
-
+        return blazes;
     }
 
-    public static void blazeRenderer(WorldRenderContext context) {
+    /**
+     * Sorts the Blaze entities based on their health values.
+     *
+     * @param blazes The list of Blaze entities to be sorted.
+     */
+    private static void sortBlazes(List<ObjectIntPair<ArmorStandEntity>> blazes) {
+        blazes.sort(Comparator.comparingInt(ObjectIntPair::rightInt));
+    }
+
+    /**
+     * Updates information about Blaze entities based on sorted list.
+     *
+     * @param blazes The sorted list of Blaze entities with associated health values.
+     */
+    private static void updateBlazeEntities(List<ObjectIntPair<ArmorStandEntity>> blazes) {
+        if (!blazes.isEmpty()) {
+            lowestBlaze = blazes.get(0).left();
+            int highestIndex = blazes.size() - 1;
+            highestBlaze = blazes.get(highestIndex).left();
+            if (blazes.size() > 1) {
+                nextLowestBlaze = blazes.get(1).left();
+                nextHighestBlaze = blazes.get(highestIndex - 1).left();
+            }
+        }
+    }
+
+    /**
+     * Renders outlines for Blaze entities based on health and position.
+     *
+     * @param wrc The WorldRenderContext used for rendering.
+     */
+    public static void blazeRenderer(WorldRenderContext wrc) {
         try {
-            if (SkyblockerConfig.get().locations.dungeons.blazesolver && highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive()) {
-                /* Outline */
+            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfig.get().locations.dungeons.blazesolver) {
                 if (highestBlaze.getY() < 69) {
-                    Box blaze = highestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                    RenderHelper.renderOutline(context, blaze, GREEN_COLOR_COMPONENTS, 5f);
-
-                    if (nextHighestBlaze != null && nextHighestBlaze.isAlive() && nextHighestBlaze != highestBlaze) {
-                        Box nextBlaze = nextHighestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                        RenderHelper.renderOutline(context, nextBlaze, WHITE_COLOR_COMPONENTS, 5f);
-                        RenderHelper.renderLinesFromPoints(context, new Vec3d[] { blaze.getCenter(), nextBlaze.getCenter() }, WHITE_COLOR_COMPONENTS, 1f, 5f);
-                    }
+                    renderBlazeOutline(highestBlaze, nextHighestBlaze, wrc);
                 }
-
-                /* Outline */
                 if (lowestBlaze.getY() > 69) {
-                    Box blaze = lowestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                    RenderHelper.renderOutline(context, blaze, GREEN_COLOR_COMPONENTS, 5f);
-
-                    if (nextLowestBlaze != null && nextLowestBlaze.isAlive() && nextLowestBlaze != lowestBlaze) {
-                        Box nextBlaze = nextLowestBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-                        RenderHelper.renderOutline(context, nextBlaze, WHITE_COLOR_COMPONENTS, 5f);
-                        RenderHelper.renderLinesFromPoints(context, new Vec3d[] { blaze.getCenter(), nextBlaze.getCenter() }, WHITE_COLOR_COMPONENTS, 1f, 5f);
-                    }
+                    renderBlazeOutline(lowestBlaze, nextLowestBlaze, wrc);
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("[Skyblocker DungeonBlazeRenderer] Failed to render blaze boxes", e);
+            handleException(e);
         }
+    }
+
+    /**
+     * Renders outlines for Blaze entities and connections between them.
+     *
+     * @param blaze     The Blaze entity for which to render an outline.
+     * @param nextBlaze The next Blaze entity for connection rendering.
+     * @param wrc       The WorldRenderContext used for rendering.
+     */
+    private static void renderBlazeOutline(ArmorStandEntity blaze, ArmorStandEntity nextBlaze, WorldRenderContext wrc) {
+        Box blazeBox = blaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
+        RenderHelper.renderOutline(wrc, blazeBox, GREEN_COLOR_COMPONENTS, 5f);
+
+        if (nextBlaze != null && nextBlaze.isAlive() && nextBlaze != blaze) {
+            Box nextBlazeBox = nextBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
+            RenderHelper.renderOutline(wrc, nextBlazeBox, WHITE_COLOR_COMPONENTS, 5f);
+
+            Vec3d blazeCenter = blazeBox.getCenter();
+            Vec3d nextBlazeCenter = nextBlazeBox.getCenter();
+
+            RenderHelper.renderLinesFromPoints(wrc, new Vec3d[]{blazeCenter, nextBlazeCenter}, WHITE_COLOR_COMPONENTS, 1f, 5f);
+        }
+    }
+
+    /**
+     * Handles exceptions by logging and printing stack traces.
+     *
+     * @param e The exception to handle.
+     */
+    private static void handleException(Exception e) {
+        LOGGER.warn("[Skyblocker BlazeRenderer] Encountered an unknown exception", e);
     }
 }

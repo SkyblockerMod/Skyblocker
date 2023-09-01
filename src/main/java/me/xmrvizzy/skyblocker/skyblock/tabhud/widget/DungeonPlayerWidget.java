@@ -45,10 +45,16 @@ public class DungeonPlayerWidget extends Widget {
         MSGS.add("More is better!");
     }
 
+    private final int player;
+
     // title needs to be changeable here
     public DungeonPlayerWidget(int player) {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        this.player = player;
+    }
 
+    @Override
+    public void updateContent() {
         int start = 1 + (player - 1) * 4;
 
         if (PlayerListMgr.strAt(start) == null) {
@@ -56,7 +62,6 @@ public class DungeonPlayerWidget extends Widget {
             IcoTextComponent noplayer = new IcoTextComponent(Ico.SIGN,
                     Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY));
             this.addComponent(noplayer);
-            this.pack();
             return;
         }
         Matcher m = PlayerListMgr.regexAt(start, PLAYER_PATTERN);
@@ -94,6 +99,5 @@ public class DungeonPlayerWidget extends Widget {
         this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
         this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
 
-        this.pack();
     }
 }

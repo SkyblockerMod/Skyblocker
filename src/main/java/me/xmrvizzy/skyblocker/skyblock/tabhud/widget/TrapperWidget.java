@@ -15,8 +15,11 @@ public class TrapperWidget extends Widget {
     public TrapperWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
 
+    }
+
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.LEATHER, "Pelts:", Formatting.AQUA, 46);
-        this.pack();
     }
 
 }

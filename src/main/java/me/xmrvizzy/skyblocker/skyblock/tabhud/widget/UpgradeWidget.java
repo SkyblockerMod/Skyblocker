@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget;
 
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 
@@ -17,17 +18,21 @@ public class UpgradeWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Upgrade Info").formatted(Formatting.GOLD,
             Formatting.BOLD);
 
-    public UpgradeWidget(String footertext) {
+    public UpgradeWidget() {
         super(TITLE, Formatting.GOLD.getColorValue());
+    }
+
+    @Override
+    public void updateContent() {
+        String footertext = PlayerListMgr.getFooter();
+
         if (footertext == null) {
             this.addComponent(new PlainTextComponent(Text.literal("No data").formatted(Formatting.GRAY)));
-            this.pack();
             return;
         }
 
         if (!footertext.contains("Upgrades")) {
             this.addComponent(new PlainTextComponent(Text.of("Currently no upgrades...")));
-            this.pack();
             return;
         }
 
@@ -41,7 +46,6 @@ public class UpgradeWidget extends Widget {
             IcoTextComponent itc = new IcoTextComponent(Ico.SIGN, Text.of(lines[i]));
             this.addComponent(itc);
         }
-        this.pack();
     }
 
 }

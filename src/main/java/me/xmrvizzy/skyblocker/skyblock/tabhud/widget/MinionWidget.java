@@ -93,7 +93,10 @@ public class MinionWidget extends Widget {
 
     public MinionWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         for (int i = 48; i < 59; i++) {
             Matcher m = PlayerListMgr.regexAt(i, MINION_PATTERN);
             if (m != null) {
@@ -128,7 +131,6 @@ public class MinionWidget extends Widget {
         if (more != null) {
             this.addComponent(new PlainTextComponent(Text.of(more)));
         }
-        this.pack();
     }
 
 }

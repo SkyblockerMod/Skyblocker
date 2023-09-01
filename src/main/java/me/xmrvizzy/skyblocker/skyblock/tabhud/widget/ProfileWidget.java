@@ -14,12 +14,15 @@ public class ProfileWidget extends Widget {
     public ProfileWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
 
+    }
+
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.SIGN, "Profile:", Formatting.GREEN, 61);
         this.addSimpleIcoText(Ico.BONE, "Pet Sitter:", Formatting.AQUA, 62);
         this.addSimpleIcoText(Ico.EMERALD, "Balance:", Formatting.GOLD, 63);
         this.addSimpleIcoText(Ico.CLOCK, "Interest in:", Formatting.GOLD, 64);
 
-        this.pack();
     }
 
 }

@@ -18,12 +18,15 @@ public class QuestWidget extends Widget {
     public QuestWidget() {
         super(TITLE, Formatting.AQUA.getColorValue());
 
+    }
+
+    @Override
+    public void updateContent() {
         for (int i = 51; i < 56; i++) {
             Text q = PlayerListMgr.textAt(i);
             IcoTextComponent itc = new IcoTextComponent(Ico.BOOK, q);
             this.addComponent(itc);
         }
-        this.pack();
 
     }
 

@@ -19,6 +19,7 @@
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
     "ScoreboardMixin",
+    "WorldRendererMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",

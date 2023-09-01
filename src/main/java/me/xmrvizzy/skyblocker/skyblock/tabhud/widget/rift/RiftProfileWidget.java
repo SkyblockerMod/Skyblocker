@@ -12,8 +12,10 @@ public class RiftProfileWidget extends Widget {
 	
 	public RiftProfileWidget() {
 		super(TITLE, Formatting.DARK_AQUA.getColorValue());
-		
+    }
+
+    @Override
+    public void updateContent() {
 		this.addSimpleIcoText(Ico.SIGN, "Profile:", Formatting.GREEN, 61);
-		this.pack();
 	}
 }

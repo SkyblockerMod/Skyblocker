@@ -2,7 +2,8 @@ package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.screens.Screen;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -37,9 +38,16 @@ public class PlayerListHudMixin {
         }
 
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
+        float scale = SkyblockerConfig.get().general.tabHud.tabHudScale / 100f;
+        w = (int) (w / scale);
+        h = (int) (h / scale);
+
+        PlayerListMgr.updateFooter(footer);
+
         try {
-            Screen screen = Screen.getCorrect(w, h, footer);
-            screen.render(context);
+            ScreenMaster.render(context, w,h);
+            // Screen screen = Screen.getCorrect(w, h, footer);
+            // screen.render(context);
             info.cancel();
         } catch (Exception e) {
             TabHud.LOGGER.error("[Skyblocker] Encountered unknown exception while drawing default hud", e);

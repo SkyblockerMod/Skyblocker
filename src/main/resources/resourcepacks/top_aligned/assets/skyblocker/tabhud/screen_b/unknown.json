@@ -1,0 +1,17 @@
+{
+    "widgets": [
+        {
+            "name": "ErrorWidget",
+            "alias": "ew"
+        }
+    ],
+    "layout": [
+        {
+            "op": "place",
+            "where": "centerTop",
+            "apply_to": [
+                "ew"
+            ]
+        }
+    ]
+}

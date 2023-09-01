@@ -17,7 +17,10 @@ public class DungeonDownedWidget extends Widget {
 
     public DungeonDownedWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         String down = PlayerListMgr.strAt(21);
         if (down == null) {
             this.addComponent(new IcoTextComponent());
@@ -36,7 +39,6 @@ public class DungeonDownedWidget extends Widget {
 
         this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GRAY, 22);
         this.addSimpleIcoText(Ico.POTION, "Revive:", Formatting.GRAY, 23);
-        this.pack();
     }
 
 }

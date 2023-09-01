@@ -14,11 +14,13 @@ public class DungeonSecretWidget extends Widget {
 
     public DungeonSecretWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 31);
         this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 32);
 
-        this.pack();
     }
 
 }

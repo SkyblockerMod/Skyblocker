@@ -37,7 +37,10 @@ public class JacobsContestWidget extends Widget {
 
     public JacobsContestWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.CLOCK, "Starts in:", Formatting.GOLD, 76);
 
         TableComponent tc = new TableComponent(1, 3, Formatting.YELLOW  .getColorValue());
@@ -54,7 +57,6 @@ public class JacobsContestWidget extends Widget {
         }
         this.addComponent(tc);
 
-        this.pack();
     }
 
 }

@@ -30,7 +30,10 @@ public class GardenSkillsWidget extends Widget {
 
     public GardenSkillsWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         ProgressComponent pc;
         Matcher m = PlayerListMgr.regexAt(66, SKILL_PATTERN);
         if (m == null) {
@@ -72,7 +75,6 @@ public class GardenSkillsWidget extends Widget {
         }
         this.addComponent(pc2);
 
-        this.pack();
     }
 
 }

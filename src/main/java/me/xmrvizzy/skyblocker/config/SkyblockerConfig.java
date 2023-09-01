@@ -12,8 +12,8 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
+import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -79,7 +79,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button6")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"), "Storage", "/storage");
+        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"), "(?:Rift )?Storage(?: \\(1/2\\))?", "/storage");
 
         @ConfigEntry.Category("button7")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -407,20 +407,44 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Dungeons {
+        @ConfigEntry.Gui.CollapsibleObject
+        public SecretWaypoints secretWaypoints = new SecretWaypoints();
         @ConfigEntry.Gui.Tooltip()
         public boolean croesusHelper = true;
         public boolean enableMap = true;
         public float mapScaling = 1f;
         public int mapX = 2;
         public int mapY = 2;
+        @ConfigEntry.Gui.Tooltip
+        public boolean starredMobGlow = false;
         public boolean solveThreeWeirdos = true;
         @ConfigEntry.Gui.Tooltip
         public boolean blazesolver = true;
         public boolean solveTrivia = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean solveTicTacToe = true;
         @ConfigEntry.Gui.CollapsibleObject
         public LividColor lividColor = new LividColor();
         @ConfigEntry.Gui.CollapsibleObject()
         public Terminals terminals = new Terminals();
+    }
+
+    public static class SecretWaypoints {
+
+        public boolean enableSecretWaypoints = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean noInitSecretWaypoints = false;
+        public boolean enableEntranceWaypoints = true;
+        public boolean enableSuperboomWaypoints = true;
+        public boolean enableChestWaypoints = true;
+        public boolean enableItemWaypoints = true;
+        public boolean enableBatWaypoints = true;
+        public boolean enableWitherWaypoints = true;
+        public boolean enableLeverWaypoints = true;
+        public boolean enableFairySoulWaypoints = true;
+        public boolean enableStonkWaypoints = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableDefaultWaypoints = true;
     }
 
     public static class LividColor {

@@ -24,7 +24,10 @@ public class GardenServerWidget extends Widget {
 
     public GardenServerWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.MAP, "Area:", Formatting.DARK_AQUA, 41);
         this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, 42);
         this.addSimpleIcoText(Ico.EMERALD, "Gems:", Formatting.GREEN, 43);
@@ -33,7 +36,6 @@ public class GardenServerWidget extends Widget {
         Matcher m = PlayerListMgr.regexAt(45, VISITOR_PATTERN);
         if (m == null ) {
             this.addComponent(new IcoTextComponent());
-            this.pack();
             return;
         }
 
@@ -47,7 +49,6 @@ public class GardenServerWidget extends Widget {
         Text visitor = Widget.simpleEntryText(vis, "Next Visitor: ", col);
         IcoTextComponent v = new IcoTextComponent(Ico.PLAYER, visitor);
         this.addComponent(v);
-        this.pack();
     }
 
 }
