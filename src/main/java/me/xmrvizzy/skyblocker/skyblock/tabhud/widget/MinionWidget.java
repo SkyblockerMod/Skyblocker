@@ -97,29 +97,13 @@ public class MinionWidget extends Widget {
 
     @Override
     public void updateContent() {
+
+        // this looks a bit weird because if we used regex mismatch as a stop condition,
+        //   it'd spam the chat.
+        // not sure if not having that debug output is worth the cleaner solution here...
+
         for (int i = 48; i < 59; i++) {
-            Matcher m = PlayerListMgr.regexAt(i, MINION_PATTERN);
-            if (m != null) {
-
-                String min = m.group("name");
-                String lvl = m.group("level");
-                String stat = m.group("status");
-
-                MutableText mt = Text.literal(min + " " + lvl).append(Text.literal(": "));
-
-                Formatting format = Formatting.RED;
-                if (stat.equals("ACTIVE")) {
-                    format = Formatting.GREEN;
-                } else if (stat.equals("SLOW")) {
-                    format = Formatting.YELLOW;
-                }
-                // makes "BLOCKED" also red. in reality, it's some kind of crimson
-                mt.append(Text.literal(stat).formatted(format));
-
-                IcoTextComponent itc = new IcoTextComponent(MIN_ICOS.get(min), mt);
-                this.addComponent(itc);
-
-            } else {
+            if (!this.addMinionComponent(i)) {
                 break;
             }
         }
@@ -128,8 +112,39 @@ public class MinionWidget extends Widget {
         // a "And X more..." text is shown
         // look for that and add it to the widget
         String more = PlayerListMgr.strAt(59);
-        if (more != null) {
+        if (more == null) {
+            return;
+        } else if (more.startsWith("And ")) {
             this.addComponent(new PlainTextComponent(Text.of(more)));
+        } else {
+            this.addMinionComponent(59);
+        }
+    }
+
+    public boolean addMinionComponent(int i) {
+        Matcher m = PlayerListMgr.regexAt(i, MINION_PATTERN);
+        if (m != null) {
+
+            String min = m.group("name");
+            String lvl = m.group("level");
+            String stat = m.group("status");
+
+            MutableText mt = Text.literal(min + " " + lvl).append(Text.literal(": "));
+
+            Formatting format = Formatting.RED;
+            if (stat.equals("ACTIVE")) {
+                format = Formatting.GREEN;
+            } else if (stat.equals("SLOW")) {
+                format = Formatting.YELLOW;
+            }
+            // makes "BLOCKED" also red. in reality, it's some kind of crimson
+            mt.append(Text.literal(stat).formatted(format));
+
+            IcoTextComponent itc = new IcoTextComponent(MIN_ICOS.get(min), mt);
+            this.addComponent(itc);
+            return true;
+        } else {
+            return false;
         }
     }
 
