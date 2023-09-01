@@ -9,6 +9,7 @@ on:
 
 jobs:
   webhook:
+    if: github.repository_owner == 'SkyblockerMod'
     runs-on: ubuntu-latest
     steps:
       - name: Translate notification
