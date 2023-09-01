@@ -17,11 +17,12 @@ public class PowderWidget extends Widget {
 
     public PowderWidget() {
         super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         this.addSimpleIcoText(Ico.MITHRIL, "Mithril:", Formatting.AQUA, 46);
         this.addSimpleIcoText(Ico.EMERALD, "Gemstone:", Formatting.DARK_PURPLE, 47);
-
-        this.pack();
 
     }
 

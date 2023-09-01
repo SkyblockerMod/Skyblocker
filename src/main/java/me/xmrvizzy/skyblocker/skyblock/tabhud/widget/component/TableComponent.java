@@ -8,9 +8,9 @@ import net.minecraft.client.gui.DrawContext;
  */
 public class TableComponent extends Component {
 
-    private Component[][] comps;
-    private int color;
-    private int cols, rows;
+    private final Component[][] comps;
+    private final int color;
+    private final int cols, rows;
     private int cellW, cellH;
 
     public TableComponent(int w, int h, int col) {

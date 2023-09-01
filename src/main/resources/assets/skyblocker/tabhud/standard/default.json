@@ -1,0 +1,17 @@
+{
+    "widgets": [
+        {
+            "name": "ServerWidget",
+            "alias": "sw"
+        }
+    ],
+    "layout": [
+        {
+            "op": "place",
+            "where": "center",
+            "apply_to": [
+                "sw"
+            ]
+        }
+    ]
+}

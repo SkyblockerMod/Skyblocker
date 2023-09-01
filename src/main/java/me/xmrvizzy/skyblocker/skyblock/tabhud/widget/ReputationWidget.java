@@ -29,7 +29,10 @@ public class ReputationWidget extends Widget {
 
     public ReputationWidget() {
         super(TITLE, Formatting.AQUA.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         String fracstr = PlayerListMgr.strAt(45);
 
         int spaceidx;
@@ -60,8 +63,6 @@ public class ReputationWidget extends Widget {
                     Formatting.AQUA.getColorValue());
             this.addComponent(pc);
         }
-
-        this.pack();
 
     }
 

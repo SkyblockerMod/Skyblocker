@@ -26,7 +26,10 @@ public class DungeonPuzzleWidget extends Widget {
 
     public DungeonPuzzleWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         int pos = 48;
 
         while (pos < 60) {
@@ -49,7 +52,6 @@ public class DungeonPuzzleWidget extends Widget {
             this.addComponent(
                     new IcoTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
         }
-        this.pack();
     }
 
 }

@@ -21,10 +21,14 @@ public class PlayerListWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Players").formatted(Formatting.GREEN,
             Formatting.BOLD);
 
-    private final ArrayList<PlayerListEntry> list = new ArrayList<>();
-
     public PlayerListWidget() {
         super(TITLE, Formatting.GREEN.getColorValue());
+
+    }
+
+    @Override
+    public void updateContent() {
+        ArrayList<PlayerListEntry> list = new ArrayList<>();
 
         // hard cap to 4x20 entries.
         // 5x20 is too wide (and not possible in theory. in reality however...)
@@ -33,7 +37,6 @@ public class PlayerListWidget extends Widget {
         // list isn't fully loaded, so our hack won't work...
         if (listlen < 80) {
             this.addComponent(new PlainTextComponent(Text.literal("List loading...").formatted(Formatting.GRAY)));
-            this.pack();
             return;
         }
 
@@ -63,6 +66,5 @@ public class PlayerListWidget extends Widget {
         }
 
         this.addComponent(tc);
-        this.pack();
     }
 }

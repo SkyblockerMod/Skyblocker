@@ -15,7 +15,10 @@ public class RiftStatsWidget extends Widget {
 
 	public RiftStatsWidget() {
 		super(TITLE, Formatting.DARK_AQUA.getColorValue());
-		
+    }
+
+    @Override
+    public void updateContent() {
 		Text riftDamage = Widget.simpleEntryText(64, "RDG", Formatting.DARK_PURPLE);
 		IcoTextComponent rdg = new IcoTextComponent(Ico.DIASWORD, riftDamage);
 		
@@ -35,7 +38,6 @@ public class RiftStatsWidget extends Widget {
 		tc.addToCell(1, 1, mrg);
 		
 		this.addComponent(tc);
-		this.pack();
 	}
 
 }

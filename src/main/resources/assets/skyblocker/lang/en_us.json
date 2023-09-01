@@ -1,9 +1,9 @@
 {
   "key.categories.skyblocker": "Skyblocker",
   "key.hotbarSlotLock": "Slot Lock (Hotbar)",
-  "key.skyblocker.playerTgl": "Switch tab HUD to player list",
+  "key.skyblocker.toggleB": "Toggle tab HUD to screen B",
   "key.skyblocker.defaultTgl": "Switch tab HUD to default view",
-  "key.skyblocker.genericTgl": "Switch tab HUD to general info",
+  "key.skyblocker.toggleA": "Toggle tab HUD to screen A",
   "key.wikiLookup": "Wiki Lookup",
 
   "text.autoconfig.skyblocker.title": "Skyblocker Settings",

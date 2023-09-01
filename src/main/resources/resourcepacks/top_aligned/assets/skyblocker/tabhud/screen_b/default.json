@@ -1,0 +1,17 @@
+{
+    "widgets": [
+        {
+            "name": "PlayerListWidget",
+            "alias": "plw"
+        }
+    ],
+    "layout": [
+        {
+            "op": "place",
+            "where": "centerTop",
+            "apply_to": [
+                "plw"
+            ]
+        }
+    ]
+}

@@ -10,8 +10,8 @@ import net.minecraft.client.util.InputUtil;
 
 public class TabHud {
 
-    public static KeyBinding playerTgl;
-    public static KeyBinding genericTgl;
+    public static KeyBinding toggleB;
+    public static KeyBinding toggleA;
     // public static KeyBinding mapTgl;
     public static KeyBinding defaultTgl;
 
@@ -19,21 +19,16 @@ public class TabHud {
 
     public static void init() {
 
-        playerTgl = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding("key.skyblocker.playerTgl",
+        toggleB = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding("key.skyblocker.toggleB",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_B,
                         "key.categories.skyblocker"));
-        genericTgl = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding("key.skyblocker.genericTgl",
+        toggleA = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding("key.skyblocker.toggleA",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_N,
                         "key.categories.skyblocker"));
-        // mapTgl = KeyBindingHelper.registerKeyBinding(
-        //         new KeyBinding("key.tabhud.mapTgl",
-        //                 InputUtil.Type.KEYSYM,
-        //                 GLFW.GLFW_KEY_LEFT_ALT,
-        //                 "key.categories.skyblocker"));
         defaultTgl = KeyBindingHelper.registerKeyBinding(
                 new KeyBinding("key.skyblocker.defaultTgl",
                         InputUtil.Type.KEYSYM,

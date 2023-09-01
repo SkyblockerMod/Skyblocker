@@ -22,6 +22,7 @@ import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.skyblock.shortcut.Shortcuts;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.utils.*;
 import me.xmrvizzy.skyblocker.utils.culling.OcclusionCulling;
@@ -90,6 +91,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DungeonMap.init();
         TheRift.init();
         TitleContainer.init();
+        ScreenMaster.init();
         OcclusionCulling.init();
         TeleportOverlay.init();
         CustomItemNames.init();

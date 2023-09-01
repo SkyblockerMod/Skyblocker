@@ -24,7 +24,10 @@ public class DungeonDeathWidget extends Widget {
 
     public DungeonDeathWidget() {
         super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    }
 
+    @Override
+    public void updateContent() {
         Matcher m = PlayerListMgr.regexAt(25, DEATH_PATTERN);
         if (m == null) {
             this.addComponent(new IcoTextComponent());
@@ -39,7 +42,6 @@ public class DungeonDeathWidget extends Widget {
         this.addSimpleIcoText(Ico.POTION, "Healing Done:", Formatting.RED, 27);
         this.addSimpleIcoText(Ico.NTAG, "Milestone:", Formatting.YELLOW, 28);
 
-        this.pack();
     }
 
 }

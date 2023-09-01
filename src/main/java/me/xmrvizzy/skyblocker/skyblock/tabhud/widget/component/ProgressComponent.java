@@ -19,25 +19,25 @@ public class ProgressComponent extends Component {
     private static final int ICO_OFFS = 4;
     private static final int COL_BG_BAR = 0xf0101010;
 
-    private ItemStack ico;
-    private Text desc, bar;
-    private float pcnt;
-    private int color;
-    private int barW;
+    private final ItemStack ico;
+    private final Text desc, bar;
+    private final float pcnt;
+    private final int color;
+    private final int barW;
 
     public ProgressComponent(ItemStack ico, Text d, Text b, float pcnt, int color) {
-        this.ico = (ico == null) ? Ico.BARRIER : ico;
-        this.desc = d;
-        this.bar = b;
-        this.color = 0xff000000 | color;
-        this.pcnt = pcnt;
-
         if (d == null || b == null) {
             this.ico = Ico.BARRIER;
             this.desc = Text.literal("No data").formatted(Formatting.GRAY);
             this.bar = Text.literal("---").formatted(Formatting.GRAY);
             this.pcnt = 100f;
             this.color = 0xff000000 | Formatting.DARK_GRAY.getColorValue();
+        } else {
+            this.ico = (ico == null) ? Ico.BARRIER : ico;
+            this.desc = d;
+            this.bar = b;
+            this.pcnt = pcnt;
+            this.color = 0xff000000 | color;
         }
 
         this.barW = BAR_WIDTH;

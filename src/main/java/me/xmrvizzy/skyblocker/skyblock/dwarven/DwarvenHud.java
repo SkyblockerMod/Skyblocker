@@ -1,7 +1,15 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.CommsWidget;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import me.xmrvizzy.skyblocker.utils.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -11,34 +19,24 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class DwarvenHud {
-
 
     public static final MinecraftClient client = MinecraftClient.getInstance();
     public static List<Commission> commissionList = new ArrayList<>();
 
-
     public static final List<Pattern> COMMISSIONS = Stream.of(
-                    "(?:Titanium|Mithril|Hard Stone) Miner",
-                    "(?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
-                    "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
-                    "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
-                    "Goblin Raid",
-                    "(?:Powder Ghast|Star Sentry) Puncher",
-                    "(?<!Lucky )Raffle",
-                    "Lucky Raffle",
-                    "2x Mithril Powder Collector",
-                    "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector",
-                    "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
-                    "Chest Looter"
-            ).map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
+            "(?:Titanium|Mithril|Hard Stone) Miner",
+            "(?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
+            "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
+            "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
+            "Goblin Raid",
+            "(?:Powder Ghast|Star Sentry) Puncher",
+            "(?<!Lucky )Raffle",
+            "Lucky Raffle",
+            "2x Mithril Powder Collector",
+            "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector",
+            "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
+            "Chest Looter").map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
             .collect(Collectors.toList());
 
     public static void init() {
@@ -54,15 +52,34 @@ public class DwarvenHud {
                     || commissionList.isEmpty()) {
                 return;
             }
-            render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
+            render(HudCommsWidget.INSTANCE, context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x,
+                    SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
         });
     }
 
-    public static void render(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
+    public static IntIntPair getDimForConfig(List<Commission> commissions) {
+        switch (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
+            case SIMPLE:
+                HudCommsWidget.INSTANCE_CFG.updateData(commissions, false);
+                return IntIntPair.of(
+                    HudCommsWidget.INSTANCE_CFG.getWidth(),
+                    HudCommsWidget.INSTANCE_CFG.getHeight());
+            case FANCY :
+                HudCommsWidget.INSTANCE_CFG.updateData(commissions, true);
+                return IntIntPair.of(
+                    HudCommsWidget.INSTANCE_CFG.getWidth(),
+                    HudCommsWidget.INSTANCE_CFG.getHeight());
+            case CLASSIC:
+            default:
+                return IntIntPair.of(200, 20 * commissions.size());
+        }
+    }
+
+    public static void render(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
 
         switch (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
-            case SIMPLE -> renderSimple(context, hudX, hudY, commissions);
-            case FANCY -> renderFancy(context, hudX, hudY, commissions);
+            case SIMPLE -> renderSimple(hcw, context, hudX, hudY, commissions);
+            case FANCY -> renderFancy(hcw, context, hudX, hudY, commissions);
             case CLASSIC -> renderClassic(context, hudX, hudY, commissions);
         }
     }
@@ -85,23 +102,28 @@ public class DwarvenHud {
         }
     }
 
-    public static void renderSimple(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
-        CommsWidget cw = new CommsWidget(commissions, false);
-        cw.setX(hudX);
-        cw.setY(hudY);
-        cw.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+    public static void renderSimple(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
+        hcw.updateData(commissions, false);
+        hcw.update();
+        hcw.setX(hudX);
+        hcw.setY(hudY);
+        hcw.render(context,
+                SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
-    public static void renderFancy(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
-        CommsWidget cw = new CommsWidget(commissions, true);
-        cw.setX(hudX);
-        cw.setY(hudY);
-        cw.render(context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+    public static void renderFancy(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
+        hcw.updateData(commissions, true);
+        hcw.update();
+        hcw.setX(hudX);
+        hcw.setY(hudY);
+        hcw.render(context,
+                SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
     public static void update() {
         commissionList = new ArrayList<>();
-        if (client.player == null || !SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled) return;
+        if (client.player == null || !SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled)
+            return;
 
         client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
             if (playerListEntry.getDisplayName() != null) {
@@ -116,7 +138,7 @@ public class DwarvenHud {
         });
     }
 
-    // steamroller tactics to get visibility from outside classes (CommsWidget)
+    // steamroller tactics to get visibility from outside classes (HudCommsWidget)
     public record Commission(String commission, String progression) {
     }
 }
