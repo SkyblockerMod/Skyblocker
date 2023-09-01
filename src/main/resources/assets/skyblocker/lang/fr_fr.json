@@ -94,9 +94,7 @@
     "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "Désactivé",
     "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Cacher les tooltips des items vides dans les menus",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip": "Valeur en %, relative à la taille de l'interface vanilla",
-    "key.skyblocker.playerTgl": "Passer le HUD Tab à la liste de joueurs",
     "key.skyblocker.defaultTgl": "Passer le HUD Tab à la vue par défaut",
-    "key.skyblocker.genericTgl": "Passer le HUD Tab aux infos générales",
     "text.autoconfig.skyblocker.option.general.tabHud": "HUD Tab joli",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled": "Activer le HUD Tab joli",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale": "Taille du HUD Tab joli",
@@ -205,5 +203,13 @@
     "text.autoconfig.skyblocker.option.quickNav.button12.item.count": "Nombre d'items",
     "text.autoconfig.skyblocker.option.quickNav.button12.item.nbt": "NBT",
     "text.autoconfig.skyblocker.option.quickNav.button12.uiTitle": "Titre du menu",
-    "text.autoconfig.skyblocker.option.quickNav.button12.clickEvent": "Evènement de clic"
+    "text.autoconfig.skyblocker.option.quickNav.button12.clickEvent": "Evènement de clic",
+    "text.autoconfig.skyblocker.option.general.experiments": "Aide aux expériences de la table d'expérimentation",
+    "text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver": "Activer l'aide au Chronomatron",
+    "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "Activer l'aide aux Superpairs",
+    "text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver": "Activer l'aide à l'Ultrasequencer",
+    "text.autoconfig.skyblocker.option.general.acceptReparty": "Accepter automatiquement les reparty (/rp)",
+    "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "Activer l'aide au Fairy Souls",
+    "text.autoconfig.skyblocker.option.general.fairySouls": "Aide aux Fairy Souls",
+    "text.autoconfig.skyblocker.option.general.shortcuts": "Raccourcis"
 }
