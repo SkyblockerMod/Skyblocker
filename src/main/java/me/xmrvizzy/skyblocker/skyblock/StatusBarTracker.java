@@ -1,7 +1,11 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.text.Text;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +19,10 @@ public class StatusBarTracker {
     private Resource health = new Resource(100, 100, 0);
     private Resource mana = new Resource(100, 100, 0);
     private int defense = 0;
+
+    public void init() {
+        ClientReceiveMessageEvents.MODIFY_GAME.register(this::onOverlayMessage);
+    }
 
     public Resource getHealth() {
         return this.health;
@@ -57,6 +65,13 @@ public class StatusBarTracker {
         return str;
     }
 
+    private Text onOverlayMessage(Text text, boolean overlay) {
+        if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfig.get().general.bars.enableBars || Utils.isInTheRift()) {
+            return text;
+        }
+        return Text.of(update(text.getString(), SkyblockerConfig.get().messages.hideMana));
+    }
+
     public String update(String actionBar, boolean filterManaUse) {
         var sb = new StringBuilder();
         Matcher matcher = STATUS_HEALTH.matcher(actionBar);
@@ -89,5 +104,6 @@ public class StatusBarTracker {
         return res.isEmpty() ? null : res;
     }
 
-    public record Resource(int value, int max, int overflow) {}
+    public record Resource(int value, int max, int overflow) {
+    }
 }

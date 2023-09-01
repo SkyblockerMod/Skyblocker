@@ -407,6 +407,8 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class Dungeons {
+        @ConfigEntry.Gui.CollapsibleObject
+        public SecretWaypoints secretWaypoints = new SecretWaypoints();
         @ConfigEntry.Gui.Tooltip()
         public boolean croesusHelper = true;
         public boolean enableMap = true;
@@ -425,6 +427,24 @@ public class SkyblockerConfig implements ConfigData {
         public LividColor lividColor = new LividColor();
         @ConfigEntry.Gui.CollapsibleObject()
         public Terminals terminals = new Terminals();
+    }
+
+    public static class SecretWaypoints {
+
+        public boolean enableSecretWaypoints = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean noInitSecretWaypoints = false;
+        public boolean enableEntranceWaypoints = true;
+        public boolean enableSuperboomWaypoints = true;
+        public boolean enableChestWaypoints = true;
+        public boolean enableItemWaypoints = true;
+        public boolean enableBatWaypoints = true;
+        public boolean enableWitherWaypoints = true;
+        public boolean enableLeverWaypoints = true;
+        public boolean enableFairySoulWaypoints = true;
+        public boolean enableStonkWaypoints = true;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean enableDefaultWaypoints = true;
     }
 
     public static class LividColor {

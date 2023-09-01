@@ -1,5 +1,8 @@
 package me.xmrvizzy.skyblocker.utils;
 
+import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.x150.renderer.render.Renderer3d;
 import me.xmrvizzy.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import me.xmrvizzy.skyblocker.utils.culling.OcclusionCulling;
@@ -7,34 +10,27 @@ import me.xmrvizzy.skyblocker.utils.title.Title;
 import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import java.awt.*;
-
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
+import java.awt.*;
 
 public class RenderHelper {
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
+    private static final MinecraftClient client = MinecraftClient.getInstance();
 
     public static void renderFilledThroughWallsWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         renderFilledThroughWalls(context, pos, colorComponents, alpha);
@@ -44,8 +40,8 @@ public class RenderHelper {
     public static void renderFilledThroughWalls(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
             Renderer3d.renderThroughWalls();
-    	    renderFilled(context, pos, colorComponents, alpha);
-    	    Renderer3d.stopRenderThroughWalls();
+            renderFilled(context, pos, colorComponents, alpha);
+            Renderer3d.stopRenderThroughWalls();
         }
     }
 
@@ -63,84 +59,120 @@ public class RenderHelper {
         if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, MAX_OVERWORLD_BUILD_HEIGHT, pos.getZ() + 1)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
-            
+
             matrices.push();
-            matrices.translate(pos.getX() - camera.x, pos.getY() - camera.y, pos.getZ() - camera.z);
-            
+            matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
+
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
             BufferBuilder buffer = tessellator.getBuffer();
             VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(buffer);
-            
+
             BeaconBlockEntityRendererInvoker.renderBeam(matrices, consumer, context.tickDelta(), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, colorComponents);
-            
+
             consumer.draw();
             matrices.pop();
         }
     }
-    
-	/**
-	 * Draws lines from point to point.<br><br>
-	 * 
-	 * Tip: To draw lines from the center of a block, offset the X, Y and Z each by 0.5
-	 * 
-	 * @param context The WorldRenderContext which supplies the matrices and tick delta
-	 * @param points The points from which to draw lines between
-	 * @param colorComponents An array of R, G and B color components
-	 * @param alpha The alpha of the lines
-	 * @param lineWidth The width of the lines
-	 */
-	public static void renderLinesFromPoints(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, float lineWidth) {
-		Vec3d camera = context.camera().getPos();
-		MatrixStack matrices = context.matrixStack();
-		
-		matrices.push();
-		matrices.translate(-camera.x, -camera.y, -camera.z);
-		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder buffer = tessellator.getBuffer();
-		Matrix4f projectionMatrix = matrices.peek().getPositionMatrix();
-		Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
-		
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
-		
-		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		RenderSystem.lineWidth(lineWidth);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA);
-		RenderSystem.disableCull();
-		RenderSystem.enableDepthTest();
-				
-		buffer.begin(DrawMode.LINE_STRIP, VertexFormats.LINES);
 
-		for (int i = 0; i < points.length; i++) {
-			Vec3d point = points[i];
-			Vec3d nextPoint = (i + 1 == points.length) ? points[i - 1] : points[i + 1];
-			Vector3f normalVec = new Vector3f((float) nextPoint.getX(), (float) nextPoint.getY(), (float) nextPoint.getZ()).sub((float) point.getX(), (float) point.getY(), (float) point.getZ()).normalize();
-			
-			buffer
-			.vertex(projectionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
-			.color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-			.normal(normalMatrix, normalVec.x, normalVec.y, normalVec.z)
-			.next();
-		}
-		
-		tessellator.draw();
-		
-		matrices.pop();
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		RenderSystem.lineWidth(1f);
-		RenderSystem.disableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.enableCull();
-		RenderSystem.disableDepthTest();
-	}
+    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean seeThrough) {
+        renderText(context, text, pos, 1, seeThrough);
+    }
 
-    public static void displayTitleAndPlaySound(int stayTicks, int fadeOutTicks, String titleKey, Formatting formatting) {
-        MinecraftClient.getInstance().inGameHud.setTitleTicks(0, stayTicks, fadeOutTicks);
-        MinecraftClient.getInstance().inGameHud.setTitle(Text.translatable(titleKey).formatted(formatting));
-        playNotificationSound();
+    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, float scale, boolean seeThrough) {
+        renderText(context, text, pos, scale, 0, seeThrough);
+    }
+
+    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, float scale, float yOffset, boolean seeThrough) {
+        renderText(context, text.asOrderedText(), pos, scale, yOffset, seeThrough);
+    }
+
+    /**
+     * Draws lines from point to point.<br><br>
+     * <p>
+     * Tip: To draw lines from the center of a block, offset the X, Y and Z each by 0.5
+     *
+     * @param context         The WorldRenderContext which supplies the matrices and tick delta
+     * @param points          The points from which to draw lines between
+     * @param colorComponents An array of R, G and B color components
+     * @param alpha           The alpha of the lines
+     * @param lineWidth       The width of the lines
+     */
+    public static void renderLinesFromPoints(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, float lineWidth) {
+        Vec3d camera = context.camera().getPos();
+        MatrixStack matrices = context.matrixStack();
+
+        matrices.push();
+        matrices.translate(-camera.x, -camera.y, -camera.z);
+
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder buffer = tessellator.getBuffer();
+        Matrix4f projectionMatrix = matrices.peek().getPositionMatrix();
+        Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
+
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.lineWidth(lineWidth);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.disableCull();
+        RenderSystem.enableDepthTest();
+
+        buffer.begin(DrawMode.LINE_STRIP, VertexFormats.LINES);
+
+        for (int i = 0; i < points.length; i++) {
+            Vec3d point = points[i];
+            Vec3d nextPoint = (i + 1 == points.length) ? points[i - 1] : points[i + 1];
+            Vector3f normalVec = new Vector3f((float) nextPoint.getX(), (float) nextPoint.getY(), (float) nextPoint.getZ()).sub((float) point.getX(), (float) point.getY(), (float) point.getZ()).normalize();
+
+            buffer.vertex(projectionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ()).color(colorComponents[0], colorComponents[1], colorComponents[2], alpha).normal(normalMatrix, normalVec.x, normalVec.y, normalVec.z).next();
+        }
+
+        tessellator.draw();
+
+        matrices.pop();
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        RenderSystem.lineWidth(1f);
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableCull();
+        RenderSystem.disableDepthTest();
+    }
+
+    /**
+     * Renders text in the world space.
+     *
+     * @param seeThrough Whether the text should be able to be seen through walls or not.
+     */
+    public static void renderText(WorldRenderContext context, OrderedText text, Vec3d pos, float scale, float yOffset, boolean seeThrough) {
+        MatrixStack matrices = context.matrixStack();
+        Vec3d camera = context.camera().getPos();
+        TextRenderer textRenderer = client.textRenderer;
+
+        scale *= 0.025f;
+
+        matrices.push();
+        matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
+        matrices.peek().getPositionMatrix().mul(RenderSystem.getModelViewMatrix());
+        matrices.multiply(context.camera().getRotation());
+        matrices.scale(-scale, -scale, scale);
+
+        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+        float xOffset = -textRenderer.getWidth(text) / 2f;
+
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder buffer = tessellator.getBuffer();
+        VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(buffer);
+
+        RenderSystem.depthFunc(seeThrough ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+
+        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        consumers.draw();
+
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        matrices.pop();
     }
 
     /**
