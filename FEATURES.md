@@ -1,9 +1,12 @@
 * Bars: Health and absorption, Mana, Defense, XP (moving fancy bars)
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
+* Dungeon Secrets
+* Starred Mob Glow
 * Dungeon Puzzle Solver:
     * Three Weirdos
     * Blaze
+    * Tic Tac Toe
     * Croesus
     * Terminal:
         * Order
@@ -14,7 +17,7 @@
 * Experiments Solvers
 * Slayer helper:
     * Vampire : Effigy Waypoints, Healing Melon Indicator, Twinclaws Ice Indicator, Steak Stake Indicator
-* Drill Fuel in Item Durability Bar
+* Drill Fuel and Pickonimbus 2000 in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
 * Price tooltip: npc, motes, bazaar (avg, lbin), ah, museum
 * reparty: write /rp to reparty + auto rejoin
@@ -28,10 +31,11 @@
 * Update notification
 * Commission HUD: Dwarven Mines quests
 * 1.8 hitbox for lever and farmland
-* Custom Tab HUD
+* Custom Tab HUD + Fully configureable with ressourcepack
 * Roughly enough items (REI) Support
 * Fishing Helper + sound notification
 * Mirrorverse Waypoints
+* Attribute Shard Info Display
 * Item and Armour customisation:
     * Item Renaming
     * Custom Armour Dye Colours

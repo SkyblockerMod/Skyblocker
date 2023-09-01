@@ -20,9 +20,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Bars: Health and absorption, Mana, Defense, XP (moving fancy bars)
 * Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
 * Dungeon Minimap
+* Dungeon Secrets
+* Starred Mob Glow
 * Dungeon Puzzle Solver:
     * Three Weirdos
     * Blaze
+    * Tic Tac Toe
     * Croesus
     * Terminal:
         * Order
@@ -33,7 +36,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Experiments Solvers
 * Slayer helper:
     * Vampire : Effigy Waypoints, Healing Melon Indicator, Twinclaws Ice Indicator, Steak Stake Indicator
-* Drill Fuel in Item Durability Bar
+* Drill Fuel and Pickonimbus 2000 in Item Durability Bar
 * Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
 * Price tooltip: npc, motes, bazaar (avg, lbin), ah, museum
 * reparty: write /rp to reparty + auto rejoin
@@ -47,10 +50,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Update notification
 * Commission HUD: Dwarven Mines quests
 * 1.8 hitbox for lever and farmland
-* Custom Tab HUD
+* Custom Tab HUD + Fully configureable with ressourcepack
 * Roughly enough items (REI) Support
 * Fishing Helper + sound notification
 * Mirrorverse Waypoints
+* Attribute Shard Info Display
 * Item and Armour customisation:
     * Item Renaming
     * Custom Armour Dye Colours
@@ -123,14 +127,14 @@ information.
 
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](https://github.com/msg-programs)) \
 Indonesian ([null2264](https://github.com/null2264)) \
-Russian ([HyperSoop](https://github.com/HyperSoop) & [Azuremane](https://github.com/Azuremane) & [CrimsonIsle](https://github.com/CrimsonIsle))\
-French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat)) \
+Russian ([HyperSoop](https://github.com/HyperSoop) & [CrimsonIsle](https://github.com/CrimsonIsle))\
+French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat) & [Kiverty](https://github.com/Kiverty)) \
 Japanese ([hirochisan](https://github.com/hirochisan)) \
 Chinese ([catandA](https://github.com/catandA)) \
+Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD) & [user123321111](https://github.com/user123321111) & [sunnytia](https://github.com/sunnytia)) \
 Korean ([lantice3720](https://github.com/lantice3720)) \
 Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
 Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
 Norwegian Nynorsk ([KdGaming0](https://github.com/KdGaming0)) \
 Turkish ([Fix3dll](https://github.com/Fix3dll)) \
-Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD)) \
 Canadian English ([AzureAaron](https://github.com/AzureAaron))
