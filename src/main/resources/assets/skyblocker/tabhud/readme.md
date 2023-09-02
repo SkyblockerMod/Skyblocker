@@ -177,6 +177,7 @@ Example: Stack A, B, C vertically/center-aligned, then align with leftOfCenter
 - Places a widget at some position, moving it in any direction as needed. Only makes sense to use on one widget at a time, as applying the same Place op to multiple widgtes causes them to be on top of each other.
 
 Example: Place A at "center"
+```
 +-----------+       +-----------+
 |           |       |           |
 |  A        |       | ->  v     |
@@ -184,3 +185,4 @@ Example: Place A at "center"
 |           |       |           |
 |           |       |           |
 +-----------+       +-----------+
+```
