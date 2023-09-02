@@ -239,5 +239,6 @@
     "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "Включить Сокращения Команд",
     "text.autoconfig.skyblocker.option.general.shortcuts": "Сокращения",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Включить Сокращения",
-    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Работает только на Хайпикселе. Сокращения можно редактировать при помощи \"/skyblocker shortcuts\". Хотя бы одна из опций должна быть включена, чтобы это работало."
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Работает только на Хайпикселе. Сокращения можно редактировать при помощи \"/skyblocker shortcuts\". Хотя бы одна из опций должна быть включена, чтобы это работало.",
+    "text.autoconfig.skyblocker.option.general.tabHud.nameSorting": "Метод сортировки имен игроков"
 }
