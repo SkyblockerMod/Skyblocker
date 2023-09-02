@@ -15,7 +15,6 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition": "法力条位置",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "防御条位置",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "经验条位置",
-    "text.autoconfig.skyblocker.option.general.quicknav": "快速导航",
     "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "启用快速导航",
     "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "查看背包预览无需按住shift键",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "物品提示信息",

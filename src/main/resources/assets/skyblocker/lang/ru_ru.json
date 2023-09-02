@@ -28,7 +28,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveStartsWith": "Показывать Решение Starts With",
     "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cИнформация о цене предмета обновится менее чем через 60 секунд. Если нет, проверьте latest.log",
     "text.autoconfig.skyblocker.option.messages.hideTeleportPad": "Скрывать сообщения Teleport Pad",
-    "text.autoconfig.skyblocker.option.general.quicknav": "Кнопки быстрого доступа",
     "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Включить кнопки быстрого доступа",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Показать средние цены на BIN",
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg": "Период времени (для средней цены)",

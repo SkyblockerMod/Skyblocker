@@ -15,7 +15,6 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition": "마나바 위치",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "방어력바 위치",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "경험치바 위치",
-    "text.autoconfig.skyblocker.option.general.quicknav": "즐겨찾기",
     "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "즐겨찾기 활성화",
     "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "Shift 를 누르지 않고 백팩 미리보기",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "아이템 툴팁",
