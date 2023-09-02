@@ -15,7 +15,6 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition": "마나바 위치",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "방어력바 위치",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "경험치바 위치",
-    "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "즐겨찾기 활성화",
     "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "Shift 를 누르지 않고 백팩 미리보기",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "아이템 툴팁",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "NPC 가격 활성화",
@@ -178,5 +177,8 @@
     "text.autoconfig.skyblocker.option.messages.hideCombo": "콤보 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideAutopet": "Autopet 메시지 가리기",
     "text.autoconfig.skyblocker.option.messages.hideMana": "액션바에서 마나 사용 메시지 가리기",
-    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBar 로 더 나은 기능을 사용합니다"
+    "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBar 로 더 나은 기능을 사용합니다",
+    "key.skyblocker.defaultTgl": "기본 보기로 탭 HUD 변경",
+    "key.skyblocker.toggleB": "B 스크린으로 탭 HUD 변경",
+    "key.skyblocker.toggleA": "A 스크린으로 탭 HUD 변경"
 }
