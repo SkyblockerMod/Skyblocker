@@ -11,7 +11,6 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition": "マナバーの位置",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "ディフェンスバーの位置",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "経験値バーの位置",
-    "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "クイックナビを有効にする",
     "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "Shiftキーを押さずにバックパックのプレビューを見る",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "アイテムの詳細情報",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "NPC売りの値段を表示する",
