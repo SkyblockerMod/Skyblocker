@@ -42,5 +42,6 @@
     "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "Superpairs Solver aktivieren",
     "text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver": "Ultrasequencer Solver aktivieren",
     "text.autoconfig.skyblocker.option.general.bars.barpositions": "Balkenposition Bearbeiten",
-    "text.autoconfig.skyblocker.option.general.acceptReparty": "Automatische Annahme von Reparty"
+    "text.autoconfig.skyblocker.option.general.acceptReparty": "Automatische Annahme von Reparty",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition": "Gesundheitsposition"
 }
