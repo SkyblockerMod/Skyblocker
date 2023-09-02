@@ -174,6 +174,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Shortcuts shortcuts = new Shortcuts();
 
+        @ConfigEntry.Category("quiverWarning")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public QuiverWarning quiverWarning = new QuiverWarning();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -300,6 +304,12 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableCommandShortcuts = true;
         @ConfigEntry.Gui.Tooltip()
         public boolean enableCommandArgShortcuts = true;
+    }
+
+    public static class QuiverWarning {
+        public boolean enableQuiverWarning = true;
+        public boolean enableQuiverWarningInDungeons = true;
+        public boolean enableQuiverWarningAfterDungeon = true;
     }
 
     public static class Hitbox {
