@@ -15,8 +15,6 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition": "法力条位置",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "防御条位置",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "经验条位置",
-    "text.autoconfig.skyblocker.option.general.quicknav": "快速导航",
-    "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "启用快速导航",
     "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "查看背包预览无需按住shift键",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "物品提示信息",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "显示NPC价格",
@@ -231,5 +229,13 @@
     "text.autoconfig.skyblocker.option.general.etherwarpOverlay": "Etherwarp 技能目标位置显示",
     "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver.@Tooltip": "以绿色边框标记正确的烈焰人，并将下一个烈焰人以白色线条与边框一同标记.",
     "text.autoconfig.skyblocker.option.general.tabHud.plainPlayerNames.@Tooltip": "开启后在公共岛屿显示玩家名时不显示任何特殊效果。",
-    "text.autoconfig.skyblocker.option.messages.hideShowOff.@Tooltip": "过滤来自 /show 命令的消息"
+    "text.autoconfig.skyblocker.option.messages.hideShowOff.@Tooltip": "过滤来自 /show 命令的消息",
+    "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow": "将星标怪物高亮",
+    "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "将玩家可见的星标怪物高亮",
+    "text.autoconfig.skyblocker.option.locations.dungeons.solveTicTacToe": "井字棋谜题助手",
+    "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints": "地牢秘密路径点",
+    "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableSecretWaypoints": "启用地牢秘密路径点",
+    "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints": "不对地牢秘密路径点进行初始化",
+    "text.autoconfig.skyblocker.option.general.tabHud.nameSorting.@Tooltip": "\"Alphabetical\" 以词典序排列玩家, 而 \"Default\" 以Hypixel默认顺序排列",
+    "text.autoconfig.skyblocker.option.locations.dungeons.solveTicTacToe.@Tooltip": "以红色方块标记井字棋的下一步!"
 }

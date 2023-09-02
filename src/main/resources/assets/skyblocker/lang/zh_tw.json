@@ -26,8 +26,6 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER1": "下排",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER2": "上排",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.NONE": "關閉",
-    "text.autoconfig.skyblocker.option.general.quicknav": "快速導航",
-    "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "啟用快速導航",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "顯示NPC價格",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "顯示平均BIN（立即購買）價格",
     "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "檢視揹包預覽無需按住shift鍵",
