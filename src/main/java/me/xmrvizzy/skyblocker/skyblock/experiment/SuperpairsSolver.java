@@ -1,5 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.experiment;
 
+import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.render.gui.ColorHighlight;
 import net.minecraft.client.gui.screen.Screen;
@@ -27,7 +28,7 @@ public class SuperpairsSolver extends ExperimentSolver {
     }
 
     @Override
-    protected boolean isEnabled(SkyblockerConfig.Experiments experimentsConfig) {
+    protected boolean isEnabled(ConfigModel.Experiments experimentsConfig) {
         return experimentsConfig.enableSuperpairsSolver;
     }
 

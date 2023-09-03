@@ -13,9 +13,15 @@ public class DungeonMapConfigScreen extends Screen {
 
 	private int hudX = SkyblockerConfig.get().locations.dungeons.mapX;
 	private int hudY = SkyblockerConfig.get().locations.dungeons.mapY;
-
+	private final Screen parent;
+	
 	protected DungeonMapConfigScreen() {
+		this(null);
+	}
+
+	public DungeonMapConfigScreen(Screen parent) {
 		super(Text.literal("Dungeon Map Config"));
+		this.parent = parent;
 	}
 
 	@Override
@@ -51,7 +57,14 @@ public class DungeonMapConfigScreen extends Screen {
 	public void close() {
 		SkyblockerConfig.get().locations.dungeons.mapX = hudX;
 		SkyblockerConfig.get().locations.dungeons.mapY = hudY;
-		AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+		SkyblockerConfig.save();
+		
+		if (parent != null) {
+			this.client.setScreen(parent);
+			
+			return;
+		}
+		
 		super.close();
 	}
 }

@@ -3,6 +3,8 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+
+import dev.isxander.yacl3.config.ConfigEntry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
@@ -138,7 +140,7 @@ public class CustomArmorTrims {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public record ArmorTrimId(Identifier material, Identifier pattern) implements Pair<Identifier, Identifier> {
+	public record ArmorTrimId(@ConfigEntry Identifier material, @ConfigEntry Identifier pattern) implements Pair<Identifier, Identifier> {
 		@Override
 		public Identifier left() {
 			return material();

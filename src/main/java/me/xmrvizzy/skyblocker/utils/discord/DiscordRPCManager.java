@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.utils.discord;
 
 
-import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -41,7 +40,7 @@ public class DiscordRPCManager {
         // If the custom message is empty, discord will keep the last message, this is can serve as a default if the user doesn't want a custom message
         if (SkyblockerConfig.get().richPresence.customMessage.isEmpty()) {
             SkyblockerConfig.get().richPresence.customMessage = "Playing Skyblock";
-            AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+            SkyblockerConfig.save();
         }
         if (SkyblockerConfig.get().richPresence.cycleMode) cycleCount = (cycleCount + 1) % 3;
         initAndUpdatePresence();

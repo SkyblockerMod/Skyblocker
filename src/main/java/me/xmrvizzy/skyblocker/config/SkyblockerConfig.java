@@ -1,728 +1,80 @@
 package me.xmrvizzy.skyblocker.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.lang.StackWalker.Option;
+import java.nio.file.Path;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.autoconfig.serializer.ConfigSerializer;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+
+import dev.isxander.yacl3.api.YetAnotherConfigLib;
+import dev.isxander.yacl3.config.GsonConfigInstance;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
-import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
+import me.xmrvizzy.skyblocker.config.categories.DiscordRPCCategory;
+import me.xmrvizzy.skyblocker.config.categories.DungeonsCategory;
+import me.xmrvizzy.skyblocker.config.categories.DwarvenMinesCategory;
+import me.xmrvizzy.skyblocker.config.categories.GeneralCategory;
+import me.xmrvizzy.skyblocker.config.categories.MessageFilterCategory;
+import me.xmrvizzy.skyblocker.config.categories.LocationsCategory;
+import me.xmrvizzy.skyblocker.config.categories.QuickNavigationCategory;
+import me.xmrvizzy.skyblocker.config.categories.SlayersCategory;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Style;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import org.eclipse.jgit.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
-@Config(name = "skyblocker")
-public class SkyblockerConfig implements ConfigData {
-
-    @ConfigEntry.Category("general")
-    @ConfigEntry.Gui.TransitiveObject
-    public General general = new General();
-
-    @ConfigEntry.Category("locations")
-    @ConfigEntry.Gui.TransitiveObject
-    public Locations locations = new Locations();
-
-    @ConfigEntry.Category("slayer")
-    @ConfigEntry.Gui.TransitiveObject
-    public Slayer slayer = new Slayer();
-
-    @ConfigEntry.Category("quickNav")
-    @ConfigEntry.Gui.TransitiveObject
-    public QuickNav quickNav = new QuickNav();
-
-    @ConfigEntry.Category("messages")
-    @ConfigEntry.Gui.TransitiveObject
-    public Messages messages = new Messages();
-
-    @ConfigEntry.Category("richPresence")
-    @ConfigEntry.Gui.TransitiveObject
-    public RichPresence richPresence = new RichPresence();
-
-    public static class QuickNav {
-        public boolean enableQuickNav = true;
-
-        @ConfigEntry.Category("button1")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button1 = new QuickNavItem(true, new ItemData("diamond_sword"), "Your Skills", "/skills");
-
-        @ConfigEntry.Category("button2")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collections", "/collection");
-
-        @ConfigEntry.Category("button3")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets(:? \\(\\d+\\/\\d+\\))?", "/pets");
-        /* REGEX Explanation
-         * "Pets" : simple match on letters
-         * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
-         */
-
-        @ConfigEntry.Category("button4")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button4 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe \\([12]\\/2\\)", "/wardrobe");
-        /* REGEX Explanation
-         * "Wardrobe" : simple match on letters
-         * " \\([12]\\/2\\)" : match on the page either " (1/2)" or " (2/2)"
-         */
-
-        @ConfigEntry.Category("button5")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button5 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;-2081424676,-57521078,-2073572414,158072763],Properties:{textures:[{Value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}}}"), "Sack of Sacks", "/sacks");
-
-        @ConfigEntry.Category("button6")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"), "(?:Rift )?Storage(?: \\([12]\\/2\\))?", "/storage");
-        /* REGEX Explanation
-         * "(?:Rift )?" : optional match on the non-capturing group "Rift "
-         * "Storage" : simple match on letters
-         * "(?: \\([12]\\/2\\))?" : optional match on the non-capturing group " (1/2)" or " (2/2)"
-         */
-
-        @ConfigEntry.Category("button7")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button7 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}"), "none", "/hub");
-
-        @ConfigEntry.Category("button8")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button8 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;1605800870,415127827,-1236127084,15358548],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}}}"), "none", "/warp dungeon_hub");
-
-        @ConfigEntry.Category("button9")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button9 = new QuickNavItem(true, new ItemData("player_head", 1, "tag:{SkullOwner:{Id:[I;-562285948,532499670,-1705302742,775653035],Properties:{textures:[{Value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjVkZjU1NTkyNjQzMGQ1ZDc1YWRlZDIxZGQ5NjE5Yjc2YzViN2NhMmM3ZjU0MDE0NDA1MjNkNTNhOGJjZmFhYiJ9fX0=\"}]}}}"), "Visit prtl", "/visit prtl");
-
-        @ConfigEntry.Category("button10")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant Item", "/etable");
-
-        @ConfigEntry.Category("button11")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button11 = new QuickNavItem(true, new ItemData("anvil"), "Anvil", "/anvil");
-
-        @ConfigEntry.Category("button12")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button12 = new QuickNavItem(true, new ItemData("crafting_table"), "Craft Item", "/craft");
-    }
-
-    public static class QuickNavItem {
-        public QuickNavItem(Boolean render, ItemData itemData, String uiTitle, String clickEvent) {
-            this.render = render;
-            this.item = itemData;
-            this.clickEvent = clickEvent;
-            this.uiTitle = uiTitle;
-        }
-
-        public Boolean render;
-
-        @ConfigEntry.Category("item")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public ItemData item;
-
-        public String uiTitle;
-        public String clickEvent;
-    }
-
-    public static class ItemData {
-        public ItemData(String itemName, int count, String nbt) {
-            this.itemName = itemName;
-            this.count = count;
-            this.nbt = nbt;
-        }
-
-        public ItemData(String itemName) {
-            this.itemName = itemName;
-            this.count = 1;
-            this.nbt = "";
-        }
-
-        public String itemName;
-        public int count;
-        public String nbt;
-    }
-
-    public static class General {
-        public boolean acceptReparty = true;
-        public boolean backpackPreviewWithoutShift = false;
-        public boolean compactorDeletorPreview = true;
-        public boolean hideEmptyTooltips = true;
-        public boolean hideStatusEffectOverlay = false;
-
-        @ConfigEntry.Category("tabHud")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public TabHudConf tabHud = new TabHudConf();
-
-        @ConfigEntry.Gui.Excluded
-        public String apiKey;
-
-        @ConfigEntry.Category("bars")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Bars bars = new Bars();
-
-        @ConfigEntry.Category("experiments")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Experiments experiments = new Experiments();
-
-        @ConfigEntry.Category("fishing")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Fishing fishing = new Fishing();
-
-        @ConfigEntry.Category("fairySouls")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public FairySouls fairySouls = new FairySouls();
-
-        @ConfigEntry.Category("shortcuts")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Shortcuts shortcuts = new Shortcuts();
-
-        @ConfigEntry.Category("quiverWarning")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public QuiverWarning quiverWarning = new QuiverWarning();
-
-        @ConfigEntry.Category("itemList")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public ItemList itemList = new ItemList();
-
-        @ConfigEntry.Category("itemTooltip")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public ItemTooltip itemTooltip = new ItemTooltip();
-
-        @ConfigEntry.Category("itemInfoDisplay")
-        @ConfigEntry.Gui.CollapsibleObject
-        public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
-
-        @ConfigEntry.Category("specialEffects")
-        @ConfigEntry.Gui.CollapsibleObject
-        public SpecialEffects specialEffects = new SpecialEffects();
-
-        @ConfigEntry.Category("hitbox")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Hitbox hitbox = new Hitbox();
-
-        @ConfigEntry.Gui.Tooltip()
-        @ConfigEntry.Category("titleContainer")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public TitleContainer titleContainer = new TitleContainer();
-
-        @ConfigEntry.Category("Teleport Overlay")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public TeleportOverlay teleportOverlay = new TeleportOverlay();
-
-        @ConfigEntry.Gui.Excluded
-        public List<Integer> lockedSlots = new ArrayList<>();
-
-        @ConfigEntry.Gui.Excluded
-        public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
-
-        @ConfigEntry.Gui.Excluded
-        public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
-
-        @ConfigEntry.Gui.Excluded
-        public Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customArmorTrims = new Object2ObjectOpenHashMap<>();
-    }
-
-    public static class TabHudConf {
-        public boolean tabHudEnabled = true;
-
-        @ConfigEntry.BoundedDiscrete(min = 10, max = 200)
-        @ConfigEntry.Gui.Tooltip()
-        public int tabHudScale = 100;
-        @ConfigEntry.Gui.Tooltip
-        public boolean plainPlayerNames = false;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        @ConfigEntry.Gui.Tooltip
-        public NameSorting nameSorting = NameSorting.DEFAULT;
-    }
-
-    public enum NameSorting {
-        DEFAULT,
-        ALPHABETICAL;
-
-        @Override
-        public String toString() {
-            return switch (this) {
-                case DEFAULT -> "Default";
-                case ALPHABETICAL -> "Alphabetical";
-            };
-        }
-    }
-
-    public static class Bars {
-        public boolean enableBars = true;
-
-        @ConfigEntry.Category("barpositions")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public BarPositions barpositions = new BarPositions();
-    }
-
-    public static class BarPositions {
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public BarPosition healthBarPosition = BarPosition.LAYER1;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public BarPosition manaBarPosition = BarPosition.LAYER1;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public BarPosition defenceBarPosition = BarPosition.LAYER1;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public BarPosition experienceBarPosition = BarPosition.LAYER1;
-    }
-
-    public enum BarPosition {
-        LAYER1,
-        LAYER2,
-        RIGHT,
-        NONE;
-
-        @Override
-        public String toString() {
-            return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
-        }
-
-        public int toInt() {
-            return switch (this) {
-                case LAYER1 -> 0;
-                case LAYER2 -> 1;
-                case RIGHT -> 2;
-                case NONE -> -1;
-            };
-        }
-    }
-
-    public static class Experiments {
-        public boolean enableChronomatronSolver = true;
-        public boolean enableSuperpairsSolver = true;
-        public boolean enableUltrasequencerSolver = true;
-    }
-
-    public static class Fishing {
-        public boolean enableFishingHelper = true;
-    }
-
-    public static class FairySouls {
-        public boolean enableFairySoulsHelper = false;
-        public boolean highlightFoundSouls = true;
-        @ConfigEntry.Gui.Tooltip()
-        public boolean highlightOnlyNearbySouls = false;
-    }
-
-    public static class Shortcuts {
-        @ConfigEntry.Gui.Tooltip()
-        public boolean enableShortcuts = true;
-        @ConfigEntry.Gui.Tooltip()
-        public boolean enableCommandShortcuts = true;
-        @ConfigEntry.Gui.Tooltip()
-        public boolean enableCommandArgShortcuts = true;
-    }
-
-    public static class QuiverWarning {
-        public boolean enableQuiverWarning = true;
-        public boolean enableQuiverWarningInDungeons = true;
-        public boolean enableQuiverWarningAfterDungeon = true;
-    }
-
-    public static class Hitbox {
-        public boolean oldFarmlandHitbox = true;
-        public boolean oldLeverHitbox = false;
-    }
-
-    public static class TitleContainer {
-        @ConfigEntry.BoundedDiscrete(min = 30, max = 140)
-        public float titleContainerScale = 100;
-        public int x = 540;
-        public int y = 10;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public Direction direction = Direction.HORIZONTAL;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
-        public Alignment alignment = Alignment.MIDDLE;
-    }
-
-    public static class TeleportOverlay {
-        public boolean enableTeleportOverlays = true;
-        public boolean enableWeirdTransmission = true;
-        public boolean enableInstantTransmission = true;
-        public boolean enableEtherTransmission = true;
-        public boolean enableSinrecallTransmission = true;
-        public boolean enableWitherImpact = true;
-    }
-
-    public enum Direction {
-        HORIZONTAL,
-        VERTICAL;
-
-        @Override
-        public String toString() {
-            return switch (this) {
-                case HORIZONTAL -> "Horizontal";
-                case VERTICAL -> "Vertical";
-            };
-        }
-    }
-
-    public enum Alignment {
-        LEFT,
-        RIGHT,
-        MIDDLE;
-
-        @Override
-        public String toString() {
-            return switch (this) {
-                case LEFT -> "Left";
-                case RIGHT -> "Right";
-                case MIDDLE -> "Middle";
-            };
-        }
-    }
-
-    public static class RichPresence {
-        public boolean enableRichPresence = false;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        @ConfigEntry.Gui.Tooltip()
-        public Info info = Info.LOCATION;
-        public boolean cycleMode = false;
-        public String customMessage = "Playing Skyblock";
-    }
-
-    public static class ItemList {
-        public boolean enableItemList = true;
-    }
-
-    public enum Average {
-        ONE_DAY,
-        THREE_DAY,
-        BOTH;
-
-        @Override
-        public String toString() {
-            return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
-        }
-    }
-
-    public static class ItemTooltip {
-        public boolean enableNPCPrice = true;
-        @ConfigEntry.Gui.Tooltip
-        public boolean enableMotesPrice = true;
-        public boolean enableAvgBIN = true;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        @ConfigEntry.Gui.Tooltip()
-        public Average avg = Average.THREE_DAY;
-        public boolean enableLowestBIN = true;
-        public boolean enableBazaarPrice = true;
-        public boolean enableMuseumDate = true;
-    }
-
-    public static class ItemInfoDisplay {
-        @ConfigEntry.Gui.Tooltip
-        public boolean attributeShardInfo = true;
-    }
-
-    public static class SpecialEffects {
-        @ConfigEntry.Gui.Tooltip
-        public boolean rareDungeonDropEffects = true;
-    }
-
-    public static class Locations {
-        @ConfigEntry.Category("barn")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Barn barn = new Barn();
-
-        @ConfigEntry.Category("dungeons")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Dungeons dungeons = new Dungeons();
-
-        @ConfigEntry.Category("dwarvenmines")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public DwarvenMines dwarvenMines = new DwarvenMines();
-
-        @ConfigEntry.Category("rift")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Rift rift = new Rift();
-
-        @ConfigEntry.Category("spidersden")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public SpidersDen spidersDen = new SpidersDen();
-    }
-
-    public static class Dungeons {
-        @ConfigEntry.Gui.CollapsibleObject
-        public SecretWaypoints secretWaypoints = new SecretWaypoints();
-        @ConfigEntry.Gui.CollapsibleObject
-        public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
-        @ConfigEntry.Gui.Tooltip()
-        public boolean croesusHelper = true;
-        public boolean enableMap = true;
-        public float mapScaling = 1f;
-        public int mapX = 2;
-        public int mapY = 2;
-        @ConfigEntry.Gui.Tooltip
-        public boolean starredMobGlow = true;
-        public boolean solveThreeWeirdos = true;
-        @ConfigEntry.Gui.Tooltip
-        public boolean blazesolver = true;
-        public boolean solveTrivia = true;
-        @ConfigEntry.Gui.Tooltip
-        public boolean solveTicTacToe = true;
-        @ConfigEntry.Gui.CollapsibleObject
-        public LividColor lividColor = new LividColor();
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Terminals terminals = new Terminals();
-    }
-
-    public static class SecretWaypoints {
-
-        public boolean enableSecretWaypoints = true;
-        @ConfigEntry.Gui.Tooltip()
-        public boolean noInitSecretWaypoints = false;
-        public boolean enableEntranceWaypoints = true;
-        public boolean enableSuperboomWaypoints = true;
-        public boolean enableChestWaypoints = true;
-        public boolean enableItemWaypoints = true;
-        public boolean enableBatWaypoints = true;
-        public boolean enableWitherWaypoints = true;
-        public boolean enableLeverWaypoints = true;
-        public boolean enableFairySoulWaypoints = true;
-        public boolean enableStonkWaypoints = true;
-        @ConfigEntry.Gui.Tooltip()
-        public boolean enableDefaultWaypoints = true;
-    }
-
-    public static class DungeonChestProfit {
-        @ConfigEntry.Gui.Tooltip
-        public boolean enableProfitCalculator = true;
-        @ConfigEntry.Gui.Tooltip
-        public boolean includeKismet = false;
-        @ConfigEntry.Gui.Tooltip
-        public boolean includeEssence = true;
-        @ConfigEntry.Gui.Tooltip
-        public int neutralThreshold = 1000;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
-        public FormattingOption neutralColor = FormattingOption.DARK_GRAY;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
-        public FormattingOption profitColor = FormattingOption.DARK_GREEN;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
-        public FormattingOption lossColor = FormattingOption.RED;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
-        @ConfigEntry.Gui.Tooltip
-        public FormattingOption incompleteColor = FormattingOption.BLUE;
-    }
-
-    public enum FormattingOption {
-        BLACK(Formatting.BLACK),
-        DARK_BLUE(Formatting.DARK_BLUE),
-        DARK_GREEN(Formatting.DARK_GREEN),
-        DARK_AQUA(Formatting.DARK_AQUA),
-        DARK_RED(Formatting.DARK_RED),
-        DARK_PURPLE(Formatting.DARK_PURPLE),
-        GOLD(Formatting.GOLD),
-        GRAY(Formatting.GRAY),
-        DARK_GRAY(Formatting.DARK_GRAY),
-        BLUE(Formatting.BLUE),
-        GREEN(Formatting.GREEN),
-        AQUA(Formatting.AQUA),
-        RED(Formatting.RED),
-        LIGHT_PURPLE(Formatting.LIGHT_PURPLE),
-        YELLOW(Formatting.YELLOW),
-        WHITE(Formatting.WHITE),
-        OBFUSCATED(Formatting.OBFUSCATED),
-        BOLD(Formatting.BOLD),
-        STRIKETHROUGH(Formatting.STRIKETHROUGH),
-        UNDERLINE(Formatting.UNDERLINE),
-        ITALIC(Formatting.ITALIC),
-        RESET(Formatting.RESET);
-        public final Formatting formatting;
-
-        FormattingOption(Formatting formatting) {
-            this.formatting = formatting;
-        }
-
-        @Override
-        public String toString() {
-            return StringUtils.capitalize(formatting.getName().replaceAll("_", " "));
-        }
-    }
-
-    public static class LividColor {
-        @ConfigEntry.Gui.Tooltip()
-        public boolean enableLividColor = true;
-        @ConfigEntry.Gui.Tooltip()
-        public String lividColorText = "The livid color is [color]";
-    }
-
-    public static class Terminals {
-        public boolean solveColor = true;
-        public boolean solveOrder = true;
-        public boolean solveStartsWith = true;
-    }
-
-    public static class DwarvenMines {
-        public boolean enableDrillFuel = true;
-        public boolean solveFetchur = true;
-        public boolean solvePuzzler = true;
-        @ConfigEntry.Gui.CollapsibleObject()
-        public DwarvenHud dwarvenHud = new DwarvenHud();
-    }
-
-    public static class DwarvenHud {
-        public boolean enabled = true;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        @ConfigEntry.Gui.Tooltip(count = 3)
-        public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
-        public boolean enableBackground = true;
-        public int x = 10;
-        public int y = 10;
-    }
-
-    public enum DwarvenHudStyle {
-        SIMPLE,
-        FANCY,
-        CLASSIC;
-
-        @Override
-        public String toString() {
-            return switch (this) {
-                case SIMPLE -> "Simple";
-                case FANCY -> "Fancy";
-                case CLASSIC -> "Classic";
-            };
-        }
-    }
-
-    public static class Barn {
-        public boolean solveHungryHiker = true;
-        public boolean solveTreasureHunter = true;
-    }
-
-    public static class Rift {
-        public boolean mirrorverseWaypoints = true;
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 5)
-        @ConfigEntry.Gui.Tooltip
-        public int mcGrubberStacks = 0;
-    }
-
-    public static class SpidersDen {
-        @ConfigEntry.Category("relics")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public Relics relics = new Relics();
-    }
-
-    public static class Relics {
-        public boolean enableRelicsHelper = false;
-        public boolean highlightFoundRelics = true;
-    }
-
-    public static class Slayer {
-        @ConfigEntry.Category("vampire")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public VampireSlayer vampireSlayer = new VampireSlayer();
-    }
-
-    public static class VampireSlayer {
-        public boolean enableEffigyWaypoints = true;
-        public boolean compactEffigyWaypoints;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        @ConfigEntry.Gui.Tooltip()
-        public int effigyUpdateFrequency = 5;
-        public boolean enableHolyIceIndicator = true;
-        public int holyIceIndicatorTickDelay = 10;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        @ConfigEntry.Gui.Tooltip()
-        public int holyIceUpdateFrequency = 5;
-        public boolean enableHealingMelonIndicator = true;
-        public float healingMelonHealthThreshold = 4F;
-        public boolean enableSteakStakeIndicator = true;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        @ConfigEntry.Gui.Tooltip()
-        public int steakStakeUpdateFrequency = 5;
-        public boolean enableManiaIndicator = true;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        @ConfigEntry.Gui.Tooltip()
-        public int maniaUpdateFrequency = 5;
-    }
-
-    public static class Messages {
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideAbility = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideHeal = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideAOTE = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideAds = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideCombo = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        @ConfigEntry.Gui.Tooltip
-        public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
-        @ConfigEntry.Gui.Tooltip()
-        public boolean hideMana = false;
-    }
-
-    public enum Info {
-        PURSE,
-        BITS,
-        LOCATION;
-
-        @Override
-        public String toString() {
-            return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
-        }
-    }
-
-    /**
-     * Registers the config to AutoConfig and registers commands to open the config screen.
-     */
-    public static void init() {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
-                .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
-                .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer())
-                .create();
-
-        ConfigSerializer.Factory<SkyblockerConfig> serializer = (cfg, cfgClass) -> new GsonConfigSerializer<>(cfg, cfgClass, gson);
-
-        AutoConfig.register(SkyblockerConfig.class, serializer);
-        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
-    }
-
-    /**
-     * Registers an options command with the given name. Used for registering both options and config as valid commands.
-     *
-     * @param name the name of the command node
-     * @return the command builder
-     */
-    private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
-        // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-        return literal(name).executes(Scheduler.queueOpenScreenCommand(AutoConfig.getConfigScreen(SkyblockerConfig.class, null)));
-    }
-
-    public static SkyblockerConfig get() {
-        return AutoConfig.getConfigHolder(SkyblockerConfig.class).getConfig();
-    }
-
-    public static void save() {
-        AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
-    }
+public class SkyblockerConfig {
+	private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
+	private static final GsonConfigInstance<ConfigModel> INSTANCE = GsonConfigInstance.createBuilder(ConfigModel.class)
+			.setPath(PATH)
+			.overrideGsonBuilder(ConfigSerializer.INSTANCE)
+			.build();
+	
+	public static ConfigModel get() {
+		return INSTANCE.getConfig();
+	}
+	
+	/**
+	 * This method is caller sensitive and can only be called by the mod initializer,
+	 * this is enforced.
+	 */
+	public static void init() {
+		if (StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass() != SkyblockerMod.class) {
+			throw new RuntimeException("Skyblocker: Called config init from an illegal place!");
+		}
+		
+		INSTANCE.load();
+		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
+	}
+	
+	public static void save() {
+		INSTANCE.save();
+	}
+	
+	public static Screen createGUI(Screen parent) {
+		return YetAnotherConfigLib.create(INSTANCE, (defaults, config, builder) -> {
+			return builder
+					.title(Text.literal("Skyblocker"))
+					.category(GeneralCategory.create(defaults, config))
+					.category(DungeonsCategory.create(defaults, config))
+					.category(DwarvenMinesCategory.create(defaults, config))
+					.category(LocationsCategory.create(defaults, config))
+					.category(SlayersCategory.create(defaults, config))
+					.category(QuickNavigationCategory.create(defaults, config))
+					.category(MessageFilterCategory.create(defaults, config))
+					.category(DiscordRPCCategory.create(defaults, config));
+					
+		}).generateScreen(parent);
+	}
+	
+	/**
+	 * Registers an options command with the given name. Used for registering both options and config as valid commands.
+	 *
+	 * @param name the name of the command node
+	 * @return the command builder
+	 */
+	private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
+		// Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
+		return ClientCommandManager.literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)));
+	}
 }

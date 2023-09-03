@@ -35,7 +35,7 @@ public class HotbarSlotLock {
             int selected = player.getInventory().selectedSlot;
             if (!isLocked(player.getInventory().selectedSlot)) lockedSlots.add(selected);
             else lockedSlots.remove(Integer.valueOf(selected));
-            AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+            SkyblockerConfig.save();
         }
     }
 }

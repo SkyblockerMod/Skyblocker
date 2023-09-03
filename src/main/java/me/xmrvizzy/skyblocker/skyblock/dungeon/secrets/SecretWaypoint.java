@@ -1,6 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
+
+import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -91,10 +93,10 @@ public class SecretWaypoint {
         FAIRYSOUL(secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, 255, 85, 255),
         STONK(secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
         DEFAULT(secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
-        private final Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate;
+        private final Predicate<ConfigModel.SecretWaypoints> enabledPredicate;
         private final float[] colorComponents;
 
-        Category(Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate, int... intColorComponents) {
+        Category(Predicate<ConfigModel.SecretWaypoints> enabledPredicate, int... intColorComponents) {
             this.enabledPredicate = enabledPredicate;
             colorComponents = new float[intColorComponents.length];
             for (int i = 0; i < intColorComponents.length; i++) {

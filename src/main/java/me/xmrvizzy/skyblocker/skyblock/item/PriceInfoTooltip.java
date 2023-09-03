@@ -2,6 +2,8 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Http;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -146,10 +148,10 @@ public class PriceInfoTooltip {
                 }
 
                 if (!neuName.isEmpty() && lbinExist) {
-                    SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
+                    ConfigModel.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
 
                     // "No data" line because of API not keeping old data, it causes NullPointerException
-                    if (type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH) {
+                    if (type == ConfigModel.Average.ONE_DAY || type == ConfigModel.Average.BOTH) {
                         lines.add(
                                 Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
@@ -159,7 +161,7 @@ public class PriceInfoTooltip {
                                         )
                         );
                     }
-                    if (type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH) {
+                    if (type == ConfigModel.Average.THREE_DAY || type == ConfigModel.Average.BOTH) {
                         lines.add(
                                 Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
@@ -362,16 +364,16 @@ public class PriceInfoTooltip {
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
             if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
-                SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
+            	ConfigModel.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
 
-                if (type == SkyblockerConfig.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0) {
+                if (type == ConfigModel.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0) {
                     futureList.add(CompletableFuture.runAsync(() -> {
                         oneDayAvgPricesJson = downloadPrices("1 day avg");
                         threeDayAvgPricesJson = downloadPrices("3 day avg");
                     }));
-                } else if (type == SkyblockerConfig.Average.ONE_DAY) {
+                } else if (type == ConfigModel.Average.ONE_DAY) {
                     futureList.add(CompletableFuture.runAsync(() -> oneDayAvgPricesJson = downloadPrices("1 day avg")));
-                } else if (type == SkyblockerConfig.Average.THREE_DAY) {
+                } else if (type == ConfigModel.Average.THREE_DAY) {
                     futureList.add(CompletableFuture.runAsync(() -> threeDayAvgPricesJson = downloadPrices("3 day avg")));
                 }
             }

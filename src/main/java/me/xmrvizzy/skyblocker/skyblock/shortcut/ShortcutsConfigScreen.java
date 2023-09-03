@@ -18,9 +18,15 @@ public class ShortcutsConfigScreen extends Screen {
     private ButtonWidget buttonDone;
     private boolean initialized;
     private double scrollAmount;
-
+    private final Screen parent;
+    
     public ShortcutsConfigScreen() {
+    	this(null);
+    }
+
+    public ShortcutsConfigScreen(Screen parent) {
         super(Text.translatable("skyblocker.shortcuts.config"));
+        this.parent = parent;
     }
 
     @Override
@@ -89,13 +95,15 @@ public class ShortcutsConfigScreen extends Screen {
         if (client != null && shortcutsConfigListWidget.hasChanges()) {
             client.setScreen(new ConfirmScreen(confirmedAction -> {
                 if (confirmedAction) {
-                    super.close();
+                	this.client.setScreen(parent);
+                    if (parent == null) super.close();
                 } else {
                     client.setScreen(this);
                 }
-            }, Text.translatable("text.cloth-config.quit_config"), Text.translatable("text.cloth-config.quit_config_sure"), Text.translatable("text.cloth-config.quit_discard"), ScreenTexts.CANCEL));
+            }, Text.translatable("text.skyblocker.quit_config"), Text.translatable("text.skyblocker.quit_config_sure"), Text.translatable("text.skyblocker.quit_discard"), ScreenTexts.CANCEL));
         } else {
-            super.close();
+            this.client.setScreen(parent);
+            if (parent == null) super.close();
         }
     }
 

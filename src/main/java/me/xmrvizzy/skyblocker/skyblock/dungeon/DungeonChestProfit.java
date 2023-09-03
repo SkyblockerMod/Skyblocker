@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntBooleanPair;
+import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.mixin.accessor.ScreenAccessor;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
@@ -158,7 +159,7 @@ public class DungeonChestProfit {
 	}
 
 	private static Text getProfitText(int profit, boolean hasIncompleteData) {
-		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfig.get().locations.dungeons.dungeonChestProfit;
+		ConfigModel.DungeonChestProfit config = SkyblockerConfig.get().locations.dungeons.dungeonChestProfit;
 		return getProfitText(profit, hasIncompleteData, config.neutralThreshold, config.neutralColor.formatting, config.profitColor.formatting, config.lossColor.formatting, config.incompleteColor.formatting);
 	}
 

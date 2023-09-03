@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.NEURepo;
 import me.xmrvizzy.skyblocker.utils.PosUtils;
@@ -141,7 +142,7 @@ public class FairySouls {
     }
 
     private static void render(WorldRenderContext context) {
-        SkyblockerConfig.FairySouls fairySoulsConfig = SkyblockerConfig.get().general.fairySouls;
+        ConfigModel.FairySouls fairySoulsConfig = SkyblockerConfig.get().general.fairySouls;
 
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
             for (BlockPos fairySoulPos : fairySouls.get(Utils.getLocationRaw())) {
