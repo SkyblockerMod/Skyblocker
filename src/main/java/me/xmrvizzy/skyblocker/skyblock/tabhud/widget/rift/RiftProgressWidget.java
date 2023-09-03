@@ -40,9 +40,9 @@ public class RiftProgressWidget extends Widget {
 
 		// Check each position to see what is or isn't there so we don't try adding
 		// invalid components
-		if (pos45.contains("Timecharms"))
+		if (pos45 != null && pos45.contains("Timecharms"))
 			hasTimecharms = true;
-		if (pos46.contains("Enigma Souls"))
+		if (pos46 != null && pos46.contains("Enigma Souls"))
 			hasEnigmaSouls = true;
 
 		// Small ternary to account for positions, defaults to -1 if it for some reason

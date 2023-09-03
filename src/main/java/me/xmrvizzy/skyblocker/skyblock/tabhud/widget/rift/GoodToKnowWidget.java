@@ -31,17 +31,17 @@ public class GoodToKnowWidget extends Widget {
 
 		// Check each position to see what is or isn't there so we don't try adding
 		// invalid components
-		if (pos49.getString().contains("times"))
+		if (pos49 != null && pos49.getString().contains("times"))
 			visitedRiftPos = 49;
-		if (pos51.getString().contains("Motes"))
+		if (pos51 != null && pos51.getString().contains("Motes"))
 			lifetimeMotesPos = 51;
-		if (pos51.getString().contains("times"))
+		if (pos51 != null && pos51.getString().contains("times"))
 			visitedRiftPos = 51;
-		if (pos53.getString().contains("Motes"))
+		if (pos53 != null && pos53.getString().contains("Motes"))
 			lifetimeMotesPos = 53;
 
-		Text timesVisitedRift = (visitedRiftPos == 51) ? pos51 : (visitedRiftPos == 49) ? pos49 : null;
-		Text lifetimeMotesEarned = (lifetimeMotesPos == 53) ? pos53 : (lifetimeMotesPos == 51) ? pos51 : null;
+		Text timesVisitedRift = (visitedRiftPos == 51) ? pos51 : (visitedRiftPos == 49) ? pos49 : Text.of("No Data");
+		Text lifetimeMotesEarned = (lifetimeMotesPos == 53) ? pos53 : (lifetimeMotesPos == 51) ? pos51 : Text.of("No Data");
 
 		if (visitedRiftPos != 0) {
 			this.addComponent(new IcoTextComponent(Ico.EXPERIENCE_BOTTLE,
