@@ -21,22 +21,22 @@ public class RiftStatsWidget extends Widget {
     public void updateContent() {
 		Text riftDamage = Widget.simpleEntryText(64, "RDG", Formatting.DARK_PURPLE);
 		IcoTextComponent rdg = new IcoTextComponent(Ico.DIASWORD, riftDamage);
-		
+
 		Text speed = Widget.simpleEntryText(65, "SPD", Formatting.WHITE);
 		IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
-		
+
 		Text intelligence = Widget.simpleEntryText(66, "INT", Formatting.AQUA);
 		IcoTextComponent intel = new IcoTextComponent(Ico.ENCHANTED_BOOK, intelligence);
-		
+
 		Text manaRegen = Widget.simpleEntryText(67, "MRG", Formatting.AQUA);
 		IcoTextComponent mrg = new IcoTextComponent(Ico.DIAMOND, manaRegen);
-		
+
 		TableComponent tc = new TableComponent(2, 2, Formatting.AQUA.getColorValue());
 		tc.addToCell(0, 0, rdg);
 		tc.addToCell(0, 1, spd);
 		tc.addToCell(1, 0, intel);
 		tc.addToCell(1, 1, mrg);
-		
+
 		this.addComponent(tc);
 	}
 

@@ -11,7 +11,7 @@ import net.minecraft.util.Formatting;
  *
  */
 public class RiftServerInfoWidget extends Widget {
-	
+
 	private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
 	public RiftServerInfoWidget() {
