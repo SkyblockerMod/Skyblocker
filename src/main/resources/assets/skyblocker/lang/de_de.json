@@ -10,7 +10,6 @@
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip": "Wert in %, relativ zur Skalierung des Vanilla-GUIs",
     "text.autoconfig.skyblocker.option.general.bars.enableBars": "Balken aktivieren",
     "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Leere Item-Tooltips in Menüs verstecken",
-
     "text.autoconfig.skyblocker.category.locations": "Standorte",
     "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Karte aktivieren",
@@ -33,10 +32,16 @@
     "text.autoconfig.skyblocker.option.messages.hideMoltenWave": "Nachricht über Molten Wave ausblenden",
     "text.autoconfig.skyblocker.option.messages.hideAds": "Werbung im öffentlichen Chat ausblenden",
     "key.wikiLookup": "Wiki-Abfrage",
-    "key.skyblocker.playerTgl": "Tab-HUD auf Spielerliste umstellen",
     "key.skyblocker.defaultTgl": "Tab-HUD auf Standard umstellen",
-    "key.skyblocker.genericTgl": "Tab-HUD auf allgemeine Infos umstellen",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.RIGHT": "Rechts",
-    "text.autoconfig.skyblocker.option.general.quicknav": "Schnellnavigation",
-    "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Schnellnavigation Einschalten"
+    "key.skyblocker.toggleB": "HUD auf Tab B umschalten",
+    "key.skyblocker.toggleA": "HUD auf Tab A umschalten",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER1": "Ebene 1",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER2": "Ebene 2",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.NONE": "Ausgeschaltet",
+    "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "Superpairs Solver aktivieren",
+    "text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver": "Ultrasequencer Solver aktivieren",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions": "Balkenposition Bearbeiten",
+    "text.autoconfig.skyblocker.option.general.acceptReparty": "Automatische Annahme von Reparty",
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition": "Gesundheitsposition"
 }

@@ -1,0 +1,22 @@
+name: translate update
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - src/main/resources/assets/skyblocker/lang/en_us.json
+
+jobs:
+  webhook:
+    if: github.repository_owner == 'SkyblockerMod'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Translate notification
+        shell: bash
+        run: |
+          OUTPUT="
+          <@&1134566053138145330>
+          New Strings available at https://translate.hysky.de/projects/Skyblocker/skyblocker"
+
+          curl -H "Content-Type: application/json" -d '{"content":"'"${OUTPUT//$'\n'/\\n}"'", "flags": 4}' "${{ secrets.DISCORD_TRANSLATE_WEBHOOK }}"

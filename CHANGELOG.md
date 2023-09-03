@@ -1,3 +1,37 @@
+# Release 1.13.0 (Dungeon Update)
+
+## Highlight
+* Dungeon Secrets by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/246
+* Tic Tac Toe Solver by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/253
+* Starred Mob Glow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/260
+* Blaze Solver draws a line to the next blaze by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/248
+* durability bar for Pickonimbus by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/259
+* Fully configureable Fancy Tab HUD with ressourcepack by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/230
+* Attribute Shard Info Display by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/263
+
+## What's Changed
+* Blaze Solver Enhancements by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/248
+* add issue templates by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/251
+* small quicknav storage cause work in rift now by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/252
+* Add alternate hypixel address argument by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/255
+* Fix Croesus Helper by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/257
+* Tic Tac Toe Solver! by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/253
+* Very important fix by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/261
+* Starred Mob Glow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/260
+* improve DungeonBlaze.java by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/254
+* fix 258 and add durability bar for Pickonimbus by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/259
+* Catch exceptions in CustomArmorTrims#initializeTrimCache by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/262
+* Fully configureable Fancy Tab HUD by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/230
+* Dungeon Secrets by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/246
+* Attribute Shard Info Display by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/263
+* Translations update from hysky translate by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/245
+* Create webhook_translate.yml by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/264
+* Update webhook_translate.yml by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/265
+* Fix minion widget displaying wrong info when player has 11/12 minions by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/267
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.12.0...v1.13.0
+___
 # Release 1.12.0
 
 ## Highlight

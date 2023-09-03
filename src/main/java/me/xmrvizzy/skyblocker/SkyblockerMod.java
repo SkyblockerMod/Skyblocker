@@ -100,6 +100,7 @@ public class SkyblockerMod implements ClientModInitializer {
         CustomArmorDyeColors.init();
         CustomArmorTrims.init();
         TicTacToe.init();
+        QuiverWarning.init();
         containerSolverManager.init();
         statusBarTracker.init();
         scheduler.scheduleCyclic(Utils::update, 20);

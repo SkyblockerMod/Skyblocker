@@ -174,6 +174,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Shortcuts shortcuts = new Shortcuts();
 
+        @ConfigEntry.Category("quiverWarning")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public QuiverWarning quiverWarning = new QuiverWarning();
+
         @ConfigEntry.Category("itemList")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemList itemList = new ItemList();
@@ -181,6 +185,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("itemTooltip")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemTooltip itemTooltip = new ItemTooltip();
+        
+        @ConfigEntry.Category("itemInfoDisplay")
+        @ConfigEntry.Gui.CollapsibleObject
+        public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
 
         @ConfigEntry.Category("hitbox")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -298,6 +306,12 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableCommandArgShortcuts = true;
     }
 
+    public static class QuiverWarning {
+        public boolean enableQuiverWarning = true;
+        public boolean enableQuiverWarningInDungeons = true;
+        public boolean enableQuiverWarningAfterDungeon = true;
+    }
+
     public static class Hitbox {
         public boolean oldFarmlandHitbox = true;
         public boolean oldLeverHitbox = false;
@@ -386,6 +400,11 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableLowestBIN = true;
         public boolean enableBazaarPrice = true;
         public boolean enableMuseumDate = true;
+    }
+    
+    public static class ItemInfoDisplay {
+    	@ConfigEntry.Gui.Tooltip
+        public boolean attributeShardInfo = true;
     }
 
     public static class Locations {
