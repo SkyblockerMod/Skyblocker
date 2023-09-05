@@ -35,7 +35,7 @@ public class DungeonBlaze {
     private static ArmorStandEntity nextLowestBlaze = null;
 
     public static void init() {
-        SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonBlaze::update, 10);
+        SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonBlaze::update, 4);
         WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
     }
 
