@@ -2,17 +2,16 @@ package me.xmrvizzy.skyblocker.skyblock.rift;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.SlayerUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import me.xmrvizzy.skyblocker.utils.title.Title;
-import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
+import me.xmrvizzy.skyblocker.utils.render.title.Title;
+import me.xmrvizzy.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class TwinClawsIndicator {
-    private static final Title title = new Title("skyblocker.rift.iceNow",Formatting.AQUA);
+    private static final Title title = new Title("skyblocker.rift.iceNow", Formatting.AQUA);
     private static boolean scheduled = false;
 
     protected static void updateIce() {

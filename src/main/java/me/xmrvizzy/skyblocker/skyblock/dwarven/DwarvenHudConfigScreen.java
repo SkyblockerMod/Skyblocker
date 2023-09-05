@@ -1,17 +1,17 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import java.awt.Color;
-import java.util.List;
-
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
-import me.xmrvizzy.skyblocker.utils.RenderUtils;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+
+import java.awt.*;
+import java.util.List;
 
 public class DwarvenHudConfigScreen extends Screen {
 
@@ -35,9 +35,9 @@ public class DwarvenHudConfigScreen extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         IntIntPair dims = DwarvenHud.getDimForConfig(CFG_COMMS);
-        if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, hudX, hudY, hudX + 200, hudY + 40) && button == 0) {
-            hudX = (int) Math.max(Math.min(mouseX - dims.leftInt()/2, this.width - dims.leftInt()), 0);
-            hudY = (int) Math.max(Math.min(mouseY - dims.rightInt()/2, this.height - dims.rightInt()), 0);
+        if (RenderHelper.pointIsInArea(mouseX, mouseY, hudX, hudY, hudX + 200, hudY + 40) && button == 0) {
+            hudX = (int) Math.max(Math.min(mouseX - (double) dims.leftInt() / 2, this.width - dims.leftInt()), 0);
+            hudY = (int) Math.max(Math.min(mouseY - (double) dims.rightInt() / 2, this.height - dims.rightInt()), 0);
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }

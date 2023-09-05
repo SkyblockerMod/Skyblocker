@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
-import com.google.gson.Gson;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -20,9 +19,8 @@ public class WikiLookup {
     public static KeyBinding wikiLookup;
     static final MinecraftClient client = MinecraftClient.getInstance();
     static String id;
-    public static Gson gson = new Gson();
 
-    public static void init(){
+    public static void init() {
         wikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.wikiLookup",
                 InputUtil.Type.KEYSYM,

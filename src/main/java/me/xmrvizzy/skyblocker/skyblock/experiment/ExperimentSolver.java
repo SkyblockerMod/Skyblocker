@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.experiment;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.gui.ContainerSolver;
+import me.xmrvizzy.skyblocker.utils.render.gui.ContainerSolver;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;

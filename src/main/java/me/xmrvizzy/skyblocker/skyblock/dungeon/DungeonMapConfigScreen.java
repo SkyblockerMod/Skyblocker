@@ -1,13 +1,13 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import java.awt.Color;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderUtils;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+
+import java.awt.*;
 
 public class DungeonMapConfigScreen extends Screen {
 
@@ -30,7 +30,7 @@ public class DungeonMapConfigScreen extends Screen {
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
 		float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
 		int size = (int) (128 * scaling);
-		if (RenderUtils.pointExistsInArea((int) mouseX, (int) mouseY, hudX, hudY, hudX + size, hudY + size) && button == 0) {
+		if (RenderHelper.pointIsInArea(mouseX, mouseY, hudX, hudY, hudX + size, hudY + size) && button == 0) {
 			hudX = (int) Math.max(Math.min(mouseX - (size >> 1), this.width - size), 0);
 			hudY = (int) Math.max(Math.min(mouseY - (size >> 1), this.height - size), 0);
 		}

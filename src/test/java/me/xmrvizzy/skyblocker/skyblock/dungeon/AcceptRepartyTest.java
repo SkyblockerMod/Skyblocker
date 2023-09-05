@@ -1,10 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.chat.ChatPatternListenerTest;
+import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
+
+import java.util.regex.Matcher;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.util.regex.Matcher;
 
 public class AcceptRepartyTest extends ChatPatternListenerTest<Reparty> {
 
