@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.Ico;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.Widget;
+import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -30,6 +31,14 @@ public class RiftProgressWidget extends Widget {
 		// that
 		// In beginning it only shows montezuma, then timecharms and enigma souls are
 		// added
+        String pos44 = PlayerListMgr.strAt(45);
+
+        // LHS short-circuits, so the RHS won't be evaluated on pos44 == null
+        if (pos44 == null || !pos44.contains("Rift Progress")) {
+            this.addComponent(new PlainTextComponent(Text.literal("No Progress").formatted(Formatting.GRAY)));
+            return;
+        }
+
 		String pos45 = PlayerListMgr.strAt(45); // Can be Montezuma or Timecharms
 		String pos46 = PlayerListMgr.strAt(46); // Can be Enigma Souls or Empty
 		String pos47 = PlayerListMgr.strAt(47); // Can be Montezuma or "Good to know" heading
