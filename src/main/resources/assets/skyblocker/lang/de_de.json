@@ -46,5 +46,6 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition": "Gesundheitsposition",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition": "Position der Manaleiste",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "Position der Verteidigungsleiste",
-    "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "Position der Erfahrungsleiste"
+    "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "Position der Erfahrungsleiste",
+    "text.autoconfig.skyblocker.option.quickNav.enableQuickNav": "Schnellnavigation aktivieren"
 }
