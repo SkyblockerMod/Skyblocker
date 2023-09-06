@@ -17,7 +17,7 @@ public class Boxes {
 
     /** Returns the vector of the side lengths of this box. **/
     public static Vec3d getLengthVec(Box box) {
-        return new Vec3d(box.getXLength(), box.getYLength(), box.getZLength());
+        return new Vec3d(box.getLengthX(), box.getLengthY(), box.getLengthZ());
     }
 
     /** Offsets this box so that minX, minY and minZ are all zero. **/

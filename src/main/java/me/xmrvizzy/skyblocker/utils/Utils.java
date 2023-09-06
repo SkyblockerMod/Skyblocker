@@ -15,6 +15,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
@@ -166,10 +167,10 @@ public class Utils {
     }
 
     private static boolean isConnectedToHypixel(MinecraftClient client) {
-        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
-        String serverBrand = (client.player != null && client.player.getServerBrand() != null) ? client.player.getServerBrand() : "";
-
-        return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
+    	String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+    	String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
+    	
+    	return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
     }
 
     private static void leaveSkyblock() {
@@ -244,7 +245,7 @@ public class Utils {
             ClientPlayerEntity client = MinecraftClient.getInstance().player;
             if (client == null) return Collections.emptyList();
             Scoreboard scoreboard = MinecraftClient.getInstance().player.getScoreboard();
-            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
+            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
             List<String> lines = new ArrayList<>();
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());

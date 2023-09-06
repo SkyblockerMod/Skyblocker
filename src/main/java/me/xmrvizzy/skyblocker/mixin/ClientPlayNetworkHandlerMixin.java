@@ -12,26 +12,22 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
-    @Shadow
-    @Final
-    private MinecraftClient client;
 
     @Inject(method = "onPlaySound", at = @At("RETURN"))
     private void skyblocker$onPlaySound(PlaySoundS2CPacket packet) {
         FishingHelper.onSound(packet);
     }
 
-    @ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "STORE", ordinal = 0))
+    @SuppressWarnings("resource")
+	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "STORE", ordinal = 0))
     private ItemEntity skyblocker$onItemPickup(ItemEntity itemEntity, @Local LivingEntity collector) {
-        DungeonSecrets.onItemPickup(itemEntity, collector, collector == client.player);
+        DungeonSecrets.onItemPickup(itemEntity, collector, collector == MinecraftClient.getInstance().player);
         return itemEntity;
     }
 

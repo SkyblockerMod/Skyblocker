@@ -27,7 +27,7 @@ public class DwarvenHudConfigScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        renderBackground(context);
+        renderBackground(context, mouseX, mouseY, delta);
         DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, context, hudX, hudY, List.of(new DwarvenHud.Commission("Test Commission 1", "1%"), new DwarvenHud.Commission("Test Commission 2", "2%")));
         context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
     }

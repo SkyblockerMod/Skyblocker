@@ -5,6 +5,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
@@ -48,7 +49,7 @@ public class SlayerUtils {
             ClientPlayerEntity client = MinecraftClient.getInstance().player;
             if (client == null) return false;
             Scoreboard scoreboard = MinecraftClient.getInstance().player.getScoreboard();
-            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
+            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());
                 if (team != null) {

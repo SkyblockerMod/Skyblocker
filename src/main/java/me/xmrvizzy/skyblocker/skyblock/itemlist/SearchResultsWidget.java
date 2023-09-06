@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -20,7 +21,8 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.Nullable;
 
 public class SearchResultsWidget implements Drawable {
-    private static final Identifier TEXTURE = new Identifier("textures/gui/recipe_book.png");
+    private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_forward"), new Identifier("recipe_book/page_forward_highlighted"));
+    private static final ButtonTextures PAGE_BACKWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_backward"), new Identifier("recipe_book/page_backward_highlighted"));
     private static final int COLS = 5;
     private static final int MAX_TEXT_WIDTH = 124;
     private static final String ELLIPSIS = "...";
@@ -54,9 +56,9 @@ public class SearchResultsWidget implements Drawable {
                 resultButtons.add(new ResultButtonWidget(x, y));
             }
         this.nextPageButton = new ToggleButtonWidget(parentX + 93, parentY + 137, 12, 17, false);
-        this.nextPageButton.setTextureUV(1, 208, 13, 18, TEXTURE);
+        this.nextPageButton.setTextures(PAGE_FORWARD_TEXTURES);
         this.prevPageButton = new ToggleButtonWidget(parentX + 38, parentY + 137, 12, 17, true);
-        this.prevPageButton.setTextureUV(1, 208, 13, 18, TEXTURE);
+        this.prevPageButton.setTextures(PAGE_BACKWARD_TEXTURES);
     }
 
     public void closeRecipeView() {

@@ -21,7 +21,7 @@ public class DungeonMapConfigScreen extends Screen {
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
-		renderBackground(context);
+		renderBackground(context, mouseX, mouseY, delta);
 		DungeonMap.renderHUDMap(context, hudX, hudY);
 		context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width >> 1, height >> 1, Color.GRAY.getRGB());
 	}

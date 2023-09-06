@@ -28,7 +28,7 @@ public class TitleContainerConfigScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        renderBackground(context);
+        renderBackground(context, mouseX, mouseY, delta);
         TitleContainer.render(context, Set.of(example1, example2, example3), (int) hudX, (int) hudY, delta);
         SkyblockerConfig.Direction direction = SkyblockerConfig.get().general.titleContainer.direction;
         SkyblockerConfig.Alignment alignment = SkyblockerConfig.get().general.titleContainer.alignment;

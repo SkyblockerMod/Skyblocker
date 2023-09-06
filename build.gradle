@@ -58,8 +58,8 @@ dependencies {
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	// EMI
-	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}+${project.minecraft_version}:api"
-	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}+${project.minecraft_version}"
+	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
+	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// Renderer (https://github.com/0x3C50/Renderer)
 	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}") {

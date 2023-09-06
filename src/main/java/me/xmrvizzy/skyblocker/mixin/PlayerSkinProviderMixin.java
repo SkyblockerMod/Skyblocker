@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(PlayerSkinProvider.class)
 public class PlayerSkinProviderMixin {
-    @ModifyVariable(method = "loadSkin(Lcom/mojang/authlib/GameProfile;Lnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;Z)V", at = @At("STORE"))
+    /*@ModifyVariable(method = "loadSkin(Lcom/mojang/authlib/GameProfile;Lnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;Z)V", at = @At("STORE"))
     private Runnable skyblocker$removeInvalidBase64LogSpam(Runnable runnable) {
         return Utils.isOnHypixel() ? () -> {
             try {
@@ -16,5 +16,5 @@ public class PlayerSkinProviderMixin {
             } catch (IllegalArgumentException ignored) {
             }
         } : runnable;
-    }
+    }*/
 }
