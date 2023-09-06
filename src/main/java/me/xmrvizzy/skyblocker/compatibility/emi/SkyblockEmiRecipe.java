@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.compatibility.emi;
 
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
@@ -15,10 +16,7 @@ public class SkyblockEmiRecipe extends EmiCraftingRecipe {
     private final String craftText;
 
     public SkyblockEmiRecipe(SkyblockCraftingRecipe recipe) {
-        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()), Identifier.of("skyblock", ItemRegistry.getInternalName(recipe.getResult()).toLowerCase().replace(';', '_')));
-        if (Identifier.of("skyblock", ItemRegistry.getInternalName(recipe.getResult()).toLowerCase().replace(';', '_')) == null) {
-            System.out.println("[Skyblocker EMI] Failed to register recipe for " + recipe.getResult().getName().getString() + " [Internal name: " + ItemRegistry.getInternalName(recipe.getResult()) + "]");
-        }
+        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()).comparison(Comparison.compareNbt()), Identifier.of("skyblock", ItemRegistry.getInternalName(recipe.getResult()).toLowerCase().replace(';', '_')));
         this.craftText = recipe.getCraftText();
     }
 
