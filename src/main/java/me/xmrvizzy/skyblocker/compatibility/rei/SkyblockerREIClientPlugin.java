@@ -1,18 +1,14 @@
-package me.xmrvizzy.skyblocker.skyblock.rei;
+package me.xmrvizzy.skyblocker.compatibility.rei;
 
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-
-import java.util.ArrayList;
 
 /**
  * REI integration
@@ -33,8 +29,6 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
-        ArrayList<EntryStack<ItemStack>> entries = new ArrayList<>();
-        ItemRegistry.getRecipes().forEach(recipe -> entries.add(EntryStacks.of(recipe.getResult())));
-        entryRegistry.addEntries(entries);
+        entryRegistry.addEntries(ItemRegistry.getRecipeResultsStream().map(EntryStacks::of).toList());
     }
 }

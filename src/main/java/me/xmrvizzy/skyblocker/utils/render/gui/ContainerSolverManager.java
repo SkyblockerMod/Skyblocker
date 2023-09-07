@@ -54,7 +54,7 @@ public class ContainerSolverManager {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
                 ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, delta) -> {
-                	MatrixStack matrices = context.getMatrices();
+                    MatrixStack matrices = context.getMatrices();
                     matrices.push();
                     matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);
                     onDraw(context, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
@@ -117,8 +117,9 @@ public class ContainerSolverManager {
 
     private Map<Integer, ItemStack> slotMap(List<Slot> slots) {
         Map<Integer, ItemStack> slotMap = new TreeMap<>();
-        for (int i = 0; i < slots.size(); i++)
+        for (int i = 0; i < slots.size(); i++) {
             slotMap.put(i, slots.get(i).getStack());
+        }
         return slotMap;
     }
 }

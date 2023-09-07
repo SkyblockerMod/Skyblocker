@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.skyblock.rei;
+package me.xmrvizzy.skyblocker.compatibility.rei;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
@@ -18,8 +18,7 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
     public Optional<List<SkyblockCraftingDisplay>> getRecipeFor(EntryStack<?> entry) {
         if (!(entry.getValue() instanceof ItemStack)) return Optional.empty();
         EntryStack<ItemStack> inputItem = EntryStacks.of((ItemStack) entry.getValue());
-        List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipes()
-                .stream()
+        List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipesStream()
                 .filter(recipe -> ItemRegistry.getInternalName(recipe.getResult()).equals(ItemRegistry.getInternalName(inputItem.getValue())))
                 .toList();
 
@@ -30,11 +29,10 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
     public Optional<List<SkyblockCraftingDisplay>> getUsageFor(EntryStack<?> entry) {
         if (!(entry.getValue() instanceof ItemStack)) return Optional.empty();
         EntryStack<ItemStack> inputItem = EntryStacks.of((ItemStack) entry.getValue());
-        List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipes()
-                .stream()
+        List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipesStream()
                 .filter(recipe -> {
                     for (ItemStack item : recipe.getGrid()) {
-                        if(!ItemRegistry.getInternalName(item).equals("") && ItemRegistry.getInternalName(item).equals(ItemRegistry.getInternalName(inputItem.getValue())))
+                        if(!ItemRegistry.getInternalName(item).isEmpty() && ItemRegistry.getInternalName(item).equals(ItemRegistry.getInternalName(inputItem.getValue())))
                             return true;
                     }
                     return false;

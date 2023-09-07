@@ -349,5 +349,7 @@
 
   "skyblocker.quiverWarning.50Left": "You only have 50 Arrows left in your Quiver!",
   "skyblocker.quiverWarning.10Left": "You only have 10 Arrows left in your Quiver!",
-  "skyblocker.quiverWarning.empty": "You don't have any more Arrows left in your Quiver!"
+  "skyblocker.quiverWarning.empty": "You don't have any more Arrows left in your Quiver!",
+
+  "emi.category.skyblocker.skyblock": "Skyblock"
 }

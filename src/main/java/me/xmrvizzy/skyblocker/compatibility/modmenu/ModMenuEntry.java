@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.config.modmenu;
+package me.xmrvizzy.skyblocker.compatibility.modmenu;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
@@ -9,7 +9,6 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuEntry implements ModMenuApi {
-
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return screen -> AutoConfig.getConfigScreen(SkyblockerConfig.class, screen).get();
