@@ -19,6 +19,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -374,7 +375,7 @@ public class Room {
     }
 
     /**
-     * Marks the closest secret no greater than 6 blocks away as found when the player picks up a secret item.
+     * Marks the closest secret that requires item pickup no greater than 6 blocks away as found when the player picks up a secret item.
      *
      * @param itemEntity the item entity being picked up
      * @param collector  the collector of the item
@@ -386,6 +387,17 @@ public class Room {
         }
         secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(collector))).filter(SecretWaypoint.getRangePredicate(collector))
                 .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} picked up a {} from a {} secret, setting secret #{} as found", collector.getName().getString(), itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
+    }
+
+    /**
+     * Marks the closest bat secret as found when a bat is killed.
+     *
+     * @param bat the bat being killed
+     * @see #onSecretFound(SecretWaypoint, String, Object...)
+     */
+    protected void onBatRemoved(AmbientEntity bat) {
+        secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat)))
+                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
     /**

@@ -57,6 +57,10 @@ public class SecretWaypoint {
         return category.needsItemPickup();
     }
 
+    boolean isBat() {
+        return category.isBat();
+    }
+
     void setFound() {
         this.missing = false;
     }
@@ -122,7 +126,11 @@ public class SecretWaypoint {
         }
 
         boolean needsItemPickup() {
-            return this == ITEM || this == BAT;
+            return this == ITEM;
+        }
+
+        boolean isBat() {
+            return this == BAT;
         }
 
         boolean isEnabled() {
