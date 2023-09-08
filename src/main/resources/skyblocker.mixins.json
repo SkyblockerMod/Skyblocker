@@ -21,6 +21,7 @@
     "PlayerSkinProviderMixin",
     "ScoreboardMixin",
     "WorldRendererMixin",
+    "YggdrasilServicesKeyInfoMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",
