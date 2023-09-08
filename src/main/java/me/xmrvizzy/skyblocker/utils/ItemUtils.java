@@ -1,8 +1,10 @@
 package me.xmrvizzy.skyblocker.utils;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -11,16 +13,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class ItemUtils {
+    private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
 
     public static List<Text> getTooltip(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player != null && item != null)
-            // return item.getTooltip(client.player, TooltipContext.Default.NORMAL);
-            return item.getTooltip(client.player, TooltipContext.Default.BASIC);
-        return Collections.emptyList();
+        return client.player == null || item == null ? Collections.emptyList() : item.getTooltip(client.player, TooltipContext.Default.BASIC);
     }
-
-    private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
 
     public static List<String> getTooltipStrings(ItemStack item) {
         List<Text> lines = getTooltip(item);
@@ -33,5 +31,13 @@ public class ItemUtils {
         }
 
         return list;
+    }
+
+    public static ItemStack getSkyblockerStack() {
+        try {
+            return ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}"));
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

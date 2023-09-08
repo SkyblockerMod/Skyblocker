@@ -1,11 +1,10 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderHelper;
-import me.xmrvizzy.skyblocker.utils.RenderUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import me.xmrvizzy.skyblocker.utils.color.QuadColor;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -27,15 +26,18 @@ import java.util.List;
  */
 public class DungeonBlaze {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
+    private static final float[] GREEN_COLOR_COMPONENTS = {0.0F, 1.0F, 0.0F};
     private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
-    private static final QuadColor outlineColorGreen = QuadColor.single(0.0F, 1.0f, 0.0f, 1f);
-    private static final QuadColor outlineColorWhite = QuadColor.single(1.0f, 1.0f, 1.0f, 1.0f);
 
     private static ArmorStandEntity highestBlaze = null;
     private static ArmorStandEntity lowestBlaze = null;
     private static ArmorStandEntity nextHighestBlaze = null;
     private static ArmorStandEntity nextLowestBlaze = null;
-    private static boolean renderHooked = false;
+
+    public static void init() {
+        SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonBlaze::update, 4);
+        WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
+    }
 
     /**
      * Updates the state of Blaze entities and triggers the rendering process if necessary.
@@ -44,10 +46,6 @@ public class DungeonBlaze {
         ClientWorld world = MinecraftClient.getInstance().world;
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (world == null || player == null || !Utils.isInDungeons()) return;
-        if (!renderHooked) {
-            WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
-            renderHooked = true;
-        }
         List<ObjectIntPair<ArmorStandEntity>> blazes = getBlazesInWorld(world, player);
         sortBlazes(blazes);
         updateBlazeEntities(blazes);
@@ -130,11 +128,11 @@ public class DungeonBlaze {
      */
     private static void renderBlazeOutline(ArmorStandEntity blaze, ArmorStandEntity nextBlaze, WorldRenderContext wrc) {
         Box blazeBox = blaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-        RenderUtils.drawBoxOutline(blazeBox, DungeonBlaze.outlineColorGreen, 5f);
+        RenderHelper.renderOutline(wrc, blazeBox, GREEN_COLOR_COMPONENTS, 5f);
 
         if (nextBlaze != null && nextBlaze.isAlive() && nextBlaze != blaze) {
             Box nextBlazeBox = nextBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-            RenderUtils.drawBoxOutline(nextBlazeBox, DungeonBlaze.outlineColorWhite, 5f);
+            RenderHelper.renderOutline(wrc, nextBlazeBox, WHITE_COLOR_COMPONENTS, 5f);
 
             Vec3d blazeCenter = blazeBox.getCenter();
             Vec3d nextBlazeCenter = nextBlazeBox.getCenter();

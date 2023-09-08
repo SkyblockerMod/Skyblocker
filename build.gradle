@@ -40,7 +40,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
+	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Cloth config
@@ -56,8 +56,12 @@ dependencies {
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
+	// EMI
+	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}+${project.minecraft_version}:api"
+	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}+${project.minecraft_version}"
+
 	// Renderer (https://github.com/0x3C50/Renderer)
-	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}"){
+	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}") {
 		exclude group: "io.github.ladysnake" exclude module: "satin"
 	}
 

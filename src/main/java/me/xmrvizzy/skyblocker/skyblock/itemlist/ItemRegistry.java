@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class ItemRegistry {
     protected static final Path ITEM_LIST_DIR = NEURepo.LOCAL_REPO_DIR.resolve("items");
@@ -105,8 +106,12 @@ public class ItemRegistry {
         return result;
     }
 
-    public static List<SkyblockCraftingRecipe> getRecipes() {
-        return recipes;
+    public static Stream<SkyblockCraftingRecipe> getRecipesStream() {
+        return recipes.stream();
+    }
+
+    public static Stream<ItemStack> getRecipeResultsStream() {
+        return recipes.stream().map(SkyblockCraftingRecipe::getResult);
     }
 
     /**

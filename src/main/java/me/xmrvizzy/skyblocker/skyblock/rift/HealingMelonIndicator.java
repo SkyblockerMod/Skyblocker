@@ -1,10 +1,10 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.Utils;
-import me.xmrvizzy.skyblocker.utils.title.Title;
-import me.xmrvizzy.skyblocker.utils.title.TitleContainer;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
+import me.xmrvizzy.skyblocker.utils.render.title.Title;
+import me.xmrvizzy.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Formatting;

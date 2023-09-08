@@ -3,8 +3,8 @@ package me.xmrvizzy.skyblocker.skyblock;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
-import me.xmrvizzy.skyblocker.utils.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
@@ -77,6 +77,7 @@ public class TeleportOverlay {
 
     /**
      * Renders the teleport overlay with a given range. Uses {@link MinecraftClient#crosshairTarget} if it is a block and within range. Otherwise, raycasts from the player with the given range.
+     *
      * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, int range) {
@@ -93,6 +94,7 @@ public class TeleportOverlay {
 
     /**
      * Renders the teleport overlay at the given {@link BlockHitResult}.
+     *
      * @implNote {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, BlockHitResult blockHitResult) {

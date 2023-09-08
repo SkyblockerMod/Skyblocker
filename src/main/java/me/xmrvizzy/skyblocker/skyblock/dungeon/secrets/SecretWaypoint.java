@@ -2,7 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderHelper;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;

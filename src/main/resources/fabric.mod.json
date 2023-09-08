@@ -22,10 +22,13 @@
       "dev.cbyrne.betterinject.BetterInject::initialize"
     ],
     "modmenu": [
-      "me.xmrvizzy.skyblocker.config.modmenu.ModMenuEntry"
+      "me.xmrvizzy.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
     "rei_client": [
-      "me.xmrvizzy.skyblocker.skyblock.rei.SkyblockerREIClientPlugin"
+      "me.xmrvizzy.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
+    ],
+    "emi": [
+      "me.xmrvizzy.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
     ]
   },
   "mixins": [

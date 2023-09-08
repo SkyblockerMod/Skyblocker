@@ -12,11 +12,47 @@ jobs:
     if: github.repository_owner == 'SkyblockerMod'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-pkg-mod-${{ hashFiles('go.sum') }}
+
+      - name: Install jd
+        run: go install github.com/josephburnett/jd@latest
+
       - name: Translate notification
         shell: bash
         run: |
-          OUTPUT="
-          <@&1134566053138145330>
-          New Strings available at https://translate.hysky.de/projects/Skyblocker/skyblocker"
-
-          curl -H "Content-Type: application/json" -d '{"content":"'"${OUTPUT//$'\n'/\\n}"'", "flags": 4}' "${{ secrets.DISCORD_TRANSLATE_WEBHOOK }}"
+          OUTPUT=$(go run github.com/josephburnett/jd@latest <(git show HEAD^:src/main/resources/assets/skyblocker/lang/en_us.json) <(git show HEAD:src/main/resources/assets/skyblocker/lang/en_us.json) || true)
+          OUTPUT=$(echo "$OUTPUT" | sed 's/"/\\"/g')
+          OUTPUT="\`\`\`diff
+          $OUTPUT
+          \`\`\`"
+          
+          JSON_PAYLOAD='{
+          "content": "<@&1134566053138145330>",
+          "embeds": [
+            {
+              "title": "Something Changed (Click me)",
+              "description": "'"${OUTPUT//$'\n'/\\n}"'",
+              "url": "https://translate.hysky.de/projects/Skyblocker/skyblocker",
+              "color": 5808639,
+              "image": {
+                "url": "https://translate.hysky.de/widgets/Skyblocker/-/skyblocker/88x31-grey.png"
+              }
+            }
+          ],
+          "attachments": []
+          }'
+          
+          curl -H "Content-Type: application/json" --data-binary "$JSON_PAYLOAD" "${{ secrets.DISCORD_TRANSLATE_WEBHOOK }}"

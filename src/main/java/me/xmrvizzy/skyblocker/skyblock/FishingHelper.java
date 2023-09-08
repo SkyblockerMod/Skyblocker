@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.RenderHelper;
-import me.xmrvizzy.skyblocker.utils.title.Title;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
+import me.xmrvizzy.skyblocker.utils.render.title.Title;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;

@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.Scheduler;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
@@ -21,7 +21,7 @@ public class DungeonMap {
 
     public static void render(MatrixStack matrices) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null && client.world == null) return;
+        if (client.player == null || client.world == null) return;
         ItemStack item = client.player.getInventory().main.get(8);
         NbtCompound tag = item.getNbt();
 

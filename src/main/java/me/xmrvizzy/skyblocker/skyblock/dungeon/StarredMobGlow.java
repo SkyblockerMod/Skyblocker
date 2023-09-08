@@ -3,7 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon;
 import java.util.List;
 
 import me.xmrvizzy.skyblocker.utils.Utils;
-import me.xmrvizzy.skyblocker.utils.culling.OcclusionCulling;
+import me.xmrvizzy.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;

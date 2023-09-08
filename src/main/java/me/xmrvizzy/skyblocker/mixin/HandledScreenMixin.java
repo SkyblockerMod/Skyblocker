@@ -2,7 +2,6 @@ package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.gui.ContainerSolver;
 import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ChronomatronSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ExperimentSolver;
@@ -10,6 +9,7 @@ import me.xmrvizzy.skyblocker.skyblock.experiment.SuperpairsSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.render.gui.ContainerSolver;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
