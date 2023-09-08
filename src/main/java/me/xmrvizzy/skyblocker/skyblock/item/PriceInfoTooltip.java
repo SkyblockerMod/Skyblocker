@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.PetHelper;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.GZIPInputStream;
 
@@ -48,8 +50,9 @@ public class PriceInfoTooltip {
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
         if (!Utils.isOnSkyblock() || client.player == null) return;
 
-        String name = getInternalNameFromNBT(stack);
-        if (name == null) return;
+        String name = getInternalNameFromNBT(stack, false);
+        String internalID = getInternalNameFromNBT(stack, true);
+        if (name == null || internalID == null) return;
 
         int count = stack.getCount();
         boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
@@ -57,31 +60,29 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
             if (npcPricesJson == null) {
                 nullWarning();
-            }
-            else if (npcPricesJson.has(name)) {
+            } else if (npcPricesJson.has(internalID)) {
                 lines.add(Text.literal(String.format("%-21s", "NPC Price:"))
                         .formatted(Formatting.YELLOW)
-                        .append(getCoinsMessage(npcPricesJson.get(name).getAsDouble(), count)));
+                        .append(getCoinsMessage(npcPricesJson.get(internalID).getAsDouble(), count)));
             }
         }
-        
+
         if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && Utils.isInTheRift()) {
-            if(motesPricesJson == null) {
-        		nullWarning();
-        	}
-        	else if (motesPricesJson.has(name)) {
-        		lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
-        				.formatted(Formatting.LIGHT_PURPLE)
-        				.append(getMotesMessage(motesPricesJson.get(name).getAsInt(), count)));
-        	}
+            if (motesPricesJson == null) {
+                nullWarning();
+            } else if (motesPricesJson.has(internalID)) {
+                lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
+                        .formatted(Formatting.LIGHT_PURPLE)
+                        .append(getMotesMessage(motesPricesJson.get(internalID).getAsInt(), count)));
+            }
         }
 
         boolean bazaarExist = false;
+
         if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice && !bazaarOpened) {
             if (bazaarPricesJson == null) {
                 nullWarning();
-            }
-            else if (bazaarPricesJson.has(name)) {
+            } else if (bazaarPricesJson.has(name)) {
                 JsonObject getItem = bazaarPricesJson.getAsJsonObject(name);
                 lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
                         .formatted(Formatting.GOLD)
@@ -102,8 +103,7 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
             if (lowestPricesJson == null) {
                 nullWarning();
-            }
-            else if (lowestPricesJson.has(name)) {
+            } else if (lowestPricesJson.has(name)) {
                 lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
                         .formatted(Formatting.GOLD)
                         .append(getCoinsMessage(lowestPricesJson.get(name).getAsDouble(), count)));
@@ -114,28 +114,31 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
             if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
                 nullWarning();
-            }
-            else {
+            } else {
                 /*
                   We are skipping check average prices for potions, runes
                   and enchanted books because there is no data for their in API.
                  */
-                if (name.contains("PET-")) {
-                    name = name.replace("PET-", "")
-                            .replace("UNCOMMON", "1")
-                            .replace("COMMON", "0")
-                            .replace("RARE", "2")
-                            .replace("EPIC", "3")
-                            .replace("LEGENDARY", "4")
-                            .replace("MYTHIC", "5")
-                            .replace("-", ";");
-                } else if (name.contains("RUNE-")) {
-                    name = name.replace("RUNE-", "");
-                    name = name.substring(0, name.indexOf("-")) + "_RUNE;" + name.substring(name.lastIndexOf("-") + 1);
-                } else if (name.contains("POTION-") || name.contains("ENCHANTED_BOOK-")) {
-                    name = "";
-                } else {
-                    name = name.replace(":", "-");
+                switch (internalID) {
+                    case "PET" -> {
+                        name = name.replaceAll("LVL_\\d*_", "");
+                        String[] parts = name.split("_");
+                        String type = parts[0];
+                        name = name.replaceAll(type + "_", "");
+                        name = name + "-" + type;
+                        name = name.replace("UNCOMMON", "1")
+                                .replace("COMMON", "0")
+                                .replace("RARE", "2")
+                                .replace("EPIC", "3")
+                                .replace("LEGENDARY", "4")
+                                .replace("MYTHIC", "5")
+                                .replace("-", ";");
+                    }
+                    case "RUNE" -> name = name.replaceAll("_(?!.*_)", ";");
+                    case "POTION" -> name = "";
+                    case "ATTRIBUTE_SHARD" ->
+                            name = internalID + "+" + name.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
+                    default -> name = name.replace(":", "-");
                 }
 
                 if (!name.isEmpty() && lbinExist) {
@@ -169,12 +172,11 @@ public class PriceInfoTooltip {
         if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !bazaarOpened) {
             if (isMuseumJson == null) {
                 nullWarning();
-            }
-            else {
+            } else {
                 String timestamp = getTimestamp(stack);
 
-                if (isMuseumJson.has(name)) {
-                    String itemCategory = isMuseumJson.get(name).toString().replaceAll("\"", "");
+                if (isMuseumJson.has(internalID)) {
+                    String itemCategory = isMuseumJson.get(internalID).getAsString();
                     String format = switch (itemCategory) {
                         case "Weapons" -> "%-18s";
                         case "Armor" -> "%-19s";
@@ -191,7 +193,7 @@ public class PriceInfoTooltip {
             }
         }
     }
-    
+
     private static void nullWarning() {
         if (!nullMsgSend && client.player != null) {
             client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
@@ -240,88 +242,118 @@ public class PriceInfoTooltip {
         return "";
     }
 
-    public static String getInternalNameFromNBT(ItemStack stack) {
+    public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
         NbtCompound tag = getItemNBT(stack);
-        if (tag != null && tag.contains("ExtraAttributes", 10)) {
-            NbtCompound ea = tag.getCompound("ExtraAttributes");
-
-            if (ea.contains("id", 8)) {
-                String internalName = ea.getString("id");
-
-                // Transformation to API format.
-                if ("ENCHANTED_BOOK".equals(internalName)) {
-                    if (ea.contains("enchantments")) {
-                        NbtCompound enchants = ea.getCompound("enchantments");
-                        String enchant = enchants.getKeys().stream().findFirst().get();
-                        return internalName + "-" + enchant.toUpperCase(Locale.ENGLISH) + "-" + enchants.getInt(enchant);
-                    }
-                } else if ("PET".equals(internalName)) {
-                    if (ea.contains("petInfo")) {
-                        JsonObject petInfo = gson.fromJson(ea.getString("petInfo"), JsonObject.class);
-                        return internalName + "-" + petInfo.get("type").getAsString() + "-" + petInfo.get("tier").getAsString();
-                    }
-                } else if ("POTION".equals(internalName)) {
-                    // New API just contains 'enhanced' tag.
-                    String enhanced = ea.contains("enhanced") ? "-ENHANCED" : "";
-                    //String extended = ea.contains("extended") ? "-EXTENDED" : "";
-                    //String splash = ea.contains("splash") ? "-SPLASH" : "";
-                    if (ea.contains("potion") && ea.contains("potion_level")) {
-                        return internalName + "-" + ea.getString("potion").toUpperCase(Locale.ENGLISH) + "-" + ea.getInt("potion_level")
-                                + enhanced; //+ extended + splash;
-                    }
-                } else if ("RUNE".equals(internalName)) {
-                    if (ea.contains("runes")) {
-                        NbtCompound runes = ea.getCompound("runes");
-                        String rune = runes.getKeys().stream().findFirst().get();
-                        return internalName + "-" + rune.toUpperCase(Locale.ENGLISH) + "-" + runes.getInt(rune);
-                    }
-                }
-
-                return internalName;
-            }
-            else
-                return null;
-        }
-        else
+        if (tag == null || !tag.contains("ExtraAttributes", 10)) {
             return null;
+        }
+        NbtCompound ea = tag.getCompound("ExtraAttributes");
+
+        if (!ea.contains("id", 8)) {
+            return null;
+        }
+        String internalName = ea.getString("id");
+
+        if (internalIDOnly) {
+            return internalName;
+        }
+
+        // Transformation to API format.
+        switch (internalName) {
+            case "ENCHANTED_BOOK" -> {
+                if (ea.contains("enchantments")) {
+                    NbtCompound enchants = ea.getCompound("enchantments");
+                    Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
+                    String enchant = firstEnchant.orElse("");
+                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
+                }
+            }
+            case "PET" -> {
+                if (ea.contains("petInfo")) {
+                    JsonObject petInfo = gson.fromJson(ea.getString("petInfo"), JsonObject.class);
+                    PetHelper.PetSkillLevelData petData = PetHelper.calculateSkillLevel(petInfo);
+                    int level = 1;
+                    int max = "GOLDEN_DRAGON".equals(petInfo.get("type").getAsString()) ? 200 : 100;
+                    int avg = "GOLDEN_DRAGON".equals(petInfo.get("type").getAsString()) ? 180 : 90;
+                    //todo for pet between 1 and 90 use avg price
+                    if (petData.level >= avg) {
+                        level = max;
+                    }
+                    return "LVL_" + level + "_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
+                }
+            }
+            case "POTION" -> {
+                String enhanced = ea.contains("enhanced") ? "_ENHANCED" : "";
+                String extended = ea.contains("extended") ? "_EXTENDED" : "";
+                String splash = ea.contains("splash") ? "_SPLASH" : "";
+                if (ea.contains("potion") && ea.contains("potion_level")) {
+                    return (ea.getString("potion") + "_" + internalName + "_" + ea.getInt("potion_level")
+                            + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
+                }
+            }
+            case "RUNE" -> {
+                if (ea.contains("runes")) {
+                    NbtCompound runes = ea.getCompound("runes");
+                    Optional<String> firstRunes = runes.getKeys().stream().findFirst();
+                    String rune = firstRunes.orElse("");
+                    return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
+                }
+            }
+            case "ATTRIBUTE_SHARD" -> {
+                if (ea.contains("attributes")) {
+                    NbtCompound shards = ea.getCompound("attributes");
+                    Optional<String> firstShards = shards.getKeys().stream().findFirst();
+                    String shard = firstShards.orElse("");
+                    return internalName + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
+                }
+            }
+        }
+        return internalName;
     }
+
 
     private static Text getCoinsMessage(double price, int count) {
+        // Format the price string once
+        String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
+
+        // If count is 1, return a simple message
         if (count == 1) {
-            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
             return Text.literal(priceString + " Coins").formatted(Formatting.DARK_AQUA);
         }
-        else {
-            String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
-            MutableText priceTextTotal = Text.literal(priceStringTotal + " Coins ").formatted(Formatting.DARK_AQUA);
 
-            String priceStringEach = String.format(Locale.ENGLISH, "%1$,.1f", price);
-            MutableText priceTextEach =  Text.literal( "(" + priceStringEach + " each)").formatted(Formatting.GRAY);
+        // If count is greater than 1, include the "each" information
+        String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
+        MutableText message = Text.literal(priceStringTotal + " Coins ").formatted(Formatting.DARK_AQUA);
+        message.append(Text.literal("(" + priceString + " each)").formatted(Formatting.GRAY));
 
-            return priceTextTotal.append(priceTextEach);
-        }
+        return message;
     }
-    
+
+
     private static Text getMotesMessage(int price, int count) {
         float motesMultiplier = SkyblockerConfig.get().locations.rift.mcGrubberStacks * 0.05f + 1;
+
+        // Calculate the total price
+        int totalPrice = price * count;
+        String totalPriceString = String.format(Locale.ENGLISH, "%1$,.1f", totalPrice * motesMultiplier);
+
+        // If count is 1, return a simple message
         if (count == 1) {
-            String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price * motesMultiplier).replace(".0", "");
-            return Text.literal(priceString + " Motes").formatted(Formatting.DARK_AQUA);
+            return Text.literal(totalPriceString.replace(".0", "") + " Motes").formatted(Formatting.DARK_AQUA);
         }
-        else {
-            String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", price * count * motesMultiplier).replace(".0", "");
-            MutableText priceTextTotal = Text.literal(priceStringTotal + " Motes ").formatted(Formatting.DARK_AQUA);
 
-            String priceStringEach = String.format(Locale.ENGLISH, "%1$,.1f", price * motesMultiplier).replace(".0", "");
-            MutableText priceTextEach =  Text.literal( "(" + priceStringEach + " each)").formatted(Formatting.GRAY);
+        // If count is greater than 1, include the "each" information
+        String eachPriceString = String.format(Locale.ENGLISH, "%1$,.1f", price * motesMultiplier);
+        MutableText message = Text.literal(totalPriceString.replace(".0", "") + " Motes ").formatted(Formatting.DARK_AQUA);
+        message.append(Text.literal("(" + eachPriceString.replace(".0", "") + " each)").formatted(Formatting.GRAY));
 
-            return priceTextTotal.append(priceTextEach);
-        }
+        return message;
     }
 
     // If these options is true beforehand, the client will get first data of these options while loading.
     // After then, it will only fetch the data if it is on Skyblock.
     public static int minute = -1;
+
     public static void init() {
         skyblocker.scheduler.scheduleCyclic(() -> {
             if (!Utils.isOnSkyblock() && 0 < minute++) {
@@ -330,17 +362,17 @@ public class PriceInfoTooltip {
             }
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
-            if ((SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) && (oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0)) {
+            if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
                 SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
 
-                if (type == SkyblockerConfig.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null) {
+                if (type == SkyblockerConfig.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0) {
+                    futureList.add(CompletableFuture.runAsync(() -> {
+                        oneDayAvgPricesJson = downloadPrices("1 day avg");
+                        threeDayAvgPricesJson = downloadPrices("3 day avg");
+                    }));
+                } else if (type == SkyblockerConfig.Average.ONE_DAY) {
                     futureList.add(CompletableFuture.runAsync(() -> oneDayAvgPricesJson = downloadPrices("1 day avg")));
-                    futureList.add(CompletableFuture.runAsync(() -> threeDayAvgPricesJson = downloadPrices("3 day avg")));
-                }
-                else if (type == SkyblockerConfig.Average.ONE_DAY) {
-                    futureList.add(CompletableFuture.runAsync(() -> oneDayAvgPricesJson = downloadPrices("1 day avg")));
-                }
-                else if (type == SkyblockerConfig.Average.THREE_DAY) {
+                } else if (type == SkyblockerConfig.Average.THREE_DAY) {
                     futureList.add(CompletableFuture.runAsync(() -> threeDayAvgPricesJson = downloadPrices("3 day avg")));
                 }
             }
@@ -355,9 +387,9 @@ public class PriceInfoTooltip {
 
             if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && isMuseumJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> isMuseumJson = downloadPrices("museum")));
-            
+
             if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && motesPricesJson == null)
-            	futureList.add(CompletableFuture.runAsync(() -> motesPricesJson = downloadPrices("motes")));
+                futureList.add(CompletableFuture.runAsync(() -> motesPricesJson = downloadPrices("motes")));
 
             minute++;
             CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
@@ -383,7 +415,7 @@ public class PriceInfoTooltip {
         apiAddresses.put("1 day avg", "https://moulberry.codes/auction_averages_lbin/1day.json.gz");
         apiAddresses.put("3 day avg", "https://moulberry.codes/auction_averages_lbin/3day.json.gz");
         apiAddresses.put("bazaar", "https://hysky.de/api/bazaar");
-        apiAddresses.put("lowest bins", "https://lb.tricked.pro/lowestbins");
+        apiAddresses.put("lowest bins", "https://hysky.de/api/auctions/lowestbins");
         apiAddresses.put("npc", "https://hysky.de/api/npcprice");
         apiAddresses.put("museum", "https://hysky.de/api/museum");
         apiAddresses.put("motes", "https://hysky.de/api/motesprice");
