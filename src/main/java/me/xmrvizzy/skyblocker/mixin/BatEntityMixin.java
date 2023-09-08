@@ -14,7 +14,6 @@ public abstract class BatEntityMixin extends AmbientEntity {
         super(entityType, world);
     }
 
-    @Unique
     @Override
     public void onRemoved() {
         super.onRemoved();
