@@ -1,5 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.authlib.yggdrasil.YggdrasilServicesKeyInfo;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import org.slf4j.Logger;
@@ -7,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.*;
 
@@ -20,14 +21,14 @@ public class YggdrasilServicesKeyInfoMixin {
     @Unique
     private static final List<Integer> ERROR_HASH_ARRAYLIST = new ArrayList<>();
 
-    @Redirect(method = "validateProperty", at = @At(value = "INVOKE", target = "Ljava/util/Base64$Decoder;decode(Ljava/lang/String;)[B", remap = false), remap = false)
-    private byte[] skyblocker$replaceKnownWrongBase64(Base64.Decoder decoder, String signature) {
+    @WrapOperation(method = "validateProperty", at = @At(value = "INVOKE", target = "Ljava/util/Base64$Decoder;decode(Ljava/lang/String;)[B", remap = false), remap = false)
+    private byte[] skyblocker$replaceKnownWrongBase64(Base64.Decoder decoder, String signature, Operation<byte[]> decode) {
         try {
-            return decoder.decode(signature);
+            return decode.call(decoder, signature.replaceAll("[^A-Za-z0-9+/=]",""));
         } catch (IllegalArgumentException e) {
             if (Utils.isOnSkyblock()) {
                 if (REPLACEMENT_HASHMAP.containsKey(signature)) {
-                    return decoder.decode(REPLACEMENT_HASHMAP.get(signature));
+                    return decode.call(decoder, REPLACEMENT_HASHMAP.get(signature));
                 }
                 int signatureHashCode = signature.hashCode();
                 if (!ERROR_HASH_ARRAYLIST.contains(signatureHashCode)) {
