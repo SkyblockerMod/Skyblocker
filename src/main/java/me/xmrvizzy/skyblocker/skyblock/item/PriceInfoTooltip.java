@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.utils.PetHelper;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
@@ -271,15 +270,7 @@ public class PriceInfoTooltip {
             case "PET" -> {
                 if (ea.contains("petInfo")) {
                     JsonObject petInfo = gson.fromJson(ea.getString("petInfo"), JsonObject.class);
-                    PetHelper.PetSkillLevelData petData = PetHelper.calculateSkillLevel(petInfo);
-                    int level = 1;
-                    int max = "GOLDEN_DRAGON".equals(petInfo.get("type").getAsString()) ? 200 : 100;
-                    int avg = "GOLDEN_DRAGON".equals(petInfo.get("type").getAsString()) ? 180 : 90;
-                    //todo for pet between 1 and 90 use avg price
-                    if (petData.level >= avg) {
-                        level = max;
-                    }
-                    return "LVL_" + level + "_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
+                    return "LVL_1_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
                 }
             }
             case "POTION" -> {
