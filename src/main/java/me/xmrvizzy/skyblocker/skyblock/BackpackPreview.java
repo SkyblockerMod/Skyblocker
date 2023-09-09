@@ -11,7 +11,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -156,7 +155,6 @@ public class BackpackPreview {
         RenderSystem.enableDepthTest();
 
         MatrixStack matrices = context.getMatrices();
-        ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         for (int i = 9; i < storage[index].size(); ++i) {
             int itemX = x + (i - 9) % 9 * 18 + 8;
