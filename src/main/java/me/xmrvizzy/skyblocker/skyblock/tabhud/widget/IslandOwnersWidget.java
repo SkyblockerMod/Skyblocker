@@ -60,7 +60,7 @@ public class IslandOwnersWidget extends Widget {
             PlainTextComponent ptc = new PlainTextComponent(entry);
             this.addComponent(ptc);
         }
-       
+
     }
 
 }

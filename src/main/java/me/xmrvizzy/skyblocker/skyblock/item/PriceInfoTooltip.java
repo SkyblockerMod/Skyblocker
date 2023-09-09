@@ -64,7 +64,7 @@ public class PriceInfoTooltip {
                         .append(getCoinsMessage(npcPricesJson.get(name).getAsDouble(), count)));
             }
         }
-        
+
         if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && Utils.isInTheRift()) {
             if(motesPricesJson == null) {
         		nullWarning();
@@ -191,7 +191,7 @@ public class PriceInfoTooltip {
             }
         }
     }
-    
+
     private static void nullWarning() {
         if (!nullMsgSend && client.player != null) {
             client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
@@ -301,7 +301,7 @@ public class PriceInfoTooltip {
             return priceTextTotal.append(priceTextEach);
         }
     }
-    
+
     private static Text getMotesMessage(int price, int count) {
         float motesMultiplier = SkyblockerConfig.get().locations.rift.mcGrubberStacks * 0.05f + 1;
         if (count == 1) {
@@ -355,7 +355,7 @@ public class PriceInfoTooltip {
 
             if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && isMuseumJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> isMuseumJson = downloadPrices("museum")));
-            
+
             if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && motesPricesJson == null)
             	futureList.add(CompletableFuture.runAsync(() -> motesPricesJson = downloadPrices("motes")));
 

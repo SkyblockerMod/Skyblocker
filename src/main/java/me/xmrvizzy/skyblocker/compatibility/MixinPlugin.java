@@ -26,7 +26,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		//OptiFabric Compatibility
 		if (mixinClassName.endsWith("WorldRendererMixin") && OPTIFABRIC_LOADED) return false;
-		
+
 		return true;
 	}
 

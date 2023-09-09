@@ -126,7 +126,7 @@ public class SearchResultsWidget implements Drawable {
             	craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS;
             }
             context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
-            
+
             //Item name
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
             if (textRenderer.getWidth(Formatting.strip(resultText.getString())) > MAX_TEXT_WIDTH) {
@@ -134,7 +134,7 @@ public class SearchResultsWidget implements Drawable {
             	resultText = Text.literal(getLegacyFormatting(resultText.getString()) + textRenderer.trimToWidth(Formatting.strip(resultText.getString()), MAX_TEXT_WIDTH) + ELLIPSIS).setStyle(resultText.getStyle());
             }
             context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
-            
+
             //Arrow pointing to result item from the recipe
             context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
         }
@@ -149,7 +149,7 @@ public class SearchResultsWidget implements Drawable {
         if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
         RenderSystem.enableDepthTest();
     }
-    
+
     /**
      * Used for drawing tooltips over truncated text
      */
@@ -160,7 +160,7 @@ public class SearchResultsWidget implements Drawable {
             }
         RenderSystem.enableDepthTest();
     }
-    
+
     /**
      * @see #drawTooltip(TextRenderer, DrawContext, Text, int, int, int, int)
      */

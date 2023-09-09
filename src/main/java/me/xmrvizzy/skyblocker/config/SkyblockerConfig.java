@@ -185,7 +185,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("itemTooltip")
         @ConfigEntry.Gui.CollapsibleObject()
         public ItemTooltip itemTooltip = new ItemTooltip();
-        
+
         @ConfigEntry.Category("itemInfoDisplay")
         @ConfigEntry.Gui.CollapsibleObject
         public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
@@ -401,7 +401,7 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableBazaarPrice = true;
         public boolean enableMuseumDate = true;
     }
-    
+
     public static class ItemInfoDisplay {
     	@ConfigEntry.Gui.Tooltip
         public boolean attributeShardInfo = true;
