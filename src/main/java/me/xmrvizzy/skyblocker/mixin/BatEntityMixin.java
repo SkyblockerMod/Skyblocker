@@ -6,7 +6,6 @@ import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(BatEntity.class)
 public abstract class BatEntityMixin extends AmbientEntity {
