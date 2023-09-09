@@ -24,6 +24,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.AmbientEntity;
+import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -348,7 +350,7 @@ public class DungeonSecrets {
 
     /**
      * Calls {@link Room#onItemPickup(ItemEntity, LivingEntity)} on the room the {@code collector} is in if that room {@link #isRoomMatched(Room)}.
-     * Used to detect finding {@link SecretWaypoint.Category.ITEM} and {@link SecretWaypoint.Category.BAT} secrets.
+     * Used to detect finding {@link SecretWaypoint.Category.ITEM} secrets.
      * If the collector is the player, {@link #currentRoom} is used as an optimization.
      */
     @SuppressWarnings("JavadocReference")
@@ -362,6 +364,18 @@ public class DungeonSecrets {
             if (isRoomMatched(room)) {
                 room.onItemPickup(itemEntity, collector);
             }
+        }
+    }
+
+    /**
+     * Calls {@link Room#onBatRemoved(BatEntity)} on the room the {@code bat} is in if that room {@link #isRoomMatched(Room)}.
+     * Used to detect finding {@link SecretWaypoint.Category.BAT} secrets.
+     */
+    @SuppressWarnings("JavadocReference")
+    public static void onBatRemoved(AmbientEntity bat) {
+        Room room = getRoomAtPhysical(bat.getPos());
+        if (isRoomMatched(room)) {
+            room.onBatRemoved(bat);
         }
     }
 

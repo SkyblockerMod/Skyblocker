@@ -435,7 +435,7 @@ public class SkyblockerConfig implements ConfigData {
         public int mapX = 2;
         public int mapY = 2;
         @ConfigEntry.Gui.Tooltip
-        public boolean starredMobGlow = false;
+        public boolean starredMobGlow = true;
         public boolean solveThreeWeirdos = true;
         @ConfigEntry.Gui.Tooltip
         public boolean blazesolver = true;
