@@ -95,7 +95,7 @@ public class RenderHelper {
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
             buffer.begin(DrawMode.LINES, VertexFormats.LINES);
-            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0] * 255f, colorComponents[1] * 255f, colorComponents[2] * 255f, 1f);
+            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], 1f);
             tessellator.draw();
 
             matrices.pop();
