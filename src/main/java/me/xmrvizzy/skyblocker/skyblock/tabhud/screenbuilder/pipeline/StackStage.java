@@ -94,7 +94,6 @@ public class StackStage extends PipelineStage {
     }
 
     public void stackWidgetsHoriz(int screenW) {
-        // TODO not centered (?)
         int compWidth = -ScreenConst.WIDGET_PAD;
         for (Widget wid : primary) {
             compWidth += wid.getWidth() + ScreenConst.WIDGET_PAD;

@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 // this widget shows a list of obtained dungeon buffs
-// TODO: could be more pretty, can't be arsed atm
 
 public class DungeonBuffWidget extends Widget {
 
