@@ -68,6 +68,7 @@ Grouped by themes (roughly)
 - SkillsWidget: The player's skill levels and stats
 - TrapperWidget: Trapper pelts on the farming island.
 - UpgradeWidget: Currently running upgrades
+- CameraPositionWidget: Shows orientation (pitch/yaw) of camera
 
 #### Garden
 - ComposterWidget: The composter in the garden.
@@ -96,12 +97,12 @@ Grouped by themes (roughly)
 
 #### Rift
 - AdvertisementWidget: Shows rift ads.
-- GoodToKnowWidget:
-- RiftProfileWidget:
-- RiftProgressWidget:
+- GoodToKnowWidget: Lifetime Motes earned and/or times you visited the rift.
+- RiftProfileWidget: Info about your player profile while in the rift.
+- RiftProgressWidget: Info about Montezuma, Timecharms and Enigma Souls.
 - RiftServerInfoWidget: Server widget specialized for the rift.
 - RiftStatsWidget: Server widget specialized for the rift.
-- ShenWidget:
+- ShenWidget: Shows Shen's countdown
 
 #### Player lists
 - PlayerListWidget: Generic list of players in the area.

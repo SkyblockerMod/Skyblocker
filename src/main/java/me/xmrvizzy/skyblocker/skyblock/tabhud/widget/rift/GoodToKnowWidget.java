@@ -22,26 +22,38 @@ public class GoodToKnowWidget extends Widget {
 		// that
 		// In beginning it only shows montezuma, then timecharms and enigma souls are
 		// added
-		Text pos49 = PlayerListMgr.textAt(49); // Can be times visited rift
-		Text pos51 = PlayerListMgr.textAt(51); // Can be lifetime motes or visited rift
-		Text pos53 = PlayerListMgr.textAt(53); // Can be lifetime motes
+
+        int headerPos = 0;
+        // this seems suboptimal, but I'm not sure if there's a way to do it better.
+        // search for the GTK header and offset the rest accordingly.
+        for (int i = 45; i <= 49; i++) {
+            String str = PlayerListMgr.strAt(i);
+            if (str != null && str.startsWith("Good to")) {
+                headerPos = i;
+                break;
+            }
+        }
+
+		Text posA = PlayerListMgr.textAt(headerPos + 2); // Can be times visited rift
+		Text posB = PlayerListMgr.textAt(headerPos + 4); // Can be lifetime motes or visited rift
+		Text posC = PlayerListMgr.textAt(headerPos + 6); // Can be lifetime motes
 
 		int visitedRiftPos = 0;
 		int lifetimeMotesPos = 0;
 
 		// Check each position to see what is or isn't there so we don't try adding
 		// invalid components
-		if (pos49.getString().contains("times"))
-			visitedRiftPos = 49;
-		if (pos51.getString().contains("Motes"))
-			lifetimeMotesPos = 51;
-		if (pos51.getString().contains("times"))
-			visitedRiftPos = 51;
-		if (pos53.getString().contains("Motes"))
-			lifetimeMotesPos = 53;
+		if (posA != null && posA.getString().contains("times"))
+			visitedRiftPos = headerPos + 2;
+		if (posB != null && posB.getString().contains("Motes"))
+			lifetimeMotesPos = headerPos + 4;
+		if (posB != null && posB.getString().contains("times"))
+			visitedRiftPos = headerPos + 4;
+		if (posC != null && posC.getString().contains("Motes"))
+			lifetimeMotesPos = headerPos + 6;
 
-		Text timesVisitedRift = (visitedRiftPos == 51) ? pos51 : (visitedRiftPos == 49) ? pos49 : null;
-		Text lifetimeMotesEarned = (lifetimeMotesPos == 53) ? pos53 : (lifetimeMotesPos == 51) ? pos51 : null;
+		Text timesVisitedRift = (visitedRiftPos == headerPos + 4) ? posB : (visitedRiftPos == headerPos + 2) ? posA : Text.literal("No Data").formatted(Formatting.GRAY);
+		Text lifetimeMotesEarned = (lifetimeMotesPos == headerPos + 6) ? posC : (lifetimeMotesPos == headerPos + 4) ? posB : Text.literal("No Data").formatted(Formatting.GRAY);
 
 		if (visitedRiftPos != 0) {
 			this.addComponent(new IcoTextComponent(Ico.EXPERIENCE_BOTTLE,

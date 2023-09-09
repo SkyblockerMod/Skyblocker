@@ -18,12 +18,18 @@ public class AdvertisementWidget extends Widget {
 
     @Override
     public void updateContent() {
+        boolean added = false;
 		for (int i = 73; i < 80; i++) {
 			Text text = PlayerListMgr.textAt(i);
-			if (text != null)
+			if (text != null) {
 				this.addComponent(new PlainTextComponent(text));
+                added = true;
+            }
 		}
 
+        if (!added) {
+            this.addComponent(new PlainTextComponent(Text.literal("No Advertisements").formatted(Formatting.GRAY)));
+        }
 	}
 
 }

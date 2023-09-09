@@ -43,7 +43,11 @@ public class PlayerListMgr {
 	}
 
     public static void updateFooter(Text f) {
-        footer = f.getString();
+        if (f == null) {
+            footer = null;
+        } else {
+            footer = f.getString();
+        }
     }
 
     public static String getFooter() {

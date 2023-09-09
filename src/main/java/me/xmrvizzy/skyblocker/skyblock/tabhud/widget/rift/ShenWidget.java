@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class ShenWidget extends Widget {
-	
+
 	private static final MutableText TITLE = Text.literal("Shen's Countdown").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
 
 	public ShenWidget() {
