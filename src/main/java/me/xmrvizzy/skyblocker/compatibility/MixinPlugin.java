@@ -41,7 +41,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 	}
 
 	@Override
-	public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {		
+	public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
 		//Do nothing
 	}
 
