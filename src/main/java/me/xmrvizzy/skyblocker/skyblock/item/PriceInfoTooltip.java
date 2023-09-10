@@ -320,7 +320,6 @@ public class PriceInfoTooltip {
         return message;
     }
 
-
     private static Text getMotesMessage(int price, int count) {
         float motesMultiplier = SkyblockerConfig.get().locations.rift.mcGrubberStacks * 0.05f + 1;
 

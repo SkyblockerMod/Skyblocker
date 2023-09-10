@@ -53,11 +53,11 @@ public class CustomItemNames {
 					}
 				} else {
 					//If the text is provided then set the item's custom name to it
-					
+
 					//Set italic to false if it hasn't been changed (or was already false)
 					Style currentStyle = text.getStyle();
 					((MutableText) text).setStyle(currentStyle.withItalic((currentStyle.isItalic() ? true : false)));
-					
+
 					customItemNames.put(itemUuid, text);
 					SkyblockerConfig.save();
 					source.sendFeedback(Text.translatable("skyblocker.customItemNames.added"));

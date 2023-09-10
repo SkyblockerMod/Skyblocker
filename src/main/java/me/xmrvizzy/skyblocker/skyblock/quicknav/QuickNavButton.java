@@ -102,6 +102,6 @@ public class QuickNavButton extends ClickableWidget {
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

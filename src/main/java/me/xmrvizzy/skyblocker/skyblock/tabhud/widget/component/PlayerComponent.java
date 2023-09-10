@@ -19,7 +19,7 @@ public class PlayerComponent extends Component {
     private final Identifier tex;
 
     public PlayerComponent(PlayerListEntry ple) {
-        
+
     	boolean plainNames = SkyblockerConfig.get().general.tabHud.plainPlayerNames;
         Team team = ple.getScoreboardTeam();
         String username = ple.getProfile().getName();

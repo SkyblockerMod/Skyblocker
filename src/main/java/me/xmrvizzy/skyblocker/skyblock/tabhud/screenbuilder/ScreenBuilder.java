@@ -99,8 +99,6 @@ public class ScreenBuilder {
         }
 
         // reflect something together for the "normal" ones.
-        // TODO don't get package list for every widget; do it once and cache.
-        // fine for now, as this would only shorten the load time anyways
 
         // list all packages that might contain widget classes
         // using Package isn't reliable, as some classes might not be loaded yet,
