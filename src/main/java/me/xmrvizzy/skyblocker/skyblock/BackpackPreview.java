@@ -10,26 +10,25 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BackpackPreview {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
     private static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/inventory_background.png");
-    private static final BackpackPreview instance = new BackpackPreview();
-    private static final Pattern PROFILE_PATTERN = Pattern.compile("Profile: ([a-zA-Z]+)");
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
     private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
     private static final int STORAGE_SIZE = 27;
@@ -55,8 +54,8 @@ public class BackpackPreview {
             saveStorage();
             // update save dir based on uuid and sb profile
             String uuid = MinecraftClient.getInstance().getSession().getUuid().replaceAll("-", "");
-            String profile = getSkyblockProfile();
-            if (profile != null) {
+            String profile = Utils.getProfile();
+            if (profile != null && !profile.isEmpty()) {
                 save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + uuid + "/" + profile);
                 save_dir.toFile().mkdirs();
                 if (loaded.equals(uuid + "/" + profile)) {
@@ -86,7 +85,7 @@ public class BackpackPreview {
                     NbtCompound root = NbtIo.read(file);
                     storage[index] = new DummyInventory(root);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error("Failed to load backpack preview file: " + file.getName(), e);
                 }
             }
         }
@@ -118,7 +117,7 @@ public class BackpackPreview {
                         NbtIo.write(root, save_dir.resolve(index + ".nbt").toFile());
                         dirty[index] = false;
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.error("Failed to save backpack preview file: " + index + ".nbt", e);
                     }
                 }
             }
@@ -143,14 +142,16 @@ public class BackpackPreview {
         int rows = (storage[index].size() - 9) / 9;
 
         Screen screen = MinecraftClient.getInstance().currentScreen;
+        if (screen == null) return false;
         int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
         int y = Math.max(0, mouseY - 16);
 
         RenderSystem.disableDepthTest();
         RenderSystem.setShaderTexture(0, TEXTURE);
         context.drawTexture(TEXTURE, x, y, 0, 0, 176, 7);
-        for (int i = 0; i < rows; ++i)
+        for (int i = 0; i < rows; ++i) {
             context.drawTexture(TEXTURE, x, y + i * 18 + 7, 0, 7, 176, 18);
+        }
         context.drawTexture(TEXTURE, x, y + rows * 18 + 7, 0, 25, 176, 7);
         RenderSystem.enableDepthTest();
 
@@ -175,19 +176,6 @@ public class BackpackPreview {
         Matcher backpack = BACKPACK_PATTERN.matcher(title);
         if (backpack.find()) return Integer.parseInt(backpack.group(1)) + 8;
         return -1;
-    }
-
-    private static String getSkyblockProfile() {
-        Collection<PlayerListEntry> list = MinecraftClient.getInstance().getNetworkHandler().getPlayerList();
-        for (PlayerListEntry entry : list) {
-            if (entry.getDisplayName() != null) {
-                Matcher matcher = PROFILE_PATTERN.matcher(entry.getDisplayName().getString());
-                if (matcher.find()) {
-                    return matcher.group(1);
-                }
-            }
-        }
-        return null;
     }
 }
 
