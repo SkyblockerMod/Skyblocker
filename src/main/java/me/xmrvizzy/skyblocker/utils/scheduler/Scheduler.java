@@ -51,7 +51,7 @@ public class Scheduler {
         if (period <= 0) {
             LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
         } else {
-            new CyclicTask(task, period).run();
+            schedule(new CyclicTask(this, task, period), 0);
         }
     }
 
@@ -95,10 +95,10 @@ public class Scheduler {
      * @param inner  the task to run
      * @param period the period in ticks
      */
-    protected record CyclicTask(Runnable inner, int period) implements Runnable {
+    protected record CyclicTask(Scheduler scheduler, Runnable inner, int period) implements Runnable {
         @Override
         public void run() {
-            SkyblockerMod.getInstance().scheduler.schedule(this, period);
+            scheduler.schedule(this, period);
             inner.run();
         }
     }
