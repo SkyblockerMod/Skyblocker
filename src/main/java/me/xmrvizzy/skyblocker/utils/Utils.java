@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -19,6 +20,8 @@ import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +31,7 @@ import java.util.List;
  * Utility variables and methods for retrieving Skyblock related information.
  */
 public class Utils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
@@ -124,19 +128,25 @@ public class Utils {
     public static void updateFromScoreboard(MinecraftClient client) {
         List<String> sidebar;
 
-        if (client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null) {
-            isOnSkyblock = false;
-            isInDungeons = false;
-            return;
+        FabricLoader fabricLoader = FabricLoader.getInstance();
+        if ((client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null)) {
+            if (fabricLoader.isDevelopmentEnvironment()) {
+                sidebar = Collections.emptyList();
+            } else {
+                isOnSkyblock = false;
+                isInDungeons = false;
+                return;
+            }
         }
+
+        if (sidebar.isEmpty() && !fabricLoader.isDevelopmentEnvironment()) return;
         String string = sidebar.toString();
 
-        if (sidebar.isEmpty()) return;
-        if (isConnectedToHypixel(client)) {
+        if (fabricLoader.isDevelopmentEnvironment() || isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
-            if (sidebar.get(0).contains("SKYBLOCK") || sidebar.get(0).contains("SKIBLOCK")) {
+            if (fabricLoader.isDevelopmentEnvironment() || sidebar.get(0).contains("SKYBLOCK") || sidebar.get(0).contains("SKIBLOCK")) {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;
@@ -148,7 +158,7 @@ public class Utils {
             } else {
                 leaveSkyblock();
             }
-            isInDungeons = isOnSkyblock && string.contains("The Catacombs");
+            isInDungeons = fabricLoader.isDevelopmentEnvironment() || isOnSkyblock && string.contains("The Catacombs");
         } else if (isOnHypixel) {
             isOnHypixel = false;
             leaveSkyblock();
@@ -156,11 +166,10 @@ public class Utils {
     }
 
     private static boolean isConnectedToHypixel(MinecraftClient client) {
-    	String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
-    	String serverBrand = (client.player != null && client.player.getServerBrand() != null) ? client.player.getServerBrand() : "";
-    	boolean isOnHypixel = (serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord"));
+        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+        String serverBrand = (client.player != null && client.player.getServerBrand() != null) ? client.player.getServerBrand() : "";
 
-    	return isOnHypixel;
+        return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
     }
 
     private static void leaveSkyblock() {
@@ -184,7 +193,7 @@ public class Utils {
                 location = location.strip();
             }
         } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
+            LOGGER.error("[Skyblocker] Failed to get location from sidebar", e);
         }
         return location;
     }
@@ -206,7 +215,7 @@ public class Utils {
             else purse = 0;
 
         } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
+            LOGGER.error("[Skyblocker] Failed to get purse from sidebar", e);
         }
         return purse;
     }
@@ -225,11 +234,10 @@ public class Utils {
                 bits = Integer.parseInt(bitsString.replaceAll("[^0-9.]", "").strip());
             }
         } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
+            LOGGER.error("[Skyblocker] Failed to get bits from sidebar", e);
         }
         return bits;
     }
-
 
     public static List<String> getSidebar() {
         try {
@@ -242,7 +250,7 @@ public class Utils {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());
                 if (team != null) {
                     String line = team.getPrefix().getString() + team.getSuffix().getString();
-                    if (line.trim().length() > 0) {
+                    if (!line.trim().isEmpty()) {
                         String formatted = Formatting.strip(line);
                         lines.add(formatted);
                     }
