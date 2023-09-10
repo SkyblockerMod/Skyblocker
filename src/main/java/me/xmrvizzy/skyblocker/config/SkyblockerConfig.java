@@ -189,6 +189,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("itemInfoDisplay")
         @ConfigEntry.Gui.CollapsibleObject
         public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
+        
+        @ConfigEntry.Category("specialEffects")
+        @ConfigEntry.Gui.CollapsibleObject
+        public SpecialEffects specialEffects = new SpecialEffects();
 
         @ConfigEntry.Category("hitbox")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -405,6 +409,11 @@ public class SkyblockerConfig implements ConfigData {
     public static class ItemInfoDisplay {
     	@ConfigEntry.Gui.Tooltip
         public boolean attributeShardInfo = true;
+    }
+    
+    public static class SpecialEffects {
+    	@ConfigEntry.Gui.Tooltip
+        public boolean rareDungeonDropEffects = true;
     }
 
     public static class Locations {
