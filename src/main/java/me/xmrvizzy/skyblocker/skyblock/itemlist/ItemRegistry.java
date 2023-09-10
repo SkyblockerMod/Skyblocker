@@ -114,6 +114,10 @@ public class ItemRegistry {
         return recipes.stream().map(SkyblockCraftingRecipe::getResult);
     }
 
+    public static Stream<ItemStack> getItemsStream() {
+        return items.stream();
+    }
+
     /**
      * Get Internal name of an ItemStack
      *

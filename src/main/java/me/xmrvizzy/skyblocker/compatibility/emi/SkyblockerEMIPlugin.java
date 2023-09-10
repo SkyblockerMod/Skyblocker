@@ -22,6 +22,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         ItemRegistry.getRecipeResultsStream().map(EmiStack::of).forEach(registry::addEmiStack);
+        ItemRegistry.getItemsStream().map(EmiStack::of).forEach(registry::addEmiStack);
         registry.addCategory(SKYBLOCK);
         registry.addWorkstation(SKYBLOCK, EmiStack.of(Items.CRAFTING_TABLE));
         ItemRegistry.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
