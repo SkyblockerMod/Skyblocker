@@ -51,7 +51,13 @@ public class PriceInfoTooltip {
 
         String name = getInternalNameFromNBT(stack, false);
         String internalID = getInternalNameFromNBT(stack, true);
+        String neuName = name;
         if (name == null || internalID == null) return;
+
+        if(name.startsWith("ISSHINY_")){
+            name = "SHINY_" + internalID;
+            neuName = internalID;
+        }
 
         int count = stack.getCount();
         boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
@@ -120,12 +126,12 @@ public class PriceInfoTooltip {
                  */
                 switch (internalID) {
                     case "PET" -> {
-                        name = name.replaceAll("LVL_\\d*_", "");
-                        String[] parts = name.split("_");
+                        neuName = neuName.replaceAll("LVL_\\d*_", "");
+                        String[] parts = neuName.split("_");
                         String type = parts[0];
-                        name = name.replaceAll(type + "_", "");
-                        name = name + "-" + type;
-                        name = name.replace("UNCOMMON", "1")
+                        neuName = neuName.replaceAll(type + "_", "");
+                        neuName = neuName + "-" + type;
+                        neuName = neuName.replace("UNCOMMON", "1")
                                 .replace("COMMON", "0")
                                 .replace("RARE", "2")
                                 .replace("EPIC", "3")
@@ -133,14 +139,14 @@ public class PriceInfoTooltip {
                                 .replace("MYTHIC", "5")
                                 .replace("-", ";");
                     }
-                    case "RUNE" -> name = name.replaceAll("_(?!.*_)", ";");
-                    case "POTION" -> name = "";
+                    case "RUNE" -> neuName = neuName.replaceAll("_(?!.*_)", ";");
+                    case "POTION" -> neuName = "";
                     case "ATTRIBUTE_SHARD" ->
-                            name = internalID + "+" + name.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
-                    default -> name = name.replace(":", "-");
+                            neuName = internalID + "+" + neuName.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
+                    default -> neuName = neuName.replace(":", "-");
                 }
 
-                if (!name.isEmpty() && lbinExist) {
+                if (!neuName.isEmpty() && lbinExist) {
                     SkyblockerConfig.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
 
                     // "No data" line because of API not keeping old data, it causes NullPointerException
@@ -148,9 +154,9 @@ public class PriceInfoTooltip {
                         lines.add(
                                 Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
-                                        .append(oneDayAvgPricesJson.get(name) == null
+                                        .append(oneDayAvgPricesJson.get(neuName) == null
                                                 ? Text.literal("No data").formatted(Formatting.RED)
-                                                : getCoinsMessage(oneDayAvgPricesJson.get(name).getAsDouble(), count)
+                                                : getCoinsMessage(oneDayAvgPricesJson.get(neuName).getAsDouble(), count)
                                         )
                         );
                     }
@@ -158,9 +164,9 @@ public class PriceInfoTooltip {
                         lines.add(
                                 Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
-                                        .append(threeDayAvgPricesJson.get(name) == null
+                                        .append(threeDayAvgPricesJson.get(neuName) == null
                                                 ? Text.literal("No data").formatted(Formatting.RED)
-                                                : getCoinsMessage(threeDayAvgPricesJson.get(name).getAsDouble(), count)
+                                                : getCoinsMessage(threeDayAvgPricesJson.get(neuName).getAsDouble(), count)
                                         )
                         );
                     }
@@ -258,6 +264,10 @@ public class PriceInfoTooltip {
         }
 
         // Transformation to API format.
+        if (ea.contains("is_shiny")){
+            return "ISSHINY_" + internalName;
+        }
+
         switch (internalName) {
             case "ENCHANTED_BOOK" -> {
                 if (ea.contains("enchantments")) {
