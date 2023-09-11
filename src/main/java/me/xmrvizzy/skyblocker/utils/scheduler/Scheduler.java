@@ -37,8 +37,7 @@ public class Scheduler {
         if (delay < 0) {
             LOGGER.warn("Scheduled a task with negative delay");
         }
-        ScheduledTask tmp = new ScheduledTask(task, currentTick + delay);
-        tasks.add(tmp);
+        tasks.add(new ScheduledTask(task, currentTick + delay));
     }
 
     /**
@@ -51,7 +50,7 @@ public class Scheduler {
         if (period <= 0) {
             LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
         } else {
-            schedule(new CyclicTask(this, task, period), 0);
+            tasks.add(new CyclicTask(this, task, period));
         }
     }
 
@@ -75,6 +74,7 @@ public class Scheduler {
         ScheduledTask task;
         while ((task = tasks.peek()) != null && task.schedule <= currentTick && runTask(task)) {
             tasks.poll();
+            if (task instanceof CyclicTask) tasks.add(task);
         }
     }
 
@@ -91,25 +91,36 @@ public class Scheduler {
 
     /**
      * A task that runs every period ticks. More specifically, this task reschedules itself to run again after period ticks every time it runs.
-     *
-     * @param inner  the task to run
-     * @param period the period in ticks
      */
-    protected record CyclicTask(Scheduler scheduler, Runnable inner, int period) implements Runnable {
+    protected static class CyclicTask extends ScheduledTask {
+        private final Scheduler scheduler;
+        private final int period;
+
+        CyclicTask(Scheduler scheduler, Runnable inner, int period) {
+            super(inner, scheduler.currentTick);
+            this.scheduler = scheduler;
+            this.period = period;
+        }
+
         @Override
         public void run() {
-            scheduler.schedule(this, period);
-            inner.run();
+            super.run();
+            schedule = scheduler.currentTick + period;
         }
     }
 
     /**
      * A task that runs at a specific tick, relative to {@link #currentTick}.
-     *
-     * @param inner    the task to run
-     * @param schedule the tick to run at
      */
-    protected record ScheduledTask(Runnable inner, int schedule) implements Comparable<ScheduledTask>, Runnable {
+    protected static class ScheduledTask implements Comparable<ScheduledTask>, Runnable {
+        private final Runnable inner;
+        protected int schedule;
+
+        public ScheduledTask(Runnable inner, int schedule) {
+            this.inner = inner;
+            this.schedule = schedule;
+        }
+
         @Override
         public int compareTo(ScheduledTask o) {
             return schedule - o.schedule;
