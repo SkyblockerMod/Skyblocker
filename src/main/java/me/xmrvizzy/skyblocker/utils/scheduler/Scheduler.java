@@ -2,9 +2,7 @@ package me.xmrvizzy.skyblocker.utils.scheduler;
 
 import com.mojang.brigadier.Command;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectSortedMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -22,7 +20,7 @@ import java.util.function.Supplier;
 public class Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
     private int currentTick = 0;
-    private final AbstractInt2ObjectSortedMap<List<ScheduledTask>> tasks = new Int2ObjectAVLTreeMap<>();
+    private final AbstractInt2ObjectSortedMap<List<ScheduledTask>> tasks = new Int2ObjectLinkedOpenHashMap<>();
 
     /**
      * Do not instantiate this class. Use {@link SkyblockerMod#scheduler} instead.
@@ -75,20 +73,9 @@ public class Scheduler {
     }
 
     public void tick() {
-        currentTick += 1;
-        if (tasks.containsKey(currentTick - 1)) {
-            List<ScheduledTask> currentTickTasks = tasks.get(currentTick - 1);
-            for (int i = 0; i < currentTickTasks.size(); i++) {
-                ScheduledTask task = currentTickTasks.get(i);
-                if (!runTask(task)) {
-                    tasks.computeIfAbsent(currentTick + 1, key -> new ArrayList<>()).add(task);
-                }
-            }
-            tasks.remove(currentTick - 1);
-        }
-
         if (tasks.containsKey(currentTick)) {
             List<ScheduledTask> currentTickTasks = tasks.get(currentTick);
+            //noinspection ForLoopReplaceableByForEach (or else we get a ConcurrentModificationException)
             for (int i = 0; i < currentTickTasks.size(); i++) {
                 ScheduledTask task = currentTickTasks.get(i);
                 if (!runTask(task)) {
@@ -97,6 +84,7 @@ public class Scheduler {
             }
             tasks.remove(currentTick);
         }
+        currentTick += 1;
     }
 
     /**
