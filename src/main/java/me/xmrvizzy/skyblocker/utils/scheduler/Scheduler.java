@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.utils.scheduler;
 
 import com.mojang.brigadier.Command;
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectSortedMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
     private int currentTick = 0;
-    private final AbstractInt2ObjectSortedMap<List<ScheduledTask>> tasks = new Int2ObjectLinkedOpenHashMap<>();
+    private final AbstractInt2ObjectMap<List<ScheduledTask>> tasks = new Int2ObjectOpenHashMap<>();
 
     /**
      * Do not instantiate this class. Use {@link SkyblockerMod#scheduler} instead.
@@ -37,10 +37,11 @@ public class Scheduler {
      * @param delay the delay in ticks
      */
     public void schedule(Runnable task, int delay) {
-        if (delay < 0) {
+        if (delay >= 0) {
+            addTask(new ScheduledTask(task), currentTick + delay);
+        } else {
             LOGGER.warn("Scheduled a task with negative delay");
         }
-        tasks.computeIfAbsent(currentTick + delay, key -> new ArrayList<>()).add(new ScheduledTask(task));
     }
 
     /**
@@ -50,10 +51,10 @@ public class Scheduler {
      * @param period the period in ticks
      */
     public void scheduleCyclic(Runnable task, int period) {
-        if (period <= 0) {
-            LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
+        if (period > 0) {
+            addTask(new CyclicTask(task, period), currentTick);
         } else {
-            tasks.computeIfAbsent(currentTick, key -> new ArrayList<>()).add(new CyclicTask(this, task, period));
+            LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
         }
     }
 
@@ -98,23 +99,31 @@ public class Scheduler {
         return true;
     }
 
+    private void addTask(ScheduledTask scheduledTask, int schedule) {
+        if (tasks.containsKey(schedule)) {
+            tasks.get(schedule).add(scheduledTask);
+        } else {
+            List<ScheduledTask> list = new ArrayList<>();
+            list.add(scheduledTask);
+            tasks.put(schedule, list);
+        }
+    }
+
     /**
      * A task that runs every period ticks. More specifically, this task reschedules itself to run again after period ticks every time it runs.
      */
     protected class CyclicTask extends ScheduledTask {
-        private final Scheduler scheduler;
         private final int period;
 
-        CyclicTask(Scheduler scheduler, Runnable inner, int period) {
+        CyclicTask(Runnable inner, int period) {
             super(inner);
-            this.scheduler = scheduler;
             this.period = period;
         }
 
         @Override
         public void run() {
             super.run();
-            tasks.computeIfAbsent(scheduler.currentTick + period, key -> new ArrayList<>()).add(this);
+            addTask(this, currentTick + period);
         }
     }
 
