@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.mixin;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
+import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonChestProfit;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ChronomatronSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ExperimentSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -16,10 +17,13 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,6 +33,9 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 import java.util.Map;
 
@@ -102,5 +109,18 @@ public abstract class HandledScreenMixin extends Screen {
                 }
             }
         }
+    }
+    
+    @WrapOperation(method = "drawForeground", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;title:Lnet/minecraft/text/Text;", opcode = Opcodes.GETFIELD))
+    private Text skyblocker$modifyScreenTitle(HandledScreen<?> handledScreen, Operation<Text> operation) {
+    	Text title = handledScreen.getTitle();
+    	
+    	if (Utils.isOnSkyblock() && handledScreen.getScreenHandler().getType().equals(ScreenHandlerType.GENERIC_9X6)) {
+    		GenericContainerScreenHandler gcsHandler = (GenericContainerScreenHandler) handledScreen.getScreenHandler();
+    		
+    		return DungeonChestProfit.getChestProfit(gcsHandler, title, this.client);
+    	}
+    	
+    	return title;
     }
 }

@@ -409,6 +409,14 @@ public class PriceInfoTooltip {
             return null;
         }
     }
+    
+    public static JsonObject getBazaarPrices() {
+    	return bazaarPricesJson;
+    }
+    
+    public static JsonObject getLBINPrices() {
+    	return lowestPricesJson;
+    }
 
     static {
         apiAddresses = new HashMap<>();
