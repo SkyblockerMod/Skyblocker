@@ -223,7 +223,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip" : "This includes all waypoints that do not belong to a category.",
   "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit": "Dungeon Chest Profit Calculator",
   "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator": "Enable Profit Calculator",
-  "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Displays the profit of a dungeon chest in the chest screen's title.\nGreen if there's profit.\nRed if there isn't profit.\nGray if you don't gain or lose anything.\nGold if calculations were based on incomplete data.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Displays the profit of a dungeon chest in the chest screen's title.\nGreen if there's profit.\nRed if there isn't profit.\nGray if you don't gain or lose anything.\nBlue if calculations were based on incomplete data.",
   "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet": "Include Kismet Price",
   "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "When enabled, if you used a kismet the price of one will be subtracted from the profit",
   "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Croesus Helper",

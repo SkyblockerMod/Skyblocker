@@ -29,7 +29,7 @@ public class DungeonChestProfit {
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>[0-9]+)");
 	private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 	private static final Style GRAY = Style.EMPTY.withColor(Formatting.GRAY);
-	private static final Style GOLD = Style.EMPTY.withColor(0xd4a72c);
+	private static final Style DARK_BLUE = Style.EMPTY.withColor(Formatting.DARK_BLUE);
 	private static final Style DARK_GREEN = Style.EMPTY.withColor(Formatting.DARK_GREEN);
 	private static final Style DARK_RED = Style.EMPTY.withColor(Formatting.DARK_RED);
 	
@@ -166,6 +166,6 @@ public class DungeonChestProfit {
 	}
 	
 	private static Text getProfitText(int profit, boolean hasIncompleteData) {
-		return (profit == 0) ? Text.literal(" " + FORMATTER.format(profit)).setStyle(hasIncompleteData ? GOLD : GRAY) : (profit > 0) ? Text.literal(" +" + FORMATTER.format(profit)).setStyle(hasIncompleteData ? GOLD : DARK_GREEN) : Text.literal(" " + FORMATTER.format(profit)).setStyle(hasIncompleteData ? GOLD : DARK_RED);
+		return (profit == 0) ? Text.literal(" " + FORMATTER.format(profit)).setStyle(hasIncompleteData ? DARK_BLUE : GRAY) : (profit > 0) ? Text.literal(" +" + FORMATTER.format(profit)).setStyle(hasIncompleteData ? DARK_BLUE : DARK_GREEN) : Text.literal(" " + FORMATTER.format(profit)).setStyle(hasIncompleteData ? DARK_BLUE : DARK_RED);
 	}
 }
