@@ -402,14 +402,14 @@ public class PriceInfoTooltip {
             String url = apiAddresses.get(type);
             
             if (type.equals("npc") || type.equals("museum") || type.equals("motes")) {
-            	HttpHeaders headers = Http.sendHeadRequest(url);
-            	long combinedHash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
+                HttpHeaders headers = Http.sendHeadRequest(url);
+                long combinedHash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
             	
-            	switch (type) {
-            	    case "npc": if (npcHash == combinedHash) return npcPricesJson; else npcHash = combinedHash;
-            	    case "museum": if (museumHash == combinedHash) return isMuseumJson; else museumHash = combinedHash;
-            	    case "motes": if (motesHash == combinedHash) return motesPricesJson; else motesHash = combinedHash;
-            	}
+                switch (type) {
+                    case "npc": if (npcHash == combinedHash) return npcPricesJson; else npcHash = combinedHash;
+                    case "museum": if (museumHash == combinedHash) return isMuseumJson; else museumHash = combinedHash;
+                    case "motes": if (motesHash == combinedHash) return motesPricesJson; else motesHash = combinedHash;
+                }
             }
             
             String apiResponse = Http.sendGetRequest(url);

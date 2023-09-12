@@ -47,8 +47,6 @@ public class Http {
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.method("HEAD", BodyPublishers.noBody())
-				.header("Accept", "application/json")
-				.header("Accept-Encoding", "gzip, deflate")
 				.header("User-Agent", USER_AGENT)
 				.version(Version.HTTP_2)
 				.uri(URI.create(url))
