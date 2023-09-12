@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -249,7 +249,7 @@ public class Room {
             // If no rooms match, reset the fields and scan again after 50 ticks.
             matched = TriState.FALSE;
             DungeonSecrets.LOGGER.warn("[Skyblocker] No dungeon room matches after checking {} block(s)", checkedBlocks.size());
-            SkyblockerMod.getInstance().scheduler.schedule(() -> matched = TriState.DEFAULT, 50);
+            Scheduler.INSTANCE.schedule(() -> matched = TriState.DEFAULT, 50);
             reset();
             return true;
         } else if (matchingRoomsSize == 1 && ++doubleCheckBlocks >= 10) {

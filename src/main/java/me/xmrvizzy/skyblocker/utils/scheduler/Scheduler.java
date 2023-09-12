@@ -3,7 +3,6 @@ package me.xmrvizzy.skyblocker.utils.scheduler;
 import com.mojang.brigadier.Command;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,19 +14,15 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * A scheduler for running tasks at a later time. Tasks will be run synchronously on the main client thread. Use the instance stored in {@link SkyblockerMod#scheduler}. Do not instantiate this class.
+ * A scheduler for running tasks at a later time. Tasks will be run synchronously on the main client thread. Use the instance stored in {@link #INSTANCE}. Do not instantiate this class.
  */
 public class Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
+    public static final Scheduler INSTANCE = new Scheduler();
     private int currentTick = 0;
     private final AbstractInt2ObjectMap<List<ScheduledTask>> tasks = new Int2ObjectOpenHashMap<>();
 
-    /**
-     * Do not instantiate this class. Use {@link SkyblockerMod#scheduler} instead.
-     */
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    @Deprecated
-    public Scheduler() {
+    protected Scheduler() {
     }
 
     /**
@@ -59,7 +54,7 @@ public class Scheduler {
     }
 
     public static Command<FabricClientCommandSource> queueOpenScreenCommand(Supplier<Screen> screenSupplier) {
-        return context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(screenSupplier);
+        return context -> INSTANCE.queueOpenScreen(screenSupplier);
     }
 
     /**

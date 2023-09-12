@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class SchedulerTest {
-    @SuppressWarnings("deprecation")
-    private final Scheduler scheduler = new Scheduler();
     private final MutableInt currentTick = new MutableInt(0);
     private final MutableInt cycleCount1 = new MutableInt(0);
     private final MutableInt cycleCount2 = new MutableInt(0);
@@ -19,53 +17,53 @@ public class SchedulerTest {
 
     @Test
     public void testSchedule() {
-        scheduler.schedule(() -> Assertions.assertEquals(0, currentTick.intValue()), 0);
-        scheduler.schedule(() -> Assertions.assertEquals(1, currentTick.intValue()), 1);
-        scheduler.schedule(() -> Assertions.assertEquals(2, currentTick.intValue()), 2);
-        scheduler.schedule(() -> Assertions.assertEquals(10, currentTick.intValue()), 10);
-        scheduler.schedule(() -> Assertions.assertEquals(20, currentTick.intValue()), 20);
-        scheduler.schedule(() -> Assertions.assertEquals(50, currentTick.intValue()), 50);
-        scheduler.schedule(() -> Assertions.assertEquals(100, currentTick.intValue()), 100);
-        scheduler.schedule(() -> Assertions.assertEquals(123, currentTick.intValue()), 123);
-        scheduler.scheduleCyclic(() -> {}, 1);
-        scheduler.scheduleCyclic(() -> {}, 1);
-        scheduler.scheduleCyclic(() -> {}, 1);
-        scheduler.scheduleCyclic(() -> {}, 1);
-        scheduler.scheduleCyclic(() -> {
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(0, currentTick.intValue()), 0);
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(1, currentTick.intValue()), 1);
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(2, currentTick.intValue()), 2);
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(10, currentTick.intValue()), 10);
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(20, currentTick.intValue()), 20);
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(50, currentTick.intValue()), 50);
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(100, currentTick.intValue()), 100);
+        Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(123, currentTick.intValue()), 123);
+        Scheduler.INSTANCE.scheduleCyclic(() -> {}, 1);
+        Scheduler.INSTANCE.scheduleCyclic(() -> {}, 1);
+        Scheduler.INSTANCE.scheduleCyclic(() -> {}, 1);
+        Scheduler.INSTANCE.scheduleCyclic(() -> {}, 1);
+        Scheduler.INSTANCE.scheduleCyclic(() -> {
             Assertions.assertEquals(cycleCount1.intValue(), currentTick.intValue());
             cycleCount1.increment();
         }, 1);
-        scheduler.scheduleCyclic(() -> {
+        Scheduler.INSTANCE.scheduleCyclic(() -> {
             Assertions.assertEquals(0, currentTick.intValue() % 10);
             Assertions.assertEquals(cycleCount2.intValue(), currentTick.intValue() / 10);
             cycleCount2.increment();
         }, 10);
-        scheduler.scheduleCyclic(() -> {
+        Scheduler.INSTANCE.scheduleCyclic(() -> {
             Assertions.assertEquals(0, currentTick.intValue() % 55);
             Assertions.assertEquals(cycleCount3.intValue(), currentTick.intValue() / 55);
             cycleCount3.increment();
         }, 55);
-        scheduler.schedule(() -> scheduler.scheduleCyclic(() -> {
+        Scheduler.INSTANCE.schedule(() -> Scheduler.INSTANCE.scheduleCyclic(() -> {
             Assertions.assertEquals(7, currentTick.intValue() % 10);
             Assertions.assertEquals(cycleCount4.intValue(), currentTick.intValue() / 10);
             cycleCount4.increment();
         }, 10), 7);
-        scheduler.schedule(() -> scheduler.scheduleCyclic(() -> {
+        Scheduler.INSTANCE.schedule(() -> Scheduler.INSTANCE.scheduleCyclic(() -> {
             Assertions.assertEquals(0, currentTick.intValue() % 75);
             Assertions.assertEquals(cycleCount5.intValue(), currentTick.intValue() / 75);
             cycleCount5.increment();
         }, 75), 0);
-        scheduler.schedule(() -> scheduler.scheduleCyclic(() -> {
+        Scheduler.INSTANCE.schedule(() -> Scheduler.INSTANCE.scheduleCyclic(() -> {
             Assertions.assertEquals(1, currentTick.intValue() % 99);
             Assertions.assertEquals(cycleCount6.intValue(), currentTick.intValue() / 99);
             cycleCount6.increment();
         }, 99), 1);
-        scheduler.scheduleCyclic(() -> scheduler.schedule(() -> {
+        Scheduler.INSTANCE.scheduleCyclic(() -> Scheduler.INSTANCE.schedule(() -> {
             Assertions.assertEquals(5, currentTick.intValue() % 10);
             Assertions.assertEquals(cycleCount7.intValue(), currentTick.intValue() / 10);
             cycleCount7.increment();
         }, 5), 10);
-        scheduler.scheduleCyclic(() -> scheduler.schedule(() -> {
+        Scheduler.INSTANCE.scheduleCyclic(() -> Scheduler.INSTANCE.schedule(() -> {
             Assertions.assertEquals(10, currentTick.intValue() % 55);
             Assertions.assertEquals(cycleCount8.intValue(), currentTick.intValue() / 55);
             cycleCount8.increment();
@@ -84,7 +82,7 @@ public class SchedulerTest {
     }
 
     private void tick() {
-        scheduler.tick();
+        Scheduler.INSTANCE.tick();
         currentTick.increment();
     }
 }

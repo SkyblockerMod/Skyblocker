@@ -3,18 +3,21 @@ package me.xmrvizzy.skyblocker.utils.scheduler;
 import net.minecraft.client.MinecraftClient;
 
 /**
- * A scheduler for sending chat messages or commands. Use the instance in {@link me.xmrvizzy.skyblocker.SkyblockerMod#messageScheduler SkyblockerMod.messageScheduler}. Do not instantiate this class.
+ * A scheduler for sending chat messages or commands. Use the instance in {@link #INSTANCE}. Do not instantiate this class.
  */
-@SuppressWarnings("deprecation")
 public class MessageScheduler extends Scheduler {
     /**
      * The minimum delay that the server will accept between chat messages.
      */
     private static final int MIN_DELAY = 200;
+    public static final MessageScheduler INSTANCE = new MessageScheduler();
     /**
      * The timestamp of the last message send,
      */
     private long lastMessage = 0;
+
+    protected MessageScheduler() {
+    }
 
     /**
      * Sends a chat message or command after the minimum cooldown. Prefer this method to send messages or commands to the server.

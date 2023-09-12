@@ -1,10 +1,10 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -35,7 +35,7 @@ public class DungeonBlaze {
     private static ArmorStandEntity nextLowestBlaze = null;
 
     public static void init() {
-        SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonBlaze::update, 4);
+        Scheduler.INSTANCE.scheduleCyclic(DungeonBlaze::update, 4);
         WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
     }
 
