@@ -63,7 +63,7 @@ public class DungeonChestProfit {
 						}
 						
 						//Essence price
-						if (name.contains("Essence")) {
+						if (name.contains("Essence") && SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.includeEssence) {
 							Matcher matcher = ESSENCE_PATTERN.matcher(name);
 							
 							if (matcher.matches()) {

@@ -482,6 +482,8 @@ public class SkyblockerConfig implements ConfigData {
     	public boolean enableProfitCalculator = true;
     	@ConfigEntry.Gui.Tooltip
     	public boolean includeKismet = false;
+    	@ConfigEntry.Gui.Tooltip
+    	public boolean includeEssence = true;
     }
 
     public static class LividColor {
