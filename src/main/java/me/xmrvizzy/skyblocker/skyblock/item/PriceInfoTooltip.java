@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.utils.Http;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
@@ -15,10 +16,7 @@ import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.http.HttpHeaders;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceInfoTooltip.class.getName());
@@ -45,6 +42,9 @@ public class PriceInfoTooltip {
     private static boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
+    private static long npcHash = 0;
+    private static long museumHash = 0;
+    private static long motesHash = 0;
 
     public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
         if (!Utils.isOnSkyblock() || client.player == null) return;
@@ -400,11 +400,22 @@ public class PriceInfoTooltip {
     private static JsonObject downloadPrices(String type) {
         try {
             String url = apiAddresses.get(type);
-            URL apiAddress = new URL(url);
-            InputStream src = apiAddress.openStream();
-            InputStreamReader reader = new InputStreamReader(url.contains(".gz") ? new GZIPInputStream(src) : src);
-            return new Gson().fromJson(reader, JsonObject.class);
-        } catch (IOException e) {
+            
+            if (type.equals("npc") || type.equals("museum") || type.equals("motes")) {
+            	HttpHeaders headers = Http.sendHeadRequest(url);
+            	long combinedHash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
+            	
+            	switch (type) {
+            	    case "npc": if (npcHash == combinedHash) return npcPricesJson; else npcHash = combinedHash;
+            	    case "museum": if (museumHash == combinedHash) return isMuseumJson; else museumHash = combinedHash;
+            	    case "motes": if (motesHash == combinedHash) return motesPricesJson; else motesHash = combinedHash;
+            	}
+            }
+            
+            String apiResponse = Http.sendGetRequest(url);
+            
+            return new Gson().fromJson(apiResponse, JsonObject.class);
+        } catch (Exception e) {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
             return null;
         }
@@ -412,8 +423,8 @@ public class PriceInfoTooltip {
 
     static {
         apiAddresses = new HashMap<>();
-        apiAddresses.put("1 day avg", "https://moulberry.codes/auction_averages_lbin/1day.json.gz");
-        apiAddresses.put("3 day avg", "https://moulberry.codes/auction_averages_lbin/3day.json.gz");
+        apiAddresses.put("1 day avg", "https://moulberry.codes/auction_averages_lbin/1day.json");
+        apiAddresses.put("3 day avg", "https://moulberry.codes/auction_averages_lbin/3day.json");
         apiAddresses.put("bazaar", "https://hysky.de/api/bazaar");
         apiAddresses.put("lowest bins", "https://hysky.de/api/auctions/lowestbins");
         apiAddresses.put("npc", "https://hysky.de/api/npcprice");

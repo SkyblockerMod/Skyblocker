@@ -41,6 +41,7 @@ import java.nio.file.Path;
  * this class.
  */
 public class SkyblockerMod implements ClientModInitializer {
+	public static final String VERSION = FabricLoader.getInstance().getModContainer("skyblocker").get().getMetadata().getVersion().getFriendlyString();
     public static final String NAMESPACE = "skyblocker";
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
