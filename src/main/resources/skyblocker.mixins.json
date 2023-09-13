@@ -29,7 +29,8 @@
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
-    "accessor.WorldRendererAccessor"
+    "accessor.WorldRendererAccessor",
+    "accessor.DrawContextInvoker"
   ],
   "injectors": {
     "defaultRequire": 1
