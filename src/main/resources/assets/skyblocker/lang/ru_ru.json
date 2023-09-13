@@ -240,5 +240,7 @@
     "text.autoconfig.skyblocker.option.general.shortcuts": "Сокращения",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Включить Сокращения",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Работает только на Хайпикселе. Сокращения можно редактировать при помощи \"/skyblocker shortcuts\". Хотя бы одна из опций должна быть включена, чтобы это работало.",
-    "text.autoconfig.skyblocker.option.general.tabHud.nameSorting": "Метод сортировки имен игроков"
+    "text.autoconfig.skyblocker.option.general.tabHud.nameSorting": "Метод сортировки имен игроков",
+    "key.skyblocker.toggleB": "Переключить интерфейс Tab на экран B",
+    "key.skyblocker.toggleA": "Переключить интерфейс Tab на экран A"
 }
