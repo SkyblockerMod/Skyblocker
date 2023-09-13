@@ -375,10 +375,10 @@ public class PriceInfoTooltip {
                     futureList.add(CompletableFuture.runAsync(() -> threeDayAvgPricesJson = downloadPrices("3 day avg")));
                 }
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN)
+            if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN || SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
                 futureList.add(CompletableFuture.runAsync(() -> lowestPricesJson = downloadPrices("lowest bins")));
 
-            if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice)
+            if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice || SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
                 futureList.add(CompletableFuture.runAsync(() -> bazaarPricesJson = downloadPrices("bazaar")));
 
             if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && npcPricesJson == null)
@@ -418,6 +418,14 @@ public class PriceInfoTooltip {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
             return null;
         }
+    }
+    
+    public static JsonObject getBazaarPrices() {
+    	return bazaarPricesJson;
+    }
+    
+    public static JsonObject getLBINPrices() {
+    	return lowestPricesJson;
     }
 
     static {

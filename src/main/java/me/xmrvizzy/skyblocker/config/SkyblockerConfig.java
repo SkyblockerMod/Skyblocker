@@ -437,6 +437,8 @@ public class SkyblockerConfig implements ConfigData {
     public static class Dungeons {
         @ConfigEntry.Gui.CollapsibleObject
         public SecretWaypoints secretWaypoints = new SecretWaypoints();
+        @ConfigEntry.Gui.CollapsibleObject
+        public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
         @ConfigEntry.Gui.Tooltip()
         public boolean croesusHelper = true;
         public boolean enableMap = true;
@@ -473,6 +475,15 @@ public class SkyblockerConfig implements ConfigData {
         public boolean enableStonkWaypoints = true;
         @ConfigEntry.Gui.Tooltip()
         public boolean enableDefaultWaypoints = true;
+    }
+    
+    public static class DungeonChestProfit {
+    	@ConfigEntry.Gui.Tooltip
+    	public boolean enableProfitCalculator = true;
+    	@ConfigEntry.Gui.Tooltip
+    	public boolean includeKismet = false;
+    	@ConfigEntry.Gui.Tooltip
+    	public boolean includeEssence = true;
     }
 
     public static class LividColor {
