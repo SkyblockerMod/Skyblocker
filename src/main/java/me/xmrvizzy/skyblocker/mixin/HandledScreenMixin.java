@@ -110,17 +110,4 @@ public abstract class HandledScreenMixin extends Screen {
             }
         }
     }
-    
-    @WrapOperation(method = "drawForeground", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;title:Lnet/minecraft/text/Text;", opcode = Opcodes.GETFIELD))
-    private Text skyblocker$modifyScreenTitle(HandledScreen<?> handledScreen, Operation<Text> operation) {
-    	Text title = handledScreen.getTitle();
-    	
-    	if (Utils.isOnSkyblock() && handledScreen.getScreenHandler().getType().equals(ScreenHandlerType.GENERIC_9X6)) {
-    		GenericContainerScreenHandler gcsHandler = (GenericContainerScreenHandler) handledScreen.getScreenHandler();
-    		
-    		return DungeonChestProfit.getChestProfit(gcsHandler, title, this.client);
-    	}
-    	
-    	return title;
-    }
 }

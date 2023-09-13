@@ -28,6 +28,7 @@
     "accessor.HandledScreenAccessor",
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
+    "accessor.ScreenAccessor",
     "accessor.WorldRendererAccessor"
   ],
   "injectors": {
