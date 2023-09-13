@@ -242,5 +242,11 @@
     "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Работает только на Хайпикселе. Сокращения можно редактировать при помощи \"/skyblocker shortcuts\". Хотя бы одна из опций должна быть включена, чтобы это работало.",
     "text.autoconfig.skyblocker.option.general.tabHud.nameSorting": "Метод сортировки имен игроков",
     "key.skyblocker.toggleB": "Переключить интерфейс Tab на экран B",
-    "key.skyblocker.toggleA": "Переключить интерфейс Tab на экран A"
+    "key.skyblocker.toggleA": "Переключить интерфейс Tab на экран A",
+    "text.autoconfig.skyblocker.option.general.tabHud.plainPlayerNames": "Чистые Имена Игроков",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts.@Tooltip": "Сокращения для команд, состоящие из только одного слова вместо нескольких. Сокращения можно отредактировать при помощи \"/skyblocker shortcuts\". Необходимо включить сокращения, чтобы это работало.",
+    "text.autoconfig.skyblocker.option.general.quiverWarning": "Предупреждение о нехватке стрел",
+    "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarning": "Включить предупреждение о нехватке стрел",
+    "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningInDungeons": "Включить предупреждение о нехватке стрел (только в данжах)",
+    "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningAfterDungeon": "Включить предупреждение о нехватке стрел (после прохождения данжа)"
 }
