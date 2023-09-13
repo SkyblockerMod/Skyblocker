@@ -143,6 +143,17 @@ public abstract class HandledScreenMixin extends Screen {
             List<String> compactorItems = attributesKeys.stream().filter(s -> s.contains(itemSlotPrefix)).toList();
             Map<Integer, ItemStack> slotAndItem = new HashMap<>();
 
+            if (compactorItems.isEmpty()) {
+                int slotsCount = (dimensions[0] * dimensions[1]);
+                components.add(targetIndex, TooltipComponent.of(Text.literal(
+                         slotsCount + (slotsCount == 1 ? " slot": " slots"))
+                        .fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)).asOrderedText()));
+
+                ((DrawContextInvoker) context).invokeDrawTooltip(textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
+                ci.cancel();
+                return;
+            }
+
             compactorItems.forEach(s -> slotAndItem.put(getNumberAtEnd(s, itemSlotPrefix), ItemRegistry.getItemStack(extraAttributes.getString(s))));
 
 
