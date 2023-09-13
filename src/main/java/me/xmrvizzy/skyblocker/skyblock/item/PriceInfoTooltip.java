@@ -65,40 +65,41 @@ public class PriceInfoTooltip {
             return;
         }
 
-        final NbtElement Color = stack.getNbt().getCompound("display").get("color");
-        if (Color != null) {
-            String colorHex = Integer.toHexString(Integer.parseInt(Color.asString()));
-            if (colorHex.equals("0")) {
-                colorHex = "000000";
-            }
-            String expectedHex = CheckExotic.getExpectedHex(internalID);
+        if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck) {
+            final NbtElement Color = stack.getNbt().getCompound("display").get("color");
+            if (Color != null) {
+                String colorHex = Integer.toHexString(Integer.parseInt(Color.asString()));
+                if (colorHex.equals("0")) {
+                    colorHex = "000000";
+                }
+                String expectedHex = CheckExotic.getExpectedHex(internalID);
 
-            boolean correctLine = false;
-            for (int i = 0; i < lines.size(); i++) {
-                String existingTooltip = String.valueOf(lines.get(i));
-                if (existingTooltip.startsWith("Color: ")) {
-                    correctLine = true;
+                boolean correctLine = false;
+                for (int i = 0; i < lines.size(); i++) {
+                    String existingTooltip = String.valueOf(lines.get(i));
+                    if (existingTooltip.startsWith("Color: ")) {
+                        correctLine = true;
 
-                    if (!colorHex.equalsIgnoreCase(expectedHex)  && !CheckExotic.checkExceptions(internalID, colorHex)) {
+                        if (!colorHex.equalsIgnoreCase(expectedHex)  && !CheckExotic.checkExceptions(internalID, colorHex)) {
+                            final String type = CheckExotic.checkDyeType(colorHex);
+                            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY  + ")"));
+                        }
+                        lines.add(2, Text.literal(Formatting.DARK_GRAY + "Expected Color: #" + expectedHex));
+                        break;
+                    }
+                }
+
+                if (!correctLine) {
+                    if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)) {
                         final String type = CheckExotic.checkDyeType(colorHex);
-                        lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + " (" + CheckExotic.FormattingColor(type) + type + Formatting.DARK_GRAY  + ")"));
+                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "Color: #" + colorHex.toUpperCase() + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY + ")"));
+                    } else {
+                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "Color: #" + colorHex.toUpperCase()));
                     }
                     lines.add(2, Text.literal(Formatting.DARK_GRAY + "Expected Color: #" + expectedHex));
-                    break;
                 }
-            }
-
-            if (!correctLine) {
-                if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)) {
-                    final String type = CheckExotic.checkDyeType(colorHex);
-                    lines.add(1, Text.literal(Formatting.DARK_GRAY + "Color: #" + colorHex.toUpperCase() + " (" + CheckExotic.FormattingColor(type) + type + Formatting.DARK_GRAY + ")"));
-                } else {
-                    lines.add(1, Text.literal(Formatting.DARK_GRAY + "Color: #" + colorHex.toUpperCase()));
-                }
-                lines.add(2, Text.literal(Formatting.DARK_GRAY + "Expected Color: #" + expectedHex));
             }
         }
-
 
         int count = stack.getCount();
         boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));

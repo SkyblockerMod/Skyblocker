@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.item.exotic;
 
 import com.google.gson.JsonObject;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class CheckExotic {
@@ -88,5 +89,17 @@ public class CheckExotic {
             case "EXOTIC": return Formatting.GOLD;
         }
         return Formatting.DARK_GRAY;
+    }
+
+    public static Text getTranslatatedText(String s) {
+        switch (s) {
+            case "CRYSTAL": return Text.translatable("skyblocker.exotic.crystal");
+            case "FAIRY": return Text.translatable("skyblocker.exotic.fairy");
+            case "OG_FAIRY": return Text.translatable("skyblocker.exotic.og_fairy");
+            case "SPOOK": return Text.translatable("skyblocker.exotic.spook");
+            case "GLITCHED": return Text.translatable("skyblocker.exotic.glitched");
+            case "EXOTIC": return Text.translatable("skyblocker.exotic.exotic");
+        }
+        return null;
     }
 }
