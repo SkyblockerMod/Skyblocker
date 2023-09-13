@@ -4,6 +4,7 @@
   "plugin": "me.xmrvizzy.skyblocker.compatibility.MixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "AbstractInventoryScreenMixin",
     "ArmorTrimMixin",
     "BatEntityMixin",
     "ClientPlayerEntityMixin",
