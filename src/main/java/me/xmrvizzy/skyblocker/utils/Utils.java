@@ -2,9 +2,9 @@ package me.xmrvizzy.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
+import me.xmrvizzy.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -294,7 +294,7 @@ public class Utils {
         if (isOnSkyblock) {
             long currentTime = System.currentTimeMillis();
             if (!sentLocRaw && currentTime > clientWorldJoinTime + 1000 && currentTime > lastLocRaw + 15000) {
-                SkyblockerMod.getInstance().messageScheduler.sendMessageAfterCooldown("/locraw");
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/locraw");
                 sentLocRaw = true;
                 lastLocRaw = currentTime;
             }

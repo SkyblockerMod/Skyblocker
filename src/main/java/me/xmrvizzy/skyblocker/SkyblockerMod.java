@@ -45,10 +45,6 @@ public class SkyblockerMod implements ClientModInitializer {
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static SkyblockerMod INSTANCE;
-
-    @SuppressWarnings("deprecation")
-    public final Scheduler scheduler = new Scheduler();
-    public final MessageScheduler messageScheduler = new MessageScheduler();
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public final StatusBarTracker statusBarTracker = new StatusBarTracker();
 
@@ -105,13 +101,13 @@ public class SkyblockerMod implements ClientModInitializer {
         SpecialEffects.init();
         containerSolverManager.init();
         statusBarTracker.init();
-        scheduler.scheduleCyclic(Utils::update, 20);
-        scheduler.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);
-        scheduler.scheduleCyclic(TicTacToe::tick, 4);
-        scheduler.scheduleCyclic(LividColor::update, 10);
-        scheduler.scheduleCyclic(BackpackPreview::tick, 50);
-        scheduler.scheduleCyclic(DwarvenHud::update, 40);
-        scheduler.scheduleCyclic(PlayerListMgr::updateList, 20);
+        Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
+        Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 100);
+        Scheduler.INSTANCE.scheduleCyclic(TicTacToe::tick, 4);
+        Scheduler.INSTANCE.scheduleCyclic(LividColor::update, 10);
+        Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
+        Scheduler.INSTANCE.scheduleCyclic(DwarvenHud::update, 40);
+        Scheduler.INSTANCE.scheduleCyclic(PlayerListMgr::updateList, 20);
     }
 
     /**
@@ -121,7 +117,7 @@ public class SkyblockerMod implements ClientModInitializer {
      * @param client the Minecraft client.
      */
     public void tick(MinecraftClient client) {
-        scheduler.tick();
-        messageScheduler.tick();
+        Scheduler.INSTANCE.tick();
+        MessageScheduler.INSTANCE.tick();
     }
 }

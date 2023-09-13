@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -140,7 +141,7 @@ public class DungeonSecrets {
             LOGGER.error("[Skyblocker] Failed to load dungeon secrets", e);
             return null;
         });
-        SkyblockerMod.getInstance().scheduler.scheduleCyclic(DungeonSecrets::update, 10);
+        Scheduler.INSTANCE.scheduleCyclic(DungeonSecrets::update, 10);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonSecrets::render);
         ClientReceiveMessageEvents.GAME.register(DungeonSecrets::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonSecrets::onChatMessage);

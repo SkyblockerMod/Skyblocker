@@ -2,9 +2,9 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,6 @@ import java.util.zip.GZIPInputStream;
 
 public class PriceInfoTooltip {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceInfoTooltip.class.getName());
-    private static final SkyblockerMod skyblocker = SkyblockerMod.getInstance();
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static JsonObject npcPricesJson;
     private static JsonObject bazaarPricesJson;
@@ -355,7 +354,7 @@ public class PriceInfoTooltip {
     public static int minute = -1;
 
     public static void init() {
-        skyblocker.scheduler.scheduleCyclic(() -> {
+        Scheduler.INSTANCE.scheduleCyclic(() -> {
             if (!Utils.isOnSkyblock() && 0 < minute++) {
                 nullMsgSend = false;
                 return;

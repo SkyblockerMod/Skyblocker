@@ -1,30 +1,28 @@
 package me.xmrvizzy.skyblocker.utils.scheduler;
 
 import com.mojang.brigadier.Command;
-import me.xmrvizzy.skyblocker.SkyblockerMod;
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * A scheduler for running tasks at a later time. Tasks will be run synchronously on the main client thread. Use the instance stored in {@link SkyblockerMod#scheduler}. Do not instantiate this class.
+ * A scheduler for running tasks at a later time. Tasks will be run synchronously on the main client thread. Use the instance stored in {@link #INSTANCE}. Do not instantiate this class.
  */
 public class Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
+    public static final Scheduler INSTANCE = new Scheduler();
     private int currentTick = 0;
-    private final PriorityQueue<ScheduledTask> tasks = new PriorityQueue<>();
+    private final AbstractInt2ObjectMap<List<ScheduledTask>> tasks = new Int2ObjectOpenHashMap<>();
 
-    /**
-     * Do not instantiate this class. Use {@link SkyblockerMod#scheduler} instead.
-     */
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    @Deprecated
-    public Scheduler() {
+    protected Scheduler() {
     }
 
     /**
@@ -34,11 +32,11 @@ public class Scheduler {
      * @param delay the delay in ticks
      */
     public void schedule(Runnable task, int delay) {
-        if (delay < 0) {
+        if (delay >= 0) {
+            addTask(new ScheduledTask(task), currentTick + delay);
+        } else {
             LOGGER.warn("Scheduled a task with negative delay");
         }
-        ScheduledTask tmp = new ScheduledTask(task, currentTick + delay);
-        tasks.add(tmp);
     }
 
     /**
@@ -48,15 +46,15 @@ public class Scheduler {
      * @param period the period in ticks
      */
     public void scheduleCyclic(Runnable task, int period) {
-        if (period <= 0) {
-            LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
+        if (period > 0) {
+            addTask(new CyclicTask(task, period), currentTick);
         } else {
-            new CyclicTask(task, period).run();
+            LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
         }
     }
 
     public static Command<FabricClientCommandSource> queueOpenScreenCommand(Supplier<Screen> screenSupplier) {
-        return context -> SkyblockerMod.getInstance().scheduler.queueOpenScreen(screenSupplier);
+        return context -> INSTANCE.queueOpenScreen(screenSupplier);
     }
 
     /**
@@ -71,11 +69,18 @@ public class Scheduler {
     }
 
     public void tick() {
-        currentTick += 1;
-        ScheduledTask task;
-        while ((task = tasks.peek()) != null && task.schedule <= currentTick && runTask(task)) {
-            tasks.poll();
+        if (tasks.containsKey(currentTick)) {
+            List<ScheduledTask> currentTickTasks = tasks.get(currentTick);
+            //noinspection ForLoopReplaceableByForEach (or else we get a ConcurrentModificationException)
+            for (int i = 0; i < currentTickTasks.size(); i++) {
+                ScheduledTask task = currentTickTasks.get(i);
+                if (!runTask(task)) {
+                    tasks.computeIfAbsent(currentTick + 1, key -> new ArrayList<>()).add(task);
+                }
+            }
+            tasks.remove(currentTick);
         }
+        currentTick += 1;
     }
 
     /**
@@ -89,30 +94,42 @@ public class Scheduler {
         return true;
     }
 
+    private void addTask(ScheduledTask scheduledTask, int schedule) {
+        if (tasks.containsKey(schedule)) {
+            tasks.get(schedule).add(scheduledTask);
+        } else {
+            List<ScheduledTask> list = new ArrayList<>();
+            list.add(scheduledTask);
+            tasks.put(schedule, list);
+        }
+    }
+
     /**
      * A task that runs every period ticks. More specifically, this task reschedules itself to run again after period ticks every time it runs.
-     *
-     * @param inner  the task to run
-     * @param period the period in ticks
      */
-    protected record CyclicTask(Runnable inner, int period) implements Runnable {
+    protected class CyclicTask extends ScheduledTask {
+        private final int period;
+
+        CyclicTask(Runnable inner, int period) {
+            super(inner);
+            this.period = period;
+        }
+
         @Override
         public void run() {
-            SkyblockerMod.getInstance().scheduler.schedule(this, period);
-            inner.run();
+            super.run();
+            addTask(this, currentTick + period);
         }
     }
 
     /**
      * A task that runs at a specific tick, relative to {@link #currentTick}.
-     *
-     * @param inner    the task to run
-     * @param schedule the tick to run at
      */
-    protected record ScheduledTask(Runnable inner, int schedule) implements Comparable<ScheduledTask>, Runnable {
-        @Override
-        public int compareTo(ScheduledTask o) {
-            return schedule - o.schedule;
+    protected static class ScheduledTask implements Runnable {
+        private final Runnable inner;
+
+        public ScheduledTask(Runnable inner) {
+            this.inner = inner;
         }
 
         @Override

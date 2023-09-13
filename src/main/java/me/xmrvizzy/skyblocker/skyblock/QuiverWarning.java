@@ -1,8 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -16,7 +16,7 @@ public class QuiverWarning {
 
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(QuiverWarning::onChatMessage);
-        SkyblockerMod.getInstance().scheduler.scheduleCyclic(QuiverWarning::update, 10);
+        Scheduler.INSTANCE.scheduleCyclic(QuiverWarning::update, 10);
     }
 
     public static boolean onChatMessage(Text text, boolean overlay) {

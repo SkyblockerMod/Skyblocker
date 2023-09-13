@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.utils.render.title;
 
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -66,7 +65,7 @@ public class TitleContainer {
      */
     public static boolean addTitle(Title title, int ticks) {
         if (addTitle(title)) {
-            SkyblockerMod.getInstance().scheduler.schedule(() -> TitleContainer.removeTitle(title), ticks);
+            Scheduler.INSTANCE.schedule(() -> TitleContainer.removeTitle(title), ticks);
             return true;
         }
         return false;

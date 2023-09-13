@@ -1,12 +1,12 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
-import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.SlayerUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.render.title.Title;
 import me.xmrvizzy.skyblocker.utils.render.title.TitleContainer;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Formatting;
 
@@ -29,7 +29,7 @@ public class TwinClawsIndicator {
                 anyClaws = true;
                 if (!TitleContainer.containsTitle(title) && !scheduled) {
                     scheduled = true;
-                    SkyblockerMod.getInstance().scheduler.schedule(() -> {
+                    Scheduler.INSTANCE.schedule(() -> {
                         RenderHelper.displayInTitleContainerAndPlaySound(title);
                         scheduled = false;
                     }, SkyblockerConfig.get().slayer.vampireSlayer.holyIceIndicatorTickDelay);
