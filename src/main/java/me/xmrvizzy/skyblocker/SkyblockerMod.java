@@ -8,6 +8,7 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.*;
+import me.xmrvizzy.skyblocker.skyblock.item.exotic.DownloadItemApi;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
@@ -30,6 +31,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -73,6 +75,11 @@ public class SkyblockerMod implements ClientModInitializer {
         WikiLookup.init();
         ItemRegistry.init();
         NEURepo.init();
+        try {
+            DownloadItemApi.init();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         FairySouls.init();
         BackpackPreview.init();
         QuickNav.init();
