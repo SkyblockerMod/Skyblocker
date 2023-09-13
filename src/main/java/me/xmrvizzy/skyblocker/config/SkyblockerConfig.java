@@ -394,6 +394,7 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class ItemTooltip {
+        public boolean enableExoticCheck = true;
         public boolean enableNPCPrice = true;
         @ConfigEntry.Gui.Tooltip
         public boolean enableMotesPrice = true;
