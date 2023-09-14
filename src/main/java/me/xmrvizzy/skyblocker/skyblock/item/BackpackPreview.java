@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.skyblock;
+package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.xmrvizzy.skyblocker.SkyblockerMod;

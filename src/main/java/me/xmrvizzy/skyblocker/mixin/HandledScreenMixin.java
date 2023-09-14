@@ -3,7 +3,7 @@ package me.xmrvizzy.skyblocker.mixin;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.mixin.accessor.DrawContextInvoker;
-import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
+import me.xmrvizzy.skyblocker.skyblock.item.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ChronomatronSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ExperimentSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.SuperpairsSolver;
