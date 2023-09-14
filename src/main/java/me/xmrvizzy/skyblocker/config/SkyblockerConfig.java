@@ -67,7 +67,7 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button3")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets \\(\\d+/\\d+\\)", "/pets");
+        public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets(:? \\(\\d+\\/\\d+\\))?", "/pets");
 
         @ConfigEntry.Category("button4")
         @ConfigEntry.Gui.CollapsibleObject()
