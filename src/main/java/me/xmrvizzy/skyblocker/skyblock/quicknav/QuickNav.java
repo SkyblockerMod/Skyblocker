@@ -5,13 +5,18 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.PatternSyntaxException;
 
 public class QuickNav {
     private static final String skyblockHubIconNbt = "{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}";
@@ -54,8 +59,18 @@ public class QuickNav {
         String nbtString = "{id:\"minecraft:" + itemData.itemName.toLowerCase(Locale.ROOT) + "\",Count:1";
         if (itemData.nbt.length() > 2) nbtString += "," + itemData.nbt;
         nbtString += "}";
+        boolean uiTitleMatches = false;
+        try {
+            uiTitleMatches = screenTitle.matches(buttonInfo.uiTitle);
+        } catch (PatternSyntaxException e) {
+            e.printStackTrace();
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null) {
+                player.sendMessage(Text.of(Formatting.RED + "[Skyblocker] Invalid regex in quicknav button " + (id + 1) + "!"), false);
+            }
+        }
         return new QuickNavButton(id,
-                screenTitle.matches(buttonInfo.uiTitle),
+                uiTitleMatches,
                 buttonInfo.clickEvent,
                 ItemStack.fromNbt(StringNbtReader.parse(nbtString))
         );
