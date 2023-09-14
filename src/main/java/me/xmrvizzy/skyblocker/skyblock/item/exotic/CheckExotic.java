@@ -8,7 +8,7 @@ public class CheckExotic {
 
     static String[] SeymourIDS = {"VELVET_TOP_HAT", "CASHMERE_JACKET", "SATIN_TROUSERS", "OXFORD_SHOES"};
     public static String getExpectedHex(String id) {
-        JsonObject item = DownloadItemApi.ItemApiData.getAsJsonObject(id);
+        JsonObject item = DownloadColors.ItemApiData.getAsJsonObject(id);
         if (item != null) {
             if (item.has("color")) {
                 String[] RGBValues = item.get("color").getAsString().split(",");

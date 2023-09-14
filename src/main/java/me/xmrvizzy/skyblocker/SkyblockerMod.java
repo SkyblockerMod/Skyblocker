@@ -8,7 +8,7 @@ import me.xmrvizzy.skyblocker.skyblock.dungeon.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
 import me.xmrvizzy.skyblocker.skyblock.item.*;
-import me.xmrvizzy.skyblocker.skyblock.item.exotic.DownloadItemApi;
+import me.xmrvizzy.skyblocker.skyblock.item.exotic.DownloadColors;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
@@ -76,7 +76,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemRegistry.init();
         NEURepo.init();
         try {
-            DownloadItemApi.init();
+            DownloadColors.init();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
