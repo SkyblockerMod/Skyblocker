@@ -159,7 +159,7 @@ public class FairySouls {
 
     public static void onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
-        if (message.equals("You have already found that Fairy Soul!") || message.equals("SOUL! You found a Fairy Soul!")) {
+        if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
             markClosestFairyFound();
         }
     }
