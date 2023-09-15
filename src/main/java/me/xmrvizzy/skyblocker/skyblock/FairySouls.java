@@ -173,7 +173,7 @@ public class FairySouls {
         fairySouls.get(Utils.getLocationRaw()).stream()
                 .filter(FairySouls::isFairySoulNotFound)
                 .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
-                .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 18)
+                .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 16)
                 .ifPresent(fairySoulPos -> {
                     initializeFoundFairiesForCurrentProfileAndLocation();
                     foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoulPos);
