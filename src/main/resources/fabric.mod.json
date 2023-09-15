@@ -46,7 +46,8 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.com/invite/aNNJHQykck"
+        "modmenu.discord": "https://discord.com/invite/aNNJHQykck",
+        "modmenu.modrinth": "https://modrinth.com/mod/skyblocker-liap"
       }
     }
   }
