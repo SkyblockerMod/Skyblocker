@@ -307,6 +307,7 @@
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
 
   "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Hide empty item tooltips in menus",
+  "text.autoconfig.skyblocker.option.general.hideStatusEffectOverlay": "Hide Status Effect Overlay",
 
   "skyblocker.updaterepository.failed":  "§b[§6Skyblocker§b] §cUpdating local repository failed. Remove files manually and restart game.",
 

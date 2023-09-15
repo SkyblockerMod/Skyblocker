@@ -61,4 +61,9 @@ public abstract class InGameHudMixin {
         if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
+    
+    @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
+    private void skyblocker$dontRenderStatusEffects(CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideStatusEffectOverlay) ci.cancel();
+    }
 }
