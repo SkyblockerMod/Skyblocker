@@ -78,7 +78,7 @@ public class PriceInfoTooltip {
                     if (existingTooltip.startsWith("Color: ")) {
                         correctLine = true;
 
-                        if (!colorHex.equalsIgnoreCase(expectedHex)  && !CheckExotic.checkExceptions(internalID, colorHex)) {
+                        if (!colorHex.equalsIgnoreCase(expectedHex)  && !CheckExotic.checkExceptions(internalID, colorHex) && !CheckExotic.intendedDyed(stack.getNbt())) {
                             final String type = CheckExotic.checkDyeType(colorHex);
                             lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY  + ")"));
                         }
@@ -87,7 +87,7 @@ public class PriceInfoTooltip {
                 }
 
                 if (!correctLine) {
-                    if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)) {
+                    if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)  && !CheckExotic.intendedDyed(stack.getNbt())) {
                         final String type = CheckExotic.checkDyeType(colorHex);
                         lines.add(1, Text.literal(Formatting.DARK_GRAY + "(" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY + ")"));
                     }

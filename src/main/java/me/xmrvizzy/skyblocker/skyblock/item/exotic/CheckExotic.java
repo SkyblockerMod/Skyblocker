@@ -1,6 +1,8 @@
 package me.xmrvizzy.skyblocker.skyblock.item.exotic;
 
 import com.google.gson.JsonObject;
+import me.xmrvizzy.skyblocker.utils.Constants;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -24,42 +26,42 @@ public class CheckExotic {
             return true;
         }
         if (id.startsWith("RANCHER")) {
-            return ListContainsString(HexArrays.Ranchers, hex);
+            return ListContainsString(Constants.Ranchers, hex);
         }
         if (id.contains("ADAPTIVE_CHESTPLATE")) {
-            return ListContainsString(HexArrays.AdaptiveChest, hex);
+            return ListContainsString(Constants.AdaptiveChest, hex);
         } else if (id.contains("ADAPTIVE")) {
-            return ListContainsString(HexArrays.Adaptive, hex);
+            return ListContainsString(Constants.Adaptive, hex);
         }
         if (id.startsWith("REAPER")) {
-            return ListContainsString(HexArrays.Reaper, hex);
+            return ListContainsString(Constants.Reaper, hex);
         }
         if (id.startsWith("FAIRY")) {
-            return ListContainsString(HexArrays.FairyHexes, hex);
+            return ListContainsString(Constants.FairyHexes, hex);
         }
         if (id.startsWith("CRYSTAL")) {
-            return ListContainsString(HexArrays.CrystalHexes, hex);
+            return ListContainsString(Constants.CrystalHexes, hex);
         }
         if (id.contains("SPOOK")) {
-            return ListContainsString(HexArrays.Spook, hex);
+            return ListContainsString(Constants.Spook, hex);
         }
         return false;
     }
 
     public static String checkDyeType(String ActualHex) {
-        if (ListContainsString(HexArrays.CrystalHexes, ActualHex)) {
+        if (ListContainsString(Constants.CrystalHexes, ActualHex)) {
             return "CRYSTAL";
         }
-        if (ListContainsString(HexArrays.FairyHexes, ActualHex)) {
+        if (ListContainsString(Constants.FairyHexes, ActualHex)) {
             return "FAIRY";
         }
-        if (ListContainsString(HexArrays.OgFairyHexes, ActualHex)) {
+        if (ListContainsString(Constants.OgFairyHexes, ActualHex)) {
             return "OG_FAIRY";
         }
-        if (ListContainsString(HexArrays.Spook, ActualHex)) {
+        if (ListContainsString(Constants.Spook, ActualHex)) {
             return "SPOOK";
         }
-        if (ListContainsString(HexArrays.Glitched, ActualHex)) {
+        if (ListContainsString(Constants.Glitched, ActualHex)) {
             return "GLITCHED";
         }
         return "EXOTIC";
@@ -72,6 +74,10 @@ public class CheckExotic {
             }
         }
         return false;
+    }
+
+    public static Boolean intendedDyed(NbtCompound ItemData) {
+        return ItemData.getCompound("ExtraAttributes").getKeys().contains("dye_item");
     }
 
     public static Formatting FormattingColor(String s) {
