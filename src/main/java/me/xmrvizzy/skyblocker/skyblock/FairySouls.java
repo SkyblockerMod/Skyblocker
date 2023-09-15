@@ -136,7 +136,7 @@ public class FairySouls {
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
             for (BlockPos fairySoulPos : fairySouls.get(Utils.getLocationRaw())) {
                 boolean fairySoulNotFound = isFairySoulNotFound(fairySoulPos);
-                if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoulPos.getSquaredDistance(context.camera().getBlockPos()) > 5000) {
+                if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoulPos.getSquaredDistance(context.camera().getPos()) > 2500) {
                     continue;
                 }
                 float[] colorComponents = fairySoulNotFound ? DyeColor.GREEN.getColorComponents() : DyeColor.RED.getColorComponents();
@@ -173,7 +173,7 @@ public class FairySouls {
         fairySouls.get(Utils.getLocationRaw()).stream()
                 .filter(FairySouls::isFairySoulNotFound)
                 .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
-                .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 10)
+                .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 18)
                 .ifPresent(fairySoulPos -> {
                     initializeFoundFairiesForCurrentProfileAndLocation();
                     foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoulPos);
