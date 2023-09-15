@@ -8,18 +8,13 @@ public class CheckExotic {
 
     static String[] SeymourIDS = {"VELVET_TOP_HAT", "CASHMERE_JACKET", "SATIN_TROUSERS", "OXFORD_SHOES"};
     public static String getExpectedHex(String id) {
-        JsonObject item = DownloadColors.ItemApiData.getAsJsonObject(id);
-        if (item != null) {
-            if (item.has("color")) {
-                String[] RGBValues = item.get("color").getAsString().split(",");
-                String hex = String.format("%02x%02x%02x", Integer.parseInt(RGBValues[0]), Integer.parseInt(RGBValues[1]), Integer.parseInt(RGBValues[2]));
-                return hex.toUpperCase();
-            } else {
-                System.out.println("Color isn't part of NBT");
-                return null;
-            }
+        String color = DownloadColors.ColorApiData.get(id).getAsString();
+        if (color != null) {
+            String[] RGBValues = color.split(",");
+            String hex = String.format("%02x%02x%02x", Integer.parseInt(RGBValues[0]), Integer.parseInt(RGBValues[1]), Integer.parseInt(RGBValues[2]));
+            return hex.toUpperCase();
         } else {
-            System.out.println("Item is null");
+            System.out.println("Color is null");
             return null;
         }
     }

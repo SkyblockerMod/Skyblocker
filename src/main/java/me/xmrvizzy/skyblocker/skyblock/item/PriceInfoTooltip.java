@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.Http;
+import me.xmrvizzy.skyblocker.skyblock.item.exotic.CheckExotic;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.skyblock.item.exotic.CheckExotic;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
@@ -66,11 +67,9 @@ public class PriceInfoTooltip {
 
         if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck) {
             final NbtElement Color = stack.getNbt().getCompound("display").get("color");
+
             if (Color != null) {
-                String colorHex = Integer.toHexString(Integer.parseInt(Color.asString()));
-                if (colorHex.equals("0")) {
-                    colorHex = "000000";
-                }
+                String colorHex = String.format("%06X", Integer.parseInt(Color.asString()));
                 String expectedHex = CheckExotic.getExpectedHex(internalID);
 
                 boolean correctLine = false;
@@ -83,7 +82,6 @@ public class PriceInfoTooltip {
                             final String type = CheckExotic.checkDyeType(colorHex);
                             lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY  + ")"));
                         }
-                        lines.add(2, Text.literal(Formatting.DARK_GRAY + "Expected Color: #" + expectedHex));
                         break;
                     }
                 }
@@ -91,11 +89,8 @@ public class PriceInfoTooltip {
                 if (!correctLine) {
                     if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)) {
                         final String type = CheckExotic.checkDyeType(colorHex);
-                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "Color: #" + colorHex.toUpperCase() + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY + ")"));
-                    } else {
-                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "Color: #" + colorHex.toUpperCase()));
+                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "(" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY + ")"));
                     }
-                    lines.add(2, Text.literal(Formatting.DARK_GRAY + "Expected Color: #" + expectedHex));
                 }
             }
         }
