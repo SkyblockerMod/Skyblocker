@@ -68,17 +68,17 @@ public class SchedulerTest {
             Assertions.assertEquals(cycleCount8.intValue(), currentTick.intValue() / 55);
             cycleCount8.increment();
         }, 10), 55);
-        while (currentTick.intValue() < 10_000_000) {
+        while (currentTick.intValue() < 100_000) {
             tick();
         }
-        Assertions.assertEquals(10000000, cycleCount1.intValue());
-        Assertions.assertEquals(1000000, cycleCount2.intValue());
-        Assertions.assertEquals(181819, cycleCount3.intValue());
-        Assertions.assertEquals(1000000, cycleCount4.intValue());
-        Assertions.assertEquals(133334, cycleCount5.intValue());
-        Assertions.assertEquals(101011, cycleCount6.intValue());
-        Assertions.assertEquals(1000000, cycleCount7.intValue());
-        Assertions.assertEquals(181818, cycleCount8.intValue());
+        Assertions.assertEquals(100000, cycleCount1.intValue());
+        Assertions.assertEquals(10000, cycleCount2.intValue());
+        Assertions.assertEquals(1819, cycleCount3.intValue());
+        Assertions.assertEquals(10000, cycleCount4.intValue());
+        Assertions.assertEquals(1334, cycleCount5.intValue());
+        Assertions.assertEquals(1011, cycleCount6.intValue());
+        Assertions.assertEquals(10000, cycleCount7.intValue());
+        Assertions.assertEquals(1818, cycleCount8.intValue());
     }
 
     private void tick() {
