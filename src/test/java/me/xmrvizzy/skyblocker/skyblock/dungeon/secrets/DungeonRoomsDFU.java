@@ -5,7 +5,9 @@ import net.minecraft.datafixer.fix.ItemInstanceTheFlatteningFix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -91,7 +93,7 @@ public class DungeonRoomsDFU {
             for (Map.Entry<String, HashMap<String, long[]>> oldRoomShape : oldDungeon.getValue().entrySet()) {
                 HashMap<String, int[]> roomShape = new HashMap<>();
                 for (Map.Entry<String, long[]> oldRoomEntry : oldRoomShape.getValue().entrySet()) {
-                    roomShape.put(oldRoomEntry.getKey(), updateRoom(oldRoomEntry.getValue()));
+                    roomShape.put(oldRoomEntry.getKey().replaceAll(" ", "-"), updateRoom(oldRoomEntry.getValue()));
                 }
                 dungeon.put(oldRoomShape.getKey(), roomShape);
             }
