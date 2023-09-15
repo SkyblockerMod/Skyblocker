@@ -1,54 +1,83 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import me.xmrvizzy.skyblocker.mixin.accessor.DrawContextInvoker;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CompactorDeletorPreview {
+    /**
+     * The width and height in slots of the compactor/deletor
+     */
+    private static final Map<String, IntIntPair> DIMENSIONS = Map.of(
+            "4000", IntIntPair.of(1, 1),
+            "5000", IntIntPair.of(1, 3),
+            "6000", IntIntPair.of(1, 7),
+            "7000", IntIntPair.of(2, 6)
+    );
+    private static final IntIntPair DEFAULT_DIMENSION = IntIntPair.of(1, 6);
+    public static final Pattern NAME = Pattern.compile("PERSONAL_(?<type>COMPACTOR|DELETOR)_(?<size>\\d+)");
+    private static final MinecraftClient client = MinecraftClient.getInstance();
 
-    private static final MinecraftClient mcClient = MinecraftClient.getInstance();
-    private static final Map<String, int[]> personalCompactorTypeToSlot = new HashMap<>();
-    // Lines, and slots per lines
-    static {
-        personalCompactorTypeToSlot.put("4000", new int[]{1,1});
-        personalCompactorTypeToSlot.put("5000", new int[]{1,3});
-        personalCompactorTypeToSlot.put("6000", new int[]{1,7});
-        personalCompactorTypeToSlot.put("7000", new int[]{2,6});
-        personalCompactorTypeToSlot.put("default", new int[]{1,6});
-    }
+    public static boolean drawPreview(DrawContext context, ItemStack stack, String type, String size, int x, int y) {
+        List<Text> tooltips = Screen.getTooltipFromItem(client, stack);
+        int targetIndex = getTargetIndex(tooltips);
+        if (targetIndex == -1) return false;
 
-    public static boolean displayCompactorDeletorPreview(DrawContextInvoker context, int x, int y, ItemStack stack) {
-        String internalName = ItemRegistry.getInternalName(stack);
+        // Get items in compactor or deletor
+        NbtCompound nbt = stack.getNbt();
+        if (nbt == null || !nbt.contains("ExtraAttributes", 10)) {
+            return false;
+        }
+        NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+        // Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
+        List<IntObjectPair<ItemStack>> slots = extraAttributes.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRegistry.getItemStack(extraAttributes.getString(slot)))).toList();
 
-        String prefix;
-        String itemSlotPrefix;
-        if (internalName.contains("PERSONAL_COMPACTOR_")) {
-            prefix = "PERSONAL_COMPACTOR_";
-            itemSlotPrefix = "personal_compact_";
-        } else {
-            prefix = "PERSONAL_DELETOR_";
-            itemSlotPrefix = "personal_deletor_";
+        List<TooltipComponent> components = tooltips.stream().map(Text::asOrderedText).map(TooltipComponent::of).collect(Collectors.toList());
+        IntIntPair dimensions = DIMENSIONS.getOrDefault(size, DEFAULT_DIMENSION);
+
+        // If there are no items in compactor or deletor
+        if (slots.isEmpty()) {
+            int slotsCount = dimensions.leftInt() * dimensions.rightInt();
+            components.add(targetIndex, TooltipComponent.of(Text.literal(slotsCount + (slotsCount == 1 ? " slot" : " slots")).formatted(Formatting.GRAY).asOrderedText()));
+
+            ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
+            return true;
         }
 
-        // Find the line to insert component
+        // Add the preview tooltip component
+        components.add(targetIndex, new CompactorPreviewTooltipComponent(slots, dimensions));
+
+        // Render accompanying text
+        components.add(targetIndex, TooltipComponent.of(Text.literal("Contents:").asOrderedText()));
+        if (extraAttributes.contains("PERSONAL_DELETOR_ACTIVE")) {
+            components.add(targetIndex, TooltipComponent.of(Text.literal("Active: ")
+                    .append(extraAttributes.getBoolean("PERSONAL_DELETOR_ACTIVE") ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
+        }
+        ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
+        return true;
+    }
+
+    /**
+     * Finds the target index to insert the preview component, which is the second empty line
+     */
+    private static int getTargetIndex(List<Text> tooltips) {
         int targetIndex = -1;
         int lineCount = 0;
-
-        List<Text> tooltips = Screen.getTooltipFromItem(mcClient, stack);
         for (int i = 0; i < tooltips.size(); i++) {
             if (tooltips.get(i).getString().isEmpty()) {
                 lineCount += 1;
@@ -58,65 +87,6 @@ public class CompactorDeletorPreview {
                 break;
             }
         }
-        if (targetIndex == -1) return false;
-        List<TooltipComponent> components = new java.util.ArrayList<>(tooltips.stream().map(Text::asOrderedText).map(TooltipComponent::of).toList());
-
-        // STUFF
-        String internalID = ItemRegistry.getInternalName(stack);
-        String compactorType = internalID.replaceFirst(prefix, "");
-        int[] dimensions = personalCompactorTypeToSlot.containsKey(compactorType) ? personalCompactorTypeToSlot.get(compactorType) : personalCompactorTypeToSlot.get("default");
-
-        NbtCompound nbt = stack.getNbt();
-        if (nbt == null || !nbt.contains("ExtraAttributes", 10)) {
-            return false;
-        }
-        NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-        Set<String> attributesKeys = extraAttributes.getKeys();
-        List<String> compactorItems = attributesKeys.stream().filter(s -> s.contains(itemSlotPrefix)).toList();
-        Map<Integer, ItemStack> slotAndItem = new HashMap<>();
-
-        if (compactorItems.isEmpty()) {
-            int slotsCount = (dimensions[0] * dimensions[1]);
-            components.add(targetIndex, TooltipComponent.of(Text.literal(
-                            slotsCount + (slotsCount == 1 ? " slot": " slots"))
-                    .fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)).asOrderedText()));
-
-            context.invokeDrawTooltip(mcClient.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
-            return true;
-        }
-
-        compactorItems.forEach(s -> slotAndItem.put(getNumberAtEnd(s, itemSlotPrefix), ItemRegistry.getItemStack(extraAttributes.getString(s))));
-
-
-        components.add(targetIndex, new CompactorPreviewTooltipComponent(slotAndItem, dimensions));
-        components.add(targetIndex, TooltipComponent.of(Text.literal(" ").append(
-                        Text.literal("Contents:").fillStyle(Style.EMPTY
-                                .withItalic(true)))
-                .asOrderedText()));
-        if (attributesKeys.stream().anyMatch(s -> s.contains("PERSONAL_DELETOR_ACTIVE"))) {
-            MutableText isActiveText = Text.literal("Active: ");
-            if (extraAttributes.getBoolean("PERSONAL_DELETOR_ACTIVE")) {
-                components.add(targetIndex, TooltipComponent.of(isActiveText.append(
-                                Text.literal("YES").fillStyle(Style.EMPTY.withBold(true).withColor(Formatting.GREEN))
-                        ).asOrderedText()
-                ));
-            } else {
-                components.add(targetIndex, TooltipComponent.of(isActiveText.append(
-                                Text.literal("NO").fillStyle(Style.EMPTY.withBold(true).withColor(Formatting.RED))
-                        ).asOrderedText()
-                ));
-            }
-        }
-        context.invokeDrawTooltip(mcClient.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
-        return true;
-    }
-
-    private static Integer getNumberAtEnd(String str, String attributesKey) {
-        try {
-            String numberPartOfTheString = str.replace(attributesKey, "");
-            return Integer.parseInt(numberPartOfTheString);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
+        return targetIndex;
     }
 }

@@ -12,7 +12,6 @@ import java.util.List;
 @Mixin(DrawContext.class)
 public interface DrawContextInvoker {
 
-    @SuppressWarnings("unused")
-    @Invoker("drawTooltip")
+    @Invoker
     void invokeDrawTooltip(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner);
 }

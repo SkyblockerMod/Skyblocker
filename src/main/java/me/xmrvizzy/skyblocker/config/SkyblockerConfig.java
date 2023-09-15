@@ -145,6 +145,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class General {
         public boolean acceptReparty = true;
         public boolean backpackPreviewWithoutShift = false;
+        public boolean compactorDeletorPreview = true;
         public boolean hideEmptyTooltips = true;
 
         @ConfigEntry.Category("tabHud")
