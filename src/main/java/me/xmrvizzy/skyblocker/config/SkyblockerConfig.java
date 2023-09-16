@@ -67,11 +67,19 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button3")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "\\Pets \\(\\d+/\\d+\\)", "/pets");
+        public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets(:? \\(\\d+\\/\\d+\\))?", "/pets");
+        /* REGEX Explanation
+        * "Pets" : simple match on letters
+        * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
+        */
 
         @ConfigEntry.Category("button4")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button4 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe \\([12]/2\\)", "/wardrobe");
+        public QuickNavItem button4 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe \\([12]\\/2\\)", "/wardrobe");
+        /* REGEX Explanation
+        * "Wardrobe" : simple match on letters
+        * " \\([12]\\/2\\)" : match on the page either " (1/2)" or " (2/2)"
+         */
 
         @ConfigEntry.Category("button5")
         @ConfigEntry.Gui.CollapsibleObject()
@@ -79,7 +87,12 @@ public class SkyblockerConfig implements ConfigData {
 
         @ConfigEntry.Category("button6")
         @ConfigEntry.Gui.CollapsibleObject()
-        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"), "(?:Rift )?Storage(?: \\(1/2\\))?", "/storage");
+        public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"), "(?:Rift )?Storage(?: \\([12]\\/2\\))?", "/storage");
+        /* REGEX Explanation
+        * "(?:Rift )?" : optional match on the non-capturing group "Rift "
+        * "Storage" : simple match on letters
+        * "(?: \\([12]\\/2\\))?" : optional match on the non-capturing group " (1/2)" or " (2/2)"
+         */
 
         @ConfigEntry.Category("button7")
         @ConfigEntry.Gui.CollapsibleObject()
