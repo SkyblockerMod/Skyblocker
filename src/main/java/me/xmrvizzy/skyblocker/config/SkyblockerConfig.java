@@ -314,6 +314,8 @@ public class SkyblockerConfig implements ConfigData {
 
     public static class FairySouls {
         public boolean enableFairySoulsHelper = false;
+        public boolean highlightFoundSouls = true;
+        public boolean highlightOnlyNearbySouls = false;
     }
 
     public static class Shortcuts {

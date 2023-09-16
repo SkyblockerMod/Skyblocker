@@ -85,6 +85,7 @@ public class FairySouls {
                 LOGGER.error("Encountered unknown exception loading fairy souls", e);
             }
         });
+
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
         ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
@@ -130,15 +131,21 @@ public class FairySouls {
     }
 
     public static void render(WorldRenderContext context) {
-        if (SkyblockerConfig.get().general.fairySouls.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
-            for (BlockPos fairySoul : fairySouls.get(Utils.getLocationRaw())) {
-                float[] colorComponents = isFairySoulNotFound(fairySoul) ? DyeColor.GREEN.getColorComponents() : DyeColor.RED.getColorComponents();
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoul, colorComponents, 0.5F);
+        SkyblockerConfig.FairySouls fairySoulsConfig = SkyblockerConfig.get().general.fairySouls;
+
+        if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
+            for (BlockPos fairySoulPos : fairySouls.get(Utils.getLocationRaw())) {
+                boolean fairySoulNotFound = isFairySoulNotFound(fairySoulPos);
+                if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoulPos.getSquaredDistance(context.camera().getPos()) > 2500) {
+                    continue;
+                }
+                float[] colorComponents = fairySoulNotFound ? DyeColor.GREEN.getColorComponents() : DyeColor.RED.getColorComponents();
+                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoulPos, colorComponents, 0.5F);
             }
         }
     }
 
-    private static boolean isFairySoulNotFound(BlockPos fairySoul) {
+    private static boolean isFairySoulNotFound(BlockPos fairySoulPos) {
         Map<String, Set<BlockPos>> foundFairiesForProfile = foundFairies.get(Utils.getProfile());
         if (foundFairiesForProfile == null) {
             return true;
@@ -147,12 +154,12 @@ public class FairySouls {
         if (foundFairiesForProfileAndLocation == null) {
             return true;
         }
-        return !foundFairiesForProfileAndLocation.contains(fairySoul);
+        return !foundFairiesForProfileAndLocation.contains(fairySoulPos);
     }
 
     public static void onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
-        if (message.equals("You have already found that Fairy Soul!") || message.equals("SOUL! You found a Fairy Soul!")) {
+        if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
             markClosestFairyFound();
         }
     }
@@ -163,10 +170,14 @@ public class FairySouls {
             LOGGER.warn("Failed to mark closest fairy soul as found because player is null.");
             return;
         }
-        fairySouls.get(Utils.getLocationRaw()).stream().filter(FairySouls::isFairySoulNotFound).min(Comparator.comparingDouble(fairySoul -> fairySoul.getSquaredDistance(player.getPos()))).ifPresent(fairySoul -> {
-            initializeFoundFairiesForCurrentProfileAndLocation();
-            foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoul);
-        });
+        fairySouls.get(Utils.getLocationRaw()).stream()
+                .filter(FairySouls::isFairySoulNotFound)
+                .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
+                .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 16)
+                .ifPresent(fairySoulPos -> {
+                    initializeFoundFairiesForCurrentProfileAndLocation();
+                    foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoulPos);
+                });
     }
 
     public static void markAllFairiesFound() {
