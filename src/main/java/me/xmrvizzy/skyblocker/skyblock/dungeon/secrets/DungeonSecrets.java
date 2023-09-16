@@ -179,8 +179,8 @@ public class DungeonSecrets {
         }
         dungeonFutures.add(CompletableFuture.runAsync(() -> {
             try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
-                SkyblockerMod.GSON.fromJson(roomsReader, JsonObject.class).asMap().forEach((room, jsonElement) -> roomsJson.put(room.toLowerCase(), jsonElement));
-                SkyblockerMod.GSON.fromJson(waypointsReader, JsonObject.class).asMap().forEach((room, jsonElement) -> waypointsJson.put(room.toLowerCase(), jsonElement));
+                loadJson(roomsReader, roomsJson);
+                loadJson(waypointsReader, waypointsJson);
                 LOGGER.debug("[Skyblocker] Loaded dungeon secrets json");
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to load dungeon secrets json", e);
@@ -199,6 +199,15 @@ public class DungeonSecrets {
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Loads the json from the given {@link BufferedReader} into the given {@link Map}.
+     * @param reader the reader to read the json from
+     * @param map the map to load into
+     */
+    private static void loadJson(BufferedReader reader, Map<String, JsonElement> map) {
+        SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
     }
 
     private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, Integer>> markSecretsCommand(boolean found) {
