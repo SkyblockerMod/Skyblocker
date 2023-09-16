@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.xmrvizzy.skyblocker.utils.NEURepo;
+import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
@@ -88,6 +89,16 @@ public class ItemStackBuilder {
             NbtList enchantments = new NbtList();
             enchantments.add(new NbtCompound());
             tag.put("Enchantments", enchantments);
+        }
+        
+        // Add firework star color
+        Matcher explosionColorMatcher = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)\\]\\}").matcher(nbttag);
+        if (explosionColorMatcher.find()) {
+            NbtCompound explosion = new NbtCompound();
+            
+            explosion.putInt("Type", FireworkRocketItem.Type.SMALL_BALL.getId()); //Forget about the actual ball type because it probably doesn't matter
+            explosion.putIntArray("Colors", new int[] { Integer.parseInt(explosionColorMatcher.group("color")) });
+            tag.put("Explosion", explosion);
         }
 
         return ItemStack.fromNbt(root);
