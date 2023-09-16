@@ -51,6 +51,7 @@
   "text.autoconfig.skyblocker.option.general.tabHud.nameSorting": "Player Name Sorting Method",
   "text.autoconfig.skyblocker.option.general.tabHud.nameSorting.@Tooltip": "Alphabetical sorting sorts names alphabetically while Default has no particular order.",
   "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticCheck": "Enable Exotic Check",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice": "Enable Motes Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice.@Tooltip": "Displays the Motes sell price of an item while in The Rift.",
@@ -316,6 +317,13 @@
   "skyblocker.dungeons.secrets.markSecretMissing": "§b[§6Skyblocker§b] §rMarked secret #%d as missing.",
   "skyblocker.dungeons.secrets.markSecretFoundUnable": "§b[§6Skyblocker§b] §cUnable to mark secret #%d as found.",
   "skyblocker.dungeons.secrets.markSecretMissingUnable": "§b[§6Skyblocker§b] §cUnable to mark secret #%d as missing.",
+
+  "skyblocker.exotic.crystal": "CRYSTAL",
+  "skyblocker.exotic.fairy": "FAIRY",
+  "skyblocker.exotic.og_fairy": "OG_FAIRY",
+  "skyblocker.exotic.spook": "SPOOK",
+  "skyblocker.exotic.glitched": "GLITCHED",
+  "skyblocker.exotic.exotic": "EXOTIC",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",

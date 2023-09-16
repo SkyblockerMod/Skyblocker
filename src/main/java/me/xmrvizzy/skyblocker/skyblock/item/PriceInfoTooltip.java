@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.skyblock.item.exotic.CheckExotic;
 import me.xmrvizzy.skyblocker.utils.Http;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
@@ -10,6 +11,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,13 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.net.http.HttpHeaders;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class PriceInfoTooltip {
@@ -38,6 +34,7 @@ public class PriceInfoTooltip {
     private static JsonObject lowestPricesJson;
     private static JsonObject isMuseumJson;
     private static JsonObject motesPricesJson;
+    public static JsonObject ColorApiData;
     private static boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
@@ -56,6 +53,45 @@ public class PriceInfoTooltip {
         if(name.startsWith("ISSHINY_")){
             name = "SHINY_" + internalID;
             neuName = internalID;
+        }
+
+        if (lines.size() == 0) {
+            return;
+        }
+
+        if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck) {
+
+            if (ColorApiData == null) { // Only download once, don't need to waste resources on downloading every few seconds
+                ColorApiData = downloadPrices("color");
+            }
+
+            final NbtElement Color = stack.getNbt().getCompound("display").get("color");
+
+            if (Color != null) {
+                String colorHex = String.format("%06X", Integer.parseInt(Color.asString()));
+                String expectedHex = CheckExotic.getExpectedHex(internalID);
+
+                boolean correctLine = false;
+                for (int i = 0; i < lines.size(); i++) {
+                    String existingTooltip = String.valueOf(lines.get(i));
+                    if (existingTooltip.startsWith("Color: ")) {
+                        correctLine = true;
+
+                        if (!colorHex.equalsIgnoreCase(expectedHex)  && !CheckExotic.checkExceptions(internalID, colorHex) && !CheckExotic.intendedDyed(stack.getNbt())) {
+                            final String type = CheckExotic.checkDyeType(colorHex);
+                            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY  + ")"));
+                        }
+                        break;
+                    }
+                }
+
+                if (!correctLine) {
+                    if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)  && !CheckExotic.intendedDyed(stack.getNbt())) {
+                        final String type = CheckExotic.checkDyeType(colorHex);
+                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "(" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY + ")"));
+                    }
+                }
+            }
         }
 
         int count = stack.getCount();
@@ -437,5 +473,6 @@ public class PriceInfoTooltip {
         apiAddresses.put("npc", "https://hysky.de/api/npcprice");
         apiAddresses.put("museum", "https://hysky.de/api/museum");
         apiAddresses.put("motes", "https://hysky.de/api/motesprice");
+        apiAddresses.put("color", "https://hysky.de/api/color");
     }
 }
