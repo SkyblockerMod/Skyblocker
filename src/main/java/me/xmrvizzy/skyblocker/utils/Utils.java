@@ -323,7 +323,11 @@ public class Utils {
                 if (locRaw.has("map")) {
                     map = locRaw.get("map").getAsString();
                 }
-                return !sentLocRaw;
+                
+                boolean shouldFilter = !sentLocRaw;
+                sentLocRaw = false;
+                
+                return shouldFilter;
             }
         }
         return true;
