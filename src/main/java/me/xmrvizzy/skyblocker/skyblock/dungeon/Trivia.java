@@ -1,9 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.skyblock.FairySouls;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
-import me.xmrvizzy.skyblocker.skyblock.FairySouls;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
@@ -77,24 +77,25 @@ public class Trivia extends ChatPatternListener {
         answers.put("Which of these enemies does not spawn in the Spider's Den?", new String[]{"Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"});
         answers.put("Which of these monsters only spawns at night?", new String[]{"Zombie Villager", "Ghast"});
         answers.put("Which of these is not a dragon in The End?", new String[]{"Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"});
+
         FairySouls.runAsyncAfterFairySoulsLoad(() -> {
-            answers.put("How many total Fairy Souls are there?", getFairySoulsSizeString(null));
-            answers.put("How many Fairy Souls are there in Spider's Den?", getFairySoulsSizeString("combat_1"));
-            answers.put("How many Fairy Souls are there in The End?", getFairySoulsSizeString("combat_3"));
-            answers.put("How many Fairy Souls are there in The Farming Islands?", getFairySoulsSizeString("farming_1"));
-            answers.put("How many Fairy Souls are there in Crimson Isle?", getFairySoulsSizeString("crimson_isle"));
-            answers.put("How many Fairy Souls are there in The Park?", getFairySoulsSizeString("foraging_1"));
-            answers.put("How many Fairy Souls are there in Jerry's Workshop?", getFairySoulsSizeString("winter"));
-            answers.put("How many Fairy Souls are there in Hub?", getFairySoulsSizeString("hub"));
-            answers.put("How many Fairy Souls are there in The Hub?", getFairySoulsSizeString("hub"));
-            answers.put("How many Fairy Souls are there in Deep Caverns?", getFairySoulsSizeString("mining_2"));
-            answers.put("How many Fairy Souls are there in Gold Mine?", getFairySoulsSizeString("mining_1"));
-            answers.put("How many Fairy Souls are there in Dungeon Hub?", getFairySoulsSizeString("dungeon_hub"));
+            answers.put("How many total Fairy Souls are there?", getFairySoulsAmountString(null));
+            answers.put("How many Fairy Souls are there in Spider's Den?", getFairySoulsAmountString("combat_1"));
+            answers.put("How many Fairy Souls are there in The End?", getFairySoulsAmountString("combat_3"));
+            answers.put("How many Fairy Souls are there in The Farming Islands?", getFairySoulsAmountString("farming_1"));
+            answers.put("How many Fairy Souls are there in Crimson Isle?", getFairySoulsAmountString("crimson_isle"));
+            answers.put("How many Fairy Souls are there in The Park?", getFairySoulsAmountString("foraging_1"));
+            answers.put("How many Fairy Souls are there in Jerry's Workshop?", getFairySoulsAmountString("winter"));
+            answers.put("How many Fairy Souls are there in Hub?", getFairySoulsAmountString("hub"));
+            answers.put("How many Fairy Souls are there in The Hub?", getFairySoulsAmountString("hub"));
+            answers.put("How many Fairy Souls are there in Deep Caverns?", getFairySoulsAmountString("mining_2"));
+            answers.put("How many Fairy Souls are there in Gold Mine?", getFairySoulsAmountString("mining_1"));
+            answers.put("How many Fairy Souls are there in Dungeon Hub?", getFairySoulsAmountString("dungeon_hub"));
         });
     }
 
     @NotNull
-    private static String[] getFairySoulsSizeString(@Nullable String location) {
-        return new String[]{"%d Fairy Souls".formatted(FairySouls.getFairySoulsSize(location))};
+    private static String[] getFairySoulsAmountString(@Nullable String location) {
+        return new String[]{"%d Fairy Souls".formatted(FairySouls.getFairySoulsAmount(location))};
     }
 }

@@ -5,17 +5,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.brigadier.CommandDispatcher;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.NEURepo;
+import me.xmrvizzy.skyblocker.utils.PosUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
@@ -45,11 +49,19 @@ public class FairySouls {
         return fairySoulsLoaded.thenRunAsync(runnable);
     }
 
-    public static int getFairySoulsSize(@Nullable String location) {
+    public static int getFairySoulsAmount(@Nullable String location) {
         return location == null ? maxSouls : fairySouls.get(location).size();
     }
 
     public static void init() {
+        loadFairySouls();
+        ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFairySouls);
+        ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
+        ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
+    }
+
+    private static void loadFairySouls() {
         fairySoulsLoaded = NEURepo.runAsyncAfterLoad(() -> {
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(NEURepo.LOCAL_REPO_DIR.resolve("constants").resolve("fairy_souls.json").toFile()));
@@ -62,53 +74,39 @@ public class FairySouls {
                     }
                     ImmutableSet.Builder<BlockPos> fairySoulsForLocation = ImmutableSet.builder();
                     for (JsonElement fairySoul : fairySoulJson.getValue().getAsJsonArray().asList()) {
-                        fairySoulsForLocation.add(parseBlockPos(fairySoul));
+                        fairySoulsForLocation.add(PosUtils.parsePosString(fairySoul.getAsString()));
                     }
                     fairySouls.put(fairySoulJson.getKey(), fairySoulsForLocation.build());
                 }
-                reader = new BufferedReader(new FileReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json").toFile()));
+                reader.close();
+                LOGGER.info("[Skyblocker] Loaded fairy soul locations");
+            } catch (IOException e) {
+                LOGGER.error("[Skyblocker] Failed to load fairy soul locations", e);
+            }
+
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json").toFile()));
                 for (Map.Entry<String, JsonElement> foundFairiesForProfileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     Map<String, Set<BlockPos>> foundFairiesForProfile = new HashMap<>();
                     for (Map.Entry<String, JsonElement> foundFairiesForLocationJson : foundFairiesForProfileJson.getValue().getAsJsonObject().asMap().entrySet()) {
                         Set<BlockPos> foundFairiesForLocation = new HashSet<>();
                         for (JsonElement foundFairy : foundFairiesForLocationJson.getValue().getAsJsonArray().asList()) {
-                            foundFairiesForLocation.add(parseBlockPos(foundFairy));
+                            foundFairiesForLocation.add(PosUtils.parsePosString(foundFairy.getAsString()));
                         }
                         foundFairiesForProfile.put(foundFairiesForLocationJson.getKey(), foundFairiesForLocation);
                     }
                     foundFairies.put(foundFairiesForProfileJson.getKey(), foundFairiesForProfile);
                 }
                 reader.close();
+                LOGGER.info("[Skyblocker] Loaded found fairy souls");
+            } catch (FileNotFoundException ignored) {
             } catch (IOException e) {
-                LOGGER.error("Failed to load found fairy souls", e);
-            } catch (Exception e) {
-                LOGGER.error("Encountered unknown exception loading fairy souls", e);
+                LOGGER.error("[Skyblocker] Failed to load found fairy souls", e);
             }
         });
-
-        ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
-        ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-                .then(literal("fairySouls")
-                        .then(literal("markAllInCurrentIslandFound").executes(context -> {
-                            FairySouls.markAllFairiesFound();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllFound"));
-                            return 1;
-                        }))
-                        .then(literal("markAllInCurrentIslandMissing").executes(context -> {
-                            FairySouls.markAllFairiesNotFound();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllMissing"));
-                            return 1;
-                        })))));
     }
 
-    private static BlockPos parseBlockPos(JsonElement posJson) {
-        String[] posArray = posJson.getAsString().split(",");
-        return new BlockPos(Integer.parseInt(posArray[0]), Integer.parseInt(posArray[1]), Integer.parseInt(posArray[2]));
-    }
-
-    public static void saveFoundFairySouls(MinecraftClient client) {
+    private static void saveFairySouls(MinecraftClient client) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json").toFile()));
             JsonObject foundFairiesJson = new JsonObject();
@@ -117,7 +115,7 @@ public class FairySouls {
                 for (Map.Entry<String, Set<BlockPos>> foundFairiesForLocation : foundFairiesForProfile.getValue().entrySet()) {
                     JsonArray foundFairiesForLocationJson = new JsonArray();
                     for (BlockPos foundFairy : foundFairiesForLocation.getValue()) {
-                        foundFairiesForLocationJson.add(foundFairy.getX() + "," + foundFairy.getY() + "," + foundFairy.getZ());
+                        foundFairiesForLocationJson.add(PosUtils.getPosString(foundFairy));
                     }
                     foundFairiesForProfileJson.add(foundFairiesForLocation.getKey(), foundFairiesForLocationJson);
                 }
@@ -125,12 +123,35 @@ public class FairySouls {
             }
             SkyblockerMod.GSON.toJson(foundFairiesJson, writer);
             writer.close();
+            LOGGER.info("[Skyblocker] Saved found fairy souls");
         } catch (IOException e) {
-            LOGGER.error("Failed to write found fairy souls to file.");
+            LOGGER.error("[Skyblocker] Failed to write found fairy souls to file", e);
         }
     }
 
-    public static void render(WorldRenderContext context) {
+    private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+        dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+            .then(literal("fairySouls")
+                .then(literal("markAllInCurrentIslandFound").executes(context -> {
+                    FairySouls.markAllFairiesOnCurrentIslandFound();
+                    context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllFound"));
+                    return 1;
+                }))
+                .then(literal("markAllInCurrentIslandMissing").executes(context -> {
+                    FairySouls.markAllFairiesOnCurrentIslandMissing();
+                    context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllMissing"));
+                    return 1;
+                }))));
+    }
+
+    private static void onChatMessage(Text text, boolean overlay) {
+        String message = text.getString();
+        if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
+            markClosestFairyFound();
+        }
+    }
+
+    private static void render(WorldRenderContext context) {
         SkyblockerConfig.FairySouls fairySoulsConfig = SkyblockerConfig.get().general.fairySouls;
 
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
@@ -157,35 +178,28 @@ public class FairySouls {
         return !foundFairiesForProfileAndLocation.contains(fairySoulPos);
     }
 
-    public static void onChatMessage(Text text, boolean overlay) {
-        String message = text.getString();
-        if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
-            markClosestFairyFound();
-        }
-    }
-
     private static void markClosestFairyFound() {
         PlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) {
-            LOGGER.warn("Failed to mark closest fairy soul as found because player is null.");
+            LOGGER.warn("[Skyblocker] Failed to mark closest fairy soul as found because player is null");
             return;
         }
         fairySouls.get(Utils.getLocationRaw()).stream()
-                .filter(FairySouls::isFairySoulNotFound)
-                .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
-                .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 16)
-                .ifPresent(fairySoulPos -> {
-                    initializeFoundFairiesForCurrentProfileAndLocation();
-                    foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoulPos);
-                });
+            .filter(FairySouls::isFairySoulNotFound)
+            .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
+            .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 16)
+            .ifPresent(fairySoulPos -> {
+                initializeFoundFairiesForCurrentProfileAndLocation();
+                foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoulPos);
+            });
     }
 
-    public static void markAllFairiesFound() {
+    public static void markAllFairiesOnCurrentIslandFound() {
         initializeFoundFairiesForCurrentProfileAndLocation();
         foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).addAll(fairySouls.get(Utils.getLocationRaw()));
     }
 
-    public static void markAllFairiesNotFound() {
+    public static void markAllFairiesOnCurrentIslandMissing() {
         Map<String, Set<BlockPos>> foundFairiesForProfile = foundFairies.get(Utils.getProfile());
         if (foundFairiesForProfile != null) {
             foundFairiesForProfile.remove(Utils.getLocationRaw());

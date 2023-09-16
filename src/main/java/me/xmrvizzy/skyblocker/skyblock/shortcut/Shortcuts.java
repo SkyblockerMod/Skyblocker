@@ -63,7 +63,7 @@ public class Shortcuts {
                 LOGGER.info("[Skyblocker] Loaded {} command shortcuts and {} command argument shortcuts", commands.size(), commandArgs.size());
             } catch (FileNotFoundException e) {
                 registerDefaultShortcuts();
-                LOGGER.warn("[Skyblocker] Shortcuts file not found, using default shortcuts. This is normal when using for the first time.", e);
+                LOGGER.warn("[Skyblocker] Shortcuts file not found, using default shortcuts. This is normal when using for the first time.");
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker] Failed to load shortcuts file", e);
             }
