@@ -49,7 +49,7 @@ public class Utils {
     private static String map = "";
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
-    private static long lastLocRaw = 0;
+    private static boolean canSendLocRaw = false;
 
     public static boolean isOnHypixel() {
         return isOnHypixel;
@@ -293,10 +293,10 @@ public class Utils {
     private static void updateLocRaw() {
         if (isOnSkyblock) {
             long currentTime = System.currentTimeMillis();
-            if (!sentLocRaw && currentTime > clientWorldJoinTime + 1000 && currentTime > lastLocRaw + 15000) {
+            if (!sentLocRaw && canSendLocRaw && currentTime > clientWorldJoinTime + 1000) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/locraw");
                 sentLocRaw = true;
-                lastLocRaw = currentTime;
+                canSendLocRaw = false;
             }
         } else {
             resetLocRawInfo();
@@ -335,6 +335,7 @@ public class Utils {
 
     private static void resetLocRawInfo() {
         sentLocRaw = false;
+        canSendLocRaw = true;
         server = "";
         gameType = "";
         locationRaw = "";
