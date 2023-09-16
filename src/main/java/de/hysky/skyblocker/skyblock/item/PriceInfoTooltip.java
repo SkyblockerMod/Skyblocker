@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.exotic.CheckExotic;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -13,6 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -35,6 +37,7 @@ public class PriceInfoTooltip {
     private static JsonObject lowestPricesJson;
     private static JsonObject isMuseumJson;
     private static JsonObject motesPricesJson;
+    public static JsonObject ColorApiData;
     private static volatile boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
@@ -53,6 +56,45 @@ public class PriceInfoTooltip {
         if (name.startsWith("ISSHINY_")) {
             name = "SHINY_" + internalID;
             neuName = internalID;
+        }
+
+        if (lines.size() == 0) {
+            return;
+        }
+
+        if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck) {
+
+            if (ColorApiData == null) { // Only download once, don't need to waste resources on downloading every few seconds
+                ColorApiData = downloadPrices("color");
+            }
+
+            final NbtElement Color = stack.getNbt().getCompound("display").get("color");
+
+            if (Color != null) {
+                String colorHex = String.format("%06X", Integer.parseInt(Color.asString()));
+                String expectedHex = CheckExotic.getExpectedHex(internalID);
+
+                boolean correctLine = false;
+                for (int i = 0; i < lines.size(); i++) {
+                    String existingTooltip = String.valueOf(lines.get(i));
+                    if (existingTooltip.startsWith("Color: ")) {
+                        correctLine = true;
+
+                        if (!colorHex.equalsIgnoreCase(expectedHex)  && !CheckExotic.checkExceptions(internalID, colorHex) && !CheckExotic.intendedDyed(stack.getNbt())) {
+                            final String type = CheckExotic.checkDyeType(colorHex);
+                            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY  + ")"));
+                        }
+                        break;
+                    }
+                }
+
+                if (!correctLine) {
+                    if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)  && !CheckExotic.intendedDyed(stack.getNbt())) {
+                        final String type = CheckExotic.checkDyeType(colorHex);
+                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "(" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY + ")"));
+                    }
+                }
+            }
         }
 
         int count = stack.getCount();
@@ -421,5 +463,6 @@ public class PriceInfoTooltip {
         apiAddresses.put("npc", "https://hysky.de/api/npcprice");
         apiAddresses.put("museum", "https://hysky.de/api/museum");
         apiAddresses.put("motes", "https://hysky.de/api/motesprice");
+        apiAddresses.put("color", "https://hysky.de/api/color");
     }
 }

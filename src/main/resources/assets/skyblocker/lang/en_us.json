@@ -65,6 +65,7 @@
   "text.autoconfig.skyblocker.option.general.tabHud.nameSorting": "Player Name Sorting Method",
   "text.autoconfig.skyblocker.option.general.tabHud.nameSorting.@Tooltip": "Alphabetical sorting sorts names alphabetically while Default has no particular order.",
   "text.autoconfig.skyblocker.option.general.itemTooltip": "Item Tooltip",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticCheck": "Enable Exotic Check",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice": "Enable Motes Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice.@Tooltip": "Displays the Motes sell price of an item while in The Rift.",
@@ -278,6 +279,13 @@
   "skyblocker.dungeons.secrets.customWaypointAdded": "§rAdded a custom waypoint at X: %d, Y: %d, Z: %d for room %s secret #%d of category %s with name '%s'.",
   "skyblocker.dungeons.secrets.customWaypointRemoved": "§rRemoved custom waypoint at X: %d, Y: %d, Z: %d for room %s secret #%d of category %s with name '%s'.",
   "skyblocker.dungeons.secrets.customWaypointNotFound": "§cNo custom waypoint found at X: %d, Y: %d, Z: %d for room %s.",
+
+  "skyblocker.exotic.crystal": "CRYSTAL",
+  "skyblocker.exotic.fairy": "FAIRY",
+  "skyblocker.exotic.og_fairy": "OG_FAIRY",
+  "skyblocker.exotic.spook": "SPOOK",
+  "skyblocker.exotic.glitched": "GLITCHED",
+  "skyblocker.exotic.exotic": "EXOTIC",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",
