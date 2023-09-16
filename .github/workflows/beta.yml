@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'src/main/resources/assets/skyblocker/lang/**'
   pull_request:
 
 
