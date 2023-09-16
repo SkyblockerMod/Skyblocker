@@ -3,7 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 import com.google.gson.JsonObject;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.item.exotic.CheckExotic;
+import me.xmrvizzy.skyblocker.skyblock.item.exotic.ExoticCheck;
 import me.xmrvizzy.skyblocker.utils.Http;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
@@ -66,7 +66,7 @@ public class PriceInfoTooltip {
 
                 if (color != null) {
                     String colorHex = String.format("%06X", Integer.parseInt(color.asString()));
-                    String expectedHex = CheckExotic.getExpectedHex(internalID);
+                    String expectedHex = ExoticCheck.getExpectedHex(internalID);
 
                     boolean correctLine = false;
                     for (Text text : lines) {
@@ -227,9 +227,9 @@ public class PriceInfoTooltip {
     }
 
     private static void addExoticTooltip(List<Text> lines, String internalID, NbtCompound nbt, String colorHex, String expectedHex, String existingTooltip) {
-        if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.isException(internalID, colorHex) && !CheckExotic.intendedDyed(nbt)) {
-            final String type = CheckExotic.checkDyeType(colorHex);
-            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + "(").append(CheckExotic.getTranslatedText(type).formatted(CheckExotic.getFormattingColor(type))).append(Formatting.DARK_GRAY + ")"));
+        if (!colorHex.equalsIgnoreCase(expectedHex) && !ExoticCheck.isException(internalID, colorHex) && !ExoticCheck.intendedDyed(nbt)) {
+            final String type = ExoticCheck.checkDyeType(colorHex);
+            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + "(").append(ExoticCheck.getTranslatedText(type).formatted(ExoticCheck.getFormattingColor(type))).append(Formatting.DARK_GRAY + ")"));
         }
     }
 

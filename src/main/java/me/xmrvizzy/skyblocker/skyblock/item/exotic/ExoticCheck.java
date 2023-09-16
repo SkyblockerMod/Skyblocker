@@ -7,7 +7,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class CheckExotic {
+public class ExoticCheck {
     public static String getExpectedHex(String id) {
         String color = PriceInfoTooltip.colorJson.get(id).getAsString();
         if (color != null) {
