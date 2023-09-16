@@ -47,7 +47,7 @@ public class YggdrasilServicesKeyInfoMixin {
                         LOGGER.warn("[Skyblocker Base64 Fixer] Failed to decode the base64 string No.{} again", ERRONEUS_SIGNATURE_HASHES.indexOf(signatureHashCode));
                     }
                 }
-        	}
+            }
             throw e;
         }
     }
