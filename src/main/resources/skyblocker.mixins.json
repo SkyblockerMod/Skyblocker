@@ -22,6 +22,7 @@
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
     "ScoreboardMixin",
+    "SocialInteractionsPlayerListWidgetMixin",
     "WorldRendererMixin",
     "YggdrasilServicesKeyInfoMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
