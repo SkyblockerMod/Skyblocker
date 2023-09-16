@@ -1,9 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.FairySouls;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
+import me.xmrvizzy.skyblocker.skyblock.FairySouls;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
@@ -77,7 +77,6 @@ public class Trivia extends ChatPatternListener {
         answers.put("Which of these enemies does not spawn in the Spider's Den?", new String[]{"Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"});
         answers.put("Which of these monsters only spawns at night?", new String[]{"Zombie Villager", "Ghast"});
         answers.put("Which of these is not a dragon in The End?", new String[]{"Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"});
-
         FairySouls.runAsyncAfterFairySoulsLoad(() -> {
             answers.put("How many total Fairy Souls are there?", getFairySoulsSizeString(null));
             answers.put("How many Fairy Souls are there in Spider's Den?", getFairySoulsSizeString("combat_1"));

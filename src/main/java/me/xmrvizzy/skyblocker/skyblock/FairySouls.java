@@ -154,13 +154,6 @@ public class FairySouls {
         }
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
-        String message = text.getString();
-        if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
-            markClosestFairyFound();
-        }
-    }
-
     private static boolean isFairySoulNotFound(BlockPos fairySoulPos) {
         Map<String, Set<BlockPos>> foundFairiesForProfile = foundFairies.get(Utils.getProfile());
         if (foundFairiesForProfile == null) {
@@ -171,6 +164,13 @@ public class FairySouls {
             return true;
         }
         return !foundFairiesForProfileAndLocation.contains(fairySoulPos);
+    }
+
+    private static void onChatMessage(Text text, boolean overlay) {
+        String message = text.getString();
+        if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
+            markClosestFairyFound();
+        }
     }
 
     private static void markClosestFairyFound() {
