@@ -33,14 +33,13 @@ public class Relics {
 
     public static void init() {
         ClientLifecycleEvents.CLIENT_STARTED.register(Relics::onClientStarted);
-        ClientLifecycleEvents.CLIENT_STOPPING.register(Relics::onClientStopping);
+        ClientLifecycleEvents.CLIENT_STOPPING.register(Relics::saveFoundRelics);
         ClientReceiveMessageEvents.GAME.register(Relics::onChatMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Relics::render);
     }
 
     private static void onClientStarted(MinecraftClient client) {
-        try {
-            BufferedReader reader = client.getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "spidersden/relics.json"));
+        try (BufferedReader reader = client.getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "spidersden/relics.json"))) {
             for (Map.Entry<String, JsonElement> json : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                 if (json.getKey().equals("total")) {
                     totalRelics = json.getValue().getAsInt();
@@ -51,14 +50,12 @@ public class Relics {
                     }
                 }
             }
-            reader.close();
             LOGGER.info("[Skyblocker] Loaded relics locations");
         } catch (IOException e) {
             LOGGER.error("[Skyblocker] Failed to load relics locations", e);
         }
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json").toFile()));
+        try (BufferedReader reader = new BufferedReader(new FileReader(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json").toFile()))) {
             for (Map.Entry<String, JsonElement> profileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                 Set<BlockPos> foundRelicsForProfile = new HashSet<>();
                 for (JsonElement foundRelicsJson : profileJson.getValue().getAsJsonArray().asList()) {
@@ -66,17 +63,15 @@ public class Relics {
                 }
                 foundRelics.put(profileJson.getKey(), foundRelicsForProfile);
             }
-            reader.close();
-            LOGGER.info("[Skyblocker] Loaded found relics");
+            LOGGER.debug("[Skyblocker] Loaded found relics");
         } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
             LOGGER.error("[Skyblocker] Failed to load found relics", e);
         }
     }
 
-    private static void onClientStopping(MinecraftClient client) {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json").toFile()));
+    private static void saveFoundRelics(MinecraftClient client) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json").toFile()))) {
             JsonObject json = new JsonObject();
             for (Map.Entry<String, Set<BlockPos>> foundRelicsForProfile : foundRelics.entrySet()) {
                 JsonArray foundRelicsJson = new JsonArray();
@@ -86,8 +81,7 @@ public class Relics {
                 json.add(foundRelicsForProfile.getKey(), foundRelicsJson);
             }
             SkyblockerMod.GSON.toJson(json, writer);
-            writer.close();
-            LOGGER.info("[Skyblocker] Saved found relics");
+            LOGGER.debug("[Skyblocker] Saved found relics");
         } catch (IOException e) {
             LOGGER.error("[Skyblocker] Failed to write found relics to file", e);
         }
@@ -101,14 +95,12 @@ public class Relics {
     }
 
     private static void render(WorldRenderContext context) {
-        SkyblockerConfig.Relics config = SkyblockerConfig.get().locations.spidersden.relics;
+        SkyblockerConfig.Relics config = SkyblockerConfig.get().locations.spidersDen.relics;
 
         if (config.enableRelicsHelper && Utils.getLocationRaw().equals("combat_1")) {
             for (BlockPos fairySoulPos : relics) {
                 boolean isRelicFound = isRelicFound(fairySoulPos);
-                if (isRelicFound && !config.highlightFoundRelics) {
-                    continue;
-                }
+                if (isRelicFound && !config.highlightFoundRelics) continue;
                 float[] colorComponents = isRelicFound ? DyeColor.BROWN.getColorComponents() : DyeColor.YELLOW.getColorComponents();
                 RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoulPos, colorComponents, 0.5F);
             }

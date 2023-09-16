@@ -438,10 +438,6 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public Barn barn = new Barn();
 
-        @ConfigEntry.Category("spidersden")
-        @ConfigEntry.Gui.CollapsibleObject()
-        public SpidersDen spidersden = new SpidersDen();
-
         @ConfigEntry.Category("dungeons")
         @ConfigEntry.Gui.CollapsibleObject()
         public Dungeons dungeons = new Dungeons();
@@ -453,6 +449,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("rift")
         @ConfigEntry.Gui.CollapsibleObject()
         public Rift rift = new Rift();
+
+        @ConfigEntry.Category("spidersden")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public SpidersDen spidersDen = new SpidersDen();
     }
 
     public static class Dungeons {
