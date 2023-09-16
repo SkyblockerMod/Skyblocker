@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.exotic.CheckExotic;
@@ -37,7 +37,7 @@ public class PriceInfoTooltip {
     private static JsonObject lowestPricesJson;
     private static JsonObject isMuseumJson;
     private static JsonObject motesPricesJson;
-    public static JsonObject ColorApiData;
+    public static JsonObject colorJson;
     private static volatile boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
@@ -45,7 +45,7 @@ public class PriceInfoTooltip {
     private static long museumHash = 0;
     private static long motesHash = 0;
 
-    public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
+    public static void getTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
         if (!Utils.isOnSkyblock() || client.player == null) return;
 
         String name = getInternalNameFromNBT(stack, false);
@@ -58,40 +58,33 @@ public class PriceInfoTooltip {
             neuName = internalID;
         }
 
-        if (lines.size() == 0) {
+        if (lines.isEmpty()) {
             return;
         }
 
         if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck) {
+            if (colorJson == null) {
+                nullWarning();
+            } else if (stack.getNbt() != null) {
+                final NbtElement color = stack.getNbt().getCompound("display").get("color");
 
-            if (ColorApiData == null) { // Only download once, don't need to waste resources on downloading every few seconds
-                ColorApiData = downloadPrices("color");
-            }
+                if (color != null) {
+                    String colorHex = String.format("%06X", Integer.parseInt(color.asString()));
+                    String expectedHex = CheckExotic.getExpectedHex(internalID);
 
-            final NbtElement Color = stack.getNbt().getCompound("display").get("color");
+                    boolean correctLine = false;
+                    for (Text text : lines) {
+                        String existingTooltip = text.getString() + " ";
+                        if (existingTooltip.startsWith("Color: ")) {
+                            correctLine = true;
 
-            if (Color != null) {
-                String colorHex = String.format("%06X", Integer.parseInt(Color.asString()));
-                String expectedHex = CheckExotic.getExpectedHex(internalID);
-
-                boolean correctLine = false;
-                for (int i = 0; i < lines.size(); i++) {
-                    String existingTooltip = String.valueOf(lines.get(i));
-                    if (existingTooltip.startsWith("Color: ")) {
-                        correctLine = true;
-
-                        if (!colorHex.equalsIgnoreCase(expectedHex)  && !CheckExotic.checkExceptions(internalID, colorHex) && !CheckExotic.intendedDyed(stack.getNbt())) {
-                            final String type = CheckExotic.checkDyeType(colorHex);
-                            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + " (" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY  + ")"));
+                            addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, existingTooltip);
+                            break;
                         }
-                        break;
                     }
-                }
 
-                if (!correctLine) {
-                    if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.checkExceptions(internalID, colorHex)  && !CheckExotic.intendedDyed(stack.getNbt())) {
-                        final String type = CheckExotic.checkDyeType(colorHex);
-                        lines.add(1, Text.literal(Formatting.DARK_GRAY + "(" + CheckExotic.FormattingColor(type) + CheckExotic.getTranslatatedText(type).getString() + Formatting.DARK_GRAY + ")"));
+                    if (!correctLine) {
+                        addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, "");
                     }
                 }
             }
@@ -237,6 +230,13 @@ public class PriceInfoTooltip {
         }
     }
 
+    private static void addExoticTooltip(List<Text> lines, String internalID, NbtCompound nbt, String colorHex, String expectedHex, String existingTooltip) {
+        if (!colorHex.equalsIgnoreCase(expectedHex) && !CheckExotic.isException(internalID, colorHex) && !CheckExotic.intendedDyed(nbt)) {
+            final String type = CheckExotic.checkDyeType(colorHex);
+            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + "(").append(CheckExotic.getTranslatedText(type).formatted(CheckExotic.getFormattingColor(type))).append(Formatting.DARK_GRAY + ")"));
+        }
+    }
+
     private static void nullWarning() {
         if (!nullMsgSend && client.player != null) {
             client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")), false);
@@ -304,7 +304,7 @@ public class PriceInfoTooltip {
             }
             case "PET" -> {
                 if (ea.contains("petInfo")) {
-                    JsonObject petInfo = gson.fromJson(ea.getString("petInfo"), JsonObject.class);
+                    JsonObject petInfo = SkyblockerMod.GSON.fromJson(ea.getString("petInfo"), JsonObject.class);
                     return "LVL_1_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
                 }
             }
@@ -416,6 +416,9 @@ public class PriceInfoTooltip {
             if (SkyblockerConfigManager.get().general.itemTooltip.enableMotesPrice && motesPricesJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> motesPricesJson = downloadPrices("motes")));
 
+            if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck && colorJson == null)
+                futureList.add(CompletableFuture.runAsync(() -> colorJson = downloadPrices("color")));
+
             minute++;
             CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
                     .whenComplete((unused, throwable) -> nullMsgSend = false);
@@ -439,7 +442,7 @@ public class PriceInfoTooltip {
 
             String apiResponse = Http.sendGetRequest(url);
 
-            return new Gson().fromJson(apiResponse, JsonObject.class);
+            return SkyblockerMod.GSON.fromJson(apiResponse, JsonObject.class);
         } catch (Exception e) {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
             return null;

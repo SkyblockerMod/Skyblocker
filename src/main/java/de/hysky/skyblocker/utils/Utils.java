@@ -180,7 +180,7 @@ public class Utils {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;
-                        ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+                        ItemTooltipCallback.EVENT.register(PriceInfoTooltip::getTooltip);
                     }
                     isOnSkyblock = true;
                     SkyblockEvents.JOIN.invoker().onSkyblockJoin();
