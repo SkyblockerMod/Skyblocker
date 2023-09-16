@@ -124,5 +124,9 @@ public class ItemRegistry {
         if (itemStack.getNbt() == null) return "";
         return itemStack.getNbt().getCompound("ExtraAttributes").getString("id");
     }
+
+    public static ItemStack getItemStack(String internalName) {
+        return itemsMap.get(internalName);
+    }
 }
 

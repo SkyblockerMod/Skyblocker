@@ -2,13 +2,14 @@ package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.BackpackPreview;
-import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonChestProfit;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ChronomatronSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ExperimentSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.SuperpairsSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import me.xmrvizzy.skyblocker.skyblock.item.BackpackPreview;
+import me.xmrvizzy.skyblocker.skyblock.item.CompactorDeletorPreview;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
+import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.gui.ContainerSolver;
 import net.minecraft.client.gui.DrawContext;
@@ -17,13 +18,10 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,10 +32,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
 import java.util.Map;
+import java.util.regex.Matcher;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin extends Screen {
@@ -56,17 +52,30 @@ public abstract class HandledScreenMixin extends Screen {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
+    @SuppressWarnings("DataFlowIssue")
+    // makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
+    @Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;II)V"), cancellable = true)
     public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci) {
+        if (!Utils.isOnSkyblock()) return;
+
         // Hide Empty Tooltips
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideEmptyTooltips && this.focusedSlot != null && focusedSlot.getStack().getName().getString().equals(" ")) {
+        if (SkyblockerConfig.get().general.hideEmptyTooltips && focusedSlot.getStack().getName().getString().equals(" ")) {
             ci.cancel();
         }
 
         // Backpack Preview
         boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-        if (this.client != null && this.client.player != null && this.focusedSlot != null && shiftDown && this.getTitle().getString().equals("Storage") && this.focusedSlot.inventory != this.client.player.getInventory() && BackpackPreview.renderPreview(context, this.focusedSlot.getIndex(), x, y)) {
+        if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, focusedSlot.getIndex(), x, y)) {
             ci.cancel();
+        }
+
+        // Compactor Preview
+        if (SkyblockerConfig.get().general.compactorDeletorPreview) {
+            ItemStack stack = focusedSlot.getStack();
+            Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemRegistry.getInternalName(stack));
+            if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, matcher.group("type"), matcher.group("size"), x, y)) {
+                ci.cancel();
+            }
         }
     }
 
@@ -79,6 +88,7 @@ public abstract class HandledScreenMixin extends Screen {
     private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, DrawContext context, Slot slot) {
         return skyblocker$experimentSolvers$getStack(slot, stack);
     }
+
 
     @Unique
     private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, ItemStack stack) {
