@@ -35,6 +35,7 @@ jobs:
         run: |
           OUTPUT=$(go run github.com/josephburnett/jd@latest <(git show HEAD^:src/main/resources/assets/skyblocker/lang/en_us.json) <(git show HEAD:src/main/resources/assets/skyblocker/lang/en_us.json) || true)
           OUTPUT=$(echo "$OUTPUT" | sed 's/"/\\"/g')
+          OUTPUT=$(echo "$OUTPUT" | sed 's/\\n/\\\\n/g')
           OUTPUT="\`\`\`diff
           $OUTPUT
           \`\`\`"
