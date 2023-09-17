@@ -20,7 +20,9 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.eclipse.jgit.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,16 +71,16 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets(:? \\(\\d+\\/\\d+\\))?", "/pets");
         /* REGEX Explanation
-        * "Pets" : simple match on letters
-        * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
-        */
+         * "Pets" : simple match on letters
+         * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
+         */
 
         @ConfigEntry.Category("button4")
         @ConfigEntry.Gui.CollapsibleObject()
         public QuickNavItem button4 = new QuickNavItem(true, new ItemData("leather_chestplate", 1, "tag:{display:{color:8991416}}"), "Wardrobe \\([12]\\/2\\)", "/wardrobe");
         /* REGEX Explanation
-        * "Wardrobe" : simple match on letters
-        * " \\([12]\\/2\\)" : match on the page either " (1/2)" or " (2/2)"
+         * "Wardrobe" : simple match on letters
+         * " \\([12]\\/2\\)" : match on the page either " (1/2)" or " (2/2)"
          */
 
         @ConfigEntry.Category("button5")
@@ -89,9 +91,9 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public QuickNavItem button6 = new QuickNavItem(true, new ItemData("ender_chest"), "(?:Rift )?Storage(?: \\([12]\\/2\\))?", "/storage");
         /* REGEX Explanation
-        * "(?:Rift )?" : optional match on the non-capturing group "Rift "
-        * "Storage" : simple match on letters
-        * "(?: \\([12]\\/2\\))?" : optional match on the non-capturing group " (1/2)" or " (2/2)"
+         * "(?:Rift )?" : optional match on the non-capturing group "Rift "
+         * "Storage" : simple match on letters
+         * "(?: \\([12]\\/2\\))?" : optional match on the non-capturing group " (1/2)" or " (2/2)"
          */
 
         @ConfigEntry.Category("button7")
@@ -204,7 +206,7 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("itemInfoDisplay")
         @ConfigEntry.Gui.CollapsibleObject
         public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
-        
+
         @ConfigEntry.Category("specialEffects")
         @ConfigEntry.Gui.CollapsibleObject
         public SpecialEffects specialEffects = new SpecialEffects();
@@ -424,12 +426,12 @@ public class SkyblockerConfig implements ConfigData {
     }
 
     public static class ItemInfoDisplay {
-    	@ConfigEntry.Gui.Tooltip
+        @ConfigEntry.Gui.Tooltip
         public boolean attributeShardInfo = true;
     }
-    
+
     public static class SpecialEffects {
-    	@ConfigEntry.Gui.Tooltip
+        @ConfigEntry.Gui.Tooltip
         public boolean rareDungeonDropEffects = true;
     }
 
@@ -493,14 +495,60 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip()
         public boolean enableDefaultWaypoints = true;
     }
-    
+
     public static class DungeonChestProfit {
-    	@ConfigEntry.Gui.Tooltip
-    	public boolean enableProfitCalculator = true;
-    	@ConfigEntry.Gui.Tooltip
-    	public boolean includeKismet = false;
-    	@ConfigEntry.Gui.Tooltip
-    	public boolean includeEssence = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean enableProfitCalculator = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean includeKismet = false;
+        @ConfigEntry.Gui.Tooltip
+        public boolean includeEssence = true;
+        @ConfigEntry.Gui.Tooltip
+        public int neutralThreshold = 1000;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+        public FormattingOption neutralColor = FormattingOption.DARK_GRAY;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+        public FormattingOption profitColor = FormattingOption.DARK_GREEN;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+        public FormattingOption lossColor = FormattingOption.RED;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+        @ConfigEntry.Gui.Tooltip
+        public FormattingOption incompleteColor = FormattingOption.BLUE;
+    }
+
+    public enum FormattingOption {
+        BLACK(Formatting.BLACK),
+        DARK_BLUE(Formatting.DARK_BLUE),
+        DARK_GREEN(Formatting.DARK_GREEN),
+        DARK_AQUA(Formatting.DARK_AQUA),
+        DARK_RED(Formatting.DARK_RED),
+        DARK_PURPLE(Formatting.DARK_PURPLE),
+        GOLD(Formatting.GOLD),
+        GRAY(Formatting.GRAY),
+        DARK_GRAY(Formatting.DARK_GRAY),
+        BLUE(Formatting.BLUE),
+        GREEN(Formatting.GREEN),
+        AQUA(Formatting.AQUA),
+        RED(Formatting.RED),
+        LIGHT_PURPLE(Formatting.LIGHT_PURPLE),
+        YELLOW(Formatting.YELLOW),
+        WHITE(Formatting.WHITE),
+        OBFUSCATED(Formatting.OBFUSCATED),
+        BOLD(Formatting.BOLD),
+        STRIKETHROUGH(Formatting.STRIKETHROUGH),
+        UNDERLINE(Formatting.UNDERLINE),
+        ITALIC(Formatting.ITALIC),
+        RESET(Formatting.RESET);
+        public final Formatting formatting;
+
+        FormattingOption(Formatting formatting) {
+            this.formatting = formatting;
+        }
+
+        @Override
+        public String toString() {
+            return StringUtils.capitalize(formatting.getName().replaceAll("_", " "));
+        }
     }
 
     public static class LividColor {
