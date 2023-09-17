@@ -109,10 +109,7 @@ public class Relics {
 
     private static boolean isRelicFound(BlockPos pos) {
         Set<BlockPos> foundRelicsForProfile = foundRelics.get(Utils.getProfile());
-        if (foundRelicsForProfile == null) {
-            return false;
-        }
-        return foundRelicsForProfile.contains(pos);
+        return (foundRelicsForProfile == null) ? false : foundRelicsForProfile.contains(pos);
     }
 
     private static void markClosestRelicFound() {
