@@ -24,7 +24,7 @@ public class ItemStackBuilder {
         try {
             petNums = JsonParser.parseString(Files.readString(PETNUMS_PATH)).getAsJsonObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            ItemRegistry.LOGGER.error("Failed to load petnums.json");
         }
     }
 
@@ -61,8 +61,8 @@ public class ItemStackBuilder {
 
         String nbttag = obj.get("nbttag").getAsString();
         // add skull texture
-        Matcher skullUuid = Pattern.compile("(?:(?<=SkullOwner:\\{)Id:\"(.{36})\")").matcher(nbttag);
-        Matcher skullTexture = Pattern.compile("(?:(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\")").matcher(nbttag);
+        Matcher skullUuid = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"").matcher(nbttag);
+        Matcher skullTexture = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"").matcher(nbttag);
         if (skullUuid.find() && skullTexture.find()) {
             NbtCompound skullOwner = new NbtCompound();
             tag.put("SkullOwner", skullOwner);
