@@ -41,6 +41,7 @@ public class FairySouls {
     private static final Map<String, Set<BlockPos>> fairySouls = new HashMap<>();
     private static final Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
 
+    @SuppressWarnings("UnusedReturnValue")
     public static CompletableFuture<Void> runAsyncAfterFairySoulsLoad(Runnable runnable) {
         if (fairySoulsLoaded == null) {
             LOGGER.error("Fairy Souls have not being initialized yet! Please ensure the Fairy Souls module is initialized before modules calling this method in SkyblockerMod#onInitializeClient. This error can be safely ignore in a test environment.");
@@ -56,9 +57,9 @@ public class FairySouls {
     public static void init() {
         loadFairySouls();
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
-        ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
         ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
+        ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
     }
 
     private static void loadFairySouls() {
@@ -126,17 +127,17 @@ public class FairySouls {
 
     private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-            .then(literal("fairySouls")
-                .then(literal("markAllInCurrentIslandFound").executes(context -> {
-                    FairySouls.markAllFairiesOnCurrentIslandFound();
-                    context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllFound"));
-                    return 1;
-                }))
-                .then(literal("markAllInCurrentIslandMissing").executes(context -> {
-                    FairySouls.markAllFairiesOnCurrentIslandMissing();
-                    context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllMissing"));
-                    return 1;
-                }))));
+                .then(literal("fairySouls")
+                        .then(literal("markAllInCurrentIslandFound").executes(context -> {
+                            FairySouls.markAllFairiesOnCurrentIslandFound();
+                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllFound"));
+                            return 1;
+                        }))
+                        .then(literal("markAllInCurrentIslandMissing").executes(context -> {
+                            FairySouls.markAllFairiesOnCurrentIslandMissing();
+                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllMissing"));
+                            return 1;
+                        }))));
     }
 
     private static void render(WorldRenderContext context) {
@@ -144,7 +145,7 @@ public class FairySouls {
 
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
             for (BlockPos fairySoulPos : fairySouls.get(Utils.getLocationRaw())) {
-                boolean fairySoulNotFound = isFairySoulNotFound(fairySoulPos);
+                boolean fairySoulNotFound = isFairySoulMissing(fairySoulPos);
                 if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoulPos.getSquaredDistance(context.camera().getPos()) > 2500) {
                     continue;
                 }
@@ -152,18 +153,6 @@ public class FairySouls {
                 RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoulPos, colorComponents, 0.5F);
             }
         }
-    }
-
-    private static boolean isFairySoulNotFound(BlockPos fairySoulPos) {
-        Map<String, Set<BlockPos>> foundFairiesForProfile = foundFairies.get(Utils.getProfile());
-        if (foundFairiesForProfile == null) {
-            return true;
-        }
-        Set<BlockPos> foundFairiesForProfileAndLocation = foundFairiesForProfile.get(Utils.getLocationRaw());
-        if (foundFairiesForProfileAndLocation == null) {
-            return true;
-        }
-        return !foundFairiesForProfileAndLocation.contains(fairySoulPos);
     }
 
     private static void onChatMessage(Text text, boolean overlay) {
@@ -174,19 +163,32 @@ public class FairySouls {
     }
 
     private static void markClosestFairyFound() {
+        if (!fairySoulsLoaded.isDone()) return;
         PlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) {
             LOGGER.warn("[Skyblocker] Failed to mark closest fairy soul as found because player is null");
             return;
         }
         fairySouls.get(Utils.getLocationRaw()).stream()
-            .filter(FairySouls::isFairySoulNotFound)
-            .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
-            .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 16)
-            .ifPresent(fairySoulPos -> {
-                initializeFoundFairiesForCurrentProfileAndLocation();
-                foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoulPos);
-            });
+                .filter(FairySouls::isFairySoulMissing)
+                .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
+                .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 16)
+                .ifPresent(fairySoulPos -> {
+                    initializeFoundFairiesForCurrentProfileAndLocation();
+                    foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).add(fairySoulPos);
+                });
+    }
+
+    private static boolean isFairySoulMissing(BlockPos fairySoulPos) {
+        Map<String, Set<BlockPos>> foundFairiesForProfile = foundFairies.get(Utils.getProfile());
+        if (foundFairiesForProfile == null) {
+            return true;
+        }
+        Set<BlockPos> foundFairiesForProfileAndLocation = foundFairiesForProfile.get(Utils.getLocationRaw());
+        if (foundFairiesForProfileAndLocation == null) {
+            return true;
+        }
+        return !foundFairiesForProfileAndLocation.contains(fairySoulPos);
     }
 
     public static void markAllFairiesOnCurrentIslandFound() {
