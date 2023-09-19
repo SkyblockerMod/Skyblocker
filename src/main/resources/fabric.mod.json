@@ -11,7 +11,7 @@
     "sources": "https://github.com/SkyblockerMod/Skyblocker",
     "issues": "https://github.com/SkyblockerMod/Skyblocker/issues"
   },
-  "license": "LGPL-3.0-only",
+  "license": "LGPL-3.0-or-later",
   "icon": "assets/skyblocker/icon.png",
   "environment": "client",
   "entrypoints": {
