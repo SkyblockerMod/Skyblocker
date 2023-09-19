@@ -21,5 +21,10 @@
     "skyblocker.customArmorTrims.notAnArmorPiece": "§b[§6Skyblocker§b] §cThis item isn't an armour piece!",
     "skyblocker.customArmorTrims.removed": "§b[§6Skyblocker§b] §fRemoved this item's custom armour trim.",
     "skyblocker.customArmorTrims.noItemUuid": "§b[§6Skyblocker§b] §cYou must be holding an item that has a uuid in order to set a custom armour trim!",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Displays the profit of a dungeon chest in the chest screen's title.\nGreen if there's profit.\nRed if there isn't profit.\nGrey if you don't gain or lose anything.\nBlue if calculations were based on incomplete data."
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Displays the profit of a dungeon chest in the chest screen's title.\nGreen if there's profit.\nRed if there isn't profit.\nGrey if you don't gain or lose anything.\nBlue if calculations were based on incomplete data.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralColor": "Neutral Colour",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor": "Profit Colour",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor": "Loss Colour",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor": "Incomplete Colour",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "The colour to display when the price data is incomplete."
 }
