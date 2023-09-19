@@ -278,7 +278,6 @@ public class SkyblockerConfig implements ConfigData {
         public BarPosition defenceBarPosition = BarPosition.LAYER1;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public BarPosition experienceBarPosition = BarPosition.LAYER1;
-
     }
 
     public enum BarPosition {
@@ -315,6 +314,7 @@ public class SkyblockerConfig implements ConfigData {
     public static class FairySouls {
         public boolean enableFairySoulsHelper = false;
         public boolean highlightFoundSouls = true;
+        @ConfigEntry.Gui.Tooltip()
         public boolean highlightOnlyNearbySouls = false;
     }
 
@@ -449,6 +449,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Category("rift")
         @ConfigEntry.Gui.CollapsibleObject()
         public Rift rift = new Rift();
+
+        @ConfigEntry.Category("spidersden")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public SpidersDen spidersDen = new SpidersDen();
     }
 
     public static class Dungeons {
@@ -559,6 +563,17 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(min = 0, max = 5)
         @ConfigEntry.Gui.Tooltip
         public int mcGrubberStacks = 0;
+    }
+
+    public static class SpidersDen {
+        @ConfigEntry.Category("relics")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public Relics relics = new Relics();
+    }
+
+    public static class Relics {
+        public boolean enableRelicsHelper = false;
+        public boolean highlightFoundRelics = true;
     }
 
     public static class Slayer {

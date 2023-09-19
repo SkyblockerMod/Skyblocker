@@ -13,6 +13,7 @@ import me.xmrvizzy.skyblocker.skyblock.quicknav.QuickNav;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.skyblock.shortcut.Shortcuts;
 import me.xmrvizzy.skyblocker.skyblock.special.SpecialEffects;
+import me.xmrvizzy.skyblocker.skyblock.spidersden.Relics;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -74,6 +75,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemRegistry.init();
         NEURepo.init();
         FairySouls.init();
+        Relics.init();
         BackpackPreview.init();
         QuickNav.init();
         DwarvenHud.init();
