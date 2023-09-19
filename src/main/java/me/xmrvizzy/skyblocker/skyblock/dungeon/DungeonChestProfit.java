@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
@@ -30,10 +29,6 @@ public class DungeonChestProfit {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonChestProfit.class);
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>[0-9]+)");
 	private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
-	private static final Style GRAY = Style.EMPTY.withColor(Formatting.GRAY);
-	private static final Style DARK_BLUE = Style.EMPTY.withColor(Formatting.DARK_BLUE);
-	private static final Style DARK_GREEN = Style.EMPTY.withColor(Formatting.DARK_GREEN);
-	private static final Style DARK_RED = Style.EMPTY.withColor(Formatting.DARK_RED);
 
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ScreenEvents.afterTick(screen).register(screen1 -> {
@@ -163,6 +158,11 @@ public class DungeonChestProfit {
 	}
 
 	private static Text getProfitText(int profit, boolean hasIncompleteData) {
-		return (profit == 0) ? Text.literal(" " + FORMATTER.format(profit)).setStyle(hasIncompleteData ? DARK_BLUE : GRAY) : (profit > 0) ? Text.literal(" +" + FORMATTER.format(profit)).setStyle(hasIncompleteData ? DARK_BLUE : DARK_GREEN) : Text.literal(" " + FORMATTER.format(profit)).setStyle(hasIncompleteData ? DARK_BLUE : DARK_RED);
+		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfig.get().locations.dungeons.dungeonChestProfit;
+		return getProfitText(profit, hasIncompleteData, config.neutralThreshold, config.neutralColor.formatting, config.profitColor.formatting, config.lossColor.formatting, config.incompleteColor.formatting);
+	}
+
+	static Text getProfitText(int profit, boolean hasIncompleteData, int neutralThreshold, Formatting neutralColor, Formatting profitColor, Formatting lossColor, Formatting incompleteColor) {
+		return Text.literal((profit > 0 ? " +" : " ") + FORMATTER.format(profit)).formatted(hasIncompleteData ? incompleteColor : (Math.abs(profit) < neutralThreshold) ? neutralColor : (profit > 0) ? profitColor : lossColor);
 	}
 }
