@@ -17,42 +17,50 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 <details open>
 <summary>open</summary>
 
-* Bars: Health and absorption, Mana, Defense, XP (moving fancy bars)
-* Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad Messages
+* Bars: Health and Absorption, Mana, Defense, XP
+* Hide Messages: Ability Cooldown, Heal, AOTE, Implosion, Molten Wave, Teleport Pad
 * Dungeon Minimap
-* Dungeon Secrets
+* Dungeon Secret Waypoints
 * Starred Mob Glow
+* Croesus Helper
 * Dungeon Puzzle Solver:
     * Three Weirdos
     * Blaze
     * Tic Tac Toe
-    * Croesus
     * Terminal:
         * Order
         * Coloured Items
         * Item Name
 * Dwarven Mines Solver: Fetchur, Puzzler
 * Barn Solver: Treasure Hunter, Hungry Hiker
-* Experiments Solvers
-* Slayer helper:
-    * Vampire : Effigy Waypoints, Healing Melon Indicator, Twinclaws Ice Indicator, Steak Stake Indicator
+* Experimentation Table Solvers
+* Slayer helpers:
+    * Vampire: Effigy Waypoints, Healing Melon Indicator, Twinclaws Ice Indicator, Steak Stake Indicator
 * Drill Fuel and Pickonimbus 2000 in Item Durability Bar
-* Hotbar Slot Lock Keybind (Select the hotbar slot you want to lock/unlock and press the lockbutton)
-* Price tooltip: npc, motes, bazaar (avg, lbin), ah, museum
-* reparty: write /rp to reparty + auto rejoin
+* Hotbar Slot Lock
+* Price Tooltip: NPC, Motes, Bazaar (average and lowest BIN), Auction House, Museum
+* Reparty: /rp to reparty + automatically rejoins
 * Wiki Lookup: press f4 to open the wiki page about the held item
-* Discord Rich Presence: Allows user to show either their Piggy, Bits, or location. Along with a custom message
-* Quicknav: fast navigate between pets, armor, enderchest, skill, collection, crafting, enchant, envil, warp dungeon,
-  warp hub
+* Discord Rich Presence: Allows user to show either their Piggy, Bits, or Location, along with a custom message.
+* Quicknav: navigate between 
+    * Pet Menu
+    * Wardrobe
+    * Ender Chest
+    * Skills Menu
+    * Collections Menu
+    * Crafting Table
+    * Enchantment Table
+    * Anvil
+    * warp dungeon & warp hub
 * Recipe book: in the vanilla recipe book all skyblock items are listed, and you can see the recipe of the item
 * Backpack preview: after you clicked your backpack or enderchest once you can hover over the backpack or enderchest and
   hold shift to preview
 * Update notification
 * Commission HUD: Dwarven Mines quests
-* 1.8 hitbox for lever and farmland
+* 1.8.9 hitbox for lever and farmland
 * Custom Tab HUD + Fully configureable with ressourcepack
-* Roughly enough items (REI) Support
-* Fishing Helper + sound notification
+* Roughly Enough Items (REI) Support
+* Fishing Helper + Sound notification
 * Mirrorverse Waypoints
 * Attribute Shard Info Display
 * Item and Armour customisation:
@@ -119,9 +127,9 @@ information.
 |:--------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
 |                               [catandA](https://github.com/catandA)                                |                                   [kevinthegreat1](https://github.com/kevinthegreat1)                                   |                                 [AzureAaron](https://github.com/AzureAaron)                                 |                                  [msg-programs](https://github.com/msg-programs)                                  |
 
-| [<img alt="lantice3720" src="https://github.com/lantice3720.png" width="100">](https://github.com/lantice3720) | [<img alt="lantice3720" src="https://github.com/koloiyolo.png" width="100">](https://github.com/koloiyolo) | [<img alt="lantice3720" src="https://github.com/Futuremappermydud.png" width="100">](https://github.com/Futuremappermydud) |
-|:--------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|
-|                                 [lantice3720](https://github.com/lantice3720)                                  |                                 [koloiyolo](https://github.com/koloiyolo)                                  |                                 [Futuremappermydud](https://github.com/Futuremappermydud)                                  |
+| [<img alt="lantice3720" src="https://github.com/lantice3720.png" width="100">](https://github.com/lantice3720) | [<img alt="koloiyolo" src="https://github.com/koloiyolo.png" width="100">](https://github.com/koloiyolo) | [<img alt="Futuremappermydud" src="https://github.com/Futuremappermydud.png" width="100">](https://github.com/Futuremappermydud) | [<img alt="enbyte" src="https://github.com/enbyte.png" width="100">](https://github.com/enbyte) |
+|:--------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
+|                                 [lantice3720](https://github.com/lantice3720)                                  |                                 [koloiyolo](https://github.com/koloiyolo)                                  |                                 [Futuremappermydud](https://github.com/Futuremappermydud)                                    |                                 [enbyte](https://github.com/enbyte)                                |
 
 ### Translators
 
