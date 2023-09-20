@@ -63,7 +63,7 @@
     "text.autoconfig.skyblocker.option.locations.barn.solveTreasureHunter": "Treasure Hunter 助手",
     "text.autoconfig.skyblocker.option.locations.dungeons": "地牢",
     "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Croesus助手",
-    "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "将打开过的箱子标记为灰色",
+    "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "将打开过的箱子标记为灰色。",
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "启用地牢地图",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "解决三怪人迷题",
     "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "烈焰人迷题助手",
@@ -188,7 +188,7 @@
     "skyblocker.fishing.reelNow": "收竿！",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "启用真 Livid 的颜色提示",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "提示真 Livid 的颜色",
-    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip": "将真 Livid 的颜色发送到聊天栏",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip": "将真 Livid 的颜色发送到聊天栏。",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "真 Livid 颜色提示信息",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Livid Boss战时发送到聊天栏的信息， 字段 “[color]” 将被替换为真 Livid 的颜色",
     "key.skyblocker.defaultTgl": "将tab键所显示的列表改为默认空岛生存列表",
@@ -203,7 +203,7 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[1]": "精致：显示委托名，进度百分比与进度条以及图标",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]": "极简：仅在简单的方框内显示委托及其进度",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice": "启用 Motes 价格显示",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice.@Tooltip": "显示 Rift 中的物品售价，以Mote为单位",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice.@Tooltip": "显示 Rift 中的物品售价，以 Mote 为单位。",
     "text.autoconfig.skyblocker.option.general.experiments": "实验台助手",
     "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "启用超级配对实验助手",
     "text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver": "启用序列记忆实验助手",
@@ -242,5 +242,6 @@
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningInDungeons": "在地牢内启用箭袋提示",
     "text.autoconfig.skyblocker.option.general.quiverWarning": "箭袋提示",
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarning": "启用箭袋提示",
-    "text.autoconfig.skyblocker.option.general.itemInfoDisplay": "物品信息显示"
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay": "物品信息显示",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator": "启用利润计算器"
 }
