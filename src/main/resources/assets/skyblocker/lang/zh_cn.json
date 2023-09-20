@@ -238,7 +238,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints": "不对地牢秘密路径点进行初始化",
     "text.autoconfig.skyblocker.option.general.tabHud.nameSorting.@Tooltip": "\"Alphabetical\" 以词典序排列玩家, 而 \"Default\" 以Hypixel默认顺序排列",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveTicTacToe.@Tooltip": "以红色方块标记井字棋的下一步!",
-    "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints.@Tooltip": "此选项可节约20MB左右的内存, 但秘密路径点需要重启之后才能使用.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints.@Tooltip": "此选项可节约20MB左右的内存, 但秘密路径点需要关闭此选项并重启后才能使用。",
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningInDungeons": "在地牢内启用箭袋提示",
     "text.autoconfig.skyblocker.option.general.quiverWarning": "箭袋提示",
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarning": "启用箭袋提示",
