@@ -248,5 +248,6 @@
     "text.autoconfig.skyblocker.option.general.quiverWarning": "Предупреждение о нехватке стрел",
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarning": "Включить предупреждение о нехватке стрел",
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningInDungeons": "Включить предупреждение о нехватке стрел (только в данжах)",
-    "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningAfterDungeon": "Включить предупреждение о нехватке стрел (после прохождения данжа)"
+    "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningAfterDungeon": "Включить предупреждение о нехватке стрел (после прохождения данжа)",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts": "Включить сокращения аргументов команд"
 }
