@@ -7,6 +7,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class ItemRegistry {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ItemRegistry.class);
     protected static final Path ITEM_LIST_DIR = NEURepo.LOCAL_REPO_DIR.resolve("items");
 
     protected static final List<ItemStack> items = new ArrayList<>();
@@ -46,7 +49,7 @@ public class ItemRegistry {
                 String fileContent = Files.readString(path);
                 jsonObjs.add(JsonParser.parseString(fileContent).getAsJsonObject());
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Failed to read file " + path, e);
             }
         }
 
@@ -87,8 +90,10 @@ public class ItemRegistry {
                 return fileJson.get("info").getAsJsonArray().get(0).getAsString();
             }
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-            client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
+            LOGGER.error("Failed to read item file " + internalName + ".json", e);
+            if (client.player != null) {
+                client.player.sendMessage(Text.of("Can't locate a wiki article for this item..."), false);
+            }
             return null;
         }
     }
@@ -110,8 +115,8 @@ public class ItemRegistry {
         return recipes.stream();
     }
 
-    public static Stream<ItemStack> getRecipeResultsStream() {
-        return recipes.stream().map(SkyblockCraftingRecipe::getResult);
+    public static Stream<ItemStack> getItemsStream() {
+        return items.stream();
     }
 
     /**

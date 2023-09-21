@@ -29,7 +29,8 @@ repositories {
 		url = "https://maven.meteordev.org/releases"
 	}
 	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
-	maven {url "https://jitpack.io"}
+	maven { url "https://repo.nea.moe/releases" } // For neu repoparser
+	maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -78,6 +79,9 @@ dependencies {
 
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
 	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
+
+	// neu repoparser | implement it if this is being used
+	// include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
 }
 
 base {

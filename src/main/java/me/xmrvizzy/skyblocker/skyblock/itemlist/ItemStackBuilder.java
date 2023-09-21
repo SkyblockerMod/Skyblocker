@@ -25,7 +25,7 @@ public class ItemStackBuilder {
         try {
             petNums = JsonParser.parseString(Files.readString(PETNUMS_PATH)).getAsJsonObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            ItemRegistry.LOGGER.error("Failed to load petnums.json");
         }
     }
 
@@ -62,11 +62,12 @@ public class ItemStackBuilder {
 
         String nbttag = obj.get("nbttag").getAsString();
         // add skull texture
-        Matcher skullMatcher = Pattern.compile("SkullOwner:\\{Id:\"(.{36})\",Properties:\\{textures:\\[0:\\{Value:\"(.+)\"}]}}").matcher(nbttag);
-        if (skullMatcher.find()) {
+        Matcher skullUuid = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"").matcher(nbttag);
+        Matcher skullTexture = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"").matcher(nbttag);
+        if (skullUuid.find() && skullTexture.find()) {
             NbtCompound skullOwner = new NbtCompound();
             tag.put("SkullOwner", skullOwner);
-            UUID uuid = UUID.fromString(skullMatcher.group(1));
+            UUID uuid = UUID.fromString(skullUuid.group(1));
             skullOwner.put("Id", NbtHelper.fromUuid(uuid));
             skullOwner.put("Name", NbtString.of(internalName));
 
@@ -76,7 +77,7 @@ public class ItemStackBuilder {
             properties.put("textures", textures);
             NbtCompound texture = new NbtCompound();
             textures.add(texture);
-            texture.put("Value", NbtString.of(skullMatcher.group(2)));
+            texture.put("Value", NbtString.of(skullTexture.group(1)));
         }
         // add leather armor dye color
         Matcher colorMatcher = Pattern.compile("color:(\\d+)").matcher(nbttag);

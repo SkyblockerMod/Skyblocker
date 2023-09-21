@@ -29,6 +29,6 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
-        entryRegistry.addEntries(ItemRegistry.getRecipeResultsStream().map(EntryStacks::of).toList());
+        entryRegistry.addEntries(ItemRegistry.getItemsStream().map(EntryStacks::of).toList());
     }
 }
