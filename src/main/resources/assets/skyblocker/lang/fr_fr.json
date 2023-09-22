@@ -209,5 +209,10 @@
     "text.autoconfig.skyblocker.option.general.acceptReparty": "Accepter automatiquement les reparty (/rp)",
     "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "Activer l'aide au Fairy Souls",
     "text.autoconfig.skyblocker.option.general.fairySouls": "Aide aux Fairy Souls",
-    "text.autoconfig.skyblocker.option.general.shortcuts": "Raccourcis"
+    "text.autoconfig.skyblocker.option.general.shortcuts": "Raccourcis",
+    "key.skyblocker.toggleB": "Basculer l'onglet HUD vers l'écran B",
+    "key.skyblocker.toggleA": "Basculer l'onglet HUD vers l'écran A",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Activer les Raccourcis",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Marche seulement sur Hypixel. Edite les raccourcis avec \"/skyblocker shortcuts\". Au moins une des options suivantes doit être activée pour que ceci prenne effet.",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "Activer les Commandes Raccourcis"
 }
