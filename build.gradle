@@ -84,6 +84,10 @@ dependencies {
 	// include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+}
+
 base {
 	archivesName = project.archives_base_name
 }

@@ -24,6 +24,7 @@
     "ScoreboardMixin",
     "SocialInteractionsPlayerListWidgetMixin",
     "WorldRendererMixin",
+    "YggdrasilMinecraftSessionServiceMixin",
     "YggdrasilServicesKeyInfoMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
     "accessor.FrustumInvoker",
