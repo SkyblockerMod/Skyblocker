@@ -1,3 +1,61 @@
+# Release 1.14.0
+
+## Highlight
+* Dungeon Chest Profit Calculator!
+* Emi integration
+* Rare Drop Special Effects! Dungeon chest
+* Reduce Network Bandwidth
+* Hide Status Effect Overlay
+* Personal Compactor/Deletor preview
+* Add new dungeon rooms secret waypoints
+* hidden relic helper
+* Hide fake players in social interactions screen
+
+## What's Changed
+* Fix Place Stage figure by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/272
+* Utils cleanup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/274
+* Update webhook_translate.yml by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/275
+* OptiFabric Compatibility by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/277
+* Emi integration by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/278
+* Readme fixes by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/276
+* Dungeon bat by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/281
+* Fix croesus helper by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/285
+* change lbin to hysky.de api by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/286
+* create the base64 fixer by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/283
+* Fix RenderHelper#renderOutline color by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/288
+* Rare Drop Special Effects! by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/289
+* Cleanup by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/290
+* Dev mode and refactor BackpackPreview by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/291
+* lbin add shiny items by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/292
+* Optimize Scheduler by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/295
+* Update Quicknav pet button by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/296
+* Reduce Network Bandwidth by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/297
+* Dungeon Chest Profit Calculator! by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/294
+* Century Emblem + Smol Refactor by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/299
+* Hide Status Effect Overlay by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/298
+* Modrinth Link by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/309
+* fix the regexes for quicknav and add a fail-safe by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/301
+* Personal Compactor/Deletor preview by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/302
+* Update Dungeon Secrets by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/306
+* Improve fairy soul helper by @Grayray75 in https://github.com/SkyblockerMod/Skyblocker/pull/307
+* Reduce SchedulerTest by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/308
+* Optimize Base64 Replacer by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/311
+* Hide fake players in social interactions screen by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/312
+* Update beta.yml by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/313
+* Locraw filter fix by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/314
+* Fix Jolly Pink Rocks by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/315
+* Update webhook_translate.yml by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/318
+* Add hidden relic helper by @Grayray75 in https://github.com/SkyblockerMod/Skyblocker/pull/316
+* Add profit calculator options and test by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/319
+* Update rei and emi by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/293
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/280
+
+## New Contributors
+* @viciscat made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/302
+* @Grayray75 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/307
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.13.0...v1.14.0
+___
 # Release 1.13.0 (Dungeon Update)
 
 ## Highlight

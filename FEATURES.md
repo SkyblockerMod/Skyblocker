@@ -32,7 +32,7 @@
 * Commission HUD: Dwarven Mines quests
 * 1.8 hitbox for lever and farmland
 * Custom Tab HUD + Fully configureable with ressourcepack
-* Roughly enough items (REI) Support
+* Roughly enough items (REI) and Emi Support
 * Fishing Helper + sound notification
 * Mirrorverse Waypoints
 * Attribute Shard Info Display
@@ -40,3 +40,10 @@
     * Item Renaming
     * Custom Armour Dye Colours
     * Custom Armour Trims
+* OptiFabric Compatibility
+* Rare Drop Special Effects! Dungeon chest
+* Dungeon Chest Profit Calculator
+* Hide Status Effect Overlay
+* Personal Compactor/Deletor preview
+* Hide fake players in social interactions screen
+* hidden relic helper

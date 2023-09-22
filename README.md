@@ -51,7 +51,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 * Commission HUD: Dwarven Mines quests
 * 1.8 hitbox for lever and farmland
 * Custom Tab HUD + Fully configureable with ressourcepack
-* Roughly enough items (REI) Support
+* Roughly enough items (REI) and Emi Support
 * Fishing Helper + sound notification
 * Mirrorverse Waypoints
 * Attribute Shard Info Display
@@ -59,6 +59,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     * Item Renaming
     * Custom Armour Dye Colours
     * Custom Armour Trims
+* OptiFabric Compatibility
+* Rare Drop Special Effects! Dungeon chest
+* Dungeon Chest Profit Calculator
+* Hide Status Effect Overlay
+* Personal Compactor/Deletor preview
+* Hide fake players in social interactions screen
+* hidden relic helper
 
 </details>
 
@@ -119,10 +126,13 @@ information.
 |:--------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
 |                               [catandA](https://github.com/catandA)                                |                                   [kevinthegreat1](https://github.com/kevinthegreat1)                                   |                                 [AzureAaron](https://github.com/AzureAaron)                                 |                                  [msg-programs](https://github.com/msg-programs)                                  |
 
-| [<img alt="lantice3720" src="https://github.com/lantice3720.png" width="100">](https://github.com/lantice3720) | [<img alt="lantice3720" src="https://github.com/koloiyolo.png" width="100">](https://github.com/koloiyolo) | [<img alt="lantice3720" src="https://github.com/Futuremappermydud.png" width="100">](https://github.com/Futuremappermydud) |
-|:--------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|
-|                                 [lantice3720](https://github.com/lantice3720)                                  |                                 [koloiyolo](https://github.com/koloiyolo)                                  |                                 [Futuremappermydud](https://github.com/Futuremappermydud)                                  |
+| [<img alt="lantice3720" src="https://github.com/lantice3720.png" width="100">](https://github.com/lantice3720) | [<img alt="lantice3720" src="https://github.com/koloiyolo.png" width="100">](https://github.com/koloiyolo) | [<img alt="lantice3720" src="https://github.com/Futuremappermydud.png" width="100">](https://github.com/Futuremappermydud) |[<img alt="viciscat" src="https://github.com/viciscat.png" width="100">](https://github.com/Futuremappermydud) |
+|:--------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|
+|                                 [lantice3720](https://github.com/lantice3720)                                  |                                 [koloiyolo](https://github.com/koloiyolo)                                  |                                 [Futuremappermydud](https://github.com/Futuremappermydud)                                  |                                [viciscat](https://github.com/Futuremappermydud)                                  |
 
+| [<img alt="Grayray75" src="https://github.com/Grayray75.png" width="100">](https://github.com/Futuremappermydud) |
+|:--------------------------------------------------------------------------------------------------------------:|
+|                                 [Grayray75](https://github.com/lantice3720)                                  |      
 ### Translators
 
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](https://github.com/msg-programs)) \
