@@ -167,10 +167,10 @@ public class Utils {
     }
 
     private static boolean isConnectedToHypixel(MinecraftClient client) {
-    	String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
-    	String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
-    	
-    	return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
+        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+        String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
+
+        return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
     }
 
     private static void leaveSkyblock() {
@@ -324,10 +324,10 @@ public class Utils {
                 if (locRaw.has("map")) {
                     map = locRaw.get("map").getAsString();
                 }
-                
+
                 boolean shouldFilter = !sentLocRaw;
                 sentLocRaw = false;
-                
+
                 return shouldFilter;
             }
         }
