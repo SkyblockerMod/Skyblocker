@@ -50,16 +50,16 @@ public class ResultButtonWidget extends ClickableWidget {
         List<Text> tooltip = Screen.getTooltipFromItem(client, this.itemStack);
         List<OrderedText> orderedTooltip = new ArrayList<>();
 
-        for(int i = 0; i < tooltip.size(); i++) {
-        	orderedTooltip.add(tooltip.get(i).asOrderedText());
+        for (int i = 0; i < tooltip.size(); i++) {
+            orderedTooltip.add(tooltip.get(i).asOrderedText());
         }
 
         client.currentScreen.setTooltip(orderedTooltip);
     }
 
-	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-		// TODO Auto-generated method stub
+    @Override
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

@@ -121,7 +121,7 @@ public class ScreenBuilder {
 
         // load failed.
         if (clazz == null) {
-           throw new NoSuchElementException(builderName + "/[ERROR]: No such Widget type \"" + name + "\"!");
+            throw new NoSuchElementException(builderName + "/[ERROR]: No such Widget type \"" + name + "\"!");
         }
 
         // return instance of that class.
@@ -129,7 +129,7 @@ public class ScreenBuilder {
             Constructor<?> ctor = clazz.getConstructor();
             return (Widget) ctor.newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
+                 | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
             throw new IllegalStateException(builderName + "/" + name + ": Internal error...");
         }
     }

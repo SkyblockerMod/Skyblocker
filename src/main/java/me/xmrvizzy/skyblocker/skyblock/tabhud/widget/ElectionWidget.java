@@ -44,7 +44,7 @@ public class ElectionWidget extends Widget {
         MAYOR_DATA.put("Marina", Ico.FISH_ROD);
     }
 
-    private static final Formatting[] COLS = { Formatting.GOLD, Formatting.RED, Formatting.LIGHT_PURPLE };
+    private static final Formatting[] COLS = {Formatting.GOLD, Formatting.RED, Formatting.LIGHT_PURPLE};
 
     public ElectionWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());

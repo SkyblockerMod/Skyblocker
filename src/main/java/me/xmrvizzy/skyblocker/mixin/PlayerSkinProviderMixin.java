@@ -14,16 +14,16 @@ import net.minecraft.client.texture.PlayerSkinProvider.Textures;
 @Mixin(targets = "net.minecraft.client.texture.PlayerSkinProvider$1")
 public class PlayerSkinProviderMixin {
 
-	@ModifyReturnValue(method = "method_52867", at = @At("RETURN"))
-	private static Textures skyblocker$fixTexturesThatHadAnInvalidSignature(Textures texture, @Local MinecraftSessionService sessionService, @Local GameProfile profile) {
-		if (Utils.isOnHypixel() && texture == Textures.MISSING) {
-			try {
-				return Textures.fromMap(sessionService.getTextures(profile, false), false);
-			} catch (Throwable t) {
-				return Textures.MISSING;
-			}
-		}
+    @ModifyReturnValue(method = "method_52867", at = @At("RETURN"))
+    private static Textures skyblocker$fixTexturesThatHadAnInvalidSignature(Textures texture, @Local MinecraftSessionService sessionService, @Local GameProfile profile) {
+        if (Utils.isOnHypixel() && texture == Textures.MISSING) {
+            try {
+                return Textures.fromMap(sessionService.getTextures(profile, false), false);
+            } catch (Throwable t) {
+                return Textures.MISSING;
+            }
+        }
 
-		return texture;
-	}
+        return texture;
+    }
 }

@@ -12,8 +12,8 @@ import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 @Mixin(AbstractInventoryScreen.class)
 public class AbstractInventoryScreenMixin {
 
-	@Inject(method = "drawStatusEffects", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$dontDrawStatusEffects(CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideStatusEffectOverlay) ci.cancel();
-	}
+    @Inject(method = "drawStatusEffects", at = @At("HEAD"), cancellable = true)
+    private void skyblocker$dontDrawStatusEffects(CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideStatusEffectOverlay) ci.cancel();
+    }
 }

@@ -34,7 +34,7 @@ public class GardenServerWidget extends Widget {
         this.addSimpleIcoText(Ico.COPPER, "Copper:", Formatting.GOLD, 44);
 
         Matcher m = PlayerListMgr.regexAt(45, VISITOR_PATTERN);
-        if (m == null ) {
+        if (m == null) {
             this.addComponent(new IcoTextComponent());
             return;
         }

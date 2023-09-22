@@ -11,17 +11,17 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(DyeableItem.class)
 public interface DyeableItemMixin {
-	@ModifyReturnValue(method = "getColor", at = @At("RETURN"))
-	private int skyblocker$customDyeColor(int originalColor, ItemStack stack) {
-		NbtCompound nbt = stack.getNbt();
+    @ModifyReturnValue(method = "getColor", at = @At("RETURN"))
+    private int skyblocker$customDyeColor(int originalColor, ItemStack stack) {
+        NbtCompound nbt = stack.getNbt();
 
-		if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
-			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
+        if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
+            NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+            String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
-			return SkyblockerConfig.get().general.customDyeColors.getOrDefault(itemUuid, originalColor);
-		}
+            return SkyblockerConfig.get().general.customDyeColors.getOrDefault(itemUuid, originalColor);
+        }
 
-		return originalColor;
-	}
+        return originalColor;
+    }
 }

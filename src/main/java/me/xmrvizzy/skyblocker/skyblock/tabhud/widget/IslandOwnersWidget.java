@@ -43,7 +43,7 @@ public class IslandOwnersWidget extends Widget {
                 name = m.group("nameA");
                 lastseen = m.group("lastseen");
                 format = Formatting.GRAY;
-            } else if (m.group("nameB")!=null){
+            } else if (m.group("nameB") != null) {
                 name = m.group("nameB");
                 lastseen = "Online";
                 format = Formatting.WHITE;

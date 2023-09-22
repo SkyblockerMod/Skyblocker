@@ -22,10 +22,12 @@ class TriviaTest extends ChatPatternListenerTest<Trivia> {
     void answer1() {
         assertGroup("    §6 ⓐ §aAnswer 1", 3, "Answer 1");
     }
+
     @Test
     void answer2() {
         assertGroup("    §6 ⓑ §aAnswer 2", 3, "Answer 2");
     }
+
     @Test
     void answer3() {
         assertGroup("    §6 ⓒ §aAnswer 3", 3, "Answer 3");

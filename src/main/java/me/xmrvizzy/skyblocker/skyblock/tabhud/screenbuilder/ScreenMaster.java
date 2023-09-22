@@ -113,9 +113,9 @@ public class ScreenMaster {
                             try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager()
                                     .openAsReader(entry.getKey())) {
                                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-                                 if (json.get("format_version").getAsInt() != VERSION) {
+                                if (json.get("format_version").getAsInt() != VERSION) {
                                     throw new IllegalStateException(String.format("Resource pack isn't compatible! Expected version %d, got %d", VERSION, json.get("format_version").getAsInt()));
-                                 }
+                                }
 
                             } catch (Exception ex) {
                                 throw new IllegalStateException(

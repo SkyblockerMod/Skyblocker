@@ -327,11 +327,14 @@ public class ItemFixerUpper {
             case "minecraft:sandstone", "minecraft:red_sandstone" -> id.replaceFirst(":", SANDSTONE_VARIANTS[damage]);
             //to use the general color variants we need to reverse the order because Minecraft decided so for some reason
             case "minecraft:banner" -> id.replaceFirst(":", COLOR_VARIANTS[15 - damage]);
-            case "minecraft:carpet", "minecraft:stained_glass", "minecraft:stained_glass_pane", "minecraft:wool" -> id.replaceFirst(":", COLOR_VARIANTS[damage]);
+            case "minecraft:carpet", "minecraft:stained_glass", "minecraft:stained_glass_pane", "minecraft:wool" ->
+                    id.replaceFirst(":", COLOR_VARIANTS[damage]);
             //for the terracotta we replace the whole name by the color and append "terracotta" at the end
-            case "minecraft:stained_hardened_clay" -> id.replaceFirst(":stained_hardened_clay", COLOR_VARIANTS[damage]) + "terracotta";
+            case "minecraft:stained_hardened_clay" ->
+                    id.replaceFirst(":stained_hardened_clay", COLOR_VARIANTS[damage]) + "terracotta";
             //for the wooden slab we need to remove the "wooden_" prefix, but otherwise it's the same, so I just combined them anyway
-            case "minecraft:leaves", "minecraft:planks", "minecraft:sapling", "minecraft:wooden_slab" -> id.replaceFirst(":(?:wooden_)?", WOOD_VARIANTS[damage]);
+            case "minecraft:leaves", "minecraft:planks", "minecraft:sapling", "minecraft:wooden_slab" ->
+                    id.replaceFirst(":(?:wooden_)?", WOOD_VARIANTS[damage]);
             //here we replace the 2 by nothing to remove it as it's not needed anymore
             case "minecraft:leaves2" -> id.replaceFirst(":", WOOD_VARIANTS[damage + 4]).replaceFirst("2", "");
             //the default case is just a rename or no change

@@ -17,21 +17,21 @@ import java.util.Optional;
 @Mixin(ArmorTrim.class)
 public class ArmorTrimMixin {
 
-	@ModifyReturnValue(method = "getTrim", at = @At("RETURN"))
-	private static Optional<ArmorTrim> skyblocker$customArmorTrims(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArmorTrim> original, @Local ItemStack stack) {
-		NbtCompound nbt = stack.getNbt();
+    @ModifyReturnValue(method = "getTrim", at = @At("RETURN"))
+    private static Optional<ArmorTrim> skyblocker$customArmorTrims(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArmorTrim> original, @Local ItemStack stack) {
+        NbtCompound nbt = stack.getNbt();
 
-		if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
-			Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfig.get().general.customArmorTrims;
-			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
+        if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
+            Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfig.get().general.customArmorTrims;
+            NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+            String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
-			if (customTrims.containsKey(itemUuid)) {
-				CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);
-				return CustomArmorTrims.TRIMS_CACHE.getOrDefault(trimKey, original);
-			}
-		}
+            if (customTrims.containsKey(itemUuid)) {
+                CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);
+                return CustomArmorTrims.TRIMS_CACHE.getOrDefault(trimKey, original);
+            }
+        }
 
-		return original;
-	}
+        return original;
+    }
 }

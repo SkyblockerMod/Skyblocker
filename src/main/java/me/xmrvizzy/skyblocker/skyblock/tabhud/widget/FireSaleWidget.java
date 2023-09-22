@@ -45,8 +45,8 @@ public class FireSaleWidget extends Widget {
             return;
         }
 
-        for (int i = 46;; i++) {
-            Matcher m = PlayerListMgr.regexAt( i, FIRE_PATTERN);
+        for (int i = 46; ; i++) {
+            Matcher m = PlayerListMgr.regexAt(i, FIRE_PATTERN);
             if (m == null) {
                 break;
             }
@@ -62,7 +62,7 @@ public class FireSaleWidget extends Widget {
     }
 
     private int pcntToCol(float pcnt) {
-        return MathHelper.hsvToRgb( pcnt / 300f, 0.9f, 0.9f);
+        return MathHelper.hsvToRgb(pcnt / 300f, 0.9f, 0.9f);
     }
 
 }

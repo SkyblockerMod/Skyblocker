@@ -43,7 +43,7 @@ public class JacobsContestWidget extends Widget {
     public void updateContent() {
         this.addSimpleIcoText(Ico.CLOCK, "Starts in:", Formatting.GOLD, 76);
 
-        TableComponent tc = new TableComponent(1, 3, Formatting.YELLOW  .getColorValue());
+        TableComponent tc = new TableComponent(1, 3, Formatting.YELLOW.getColorValue());
 
         for (int i = 77; i < 80; i++) {
             String item = PlayerListMgr.strAt(i);

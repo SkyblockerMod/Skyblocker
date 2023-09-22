@@ -203,8 +203,9 @@ public class DungeonSecrets {
 
     /**
      * Loads the json from the given {@link BufferedReader} into the given {@link Map}.
+     *
      * @param reader the reader to read the json from
-     * @param map the map to load into
+     * @param map    the map to load into
      */
     private static void loadJson(BufferedReader reader, Map<String, JsonElement> map) {
         SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
@@ -295,7 +296,8 @@ public class DungeonSecrets {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM ->
+                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {

@@ -66,6 +66,7 @@ public class TicTacToeUtils {
 
         return 0;
     }
+
     public static int alphabeta(char[][] board, int alpha, int beta, boolean max, int depth) {
         int score = getBoardRanking(board);
         if (score == 10 || score == -10) return score;

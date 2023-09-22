@@ -1,6 +1,7 @@
 package me.xmrvizzy.skyblocker.utils.chat;
 
 import net.minecraft.client.resource.language.I18n;
+
 public enum ChatFilterResult {
     // Skip this one / no action
     PASS,

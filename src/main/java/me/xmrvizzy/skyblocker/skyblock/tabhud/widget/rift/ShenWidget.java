@@ -9,14 +9,14 @@ import net.minecraft.util.Formatting;
 
 public class ShenWidget extends Widget {
 
-	private static final MutableText TITLE = Text.literal("Shen's Countdown").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
+    private static final MutableText TITLE = Text.literal("Shen's Countdown").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
 
-	public ShenWidget() {
-		super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    public ShenWidget() {
+        super(TITLE, Formatting.DARK_AQUA.getColorValue());
     }
 
     @Override
     public void updateContent() {
-		this.addComponent(new PlainTextComponent(Text.literal(PlayerListMgr.strAt(70))));
-	}
+        this.addComponent(new PlainTextComponent(Text.literal(PlayerListMgr.strAt(70))));
+    }
 }

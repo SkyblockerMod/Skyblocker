@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface RecipeBookWidgetAccessor {
     @Accessor
     String getSearchText();
+
     @Accessor
     TextFieldWidget getSearchField();
 }

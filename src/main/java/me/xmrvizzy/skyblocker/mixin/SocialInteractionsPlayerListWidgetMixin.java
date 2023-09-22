@@ -15,10 +15,11 @@ import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListW
 @Mixin(SocialInteractionsPlayerListWidget.class)
 public class SocialInteractionsPlayerListWidgetMixin {
 
-	@WrapOperation(method = "setPlayers", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
-	private Object skyblocker$hideInvalidPlayers(Map<Object, Object> map, Object uuid, Object entry, Operation<Object> operation) {
-		if (Utils.isOnSkyblock() && !((SocialInteractionsPlayerListEntry) entry).getName().matches("[A-Za-z0-9_]+")) return null;
-		
-		return operation.call(map, uuid, entry);
-	}
+    @WrapOperation(method = "setPlayers", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
+    private Object skyblocker$hideInvalidPlayers(Map<Object, Object> map, Object uuid, Object entry, Operation<Object> operation) {
+        if (Utils.isOnSkyblock() && !((SocialInteractionsPlayerListEntry) entry).getName().matches("[A-Za-z0-9_]+"))
+            return null;
+
+        return operation.call(map, uuid, entry);
+    }
 }

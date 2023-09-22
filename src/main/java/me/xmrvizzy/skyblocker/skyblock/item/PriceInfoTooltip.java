@@ -53,7 +53,7 @@ public class PriceInfoTooltip {
         String neuName = name;
         if (name == null || internalID == null) return;
 
-        if(name.startsWith("ISSHINY_")){
+        if (name.startsWith("ISSHINY_")) {
             name = "SHINY_" + internalID;
             neuName = internalID;
         }
@@ -263,7 +263,7 @@ public class PriceInfoTooltip {
         }
 
         // Transformation to API format.
-        if (ea.contains("is_shiny")){
+        if (ea.contains("is_shiny")) {
             return "ISSHINY_" + internalName;
         }
 
@@ -399,33 +399,39 @@ public class PriceInfoTooltip {
     private static JsonObject downloadPrices(String type) {
         try {
             String url = apiAddresses.get(type);
-            
+
             if (type.equals("npc") || type.equals("museum") || type.equals("motes")) {
                 HttpHeaders headers = Http.sendHeadRequest(url);
                 long combinedHash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
-            	
+
                 switch (type) {
-                    case "npc": if (npcHash == combinedHash) return npcPricesJson; else npcHash = combinedHash;
-                    case "museum": if (museumHash == combinedHash) return isMuseumJson; else museumHash = combinedHash;
-                    case "motes": if (motesHash == combinedHash) return motesPricesJson; else motesHash = combinedHash;
+                    case "npc":
+                        if (npcHash == combinedHash) return npcPricesJson;
+                        else npcHash = combinedHash;
+                    case "museum":
+                        if (museumHash == combinedHash) return isMuseumJson;
+                        else museumHash = combinedHash;
+                    case "motes":
+                        if (motesHash == combinedHash) return motesPricesJson;
+                        else motesHash = combinedHash;
                 }
             }
-            
+
             String apiResponse = Http.sendGetRequest(url);
-            
+
             return new Gson().fromJson(apiResponse, JsonObject.class);
         } catch (Exception e) {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
             return null;
         }
     }
-    
+
     public static JsonObject getBazaarPrices() {
-    	return bazaarPricesJson;
+        return bazaarPricesJson;
     }
-    
+
     public static JsonObject getLBINPrices() {
-    	return lowestPricesJson;
+        return lowestPricesJson;
     }
 
     static {

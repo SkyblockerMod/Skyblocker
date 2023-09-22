@@ -8,14 +8,14 @@ import net.minecraft.util.Formatting;
 
 public class RiftProfileWidget extends Widget {
 
-	private static final MutableText TITLE = Text.literal("Profile").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
+    private static final MutableText TITLE = Text.literal("Profile").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
 
-	public RiftProfileWidget() {
-		super(TITLE, Formatting.DARK_AQUA.getColorValue());
+    public RiftProfileWidget() {
+        super(TITLE, Formatting.DARK_AQUA.getColorValue());
     }
 
     @Override
     public void updateContent() {
-		this.addSimpleIcoText(Ico.SIGN, "Profile:", Formatting.GREEN, 61);
-	}
+        this.addSimpleIcoText(Ico.SIGN, "Profile:", Formatting.GREEN, 61);
+    }
 }

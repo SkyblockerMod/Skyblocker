@@ -35,7 +35,7 @@ public class ItemStackBuilder {
         List<Pair<String, String>> injectors = new ArrayList<>(petData(internalName));
 
         NbtCompound root = new NbtCompound();
-        root.put("Count", NbtByte.of((byte)1));
+        root.put("Count", NbtByte.of((byte) 1));
 
         String id = obj.get("itemid").getAsString();
         int damage = obj.get("damage").getAsInt();
@@ -91,14 +91,14 @@ public class ItemStackBuilder {
             enchantments.add(new NbtCompound());
             tag.put("Enchantments", enchantments);
         }
-        
+
         // Add firework star color
         Matcher explosionColorMatcher = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)\\]\\}").matcher(nbttag);
         if (explosionColorMatcher.find()) {
             NbtCompound explosion = new NbtCompound();
-            
+
             explosion.putInt("Type", FireworkRocketItem.Type.SMALL_BALL.getId()); //Forget about the actual ball type because it probably doesn't matter
-            explosion.putIntArray("Colors", new int[] { Integer.parseInt(explosionColorMatcher.group("color")) });
+            explosion.putIntArray("Colors", new int[]{Integer.parseInt(explosionColorMatcher.group("color"))});
             tag.put("Explosion", explosion);
         }
 
@@ -130,7 +130,7 @@ public class ItemStackBuilder {
         Set<Map.Entry<String, JsonElement>> entrySet = statNumsMin.entrySet();
         for (Map.Entry<String, JsonElement> entry : entrySet) {
             String key = entry.getKey();
-            String left = "\\{" + key+ "\\}";
+            String left = "\\{" + key + "\\}";
             String right = statNumsMin.get(key).getAsString() + " ➡ " + statNumsMax.get(key).getAsString();
             list.add(new Pair<>(left, right));
         }

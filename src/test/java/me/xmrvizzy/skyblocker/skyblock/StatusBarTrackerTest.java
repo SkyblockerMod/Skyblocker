@@ -15,10 +15,10 @@ class StatusBarTrackerTest {
 
     void assertStats(int hp, int maxHp, int def, int mana, int maxMana, int overflowMana) {
         int absorption = 0;
-        if(hp > maxHp) {
+        if (hp > maxHp) {
             absorption = hp - maxHp;
             hp -= absorption;
-            if(absorption > maxHp)
+            if (absorption > maxHp)
                 absorption = maxHp;
         }
         assertEquals(new StatusBarTracker.Resource(hp, maxHp, absorption), tracker.getHealth());

@@ -8,20 +8,19 @@ import net.minecraft.util.Formatting;
 
 /**
  * Special version of the server info widget for the rift!
- *
  */
 public class RiftServerInfoWidget extends Widget {
 
-	private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
+    private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
-	public RiftServerInfoWidget() {
-		super(TITLE, Formatting.LIGHT_PURPLE.getColorValue());
+    public RiftServerInfoWidget() {
+        super(TITLE, Formatting.LIGHT_PURPLE.getColorValue());
     }
 
     @Override
     public void updateContent() {
-		this.addSimpleIcoText(Ico.MAP, "Area:", Formatting.LIGHT_PURPLE, 41);
-		this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, 42);
-	}
+        this.addSimpleIcoText(Ico.MAP, "Area:", Formatting.LIGHT_PURPLE, 41);
+        this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, 42);
+    }
 
 }

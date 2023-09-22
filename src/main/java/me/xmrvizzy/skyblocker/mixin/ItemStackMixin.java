@@ -15,19 +15,19 @@ import net.minecraft.text.Text;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
-	@Shadow
-	@Nullable
-	private NbtCompound nbt;
+    @Shadow
+    @Nullable
+    private NbtCompound nbt;
 
-	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
-	private Text skyblocker$customItemNames(Text original) {
-		if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes"))  {
-			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
+    @ModifyReturnValue(method = "getName", at = @At("RETURN"))
+    private Text skyblocker$customItemNames(Text original) {
+        if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
+            NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+            String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
-			return SkyblockerConfig.get().general.customItemNames.getOrDefault(itemUuid, original);
-		}
+            return SkyblockerConfig.get().general.customItemNames.getOrDefault(itemUuid, original);
+        }
 
-		return original;
-	}
+        return original;
+    }
 }

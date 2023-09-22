@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-@Environment(value=EnvType.CLIENT)
+@Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
     private static final Identifier BUTTON_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
 
@@ -39,9 +39,9 @@ public class QuickNavButton extends ClickableWidget {
     private void updateCoordinates() {
         Screen screen = MinecraftClient.getInstance().currentScreen;
         if (screen instanceof HandledScreen<?> handledScreen) {
-            int x = ((HandledScreenAccessor)handledScreen).getX();
-            int y = ((HandledScreenAccessor)handledScreen).getY();
-            int h = ((HandledScreenAccessor)handledScreen).getBackgroundHeight();
+            int x = ((HandledScreenAccessor) handledScreen).getX();
+            int y = ((HandledScreenAccessor) handledScreen).getY();
+            int h = ((HandledScreenAccessor) handledScreen).getBackgroundHeight();
             if (h > 166) --h; // why is this even a thing
             this.setX(x + this.index % 6 * 26 + 4);
             this.setY(this.index < 6 ? y - 26 : y + h - 4);
@@ -72,36 +72,36 @@ public class QuickNavButton extends ClickableWidget {
             else
                 // this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
                 context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY() - 2, this.u, this.v, this.width, this.height - 4);
-        // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
+            // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
         } else {
-        	matrices.push();
-        	//Move the top buttons 2 pixels up if they're selected
-        	if (this.index < 6) matrices.translate(0f, -2f, 0f);
+            matrices.push();
+            //Move the top buttons 2 pixels up if they're selected
+            if (this.index < 6) matrices.translate(0f, -2f, 0f);
             context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
-        	matrices.pop();
+            matrices.pop();
         }
         // render button icon
         if (!this.toggled) {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 6);
+                context.drawItem(this.icon, this.getX() + 5, this.getY() + 6);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 7);
+                context.drawItem(this.icon, this.getX() + 5, this.getY() + 7);
         } else {
             if (this.index >= 6)
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 9);
+                context.drawItem(this.icon, this.getX() + 5, this.getY() + 9);
             else
                 // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 6);
+                context.drawItem(this.icon, this.getX() + 5, this.getY() + 6);
         }
         RenderSystem.enableDepthTest();
     }
 
-	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-		// TODO Auto-generated method stub
+    @Override
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

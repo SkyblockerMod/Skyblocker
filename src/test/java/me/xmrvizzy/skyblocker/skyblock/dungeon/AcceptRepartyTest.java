@@ -10,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AcceptRepartyTest extends ChatPatternListenerTest<Reparty> {
 
-    public AcceptRepartyTest() { super(new Reparty()); }
+    public AcceptRepartyTest() {
+        super(new Reparty());
+    }
 
     protected void assertGroup(String message, String group, String expect) {
         Matcher matcher = matcher(message);

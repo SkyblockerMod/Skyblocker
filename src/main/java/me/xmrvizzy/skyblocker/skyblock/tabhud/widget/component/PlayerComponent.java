@@ -20,7 +20,7 @@ public class PlayerComponent extends Component {
 
     public PlayerComponent(PlayerListEntry ple) {
 
-    	boolean plainNames = SkyblockerConfig.get().general.tabHud.plainPlayerNames;
+        boolean plainNames = SkyblockerConfig.get().general.tabHud.plainPlayerNames;
         Team team = ple.getScoreboardTeam();
         String username = ple.getProfile().getName();
         name = (team != null && !plainNames) ? Text.empty().append(team.getPrefix()).append(Text.literal(username).formatted(team.getColor())).append(team.getSuffix()) : Text.of(username);

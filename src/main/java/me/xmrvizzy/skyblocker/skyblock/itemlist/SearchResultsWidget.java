@@ -118,22 +118,22 @@ public class SearchResultsWidget implements Drawable {
     }
 
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-    	TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
             //Craft text - usually a requirement for the recipe
             String craftText = this.recipeResults.get(this.currentPage).craftText;
             if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) {
-            	drawTooltip(textRenderer, context, craftText, this.parentX + 11, this.parentY + 31, mouseX, mouseY);
-            	craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS;
+                drawTooltip(textRenderer, context, craftText, this.parentX + 11, this.parentY + 31, mouseX, mouseY);
+                craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS;
             }
             context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
 
             //Item name
             Text resultText = this.recipeResults.get(this.currentPage).result.getName();
             if (textRenderer.getWidth(Formatting.strip(resultText.getString())) > MAX_TEXT_WIDTH) {
-            	drawTooltip(textRenderer, context, resultText, this.parentX + 11, this.parentY + 43, mouseX, mouseY);
-            	resultText = Text.literal(getLegacyFormatting(resultText.getString()) + textRenderer.trimToWidth(Formatting.strip(resultText.getString()), MAX_TEXT_WIDTH) + ELLIPSIS).setStyle(resultText.getStyle());
+                drawTooltip(textRenderer, context, resultText, this.parentX + 11, this.parentY + 43, mouseX, mouseY);
+                resultText = Text.literal(getLegacyFormatting(resultText.getString()) + textRenderer.trimToWidth(Formatting.strip(resultText.getString()), MAX_TEXT_WIDTH) + ELLIPSIS).setStyle(resultText.getStyle());
             }
             context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
 
@@ -155,24 +155,24 @@ public class SearchResultsWidget implements Drawable {
     /**
      * Used for drawing tooltips over truncated text
      */
-    private void drawTooltip(TextRenderer textRenderer, DrawContext context, Text text, int textX, int textY, int mouseX, int mouseY){
+    private void drawTooltip(TextRenderer textRenderer, DrawContext context, Text text, int textX, int textY, int mouseX, int mouseY) {
         RenderSystem.disableDepthTest();
-            if (mouseX >= textX && mouseX <= textX + MAX_TEXT_WIDTH + 4 && mouseY >=  textY && mouseY <= textY + 9) {
-                context.drawTooltip(textRenderer, text, mouseX, mouseY);
-            }
+        if (mouseX >= textX && mouseX <= textX + MAX_TEXT_WIDTH + 4 && mouseY >= textY && mouseY <= textY + 9) {
+            context.drawTooltip(textRenderer, text, mouseX, mouseY);
+        }
         RenderSystem.enableDepthTest();
     }
 
     /**
      * @see #drawTooltip(TextRenderer, DrawContext, Text, int, int, int, int)
      */
-    private void drawTooltip(TextRenderer textRenderer, DrawContext context, String text, int textX, int textY, int mouseX, int mouseY){
+    private void drawTooltip(TextRenderer textRenderer, DrawContext context, String text, int textX, int textY, int mouseX, int mouseY) {
         drawTooltip(textRenderer, context, Text.of(text), textX, textY, mouseX, mouseY);
     }
 
     /**
      * Retrieves the first occurrence of section symbol formatting in a string
-     * 
+     *
      * @param string The string to fetch section symbol formatting from
      * @return The section symbol and its formatting code or {@code null} if a match isn't found or if the {@code string} is null
      */

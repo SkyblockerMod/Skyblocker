@@ -56,8 +56,7 @@ public class SkyblockCategory implements DisplayCategory<SkyblockCraftingDisplay
         Point startPoint;
         if (!display.getCraftText().isEmpty() && display.getCraftText() != null) {
             startPoint = new Point(bounds.getCenterX() - 58, bounds.getCenterY() - 31);
-        }
-        else {
+        } else {
             startPoint = new Point(bounds.getCenterX() - 58, bounds.getCenterY() - 26);
         }
         Point resultPoint = new Point(startPoint.x + 95, startPoint.y + 19);

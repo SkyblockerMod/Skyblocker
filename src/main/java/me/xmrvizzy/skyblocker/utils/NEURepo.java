@@ -53,7 +53,7 @@ public class NEURepo {
                     Git.cloneRepository().setURI(REMOTE_REPO_URL).setDirectory(NEURepo.LOCAL_REPO_DIR.toFile()).setBranchesToClone(List.of("refs/heads/master")).setBranch("refs/heads/master").call().close();
                     LOGGER.info("[Skyblocker] NEU Repository Downloaded");
                 }
-            } catch (TransportException e){
+            } catch (TransportException e) {
                 LOGGER.error("[Skyblocker] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
             } catch (RepositoryNotFoundException e) {
                 LOGGER.warn("[Skyblocker] Local NEU Repository not found or corrupted, downloading new one", e);
@@ -92,6 +92,7 @@ public class NEURepo {
 
     /**
      * Runs the given runnable after the NEU repo is initialized.
+     *
      * @param runnable the runnable to run
      * @return a completable future of the given runnable
      */

@@ -41,7 +41,7 @@ public class YggdrasilServicesKeyInfoMixin {
                     }
                     int signatureHashCode = signature.hashCode();
                     if (!ERRONEUS_SIGNATURE_HASHES.contains(signatureHashCode)) {
-                    	ERRONEUS_SIGNATURE_HASHES.add(signatureHashCode);
+                        ERRONEUS_SIGNATURE_HASHES.add(signatureHashCode);
                         LOGGER.warn("[Skyblocker Base64 Fixer] Failed to decode base64 string No.{}: {}", ERRONEUS_SIGNATURE_HASHES.size() - 1, signature);
                     } else {
                         LOGGER.warn("[Skyblocker Base64 Fixer] Failed to decode the base64 string No.{} again", ERRONEUS_SIGNATURE_HASHES.indexOf(signatureHashCode));
@@ -51,7 +51,7 @@ public class YggdrasilServicesKeyInfoMixin {
             throw e;
         }
     }
-    
+
     @WrapOperation(method = "validateProperty", remap = false, at = @At(value = "INVOKE", target = "org/slf4j/Logger.error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
     private void skyblocker$dontLogFailedSignatureValidation(Logger logger, String message, Object property, Object exception, Operation<Void> operation) {
         if (!Utils.isOnHypixel()) operation.call(logger, message, property, exception);

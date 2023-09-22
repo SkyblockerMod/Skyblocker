@@ -25,7 +25,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     }
 
     @SuppressWarnings("resource")
-	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "STORE", ordinal = 0))
+    @ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "STORE", ordinal = 0))
     private ItemEntity skyblocker$onItemPickup(ItemEntity itemEntity, @Local LivingEntity collector) {
         DungeonSecrets.onItemPickup(itemEntity, collector, collector == MinecraftClient.getInstance().player);
         return itemEntity;

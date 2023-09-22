@@ -113,7 +113,6 @@ public class MinionWidget extends Widget {
         // look for that and add it to the widget
         String more = PlayerListMgr.strAt(59);
         if (more == null) {
-            return;
         } else if (more.startsWith("And ")) {
             this.addComponent(new PlainTextComponent(Text.of(more)));
         } else {

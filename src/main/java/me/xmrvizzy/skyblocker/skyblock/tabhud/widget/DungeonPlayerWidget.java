@@ -32,6 +32,7 @@ public class DungeonPlayerWidget extends Widget {
 
     private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
     private static final ArrayList<String> MSGS = new ArrayList<>();
+
     static {
         ICOS.put("Tank", Ico.CHESTPLATE);
         ICOS.put("Mage", Ico.B_ROD);

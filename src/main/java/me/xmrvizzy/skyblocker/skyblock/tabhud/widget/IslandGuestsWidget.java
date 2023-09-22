@@ -35,7 +35,7 @@ public class IslandGuestsWidget extends Widget {
                 }
                 break;
             }
-            Matcher m = PlayerListMgr.regexAt( i, GUEST_PATTERN);
+            Matcher m = PlayerListMgr.regexAt(i, GUEST_PATTERN);
             if (m == null) {
                 this.addComponent(new PlainTextComponent(Text.of("???")));
             } else {
