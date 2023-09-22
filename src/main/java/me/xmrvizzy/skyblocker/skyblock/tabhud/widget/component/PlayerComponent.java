@@ -24,7 +24,7 @@ public class PlayerComponent extends Component {
         Team team = ple.getScoreboardTeam();
         String username = ple.getProfile().getName();
         name = (team != null && !plainNames) ? Text.empty().append(team.getPrefix()).append(Text.literal(username).formatted(team.getColor())).append(team.getSuffix()) : Text.of(username);
-        tex = ple.getSkinTexture();
+        tex = ple.getSkinTextures().texture();
 
         this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(name);
         this.height = txtRend.fontHeight;

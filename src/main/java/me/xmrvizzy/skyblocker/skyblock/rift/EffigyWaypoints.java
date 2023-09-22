@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
@@ -40,7 +41,7 @@ public class EffigyWaypoints {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player == null) return;
             Scoreboard scoreboard = player.getScoreboard();
-            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
+            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());
                 if (team != null) {

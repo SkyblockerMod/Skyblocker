@@ -44,8 +44,8 @@ public class DungeonMapUtils {
     @Nullable
     private static Vector2i getMapPlayerPos(MapState map) {
         for (MapIcon icon : map.getIcons()) {
-            if (icon.getType() == MapIcon.Type.FRAME) {
-                return new Vector2i((icon.getX() >> 1) + 64, (icon.getZ() >> 1) + 64);
+            if (icon.type() == MapIcon.Type.FRAME) {
+                return new Vector2i((icon.x() >> 1) + 64, (icon.z() >> 1) + 64);
             }
         }
         return null;
