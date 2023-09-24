@@ -2,14 +2,16 @@ package de.hysky.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import dev.cbyrne.betterinject.annotations.Inject;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.diana.MythologicalRitual;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,5 +46,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @WrapWithCondition(method = "onTeam", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
     private boolean skyblocker$cancelTeamWarning(Logger instance, String format, Object... arg) {
         return !Utils.isOnHypixel();
+    }
+
+    @Inject(method = "onParticle", at = @At("RETURN"))
+    private void skyblocker$onParticle(ParticleS2CPacket packet) {
+        MythologicalRitual.onParticle(packet);
     }
 }

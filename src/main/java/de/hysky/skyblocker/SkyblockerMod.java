@@ -3,6 +3,7 @@ package de.hysky.skyblocker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.hysky.skyblocker.skyblock.*;
+import de.hysky.skyblocker.skyblock.diana.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import de.hysky.skyblocker.skyblock.item.*;
@@ -76,6 +77,7 @@ public class SkyblockerMod implements ClientModInitializer {
         WikiLookup.init();
         FairySouls.init();
         Relics.init();
+        MythologicalRitual.init();
         BackpackPreview.init();
         QuickNav.init();
         ItemCooldowns.init();
