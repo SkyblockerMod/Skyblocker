@@ -136,5 +136,9 @@
     "text.autoconfig.skyblocker.option.quickNav.button12.item": "Objeto",
     "text.autoconfig.skyblocker.option.quickNav.button12.item.itemName": "Nombre del objeto",
     "text.autoconfig.skyblocker.option.quickNav.button12.item.nbt": "NBT",
-    "text.autoconfig.skyblocker.option.quickNav.button12.uiTitle": "Titulo de la Interfaz"
+    "text.autoconfig.skyblocker.option.quickNav.button12.uiTitle": "Titulo de la Interfaz",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Habilitar atajos",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Solo funciona en Hypixel. Edita atajos ejecutando \"/skyblocker shortcuts\". Al menos una de las siguientes opciones debe ser activada para surgir efecto.",
+    "text.autoconfig.skyblocker.option.general.shortcuts": "Atajos",
+    "text.autoconfig.skyblocker.option.general.compactorDeletorPreview": "Habilitar la previsualización del compactador/eliminador"
 }
