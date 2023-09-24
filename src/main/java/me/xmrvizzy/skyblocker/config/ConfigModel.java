@@ -14,6 +14,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+@SuppressWarnings("deprecation")
 public class ConfigModel {
 	@ConfigEntry
 	public int version = 1;

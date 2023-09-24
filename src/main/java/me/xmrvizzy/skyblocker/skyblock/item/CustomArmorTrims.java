@@ -140,6 +140,7 @@ public class CustomArmorTrims {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	@SuppressWarnings("deprecation")
 	public record ArmorTrimId(@ConfigEntry Identifier material, @ConfigEntry Identifier pattern) implements Pair<Identifier, Identifier> {
 		@Override
 		public Identifier left() {

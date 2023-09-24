@@ -31,7 +31,8 @@ repositories {
 	}
 	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
 	maven { url "https://repo.nea.moe/releases" } // For neu repoparser
-	maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots" } //For YACL
+	maven { url "https://maven.quiltmc.org/repository/release" } //For YACL
 	maven {url "https://jitpack.io"}
 }
 

@@ -23,12 +23,20 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
+@SuppressWarnings("deprecation")
 public class SkyblockerConfig {
 	private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
 	private static final GsonConfigInstance<ConfigModel> INSTANCE = GsonConfigInstance.createBuilder(ConfigModel.class)
 			.setPath(PATH)
 			.overrideGsonBuilder(ConfigSerializer.INSTANCE)
 			.build();
+	/*private static final ConfigClassHandler<ConfigModel> HANDLER = ConfigClassHandler.createBuilder(ConfigModel.class)
+			.serializer(config -> GsonConfigSerializerBuilder.create(config)
+					.setPath(PATH)
+					.setJson5(false)
+					.overrideGsonBuilder(ConfigSerializer.INSTANCE)
+					.build())
+			.build();*/
 	
 	public static ConfigModel get() {
 		return INSTANCE.getConfig();

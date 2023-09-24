@@ -10,6 +10,6 @@ public class ConfigUtils {
 	public static <E extends Enum<?>> CyclingListControllerBuilder<E> createCyclingListController4Enum(Option<E> opt) {
 		E[] constants = (E[]) opt.binding().defaultValue().getClass().getEnumConstants();
 		
-		return CyclingListControllerBuilder.create(opt).values(constants).valueFormatter(c -> Text.of(c.toString()));
+		return CyclingListControllerBuilder.create(opt).values(constants).formatValue(formatter -> Text.of(formatter.toString()));
 	}
 }
