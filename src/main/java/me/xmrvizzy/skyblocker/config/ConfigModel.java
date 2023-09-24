@@ -16,6 +16,9 @@ import net.minecraft.util.Formatting;
 
 public class ConfigModel {
 	@ConfigEntry
+	public int version = 1;
+	
+	@ConfigEntry
 	public General general = new General();
 
 	@ConfigEntry
