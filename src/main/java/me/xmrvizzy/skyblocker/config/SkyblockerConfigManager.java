@@ -62,7 +62,7 @@ public class SkyblockerConfigManager {
 	public static Screen createGUI(Screen parent) {
 		return YetAnotherConfigLib.create(INSTANCE, (defaults, config, builder) -> {
 			return builder
-					.title(Text.literal("Skyblocker"))
+					.title(Text.translatable("text.autoconfig.skyblocker.title"))
 					.category(GeneralCategory.create(defaults, config))
 					.category(DungeonsCategory.create(defaults, config))
 					.category(DwarvenMinesCategory.create(defaults, config))
