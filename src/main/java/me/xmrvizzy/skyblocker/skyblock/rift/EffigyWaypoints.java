@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -34,7 +34,7 @@ public class EffigyWaypoints {
     private static final List<BlockPos> unBrokenEffigies = new ArrayList<>();
 
     protected static void updateEffigies() {
-        if (!SkyblockerConfig.get().slayer.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château")) return;
+        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château")) return;
 
         unBrokenEffigies.clear();
         try {
@@ -63,10 +63,10 @@ public class EffigyWaypoints {
     }
 
     protected static void render(WorldRenderContext context) {
-        if (SkyblockerConfig.get().slayer.vampireSlayer.enableEffigyWaypoints && Utils.getLocation().contains("Stillgore Château")) {
+        if (SkyblockerConfigManager.get().slayer.vampireSlayer.enableEffigyWaypoints && Utils.getLocation().contains("Stillgore Château")) {
             for (BlockPos effigy : unBrokenEffigies) {
                 float[] colorComponents = DyeColor.RED.getColorComponents();
-                if (SkyblockerConfig.get().slayer.vampireSlayer.compactEffigyWaypoints) {
+                if (SkyblockerConfigManager.get().slayer.vampireSlayer.compactEffigyWaypoints) {
                     RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, effigy.down(6), colorComponents, 0.5F);
                 } else {
                     RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, effigy, colorComponents, 0.5F);

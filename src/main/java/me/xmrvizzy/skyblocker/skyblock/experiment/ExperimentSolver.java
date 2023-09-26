@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.experiment;
 
-import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.render.gui.ContainerSolver;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
@@ -37,10 +37,10 @@ public abstract class ExperimentSolver extends ContainerSolver {
 
     @Override
     protected final boolean isEnabled() {
-        return isEnabled(SkyblockerConfig.get().general.experiments);
+        return isEnabled(SkyblockerConfigManager.get().general.experiments);
     }
 
-    protected abstract boolean isEnabled(ConfigModel.Experiments experimentsConfig);
+    protected abstract boolean isEnabled(SkyblockerConfig.Experiments experimentsConfig);
 
     @Override
     protected void start(GenericContainerScreen screen) {

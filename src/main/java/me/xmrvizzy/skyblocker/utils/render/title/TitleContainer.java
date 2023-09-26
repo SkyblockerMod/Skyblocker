@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.utils.render.title;
 
-import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -82,7 +82,7 @@ public class TitleContainer {
     }
 
     private static void render(DrawContext context, float tickDelta) {
-        render(context, titles, SkyblockerConfig.get().general.titleContainer.x, SkyblockerConfig.get().general.titleContainer.y, tickDelta);
+        render(context, titles, SkyblockerConfigManager.get().general.titleContainer.x, SkyblockerConfigManager.get().general.titleContainer.y, tickDelta);
     }
 
     protected static void render(DrawContext context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
@@ -90,11 +90,11 @@ public class TitleContainer {
         TextRenderer textRenderer = client.textRenderer;
 
         // Calculate Scale to use
-        float scale = 3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F);
+        float scale = 3F * (SkyblockerConfigManager.get().general.titleContainer.titleContainerScale / 100F);
 
         // Grab direction and alignment values
-        ConfigModel.Direction direction = SkyblockerConfig.get().general.titleContainer.direction;
-        ConfigModel.Alignment alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+        SkyblockerConfig.Direction direction = SkyblockerConfigManager.get().general.titleContainer.direction;
+        SkyblockerConfig.Alignment alignment = SkyblockerConfigManager.get().general.titleContainer.alignment;
         // x/y refer to the starting position for the text
         // y always starts at yPos
         float x = 0;
@@ -106,8 +106,8 @@ public class TitleContainer {
             width += textRenderer.getWidth(title.getText()) * scale + 10;
         }
 
-        if (alignment == ConfigModel.Alignment.MIDDLE) {
-            if (direction == ConfigModel.Direction.HORIZONTAL) {
+        if (alignment == SkyblockerConfig.Alignment.MIDDLE) {
+            if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
                 //If middle aligned horizontally, start the xPosition at half of the width to the left.
                 x = xPos - (width / 2);
             } else {
@@ -115,7 +115,7 @@ public class TitleContainer {
                 x = xPos;
             }
         }
-        if (alignment == ConfigModel.Alignment.LEFT || alignment == ConfigModel.Alignment.RIGHT) {
+        if (alignment == SkyblockerConfig.Alignment.LEFT || alignment == SkyblockerConfig.Alignment.RIGHT) {
             //If left or right aligned, start at xPos, we will shift each text later
             x = xPos;
         }
@@ -124,14 +124,14 @@ public class TitleContainer {
 
             //Calculate which x the text should use
             float xToUse;
-            if (direction == ConfigModel.Direction.HORIZONTAL) {
-                xToUse = alignment == ConfigModel.Alignment.RIGHT ?
+            if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
+                xToUse = alignment == SkyblockerConfig.Alignment.RIGHT ?
                         x - (textRenderer.getWidth(title.getText()) * scale) : //if right aligned we need the text position to be aligned on the right side.
                         x;
             } else {
-                xToUse = alignment == ConfigModel.Alignment.MIDDLE ?
+                xToUse = alignment == SkyblockerConfig.Alignment.MIDDLE ?
                         x - (textRenderer.getWidth(title.getText()) * scale) / 2 : //if middle aligned we need the text position to be aligned in the middle.
-                        alignment == ConfigModel.Alignment.RIGHT ?
+                        alignment == SkyblockerConfig.Alignment.RIGHT ?
                                 x - (textRenderer.getWidth(title.getText()) * scale) : //if right aligned we need the text position to be aligned on the right side.
                                 x;
             }
@@ -156,13 +156,13 @@ public class TitleContainer {
             context.getMatrices().pop();
 
             //Calculate the x and y positions for the next title
-            if (direction == ConfigModel.Direction.HORIZONTAL) {
-                if (alignment == ConfigModel.Alignment.MIDDLE || alignment == ConfigModel.Alignment.LEFT) {
+            if (direction == SkyblockerConfig.Direction.HORIZONTAL) {
+                if (alignment == SkyblockerConfig.Alignment.MIDDLE || alignment == SkyblockerConfig.Alignment.LEFT) {
                     //Move to the right if middle or left aligned
                     x += textRenderer.getWidth(title.getText()) * scale + 10;
                 }
 
-                if (alignment == ConfigModel.Alignment.RIGHT) {
+                if (alignment == SkyblockerConfig.Alignment.RIGHT) {
                     //Move to the left if right aligned
                     x -= textRenderer.getWidth(title.getText()) * scale + 10;
                 }

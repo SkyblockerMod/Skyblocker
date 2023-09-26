@@ -9,7 +9,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.StarredMobGlow;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
@@ -19,7 +19,7 @@ public class WorldRendererMixin {
 
 	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
 	private boolean skyblocker$shouldStarredMobGlow(boolean original, @Local Entity entity, @Share("isGlowingStarredMob") LocalBooleanRef isGlowingStarredMob) {
-		boolean isAStarredMobThatShouldGlow = SkyblockerConfig.get().locations.dungeons.starredMobGlow && StarredMobGlow.shouldMobGlow(entity);
+		boolean isAStarredMobThatShouldGlow = SkyblockerConfigManager.get().locations.dungeons.starredMobGlow && StarredMobGlow.shouldMobGlow(entity);
 
 		isGlowingStarredMob.set(isAStarredMobThatShouldGlow);
 

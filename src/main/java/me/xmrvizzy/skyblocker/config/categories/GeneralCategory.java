@@ -9,7 +9,7 @@ import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import me.xmrvizzy.skyblocker.config.ConfigModel;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import me.xmrvizzy.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import me.xmrvizzy.skyblocker.utils.render.title.TitleContainerConfigScreen;
@@ -18,7 +18,7 @@ import net.minecraft.text.Text;
 
 public class GeneralCategory {
 
-	public static ConfigCategory create(ConfigModel defaults, ConfigModel config) {		
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {		
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.general"))
 				
@@ -86,7 +86,7 @@ public class GeneralCategory {
 										newValue -> config.general.tabHud.plainPlayerNames = newValue)
 								.controller(BooleanControllerBuilder::create)
 								.build())
-						.option(Option.<ConfigModel.NameSorting>createBuilder()
+						.option(Option.<SkyblockerConfig.NameSorting>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.nameSorting"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.nameSorting.@Tooltip")))
 								.binding(defaults.general.tabHud.nameSorting,
@@ -107,28 +107,28 @@ public class GeneralCategory {
 										newValue -> config.general.bars.enableBars = newValue)
 								.controller(BooleanControllerBuilder::create)
 								.build())
-						.option(Option.<ConfigModel.BarPosition>createBuilder()
+						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition"))
 								.binding(defaults.general.bars.barpositions.healthBarPosition,
 										() -> config.general.bars.barpositions.healthBarPosition,
 										newValue -> config.general.bars.barpositions.healthBarPosition = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
-						.option(Option.<ConfigModel.BarPosition>createBuilder()
+						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition"))
 								.binding(defaults.general.bars.barpositions.manaBarPosition,
 										() -> config.general.bars.barpositions.manaBarPosition,
 										newValue -> config.general.bars.barpositions.manaBarPosition = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
-						.option(Option.<ConfigModel.BarPosition>createBuilder()
+						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition"))
 								.binding(defaults.general.bars.barpositions.defenceBarPosition,
 										() -> config.general.bars.barpositions.defenceBarPosition,
 										newValue -> config.general.bars.barpositions.defenceBarPosition = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
-						.option(Option.<ConfigModel.BarPosition>createBuilder()
+						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition"))
 								.binding(defaults.general.bars.barpositions.experienceBarPosition,
 										() -> config.general.bars.barpositions.experienceBarPosition,
@@ -306,7 +306,7 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableAvgBIN = newValue)
 								.controller(BooleanControllerBuilder::create)
 								.build())
-						.option(Option.<ConfigModel.Average>createBuilder()
+						.option(Option.<SkyblockerConfig.Average>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.avg"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip")))
 								.binding(defaults.general.itemTooltip.avg,
@@ -411,14 +411,14 @@ public class GeneralCategory {
 										newValue -> config.general.titleContainer.y = newValue)
 								.controller(IntegerFieldControllerBuilder::create)
 								.build())
-						.option(Option.<ConfigModel.Direction>createBuilder()
+						.option(Option.<SkyblockerConfig.Direction>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.direction"))
 								.binding(defaults.general.titleContainer.direction,
 										() -> config.general.titleContainer.direction,
 										newValue -> config.general.titleContainer.direction = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
-						.option(Option.<ConfigModel.Alignment>createBuilder()
+						.option(Option.<SkyblockerConfig.Alignment>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.alignment"))
 								.binding(defaults.general.titleContainer.alignment,
 										() -> config.general.titleContainer.alignment,

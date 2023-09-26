@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.experiment;
 
-import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.render.gui.ColorHighlight;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -28,7 +28,7 @@ public class UltrasequencerSolver extends ExperimentSolver {
     }
 
     @Override
-    protected boolean isEnabled(ConfigModel.Experiments experimentsConfig) {
+    protected boolean isEnabled(SkyblockerConfig.Experiments experimentsConfig) {
         return experimentsConfig.enableUltrasequencerSolver;
     }
 

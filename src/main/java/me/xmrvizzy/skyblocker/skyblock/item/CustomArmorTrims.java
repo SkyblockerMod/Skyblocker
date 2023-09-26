@@ -7,7 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.isxander.yacl3.config.ConfigEntry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -102,12 +102,12 @@ public class CustomArmorTrims {
 					String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
 					if (itemUuid != null) {
-						Object2ObjectOpenHashMap<String, ArmorTrimId> customArmorTrims = SkyblockerConfig.get().general.customArmorTrims;
+						Object2ObjectOpenHashMap<String, ArmorTrimId> customArmorTrims = SkyblockerConfigManager.get().general.customArmorTrims;
 
 						if (material == null && pattern == null) {
 							if (customArmorTrims.containsKey(itemUuid)) {
 								customArmorTrims.remove(itemUuid);
-								SkyblockerConfig.save();
+								SkyblockerConfigManager.save();
 								source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.removed"));
 							} else {
 								source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.neverHad"));
@@ -122,7 +122,7 @@ public class CustomArmorTrims {
 							}
 
 							customArmorTrims.put(itemUuid, trimId);
-							SkyblockerConfig.save();
+							SkyblockerConfigManager.save();
 							source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.added"));
 						}
 					} else {

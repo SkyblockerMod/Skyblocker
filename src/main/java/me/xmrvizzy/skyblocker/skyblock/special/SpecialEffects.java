@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.special;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -45,7 +45,7 @@ public class SpecialEffects {
 	private static void displayRareDropEffect(Text message, boolean overlay) {
 		//We don't check if we're in dungeons because that check doesn't work in m7 which defeats the point of this
 		//It might also allow it to work with Croesus
-		if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.specialEffects.rareDungeonDropEffects) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects) {
 			try {
 				String stringForm = message.getString();
 				Matcher matcher = DROP_PATTERN.matcher(stringForm);

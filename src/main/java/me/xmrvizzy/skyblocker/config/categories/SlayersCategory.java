@@ -8,12 +8,12 @@ import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import me.xmrvizzy.skyblocker.config.ConfigModel;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.text.Text;
 
 public class SlayersCategory {
 
-	public static ConfigCategory create(ConfigModel defaults, ConfigModel config) {
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.slayer"))
 				

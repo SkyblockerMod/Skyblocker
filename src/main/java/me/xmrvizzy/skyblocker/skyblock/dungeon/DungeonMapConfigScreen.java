@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,8 +10,8 @@ import java.awt.*;
 
 public class DungeonMapConfigScreen extends Screen {
 
-	private int hudX = SkyblockerConfig.get().locations.dungeons.mapX;
-	private int hudY = SkyblockerConfig.get().locations.dungeons.mapY;
+	private int hudX = SkyblockerConfigManager.get().locations.dungeons.mapX;
+	private int hudY = SkyblockerConfigManager.get().locations.dungeons.mapY;
 	private final Screen parent;
 	
 	protected DungeonMapConfigScreen() {
@@ -33,7 +33,7 @@ public class DungeonMapConfigScreen extends Screen {
 
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-		float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
+		float scaling = SkyblockerConfigManager.get().locations.dungeons.mapScaling;
 		int size = (int) (128 * scaling);
 		if (RenderHelper.pointIsInArea(mouseX, mouseY, hudX, hudY, hudX + size, hudY + size) && button == 0) {
 			hudX = (int) Math.max(Math.min(mouseX - (size >> 1), this.width - size), 0);
@@ -54,9 +54,9 @@ public class DungeonMapConfigScreen extends Screen {
 
 	@Override
 	public void close() {
-		SkyblockerConfig.get().locations.dungeons.mapX = hudX;
-		SkyblockerConfig.get().locations.dungeons.mapY = hudY;
-		SkyblockerConfig.save();
+		SkyblockerConfigManager.get().locations.dungeons.mapX = hudX;
+		SkyblockerConfigManager.get().locations.dungeons.mapY = hudY;
+		SkyblockerConfigManager.save();
 		this.client.setScreen(parent);
 	}
 }

@@ -5,13 +5,13 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import me.xmrvizzy.skyblocker.config.ConfigModel;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import net.minecraft.text.Text;
 
 public class DiscordRPCCategory {
 
-	public static ConfigCategory create(ConfigModel defaults, ConfigModel config) {
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.richPresence"))
 				
@@ -23,7 +23,7 @@ public class DiscordRPCCategory {
 								newValue -> config.richPresence.enableRichPresence = newValue)
 						.controller(BooleanControllerBuilder::create)
 						.build())
-				.option(Option.<ConfigModel.Info>createBuilder()
+				.option(Option.<SkyblockerConfig.Info>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.richPresence.info"))
 						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.richPresence.info.@Tooltip")))
 						.binding(defaults.richPresence.info,

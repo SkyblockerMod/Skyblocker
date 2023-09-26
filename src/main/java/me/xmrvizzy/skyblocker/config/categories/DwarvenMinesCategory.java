@@ -7,7 +7,7 @@ import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
-import me.xmrvizzy.skyblocker.config.ConfigModel;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
 import net.minecraft.client.MinecraftClient;
@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 
 public class DwarvenMinesCategory {
 
-	public static ConfigCategory create(ConfigModel defaults, ConfigModel config) {
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines"))
 				
@@ -53,7 +53,7 @@ public class DwarvenMinesCategory {
 										newValue -> config.locations.dwarvenMines.dwarvenHud.enabled = newValue)
 								.controller(BooleanControllerBuilder::create)
 								.build())
-						.option(Option.<ConfigModel.DwarvenHudStyle>createBuilder()
+						.option(Option.<SkyblockerConfig.DwarvenHudStyle>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]", 
 										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[1]"),

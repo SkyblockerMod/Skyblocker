@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.Component;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -130,7 +130,7 @@ public abstract class Widget {
         RenderSystem.enableDepthTest();
         ms.push();
 
-        float scale = SkyblockerConfig.get().general.tabHud.tabHudScale / 100f;
+        float scale = SkyblockerConfigManager.get().general.tabHud.tabHudScale / 100f;
         ms.scale(scale, scale, 1);
 
         // move above other UI elements

@@ -2,7 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.filters;
 
 import me.xmrvizzy.skyblocker.utils.Constants;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 
 public class ShowOffFilter extends SimpleChatFilter {
 	private static final String[] SHOW_TYPES = { "is holding", "is wearing", "is friends with a", "has" };
@@ -13,6 +13,6 @@ public class ShowOffFilter extends SimpleChatFilter {
 
 	@Override
 	protected ChatFilterResult state() {
-		return SkyblockerConfig.get().messages.hideShowOff;
+		return SkyblockerConfigManager.get().messages.hideShowOff;
 	}
 }

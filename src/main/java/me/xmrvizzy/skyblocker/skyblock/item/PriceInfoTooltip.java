@@ -3,8 +3,8 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Http;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
@@ -63,7 +63,7 @@ public class PriceInfoTooltip {
         int count = stack.getCount();
         boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableNPCPrice) {
             if (npcPricesJson == null) {
                 nullWarning();
             } else if (npcPricesJson.has(internalID)) {
@@ -73,7 +73,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && Utils.isInTheRift()) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableMotesPrice && Utils.isInTheRift()) {
             if (motesPricesJson == null) {
                 nullWarning();
             } else if (motesPricesJson.has(internalID)) {
@@ -85,7 +85,7 @@ public class PriceInfoTooltip {
 
         boolean bazaarExist = false;
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice && !bazaarOpened) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableBazaarPrice && !bazaarOpened) {
             if (bazaarPricesJson == null) {
                 nullWarning();
             } else if (bazaarPricesJson.has(name)) {
@@ -106,7 +106,7 @@ public class PriceInfoTooltip {
 
         // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
         boolean lbinExist = false;
-        if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableLowestBIN && !bazaarOpened && !bazaarExist) {
             if (lowestPricesJson == null) {
                 nullWarning();
             } else if (lowestPricesJson.has(name)) {
@@ -117,7 +117,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
             if (threeDayAvgPricesJson == null || oneDayAvgPricesJson == null) {
                 nullWarning();
             } else {
@@ -148,10 +148,10 @@ public class PriceInfoTooltip {
                 }
 
                 if (!neuName.isEmpty() && lbinExist) {
-                    ConfigModel.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
+                    SkyblockerConfig.Average type = SkyblockerConfigManager.get().general.itemTooltip.avg;
 
                     // "No data" line because of API not keeping old data, it causes NullPointerException
-                    if (type == ConfigModel.Average.ONE_DAY || type == ConfigModel.Average.BOTH) {
+                    if (type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH) {
                         lines.add(
                                 Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
@@ -161,7 +161,7 @@ public class PriceInfoTooltip {
                                         )
                         );
                     }
-                    if (type == ConfigModel.Average.THREE_DAY || type == ConfigModel.Average.BOTH) {
+                    if (type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH) {
                         lines.add(
                                 Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
@@ -175,7 +175,7 @@ public class PriceInfoTooltip {
             }
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && !bazaarOpened) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableMuseumDate && !bazaarOpened) {
             if (isMuseumJson == null) {
                 nullWarning();
             } else {
@@ -332,7 +332,7 @@ public class PriceInfoTooltip {
     }
 
     private static Text getMotesMessage(int price, int count) {
-        float motesMultiplier = SkyblockerConfig.get().locations.rift.mcGrubberStacks * 0.05f + 1;
+        float motesMultiplier = SkyblockerConfigManager.get().locations.rift.mcGrubberStacks * 0.05f + 1;
 
         // Calculate the total price
         int totalPrice = price * count;
@@ -363,33 +363,33 @@ public class PriceInfoTooltip {
             }
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
-            if (SkyblockerConfig.get().general.itemTooltip.enableAvgBIN) {
-            	ConfigModel.Average type = SkyblockerConfig.get().general.itemTooltip.avg;
+            if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
+            	SkyblockerConfig.Average type = SkyblockerConfigManager.get().general.itemTooltip.avg;
 
-                if (type == ConfigModel.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0) {
+                if (type == SkyblockerConfig.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0) {
                     futureList.add(CompletableFuture.runAsync(() -> {
                         oneDayAvgPricesJson = downloadPrices("1 day avg");
                         threeDayAvgPricesJson = downloadPrices("3 day avg");
                     }));
-                } else if (type == ConfigModel.Average.ONE_DAY) {
+                } else if (type == SkyblockerConfig.Average.ONE_DAY) {
                     futureList.add(CompletableFuture.runAsync(() -> oneDayAvgPricesJson = downloadPrices("1 day avg")));
-                } else if (type == ConfigModel.Average.THREE_DAY) {
+                } else if (type == SkyblockerConfig.Average.THREE_DAY) {
                     futureList.add(CompletableFuture.runAsync(() -> threeDayAvgPricesJson = downloadPrices("3 day avg")));
                 }
             }
-            if (SkyblockerConfig.get().general.itemTooltip.enableLowestBIN || SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
+            if (SkyblockerConfigManager.get().general.itemTooltip.enableLowestBIN || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
                 futureList.add(CompletableFuture.runAsync(() -> lowestPricesJson = downloadPrices("lowest bins")));
 
-            if (SkyblockerConfig.get().general.itemTooltip.enableBazaarPrice || SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
+            if (SkyblockerConfigManager.get().general.itemTooltip.enableBazaarPrice || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
                 futureList.add(CompletableFuture.runAsync(() -> bazaarPricesJson = downloadPrices("bazaar")));
 
-            if (SkyblockerConfig.get().general.itemTooltip.enableNPCPrice && npcPricesJson == null)
+            if (SkyblockerConfigManager.get().general.itemTooltip.enableNPCPrice && npcPricesJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> npcPricesJson = downloadPrices("npc")));
 
-            if (SkyblockerConfig.get().general.itemTooltip.enableMuseumDate && isMuseumJson == null)
+            if (SkyblockerConfigManager.get().general.itemTooltip.enableMuseumDate && isMuseumJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> isMuseumJson = downloadPrices("museum")));
 
-            if (SkyblockerConfig.get().general.itemTooltip.enableMotesPrice && motesPricesJson == null)
+            if (SkyblockerConfigManager.get().general.itemTooltip.enableMotesPrice && motesPricesJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> motesPricesJson = downloadPrices("motes")));
 
             minute++;

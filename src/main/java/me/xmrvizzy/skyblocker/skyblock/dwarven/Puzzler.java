@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
 import net.minecraft.block.Blocks;
@@ -18,7 +18,7 @@ public class Puzzler extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfig.get().locations.dwarvenMines.solvePuzzler ? null : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().locations.dwarvenMines.solvePuzzler ? null : ChatFilterResult.PASS;
     }
 
     @Override

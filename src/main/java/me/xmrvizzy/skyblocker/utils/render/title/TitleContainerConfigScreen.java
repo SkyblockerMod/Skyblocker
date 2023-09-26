@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.utils.render.title;
 
-import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,8 +18,8 @@ public class TitleContainerConfigScreen extends Screen {
     private final Title example1 = new Title(Text.literal("Test1").formatted(Formatting.RED));
     private final Title example2 = new Title(Text.literal("Test23").formatted(Formatting.AQUA));
     private final Title example3 = new Title(Text.literal("Testing1234").formatted(Formatting.DARK_GREEN));
-    private float hudX = SkyblockerConfig.get().general.titleContainer.x;
-    private float hudY = SkyblockerConfig.get().general.titleContainer.y;
+    private float hudX = SkyblockerConfigManager.get().general.titleContainer.x;
+    private float hudY = SkyblockerConfigManager.get().general.titleContainer.y;
     private final Screen parent;
     
     protected TitleContainerConfigScreen() {
@@ -36,8 +36,8 @@ public class TitleContainerConfigScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         renderBackground(context, mouseX, mouseY, delta);
         TitleContainer.render(context, Set.of(example1, example2, example3), (int) hudX, (int) hudY, delta);
-        ConfigModel.Direction direction = SkyblockerConfig.get().general.titleContainer.direction;
-        ConfigModel.Alignment alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+        SkyblockerConfig.Direction direction = SkyblockerConfigManager.get().general.titleContainer.direction;
+        SkyblockerConfig.Alignment alignment = SkyblockerConfigManager.get().general.titleContainer.alignment;
         context.drawCenteredTextWithShadow(textRenderer, "Press Q/E to change Alignment: " + alignment, width / 2, textRenderer.fontHeight * 2, Color.WHITE.getRGB());
         context.drawCenteredTextWithShadow(textRenderer, "Press R to change Direction: " + direction, width / 2, textRenderer.fontHeight * 3 + 5, Color.WHITE.getRGB());
         context.drawCenteredTextWithShadow(textRenderer, "Press +/- to change Scale", width / 2, textRenderer.fontHeight * 4 + 10, Color.WHITE.getRGB());
@@ -56,7 +56,7 @@ public class TitleContainerConfigScreen extends Screen {
     }
 
     private Pair<Vector2f, Vector2f> getSelectionBoundingBox() {
-    	ConfigModel.Alignment alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+    	SkyblockerConfig.Alignment alignment = SkyblockerConfigManager.get().general.titleContainer.alignment;
 
         float midWidth = getSelectionWidth() / 2F;
         float x1 = 0;
@@ -81,15 +81,15 @@ public class TitleContainerConfigScreen extends Screen {
     }
 
     private float getSelectionHeight() {
-        float scale = (3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F));
-        return SkyblockerConfig.get().general.titleContainer.direction == ConfigModel.Direction.HORIZONTAL ?
+        float scale = (3F * (SkyblockerConfigManager.get().general.titleContainer.titleContainerScale / 100F));
+        return SkyblockerConfigManager.get().general.titleContainer.direction == SkyblockerConfig.Direction.HORIZONTAL ?
                 (textRenderer.fontHeight * scale) :
                 (textRenderer.fontHeight + 10F) * 3F * scale;
     }
 
     private float getSelectionWidth() {
-        float scale = (3F * (SkyblockerConfig.get().general.titleContainer.titleContainerScale / 100F));
-        return SkyblockerConfig.get().general.titleContainer.direction == ConfigModel.Direction.HORIZONTAL ?
+        float scale = (3F * (SkyblockerConfigManager.get().general.titleContainer.titleContainerScale / 100F));
+        return SkyblockerConfigManager.get().general.titleContainer.direction == SkyblockerConfig.Direction.HORIZONTAL ?
                 (textRenderer.getWidth("Test1") + 10 + textRenderer.getWidth("Test23") + 10 + textRenderer.getWidth("Testing1234")) * scale :
                 textRenderer.getWidth("Testing1234") * scale;
     }
@@ -98,7 +98,7 @@ public class TitleContainerConfigScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         float midWidth = getSelectionWidth() / 2;
         float midHeight = getSelectionHeight() / 2;
-        var alignment = SkyblockerConfig.get().general.titleContainer.alignment;
+        var alignment = SkyblockerConfigManager.get().general.titleContainer.alignment;
 
         Pair<Vector2f, Vector2f> boundingBox = getSelectionBoundingBox();
         float x1 = boundingBox.getLeft().getX();
@@ -129,42 +129,42 @@ public class TitleContainerConfigScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_Q) {
-        	ConfigModel.Alignment current = SkyblockerConfig.get().general.titleContainer.alignment;
-            SkyblockerConfig.get().general.titleContainer.alignment = switch (current) {
-                case LEFT -> ConfigModel.Alignment.MIDDLE;
-                case MIDDLE -> ConfigModel.Alignment.RIGHT;
-                case RIGHT -> ConfigModel.Alignment.LEFT;
+        	SkyblockerConfig.Alignment current = SkyblockerConfigManager.get().general.titleContainer.alignment;
+            SkyblockerConfigManager.get().general.titleContainer.alignment = switch (current) {
+                case LEFT -> SkyblockerConfig.Alignment.MIDDLE;
+                case MIDDLE -> SkyblockerConfig.Alignment.RIGHT;
+                case RIGHT -> SkyblockerConfig.Alignment.LEFT;
             };
         }
         if (keyCode == GLFW.GLFW_KEY_E) {
-        	ConfigModel.Alignment current = SkyblockerConfig.get().general.titleContainer.alignment;
-            SkyblockerConfig.get().general.titleContainer.alignment = switch (current) {
-                case LEFT -> ConfigModel.Alignment.RIGHT;
-                case MIDDLE -> ConfigModel.Alignment.LEFT;
-                case RIGHT -> ConfigModel.Alignment.MIDDLE;
+        	SkyblockerConfig.Alignment current = SkyblockerConfigManager.get().general.titleContainer.alignment;
+            SkyblockerConfigManager.get().general.titleContainer.alignment = switch (current) {
+                case LEFT -> SkyblockerConfig.Alignment.RIGHT;
+                case MIDDLE -> SkyblockerConfig.Alignment.LEFT;
+                case RIGHT -> SkyblockerConfig.Alignment.MIDDLE;
             };
         }
         if (keyCode == GLFW.GLFW_KEY_R) {
-        	ConfigModel.Direction current = SkyblockerConfig.get().general.titleContainer.direction;
-            SkyblockerConfig.get().general.titleContainer.direction = switch (current) {
-                case HORIZONTAL -> ConfigModel.Direction.VERTICAL;
-                case VERTICAL -> ConfigModel.Direction.HORIZONTAL;
+        	SkyblockerConfig.Direction current = SkyblockerConfigManager.get().general.titleContainer.direction;
+            SkyblockerConfigManager.get().general.titleContainer.direction = switch (current) {
+                case HORIZONTAL -> SkyblockerConfig.Direction.VERTICAL;
+                case VERTICAL -> SkyblockerConfig.Direction.HORIZONTAL;
             };
         }
         if (keyCode == GLFW.GLFW_KEY_EQUAL) {
-            SkyblockerConfig.get().general.titleContainer.titleContainerScale += 10;
+            SkyblockerConfigManager.get().general.titleContainer.titleContainerScale += 10;
         }
         if (keyCode == GLFW.GLFW_KEY_MINUS) {
-            SkyblockerConfig.get().general.titleContainer.titleContainerScale -= 10;
+            SkyblockerConfigManager.get().general.titleContainer.titleContainerScale -= 10;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public void close() {
-        SkyblockerConfig.get().general.titleContainer.x = (int) hudX;
-        SkyblockerConfig.get().general.titleContainer.y = (int) hudY;
-        SkyblockerConfig.save();
+        SkyblockerConfigManager.get().general.titleContainer.x = (int) hudX;
+        SkyblockerConfigManager.get().general.titleContainer.y = (int) hudY;
+        SkyblockerConfigManager.save();
         this.client.setScreen(parent);
     }
 }

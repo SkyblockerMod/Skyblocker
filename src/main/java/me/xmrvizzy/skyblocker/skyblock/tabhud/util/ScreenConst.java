@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.util;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 
 public class ScreenConst {
     public static final int WIDGET_PAD = 5;
@@ -8,6 +8,6 @@ public class ScreenConst {
     private static final int SCREEN_PAD_BASE = 20;
 
     public static int getScreenPad() {
-        return (int) ((1f/((float)SkyblockerConfig.get().general.tabHud.tabHudScale/100f) * SCREEN_PAD_BASE));
+        return (int) ((1f/((float)SkyblockerConfigManager.get().general.tabHud.tabHudScale/100f) * SCREEN_PAD_BASE));
     }
 }

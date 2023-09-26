@@ -5,13 +5,13 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
-import me.xmrvizzy.skyblocker.config.ConfigModel;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import net.minecraft.text.Text;
 
 public class MessageFilterCategory {
 
-	public static ConfigCategory create(ConfigModel defaults, ConfigModel config) {
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.messages"))
 				

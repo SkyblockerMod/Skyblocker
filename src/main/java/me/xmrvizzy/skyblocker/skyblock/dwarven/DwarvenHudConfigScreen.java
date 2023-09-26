@@ -2,7 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
@@ -17,8 +17,8 @@ public class DwarvenHudConfigScreen extends Screen {
 
     private static final List<Commission> CFG_COMMS = List.of(new DwarvenHud.Commission("Test Commission 1", "1%"), new DwarvenHud.Commission("Test Commission 2", "2%"));
 
-    private int hudX = SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x;
-    private int hudY = SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y;
+    private int hudX = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x;
+    private int hudY = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y;
     private final Screen parent;
 
     protected DwarvenHudConfigScreen() {
@@ -60,9 +60,9 @@ public class DwarvenHudConfigScreen extends Screen {
 
     @Override
     public void close() {
-        SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x = hudX;
-        SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y = hudY;
-        SkyblockerConfig.save();
+        SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x = hudX;
+        SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y = hudY;
+        SkyblockerConfigManager.save();
         client.setScreen(parent);
     }
 }
