@@ -12,6 +12,7 @@ import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import me.xmrvizzy.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
+import me.xmrvizzy.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -423,6 +424,11 @@ public class GeneralCategory {
 										() -> config.general.titleContainer.alignment,
 										newValue -> config.general.titleContainer.alignment = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.config"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new TitleContainerConfigScreen(screen)))
 								.build())
 						.build())
 				

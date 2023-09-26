@@ -95,15 +95,13 @@ public class ShortcutsConfigScreen extends Screen {
         if (client != null && shortcutsConfigListWidget.hasChanges()) {
             client.setScreen(new ConfirmScreen(confirmedAction -> {
                 if (confirmedAction) {
-                	this.client.setScreen(parent);
-                    if (parent == null) super.close();
+                    this.client.setScreen(parent);
                 } else {
                     client.setScreen(this);
                 }
             }, Text.translatable("text.skyblocker.quit_config"), Text.translatable("text.skyblocker.quit_config_sure"), Text.translatable("text.skyblocker.quit_discard"), ScreenTexts.CANCEL));
         } else {
             this.client.setScreen(parent);
-            if (parent == null) super.close();
         }
     }
 

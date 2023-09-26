@@ -63,13 +63,6 @@ public class DwarvenHudConfigScreen extends Screen {
         SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x = hudX;
         SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y = hudY;
         SkyblockerConfig.save();
-        
-        if (parent != null) {
-            this.client.setScreen(parent);
-        	
-            return;
-        }
-        
-        super.close();
+        client.setScreen(parent);
     }
 }

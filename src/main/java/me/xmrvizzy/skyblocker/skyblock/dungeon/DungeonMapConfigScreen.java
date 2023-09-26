@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
@@ -58,13 +57,6 @@ public class DungeonMapConfigScreen extends Screen {
 		SkyblockerConfig.get().locations.dungeons.mapX = hudX;
 		SkyblockerConfig.get().locations.dungeons.mapY = hudY;
 		SkyblockerConfig.save();
-		
-		if (parent != null) {
-			this.client.setScreen(parent);
-			
-			return;
-		}
-		
-		super.close();
+		this.client.setScreen(parent);
 	}
 }

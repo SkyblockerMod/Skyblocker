@@ -91,6 +91,7 @@
   "text.autoconfig.skyblocker.option.general.titleContainer.y": "Title Container Y Position",
   "text.autoconfig.skyblocker.option.general.titleContainer.direction": "Title Container Orientation",
   "text.autoconfig.skyblocker.option.general.titleContainer.alignment": "Title Container Horizontal Alignment",
+  "text.autoconfig.skyblocker.option.general.titleContainer.config": "Title Container Placement Config...",
   "text.autoconfig.skyblocker.option.general.teleportOverlay": "Teleport Overlay",
   "text.autoconfig.skyblocker.option.general.teleportOverlay.enableTeleportOverlays": "Enable Teleport Overlays",
   "text.autoconfig.skyblocker.option.general.teleportOverlay.enableWeirdTransmission": "Enable Weird Transmission Overlay",

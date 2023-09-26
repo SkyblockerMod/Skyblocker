@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.utils.render.title;
 
-import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.ConfigModel;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
@@ -21,9 +20,15 @@ public class TitleContainerConfigScreen extends Screen {
     private final Title example3 = new Title(Text.literal("Testing1234").formatted(Formatting.DARK_GREEN));
     private float hudX = SkyblockerConfig.get().general.titleContainer.x;
     private float hudY = SkyblockerConfig.get().general.titleContainer.y;
-
+    private final Screen parent;
+    
     protected TitleContainerConfigScreen() {
-        super(Text.of("Title Container HUD Config"));
+    	this(null);
+    }
+
+    public TitleContainerConfigScreen(Screen parent) {
+		super(Text.of("Title Container HUD Config"));
+		this.parent = parent;
     }
 
     @Override
@@ -160,6 +165,6 @@ public class TitleContainerConfigScreen extends Screen {
         SkyblockerConfig.get().general.titleContainer.x = (int) hudX;
         SkyblockerConfig.get().general.titleContainer.y = (int) hudY;
         SkyblockerConfig.save();
-        super.close();
+        this.client.setScreen(parent);
     }
 }
