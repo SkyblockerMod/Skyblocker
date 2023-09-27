@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;

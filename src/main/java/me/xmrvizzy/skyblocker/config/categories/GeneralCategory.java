@@ -109,30 +109,30 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition"))
-								.binding(defaults.general.bars.barpositions.healthBarPosition,
-										() -> config.general.bars.barpositions.healthBarPosition,
-										newValue -> config.general.bars.barpositions.healthBarPosition = newValue)
+								.binding(defaults.general.bars.barPositions.healthBarPosition,
+										() -> config.general.bars.barPositions.healthBarPosition,
+										newValue -> config.general.bars.barPositions.healthBarPosition = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition"))
-								.binding(defaults.general.bars.barpositions.manaBarPosition,
-										() -> config.general.bars.barpositions.manaBarPosition,
-										newValue -> config.general.bars.barpositions.manaBarPosition = newValue)
+								.binding(defaults.general.bars.barPositions.manaBarPosition,
+										() -> config.general.bars.barPositions.manaBarPosition,
+										newValue -> config.general.bars.barPositions.manaBarPosition = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition"))
-								.binding(defaults.general.bars.barpositions.defenceBarPosition,
-										() -> config.general.bars.barpositions.defenceBarPosition,
-										newValue -> config.general.bars.barpositions.defenceBarPosition = newValue)
+								.binding(defaults.general.bars.barPositions.defenceBarPosition,
+										() -> config.general.bars.barPositions.defenceBarPosition,
+										newValue -> config.general.bars.barPositions.defenceBarPosition = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition"))
-								.binding(defaults.general.bars.barpositions.experienceBarPosition,
-										() -> config.general.bars.barpositions.experienceBarPosition,
-										newValue -> config.general.bars.barpositions.experienceBarPosition = newValue)
+								.binding(defaults.general.bars.barPositions.experienceBarPosition,
+										() -> config.general.bars.barPositions.experienceBarPosition,
+										newValue -> config.general.bars.barPositions.experienceBarPosition = newValue)
 								.controller(ConfigUtils::createCyclingListController4Enum)
 								.build())
 						.build())

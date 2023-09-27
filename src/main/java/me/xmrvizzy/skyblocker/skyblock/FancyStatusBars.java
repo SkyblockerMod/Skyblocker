@@ -60,10 +60,10 @@ public class FancyStatusBars {
         // Update positions of bars from config
         for (int i = 0; i < 4; i++) {
             int configAnchorNum = switch (i) {
-                case 0 -> SkyblockerConfigManager.get().general.bars.barpositions.healthBarPosition.toInt();
-                case 1 -> SkyblockerConfigManager.get().general.bars.barpositions.manaBarPosition.toInt();
-                case 2 -> SkyblockerConfigManager.get().general.bars.barpositions.defenceBarPosition.toInt();
-                case 3 -> SkyblockerConfigManager.get().general.bars.barpositions.experienceBarPosition.toInt();
+                case 0 -> SkyblockerConfigManager.get().general.bars.barPositions.healthBarPosition.toInt();
+                case 1 -> SkyblockerConfigManager.get().general.bars.barPositions.manaBarPosition.toInt();
+                case 2 -> SkyblockerConfigManager.get().general.bars.barPositions.defenceBarPosition.toInt();
+                case 3 -> SkyblockerConfigManager.get().general.bars.barPositions.experienceBarPosition.toInt();
                 default -> 0;
             };
 

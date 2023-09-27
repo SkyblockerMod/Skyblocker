@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class DungeonChestProfitTest {
     @Test
     void testProfitText() {
-    	SkyblockerConfig.DungeonChestProfit config = new SkyblockerConfig.DungeonChestProfit();
+        SkyblockerConfig.DungeonChestProfit config = new SkyblockerConfig.DungeonChestProfit();
         Assertions.assertEquals("literal{ 0}[style={color=dark_gray}]", DungeonChestProfit.getProfitText(0, false, config.neutralThreshold, config.neutralColor.formatting, config.profitColor.formatting, config.lossColor.formatting, config.incompleteColor.formatting).toString());
         Assertions.assertEquals("literal{ 0}[style={color=blue}]", DungeonChestProfit.getProfitText(0, true, config.neutralThreshold, config.neutralColor.formatting, config.profitColor.formatting, config.lossColor.formatting, config.incompleteColor.formatting).toString());
         Assertions.assertEquals("literal{ +10}[style={color=dark_gray}]", DungeonChestProfit.getProfitText(10, false, config.neutralThreshold, config.neutralColor.formatting, config.profitColor.formatting, config.lossColor.formatting, config.incompleteColor.formatting).toString());

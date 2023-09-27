@@ -60,19 +60,16 @@ public class SkyblockerConfigManager {
 	}
 	
 	public static Screen createGUI(Screen parent) {
-		return YetAnotherConfigLib.create(INSTANCE, (defaults, config, builder) -> {
-			return builder
-					.title(Text.translatable("text.autoconfig.skyblocker.title"))
-					.category(GeneralCategory.create(defaults, config))
-					.category(DungeonsCategory.create(defaults, config))
-					.category(DwarvenMinesCategory.create(defaults, config))
-					.category(LocationsCategory.create(defaults, config))
-					.category(SlayersCategory.create(defaults, config))
-					.category(QuickNavigationCategory.create(defaults, config))
-					.category(MessageFilterCategory.create(defaults, config))
-					.category(DiscordRPCCategory.create(defaults, config));
-					
-		}).generateScreen(parent);
+		return YetAnotherConfigLib.create(INSTANCE, (defaults, config, builder) -> builder
+				.title(Text.translatable("text.autoconfig.skyblocker.title"))
+				.category(GeneralCategory.create(defaults, config))
+				.category(DungeonsCategory.create(defaults, config))
+				.category(DwarvenMinesCategory.create(defaults, config))
+				.category(LocationsCategory.create(defaults, config))
+				.category(SlayersCategory.create(defaults, config))
+				.category(QuickNavigationCategory.create(defaults, config))
+				.category(MessageFilterCategory.create(defaults, config))
+				.category(DiscordRPCCategory.create(defaults, config))).generateScreen(parent);
 	}
 	
 	/**

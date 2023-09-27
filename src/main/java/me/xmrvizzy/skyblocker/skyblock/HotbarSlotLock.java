@@ -1,6 +1,5 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
-import me.shedaniel.autoconfig.AutoConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.network.ClientPlayerEntity;

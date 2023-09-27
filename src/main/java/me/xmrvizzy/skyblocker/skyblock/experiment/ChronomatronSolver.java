@@ -3,7 +3,6 @@ package me.xmrvizzy.skyblocker.skyblock.experiment;
 import com.google.common.collect.ImmutableMap;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.render.gui.ColorHighlight;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;

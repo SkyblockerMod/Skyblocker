@@ -249,7 +249,7 @@ public class SkyblockerConfig {
 		public boolean enableBars = true;
 
 		@ConfigEntry
-		public BarPositions barpositions = new BarPositions();
+		public BarPositions barPositions = new BarPositions();
 	}
 
 	public static class BarPositions {
