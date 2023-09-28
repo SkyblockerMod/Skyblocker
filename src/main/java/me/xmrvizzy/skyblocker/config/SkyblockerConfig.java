@@ -187,6 +187,10 @@ public class SkyblockerConfig implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject()
         public FairySouls fairySouls = new FairySouls();
 
+        @ConfigEntry.Category("itemCooldown")
+        @ConfigEntry.Gui.CollapsibleObject()
+        public ItemCooldown itemCooldown = new ItemCooldown();
+
         @ConfigEntry.Category("shortcuts")
         @ConfigEntry.Gui.CollapsibleObject()
         public Shortcuts shortcuts = new Shortcuts();
@@ -318,6 +322,10 @@ public class SkyblockerConfig implements ConfigData {
         public boolean highlightFoundSouls = true;
         @ConfigEntry.Gui.Tooltip()
         public boolean highlightOnlyNearbySouls = false;
+    }
+
+    public static class ItemCooldown {
+        public boolean enableItemCooldowns = true;
     }
 
     public static class Shortcuts {

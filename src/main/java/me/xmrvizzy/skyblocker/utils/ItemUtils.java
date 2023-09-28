@@ -4,6 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
 
@@ -39,5 +40,19 @@ public class ItemUtils {
         } catch (CommandSyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getItemId(ItemStack itemStack) {
+        if (itemStack == null) return null;
+
+        NbtCompound nbt = itemStack.getNbt();
+        if (nbt != null && nbt.contains("ExtraAttributes")) {
+            NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+            if (extraAttributes.contains("id")) {
+                return extraAttributes.getString("id");
+            }
+        }
+
+        return null;
     }
 }

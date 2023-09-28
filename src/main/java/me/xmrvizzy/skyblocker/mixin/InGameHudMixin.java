@@ -1,17 +1,22 @@
 package me.xmrvizzy.skyblocker.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.FancyStatusBars;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
+import me.xmrvizzy.skyblocker.skyblock.cooldown.ItemCooldowns;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,6 +36,10 @@ public abstract class InGameHudMixin {
     private int scaledHeight;
     @Shadow
     private int scaledWidth;
+
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V", ordinal = 0))
     public void skyblocker$renderHotbarItemLock(float tickDelta, DrawContext context, CallbackInfo ci, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y) {
@@ -61,9 +70,21 @@ public abstract class InGameHudMixin {
         if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
-    
+
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
     private void skyblocker$dontRenderStatusEffects(CallbackInfo ci) {
         if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideStatusEffectOverlay) ci.cancel();
+    }
+
+    @ModifyExpressionValue(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAttackCooldownProgress(F)F"))
+    private float skyblocker$modifyAttackIndicatorCooldown(float cooldownProgress) {
+        if (Utils.isOnSkyblock()) {
+            ItemStack stack = this.client.player.getMainHandStack();
+            if (ItemCooldowns.isItemOnCooldown(stack)) {
+                return ItemCooldowns.getItemCooldownEntry(stack).getRemainingCooldownPercent();
+            }
+        }
+
+        return cooldownProgress;
     }
 }
