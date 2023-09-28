@@ -9,6 +9,7 @@
     "BatEntityMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
+    "ClientWorldMixin",
     "DrawContextMixin",
     "DyeableItemMixin",
     "FarmlandBlockMixin",

@@ -100,6 +100,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TicTacToe.init();
         QuiverWarning.init();
         SpecialEffects.init();
+        CrystalWishingCompassSolver.init();
         containerSolverManager.init();
         statusBarTracker.init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
