@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import dev.isxander.yacl3.config.ConfigEntry;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
@@ -140,8 +140,7 @@ public class CustomArmorTrims {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	@SuppressWarnings("deprecation")
-	public record ArmorTrimId(@ConfigEntry Identifier material, @ConfigEntry Identifier pattern) implements Pair<Identifier, Identifier> {
+	public record ArmorTrimId(@SerialEntry Identifier material, @SerialEntry Identifier pattern) implements Pair<Identifier, Identifier> {
 		@Override
 		public Identifier left() {
 			return material();

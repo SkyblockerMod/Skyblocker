@@ -2,17 +2,20 @@ package me.xmrvizzy.skyblocker.config;
 
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
+
+import com.google.gson.FieldNamingPolicy;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
-import dev.isxander.yacl3.config.GsonConfigInstance;
+import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
+import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.categories.DiscordRPCCategory;
 import me.xmrvizzy.skyblocker.config.categories.DungeonsCategory;
 import me.xmrvizzy.skyblocker.config.categories.DwarvenMinesCategory;
 import me.xmrvizzy.skyblocker.config.categories.GeneralCategory;
-import me.xmrvizzy.skyblocker.config.categories.MessageFilterCategory;
 import me.xmrvizzy.skyblocker.config.categories.LocationsCategory;
+import me.xmrvizzy.skyblocker.config.categories.MessageFilterCategory;
 import me.xmrvizzy.skyblocker.config.categories.QuickNavigationCategory;
 import me.xmrvizzy.skyblocker.config.categories.SlayersCategory;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
@@ -22,24 +25,22 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
-@SuppressWarnings("deprecation")
 public class SkyblockerConfigManager {
 	private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
-	private static final GsonConfigInstance<SkyblockerConfig> INSTANCE = GsonConfigInstance.createBuilder(SkyblockerConfig.class)
-			.setPath(PATH)
-			.overrideGsonBuilder(ConfigSerializer.INSTANCE)
-			.build();
-	/*private static final ConfigClassHandler<ConfigModel> HANDLER = ConfigClassHandler.createBuilder(ConfigModel.class)
+	private static final ConfigClassHandler<SkyblockerConfig> HANDLER = ConfigClassHandler.createBuilder(SkyblockerConfig.class)
 			.serializer(config -> GsonConfigSerializerBuilder.create(config)
 					.setPath(PATH)
 					.setJson5(false)
-					.overrideGsonBuilder(ConfigSerializer.INSTANCE)
+					.appendGsonBuilder(builder -> builder
+						.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+						.registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
 					.build())
-			.build();*/
+			.build();
 	
 	public static SkyblockerConfig get() {
-		return INSTANCE.getConfig();
+		return HANDLER.instance();
 	}
 	
 	/**
@@ -51,16 +52,16 @@ public class SkyblockerConfigManager {
 			throw new RuntimeException("Skyblocker: Called config init from an illegal place!");
 		}
 		
-		INSTANCE.load();
+		HANDLER.load();
 		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
 	}
 	
 	public static void save() {
-		INSTANCE.save();
+		HANDLER.save();
 	}
 	
 	public static Screen createGUI(Screen parent) {
-		return YetAnotherConfigLib.create(INSTANCE, (defaults, config, builder) -> builder
+		return YetAnotherConfigLib.create(HANDLER, (defaults, config, builder) -> builder
 				.title(Text.translatable("text.autoconfig.skyblocker.title"))
 				.category(GeneralCategory.create(defaults, config))
 				.category(DungeonsCategory.create(defaults, config))
