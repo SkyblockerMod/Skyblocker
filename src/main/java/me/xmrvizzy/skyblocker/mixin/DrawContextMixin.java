@@ -7,7 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.cbyrne.betterinject.annotations.Arg;
 import dev.cbyrne.betterinject.annotations.Inject;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.cooldown.ItemCooldowns;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemCooldowns;
 import me.xmrvizzy.skyblocker.skyblock.item.AttributeShards;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;

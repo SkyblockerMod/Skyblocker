@@ -6,7 +6,7 @@ import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.FancyStatusBars;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
-import me.xmrvizzy.skyblocker.skyblock.cooldown.ItemCooldowns;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemCooldowns;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;

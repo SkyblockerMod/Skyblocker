@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.skyblock.cooldown;
+package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.google.common.collect.ImmutableList;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
@@ -21,7 +21,7 @@ public class ItemCooldowns {
     private static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
     private static final ImmutableList<String> BAT_ARMOR_IDS = ImmutableList.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
 
-    private static final Map<String, ItemCooldownEntry> itemCooldowns = new HashMap<>();
+    private static final Map<String, CooldownEntry> itemCooldowns = new HashMap<>();
     private static SkyblockerConfig.ItemCooldown config;
 
     public static void init() {
@@ -38,12 +38,12 @@ public class ItemCooldowns {
 
         if (usedItemId.equals(JUNGLE_AXE_ID)) {
             if (!isItemOnCooldown(JUNGLE_AXE_ID)) {
-                itemCooldowns.put(JUNGLE_AXE_ID, new ItemCooldownEntry(2000));
+                itemCooldowns.put(JUNGLE_AXE_ID, new CooldownEntry(2000));
             }
         }
         else if (usedItemId.equals(TREECAPITATOR_ID)) {
             if (!isItemOnCooldown(TREECAPITATOR_ID)) {
-                itemCooldowns.put(TREECAPITATOR_ID, new ItemCooldownEntry(2000));
+                itemCooldowns.put(TREECAPITATOR_ID, new CooldownEntry(2000));
             }
         }
     }
@@ -54,7 +54,7 @@ public class ItemCooldowns {
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId != null && usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
             if (!isItemOnCooldown(GRAPPLING_HOOK_ID) && !isPlayerWearingBatArmor(player)) {
-                itemCooldowns.put(GRAPPLING_HOOK_ID, new ItemCooldownEntry(2000));
+                itemCooldowns.put(GRAPPLING_HOOK_ID, new CooldownEntry(2000));
             }
         }
 
@@ -67,7 +67,7 @@ public class ItemCooldowns {
 
     private static boolean isItemOnCooldown(String itemId) {
         if (itemCooldowns.containsKey(itemId)) {
-            ItemCooldownEntry cooldownEntry = itemCooldowns.get(itemId);
+            CooldownEntry cooldownEntry = itemCooldowns.get(itemId);
             if (cooldownEntry.isOnCooldown()) {
                 return true;
             }
@@ -80,7 +80,7 @@ public class ItemCooldowns {
         return false;
     }
 
-    public static ItemCooldownEntry getItemCooldownEntry(ItemStack itemStack) {
+    public static CooldownEntry getItemCooldownEntry(ItemStack itemStack) {
         return itemCooldowns.get(ItemUtils.getItemId(itemStack));
     }
 
@@ -92,5 +92,28 @@ public class ItemCooldowns {
             }
         }
         return true;
+    }
+
+    public static class CooldownEntry {
+        private final int cooldown;
+        private final long startTime;
+
+        public CooldownEntry(int cooldown) {
+            this.cooldown = cooldown;
+            this.startTime = System.currentTimeMillis();
+        }
+
+        public boolean isOnCooldown() {
+            return (this.startTime + this.cooldown) > System.currentTimeMillis();
+        }
+
+        public long getRemainingCooldown() {
+            long time = (this.startTime + this.cooldown) - System.currentTimeMillis();
+            return time <= 0 ? 0 : time;
+        }
+
+        public float getRemainingCooldownPercent() {
+            return this.isOnCooldown() ? ((float) this.getRemainingCooldown()) / ((float) cooldown) : 0.0f;
+        }
     }
 }
