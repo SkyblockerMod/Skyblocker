@@ -40,11 +40,11 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class MythologicalRitual {
     private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d)/4\\)");
-    private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
+    private static final float[] ORANGE_COLOR_COMPONENTS = DyeColor.ORANGE.getColorComponents();
     private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
     @Nullable
     private static BlockPos lastDugBurrowPos;
-    private static GriffinBurrow previousBurrow;
+    private static GriffinBurrow previousBurrow = new GriffinBurrow();
 
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MythologicalRitual::render);
@@ -63,6 +63,10 @@ public class MythologicalRitual {
                         }))
                 )
         )));
+
+        // Put a root burrow so echo detection works without a previous burrow
+        previousBurrow.confirmed = TriState.DEFAULT;
+        griffinBurrows.put(BlockPos.ORIGIN, previousBurrow);
     }
 
     public static void onParticle(ParticleS2CPacket packet) {
@@ -89,24 +93,51 @@ public class MythologicalRitual {
                 if (Double.isNaN(slope)) {
                     return;
                 }
-                Vec3d nextBurrowDirection = new Vec3d(100, 2, slope * 100).normalize().multiply(500);
-                burrow.nextBurrowPlane = new Vec3d[]{
-                        Vec3d.of(pos).add(nextBurrowDirection),
-                        Vec3d.of(pos).subtract(nextBurrowDirection)
-                };
+                Vec3d nextBurrowDirection = new Vec3d(100, 0, slope * 100).normalize().multiply(100);
+                if (burrow.nextBurrowPlane == null) {
+                    burrow.nextBurrowPlane = new Vec3d[4];
+                }
+                burrow.nextBurrowPlane[0] = Vec3d.of(pos).add(nextBurrowDirection).subtract(0, 50, 0);
+                burrow.nextBurrowPlane[1] = Vec3d.of(pos).subtract(nextBurrowDirection).subtract(0, 50, 0);
+                burrow.nextBurrowPlane[2] = burrow.nextBurrowPlane[1].add(0, 100, 0);
+                burrow.nextBurrowPlane[3] = burrow.nextBurrowPlane[0].add(0, 100, 0);
+            } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType())) {
+                if (previousBurrow.echoBurrowDirection == null) {
+                    previousBurrow.echoBurrowDirection = new Vec3d[2];
+                }
+                previousBurrow.echoBurrowDirection[0] = previousBurrow.echoBurrowDirection[1];
+                previousBurrow.echoBurrowDirection[1] = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
+                if (previousBurrow.echoBurrowDirection[0] == null || previousBurrow.echoBurrowDirection[1] == null) {
+                    return;
+                }
+                Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize().multiply(100);
+                if (previousBurrow.echoBurrowPlane == null) {
+                    previousBurrow.echoBurrowPlane = new Vec3d[4];
+                }
+                previousBurrow.echoBurrowPlane[0] = previousBurrow.echoBurrowDirection[0].add(echoBurrowDirection).subtract(0, 50, 0);
+                previousBurrow.echoBurrowPlane[1] = previousBurrow.echoBurrowDirection[0].subtract(echoBurrowDirection).subtract(0, 50, 0);
+                previousBurrow.echoBurrowPlane[2] = previousBurrow.echoBurrowPlane[0].add(0, 100, 0);
+                previousBurrow.echoBurrowPlane[3] = previousBurrow.echoBurrowPlane[1].add(0, 100, 0);
             }
         }
     }
 
     public static void render(WorldRenderContext context) {
+        RenderHelper.renderLinesFromPoints(context, new Vec3d[]{new Vec3d(0, 96, -100), new Vec3d(0, 96, 100)}, ORANGE_COLOR_COMPONENTS, 0.25F, 5); // TODO debug
+        RenderHelper.renderQuad(context, new Vec3d[]{new Vec3d(0, 100, -100), new Vec3d(0, 100, 100), new Vec3d(0, 200, 100), new Vec3d(0, 200, -100)}, ORANGE_COLOR_COMPONENTS, 0.25F, true); // TODO debug
         if (isActive()) {
             for (Map.Entry<BlockPos, GriffinBurrow> burrowEntry : griffinBurrows.entrySet()) {
                 GriffinBurrow burrow = burrowEntry.getValue();
                 if (burrow.confirmed == TriState.TRUE) {
-                    RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, burrowEntry.getKey(), DyeColor.GREEN.getColorComponents(), 0.5F);
+                    RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, burrowEntry.getKey(), ORANGE_COLOR_COMPONENTS, 0.25F);
                 }
-                if (burrow.confirmed != TriState.FALSE && burrow.nextBurrowPlane != null) { // TODO try before debug render?
-                    RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowPlane, WHITE_COLOR_COMPONENTS, 1, 5);
+                if (burrow.confirmed != TriState.FALSE) {
+                    if (burrow.nextBurrowPlane != null) {
+                        RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, 5);
+                    }
+                    if (burrow.echoBurrowPlane != null) {
+                        RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, 5);
+                    }
                 }
             }
         }
@@ -130,9 +161,7 @@ public class MythologicalRitual {
 
     public static void onChatMessage(Text message, boolean overlay) {
         if (isActive() && GRIFFIN_BURROW_DUG.matcher(message.getString()).matches()) {
-            if (previousBurrow != null) {
-                previousBurrow.confirmed = TriState.FALSE;
-            }
+            previousBurrow.confirmed = TriState.FALSE;
             previousBurrow = griffinBurrows.get(lastDugBurrowPos);
             previousBurrow.confirmed = TriState.DEFAULT;
         }
@@ -148,6 +177,9 @@ public class MythologicalRitual {
         private TriState confirmed = TriState.FALSE;
         private final SimpleRegression regression = new SimpleRegression();
         private Vec3d[] nextBurrowPlane;
+        @Nullable
+        private Vec3d[] echoBurrowDirection;
+        private Vec3d[] echoBurrowPlane;
 
         private void init() {
             confirmed = TriState.TRUE;
