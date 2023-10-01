@@ -55,9 +55,9 @@ public class DwarvenMinesCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.DwarvenHudStyle>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]", 
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]"), 
 										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[1]"),
-										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]"))))
+										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]")))
 								.binding(defaults.locations.dwarvenMines.dwarvenHud.style,
 										() -> config.locations.dwarvenMines.dwarvenHud.style,
 										newValue -> config.locations.dwarvenMines.dwarvenHud.style = newValue)
