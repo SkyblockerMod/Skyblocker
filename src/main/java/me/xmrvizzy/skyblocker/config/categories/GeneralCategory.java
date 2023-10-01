@@ -92,7 +92,7 @@ public class GeneralCategory {
 								.binding(defaults.general.tabHud.nameSorting,
 										() -> config.general.tabHud.nameSorting,
 										newValue -> config.general.tabHud.nameSorting = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.build())
 				
@@ -112,28 +112,28 @@ public class GeneralCategory {
 								.binding(defaults.general.bars.barPositions.healthBarPosition,
 										() -> config.general.bars.barPositions.healthBarPosition,
 										newValue -> config.general.bars.barPositions.healthBarPosition = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition"))
 								.binding(defaults.general.bars.barPositions.manaBarPosition,
 										() -> config.general.bars.barPositions.manaBarPosition,
 										newValue -> config.general.bars.barPositions.manaBarPosition = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition"))
 								.binding(defaults.general.bars.barPositions.defenceBarPosition,
 										() -> config.general.bars.barPositions.defenceBarPosition,
 										newValue -> config.general.bars.barPositions.defenceBarPosition = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition"))
 								.binding(defaults.general.bars.barPositions.experienceBarPosition,
 										() -> config.general.bars.barPositions.experienceBarPosition,
 										newValue -> config.general.bars.barPositions.experienceBarPosition = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.build())
 				
@@ -312,7 +312,7 @@ public class GeneralCategory {
 								.binding(defaults.general.itemTooltip.avg,
 										() -> config.general.itemTooltip.avg,
 										newValue -> config.general.itemTooltip.avg = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN"))
@@ -416,14 +416,14 @@ public class GeneralCategory {
 								.binding(defaults.general.titleContainer.direction,
 										() -> config.general.titleContainer.direction,
 										newValue -> config.general.titleContainer.direction = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<SkyblockerConfig.Alignment>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.alignment"))
 								.binding(defaults.general.titleContainer.alignment,
 										() -> config.general.titleContainer.alignment,
 										newValue -> config.general.titleContainer.alignment = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.config"))

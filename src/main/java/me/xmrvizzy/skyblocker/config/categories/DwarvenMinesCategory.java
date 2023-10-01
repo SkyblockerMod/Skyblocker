@@ -61,7 +61,7 @@ public class DwarvenMinesCategory {
 								.binding(defaults.locations.dwarvenMines.dwarvenHud.style,
 										() -> config.locations.dwarvenMines.dwarvenHud.style,
 										newValue -> config.locations.dwarvenMines.dwarvenHud.style = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.screen"))

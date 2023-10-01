@@ -156,21 +156,21 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.dungeonChestProfit.neutralColor,
 										() -> config.locations.dungeons.dungeonChestProfit.neutralColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.neutralColor = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<FormattingOption>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor"))
 								.binding(defaults.locations.dungeons.dungeonChestProfit.profitColor,
 										() -> config.locations.dungeons.dungeonChestProfit.profitColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.profitColor = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<FormattingOption>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor"))
 								.binding(defaults.locations.dungeons.dungeonChestProfit.lossColor,
 										() -> config.locations.dungeons.dungeonChestProfit.lossColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.lossColor = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<FormattingOption>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor"))
@@ -178,7 +178,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.dungeonChestProfit.incompleteColor,
 										() -> config.locations.dungeons.dungeonChestProfit.incompleteColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.incompleteColor = newValue)
-								.controller(ConfigUtils::createCyclingListController4Enum)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.build())
 				

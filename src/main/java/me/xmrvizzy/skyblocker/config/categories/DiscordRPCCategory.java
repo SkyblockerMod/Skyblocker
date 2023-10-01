@@ -29,7 +29,7 @@ public class DiscordRPCCategory {
 						.binding(defaults.richPresence.info,
 								() -> config.richPresence.info,
 								newValue -> config.richPresence.info = newValue)
-						.controller(ConfigUtils::createCyclingListController4Enum)
+						.controller(ConfigUtils::createEnumCyclingListController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.richPresence.cycleMode"))
