@@ -50,8 +50,6 @@
   "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarning": "Enable Quiver Warning",
   "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningInDungeons": "Enable Quiver Warning In Dungeons",
   "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningAfterDungeon": "Enable Quiver Warning After a Dungeon",
-  "text.autoconfig.skyblocker.option.general.quicknav": "Quicknav",
-  "text.autoconfig.skyblocker.option.general.quicknav.enableQuicknav": "Enable Quicknav",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
   "text.autoconfig.skyblocker.option.general.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
   "text.autoconfig.skyblocker.option.general.tabHud": "Fancy tab HUD",

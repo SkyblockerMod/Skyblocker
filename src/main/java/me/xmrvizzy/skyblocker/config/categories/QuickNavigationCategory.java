@@ -15,6 +15,15 @@ public class QuickNavigationCategory {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.quickNav"))
 				
+				//Toggle
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.enableQuickNav"))
+						.binding(defaults.quickNav.enableQuickNav,
+								() -> config.quickNav.enableQuickNav,
+								newValue -> config.quickNav.enableQuickNav = newValue)
+						.controller(BooleanControllerBuilder::create)
+						.build())
+				
 				//Button 1
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1"))
