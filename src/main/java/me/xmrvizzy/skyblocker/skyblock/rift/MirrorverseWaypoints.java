@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -71,7 +71,7 @@ public class MirrorverseWaypoints {
 
 	protected static void render(WorldRenderContext wrc) {
 		//I would also check for the mirrorverse location but the scoreboard stuff is not performant at all...
-		if (Utils.isInTheRift() && SkyblockerConfig.get().locations.rift.mirrorverseWaypoints) {
+		if (Utils.isInTheRift() && SkyblockerConfigManager.get().locations.rift.mirrorverseWaypoints) {
 			for (BlockPos pos : LAVA_PATH_WAYPOINTS) {
 				RenderHelper.renderFilledIfVisible(wrc, pos, COLOR_COMPONENTS, 0.5f);
 			}

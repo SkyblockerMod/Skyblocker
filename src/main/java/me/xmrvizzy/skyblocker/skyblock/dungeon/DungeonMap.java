@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -32,9 +32,9 @@ public class DungeonMap {
             VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
             MapRenderer map = client.gameRenderer.getMapRenderer();
             MapState state = FilledMapItem.getMapState(mapid, client.world);
-            float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
-            int x = SkyblockerConfig.get().locations.dungeons.mapX;
-            int y = SkyblockerConfig.get().locations.dungeons.mapY;
+            float scaling = SkyblockerConfigManager.get().locations.dungeons.mapScaling;
+            int x = SkyblockerConfigManager.get().locations.dungeons.mapX;
+            int y = SkyblockerConfigManager.get().locations.dungeons.mapY;
 
             if (state == null) return;
             matrices.push();
@@ -47,7 +47,7 @@ public class DungeonMap {
     }
 
     public static void renderHUDMap(DrawContext context, int x, int y) {
-        float scaling = SkyblockerConfig.get().locations.dungeons.mapScaling;
+        float scaling = SkyblockerConfigManager.get().locations.dungeons.mapScaling;
         int size = (int) (128 * scaling);
         context.drawTexture(MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
     }

@@ -2,7 +2,7 @@ package me.xmrvizzy.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.FancyStatusBars;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.DungeonMap;
@@ -41,7 +41,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderExperienceBar(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.isInTheRift())
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
 
@@ -52,18 +52,18 @@ public abstract class InGameHudMixin {
         if (statusBars.render(context, scaledWidth, scaledHeight))
             ci.cancel();
 
-        if (Utils.isInDungeons() && SkyblockerConfig.get().locations.dungeons.enableMap)
+        if (Utils.isInDungeons() && SkyblockerConfigManager.get().locations.dungeons.enableMap)
             DungeonMap.render(context.getMatrices());
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderMountHealth(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.bars.enableBars && !Utils.isInTheRift())
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
     
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
     private void skyblocker$dontRenderStatusEffects(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.hideStatusEffectOverlay) ci.cancel();
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hideStatusEffectOverlay) ci.cancel();
     }
 }

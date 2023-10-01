@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -66,10 +66,10 @@ public class StatusBarTracker {
     }
 
     private Text onOverlayMessage(Text text, boolean overlay) {
-        if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfig.get().general.bars.enableBars || Utils.isInTheRift()) {
+        if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.bars.enableBars || Utils.isInTheRift()) {
             return text;
         }
-        return Text.of(update(text.getString(), SkyblockerConfig.get().messages.hideMana));
+        return Text.of(update(text.getString(), SkyblockerConfigManager.get().messages.hideMana));
     }
 
     public String update(String actionBar, boolean filterManaUse) {

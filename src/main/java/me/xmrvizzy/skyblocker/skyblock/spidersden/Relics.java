@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.PosUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
@@ -115,7 +116,7 @@ public class Relics {
     }
 
     private static void render(WorldRenderContext context) {
-        SkyblockerConfig.Relics config = SkyblockerConfig.get().locations.spidersDen.relics;
+        SkyblockerConfig.Relics config = SkyblockerConfigManager.get().locations.spidersDen.relics;
 
         if (config.enableRelicsHelper && relicsLoaded.isDone() && Utils.getLocationRaw().equals("combat_1")) {
             for (BlockPos fairySoulPos : relics) {

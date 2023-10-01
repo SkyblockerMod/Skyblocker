@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dwarven;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -46,19 +46,19 @@ public class DwarvenHud {
                                 .executes(Scheduler.queueOpenScreenCommand(DwarvenHudConfigScreen::new))))));
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
-            if (!SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled
+            if (!SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabled
                     || client.options.playerListKey.isPressed()
                     || client.player == null
                     || commissionList.isEmpty()) {
                 return;
             }
-            render(HudCommsWidget.INSTANCE, context, SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.x,
-                    SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
+            render(HudCommsWidget.INSTANCE, context, SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x,
+                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y, commissionList);
         });
     }
 
     public static IntIntPair getDimForConfig(List<Commission> commissions) {
-        return switch (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
+        return switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
             case SIMPLE -> {
                 HudCommsWidget.INSTANCE_CFG.updateData(commissions, false);
                 yield IntIntPair.of(
@@ -77,7 +77,7 @@ public class DwarvenHud {
 
     public static void render(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
 
-        switch (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.style) {
+        switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
             case SIMPLE -> renderSimple(hcw, context, hudX, hudY, commissions);
             case FANCY -> renderFancy(hcw, context, hudX, hudY, commissions);
             case CLASSIC -> renderClassic(context, hudX, hudY, commissions);
@@ -85,7 +85,7 @@ public class DwarvenHud {
     }
 
     public static void renderClassic(DrawContext context, int hudX, int hudY, List<Commission> commissions) {
-        if (SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground) {
+        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground) {
             context.fill(hudX, hudY, hudX + 200, hudY + (20 * commissions.size()), 0x64000000);
         }
 
@@ -108,7 +108,7 @@ public class DwarvenHud {
         hcw.setX(hudX);
         hcw.setY(hudY);
         hcw.render(context,
-                SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+                SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
     public static void renderFancy(HudCommsWidget hcw, DrawContext context, int hudX, int hudY, List<Commission> commissions) {
@@ -117,12 +117,12 @@ public class DwarvenHud {
         hcw.setX(hudX);
         hcw.setY(hudY);
         hcw.render(context,
-                SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+                SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground);
     }
 
     public static void update() {
         commissionList = new ArrayList<>();
-        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfig.get().locations.dwarvenMines.dwarvenHud.enabled)
+        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabled)
             return;
 
         client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {

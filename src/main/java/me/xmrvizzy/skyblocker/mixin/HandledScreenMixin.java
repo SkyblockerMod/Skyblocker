@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ChronomatronSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.ExperimentSolver;
 import me.xmrvizzy.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -59,18 +59,18 @@ public abstract class HandledScreenMixin extends Screen {
         if (!Utils.isOnSkyblock()) return;
 
         // Hide Empty Tooltips
-        if (SkyblockerConfig.get().general.hideEmptyTooltips && focusedSlot.getStack().getName().getString().equals(" ")) {
+        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && focusedSlot.getStack().getName().getString().equals(" ")) {
             ci.cancel();
         }
 
         // Backpack Preview
-        boolean shiftDown = SkyblockerConfig.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
+        boolean shiftDown = SkyblockerConfigManager.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
         if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, focusedSlot.getIndex(), x, y)) {
             ci.cancel();
         }
 
         // Compactor Preview
-        if (SkyblockerConfig.get().general.compactorDeletorPreview) {
+        if (SkyblockerConfigManager.get().general.compactorDeletorPreview) {
             ItemStack stack = focusedSlot.getStack();
             Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemRegistry.getInternalName(stack));
             if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, matcher.group("type"), matcher.group("size"), x, y)) {

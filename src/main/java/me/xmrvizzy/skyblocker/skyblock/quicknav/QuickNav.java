@@ -1,7 +1,9 @@
 package me.xmrvizzy.skyblocker.skyblock.quicknav;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -24,7 +26,7 @@ public class QuickNav {
 
     public static void init() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (Utils.isOnSkyblock() && SkyblockerConfig.get().quickNav.enableQuickNav && screen instanceof HandledScreen<?> && client.player != null && !client.player.isCreative()) {
+            if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && screen instanceof HandledScreen<?> && client.player != null && !client.player.isCreative()) {
                 String screenTitle = screen.getTitle().getString().trim();
                 List<QuickNavButton> buttons = QuickNav.init(screenTitle);
                 for (QuickNavButton button : buttons) Screens.getButtons(screen).add(button);
@@ -34,7 +36,7 @@ public class QuickNav {
 
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
-        SkyblockerConfig.QuickNav data = SkyblockerConfig.get().quickNav;
+        SkyblockerConfig.QuickNav data = SkyblockerConfigManager.get().quickNav;
         try {
             if (data.button1.render) buttons.add(parseButton(data.button1, screenTitle, 0));
             if (data.button2.render) buttons.add(parseButton(data.button2, screenTitle, 1));
@@ -55,7 +57,7 @@ public class QuickNav {
     }
 
     private static QuickNavButton parseButton(SkyblockerConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
-        SkyblockerConfig.ItemData itemData = buttonInfo.item;
+    	SkyblockerConfig.ItemData itemData = buttonInfo.item;
         String nbtString = "{id:\"minecraft:" + itemData.itemName.toLowerCase(Locale.ROOT) + "\",Count:1";
         if (itemData.nbt.length() > 2) nbtString += "," + itemData.nbt;
         nbtString += "}";

@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -46,19 +46,19 @@ public class CustomArmorDyeColors {
 					String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
 					if (itemUuid != null) {
-						Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfig.get().general.customDyeColors;
+						Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;
 
 						if (hex == null) {
 							if (customDyeColors.containsKey(itemUuid)) {
 								customDyeColors.removeInt(itemUuid);
-								SkyblockerConfig.save();
+								SkyblockerConfigManager.save();
 								source.sendFeedback(Text.translatable("skyblocker.customDyeColors.removed"));
 							} else {
 								source.sendFeedback(Text.translatable("skyblocker.customDyeColors.neverHad"));
 							}
 						} else {
 							customDyeColors.put(itemUuid, Integer.decode("0x" + hex.replace("#", "")).intValue());
-							SkyblockerConfig.save();
+							SkyblockerConfigManager.save();
 							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.added"));
 						}
 					} else {

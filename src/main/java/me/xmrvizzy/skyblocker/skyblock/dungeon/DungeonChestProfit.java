@@ -3,6 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntBooleanPair;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.mixin.accessor.ScreenAccessor;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -40,7 +41,7 @@ public class DungeonChestProfit {
 
 	public static Text getChestProfit(GenericContainerScreenHandler handler, Text title, MinecraftClient client) {
 		try {
-			if (SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator && isDungeonChest(title.getString())) {
+			if (SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator && isDungeonChest(title.getString())) {
 				int profit = 0;
 				boolean hasIncompleteData = false, usedKismet = false;
 				List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
@@ -68,7 +69,7 @@ public class DungeonChestProfit {
 						}
 
 						//Essence price
-						if (name.contains("Essence") && SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.includeEssence) {
+						if (name.contains("Essence") && SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.includeEssence) {
 							Matcher matcher = ESSENCE_PATTERN.matcher(name);
 
 							if (matcher.matches()) {
@@ -105,7 +106,7 @@ public class DungeonChestProfit {
 					}
 				}
 
-				if (SkyblockerConfig.get().locations.dungeons.dungeonChestProfit.includeKismet && usedKismet) {
+				if (SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.includeKismet && usedKismet) {
 					IntBooleanPair kismetPriceData = getItemPrice("KISMET_FEATHER");
 
 					if (!kismetPriceData.rightBoolean()) hasIncompleteData = true;
@@ -158,7 +159,7 @@ public class DungeonChestProfit {
 	}
 
 	private static Text getProfitText(int profit, boolean hasIncompleteData) {
-		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfig.get().locations.dungeons.dungeonChestProfit;
+		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit;
 		return getProfitText(profit, hasIncompleteData, config.neutralThreshold, config.neutralColor.formatting, config.profitColor.formatting, config.lossColor.formatting, config.incompleteColor.formatting);
 	}
 

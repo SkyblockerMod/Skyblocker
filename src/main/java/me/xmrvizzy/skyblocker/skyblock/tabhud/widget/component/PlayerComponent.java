@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.tabhud.widget.component;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
@@ -20,7 +20,7 @@ public class PlayerComponent extends Component {
 
     public PlayerComponent(PlayerListEntry ple) {
 
-    	boolean plainNames = SkyblockerConfig.get().general.tabHud.plainPlayerNames;
+    	boolean plainNames = SkyblockerConfigManager.get().general.tabHud.plainPlayerNames;
         Team team = ple.getScoreboardTeam();
         String username = ple.getProfile().getName();
         name = (team != null && !plainNames) ? Text.empty().append(team.getPrefix()).append(Text.literal(username).formatted(team.getColor())).append(team.getSuffix()) : Text.of(username);
