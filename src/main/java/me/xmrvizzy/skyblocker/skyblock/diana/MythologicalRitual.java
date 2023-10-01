@@ -2,7 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.diana;
 
 import com.mojang.brigadier.Command;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -168,7 +168,7 @@ public class MythologicalRitual {
     }
 
     private static boolean isActive() {
-        return SkyblockerConfig.get().general.fairySouls.enableFairySoulsHelper && Utils.getLocationRaw().equals("hub"); // TODO Change to actual config option
+        return SkyblockerConfigManager.get().general.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocationRaw().equals("hub");
     }
 
     private static class GriffinBurrow {

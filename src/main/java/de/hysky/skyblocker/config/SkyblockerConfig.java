@@ -177,6 +177,9 @@ public class SkyblockerConfig {
 		public FairySouls fairySouls = new FairySouls();
 
 		@SerialEntry
+        public MythologicalRitual mythologicalRitual = new MythologicalRitual();
+
+		@SerialEntry
 		public ItemCooldown itemCooldown = new ItemCooldown();
 
 		@SerialEntry
@@ -320,6 +323,11 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean highlightOnlyNearbySouls = false;
+	}
+
+	public static class MythologicalRitual {
+		@SerialEntry
+		public boolean enableMythologicalRitualHelper = true;
 	}
 
 	public static class ItemCooldown {
@@ -653,7 +661,6 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Formatting incompleteColor = Formatting.BLUE;
-
 	}
 
 	public static class LividColor {
