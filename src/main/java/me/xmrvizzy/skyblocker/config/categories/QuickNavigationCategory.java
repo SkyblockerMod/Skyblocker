@@ -3,9 +3,9 @@ package me.xmrvizzy.skyblocker.config.categories;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
+import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.text.Text;
 
@@ -21,7 +21,7 @@ public class QuickNavigationCategory {
 						.binding(defaults.quickNav.enableQuickNav,
 								() -> config.quickNav.enableQuickNav,
 								newValue -> config.quickNav.enableQuickNav = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				
 				//Button 1
@@ -33,7 +33,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button1.render,
 										() -> config.quickNav.button1.render,
 										newValue -> config.quickNav.button1.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -81,7 +81,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button2.render,
 										() -> config.quickNav.button2.render,
 										newValue -> config.quickNav.button2.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -129,7 +129,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button3.render,
 										() -> config.quickNav.button3.render,
 										newValue -> config.quickNav.button3.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -177,7 +177,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button4.render,
 										() -> config.quickNav.button4.render,
 										newValue -> config.quickNav.button4.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -225,7 +225,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button5.render,
 										() -> config.quickNav.button5.render,
 										newValue -> config.quickNav.button5.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -273,7 +273,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button6.render,
 										() -> config.quickNav.button6.render,
 										newValue -> config.quickNav.button6.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -321,7 +321,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button7.render,
 										() -> config.quickNav.button7.render,
 										newValue -> config.quickNav.button7.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -369,7 +369,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button8.render,
 										() -> config.quickNav.button8.render,
 										newValue -> config.quickNav.button8.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -417,7 +417,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button9.render,
 										() -> config.quickNav.button9.render,
 										newValue -> config.quickNav.button9.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -465,7 +465,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button10.render,
 										() -> config.quickNav.button10.render,
 										newValue -> config.quickNav.button10.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -513,7 +513,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button11.render,
 										() -> config.quickNav.button11.render,
 										newValue -> config.quickNav.button11.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))
@@ -561,7 +561,7 @@ public class QuickNavigationCategory {
 								.binding(defaults.quickNav.button12.render,
 										() -> config.quickNav.button12.render,
 										newValue -> config.quickNav.button12.render = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button1.item.itemName"))

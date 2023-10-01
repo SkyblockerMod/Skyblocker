@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.DropdownStringControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 
@@ -12,6 +13,10 @@ public class ConfigUtils {
 	@SuppressWarnings("unchecked")
 	public static <E extends Enum<E>> EnumControllerBuilder<E> createEnumCyclingListController(Option<E> opt) {
 		return EnumControllerBuilder.create(opt).enumClass((Class<E>) opt.binding().defaultValue().getClass());
+	}
+	
+	public static BooleanControllerBuilder createBooleanController(Option<Boolean> opt) {
+		return BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true);
 	}
 
 	/**

@@ -4,10 +4,10 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.text.Text;
 
@@ -26,14 +26,14 @@ public class SlayersCategory {
 								.binding(defaults.slayer.vampireSlayer.enableEffigyWaypoints,
 										() -> config.slayer.vampireSlayer.enableEffigyWaypoints,
 										newValue -> config.slayer.vampireSlayer.enableEffigyWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.compactEffigyWaypoints"))
 								.binding(defaults.slayer.vampireSlayer.compactEffigyWaypoints,
 										() -> config.slayer.vampireSlayer.compactEffigyWaypoints,
 										newValue -> config.slayer.vampireSlayer.compactEffigyWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.effigyUpdateFrequency"))
@@ -48,7 +48,7 @@ public class SlayersCategory {
 								.binding(defaults.slayer.vampireSlayer.enableHolyIceIndicator,
 										() -> config.slayer.vampireSlayer.enableHolyIceIndicator,
 										newValue -> config.slayer.vampireSlayer.enableHolyIceIndicator = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceIndicatorTickDelay"))
@@ -70,7 +70,7 @@ public class SlayersCategory {
 								.binding(defaults.slayer.vampireSlayer.enableHealingMelonIndicator,
 										() -> config.slayer.vampireSlayer.enableHealingMelonIndicator,
 										newValue -> config.slayer.vampireSlayer.enableHealingMelonIndicator = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.healingMelonHealthThreshold"))
@@ -84,7 +84,7 @@ public class SlayersCategory {
 								.binding(defaults.slayer.vampireSlayer.enableSteakStakeIndicator,
 										() -> config.slayer.vampireSlayer.enableSteakStakeIndicator,
 										newValue -> config.slayer.vampireSlayer.enableSteakStakeIndicator = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency"))
@@ -99,7 +99,7 @@ public class SlayersCategory {
 								.binding(defaults.slayer.vampireSlayer.enableManiaIndicator,
 										() -> config.slayer.vampireSlayer.enableManiaIndicator,
 										newValue -> config.slayer.vampireSlayer.enableManiaIndicator = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency"))

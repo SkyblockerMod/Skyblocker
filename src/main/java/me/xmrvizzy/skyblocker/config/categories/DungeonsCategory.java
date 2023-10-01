@@ -6,7 +6,6 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionFlag;
 import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
@@ -32,7 +31,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.secretWaypoints.enableSecretWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableSecretWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableSecretWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints"))
@@ -40,7 +39,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.secretWaypoints.noInitSecretWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.noInitSecretWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.noInitSecretWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.flag(OptionFlag.GAME_RESTART)
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -48,63 +47,63 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.secretWaypoints.enableEntranceWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableEntranceWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableEntranceWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableSuperboomWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableSuperboomWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableSuperboomWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableSuperboomWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableChestWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableChestWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableChestWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableChestWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableItemWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableItemWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableItemWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableItemWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableBatWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableBatWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableBatWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableBatWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableWitherWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableWitherWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableWitherWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableWitherWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableLeverWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableLeverWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableLeverWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableLeverWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableFairySoulWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableFairySoulWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableFairySoulWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableFairySoulWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableStonkWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableStonkWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableStonkWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableStonkWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints"))
@@ -112,7 +111,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.secretWaypoints.enableDefaultWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableDefaultWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableDefaultWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 				
@@ -125,7 +124,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.dungeonChestProfit.enableProfitCalculator,
 										() -> config.locations.dungeons.dungeonChestProfit.enableProfitCalculator,
 										newValue -> config.locations.dungeons.dungeonChestProfit.enableProfitCalculator = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet"))
@@ -133,7 +132,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.dungeonChestProfit.includeKismet,
 										() -> config.locations.dungeons.dungeonChestProfit.includeKismet,
 										newValue -> config.locations.dungeons.dungeonChestProfit.includeKismet = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence"))
@@ -141,7 +140,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.dungeonChestProfit.includeEssence,
 										() -> config.locations.dungeons.dungeonChestProfit.includeEssence,
 										newValue -> config.locations.dungeons.dungeonChestProfit.includeEssence = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralThreshold"))
@@ -189,14 +188,14 @@ public class DungeonsCategory {
 						.binding(defaults.locations.dungeons.croesusHelper,
 								() -> config.locations.dungeons.croesusHelper,
 								newValue -> config.locations.dungeons.croesusHelper = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.enableMap"))
 						.binding(defaults.locations.dungeons.enableMap,
 								() -> config.locations.dungeons.enableMap,
 								newValue -> config.locations.dungeons.enableMap = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mapScreen"))
@@ -230,14 +229,14 @@ public class DungeonsCategory {
 						.binding(defaults.locations.dungeons.starredMobGlow,
 								() -> config.locations.dungeons.starredMobGlow,
 								newValue -> config.locations.dungeons.starredMobGlow = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos"))
 						.binding(defaults.locations.dungeons.solveThreeWeirdos,
 								() -> config.locations.dungeons.solveThreeWeirdos,
 								newValue -> config.locations.dungeons.solveThreeWeirdos = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.blazesolver"))
@@ -245,14 +244,14 @@ public class DungeonsCategory {
 						.binding(defaults.locations.dungeons.blazesolver,
 								() -> config.locations.dungeons.blazesolver,
 								newValue -> config.locations.dungeons.blazesolver = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia"))
 						.binding(defaults.locations.dungeons.solveTrivia,
 								() -> config.locations.dungeons.solveTrivia,
 								newValue -> config.locations.dungeons.solveTrivia = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveTicTacToe"))
@@ -260,7 +259,7 @@ public class DungeonsCategory {
 						.binding(defaults.locations.dungeons.solveTicTacToe,
 								() -> config.locations.dungeons.solveTicTacToe,
 								newValue -> config.locations.dungeons.solveTicTacToe = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				
 				//Livid Color
@@ -273,7 +272,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.lividColor.enableLividColor,
 										() -> config.locations.dungeons.lividColor.enableLividColor,
 										newValue -> config.locations.dungeons.lividColor.enableLividColor = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText"))
@@ -294,21 +293,21 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.terminals.solveColor,
 										() -> config.locations.dungeons.terminals.solveColor,
 										newValue -> config.locations.dungeons.terminals.solveColor = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder"))
 								.binding(defaults.locations.dungeons.terminals.solveOrder,
 										() -> config.locations.dungeons.terminals.solveOrder,
 										newValue -> config.locations.dungeons.terminals.solveOrder = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveStartsWith"))
 								.binding(defaults.locations.dungeons.terminals.solveStartsWith,
 										() -> config.locations.dungeons.terminals.solveStartsWith,
 										newValue -> config.locations.dungeons.terminals.solveStartsWith = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 				.build();
