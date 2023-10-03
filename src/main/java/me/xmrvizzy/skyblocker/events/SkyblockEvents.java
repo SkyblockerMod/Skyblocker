@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.utils;
+package me.xmrvizzy.skyblocker.events;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -6,6 +6,7 @@ import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.events.ClientPlayerBlockBreakEvent;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -22,28 +23,26 @@ public class ItemCooldowns {
     private static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
     private static final ImmutableList<String> BAT_ARMOR_IDS = ImmutableList.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
 
+    private static final SkyblockerConfig.ItemCooldown config = SkyblockerConfigManager.get().general.itemCooldown;
     private static final Map<String, CooldownEntry> itemCooldowns = new HashMap<>();
-    private static SkyblockerConfig.ItemCooldown config;
 
     public static void init() {
-        config = SkyblockerConfigManager.get().general.itemCooldown;
         ClientPlayerBlockBreakEvent.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
     }
 
-    public static void afterBlockBreak(BlockPos pos, PlayerEntity player) {
+    public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
         if (!config.enableItemCooldowns) return;
 
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId == null) return;
 
         if (usedItemId.equals(JUNGLE_AXE_ID)) {
-            if (!isItemOnCooldown(JUNGLE_AXE_ID)) {
+            if (!isOnCooldown(JUNGLE_AXE_ID)) {
                 itemCooldowns.put(JUNGLE_AXE_ID, new CooldownEntry(2000));
             }
-        }
-        else if (usedItemId.equals(TREECAPITATOR_ID)) {
-            if (!isItemOnCooldown(TREECAPITATOR_ID)) {
+        } else if (usedItemId.equals(TREECAPITATOR_ID)) {
+            if (!isOnCooldown(TREECAPITATOR_ID)) {
                 itemCooldowns.put(TREECAPITATOR_ID, new CooldownEntry(2000));
             }
         }
@@ -54,7 +53,7 @@ public class ItemCooldowns {
 
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId != null && usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
-            if (!isItemOnCooldown(GRAPPLING_HOOK_ID) && !isPlayerWearingBatArmor(player)) {
+            if (!isOnCooldown(GRAPPLING_HOOK_ID) && !isWearingBatArmor(player)) {
                 itemCooldowns.put(GRAPPLING_HOOK_ID, new CooldownEntry(2000));
             }
         }
@@ -62,18 +61,17 @@ public class ItemCooldowns {
         return TypedActionResult.pass(ItemStack.EMPTY);
     }
 
-    public static boolean isItemOnCooldown(ItemStack itemStack) {
-        return isItemOnCooldown(ItemUtils.getItemId(itemStack));
+    public static boolean isOnCooldown(ItemStack itemStack) {
+        return isOnCooldown(ItemUtils.getItemId(itemStack));
     }
 
-    private static boolean isItemOnCooldown(String itemId) {
+    private static boolean isOnCooldown(String itemId) {
         if (itemCooldowns.containsKey(itemId)) {
             CooldownEntry cooldownEntry = itemCooldowns.get(itemId);
             if (cooldownEntry.isOnCooldown()) {
                 return true;
-            }
-            else {
-                itemCooldowns.remove(cooldownEntry);
+            } else {
+                itemCooldowns.remove(itemId);
                 return false;
             }
         }
@@ -85,7 +83,7 @@ public class ItemCooldowns {
         return itemCooldowns.get(ItemUtils.getItemId(itemStack));
     }
 
-    private static boolean isPlayerWearingBatArmor(PlayerEntity player) {
+    private static boolean isWearingBatArmor(PlayerEntity player) {
         for (ItemStack stack : player.getArmorItems()) {
             String itemId = ItemUtils.getItemId(stack);
             if (!BAT_ARMOR_IDS.contains(itemId)) {
@@ -95,13 +93,9 @@ public class ItemCooldowns {
         return true;
     }
 
-    public static class CooldownEntry {
-        private final int cooldown;
-        private final long startTime;
-
+    public record CooldownEntry(int cooldown, long startTime) {
         public CooldownEntry(int cooldown) {
-            this.cooldown = cooldown;
-            this.startTime = System.currentTimeMillis();
+            this(cooldown, System.currentTimeMillis());
         }
 
         public boolean isOnCooldown() {
@@ -110,11 +104,11 @@ public class ItemCooldowns {
 
         public long getRemainingCooldown() {
             long time = (this.startTime + this.cooldown) - System.currentTimeMillis();
-            return time <= 0 ? 0 : time;
+            return Math.max(time, 0);
         }
 
         public float getRemainingCooldownPercent() {
-            return this.isOnCooldown() ? ((float) this.getRemainingCooldown()) / ((float) cooldown) : 0.0f;
+            return this.isOnCooldown() ? (float) this.getRemainingCooldown() / cooldown : 0.0f;
         }
     }
 }

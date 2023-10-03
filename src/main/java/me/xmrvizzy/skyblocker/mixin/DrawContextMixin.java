@@ -134,10 +134,6 @@ public abstract class DrawContextMixin {
     @ModifyExpressionValue(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/Item;F)F"))
     private float skyblocker$modifyItemCooldown(float cooldownProgress, @Local ItemStack stack) {
-        if (Utils.isOnSkyblock() && ItemCooldowns.isItemOnCooldown(stack)) {
-            return ItemCooldowns.getItemCooldownEntry(stack).getRemainingCooldownPercent();
-        }
-
-        return cooldownProgress;
+        return Utils.isOnSkyblock() && ItemCooldowns.isOnCooldown(stack) ? ItemCooldowns.getItemCooldownEntry(stack).getRemainingCooldownPercent() : cooldownProgress;
     }
 }

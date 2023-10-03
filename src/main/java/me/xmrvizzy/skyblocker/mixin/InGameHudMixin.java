@@ -78,9 +78,9 @@ public abstract class InGameHudMixin {
 
     @ModifyExpressionValue(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAttackCooldownProgress(F)F"))
     private float skyblocker$modifyAttackIndicatorCooldown(float cooldownProgress) {
-        if (Utils.isOnSkyblock()) {
-            ItemStack stack = this.client.player.getMainHandStack();
-            if (ItemCooldowns.isItemOnCooldown(stack)) {
+        if (Utils.isOnSkyblock() && client.player != null) {
+            ItemStack stack = client.player.getMainHandStack();
+            if (ItemCooldowns.isOnCooldown(stack)) {
                 return ItemCooldowns.getItemCooldownEntry(stack).getRemainingCooldownPercent();
             }
         }
