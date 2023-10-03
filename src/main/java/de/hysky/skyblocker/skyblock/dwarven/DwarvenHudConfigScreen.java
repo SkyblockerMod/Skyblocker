@@ -4,9 +4,14 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.gui.YACLScreen;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -61,6 +66,19 @@ public class DwarvenHudConfigScreen extends Screen {
     public void close() {
         SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x = hudX;
         SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y = hudY;
+        
+        if (parent instanceof YACLScreen yaclScreen) {
+            ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.locations.dwarvenMines"))).findFirst().orElseThrow();
+            OptionGroup group = category.groups().stream().filter(grp -> grp.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud"))).findFirst().orElseThrow();
+                    	
+            Option<?> xOpt = group.options().get(4);
+            Option<?> yOpt = group.options().get(5);
+        	
+            // Refresh the value in the config with the bound value
+            xOpt.forgetPendingValue();
+            yOpt.forgetPendingValue();
+        }
+        
         SkyblockerConfigManager.save();
         client.setScreen(parent);
     }
