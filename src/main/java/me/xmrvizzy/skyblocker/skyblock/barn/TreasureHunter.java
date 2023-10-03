@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.barn;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
 import net.minecraft.client.MinecraftClient;
@@ -18,7 +18,7 @@ public class TreasureHunter extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfig.get().locations.barn.solveTreasureHunter ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().locations.barn.solveTreasureHunter ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

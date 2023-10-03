@@ -1,8 +1,7 @@
 package me.xmrvizzy.skyblocker.utils.discord;
 
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import meteordevelopment.discordipc.DiscordIPC;
@@ -35,15 +34,15 @@ public class DiscordRPCManager {
     }
 
     /**
-     * Checks the {@link SkyblockerConfig.RichPresence#customMessage custom message}, updates {@link #cycleCount} if enabled, and updates rich presence.
+     * Checks the {@link SkyblockerConfigManager.RichPresence#customMessage custom message}, updates {@link #cycleCount} if enabled, and updates rich presence.
      */
     public static void updateDataAndPresence() {
         // If the custom message is empty, discord will keep the last message, this is can serve as a default if the user doesn't want a custom message
-        if (SkyblockerConfig.get().richPresence.customMessage.isEmpty()) {
-            SkyblockerConfig.get().richPresence.customMessage = "Playing Skyblock";
-            AutoConfig.getConfigHolder(SkyblockerConfig.class).save();
+        if (SkyblockerConfigManager.get().richPresence.customMessage.isEmpty()) {
+            SkyblockerConfigManager.get().richPresence.customMessage = "Playing Skyblock";
+            SkyblockerConfigManager.save();
         }
-        if (SkyblockerConfig.get().richPresence.cycleMode) cycleCount = (cycleCount + 1) % 3;
+        if (SkyblockerConfigManager.get().richPresence.cycleMode) cycleCount = (cycleCount + 1) % 3;
         initAndUpdatePresence();
     }
 
@@ -59,21 +58,21 @@ public class DiscordRPCManager {
      * <p>
      * When the {@link #updateTask previous update} does not exist or {@link CompletableFuture#isDone() has completed}:
      * <p>
-     * Connects to discord if {@link SkyblockerConfig.RichPresence#enableRichPresence rich presence is enabled},
+     * Connects to discord if {@link SkyblockerConfigManager.RichPresence#enableRichPresence rich presence is enabled},
      * the player {@link Utils#isOnSkyblock() is on Skyblock}, and {@link DiscordIPC#isConnected() discord is not already connected}.
-     * Updates the presence if {@link SkyblockerConfig.RichPresence#enableRichPresence rich presence is enabled}
+     * Updates the presence if {@link SkyblockerConfigManager.RichPresence#enableRichPresence rich presence is enabled}
      * and the player {@link Utils#isOnSkyblock() is on Skyblock}.
-     * Stops the connection if {@link SkyblockerConfig.RichPresence#enableRichPresence rich presence is disabled}
+     * Stops the connection if {@link SkyblockerConfigManager.RichPresence#enableRichPresence rich presence is disabled}
      * or the player {@link Utils#isOnSkyblock() is not on Skyblock} and {@link DiscordIPC#isConnected() discord is connected}.
      * Saves the update task in {@link #updateTask}
      *
      * @param initialization whether this is the first time the presence is being updates. If {@code true}, a message will be logged
-     *                       if {@link SkyblockerConfig.RichPresence#enableRichPresence rich presence is disabled}.
+     *                       if {@link SkyblockerConfigManager.RichPresence#enableRichPresence rich presence is disabled}.
      */
     private static void initAndUpdatePresence(boolean initialization) {
         if (updateTask == null || updateTask.isDone()) {
             updateTask = CompletableFuture.runAsync(() -> {
-                if (SkyblockerConfig.get().richPresence.enableRichPresence && Utils.isOnSkyblock()) {
+                if (SkyblockerConfigManager.get().richPresence.enableRichPresence && Utils.isOnSkyblock()) {
                     if (!DiscordIPC.isConnected()) {
                         if (DiscordIPC.start(934607927837356052L, null)) {
                             LOGGER.info("Discord RPC started successfully");
@@ -97,20 +96,20 @@ public class DiscordRPCManager {
         RichPresence presence = new RichPresence();
         presence.setLargeImage("skyblocker-default", null);
         presence.setStart(startTimeStamp);
-        presence.setDetails(SkyblockerConfig.get().richPresence.customMessage);
+        presence.setDetails(SkyblockerConfigManager.get().richPresence.customMessage);
         presence.setState(getInfo());
         return presence;
     }
 
     public static String getInfo() {
         String info = null;
-        if (!SkyblockerConfig.get().richPresence.cycleMode) {
-            switch (SkyblockerConfig.get().richPresence.info) {
+        if (!SkyblockerConfigManager.get().richPresence.cycleMode) {
+            switch (SkyblockerConfigManager.get().richPresence.info) {
                 case BITS -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case PURSE -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
                 case LOCATION -> info = Utils.getLocation();
             }
-        } else if (SkyblockerConfig.get().richPresence.cycleMode) {
+        } else if (SkyblockerConfigManager.get().richPresence.cycleMode) {
             switch (cycleCount) {
                 case 0 -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case 1 -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());

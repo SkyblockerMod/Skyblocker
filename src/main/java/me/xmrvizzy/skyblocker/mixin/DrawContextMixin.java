@@ -6,9 +6,9 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.cbyrne.betterinject.annotations.Arg;
 import dev.cbyrne.betterinject.annotations.Inject;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
-import me.xmrvizzy.skyblocker.skyblock.item.ItemCooldowns;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.item.AttributeShards;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemCooldowns;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.font.TextRenderer;
@@ -42,7 +42,7 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
     public void skyblocker$renderItemBar(@Arg ItemStack stack, @Arg(ordinal = 0) int x, @Arg(ordinal = 1) int y) {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfig.get().locations.dwarvenMines.enableDrillFuel || stack.isEmpty()) {
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().locations.dwarvenMines.enableDrillFuel || stack.isEmpty()) {
             return;
         }
 
@@ -99,7 +99,7 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
     private void skyblocker$renderAttributeShardDisplay(@Arg TextRenderer textRenderer, @Arg ItemStack stack, @Arg(ordinal = 0) int x, @Arg(ordinal = 1) int y, @Local(argsOnly = true) LocalRef<String> countOverride) {
-    	if (!SkyblockerConfig.get().general.itemInfoDisplay.attributeShardInfo) return;
+    	if (!SkyblockerConfigManager.get().general.itemInfoDisplay.attributeShardInfo) return;
 
     	NbtCompound nbt = stack.getNbt();
 

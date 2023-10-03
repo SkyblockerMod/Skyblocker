@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.tictactoe.TicTacToeUtils;
@@ -126,7 +126,7 @@ public class TicTacToe {
 
 	private static void solutionRenderer(WorldRenderContext context) {
 		try {
-			if (SkyblockerConfig.get().locations.dungeons.solveTicTacToe && nextBestMoveToMake != null) {
+			if (SkyblockerConfigManager.get().locations.dungeons.solveTicTacToe && nextBestMoveToMake != null) {
 				RenderHelper.renderOutline(context, nextBestMoveToMake, RED_COLOR_COMPONENTS, 5);
 			}
 		} catch (Exception e) {

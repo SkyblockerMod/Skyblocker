@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
@@ -43,7 +43,7 @@ public class Reparty extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return (SkyblockerConfig.get().general.acceptReparty || this.repartying) ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return (SkyblockerConfigManager.get().general.acceptReparty || this.repartying) ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

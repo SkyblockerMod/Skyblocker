@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
@@ -19,7 +19,7 @@ public interface DyeableItemMixin {
 			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
 			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
-			return SkyblockerConfig.get().general.customDyeColors.getOrDefault(itemUuid, originalColor);
+			return SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, originalColor);
 		}
 
 		return originalColor;

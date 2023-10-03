@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -25,7 +25,7 @@ public abstract class ItemStackMixin {
 			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
 			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
-			return SkyblockerConfig.get().general.customItemNames.getOrDefault(itemUuid, original);
+			return SkyblockerConfigManager.get().general.customItemNames.getOrDefault(itemUuid, original);
 		}
 
 		return original;

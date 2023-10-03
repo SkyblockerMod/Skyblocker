@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.render.title.Title;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -46,7 +46,7 @@ public class FishingHelper {
 
     public static void onSound(PlaySoundS2CPacket packet) {
         String path = packet.getSound().value().getId().getPath();
-        if (SkyblockerConfig.get().general.fishing.enableFishingHelper && startTime != 0 && System.currentTimeMillis() >= startTime + 2000 && ("entity.generic.splash".equals(path) || "entity.player.splash".equals(path))) {
+        if (SkyblockerConfigManager.get().general.fishing.enableFishingHelper && startTime != 0 && System.currentTimeMillis() >= startTime + 2000 && ("entity.generic.splash".equals(path) || "entity.player.splash".equals(path))) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.fishHook != null) {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());

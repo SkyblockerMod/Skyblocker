@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.filters;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Constants;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
@@ -34,6 +34,6 @@ public class AdFilter extends ChatPatternListener {
 
 	@Override
 	protected ChatFilterResult state() {
-		return SkyblockerConfig.get().messages.hideAds;
+		return SkyblockerConfigManager.get().messages.hideAds;
 	}
 }

@@ -2,6 +2,7 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.google.common.collect.ImmutableList;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.events.ClientPlayerBlockBreakEvent;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -25,9 +26,9 @@ public class ItemCooldowns {
     private static SkyblockerConfig.ItemCooldown config;
 
     public static void init() {
+        config = SkyblockerConfigManager.get().general.itemCooldown;
         ClientPlayerBlockBreakEvent.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
-        config = SkyblockerConfig.get().general.itemCooldown;
     }
 
     public static void afterBlockBreak(BlockPos pos, PlayerEntity player) {

@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
@@ -24,7 +24,7 @@ public class TeleportOverlay {
     }
 
     private static void render(WorldRenderContext wrc) {
-        if (Utils.isOnSkyblock() && SkyblockerConfig.get().general.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
             String itemId = PriceInfoTooltip.getInternalNameFromNBT(heldItem, true);
             NbtCompound nbt = heldItem.getNbt();
@@ -32,34 +32,34 @@ public class TeleportOverlay {
             if (itemId != null) {
                 switch (itemId) {
                     case "ASPECT_OF_THE_LEECH_1" -> {
-                        if (SkyblockerConfig.get().general.teleportOverlay.enableWeirdTransmission) {
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableWeirdTransmission) {
                             render(wrc, 3);
                         }
                     }
                     case "ASPECT_OF_THE_LEECH_2" -> {
-                        if (SkyblockerConfig.get().general.teleportOverlay.enableWeirdTransmission) {
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableWeirdTransmission) {
                             render(wrc, 4);
                         }
                     }
                     case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-                        if (SkyblockerConfig.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && nbt != null && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1) {
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && nbt != null && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1) {
                             render(wrc, nbt, 57);
-                        } else if (SkyblockerConfig.get().general.teleportOverlay.enableInstantTransmission) {
+                        } else if (SkyblockerConfigManager.get().general.teleportOverlay.enableInstantTransmission) {
                             render(wrc, nbt, 8);
                         }
                     }
                     case "ETHERWARP_CONDUIT" -> {
-                        if (SkyblockerConfig.get().general.teleportOverlay.enableEtherTransmission) {
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission) {
                             render(wrc, nbt, 57);
                         }
                     }
                     case "SINSEEKER_SCYTHE" -> {
-                        if (SkyblockerConfig.get().general.teleportOverlay.enableSinrecallTransmission) {
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableSinrecallTransmission) {
                             render(wrc, nbt, 4);
                         }
                     }
                     case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
-                        if (SkyblockerConfig.get().general.teleportOverlay.enableWitherImpact) {
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableWitherImpact) {
                             render(wrc, 10);
                         }
                     }

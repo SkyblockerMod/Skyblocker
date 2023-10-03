@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
@@ -106,7 +106,7 @@ public class DungeonBlaze {
      */
     public static void blazeRenderer(WorldRenderContext wrc) {
         try {
-            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfig.get().locations.dungeons.blazesolver) {
+            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfigManager.get().locations.dungeons.blazesolver) {
                 if (highestBlaze.getY() < 69) {
                     renderBlazeOutline(highestBlaze, nextHighestBlaze, wrc);
                 }

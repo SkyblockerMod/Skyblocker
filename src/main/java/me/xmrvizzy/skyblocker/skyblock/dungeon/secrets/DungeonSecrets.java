@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -133,7 +133,7 @@ public class DungeonSecrets {
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
      */
     public static void init() {
-        if (SkyblockerConfig.get().locations.dungeons.secretWaypoints.noInitSecretWaypoints) {
+        if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.noInitSecretWaypoints) {
             return;
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
@@ -248,7 +248,7 @@ public class DungeonSecrets {
      */
     @SuppressWarnings("JavadocReference")
     private static void update() {
-        if (!SkyblockerConfig.get().locations.dungeons.secretWaypoints.enableSecretWaypoints) {
+        if (!SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints) {
             return;
         }
         if (!Utils.isInDungeons()) {
@@ -430,12 +430,12 @@ public class DungeonSecrets {
     }
 
     /**
-     * Checks if the player is in a dungeon and {@link me.xmrvizzy.skyblocker.config.SkyblockerConfig.Dungeons#secretWaypoints Secret Waypoints} is enabled.
+     * Checks if the player is in a dungeon and {@link me.xmrvizzy.skyblocker.config.SkyblockerConfigManager.Dungeons#secretWaypoints Secret Waypoints} is enabled.
      *
      * @return whether dungeon secrets should be processed
      */
     private static boolean shouldProcess() {
-        return SkyblockerConfig.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && Utils.isInDungeons();
+        return SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && Utils.isInDungeons();
     }
 
     /**

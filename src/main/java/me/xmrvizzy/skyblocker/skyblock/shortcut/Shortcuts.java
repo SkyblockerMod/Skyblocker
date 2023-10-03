@@ -6,7 +6,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -161,14 +161,14 @@ public class Shortcuts {
         }
         dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("help").executes(context -> {
             FabricClientCommandSource source = context.getSource();
-            String status = SkyblockerConfig.get().general.shortcuts.enableShortcuts && SkyblockerConfig.get().general.shortcuts.enableCommandShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
+            String status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
             source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Shortcuts" + status));
             if (!isShortcutsLoaded()) {
                 source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
             } else for (Map.Entry<String, String> command : commands.entrySet()) {
                 source.sendFeedback(Text.of("§7" + command.getKey() + " §f→ §7" + command.getValue()));
             }
-            status = SkyblockerConfig.get().general.shortcuts.enableShortcuts && SkyblockerConfig.get().general.shortcuts.enableCommandArgShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
+            status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
             source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Argument Shortcuts" + status));
             if (!isShortcutsLoaded()) {
                 source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
@@ -185,16 +185,16 @@ public class Shortcuts {
     }
 
     private static String modifyCommand(String command) {
-        if (SkyblockerConfig.get().general.shortcuts.enableShortcuts) {
+        if (SkyblockerConfigManager.get().general.shortcuts.enableShortcuts) {
             if (!isShortcutsLoaded()) {
                 LOGGER.warn("[Skyblocker] Shortcuts not loaded yet, skipping shortcut for command: {}", command);
                 return command;
             }
             command = '/' + command;
-            if (SkyblockerConfig.get().general.shortcuts.enableCommandShortcuts) {
+            if (SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts) {
                 command = commands.getOrDefault(command, command);
             }
-            if (SkyblockerConfig.get().general.shortcuts.enableCommandArgShortcuts) {
+            if (SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts) {
                 String[] messageArgs = command.split(" ");
                 for (int i = 0; i < messageArgs.length; i++) {
                     messageArgs[i] = commandArgs.getOrDefault(messageArgs[i], messageArgs[i]);
