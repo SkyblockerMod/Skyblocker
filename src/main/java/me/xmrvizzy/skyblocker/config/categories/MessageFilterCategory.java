@@ -3,7 +3,6 @@ package me.xmrvizzy.skyblocker.config.categories;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
@@ -92,7 +91,7 @@ public class MessageFilterCategory {
 						.binding(defaults.messages.hideMana,
 								() -> config.messages.hideMana,
 								newValue -> config.messages.hideMana = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.build();
 	}

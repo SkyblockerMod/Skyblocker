@@ -4,8 +4,8 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import me.xmrvizzy.skyblocker.config.ConfigUtils;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import net.minecraft.text.Text;
 
@@ -24,14 +24,14 @@ public class LocationsCategory {
 								.binding(defaults.locations.barn.solveHungryHiker,
 										() -> config.locations.barn.solveHungryHiker,
 										newValue -> config.locations.barn.solveHungryHiker = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.barn.solveTreasureHunter"))
 								.binding(defaults.locations.barn.solveTreasureHunter,
 										() -> config.locations.barn.solveTreasureHunter,
 										newValue -> config.locations.barn.solveTreasureHunter = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 				
@@ -44,7 +44,7 @@ public class LocationsCategory {
 								.binding(defaults.locations.rift.mirrorverseWaypoints,
 										() -> config.locations.rift.mirrorverseWaypoints,
 										newValue -> config.locations.rift.mirrorverseWaypoints = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks"))
@@ -65,14 +65,14 @@ public class LocationsCategory {
 								.binding(defaults.locations.spidersDen.relics.enableRelicsHelper,
 										() -> config.locations.spidersDen.relics.enableRelicsHelper,
 										newValue -> config.locations.spidersDen.relics.enableRelicsHelper = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.spidersDen.relics.highlightFoundRelics"))
 								.binding(defaults.locations.spidersDen.relics.highlightFoundRelics,
 										() -> config.locations.spidersDen.relics.highlightFoundRelics,
 										newValue -> config.locations.spidersDen.relics.highlightFoundRelics = newValue)
-								.controller(BooleanControllerBuilder::create)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 				.build();

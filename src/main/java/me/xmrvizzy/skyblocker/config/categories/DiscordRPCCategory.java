@@ -3,7 +3,6 @@ package me.xmrvizzy.skyblocker.config.categories;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
@@ -21,7 +20,7 @@ public class DiscordRPCCategory {
 						.binding(defaults.richPresence.enableRichPresence,
 								() -> config.richPresence.enableRichPresence,
 								newValue -> config.richPresence.enableRichPresence = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<SkyblockerConfig.Info>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.richPresence.info"))
@@ -36,7 +35,7 @@ public class DiscordRPCCategory {
 						.binding(defaults.richPresence.cycleMode,
 								() -> config.richPresence.cycleMode,
 								newValue -> config.richPresence.cycleMode = newValue)
-						.controller(BooleanControllerBuilder::create)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<String>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.richPresence.customMessage"))
