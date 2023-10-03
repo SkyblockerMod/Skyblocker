@@ -150,34 +150,34 @@ public class DungeonsCategory {
 										newValue -> config.locations.dungeons.dungeonChestProfit.neutralThreshold = newValue)
 								.controller(IntegerFieldControllerBuilder::create)
 								.build())
-						.option(Option.<String>createBuilder()
+						.option(Option.<FormattingOption>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralColor"))
-								.binding(defaults.locations.dungeons.dungeonChestProfit.neutralColor.toString(),
-										() -> config.locations.dungeons.dungeonChestProfit.neutralColor.toString(),
-										newValue -> config.locations.dungeons.dungeonChestProfit.neutralColor = ConfigUtils.enumConstantFromToString(FormattingOption.class, newValue))
-								.controller(opt -> ConfigUtils.createDropdownControllerFromEnum(opt, FormattingOption.class))
+								.binding(defaults.locations.dungeons.dungeonChestProfit.neutralColor,
+										() -> config.locations.dungeons.dungeonChestProfit.neutralColor,
+										newValue -> config.locations.dungeons.dungeonChestProfit.neutralColor = newValue)
+								.controller(ConfigUtils::createEnumDropdownController)
 								.build())
-						.option(Option.<String>createBuilder()
+						.option(Option.<FormattingOption>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor"))
-								.binding(defaults.locations.dungeons.dungeonChestProfit.profitColor.toString(),
-										() -> config.locations.dungeons.dungeonChestProfit.profitColor.toString(),
-										newValue -> config.locations.dungeons.dungeonChestProfit.profitColor = ConfigUtils.enumConstantFromToString(FormattingOption.class, newValue))
-								.controller(opt -> ConfigUtils.createDropdownControllerFromEnum(opt, FormattingOption.class))
+								.binding(defaults.locations.dungeons.dungeonChestProfit.profitColor,
+										() -> config.locations.dungeons.dungeonChestProfit.profitColor,
+										newValue -> config.locations.dungeons.dungeonChestProfit.profitColor = newValue)
+								.controller(ConfigUtils::createEnumDropdownController)
 								.build())
-						.option(Option.<String>createBuilder()
+						.option(Option.<FormattingOption>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor"))
-								.binding(defaults.locations.dungeons.dungeonChestProfit.lossColor.toString(),
-										() -> config.locations.dungeons.dungeonChestProfit.lossColor.toString(),
-										newValue -> config.locations.dungeons.dungeonChestProfit.lossColor = ConfigUtils.enumConstantFromToString(FormattingOption.class, newValue))
-								.controller(opt -> ConfigUtils.createDropdownControllerFromEnum(opt, FormattingOption.class))
+								.binding(defaults.locations.dungeons.dungeonChestProfit.lossColor,
+										() -> config.locations.dungeons.dungeonChestProfit.lossColor,
+										newValue -> config.locations.dungeons.dungeonChestProfit.lossColor = newValue)
+								.controller(ConfigUtils::createEnumDropdownController)
 								.build())
-						.option(Option.<String>createBuilder()
+						.option(Option.<FormattingOption>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor.@Tooltip")))
-								.binding(defaults.locations.dungeons.dungeonChestProfit.incompleteColor.toString(),
-										() -> config.locations.dungeons.dungeonChestProfit.incompleteColor.toString(),
-										newValue -> config.locations.dungeons.dungeonChestProfit.incompleteColor = ConfigUtils.enumConstantFromToString(FormattingOption.class, newValue))
-								.controller(opt -> ConfigUtils.createDropdownControllerFromEnum(opt, FormattingOption.class))
+								.binding(defaults.locations.dungeons.dungeonChestProfit.incompleteColor,
+										() -> config.locations.dungeons.dungeonChestProfit.incompleteColor,
+										newValue -> config.locations.dungeons.dungeonChestProfit.incompleteColor = newValue)
+								.controller(ConfigUtils::createEnumDropdownController)
 								.build())
 						.build())
 				
