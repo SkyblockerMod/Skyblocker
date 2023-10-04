@@ -14,12 +14,9 @@ public class ClientWorldMixin {
         at = @At("HEAD"),
         method = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;ZDDDDDD)V"
     )
-    public void skyblocker$handleParticles(ParticleEffect effect, boolean alwaysSpawn, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfo ci) {
-        CrystalWishingCompassSolver.getInstance().onSpawnParticle(
-            effect.getType(),
-            x,
-            y,
-            z
-        );
+    public void skyblocker$handleParticles(
+            ParticleEffect effect, boolean alwaysSpawn, double x, double y, double z,
+            double velocityX, double velocityY, double velocityZ, CallbackInfo ci) {
+        CrystalWishingCompassSolver.getInstance().onSpawnParticle(effect.getType(), x, y, z);
     }
 }
