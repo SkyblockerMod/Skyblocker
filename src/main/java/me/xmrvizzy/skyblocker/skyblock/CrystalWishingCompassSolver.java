@@ -127,10 +127,6 @@ public class CrystalWishingCompassSolver {
 
     private static final CrystalWishingCompassSolver solver = new CrystalWishingCompassSolver();
 
-    public static CrystalWishingCompassSolver getInstance() {
-        return solver;
-    }
-
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final ArrayDeque<ParticleData> seenParticles = new ArrayDeque<>();
 
