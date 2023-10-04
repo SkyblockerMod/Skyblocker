@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import net.minecraft.client.resource.language.I18n;
@@ -206,6 +207,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
+		
+		@SerialEntry
+		public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
 		@SerialEntry
 		public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
