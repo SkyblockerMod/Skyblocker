@@ -139,7 +139,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     
     /**
      * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks)
-     * 
      * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item
      */
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At("HEAD"), cancellable = true)
@@ -168,7 +167,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
                 }
                 
                 //Prevent selling to NPC shops
-                if (this.handler instanceof GenericContainerScreenHandler handler && handler.getRows() == 6) {
+                if (this.client != null && this.handler instanceof GenericContainerScreenHandler genericContainerScreenHandler && genericContainerScreenHandler.getRows() == 6) {
                     ItemStack sellItem = this.handler.slots.get(49).getStack();
                 	
                     if (sellItem.getName().getString().equals("Sell Item") || skyblocker$doesLoreContain(sellItem, this.client, "buyback")) {
