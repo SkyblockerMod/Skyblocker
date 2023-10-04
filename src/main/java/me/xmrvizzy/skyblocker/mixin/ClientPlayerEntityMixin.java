@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 
 import dev.cbyrne.betterinject.annotations.Inject;
 import me.xmrvizzy.skyblocker.skyblock.HotbarSlotLock;
-import me.xmrvizzy.skyblocker.skyblock.ItemProtection;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemProtection;
 import me.xmrvizzy.skyblocker.skyblock.rift.HealingMelonIndicator;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
