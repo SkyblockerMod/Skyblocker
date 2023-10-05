@@ -209,7 +209,7 @@ public class GeneralCategory {
                                 .binding(defaults.general.mythologicalRitual.enableMythologicalRitualHelper,
                                         () -> config.general.mythologicalRitual.enableMythologicalRitualHelper,
                                         newValue -> config.general.mythologicalRitual.enableMythologicalRitualHelper = newValue)
-                                .controller(BooleanControllerBuilder::create)
+                                .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
 
