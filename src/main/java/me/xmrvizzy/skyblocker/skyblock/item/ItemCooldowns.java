@@ -1,7 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.google.common.collect.ImmutableList;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.events.ClientPlayerBlockBreakEvent;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
@@ -23,8 +22,7 @@ public class ItemCooldowns {
     private static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
     private static final ImmutableList<String> BAT_ARMOR_IDS = ImmutableList.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
 
-    private static final SkyblockerConfig.ItemCooldown config = SkyblockerConfigManager.get().general.itemCooldown;
-    private static final Map<String, CooldownEntry> itemCooldowns = new HashMap<>();
+    private static final Map<String, CooldownEntry> ITEM_COOLDOWNS = new HashMap<>();
 
     public static void init() {
         ClientPlayerBlockBreakEvent.AFTER.register(ItemCooldowns::afterBlockBreak);
@@ -32,29 +30,29 @@ public class ItemCooldowns {
     }
 
     public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
-        if (!config.enableItemCooldowns) return;
+        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return;
 
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId == null) return;
 
         if (usedItemId.equals(JUNGLE_AXE_ID)) {
             if (!isOnCooldown(JUNGLE_AXE_ID)) {
-                itemCooldowns.put(JUNGLE_AXE_ID, new CooldownEntry(2000));
+                ITEM_COOLDOWNS.put(JUNGLE_AXE_ID, new CooldownEntry(2000));
             }
         } else if (usedItemId.equals(TREECAPITATOR_ID)) {
             if (!isOnCooldown(TREECAPITATOR_ID)) {
-                itemCooldowns.put(TREECAPITATOR_ID, new CooldownEntry(2000));
+                ITEM_COOLDOWNS.put(TREECAPITATOR_ID, new CooldownEntry(2000));
             }
         }
     }
 
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity player, World world, Hand hand) {
-        if (!config.enableItemCooldowns) return TypedActionResult.pass(ItemStack.EMPTY);
+        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return TypedActionResult.pass(ItemStack.EMPTY);
 
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId != null && usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
             if (!isOnCooldown(GRAPPLING_HOOK_ID) && !isWearingBatArmor(player)) {
-                itemCooldowns.put(GRAPPLING_HOOK_ID, new CooldownEntry(2000));
+                ITEM_COOLDOWNS.put(GRAPPLING_HOOK_ID, new CooldownEntry(2000));
             }
         }
 
@@ -66,12 +64,12 @@ public class ItemCooldowns {
     }
 
     private static boolean isOnCooldown(String itemId) {
-        if (itemCooldowns.containsKey(itemId)) {
-            CooldownEntry cooldownEntry = itemCooldowns.get(itemId);
+        if (ITEM_COOLDOWNS.containsKey(itemId)) {
+            CooldownEntry cooldownEntry = ITEM_COOLDOWNS.get(itemId);
             if (cooldownEntry.isOnCooldown()) {
                 return true;
             } else {
-                itemCooldowns.remove(itemId);
+                ITEM_COOLDOWNS.remove(itemId);
                 return false;
             }
         }
@@ -80,7 +78,7 @@ public class ItemCooldowns {
     }
 
     public static CooldownEntry getItemCooldownEntry(ItemStack itemStack) {
-        return itemCooldowns.get(ItemUtils.getItemId(itemStack));
+        return ITEM_COOLDOWNS.get(ItemUtils.getItemId(itemStack));
     }
 
     private static boolean isWearingBatArmor(PlayerEntity player) {
