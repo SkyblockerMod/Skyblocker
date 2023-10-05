@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils.render;
 
-import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import me.x150.renderer.render.Renderer3d;
@@ -138,7 +136,7 @@ public class RenderHelper {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.lineWidth(lineWidth);
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();
 
@@ -158,10 +156,7 @@ public class RenderHelper {
         matrices.pop();
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
         RenderSystem.lineWidth(1f);
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.enableCull();
-        RenderSystem.disableDepthTest();
     }
 
     public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {
@@ -177,6 +172,9 @@ public class RenderHelper {
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
         buffer.begin(DrawMode.QUADS, VertexFormats.POSITION_COLOR);
@@ -185,6 +183,7 @@ public class RenderHelper {
         }
         tessellator.draw();
 
+        RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
         matrices.pop();

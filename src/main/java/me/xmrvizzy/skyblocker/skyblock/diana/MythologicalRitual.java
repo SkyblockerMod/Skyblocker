@@ -123,8 +123,6 @@ public class MythologicalRitual {
     }
 
     public static void render(WorldRenderContext context) {
-        RenderHelper.renderLinesFromPoints(context, new Vec3d[]{new Vec3d(0, 96, -100), new Vec3d(0, 96, 100)}, ORANGE_COLOR_COMPONENTS, 0.25F, 5); // TODO debug
-        RenderHelper.renderQuad(context, new Vec3d[]{new Vec3d(0, 100, -100), new Vec3d(0, 100, 100), new Vec3d(0, 200, 100), new Vec3d(0, 200, -100)}, ORANGE_COLOR_COMPONENTS, 0.25F, true); // TODO debug
         if (isActive()) {
             for (Map.Entry<BlockPos, GriffinBurrow> burrowEntry : griffinBurrows.entrySet()) {
                 GriffinBurrow burrow = burrowEntry.getValue();
@@ -133,10 +131,10 @@ public class MythologicalRitual {
                 }
                 if (burrow.confirmed != TriState.FALSE) {
                     if (burrow.nextBurrowPlane != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, 5);
+                        RenderHelper.renderQuad(context, burrow.nextBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, true);
                     }
                     if (burrow.echoBurrowPlane != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, 5);
+                        RenderHelper.renderQuad(context, burrow.echoBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, true);
                     }
                 }
             }
