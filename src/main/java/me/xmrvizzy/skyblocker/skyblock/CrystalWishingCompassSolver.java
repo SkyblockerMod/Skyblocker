@@ -176,18 +176,6 @@ public class CrystalWishingCompassSolver {
     private Vec3Comparable originalSolution;
     private EnumSet<CompassTarget> solutionPossibleTargets;
 
-    public SolverState getSolverState() {
-        return solverState;
-    }
-
-    public Vec3i getSolutionCoords() {
-        return new Vec3i((int)solution.getX(), (int)solution.getY(), (int)solution.getZ());
-    }
-
-    public EnumSet<CompassTarget> getPossibleTargets() {
-        return possibleTargets;
-    }
-
     public static HollowsZone getZoneForCoords(BlockPos blockPos) {
         return getZoneForCoords(new Vec3Comparable(blockPos));
     }
