@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.ItemUtils.Durability;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -28,6 +30,33 @@ public abstract class ItemStackMixin {
 			return SkyblockerConfigManager.get().general.customItemNames.getOrDefault(itemUuid, original);
 		}
 
+		return original;
+	}
+
+	@ModifyReturnValue(method = "getDamage", at = @At("RETURN"))
+	private int skyblocker$handlePickoDrillDamage(int original) {
+		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
+		if (dur != null) {
+			return dur.max() - dur.current();
+		}
+		return original;
+	}
+
+	@ModifyReturnValue(method = "getMaxDamage", at = @At("RETURN"))
+	private int skyblocker$handlePickoDrillMaxDamage(int original) {
+		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
+		if (dur != null) {
+			return dur.max();
+		}
+		return original;
+	}
+
+	@ModifyReturnValue(method = "isDamageable", at = @At("RETURN"))
+	private boolean skyblocker$handlePickoDrillDamageable(boolean original) {
+		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
+		if (dur != null) {
+			return true;
+		}
 		return original;
 	}
 }

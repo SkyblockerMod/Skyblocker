@@ -1,11 +1,15 @@
 package me.xmrvizzy.skyblocker.utils;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +18,56 @@ import java.util.regex.Pattern;
 
 public class ItemUtils {
     private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
+
+    public record Durability(int current, int max) {
+    }
+
+    @Nullable
+    public static Durability getDurability(ItemStack stack) {
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().locations.dwarvenMines.enableDrillFuel || stack.isEmpty()) {
+            return null;
+        }
+
+        NbtCompound tag = stack.getNbt();
+        if (tag == null || !tag.contains("ExtraAttributes")) {
+            return null;
+        }
+
+        NbtCompound extraAttributes = tag.getCompound("ExtraAttributes");
+        if (!extraAttributes.contains("drill_fuel") && !extraAttributes.getString("id").equals("PICKONIMBUS")) {
+            return null;
+        }
+
+        int current = 0;
+        int max = 0;
+        String clearFormatting = "";
+
+        for (String line : ItemUtils.getTooltipStrings(stack)) {
+            clearFormatting = Formatting.strip(line);
+            if (line.contains("Fuel: ")) {
+                if (clearFormatting != null) {
+                    String clear = Pattern.compile("[^0-9 /]").matcher(clearFormatting).replaceAll("").trim();
+                    String[] split = clear.split("/");
+                    current = Integer.parseInt(split[0]);
+                    max = Integer.parseInt(split[1]) * 1000;
+                    return new Durability(current, max);
+                }
+            } else if (line.contains("uses.")) {
+                if (clearFormatting != null) {
+                    int startIndex = clearFormatting.lastIndexOf("after") + 6;
+                    int endIndex = clearFormatting.indexOf("uses", startIndex);
+                    if (startIndex >= 0 && endIndex > startIndex) {
+                        String usesString = clearFormatting.substring(startIndex, endIndex).trim();
+                        current = Integer.parseInt(usesString);
+                        max = 5000;
+                    }
+                    return new Durability(current, max);
+                }
+            }
+        }
+
+        return null;
+    }
 
     public static List<Text> getTooltip(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
