@@ -348,6 +348,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemInfoDisplay.attributeShardInfo = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.itemRarityBackgrounds,
+										() -> config.general.itemInfoDisplay.itemRarityBackgrounds,
+										newValue -> config.general.itemInfoDisplay.itemRarityBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 				
 				//Special Effects

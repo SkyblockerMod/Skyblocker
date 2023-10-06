@@ -461,6 +461,9 @@ public class SkyblockerConfig {
 	public static class ItemInfoDisplay {
 		@SerialEntry
 		public boolean attributeShardInfo = true;
+		
+		@SerialEntry
+		public boolean itemRarityBackgrounds = false;
 	}
 	
 	public static class SpecialEffects {
