@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
@@ -35,13 +36,15 @@ public class ItemCooldowns {
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId == null) return;
 
-        if (usedItemId.equals(JUNGLE_AXE_ID)) {
-            if (!isOnCooldown(JUNGLE_AXE_ID)) {
-                ITEM_COOLDOWNS.put(JUNGLE_AXE_ID, new CooldownEntry(2000));
-            }
-        } else if (usedItemId.equals(TREECAPITATOR_ID)) {
-            if (!isOnCooldown(TREECAPITATOR_ID)) {
-                ITEM_COOLDOWNS.put(TREECAPITATOR_ID, new CooldownEntry(2000));
+        if (state.getSoundGroup() == BlockSoundGroup.WOOD && state.isBurnable()) {
+            if (usedItemId.equals(JUNGLE_AXE_ID)) {
+                if (!isOnCooldown(JUNGLE_AXE_ID)) {
+                    ITEM_COOLDOWNS.put(JUNGLE_AXE_ID, new CooldownEntry(2000));
+                }
+            } else if (usedItemId.equals(TREECAPITATOR_ID)) {
+                if (!isOnCooldown(TREECAPITATOR_ID)) {
+                    ITEM_COOLDOWNS.put(TREECAPITATOR_ID, new CooldownEntry(2000));
+                }
             }
         }
     }
