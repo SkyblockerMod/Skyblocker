@@ -26,7 +26,6 @@ import net.minecraft.util.Identifier;
 public class ItemRarityBackgrounds {
 	private static final Identifier RARITY_BG_TEX = new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background");
 	private static final Supplier<Sprite> SPRITE = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(RARITY_BG_TEX);
-	private static final String EMPTY = "";
 	private static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
 			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),
 			Map.entry("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
@@ -37,13 +36,13 @@ public class ItemRarityBackgrounds {
 			Map.entry("EPIC", SkyblockItemRarity.EPIC),
 			Map.entry("RARE", SkyblockItemRarity.RARE),
 			Map.entry("UNCOMMON", SkyblockItemRarity.UNCOMMON),
-			Map.entry("COMMON", SkyblockItemRarity.COMMON));
-	
+			Map.entry("COMMON", SkyblockItemRarity.COMMON)
+	);
 	private static final Int2ReferenceOpenHashMap<SkyblockItemRarity> CACHE = new Int2ReferenceOpenHashMap<>();
 	
 	public static void init() {
 		//Clear the cache every 5 minutes, ints are very compact!
-		Scheduler.INSTANCE.scheduleCyclic(() -> CACHE.clear(), 4800);
+		Scheduler.INSTANCE.scheduleCyclic(CACHE::clear, 4800);
 		
 		//Clear cache after a screen where items can be upgraded in rarity closes
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
@@ -64,7 +63,7 @@ public class ItemRarityBackgrounds {
 			if (itemRarity != null) draw(context, x, y, itemRarity);
 		}
 	}
-	
+
 	private static SkyblockItemRarity getItemRarity(ItemStack stack, ClientPlayerEntity player) {
 		if (stack == null || stack.isEmpty()) return null;
 		
@@ -73,23 +72,23 @@ public class ItemRarityBackgrounds {
 		
 		if (nbt != null && nbt.contains("ExtraAttributes")) {
 			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : EMPTY;
+			String itemUuid = extraAttributes.getString("uuid");
 			
-			//If the item has a uuid, then use the hash code of the uuid otherwise use the identity hash code of the stack
-			hashCode = (itemUuid != EMPTY) ? itemUuid.hashCode() : System.identityHashCode(stack);
+			//If the item has an uuid, then use the hash code of the uuid otherwise use the identity hash code of the stack
+			hashCode = itemUuid.isEmpty() ? System.identityHashCode(stack) : itemUuid.hashCode();
 		}
-				
+
 		if (CACHE.containsKey(hashCode)) return CACHE.get(hashCode);
 				
 		List<Text> tooltip = stack.getTooltip(player, TooltipContext.BASIC);
 		String[] stringifiedTooltip = tooltip.stream().map(Text::getString).toArray(String[]::new);
 		
-		for (String rarity : LORE_RARITIES.keySet()) {
-			if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarity))) {
-				SkyblockItemRarity foundRarity = LORE_RARITIES.get(rarity);
+		for (String rarityString : LORE_RARITIES.keySet()) {
+			if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarityString))) {
+				SkyblockItemRarity rarity = LORE_RARITIES.get(rarityString);
 				
-				CACHE.put(hashCode, foundRarity);
-				return LORE_RARITIES.get(rarity);
+				CACHE.put(hashCode, rarity);
+				return rarity;
 			}
 		}
 		

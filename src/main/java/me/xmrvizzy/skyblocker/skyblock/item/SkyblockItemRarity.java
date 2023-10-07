@@ -17,10 +17,11 @@ public enum SkyblockItemRarity {
 	public final float r;
 	public final float g;
 	public final float b;
-	
-	private SkyblockItemRarity(Formatting formatting) {
+
+	SkyblockItemRarity(Formatting formatting) {
+		@SuppressWarnings("DataFlowIssue")
 		int rgb = formatting.getColorValue();
-		
+
 		this.r = ((rgb >> 16) & 0xFF) / 255f;
 		this.g = ((rgb >> 8) & 0xFF) / 255f;
 		this.b = (rgb & 0xFF) / 255f;
