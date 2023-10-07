@@ -1,15 +1,12 @@
 package me.xmrvizzy.skyblocker.config.categories;
 
-import dev.isxander.yacl3.api.ButtonOption;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.config.ConfigUtils;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
 import me.xmrvizzy.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import me.xmrvizzy.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import net.minecraft.client.MinecraftClient;
@@ -17,10 +14,10 @@ import net.minecraft.text.Text;
 
 public class GeneralCategory {
 
-	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {		
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.general"))
-				
+
 				//Ungrouped Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.acceptReparty"))
@@ -57,7 +54,7 @@ public class GeneralCategory {
 								newValue -> config.general.hideStatusEffectOverlay = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-				
+
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud"))
@@ -94,7 +91,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.build())
-				
+
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars"))
@@ -135,7 +132,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.build())
-				
+
 				//Experiments Solver
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.experiments"))
@@ -162,7 +159,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Fishing Helper
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing"))
@@ -175,7 +172,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Fairy Souls Helper
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.fairySouls"))
@@ -203,7 +200,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Shortcuts
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.shortcuts"))
@@ -238,7 +235,7 @@ public class GeneralCategory {
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new ShortcutsConfigScreen(screen)))
 								.build())
 						.build())
-				
+
 				//Quiver Warning
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.quiverWarning"))
@@ -265,7 +262,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Item List
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemList"))
@@ -278,7 +275,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Item Tooltip
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip"))
@@ -335,7 +332,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Item Info Display
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay"))
@@ -348,8 +345,23 @@ public class GeneralCategory {
 										newValue -> config.general.itemInfoDisplay.attributeShardInfo = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.itemRarityBackgrounds,
+										() -> config.general.itemInfoDisplay.itemRarityBackgrounds,
+										newValue -> config.general.itemInfoDisplay.itemRarityBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundsOpacity"))
+								.binding(defaults.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
+										() -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
+										newValue -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity = newValue)
+								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0f, 1f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
+								.build())
 						.build())
-				
+
 				//Special Effects
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.specialEffects"))
@@ -363,7 +375,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Hitboxes
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.hitbox"))
@@ -383,7 +395,7 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//Title Container
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer"))
@@ -430,7 +442,7 @@ public class GeneralCategory {
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new TitleContainerConfigScreen(screen)))
 								.build())
 						.build())
-				
+
 				//Teleport Overlays
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.teleportOverlay"))
