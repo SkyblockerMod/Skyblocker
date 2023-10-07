@@ -40,7 +40,7 @@
   "text.autoconfig.skyblocker.option.general.fairySouls.highlightOnlyNearbySouls.@Tooltip": "When enabled only fairy souls in a radius of 50 blocks are highlighted",
   "text.autoconfig.skyblocker.option.general.shortcuts": "Shortcuts",
   "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Enable Shortcuts",
-  "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Only works on Hypixel. Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
+  "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Works anywhere, even in vanilla! Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
   "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "Enable Command Shortcuts",
   "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts.@Tooltip": "Shortcuts for commands consisting of only one word. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
   "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts": "Enable Command Argument Shortcuts",
