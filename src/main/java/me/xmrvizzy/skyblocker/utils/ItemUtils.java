@@ -40,7 +40,7 @@ public class ItemUtils {
 
         int current = 0;
         int max = 0;
-        String clearFormatting = "";
+        String clearFormatting;
 
         for (String line : ItemUtils.getTooltipStrings(stack)) {
             clearFormatting = Formatting.strip(line);

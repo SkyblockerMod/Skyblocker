@@ -34,7 +34,7 @@ public abstract class ItemStackMixin {
 	}
 
 	@ModifyReturnValue(method = "getDamage", at = @At("RETURN"))
-	private int skyblocker$handlePickoDrillDamage(int original) {
+	private int skyblocker$handleDamage(int original) {
 		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
 		if (dur != null) {
 			return dur.max() - dur.current();
@@ -43,7 +43,7 @@ public abstract class ItemStackMixin {
 	}
 
 	@ModifyReturnValue(method = "getMaxDamage", at = @At("RETURN"))
-	private int skyblocker$handlePickoDrillMaxDamage(int original) {
+	private int skyblocker$handleMaxDamage(int original) {
 		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
 		if (dur != null) {
 			return dur.max();
@@ -52,7 +52,7 @@ public abstract class ItemStackMixin {
 	}
 
 	@ModifyReturnValue(method = "isDamageable", at = @At("RETURN"))
-	private boolean skyblocker$handlePickoDrillDamageable(boolean original) {
+	private boolean skyblocker$handleDamageable(boolean original) {
 		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
 		if (dur != null) {
 			return true;
