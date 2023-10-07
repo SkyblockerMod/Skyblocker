@@ -10,19 +10,23 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ItemRarityBackgrounds {
 	private static final Identifier RARITY_BG_TEX = new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background");
 	private static final Supplier<Sprite> SPRITE = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(RARITY_BG_TEX);
+	private static final String EMPTY = "";
 	private static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
 			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),
 			Map.entry("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
@@ -40,6 +44,15 @@ public class ItemRarityBackgrounds {
 	public static void init() {
 		//Clear the cache every 5 minutes, ints are very compact!
 		Scheduler.INSTANCE.scheduleCyclic(() -> CACHE.clear(), 4800);
+		
+		//Clear cache after a screen where items can be upgraded in rarity closes
+		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+			String title = screen.getTitle().getString();
+			
+			if (Utils.isOnSkyblock() && (title.equals("The Hex") || title.equals("Craft Item") || title.equals("Anvil") || title.equals("Reforge Anvil"))) {
+				ScreenEvents.remove(screen).register(screen1 -> CACHE.clear());
+			}
+		});
 	}
 	
 	public static void tryDraw(ItemStack stack, DrawContext context, int x, int y) {
@@ -55,7 +68,17 @@ public class ItemRarityBackgrounds {
 	private static SkyblockItemRarity getItemRarity(ItemStack stack, ClientPlayerEntity player) {
 		if (stack == null || stack.isEmpty()) return null;
 		
-		int hashCode = System.identityHashCode(stack);
+		int hashCode = 0;
+		NbtCompound nbt = stack.getNbt();
+		
+		if (nbt != null && nbt.contains("ExtraAttributes")) {
+			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : EMPTY;
+			
+			//If the item has a uuid, then use the hash code of the uuid otherwise use the identity hash code of the stack
+			hashCode = (itemUuid != EMPTY) ? itemUuid.hashCode() : System.identityHashCode(stack);
+		}
+				
 		if (CACHE.containsKey(hashCode)) return CACHE.get(hashCode);
 				
 		List<Text> tooltip = stack.getTooltip(player, TooltipContext.BASIC);
