@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.rift;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.SlayerUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
@@ -15,7 +15,7 @@ public class TwinClawsIndicator {
     private static boolean scheduled = false;
 
     protected static void updateIce() {
-        if (!SkyblockerConfig.get().slayer.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getLocation().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
+        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getLocation().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
             TitleContainer.removeTitle(title);
             return;
         }
@@ -32,7 +32,7 @@ public class TwinClawsIndicator {
                     Scheduler.INSTANCE.schedule(() -> {
                         RenderHelper.displayInTitleContainerAndPlaySound(title);
                         scheduled = false;
-                    }, SkyblockerConfig.get().slayer.vampireSlayer.holyIceIndicatorTickDelay);
+                    }, SkyblockerConfigManager.get().slayer.vampireSlayer.holyIceIndicatorTickDelay);
                 }
             }
         }

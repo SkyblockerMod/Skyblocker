@@ -2,7 +2,7 @@ package me.xmrvizzy.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
@@ -69,7 +69,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
         Utils.init();
         HotbarSlotLock.init();
-        SkyblockerConfig.init();
+        SkyblockerConfigManager.init();
         PriceInfoTooltip.init();
         WikiLookup.init();
         ItemRegistry.init();
@@ -101,6 +101,7 @@ public class SkyblockerMod implements ClientModInitializer {
         QuiverWarning.init();
         SpecialEffects.init();
         CrystalWishingCompassSolver.init();
+        ItemProtection.init();
         containerSolverManager.init();
         statusBarTracker.init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);

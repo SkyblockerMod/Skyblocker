@@ -1,7 +1,7 @@
 package me.xmrvizzy.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -27,7 +27,7 @@ public abstract class FarmlandBlockMixin extends Block {
 
     @ModifyReturnValue(method = "getOutlineShape", at = @At("RETURN"))
     private VoxelShape skyblocker$replaceOutlineShape(VoxelShape original) {
-        return Utils.isOnSkyblock() && SkyblockerConfig.get().general.hitbox.oldFarmlandHitbox ? VoxelShapes.fullCube() : original;
+        return Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hitbox.oldFarmlandHitbox ? VoxelShapes.fullCube() : original;
     }
 
     @SuppressWarnings("deprecation")

@@ -20,6 +20,7 @@ repositories {
 	}
 	maven { url "https://maven.terraformersmc.com/releases" }
 	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.isxander.dev/releases" }
 	maven {
 		url 'https://repo.maven.apache.org/maven2'
 		name 'Maven Central'
@@ -30,7 +31,9 @@ repositories {
 	}
 	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
 	maven { url "https://repo.nea.moe/releases" } // For neu repoparser
-	maven { url "https://jitpack.io" }
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots" } //For YACL
+	maven { url "https://maven.quiltmc.org/repository/release" } //For YACL
+	maven {url "https://jitpack.io"}
 }
 
 dependencies {
@@ -44,11 +47,8 @@ dependencies {
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// Cloth config
-	include modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}") {
-		exclude group: "net.fabricmc.fabric-api"
-		exclude module: "modmenu"
-	}
+	// YACL
+	include modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}")
 
 	// Mod Menu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
@@ -59,7 +59,7 @@ dependencies {
 
 	// EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+//	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}" TODO uncomment when EMI is updated
 
 	// Renderer (https://github.com/0x3C50/Renderer)
 	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}") {

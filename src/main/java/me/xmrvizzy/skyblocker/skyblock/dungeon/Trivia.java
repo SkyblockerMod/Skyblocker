@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import me.xmrvizzy.skyblocker.utils.chat.ChatPatternListener;
 import me.xmrvizzy.skyblocker.skyblock.FairySouls;
@@ -24,7 +24,7 @@ public class Trivia extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfig.get().locations.dungeons.solveTrivia ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().locations.dungeons.solveTrivia ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

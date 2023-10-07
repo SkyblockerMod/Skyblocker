@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.BlockFace;
 import net.minecraft.util.math.Direction;
@@ -14,7 +14,7 @@ public class OldLever {
     protected static final VoxelShape WEST_SHAPE = Block.createCuboidShape(10.0D, 3.0D, 5.0D, 16.0D, 13.0D, 11.0D);
 
     public static VoxelShape getShape(BlockFace face, Direction direction) {
-        if (!SkyblockerConfig.get().general.hitbox.oldLeverHitbox)
+        if (!SkyblockerConfigManager.get().general.hitbox.oldLeverHitbox)
             return null;
 
         if (face == BlockFace.FLOOR) {

@@ -3,7 +3,7 @@ package me.xmrvizzy.skyblocker.skyblock.item;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -40,13 +40,13 @@ public class CustomItemNames {
 			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 
 			if (itemUuid != null) {
-				Object2ObjectOpenHashMap<String, Text> customItemNames = SkyblockerConfig.get().general.customItemNames;
+				Object2ObjectOpenHashMap<String, Text> customItemNames = SkyblockerConfigManager.get().general.customItemNames;
 
 				if (text == null) {
 					if (customItemNames.containsKey(itemUuid)) {
 						//Remove custom item name when the text argument isn't passed
 						customItemNames.remove(itemUuid);
-						SkyblockerConfig.save();
+						SkyblockerConfigManager.save();
 						source.sendFeedback(Text.translatable("skyblocker.customItemNames.removed"));
 					} else {
 						source.sendFeedback(Text.translatable("skyblocker.customItemNames.neverHad"));
@@ -59,7 +59,7 @@ public class CustomItemNames {
 					((MutableText) text).setStyle(currentStyle.withItalic((currentStyle.isItalic() ? true : false)));
 
 					customItemNames.put(itemUuid, text);
-					SkyblockerConfig.save();
+					SkyblockerConfigManager.save();
 					source.sendFeedback(Text.translatable("skyblocker.customItemNames.added"));
 				}
 			} else {

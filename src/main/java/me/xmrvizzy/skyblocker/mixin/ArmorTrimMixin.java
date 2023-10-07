@@ -3,7 +3,7 @@ package me.xmrvizzy.skyblocker.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,7 @@ public class ArmorTrimMixin {
 		NbtCompound nbt = stack.getNbt();
 
 		if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
-			Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfig.get().general.customArmorTrims;
+			Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;
 			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
 			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
 

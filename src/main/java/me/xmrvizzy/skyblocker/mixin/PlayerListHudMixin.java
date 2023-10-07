@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.mixin;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.TabHud;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import me.xmrvizzy.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -28,7 +28,7 @@ public class PlayerListHudMixin {
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", cancellable = true)
     public void skyblocker$renderTabHud(@Arg DrawContext context, @Arg int w, CallbackInfo info) {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfig.get().general.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
             return;
         }
 
@@ -38,7 +38,7 @@ public class PlayerListHudMixin {
         }
 
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
-        float scale = SkyblockerConfig.get().general.tabHud.tabHudScale / 100f;
+        float scale = SkyblockerConfigManager.get().general.tabHud.tabHudScale / 100f;
         w = (int) (w / scale);
         h = (int) (h / scale);
 

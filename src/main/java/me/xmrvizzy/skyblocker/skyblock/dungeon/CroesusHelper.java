@@ -1,6 +1,6 @@
 package me.xmrvizzy.skyblocker.skyblock.dungeon;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfig;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.render.gui.ColorHighlight;
 import me.xmrvizzy.skyblocker.utils.render.gui.ContainerSolver;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ public class CroesusHelper extends ContainerSolver {
 
     @Override
     protected boolean isEnabled() {
-        return SkyblockerConfig.get().locations.dungeons.croesusHelper;
+        return SkyblockerConfigManager.get().locations.dungeons.croesusHelper;
     }
 
     @Override
