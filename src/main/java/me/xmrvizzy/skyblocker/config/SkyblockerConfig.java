@@ -464,6 +464,9 @@ public class SkyblockerConfig {
 		
 		@SerialEntry
 		public boolean itemRarityBackgrounds = false;
+
+		@SerialEntry
+		public float itemRarityBackgroundsOpacity = 1f;
 	}
 	
 	public static class SpecialEffects {

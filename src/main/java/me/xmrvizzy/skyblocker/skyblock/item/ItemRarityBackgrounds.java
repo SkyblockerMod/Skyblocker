@@ -10,6 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -100,8 +101,8 @@ public class ItemRarityBackgrounds {
 		//Enable blending to handle HUD translucency
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		
-		context.drawSprite(x, y, 0, 16, 16, SPRITE.get(), rarity.r, rarity.g, rarity.b, 1f);
+
+		context.drawSprite(x, y, 0, 16, 16, SPRITE.get(), rarity.r, rarity.g, rarity.b, SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity);
 		
 		RenderSystem.disableBlend();
 	}

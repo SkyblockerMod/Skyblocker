@@ -78,6 +78,7 @@
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Displays the attribute's level as the stack count and the initials of the attribute's name.",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Backgrounds",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item, the color represents the item's rarity.",
+  "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
   "text.autoconfig.skyblocker.option.general.specialEffects": "Special Effects",
   "text.autoconfig.skyblocker.option.general.specialEffects.rareDungeonDropEffects": "Rare Dungeon Drop Effects",
   "text.autoconfig.skyblocker.option.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",
