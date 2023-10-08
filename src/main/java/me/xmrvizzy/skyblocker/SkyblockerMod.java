@@ -101,6 +101,7 @@ public class SkyblockerMod implements ClientModInitializer {
         QuiverWarning.init();
         SpecialEffects.init();
         ItemProtection.init();
+        CreeperBeams.init();
         containerSolverManager.init();
         statusBarTracker.init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
