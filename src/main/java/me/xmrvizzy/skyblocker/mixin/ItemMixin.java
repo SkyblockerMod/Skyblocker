@@ -13,18 +13,10 @@ import net.minecraft.item.ItemStack;
 @Mixin(Item.class)
 public abstract class ItemMixin {
 	@WrapOperation(
-		method = "getItemBarColor",
+		method = {"getItemBarColor", "getItemBarStep"},
 		at = @At(value = "FIELD", target = "Lnet/minecraft/item/Item;maxDamage:I", opcode = Opcodes.GETFIELD)
 	)
-	private int skyblocker$handlePickoDrillBarColor(Item item, Operation<Integer> original, ItemStack stack) {
-		return stack.getMaxDamage();
-	}
-
-	@WrapOperation(
-		method = "getItemBarStep",
-		at = @At(value = "FIELD", target = "Lnet/minecraft/item/Item;maxDamage:I", opcode = Opcodes.GETFIELD)
-	)
-	private int skyblocker$handlePickoDrillBarStep(Item item, Operation<Integer> original, ItemStack stack) {
+	private int skyblocker$handlePickoDrillBar(Item item, Operation<Integer> original, ItemStack stack) {
 		return stack.getMaxDamage();
 	}
 }
