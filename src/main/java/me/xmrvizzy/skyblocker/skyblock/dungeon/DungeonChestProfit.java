@@ -160,7 +160,7 @@ public class DungeonChestProfit {
 
 	private static Text getProfitText(int profit, boolean hasIncompleteData) {
 		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit;
-		return getProfitText(profit, hasIncompleteData, config.neutralThreshold, config.neutralColor.formatting, config.profitColor.formatting, config.lossColor.formatting, config.incompleteColor.formatting);
+		return getProfitText(profit, hasIncompleteData, config.neutralThreshold, config.neutralColor, config.profitColor, config.lossColor, config.incompleteColor);
 	}
 
 	static Text getProfitText(int profit, boolean hasIncompleteData, int neutralThreshold, Formatting neutralColor, Formatting profitColor, Formatting lossColor, Formatting incompleteColor) {
