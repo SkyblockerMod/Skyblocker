@@ -36,8 +36,8 @@ public class CreeperBeams {
             { 1f, 0.33f, 1f },
     };
 
-    private static final int FLOOR_Y = -24; // 68;
-    private static final int BASE_Y = -16; // 74;
+    private static final int FLOOR_Y = 68;
+    private static final int BASE_Y = 74;
 
     private static ArrayList<Beam> beams = new ArrayList<>();
     private static BlockPos base = null;
@@ -91,7 +91,7 @@ public class CreeperBeams {
         }
 
         // update the beam states
-        beams.forEach(b -> b.updateShouldRender(world));
+        beams.forEach(b -> b.updateState(world));
     }
 
     // find the sea lantern block beneath the creeper
@@ -203,14 +203,21 @@ public class CreeperBeams {
         }
     }
 
+    // helper class to hold all the things needed to render a beam
     private static class Beam {
 
+        // raw block pos of target
         public BlockPos blockOne;
         public BlockPos blockTwo;
+
+        // middle of targets used for rendering the line
         public Vec3d[] line = new Vec3d[2];
+
+        // boxes used for rendering the block outline
         public Box outlineOne;
         public Box outlineTwo;
 
+        // state: is this beam created/inputted or not?
         private boolean toDo = true;
 
         public Beam(BlockPos a, BlockPos b) {
@@ -222,19 +229,21 @@ public class CreeperBeams {
             outlineTwo = new Box(b);
         }
 
+        // used to filter the list of all beams so that no two beams share a target
         public boolean containsComponentOf(Beam other) {
             return this.blockOne.equals(other.blockOne)
                     || this.blockOne.equals(other.blockTwo)
                     || this.blockTwo.equals(other.blockOne)
                     || this.blockTwo.equals(other.blockTwo);
-
         }
 
-        public void updateShouldRender(ClientWorld world) {
+        // update the state: is the beam created or not?
+        public void updateState(ClientWorld world) {
             toDo = !(world.getBlockState(blockOne).getBlock() == Blocks.PRISMARINE
                     && world.getBlockState(blockTwo).getBlock() == Blocks.PRISMARINE);
         }
 
+        // render either in a color if not created or faintly green if created
         public void render(WorldRenderContext wrc, float[] color) {
             if (toDo) {
                 RenderHelper.renderOutline(wrc, outlineOne, color, 3);
