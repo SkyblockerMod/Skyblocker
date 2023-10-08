@@ -3,13 +3,11 @@ package me.xmrvizzy.skyblocker.skyblock.dungeon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Intersectiond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dev.architectury.event.events.client.ClientTooltipEvent.Render;
-import me.xmrvizzy.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -32,16 +30,18 @@ public class CreeperBeams {
 
     // "missing, this palette looks like you stole it from a 2018 bootstrap webapp!"
     private static final float[][] COLORS = {
-            { (float) 0xC6 / 0xFF, (float) 0xA1 / 0xFF, (float) 0x5B / 0xFF },
-            { (float) 0x6D / 0xFF, (float) 0x59 / 0xFF, (float) 0x7A / 0xFF },
-            { (float) 0xB5 / 0xFF, (float) 0x65 / 0xFF, (float) 0x76 / 0xFF },
-            { (float) 0xE5 / 0xFF, (float) 0x6B / 0xFF, (float) 0x6F / 0xFF },
+            { 0.33f, 1f, 1f },
+            { 1f, 0.33f, 0.33f },
+            { 1f, 0.66f, 0f },
+            { 1f, 0.33f, 1f },
     };
 
-    private static final int FLOOR_Y = 68;
-    private static final int BASE_Y = 74;
+    private static final int FLOOR_Y = -24; // 68;
+    private static final int BASE_Y = -16; // 74;
 
-    private static ArrayList<Vec3d[]> lines = new ArrayList<>();
+    private static ArrayList<Beam> beams = new ArrayList<>();
+    private static BlockPos base = null;
+    private static boolean solved = false;
 
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(CreeperBeams::update, 20);
@@ -50,35 +50,51 @@ public class CreeperBeams {
 
     private static void update() {
 
-        if (!Utils.isInDungeons()) {
-            lines.clear();
-            return;
-        }
-
         MinecraftClient client = MinecraftClient.getInstance();
         ClientWorld world = client.world;
         ClientPlayerEntity player = client.player;
 
-        if (world == null || player == null) {
+        // clear state if not in dungeon
+        if (world == null || player == null /* || !Utils.isInDungeons() */) {
+            beams.clear();
+            base = null;
+            solved = false;
             return;
         }
 
-        if (lines.size() == 0) {
-
-            BlockPos basePos = findCreeperBase(player, world);
-
-            if (basePos == null) {
-                return;
-            }
-
-            ArrayList<Vec3d> targets = findTargets(player, world, basePos);
-            Vec3d creeperPos = new Vec3d(basePos.getX() + 0.5, BASE_Y + 3.5, basePos.getZ() + 0.5);
-
-            lines = findLines(player, world, creeperPos, targets);
+        // don't do anything if the room is solved
+        if (solved) {
+            player.sendMessage(Text.of("Room is solved"));
+            return;
         }
 
+        // try to find base if not found
+        if (base == null) {
+            base = findCreeperBase(player, world);
+            if (base == null) {
+                return;
+            }
+        }
+
+        // try to solve if we haven't already
+        if (beams.size() == 0) {
+
+            Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 3.5, base.getZ() + 0.5);
+            ArrayList<BlockPos> targets = findTargets(player, world, base);
+            LOGGER.info("targets2 = {}", targets);
+            beams = findLines(player, world, creeperPos, targets);
+        }
+
+        // check if the room is solved
+        if (world.getBlockState(base).getBlock() != Blocks.SEA_LANTERN) {
+            solved = true;
+        }
+
+        // update the beam states
+        beams.forEach(b -> b.updateShouldRender(world));
     }
 
+    // find the sea lantern block beneath the creeper
     private static BlockPos findCreeperBase(ClientPlayerEntity player, ClientWorld world) {
 
         // find all creepers
@@ -108,10 +124,9 @@ public class CreeperBeams {
 
     }
 
-    // search for sea lanterns (and the ONE prismarine ty hypixel) and calculate
-    // solutions
-    private static ArrayList<Vec3d> findTargets(ClientPlayerEntity player, ClientWorld world, BlockPos basePos) {
-        ArrayList<Vec3d> targets = new ArrayList<>();
+    // find the sea lanterns (and the ONE prismarine ty hypixel) in the room
+    private static ArrayList<BlockPos> findTargets(ClientPlayerEntity player, ClientWorld world, BlockPos basePos) {
+        ArrayList<BlockPos> targets = new ArrayList<>();
 
         BlockPos start = new BlockPos(basePos.getX() - 15, BASE_Y + 12, basePos.getZ() - 15);
         BlockPos end = new BlockPos(basePos.getX() + 16, FLOOR_Y, basePos.getZ() + 16);
@@ -119,52 +134,53 @@ public class CreeperBeams {
         for (BlockPos bp : BlockPos.iterate(start, end)) {
             Block b = world.getBlockState(bp).getBlock();
             if (b == Blocks.SEA_LANTERN || b == Blocks.PRISMARINE) {
-                targets.add(new Vec3d(bp.getX() + 0.5, bp.getY() + 0.5, bp.getZ() + 0.5));
+                targets.add(new BlockPos(bp));
                 player.sendMessage(Text.of(String.format("Found a target at %s", bp.toString())));
             }
         }
+        LOGGER.info("targets = {}", targets);
         return targets;
     }
 
-    private static ArrayList<Vec3d[]> findLines(ClientPlayerEntity player, ClientWorld world, Vec3d creeperPos,
-            ArrayList<Vec3d> targets) {
+    // generate lines between targets and finally find the solution
+    private static ArrayList<Beam> findLines(ClientPlayerEntity player, ClientWorld world, Vec3d creeperPos,
+            ArrayList<BlockPos> targets) {
 
-        ArrayList<Triple<Double, Integer, Integer>> allLines = new ArrayList<>();
+        LOGGER.info("targets3 = {}", targets);
+
+        ArrayList<ObjectDoublePair<Beam>> allLines = new ArrayList<>();
 
         // optimize this a little bit by
-        // only generating lines "one way", i.e. 1->2 but not 2->1
+        // only generating lines "one way", i.e. 1 -> 2 but not 2 -> 1
         for (int i = 0; i < targets.size(); i++) {
             for (int j = i + 1; j < targets.size(); j++) {
-                Vec3d one = targets.get(i);
-                Vec3d two = targets.get(j);
+                Beam beam = new Beam(targets.get(i), targets.get(j));
                 double dist = Intersectiond.distancePointLine(
                         creeperPos.x, creeperPos.y, creeperPos.z,
-                        one.x, one.y, one.z,
-                        two.x, two.y, two.z);
-                allLines.add(Triple.of(dist, i, j));
+                        beam.line[0].x, beam.line[0].y, beam.line[0].z,
+                        beam.line[1].x, beam.line[1].y, beam.line[1].z);
+                allLines.add(ObjectDoublePair.of(beam, dist));
+                player.sendMessage(Text.of(String.format("Adding line from %s to %s", beam.blockOne, beam.blockTwo)));
             }
         }
 
-        // this still feels a bit heavy-handed, but it works for now.
+        // this feels a bit heavy-handed, but it works for now.
 
-        ArrayList<Vec3d[]> result = new ArrayList<>();
-
-        allLines.sort((a, b) -> Double.compare(a.getLeft(), b.getLeft()));
+        ArrayList<Beam> result = new ArrayList<>();
+        allLines.sort((a, b) -> Double.compare(a.rightDouble(), b.rightDouble()));
 
         while (result.size() < 4 && !allLines.isEmpty()) {
-            int idxA = allLines.get(0).getMiddle();
-            int idxB = allLines.get(0).getRight();
-            result.add(new Vec3d[] { targets.get(idxA), targets.get(idxB) });
-            player.sendMessage(Text.of(String.format("Drawing line from %s to %s", targets.get(idxA).toString(),
-                    targets.get(idxB).toString())));
+            Beam solution = allLines.get(0).left();
+            result.add(solution);
+            player.sendMessage(
+                    Text.of(String.format("Drawing line from %s to %s", solution.blockOne, solution.blockTwo)));
 
             // remove the line we just added and other lines that use blocks we're using for
             // that line
             allLines.remove(0);
-            allLines.removeIf(line -> line.getMiddle() == idxA
-                    || line.getRight() == idxA
-                    || line.getMiddle() == idxB
-                    || line.getRight() == idxB);
+            player.sendMessage(Text.of(String.format("Deduplicating pre, %d left", allLines.size())));
+            allLines.removeIf(beam -> solution.containsComponentOf(beam.left()));
+            player.sendMessage(Text.of(String.format("Deduplicating post, %d left", allLines.size())));
         }
 
         if (result.size() != 4) {
@@ -176,11 +192,61 @@ public class CreeperBeams {
 
     private static void render(WorldRenderContext wrc) {
 
-        // lines.size() is always <= so no issues OOB issues here.
-        for (int i = 0; i < lines.size(); i++) {
-            Vec3d[] line = lines.get(i);
-            RenderHelper.renderLinesFromPoints(wrc, line, COLORS[i], 1, 3);
+        // don't render if solved
+        if (solved) {
+            return;
         }
+
+        // lines.size() is always <= 4 so no issues OOB issues with the colors here.
+        for (int i = 0; i < beams.size(); i++) {
+            beams.get(i).render(wrc, COLORS[i]);
+        }
+    }
+
+    private static class Beam {
+
+        public BlockPos blockOne;
+        public BlockPos blockTwo;
+        public Vec3d[] line = new Vec3d[2];
+        public Box outlineOne;
+        public Box outlineTwo;
+
+        private boolean toDo = true;
+
+        public Beam(BlockPos a, BlockPos b) {
+            blockOne = a;
+            blockTwo = b;
+            line[0] = new Vec3d(a.getX() + 0.5, a.getY() + 0.5, a.getZ() + 0.5);
+            line[1] = new Vec3d(b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5);
+            outlineOne = new Box(a);
+            outlineTwo = new Box(b);
+        }
+
+        public boolean containsComponentOf(Beam other) {
+            return this.blockOne.equals(other.blockOne)
+                    || this.blockOne.equals(other.blockTwo)
+                    || this.blockTwo.equals(other.blockOne)
+                    || this.blockTwo.equals(other.blockTwo);
+
+        }
+
+        public void updateShouldRender(ClientWorld world) {
+            toDo = !(world.getBlockState(blockOne).getBlock() == Blocks.PRISMARINE
+                    && world.getBlockState(blockTwo).getBlock() == Blocks.PRISMARINE);
+        }
+
+        public void render(WorldRenderContext wrc, float[] color) {
+            if (toDo) {
+                RenderHelper.renderOutline(wrc, outlineOne, color, 3);
+                RenderHelper.renderOutline(wrc, outlineTwo, color, 3);
+                RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2);
+            } else {
+                RenderHelper.renderOutline(wrc, outlineOne, new float[] { 0.33f, 1f, 0.33f }, 1);
+                RenderHelper.renderOutline(wrc, outlineTwo, new float[] { 0.33f, 1f, 0.33f }, 1);
+                RenderHelper.renderLinesFromPoints(wrc, line, new float[] { 0.33f, 1f, 0.33f }, 0.75f, 1);
+            }
+        }
+
     }
 
 }
