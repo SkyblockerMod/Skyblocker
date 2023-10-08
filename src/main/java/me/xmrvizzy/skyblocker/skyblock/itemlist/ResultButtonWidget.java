@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ResultButtonWidget extends ClickableWidget {
-    private static final Identifier BACKGROUND_TEXTURE = new Identifier("textures/gui/recipe_book.png");
+    private static final Identifier BACKGROUND_TEXTURE = new Identifier("recipe_book/slot_craftable");
 
     protected ItemStack itemStack = null;
 
@@ -38,7 +38,7 @@ public class ResultButtonWidget extends ClickableWidget {
     public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
         MinecraftClient client = MinecraftClient.getInstance();
         // this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
-        context.drawTexture(BACKGROUND_TEXTURE, this.getX(), this.getY(), 29, 206, this.getWidth(), this.getHeight());
+        context.drawGuiTexture(BACKGROUND_TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
         // client.getItemRenderer().renderInGui(this.itemStack, this.x + 4, this.y + 4);
         context.drawItem(this.itemStack, this.getX() + 4, this.getY() + 4);
         // client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, itemStack, this.x + 4, this.y + 4);
