@@ -26,7 +26,8 @@ public class DwarvenHud {
 
     public static final List<Pattern> COMMISSIONS = Stream.of(
                     "(?:Titanium|Mithril|Hard Stone) Miner",
-                    "(?:Ice Walker|Goblin|Goblin Raid|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
+                    "Golden Goblin Slayer",
+                    "(?:Ice Walker|(?<!Golden )Goblin|Goblin Raid|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
                     "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
                     "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
                     "Goblin Raid",
