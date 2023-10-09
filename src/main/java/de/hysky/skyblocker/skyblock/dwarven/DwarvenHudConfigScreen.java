@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class DwarvenHudConfigScreen extends Screen {
 
-    private static final List<DwarvenHud.Commission> CFG_COMMS = List.of(new DwarvenHud.Commission("Test Commission 1", "1%"), new DwarvenHud.Commission("Test Commission 2", "2%"));
+    private static final List<DwarvenHud.Commission> CFG_COMMS = List.of(new Commission("Test Commission 1", "1%"), new DwarvenHud.Commission("Test Commission 2", "2%"));
 
     private int hudX = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x;
     private int hudY = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y;

@@ -430,7 +430,7 @@ public class DungeonSecrets {
     }
 
     /**
-     * Checks if the player is in a dungeon and {@link SkyblockerConfigManager.Dungeons#secretWaypoints Secret Waypoints} is enabled.
+     * Checks if the player is in a dungeon and {@link de.hysky.skyblocker.config.SkyblockerConfig.Dungeons#secretWaypoints Secret Waypoints} is enabled.
      *
      * @return whether dungeon secrets should be processed
      */

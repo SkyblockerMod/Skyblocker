@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.rift;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class TheRift {
     /**
-     * @see Utils#isInTheRift() Utils#isInTheRift().
+     * @see de.hysky.skyblocker.utils.Utils#isInTheRift() Utils#isInTheRift().
      */
     public static final String LOCATION = "rift";
 
