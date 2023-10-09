@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.*;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemCooldowns;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.*;
 import me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import me.xmrvizzy.skyblocker.skyblock.dwarven.DwarvenHud;
@@ -78,6 +79,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Relics.init();
         BackpackPreview.init();
         QuickNav.init();
+        ItemCooldowns.init();
         DwarvenHud.init();
         ChatMessageListener.init();
         Shortcuts.init();
@@ -101,6 +103,7 @@ public class SkyblockerMod implements ClientModInitializer {
         QuiverWarning.init();
         SpecialEffects.init();
         ItemProtection.init();
+        ItemRarityBackgrounds.init();
         containerSolverManager.init();
         statusBarTracker.init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);

@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.3-SNAPSHOT'
+	id 'fabric-loom' version '1.4-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.modrinth.minotaur' version '2.+'
 }
@@ -140,17 +140,21 @@ modrinth {
 	gameVersions = [project.minecraft_version]
 	loaders = ["fabric"]
 	versionType = "release"
-	dependencies = [ // Yet another array. Create a new `ModDependency` or `VersionDependency` with two strings - the ID and the scope
-					 new ModDependency("P7dR8mSH", "required"), // Creates a new required dependency on Fabric API
-					 new ModDependency("mOgUt4GM", "optional"), // modmenu
-					 new ModDependency("nfn13YXA", "optional") // REI
-	]
+	dependencies {
+		required.project "fabric-api"
+		optional.project "modmenu"
+		optional.project "rei"
+		optional.project "emi"
+	}
 	changelog = System.getenv('CHANGELOG')
+	syncBodyFrom = rootProject.file("MRREADME.md").text
 }
 
 tasks.modrinth.doLast {
 	println "::set-output name=url::https://modrinth.com/mod/skyblocker-liap/version/$uploadInfo.id"
 }
+
+tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 
 // configure the maven publication
 publishing {

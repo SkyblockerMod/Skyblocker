@@ -1,12 +1,13 @@
 package me.xmrvizzy.skyblocker.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-
 import dev.cbyrne.betterinject.annotations.Arg;
 import dev.cbyrne.betterinject.annotations.Inject;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
 import me.xmrvizzy.skyblocker.skyblock.item.AttributeShards;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemCooldowns;
 import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.client.font.TextRenderer;
@@ -15,7 +16,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Formatting;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -63,5 +63,11 @@ public abstract class DrawContextMixin {
     			}
     		}
     	}
+    }
+
+    @ModifyExpressionValue(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/Item;F)F"))
+    private float skyblocker$modifyItemCooldown(float cooldownProgress, @Local ItemStack stack) {
+        return Utils.isOnSkyblock() && ItemCooldowns.isOnCooldown(stack) ? ItemCooldowns.getItemCooldownEntry(stack).getRemainingCooldownPercent() : cooldownProgress;
     }
 }

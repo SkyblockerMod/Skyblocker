@@ -9,6 +9,7 @@ import me.xmrvizzy.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import me.xmrvizzy.skyblocker.skyblock.item.BackpackPreview;
 import me.xmrvizzy.skyblocker.skyblock.item.CompactorDeletorPreview;
 import me.xmrvizzy.skyblocker.skyblock.item.ItemProtection;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
 import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
 import me.xmrvizzy.skyblocker.utils.Utils;
@@ -183,5 +184,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     //TODO make this a util method somewhere else, eventually
     private static boolean skyblocker$doesLoreContain(ItemStack stack, MinecraftClient client, String searchString) {
         return stack.getTooltip(client.player, TooltipContext.BASIC).stream().map(Text::getString).anyMatch(line -> line.contains(searchString));
+    }
+    
+    @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
+    private void skyblocker$drawItemRarityBackground(DrawContext context, Slot slot, CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
     }
 }

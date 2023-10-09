@@ -1,10 +1,5 @@
 package me.xmrvizzy.skyblocker.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -14,6 +9,9 @@ import me.xmrvizzy.skyblocker.utils.chat.ChatFilterResult;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SkyblockerConfig {
 	@SerialEntry
@@ -179,6 +177,9 @@ public class SkyblockerConfig {
 		public FairySouls fairySouls = new FairySouls();
 
 		@SerialEntry
+		public ItemCooldown itemCooldown = new ItemCooldown();
+
+		@SerialEntry
 		public Shortcuts shortcuts = new Shortcuts();
 		
 		@SerialEntry
@@ -313,6 +314,11 @@ public class SkyblockerConfig {
 		
 		@SerialEntry
 		public boolean highlightOnlyNearbySouls = false;
+	}
+
+	public static class ItemCooldown {
+		@SerialEntry
+		public boolean enableItemCooldowns = true;
 	}
 
 	public static class Shortcuts {
@@ -461,6 +467,12 @@ public class SkyblockerConfig {
 	public static class ItemInfoDisplay {
 		@SerialEntry
 		public boolean attributeShardInfo = true;
+		
+		@SerialEntry
+		public boolean itemRarityBackgrounds = false;
+
+		@SerialEntry
+		public float itemRarityBackgroundsOpacity = 1f;
 	}
 	
 	public static class SpecialEffects {
@@ -581,54 +593,17 @@ public class SkyblockerConfig {
 		public int neutralThreshold = 1000;
 		
 		@SerialEntry
-		public FormattingOption neutralColor = FormattingOption.DARK_GRAY;
+		public Formatting neutralColor = Formatting.DARK_GRAY;
 		
 		@SerialEntry
-		public FormattingOption profitColor = FormattingOption.DARK_GREEN;
+		public Formatting profitColor = Formatting.DARK_GREEN;
 		
 		@SerialEntry
-		public FormattingOption lossColor = FormattingOption.RED;
+		public Formatting lossColor = Formatting.RED;
 		
 		@SerialEntry
-		public FormattingOption incompleteColor = FormattingOption.BLUE;
+		public Formatting incompleteColor = Formatting.BLUE;
 		
-	}
-	
-	public enum FormattingOption {
-		BLACK(Formatting.BLACK),
-		DARK_BLUE(Formatting.DARK_BLUE),
-		DARK_GREEN(Formatting.DARK_GREEN),
-		DARK_AQUA(Formatting.DARK_AQUA),
-		DARK_RED(Formatting.DARK_RED),
-		DARK_PURPLE(Formatting.DARK_PURPLE),
-		GOLD(Formatting.GOLD),
-		GRAY(Formatting.GRAY),
-		DARK_GRAY(Formatting.DARK_GRAY),
-		BLUE(Formatting.BLUE),
-		GREEN(Formatting.GREEN),
-		AQUA(Formatting.AQUA),
-		RED(Formatting.RED),
-		LIGHT_PURPLE(Formatting.LIGHT_PURPLE),
-		YELLOW(Formatting.YELLOW),
-		WHITE(Formatting.WHITE),
-		OBFUSCATED(Formatting.OBFUSCATED),
-		BOLD(Formatting.BOLD),
-		STRIKETHROUGH(Formatting.STRIKETHROUGH),
-		UNDERLINE(Formatting.UNDERLINE),
-		ITALIC(Formatting.ITALIC),
-		RESET(Formatting.RESET);
-		
-		public final Formatting formatting;
-		
-		
-		FormattingOption(Formatting formatting) {
-			this.formatting = formatting;
-		}
-		
-		@Override
-		public String toString() {
-			return StringUtils.capitalize(formatting.getName().replaceAll("_", " "));
-		}
 	}
 
 	public static class LividColor {

@@ -92,6 +92,20 @@ public class ItemUtils {
         }
     }
 
+    public static String getItemId(ItemStack itemStack) {
+        if (itemStack == null) return null;
+
+        NbtCompound nbt = itemStack.getNbt();
+        if (nbt != null && nbt.contains("ExtraAttributes")) {
+            NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+            if (extraAttributes.contains("id")) {
+                return extraAttributes.getString("id");
+            }
+        }
+
+        return null;
+    }
+  
     public record Durability(int current, int max) {
     }
 }
