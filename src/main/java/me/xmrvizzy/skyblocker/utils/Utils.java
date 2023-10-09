@@ -2,6 +2,8 @@ package me.xmrvizzy.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.xmrvizzy.skyblocker.events.SkyblockEvents;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
@@ -25,7 +27,6 @@ import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,6 +53,12 @@ public class Utils {
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
     private static boolean canSendLocRaw = false;
+    
+    /**
+     * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
+     */
+    public static final ObjectArrayList<Text> TEXT_SCOREBOARD = new ObjectArrayList<>();
+    public static final ObjectArrayList<String> STRING_SCOREBOARD = new ObjectArrayList<>();
 
     public static boolean isOnHypixel() {
         return isOnHypixel;
@@ -119,7 +126,8 @@ public class Utils {
      */
     public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
-        updateFromScoreboard(client);
+        updateScoreboard(client);
+        updatePlayerPresenceFromScoreboard(client);
         updateFromPlayerList(client);
         updateLocRaw();
     }
@@ -127,11 +135,11 @@ public class Utils {
     /**
      * Updates {@link #isOnSkyblock}, {@link #isInDungeons}, and {@link #isInjected} from the scoreboard.
      */
-    public static void updateFromScoreboard(MinecraftClient client) {
-        List<String> sidebar;
+    public static void updatePlayerPresenceFromScoreboard(MinecraftClient client) {
+        List<String> sidebar = STRING_SCOREBOARD;
 
         FabricLoader fabricLoader = FabricLoader.getInstance();
-        if ((client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null)) {
+        if ((client.world == null || client.isInSingleplayer() || sidebar == null || sidebar.isEmpty())) {
             if (fabricLoader.isDevelopmentEnvironment()) {
                 sidebar = Collections.emptyList();
             } else {
@@ -158,12 +166,12 @@ public class Utils {
                     SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 }
             } else {
-                leaveSkyblock();
+                onLeaveSkyblock();
             }
             isInDungeons = fabricLoader.isDevelopmentEnvironment() || isOnSkyblock && string.contains("The Catacombs");
         } else if (isOnHypixel) {
             isOnHypixel = false;
-            leaveSkyblock();
+            onLeaveSkyblock();
         }
     }
 
@@ -174,7 +182,7 @@ public class Utils {
         return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
     }
 
-    private static void leaveSkyblock() {
+    private static void onLeaveSkyblock() {
         if (isOnSkyblock) {
             isOnSkyblock = false;
             isInDungeons = false;
@@ -184,7 +192,7 @@ public class Utils {
 
     public static String getLocation() {
         String location = null;
-        List<String> sidebarLines = getSidebar();
+        List<String> sidebarLines = STRING_SCOREBOARD;
         try {
             if (sidebarLines != null) {
                 for (String sidebarLine : sidebarLines) {
@@ -204,7 +212,7 @@ public class Utils {
         String purseString = null;
         double purse = 0;
 
-        List<String> sidebarLines = getSidebar();
+        List<String> sidebarLines = STRING_SCOREBOARD;
         try {
 
             if (sidebarLines != null) {
@@ -225,7 +233,7 @@ public class Utils {
     public static int getBits() {
         int bits = 0;
         String bitsString = null;
-        List<String> sidebarLines = getSidebar();
+        List<String> sidebarLines = STRING_SCOREBOARD;
         try {
             if (sidebarLines != null) {
                 for (String sidebarLine : sidebarLines) {
@@ -241,31 +249,47 @@ public class Utils {
         return bits;
     }
 
-    public static List<String> getSidebar() {
+    private static void updateScoreboard(MinecraftClient client) {
         try {
-            ClientPlayerEntity client = MinecraftClient.getInstance().player;
-            if (client == null) return Collections.emptyList();
-            Scoreboard scoreboard = MinecraftClient.getInstance().player.getScoreboard();
+            TEXT_SCOREBOARD.clear();
+            STRING_SCOREBOARD.clear();
+            
+            ClientPlayerEntity player = client.player;
+            if (player == null) return;
+            
+            Scoreboard scoreboard = player.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
-            List<String> lines = new ArrayList<>();
+            ObjectArrayList<Text> textLines = new ObjectArrayList<>();
+            ObjectArrayList<String> stringLines = new ObjectArrayList<>();
+            
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());
+                
                 if (team != null) {
-                    String line = team.getPrefix().getString() + team.getSuffix().getString();
-                    if (!line.trim().isEmpty()) {
-                        String formatted = Formatting.strip(line);
-                        lines.add(formatted);
+                    Text textLine = Text.empty().append(team.getPrefix().copy()).append(team.getSuffix().copy());
+                    String strLine = team.getPrefix().getString() + team.getSuffix().getString();
+                    
+                    if (!strLine.trim().isEmpty()) {
+                        String formatted = Formatting.strip(strLine);
+                        
+                        textLines.add(textLine);
+                        stringLines.add(formatted);
                     }
                 }
             }
 
             if (objective != null) {
-                lines.add(objective.getDisplayName().getString());
-                Collections.reverse(lines);
+                stringLines.add(objective.getDisplayName().getString());
+                textLines.add(Text.empty().append(objective.getDisplayName().copy()));
+                
+                Collections.reverse(stringLines);
+                Collections.reverse(textLines);
             }
-            return lines;
+            
+            TEXT_SCOREBOARD.addAll(textLines);
+            STRING_SCOREBOARD.addAll(stringLines);
         } catch (NullPointerException e) {
-            return null;
+            //Do nothing
         }
     }
 

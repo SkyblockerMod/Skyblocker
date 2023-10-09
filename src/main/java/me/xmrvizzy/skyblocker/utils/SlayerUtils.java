@@ -1,14 +1,8 @@
 package me.xmrvizzy.skyblocker.utils;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardDisplaySlot;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
-import net.minecraft.scoreboard.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,22 +40,15 @@ public class SlayerUtils {
 
     public static boolean isInSlayer() {
         try {
-            ClientPlayerEntity client = MinecraftClient.getInstance().player;
-            if (client == null) return false;
-            Scoreboard scoreboard = MinecraftClient.getInstance().player.getScoreboard();
-            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
-            for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
-                Team team = scoreboard.getPlayerTeam(score.getPlayerName());
-                if (team != null) {
-                    String line = team.getPrefix().getString() + team.getSuffix().getString();
-                    if (line.contains("Slay the boss!")) {
-                        return true;
-                    }
-                }
+            for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
+                String line = Utils.STRING_SCOREBOARD.get(i);
+                
+                if (line.contains("Slay the boss!")) return true;
             }
         } catch (NullPointerException e) {
             LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
         }
+        
         return false;
     }
 }
