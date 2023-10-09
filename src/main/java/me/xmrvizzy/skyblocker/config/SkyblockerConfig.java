@@ -177,6 +177,9 @@ public class SkyblockerConfig {
 		public FairySouls fairySouls = new FairySouls();
 
 		@SerialEntry
+		public ItemCooldown itemCooldown = new ItemCooldown();
+
+		@SerialEntry
 		public Shortcuts shortcuts = new Shortcuts();
 		
 		@SerialEntry
@@ -311,6 +314,11 @@ public class SkyblockerConfig {
 		
 		@SerialEntry
 		public boolean highlightOnlyNearbySouls = false;
+	}
+
+	public static class ItemCooldown {
+		@SerialEntry
+		public boolean enableItemCooldowns = true;
 	}
 
 	public static class Shortcuts {

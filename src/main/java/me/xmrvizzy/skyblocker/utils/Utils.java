@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import me.xmrvizzy.skyblocker.events.SkyblockEvents;
 import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
 import me.xmrvizzy.skyblocker.skyblock.rift.TheRift;
 import me.xmrvizzy.skyblocker.utils.scheduler.MessageScheduler;

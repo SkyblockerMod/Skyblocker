@@ -8,7 +8,7 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
-import me.xmrvizzy.skyblocker.utils.SkyblockEvents;
+import me.xmrvizzy.skyblocker.events.SkyblockEvents;
 import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;

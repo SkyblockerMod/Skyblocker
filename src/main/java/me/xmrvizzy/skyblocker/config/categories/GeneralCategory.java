@@ -201,6 +201,19 @@ public class GeneralCategory {
 								.build())
 						.build())
 
+				//Item Cooldown
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemCooldown"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemCooldown.enableItemCooldowns"))
+								.binding(defaults.general.itemCooldown.enableItemCooldowns,
+										() -> config.general.itemCooldown.enableItemCooldowns,
+										newValue -> config.general.itemCooldown.enableItemCooldowns = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
+
 				//Shortcuts
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.shortcuts"))
