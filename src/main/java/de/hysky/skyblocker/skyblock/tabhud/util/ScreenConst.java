@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
-import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public class ScreenConst {
     public static final int WIDGET_PAD = 5;
