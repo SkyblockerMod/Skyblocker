@@ -67,10 +67,17 @@ public class ItemUtils {
                     max = Integer.parseInt(split[1]) * 1000;
                     return new Durability(current, max);
                 }
-            } else if (line.contains("uses.")) {
+            } else if (line.contains("uses.") || line.contains("use.")) {
                 if (clearFormatting != null) {
-                    int startIndex = clearFormatting.lastIndexOf("after") + 6;
-                    int endIndex = clearFormatting.indexOf("uses", startIndex);
+                    int startIndex;
+                    int endIndex;
+                    if (line.contains("uses.")) {
+                        startIndex = clearFormatting.lastIndexOf("after") + 6;
+                        endIndex = clearFormatting.indexOf("uses", startIndex);
+                    } else {
+                        startIndex = clearFormatting.lastIndexOf("only") + 5;
+                        endIndex = clearFormatting.indexOf("more", startIndex);
+                    }
                     if (startIndex >= 0 && endIndex > startIndex) {
                         String usesString = clearFormatting.substring(startIndex, endIndex).trim();
                         current = Integer.parseInt(usesString);
