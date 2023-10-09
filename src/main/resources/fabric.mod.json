@@ -16,19 +16,19 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "me.xmrvizzy.skyblocker.SkyblockerMod"
+      "de.hysky.skyblocker.SkyblockerMod"
     ],
     "preLaunch": [
       "dev.cbyrne.betterinject.BetterInject::initialize"
     ],
     "modmenu": [
-      "me.xmrvizzy.skyblocker.compatibility.modmenu.ModMenuEntry"
+      "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
     "rei_client": [
-      "me.xmrvizzy.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
+      "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
     ],
     "emi": [
-      "me.xmrvizzy.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
+      "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
     ]
   },
   "mixins": [
