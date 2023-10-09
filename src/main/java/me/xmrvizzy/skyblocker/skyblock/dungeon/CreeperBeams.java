@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -55,7 +56,7 @@ public class CreeperBeams {
         ClientPlayerEntity player = client.player;
 
         // clear state if not in dungeon
-        if (world == null || player == null /* || !Utils.isInDungeons() */) {
+        if (world == null || player == null  || !Utils.isInDungeons()) {
             beams.clear();
             base = null;
             solved = false;
@@ -64,7 +65,6 @@ public class CreeperBeams {
 
         // don't do anything if the room is solved
         if (solved) {
-            player.sendMessage(Text.of("Room is solved"));
             return;
         }
 
@@ -81,7 +81,6 @@ public class CreeperBeams {
 
             Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 3.5, base.getZ() + 0.5);
             ArrayList<BlockPos> targets = findTargets(player, world, base);
-            LOGGER.info("targets2 = {}", targets);
             beams = findLines(player, world, creeperPos, targets);
         }
 
@@ -114,12 +113,10 @@ public class CreeperBeams {
             BlockPos potentialBase = BlockPos.ofFloored(creeperPos.x, BASE_Y, creeperPos.z);
             Block block = world.getBlockState(potentialBase).getBlock();
             if (block == Blocks.SEA_LANTERN || block == Blocks.PRISMARINE) {
-                player.sendMessage(Text.of(String.format("Base found at %s", potentialBase.toString())));
                 return potentialBase;
             }
         }
 
-        player.sendMessage(Text.of("Base not found"));
         return null;
 
     }
@@ -135,18 +132,14 @@ public class CreeperBeams {
             Block b = world.getBlockState(bp).getBlock();
             if (b == Blocks.SEA_LANTERN || b == Blocks.PRISMARINE) {
                 targets.add(new BlockPos(bp));
-                player.sendMessage(Text.of(String.format("Found a target at %s", bp.toString())));
             }
         }
-        LOGGER.info("targets = {}", targets);
         return targets;
     }
 
     // generate lines between targets and finally find the solution
     private static ArrayList<Beam> findLines(ClientPlayerEntity player, ClientWorld world, Vec3d creeperPos,
             ArrayList<BlockPos> targets) {
-
-        LOGGER.info("targets3 = {}", targets);
 
         ArrayList<ObjectDoublePair<Beam>> allLines = new ArrayList<>();
 
@@ -160,7 +153,6 @@ public class CreeperBeams {
                         beam.line[0].x, beam.line[0].y, beam.line[0].z,
                         beam.line[1].x, beam.line[1].y, beam.line[1].z);
                 allLines.add(ObjectDoublePair.of(beam, dist));
-                player.sendMessage(Text.of(String.format("Adding line from %s to %s", beam.blockOne, beam.blockTwo)));
             }
         }
 
@@ -172,15 +164,11 @@ public class CreeperBeams {
         while (result.size() < 4 && !allLines.isEmpty()) {
             Beam solution = allLines.get(0).left();
             result.add(solution);
-            player.sendMessage(
-                    Text.of(String.format("Drawing line from %s to %s", solution.blockOne, solution.blockTwo)));
 
             // remove the line we just added and other lines that use blocks we're using for
             // that line
             allLines.remove(0);
-            player.sendMessage(Text.of(String.format("Deduplicating pre, %d left", allLines.size())));
             allLines.removeIf(beam -> solution.containsComponentOf(beam.left()));
-            player.sendMessage(Text.of(String.format("Deduplicating post, %d left", allLines.size())));
         }
 
         if (result.size() != 4) {
