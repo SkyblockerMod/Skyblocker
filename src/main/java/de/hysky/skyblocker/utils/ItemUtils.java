@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 public class ItemUtils {
     private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
     public static final String EXTRA_ATTRIBUTES = "ExtraAttributes";
+    public static final String ID = "id";
+    public static final String UUID = "uuid";
 
     public static List<Text> getTooltip(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -65,7 +67,7 @@ public class ItemUtils {
      * @return an optional containing the internal name of the item stack
      */
     public static Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
-        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString("id"));
+        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString(ID));
     }
 
     /**
@@ -83,7 +85,7 @@ public class ItemUtils {
      * @return an optional containing the UUID of the item stack
      */
     public static Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
-        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString("uuid"));
+        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString(UUID));
     }
 
     /**
@@ -101,7 +103,7 @@ public class ItemUtils {
             return null;
         }
 
-        if (getExtraAttributesOptional(stack).filter(extraAttributes -> extraAttributes.contains("drill_fuel") || extraAttributes.getString("id").equals("PICKONIMBUS")).isEmpty()) {
+        if (getExtraAttributesOptional(stack).filter(extraAttributes -> extraAttributes.contains("drill_fuel") || extraAttributes.getString(ItemUtils.ID).equals("PICKONIMBUS")).isEmpty()) {
             return null;
         }
 

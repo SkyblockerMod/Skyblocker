@@ -236,10 +236,10 @@ public class PriceInfoTooltip {
     public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
         NbtCompound ea = ItemUtils.getExtraAttributes(stack);
 
-        if (ea == null || !ea.contains("id", 8)) {
+        if (ea == null || !ea.contains(ItemUtils.ID, 8)) {
             return null;
         }
-        String internalName = ea.getString("id");
+        String internalName = ea.getString(ItemUtils.ID);
 
         if (internalIDOnly) {
             return internalName;

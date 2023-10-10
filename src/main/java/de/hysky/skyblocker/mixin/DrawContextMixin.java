@@ -37,7 +37,7 @@ public abstract class DrawContextMixin {
 		if (Utils.isOnSkyblock()) {
     		NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
 
-    		if (extraAttributes != null && extraAttributes.getString("id").equals("ATTRIBUTE_SHARD")) {
+    		if (extraAttributes != null && extraAttributes.getString(ItemUtils.ID).equals("ATTRIBUTE_SHARD")) {
     			NbtCompound attributesTag = extraAttributes.getCompound("attributes");
     			String[] attributes = attributesTag.getKeys().toArray(String[]::new);
 
