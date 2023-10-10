@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.config;
 
+import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;

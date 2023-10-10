@@ -2,10 +2,10 @@ package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
-import me.x150.renderer.render.Renderer3d;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+import me.x150.renderer.render.Renderer3d;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
