@@ -63,7 +63,7 @@ public class DungeonBlaze {
             String blazeName = blaze.getName().getString();
             if (blazeName.contains("Blaze") && blazeName.contains("/")) {
                 try {
-                    int health = Integer.parseInt(blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1));
+                    int health = Integer.parseInt((blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1)).replaceAll(",",""));
                     blazes.add(ObjectIntPair.of(blaze, health));
                 } catch (NumberFormatException e) {
                     handleException(e);
@@ -147,6 +147,6 @@ public class DungeonBlaze {
      * @param e The exception to handle.
      */
     private static void handleException(Exception e) {
-        LOGGER.warn("[Skyblocker BlazeRenderer] Encountered an unknown exception", e);
+        LOGGER.error("[Skyblocker BlazeRenderer] Encountered an unknown exception", e);
     }
 }
