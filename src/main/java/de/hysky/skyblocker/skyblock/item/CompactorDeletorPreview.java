@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
 import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;

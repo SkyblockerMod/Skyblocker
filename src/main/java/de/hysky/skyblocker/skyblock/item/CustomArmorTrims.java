@@ -3,14 +3,13 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;

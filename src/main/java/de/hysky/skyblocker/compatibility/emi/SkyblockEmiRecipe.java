@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.compatibility.emi;
 
+import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.utils.ItemUtils;
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
-import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;

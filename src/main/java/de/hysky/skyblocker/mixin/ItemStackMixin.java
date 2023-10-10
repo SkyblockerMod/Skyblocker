@@ -1,17 +1,15 @@
 package de.hysky.skyblocker.mixin;
 
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.ItemUtils.Durability;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
