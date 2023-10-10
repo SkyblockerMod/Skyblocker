@@ -34,12 +34,10 @@ public abstract class DrawContextMixin {
     private void skyblocker$renderAttributeShardDisplay(@Arg TextRenderer textRenderer, @Arg ItemStack stack, @Arg(ordinal = 0) int x, @Arg(ordinal = 1) int y, @Local(argsOnly = true) LocalRef<String> countOverride) {
     	if (!SkyblockerConfigManager.get().general.itemInfoDisplay.attributeShardInfo) return;
 
-    	NbtCompound nbt = stack.getNbt();
+		if (Utils.isOnSkyblock()) {
+    		NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
 
-    	if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
-    		NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-
-    		if (extraAttributes.getString("id").equals("ATTRIBUTE_SHARD")) {
+    		if (extraAttributes != null && extraAttributes.getString("id").equals("ATTRIBUTE_SHARD")) {
     			NbtCompound attributesTag = extraAttributes.getCompound("attributes");
     			String[] attributes = attributesTag.getKeys().toArray(String[]::new);
 

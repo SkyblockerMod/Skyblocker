@@ -1,9 +1,10 @@
-package de.hysky.skyblocker.skyblock.item;
+package me.xmrvizzy.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import me.xmrvizzy.skyblocker.mixin.accessor.DrawContextInvoker;
+import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -39,11 +40,8 @@ public class CompactorDeletorPreview {
         if (targetIndex == -1) return false;
 
         // Get items in compactor or deletor
-        NbtCompound nbt = stack.getNbt();
-        if (nbt == null || !nbt.contains("ExtraAttributes", 10)) {
-            return false;
-        }
-        NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
+        NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
+        if (extraAttributes == null) return false;
         // Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
         List<IntObjectPair<ItemStack>> slots = extraAttributes.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRegistry.getItemStack(extraAttributes.getString(slot)))).toList();
 

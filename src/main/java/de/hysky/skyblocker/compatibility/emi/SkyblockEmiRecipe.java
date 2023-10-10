@@ -1,13 +1,13 @@
-package de.hysky.skyblocker.compatibility.emi;
+package me.xmrvizzy.skyblocker.compatibility.emi;
 
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
-import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import me.xmrvizzy.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -16,7 +16,7 @@ public class SkyblockEmiRecipe extends EmiCraftingRecipe {
     private final String craftText;
 
     public SkyblockEmiRecipe(SkyblockCraftingRecipe recipe) {
-        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()).comparison(Comparison.compareNbt()), Identifier.of("skyblock", ItemRegistry.getInternalName(recipe.getResult()).toLowerCase().replace(';', '_')));
+        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()).comparison(Comparison.compareNbt()), Identifier.of("skyblock", ItemUtils.getItemId(recipe.getResult()).toLowerCase().replace(';', '_')));
         this.craftText = recipe.getCraftText();
     }
 

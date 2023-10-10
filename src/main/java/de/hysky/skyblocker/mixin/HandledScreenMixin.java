@@ -1,19 +1,19 @@
-package de.hysky.skyblocker.mixin;
+package me.xmrvizzy.skyblocker.mixin;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
-import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
-import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
-import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.item.BackpackPreview;
-import de.hysky.skyblocker.skyblock.item.CompactorDeletorPreview;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import me.xmrvizzy.skyblocker.skyblock.experiment.ChronomatronSolver;
+import me.xmrvizzy.skyblocker.skyblock.experiment.ExperimentSolver;
+import me.xmrvizzy.skyblocker.skyblock.experiment.SuperpairsSolver;
+import me.xmrvizzy.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import me.xmrvizzy.skyblocker.skyblock.item.BackpackPreview;
+import me.xmrvizzy.skyblocker.skyblock.item.CompactorDeletorPreview;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemProtection;
+import me.xmrvizzy.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import me.xmrvizzy.skyblocker.skyblock.item.WikiLookup;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.render.gui.ContainerSolver;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -89,7 +89,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         // Compactor Preview
         if (SkyblockerConfigManager.get().general.compactorDeletorPreview) {
             ItemStack stack = focusedSlot.getStack();
-            Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemRegistry.getInternalName(stack));
+            Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
             if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, matcher.group("type"), matcher.group("size"), x, y)) {
                 ci.cancel();
             }

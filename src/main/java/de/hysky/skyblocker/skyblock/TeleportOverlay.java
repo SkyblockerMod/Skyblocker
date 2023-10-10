@@ -1,10 +1,11 @@
-package de.hysky.skyblocker.skyblock;
+package me.xmrvizzy.skyblocker.skyblock;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
@@ -27,7 +28,7 @@ public class TeleportOverlay {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
             String itemId = PriceInfoTooltip.getInternalNameFromNBT(heldItem, true);
-            NbtCompound nbt = heldItem.getNbt();
+            NbtCompound extraAttributes = ItemUtils.getExtraAttributes(heldItem);
 
             if (itemId != null) {
                 switch (itemId) {
@@ -42,20 +43,20 @@ public class TeleportOverlay {
                         }
                     }
                     case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && nbt != null && nbt.getCompound("ExtraAttributes").getInt("ethermerge") == 1) {
-                            render(wrc, nbt, 57);
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && extraAttributes != null && extraAttributes.getInt("ethermerge") == 1) {
+                            render(wrc, extraAttributes, 57);
                         } else if (SkyblockerConfigManager.get().general.teleportOverlay.enableInstantTransmission) {
-                            render(wrc, nbt, 8);
+                            render(wrc, extraAttributes, 8);
                         }
                     }
                     case "ETHERWARP_CONDUIT" -> {
                         if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission) {
-                            render(wrc, nbt, 57);
+                            render(wrc, extraAttributes, 57);
                         }
                     }
                     case "SINSEEKER_SCYTHE" -> {
                         if (SkyblockerConfigManager.get().general.teleportOverlay.enableSinrecallTransmission) {
-                            render(wrc, nbt, 4);
+                            render(wrc, extraAttributes, 4);
                         }
                     }
                     case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
@@ -71,8 +72,8 @@ public class TeleportOverlay {
     /**
      * Renders the teleport overlay with a given base range and the tuned transmission stat.
      */
-    private static void render(WorldRenderContext wrc, NbtCompound nbt, int baseRange) {
-        render(wrc, nbt != null && nbt.getCompound("ExtraAttributes").contains("tuned_transmission") ? baseRange + nbt.getCompound("ExtraAttributes").getInt("tuned_transmission") : baseRange);
+    private static void render(WorldRenderContext wrc, NbtCompound extraAttributes, int baseRange) {
+        render(wrc, extraAttributes != null && extraAttributes.contains("tuned_transmission") ? baseRange + extraAttributes.getInt("tuned_transmission") : baseRange);
     }
 
     /**

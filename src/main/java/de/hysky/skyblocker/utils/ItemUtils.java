@@ -9,15 +9,18 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class ItemUtils {
     private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
+    public static final String EXTRA_ATTRIBUTES = "ExtraAttributes";
 
     public static List<Text> getTooltip(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -37,19 +40,68 @@ public class ItemUtils {
         return list;
     }
 
+    /**
+     * Gets the {@code ExtraAttributes} NBT tag from the item stack.
+     * @param stack the item stack to get the {@code ExtraAttributes} NBT tag from
+     * @return an optional containing the {@code ExtraAttributes} NBT tag of the item stack
+     */
+    public static Optional<NbtCompound> getExtraAttributesOptional(@NotNull ItemStack stack) {
+        return Optional.ofNullable(stack.getSubNbt(EXTRA_ATTRIBUTES));
+    }
+
+    /**
+     * Gets the {@code ExtraAttributes} NBT tag from the item stack.
+     * @param stack the item stack to get the {@code ExtraAttributes} NBT tag from
+     * @return the {@code ExtraAttributes} NBT tag of the item stack, or null if the item stack is null or does not have an {@code ExtraAttributes} NBT tag
+     */
     @Nullable
-    public static Durability getDurability(ItemStack stack) {
+    public static NbtCompound getExtraAttributes(@NotNull ItemStack stack) {
+        return getExtraAttributesOptional(stack).orElse(null);
+    }
+
+    /**
+     * Gets the internal name of the item stack from the {@code ExtraAttributes} NBT tag.
+     * @param stack the item stack to get the internal name from
+     * @return an optional containing the internal name of the item stack
+     */
+    public static Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
+        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString("id"));
+    }
+
+    /**
+     * Gets the internal name of the item stack from the {@code ExtraAttributes} NBT tag.
+     * @param stack the item stack to get the internal name from
+     * @return the internal name of the item stack, or an empty string if the item stack is null or does not have an internal name
+     */
+    public static String getItemId(@NotNull ItemStack stack) {
+        return getItemIdOptional(stack).orElse("");
+    }
+
+    /**
+     * Gets the UUID of the item stack from the {@code ExtraAttributes} NBT tag.
+     * @param stack the item stack to get the UUID from
+     * @return an optional containing the UUID of the item stack
+     */
+    public static Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
+        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString("uuid"));
+    }
+
+    /**
+     * Gets the UUID of the item stack from the {@code ExtraAttributes} NBT tag.
+     * @param stack the item stack to get the UUID from
+     * @return the UUID of the item stack, or null if the item stack is null or does not have a UUID
+     */
+    public static String getItemUuid(@NotNull ItemStack stack) {
+        return getItemUuidOptional(stack).orElse("");
+    }
+
+    @Nullable
+    public static Durability getDurability(@NotNull ItemStack stack) {
         if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().locations.dwarvenMines.enableDrillFuel || stack.isEmpty()) {
             return null;
         }
 
-        NbtCompound tag = stack.getNbt();
-        if (tag == null || !tag.contains("ExtraAttributes")) {
-            return null;
-        }
-
-        NbtCompound extraAttributes = tag.getCompound("ExtraAttributes");
-        if (!extraAttributes.contains("drill_fuel") && !extraAttributes.getString("id").equals("PICKONIMBUS")) {
+        if (getExtraAttributesOptional(stack).filter(extraAttributes -> extraAttributes.contains("drill_fuel") || extraAttributes.getString("id").equals("PICKONIMBUS")).isEmpty()) {
             return null;
         }
 
@@ -92,20 +144,6 @@ public class ItemUtils {
         }
     }
 
-    public static String getItemId(ItemStack itemStack) {
-        if (itemStack == null) return null;
-
-        NbtCompound nbt = itemStack.getNbt();
-        if (nbt != null && nbt.contains("ExtraAttributes")) {
-            NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-            if (extraAttributes.contains("id")) {
-                return extraAttributes.getString("id");
-            }
-        }
-
-        return null;
-    }
-  
     public record Durability(int current, int max) {
     }
 }

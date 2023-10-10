@@ -1,14 +1,14 @@
-package de.hysky.skyblocker.mixin;
+package me.xmrvizzy.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
-import de.hysky.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
-import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -19,12 +19,9 @@ public class ArmorTrimMixin {
 
 	@ModifyReturnValue(method = "getTrim", at = @At("RETURN"))
 	private static Optional<ArmorTrim> skyblocker$customArmorTrims(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArmorTrim> original, @Local ItemStack stack) {
-		NbtCompound nbt = stack.getNbt();
-
-		if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
+		if (Utils.isOnSkyblock()) {
 			Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;
-			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
+			String itemUuid = ItemUtils.getItemUuid(stack);
 
 			if (customTrims.containsKey(itemUuid)) {
 				CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);

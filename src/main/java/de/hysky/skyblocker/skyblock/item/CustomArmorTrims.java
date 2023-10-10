@@ -1,15 +1,16 @@
-package de.hysky.skyblocker.skyblock.item;
+package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Utils;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import me.xmrvizzy.skyblocker.events.SkyblockEvents;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -93,41 +94,37 @@ public class CustomArmorTrims {
 	@SuppressWarnings("SameReturnValue")
 	private static int customizeTrim(FabricClientCommandSource source, Identifier material, Identifier pattern) {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
-		NbtCompound nbt = (heldItem != null) ? heldItem.getNbt() : null;
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.getItem() instanceof ArmorItem) {
-				if (nbt != null && nbt.contains("ExtraAttributes")) {
-					NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-					String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
+				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
-					if (itemUuid != null) {
-						Object2ObjectOpenHashMap<String, ArmorTrimId> customArmorTrims = SkyblockerConfigManager.get().general.customArmorTrims;
+				if (!itemUuid.isEmpty()) {
+					Object2ObjectOpenHashMap<String, ArmorTrimId> customArmorTrims = SkyblockerConfigManager.get().general.customArmorTrims;
 
-						if (material == null && pattern == null) {
-							if (customArmorTrims.containsKey(itemUuid)) {
-								customArmorTrims.remove(itemUuid);
-								SkyblockerConfigManager.save();
-								source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.removed"));
-							} else {
-								source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.neverHad"));
-							}
-						} else {
-							// Ensure that the material & trim are valid
-							ArmorTrimId trimId = new ArmorTrimId(material, pattern);
-							if (TRIMS_CACHE.get(trimId) == null) {
-								source.sendError(Text.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern"));
-
-								return Command.SINGLE_SUCCESS;
-							}
-
-							customArmorTrims.put(itemUuid, trimId);
+					if (material == null && pattern == null) {
+						if (customArmorTrims.containsKey(itemUuid)) {
+							customArmorTrims.remove(itemUuid);
 							SkyblockerConfigManager.save();
-							source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.added"));
+							source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.removed"));
+						} else {
+							source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.neverHad"));
 						}
 					} else {
-						source.sendError(Text.translatable("skyblocker.customArmorTrims.noItemUuid"));
+						// Ensure that the material & trim are valid
+						ArmorTrimId trimId = new ArmorTrimId(material, pattern);
+						if (TRIMS_CACHE.get(trimId) == null) {
+							source.sendError(Text.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern"));
+
+							return Command.SINGLE_SUCCESS;
+						}
+
+						customArmorTrims.put(itemUuid, trimId);
+						SkyblockerConfigManager.save();
+						source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.added"));
 					}
+				} else {
+					source.sendError(Text.translatable("skyblocker.customArmorTrims.noItemUuid"));
 				}
 			} else {
 				source.sendError(Text.translatable("skyblocker.customArmorTrims.notAnArmorPiece"));

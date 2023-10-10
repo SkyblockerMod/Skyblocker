@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -198,10 +199,10 @@ public class SearchResultsWidget implements Drawable {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (ResultButtonWidget button : resultButtons)
             if (button.mouseClicked(mouseX, mouseY, mouseButton)) {
-                if (button.itemStack.getNbt() == null) {
+                String internalName = ItemUtils.getItemId(button.itemStack);
+                if (internalName.isEmpty()) {
                     continue;
                 }
-                String internalName = button.itemStack.getNbt().getCompound("ExtraAttributes").getString("id");
                 List<SkyblockCraftingRecipe> recipes = ItemRegistry.getRecipes(internalName);
                 if (!recipes.isEmpty()) {
                     this.recipeResults = recipes;

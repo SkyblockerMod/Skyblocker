@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item;
+package me.xmrvizzy.skyblocker.skyblock.item;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,11 +8,12 @@ import java.util.function.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+import me.xmrvizzy.skyblocker.SkyblockerMod;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
+import me.xmrvizzy.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -20,7 +21,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -67,17 +67,11 @@ public class ItemRarityBackgrounds {
 
 	private static SkyblockItemRarity getItemRarity(ItemStack stack, ClientPlayerEntity player) {
 		if (stack == null || stack.isEmpty()) return null;
-		
-		int hashCode = 0;
-		NbtCompound nbt = stack.getNbt();
-		
-		if (nbt != null && nbt.contains("ExtraAttributes")) {
-			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid = extraAttributes.getString("uuid");
-			
-			//If the item has an uuid, then use the hash code of the uuid otherwise use the identity hash code of the stack
-			hashCode = itemUuid.isEmpty() ? System.identityHashCode(stack) : itemUuid.hashCode();
-		}
+
+		String itemUuid = ItemUtils.getItemUuid(stack);
+
+		//If the item has an uuid, then use the hash code of the uuid otherwise use the identity hash code of the stack
+		int hashCode = itemUuid.isEmpty() ? System.identityHashCode(stack) : itemUuid.hashCode();
 
 		if (CACHE.containsKey(hashCode)) return CACHE.get(hashCode);
 				

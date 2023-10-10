@@ -1,17 +1,16 @@
-package de.hysky.skyblocker.skyblock.item;
+package me.xmrvizzy.skyblocker.skyblock.item;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
+import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import me.xmrvizzy.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.TextArgumentType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -32,14 +31,10 @@ public class CustomItemNames {
 
 	@SuppressWarnings("SameReturnValue")
 	private static int renameItem(FabricClientCommandSource source, Text text) {
-		ItemStack heldItem = source.getPlayer().getMainHandStack();
-		NbtCompound nbt = (heldItem != null) ? heldItem.getNbt() : null;
+		if (Utils.isOnSkyblock()) {
+			String itemUuid = ItemUtils.getItemUuid(source.getPlayer().getMainHandStack());
 
-		if (Utils.isOnSkyblock() && nbt != null && nbt.contains("ExtraAttributes")) {
-			NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-			String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
-
-			if (itemUuid != null) {
+			if (!itemUuid.isEmpty()) {
 				Object2ObjectOpenHashMap<String, Text> customItemNames = SkyblockerConfigManager.get().general.customItemNames;
 
 				if (text == null) {
@@ -56,7 +51,7 @@ public class CustomItemNames {
 
 					//Set italic to false if it hasn't been changed (or was already false)
 					Style currentStyle = text.getStyle();
-					((MutableText) text).setStyle(currentStyle.withItalic((currentStyle.isItalic() ? true : false)));
+					((MutableText) text).setStyle(currentStyle.withItalic(currentStyle.isItalic()));
 
 					customItemNames.put(itemUuid, text);
 					SkyblockerConfigManager.save();
