@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
@@ -46,50 +47,49 @@ public class CreeperBeams {
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(CreeperBeams::update, 20);
         WorldRenderEvents.BEFORE_DEBUG_RENDER.register(CreeperBeams::render);
+        ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
+    }
+
+    private static void reset() {
+        beams.clear();
+        base = null;
+        solved = false;
     }
 
     private static void update() {
-
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientWorld world = client.world;
-        ClientPlayerEntity player = client.player;
-
-        // clear state if not in dungeon
-        if (world == null || player == null  || !Utils.isInDungeons()) {
-            beams.clear();
-            base = null;
-            solved = false;
-            return;
-        }
 
         // don't do anything if the room is solved
         if (solved) {
             return;
         }
 
-        // try to find base if not found
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientWorld world = client.world;
+        ClientPlayerEntity player = client.player;
+
+        // clear state if not in dungeon
+        if (world == null || player == null || !Utils.isInDungeons()) {
+            return;
+        }
+
+        // try to find base if not found and solve
         if (base == null) {
             base = findCreeperBase(player, world);
             if (base == null) {
                 return;
             }
-        }
-
-        // try to solve if we haven't already
-        if (beams.size() == 0) {
-
             Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 3.5, base.getZ() + 0.5);
             ArrayList<BlockPos> targets = findTargets(player, world, base);
             beams = findLines(player, world, creeperPos, targets);
         }
 
-        // check if the room is solved
-        if (world.getBlockState(base).getBlock() != Blocks.SEA_LANTERN) {
-            solved = true;
-        }
-
         // update the beam states
         beams.forEach(b -> b.updateState(world));
+
+        // check if the room is solved
+        if (!isTarget(world, base)) {
+            solved = true;
+        }
     }
 
     // find the sea lantern block beneath the creeper
@@ -110,8 +110,7 @@ public class CreeperBeams {
         for (CreeperEntity ce : creepers) {
             Vec3d creeperPos = ce.getPos();
             BlockPos potentialBase = BlockPos.ofFloored(creeperPos.x, BASE_Y, creeperPos.z);
-            Block block = world.getBlockState(potentialBase).getBlock();
-            if (block == Blocks.SEA_LANTERN || block == Blocks.PRISMARINE) {
+            if (isTarget(world, potentialBase)) {
                 return potentialBase;
             }
         }
@@ -128,8 +127,7 @@ public class CreeperBeams {
         BlockPos end = new BlockPos(basePos.getX() + 16, FLOOR_Y, basePos.getZ() + 16);
 
         for (BlockPos bp : BlockPos.iterate(start, end)) {
-            Block b = world.getBlockState(bp).getBlock();
-            if (b == Blocks.SEA_LANTERN || b == Blocks.PRISMARINE) {
+            if (isTarget(world, bp)) {
                 targets.add(new BlockPos(bp));
             }
         }
@@ -190,6 +188,11 @@ public class CreeperBeams {
         }
     }
 
+    private static boolean isTarget(ClientWorld world, BlockPos pos) {
+        Block block = world.getBlockState(pos).getBlock();
+        return block == Blocks.SEA_LANTERN || block == Blocks.PRISMARINE;
+    }
+
     // helper class to hold all the things needed to render a beam
     private static class Beam {
 
@@ -242,7 +245,5 @@ public class CreeperBeams {
                 RenderHelper.renderLinesFromPoints(wrc, line, new float[] { 0.33f, 1f, 0.33f }, 0.75f, 1);
             }
         }
-
     }
-
 }
