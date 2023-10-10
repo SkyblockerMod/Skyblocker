@@ -55,14 +55,14 @@ body:
         Description: Unexpected error
         
         java.lang.NullPointerException: Cannot invoke "java.util.HashMap.get(Object)" because the return value of "java.util.HashMap.get(Object)" is null
-          at me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.Room.<init>(Room.java:80)
-          at me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonSecrets.newRoom(DungeonSecrets.java:297)
-          at me.xmrvizzy.skyblocker.skyblock.dungeon.secrets.DungeonSecrets.update(DungeonSecrets.java:263)
-          at me.xmrvizzy.skyblocker.utils.Scheduler$CyclicTask.run(Scheduler.java:102)
-          at me.xmrvizzy.skyblocker.utils.Scheduler$ScheduledTask.run(Scheduler.java:120)
-          at me.xmrvizzy.skyblocker.utils.Scheduler.runTask(Scheduler.java:88)
-          at me.xmrvizzy.skyblocker.utils.Scheduler.tick(Scheduler.java:76)
-          at me.xmrvizzy.skyblocker.SkyblockerMod.tick(SkyblockerMod.java:116)
+          at de.hysky.skyblocker.skyblock.dungeon.secrets.Room.<init>(Room.java:80)
+          at de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets.newRoom(DungeonSecrets.java:297)
+          at de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets.update(DungeonSecrets.java:263)
+          at de.hysky.skyblocker.utils.Scheduler$CyclicTask.run(Scheduler.java:102)
+          at de.hysky.skyblocker.utils.Scheduler$ScheduledTask.run(Scheduler.java:120)
+          at de.hysky.skyblocker.utils.Scheduler.runTask(Scheduler.java:88)
+          at de.hysky.skyblocker.utils.Scheduler.tick(Scheduler.java:76)
+          at de.hysky.skyblocker.SkyblockerMod.tick(SkyblockerMod.java:116)
           at net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.lambda$static$2(ClientTickEvents.java:43)
           at net.minecraft.class_310.handler$ble000$fabric-lifecycle-events-v1$onEndTick(class_310.java:11022)
           at net.minecraft.class_310.method_1574(class_310.java:1957)
