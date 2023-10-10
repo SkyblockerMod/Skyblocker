@@ -63,7 +63,7 @@ public class DungeonBlaze {
             String blazeName = blaze.getName().getString();
             if (blazeName.contains("Blaze") && blazeName.contains("/")) {
                 try {
-                    int health = Integer.parseInt((blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1)).replaceAll(",",""));
+                    int health = Integer.parseInt((blazeName.substring(blazeName.indexOf("/") + 1, blazeName.length() - 1)).replaceAll(",", ""));
                     blazes.add(ObjectIntPair.of(blaze, health));
                 } catch (NumberFormatException e) {
                     handleException(e);
