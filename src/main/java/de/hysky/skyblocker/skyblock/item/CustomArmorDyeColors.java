@@ -1,12 +1,12 @@
-package me.xmrvizzy.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
-import me.xmrvizzy.skyblocker.utils.Utils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;

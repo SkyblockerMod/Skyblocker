@@ -1,9 +1,9 @@
-package me.xmrvizzy.skyblocker.mixin;
+package de.hysky.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
-import me.xmrvizzy.skyblocker.utils.Utils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

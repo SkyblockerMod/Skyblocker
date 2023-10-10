@@ -1,4 +1,4 @@
-package me.xmrvizzy.skyblocker.compatibility.emi;
+package de.hysky.skyblocker.compatibility.emi;
 
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -6,8 +6,8 @@ import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import me.xmrvizzy.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;

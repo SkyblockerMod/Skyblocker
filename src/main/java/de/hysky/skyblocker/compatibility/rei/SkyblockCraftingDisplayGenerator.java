@@ -1,12 +1,12 @@
-package me.xmrvizzy.skyblocker.compatibility.rei;
+package de.hysky.skyblocker.compatibility.rei;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
-import me.xmrvizzy.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;

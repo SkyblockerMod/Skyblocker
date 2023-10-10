@@ -1,12 +1,12 @@
-package me.xmrvizzy.skyblocker.mixin;
+package de.hysky.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import me.xmrvizzy.skyblocker.config.SkyblockerConfigManager;
-import me.xmrvizzy.skyblocker.skyblock.item.CustomArmorTrims;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
-import me.xmrvizzy.skyblocker.utils.Utils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
 import org.spongepowered.asm.mixin.Mixin;

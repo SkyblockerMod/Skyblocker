@@ -1,8 +1,8 @@
-package me.xmrvizzy.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item;
 
-import me.xmrvizzy.skyblocker.skyblock.itemlist.ItemRegistry;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
-import me.xmrvizzy.skyblocker.utils.Utils;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;

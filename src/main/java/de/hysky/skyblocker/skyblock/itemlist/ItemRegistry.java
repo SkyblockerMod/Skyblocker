@@ -1,9 +1,9 @@
-package me.xmrvizzy.skyblocker.skyblock.itemlist;
+package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.xmrvizzy.skyblocker.utils.ItemUtils;
-import me.xmrvizzy.skyblocker.utils.NEURepo;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.NEURepo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
