@@ -13,7 +13,7 @@ public class StakeIndicator {
     private static final Title title = new Title("skyblocker.rift.stakeNow", Formatting.RED);
 
     protected static void updateStake() {
-        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableSteakStakeIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château") || !SlayerUtils.isInSlayer()) {
+        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableSteakStakeIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocationScoreboard().contains("Stillgore Château") || !SlayerUtils.isInSlayer()) {
             TitleContainer.removeTitle(title);
             return;
         }

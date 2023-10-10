@@ -2,12 +2,11 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import de.hysky.skyblocker.events.SkyblockEvents;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -17,11 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardDisplaySlot;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
-import net.minecraft.scoreboard.Team;
+import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -139,7 +134,7 @@ public class Utils {
         List<String> sidebar = STRING_SCOREBOARD;
 
         FabricLoader fabricLoader = FabricLoader.getInstance();
-        if ((client.world == null || client.isInSingleplayer() || sidebar == null || sidebar.isEmpty())) {
+        if (client.world == null || client.isInSingleplayer() || sidebar.isEmpty()) {
             if (fabricLoader.isDevelopmentEnvironment()) {
                 sidebar = Collections.emptyList();
             } else {
@@ -190,18 +185,14 @@ public class Utils {
         }
     }
 
-    public static String getLocation() {
+    public static String getLocationScoreboard() {
         String location = null;
-        List<String> sidebarLines = STRING_SCOREBOARD;
         try {
-            if (sidebarLines != null) {
-                for (String sidebarLine : sidebarLines) {
-                    if (sidebarLine.contains("⏣")) location = sidebarLine;
-                    if (sidebarLine.contains("ф")) location = sidebarLine; //Rift
-                }
-                if (location == null) location = "Unknown";
-                location = location.strip();
+            for (String sidebarLine : STRING_SCOREBOARD) {
+                if (sidebarLine.contains("⏣") || sidebarLine.contains("ф") /* Rift */) location = sidebarLine;
             }
+            if (location == null) location = "Unknown";
+            location = location.strip();
         } catch (IndexOutOfBoundsException e) {
             LOGGER.error("[Skyblocker] Failed to get location from sidebar", e);
         }
@@ -212,14 +203,9 @@ public class Utils {
         String purseString = null;
         double purse = 0;
 
-        List<String> sidebarLines = STRING_SCOREBOARD;
         try {
-
-            if (sidebarLines != null) {
-                for (String sidebarLine : sidebarLines) {
-                    if (sidebarLine.contains("Piggy:")) purseString = sidebarLine;
-                    if (sidebarLine.contains("Purse:")) purseString = sidebarLine;
-                }
+            for (String sidebarLine : STRING_SCOREBOARD) {
+                if (sidebarLine.contains("Piggy:") || sidebarLine.contains("Purse:")) purseString = sidebarLine;
             }
             if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
             else purse = 0;
@@ -233,12 +219,9 @@ public class Utils {
     public static int getBits() {
         int bits = 0;
         String bitsString = null;
-        List<String> sidebarLines = STRING_SCOREBOARD;
         try {
-            if (sidebarLines != null) {
-                for (String sidebarLine : sidebarLines) {
-                    if (sidebarLine.contains("Bits")) bitsString = sidebarLine;
-                }
+            for (String sidebarLine : STRING_SCOREBOARD) {
+                if (sidebarLine.contains("Bits")) bitsString = sidebarLine;
             }
             if (bitsString != null) {
                 bits = Integer.parseInt(bitsString.replaceAll("[^0-9.]", "").strip());

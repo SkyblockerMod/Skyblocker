@@ -107,13 +107,13 @@ public class DiscordRPCManager {
             switch (SkyblockerConfigManager.get().richPresence.info) {
                 case BITS -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case PURSE -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
-                case LOCATION -> info = Utils.getLocation();
+                case LOCATION -> info = Utils.getLocationScoreboard();
             }
         } else if (SkyblockerConfigManager.get().richPresence.cycleMode) {
             switch (cycleCount) {
                 case 0 -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
                 case 1 -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
-                case 2 -> info = Utils.getLocation();
+                case 2 -> info = Utils.getLocationScoreboard();
             }
         }
         return info;

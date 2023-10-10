@@ -13,7 +13,7 @@ public class HealingMelonIndicator {
     private static final Title title = new Title("skyblocker.rift.healNow", Formatting.DARK_RED);
 
     public static void updateHealth() {
-        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocation().contains("Stillgore Château")) {
+        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getLocationScoreboard().contains("Stillgore Château")) {
             TitleContainer.removeTitle(title);
             return;
         }

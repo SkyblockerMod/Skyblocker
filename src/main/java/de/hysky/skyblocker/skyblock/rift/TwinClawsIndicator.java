@@ -15,7 +15,7 @@ public class TwinClawsIndicator {
     private static boolean scheduled = false;
 
     protected static void updateIce() {
-        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getLocation().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
+        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getLocationScoreboard().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
             TitleContainer.removeTitle(title);
             return;
         }
