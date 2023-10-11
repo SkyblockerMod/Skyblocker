@@ -48,7 +48,7 @@ public class Utils {
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
     private static boolean canSendLocRaw = false;
-    
+
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
      */
@@ -185,18 +185,17 @@ public class Utils {
         }
     }
 
-    public static String getLocationScoreboard() {
-        String location = null;
+    public static String getIslandArea() {
         try {
             for (String sidebarLine : STRING_SCOREBOARD) {
-                if (sidebarLine.contains("⏣") || sidebarLine.contains("ф") /* Rift */) location = sidebarLine;
+                if (sidebarLine.contains("⏣") || sidebarLine.contains("ф") /* Rift */) {
+                    return sidebarLine.strip();
+                }
             }
-            if (location == null) location = "Unknown";
-            location = location.strip();
         } catch (IndexOutOfBoundsException e) {
             LOGGER.error("[Skyblocker] Failed to get location from sidebar", e);
         }
-        return location;
+        return "Unknown";
     }
 
     public static double getPurse() {
@@ -236,25 +235,25 @@ public class Utils {
         try {
             TEXT_SCOREBOARD.clear();
             STRING_SCOREBOARD.clear();
-            
+
             ClientPlayerEntity player = client.player;
             if (player == null) return;
-            
+
             Scoreboard scoreboard = player.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
             ObjectArrayList<Text> textLines = new ObjectArrayList<>();
             ObjectArrayList<String> stringLines = new ObjectArrayList<>();
-            
+
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());
-                
+
                 if (team != null) {
                     Text textLine = Text.empty().append(team.getPrefix().copy()).append(team.getSuffix().copy());
                     String strLine = team.getPrefix().getString() + team.getSuffix().getString();
-                    
+
                     if (!strLine.trim().isEmpty()) {
                         String formatted = Formatting.strip(strLine);
-                        
+
                         textLines.add(textLine);
                         stringLines.add(formatted);
                     }
@@ -264,11 +263,11 @@ public class Utils {
             if (objective != null) {
                 stringLines.add(objective.getDisplayName().getString());
                 textLines.add(Text.empty().append(objective.getDisplayName().copy()));
-                
+
                 Collections.reverse(stringLines);
                 Collections.reverse(textLines);
             }
-            
+
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
         } catch (NullPointerException e) {

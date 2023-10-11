@@ -17,7 +17,7 @@ public class ManiaIndicator {
     private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
 
     protected static void updateMania() {
-        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableManiaIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getLocationScoreboard().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
+        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableManiaIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
             TitleContainer.removeTitle(title);
             return;
         }
