@@ -44,6 +44,7 @@ public class ItemUtils {
 
     /**
      * Gets the {@code ExtraAttributes} NBT tag from the item stack.
+     *
      * @param stack the item stack to get the {@code ExtraAttributes} NBT tag from
      * @return an optional containing the {@code ExtraAttributes} NBT tag of the item stack
      */
@@ -53,16 +54,18 @@ public class ItemUtils {
 
     /**
      * Gets the {@code ExtraAttributes} NBT tag from the item stack.
+     *
      * @param stack the item stack to get the {@code ExtraAttributes} NBT tag from
      * @return the {@code ExtraAttributes} NBT tag of the item stack, or null if the item stack is null or does not have an {@code ExtraAttributes} NBT tag
      */
     @Nullable
     public static NbtCompound getExtraAttributes(@NotNull ItemStack stack) {
-        return getExtraAttributesOptional(stack).orElse(null);
+        return stack.getSubNbt(EXTRA_ATTRIBUTES);
     }
 
     /**
      * Gets the internal name of the item stack from the {@code ExtraAttributes} NBT tag.
+     *
      * @param stack the item stack to get the internal name from
      * @return an optional containing the internal name of the item stack
      */
@@ -72,15 +75,18 @@ public class ItemUtils {
 
     /**
      * Gets the internal name of the item stack from the {@code ExtraAttributes} NBT tag.
+     *
      * @param stack the item stack to get the internal name from
      * @return the internal name of the item stack, or an empty string if the item stack is null or does not have an internal name
      */
     public static String getItemId(@NotNull ItemStack stack) {
-        return getItemIdOptional(stack).orElse("");
+        NbtCompound extraAttributes = getExtraAttributes(stack);
+        return extraAttributes != null ? extraAttributes.getString(ID) : "";
     }
 
     /**
      * Gets the UUID of the item stack from the {@code ExtraAttributes} NBT tag.
+     *
      * @param stack the item stack to get the UUID from
      * @return an optional containing the UUID of the item stack
      */
@@ -90,11 +96,13 @@ public class ItemUtils {
 
     /**
      * Gets the UUID of the item stack from the {@code ExtraAttributes} NBT tag.
+     *
      * @param stack the item stack to get the UUID from
      * @return the UUID of the item stack, or null if the item stack is null or does not have a UUID
      */
     public static String getItemUuid(@NotNull ItemStack stack) {
-        return getItemUuidOptional(stack).orElse("");
+        NbtCompound extraAttributes = getExtraAttributes(stack);
+        return extraAttributes != null ? extraAttributes.getString(UUID) : "";
     }
 
     @Nullable

@@ -40,27 +40,27 @@ public class CustomArmorDyeColors {
 
 	if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.getItem() instanceof DyeableItem) {
-                String itemUuid = ItemUtils.getItemUuid(heldItem);
+				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
-                if (!itemUuid.isEmpty()) {
-                    Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;
+				if (!itemUuid.isEmpty()) {
+					Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;
 
-                    if (hex == null) {
-                        if (customDyeColors.containsKey(itemUuid)) {
-                            customDyeColors.removeInt(itemUuid);
-                            SkyblockerConfigManager.save();
-                            source.sendFeedback(Text.translatable("skyblocker.customDyeColors.removed"));
-                        } else {
-                            source.sendFeedback(Text.translatable("skyblocker.customDyeColors.neverHad"));
-                        }
-                    } else {
-                        customDyeColors.put(itemUuid, Integer.decode("0x" + hex.replace("#", "")).intValue());
-                        SkyblockerConfigManager.save();
-                        source.sendFeedback(Text.translatable("skyblocker.customDyeColors.added"));
-                    }
-                } else {
-                    source.sendError(Text.translatable("skyblocker.customDyeColors.noItemUuid"));
-                }
+					if (hex == null) {
+						if (customDyeColors.containsKey(itemUuid)) {
+							customDyeColors.removeInt(itemUuid);
+							SkyblockerConfigManager.save();
+							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.removed"));
+						} else {
+							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.neverHad"));
+						}
+					} else {
+						customDyeColors.put(itemUuid, Integer.decode("0x" + hex.replace("#", "")).intValue());
+						SkyblockerConfigManager.save();
+						source.sendFeedback(Text.translatable("skyblocker.customDyeColors.added"));
+					}
+				} else {
+					source.sendError(Text.translatable("skyblocker.customDyeColors.noItemUuid"));
+				}
 			} else {
 				source.sendError(Text.translatable("skyblocker.customDyeColors.notDyeable"));
 				return Command.SINGLE_SUCCESS;
