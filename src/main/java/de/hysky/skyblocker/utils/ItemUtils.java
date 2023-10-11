@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.utils;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -18,12 +21,21 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
 public class ItemUtils {
     public static final String EXTRA_ATTRIBUTES = "ExtraAttributes";
     public static final String ID = "id";
     public static final String UUID = "uuid";
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
+
+    public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemNbtCommand() {
+        return literal("dumpHeldItemNbt").executes(context -> {
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item Nbt: " + context.getSource().getPlayer().getMainHandStack().writeNbt(new NbtCompound())));
+            return Command.SINGLE_SUCCESS;
+        });
+    }
 
     public static List<Text> getTooltips(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
