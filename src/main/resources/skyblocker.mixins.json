@@ -1,13 +1,14 @@
 {
   "required": true,
-  "package": "me.xmrvizzy.skyblocker.mixin",
-  "plugin": "me.xmrvizzy.skyblocker.compatibility.MixinPlugin",
+  "package": "de.hysky.skyblocker.mixin",
+  "plugin": "de.hysky.skyblocker.compatibility.MixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "AbstractInventoryScreenMixin",
     "ArmorTrimMixin",
     "BatEntityMixin",
     "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
     "DrawContextMixin",
@@ -17,6 +18,7 @@
     "HandledScreenMixin",
     "InGameHudMixin",
     "InventoryScreenMixin",
+    "ItemMixin",
     "ItemStackMixin",
     "LeverBlockMixin",
     "MinecraftClientMixin",
@@ -28,13 +30,13 @@
     "YggdrasilMinecraftSessionServiceMixin",
     "YggdrasilServicesKeyInfoMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
+    "accessor.DrawContextInvoker",
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
-    "accessor.WorldRendererAccessor",
-    "accessor.DrawContextInvoker"
+    "accessor.WorldRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
