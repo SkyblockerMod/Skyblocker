@@ -10,12 +10,15 @@ body:
         Before continuing to make the issue, please make sure there are no similar issues on [the issue tracker](https://github.com/SkyblockerMod/Skyblocker/issues). If there are, consider contributing your information in there instead!
         
         Also, make sure you are using the latest version of the mod! If not, try updating to see if it resolves your issue.
-  - type: input
+  - type: dropdown
     id: minecraft-version
     attributes:
       label: Minecraft Version
       description: What version of Minecraft are you running? If you do not know what version you are using, look in the bottom left corner of the main menu in game.
-      placeholder: ex. Minecraft 1.20.1
+      options:
+        - 1.20.2
+        - 1.20.1
+        - 1.20.0
     validations:
       required: true
   - type: input
