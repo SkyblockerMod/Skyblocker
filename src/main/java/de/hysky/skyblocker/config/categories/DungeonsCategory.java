@@ -247,7 +247,7 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.blazeSolver = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-                .option(Option.<Boolean>createBuilder()
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.creeperSolver"))
 						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.creeperSolver.@Tooltip")))
 						.binding(defaults.locations.dungeons.creeperSolver,
