@@ -12,22 +12,32 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 @Environment(value=EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
-    private static final Identifier BUTTON_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
-
     private final int index;
     private boolean toggled;
-    private int u;
-    private int v;
     private final String command;
     private final ItemStack icon;
 
+    /**
+     * Checks if the current tab is a top tab based on its index.
+     * @return true if the index is less than 6, false otherwise.
+     */
+    private boolean isTopTab() {
+        return index < 6;
+    }
+
+    /**
+     * Constructs a new QuickNavButton with the given parameters.
+     * @param index the index of the button.
+     * @param toggled the toggled state of the button.
+     * @param command the command to execute when the button is clicked.
+     * @param icon the icon to display on the button.
+     */
     public QuickNavButton(int index, boolean toggled, String command, ItemStack icon) {
         super(0, 0, 26, 32, Text.empty());
         this.index = index;
@@ -45,11 +55,15 @@ public class QuickNavButton extends ClickableWidget {
             if (h > 166) --h; // why is this even a thing
             this.setX(x + this.index % 6 * 26 + 4);
             this.setY(this.index < 6 ? y - 26 : y + h - 4);
-            this.u = 26;
-            this.v = (index < 6 ? 0 : 64) + (toggled ? 32 : 0);
         }
     }
 
+    /**
+     * Handles click events. If the button is not currently toggled,
+     * it sets the toggled state to true and sends a message with the command after cooldown.
+     * @param mouseX the x-coordinate of the mouse click
+     * @param mouseY the y-coordinate of the mouse click
+     */
     @Override
     public void onClick(double mouseX, double mouseY) {
         if (!this.toggled) {
@@ -59,43 +73,40 @@ public class QuickNavButton extends ClickableWidget {
         }
     }
 
+    /**
+     * Renders the button on screen. This includes both its texture and its icon.
+     * The method first updates the coordinates of the button,
+     * then calculates appropriate values for rendering based on its current state,
+     * and finally draws both the background and icon of the button on screen.
+     * @param context the context in which to render the button
+     * @param mouseX the x-coordinate of the mouse cursor
+     * @param mouseY the y-coordinate of the mouse cursor
+     */
     @Override
     public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
         this.updateCoordinates();
-        MatrixStack matrices = context.getMatrices();
         RenderSystem.disableDepthTest();
-        // render button background
-        if (!this.toggled) {
-            if (this.index >= 6)
-                // this.drawTexture(matrices, this.x, this.y + 4, this.u, this.v + 4, this.width, this.height - 4);
-                context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY() + 4, this.u, this.v + 4, this.width, this.height - 4);
-            else
-                // this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height - 4);
-                context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY() - 2, this.u, this.v, this.width, this.height - 4);
-        // } else this.drawTexture(matrices, this.x, this.y, this.u, this.v, this.width, this.height);
+
+        // Construct the texture identifier based on the index and toggled state
+        String tabType = isTopTab() ? "top" : "bottom";
+        Identifier BUTTON_TEXTURES = new Identifier("container/creative_inventory/tab_" + tabType +
+                (toggled ? "_selected_" : "_unselected_") + 2);
+
+        // Render the button texture
+        int y = this.getY();
+        if (this.toggled) {
+            if (this.index < 6) y -= 2;
         } else {
-        	matrices.push();
-        	//Move the top buttons 2 pixels up if they're selected
-        	if (this.index < 6) matrices.translate(0f, -2f, 0f);
-            context.drawTexture(BUTTON_TEXTURE, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
-        	matrices.pop();
+            y += (this.index >= 6) ? 4 : -2;
         }
-        // render button icon
-        if (!this.toggled) {
-            if (this.index >= 6)
-                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 6);
-            else
-                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 7);
-        } else {
-            if (this.index >= 6)
-                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 9);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 9);
-            else
-                // CLIENT.getItemRenderer().renderInGui(this.icon,this.x + 6, this.y + 6);
-                context.drawItem(this.icon,this.getX() + 5, this.getY() + 6);
-        }
+        int height = this.height - ((this.toggled ) ? 0 : 4);
+
+        context.drawGuiTexture(BUTTON_TEXTURES, this.getX(), y, this.width, height);
+
+        // Render the button icon
+        int yOffset = !this.toggled && this.index < 6 ? 1 : 0;
+        context.drawItem(this.icon, this.getX() + 5, this.getY() + 6 + yOffset);
+
         RenderSystem.enableDepthTest();
     }
 
