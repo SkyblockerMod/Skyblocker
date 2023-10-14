@@ -39,7 +39,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Griser les coffres qui ont déjà été ouverts.",
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Activer la carte",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Résoudre le puzzle des trois PNJ « Three Weirdos »",
-    "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Résoudre le puzzle des blazes « Higher or Lower »",
+    "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver": "Résoudre le puzzle des blazes « Higher or Lower »",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Résoudre le quiz",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Solveurs des terminaux",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Résoudre le puzzle des couleurs « Color »",

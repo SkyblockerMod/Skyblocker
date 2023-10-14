@@ -9,7 +9,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Aktifkan Peta",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Pecahkan Teka Teki \"Tiga Orang Aneh\"",
-    "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Pecahkan Teka Teki \"Blaze\"",
+    "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver": "Pecahkan Teka Teki \"Blaze\"",
     "text.autoconfig.skyblocker.category.messages": "Pesan",
     "text.autoconfig.skyblocker.option.messages.hideAbility": "Sembunyikan Cooldown Kemampuan",
     "text.autoconfig.skyblocker.option.messages.hideHeal": "Sembunyikan Pesan Penyembuhan",

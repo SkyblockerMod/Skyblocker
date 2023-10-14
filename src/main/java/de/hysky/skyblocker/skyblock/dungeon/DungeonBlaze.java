@@ -106,7 +106,7 @@ public class DungeonBlaze {
      */
     public static void blazeRenderer(WorldRenderContext wrc) {
         try {
-            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfigManager.get().locations.dungeons.blazesolver) {
+            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfigManager.get().locations.dungeons.blazeSolver) {
                 if (highestBlaze.getY() < 69) {
                     renderBlazeOutline(highestBlaze, nextHighestBlaze, wrc);
                 }

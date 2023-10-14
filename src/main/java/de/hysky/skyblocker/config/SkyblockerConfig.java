@@ -526,10 +526,10 @@ public class SkyblockerConfig {
 		public boolean solveThreeWeirdos = true;
 		
 		@SerialEntry
-		public boolean blazesolver = true;
+		public boolean blazeSolver = true;
 
         @SerialEntry
-		public boolean creepersolver = true;
+		public boolean creeperSolver = true;
 		
 		@SerialEntry
 		public boolean solveTrivia = true;

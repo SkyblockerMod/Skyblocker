@@ -75,7 +75,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Habilitar Mapa",
     "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "Escala del Mapa",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Resuelve el Acertijo de \"Los Tres Chiflados\"",
-    "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "Resuelve el Acertijo del Blaze",
+    "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver": "Resuelve el Acertijo del Blaze",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Resuelve el Acertijo de Trivia",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Minas Dwarven",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Habilitar Combustible del Taladro",

@@ -1,17 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joml.Intersectiond;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -22,9 +15,17 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Intersectiond;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class CreeperBeams {
 
@@ -32,11 +33,12 @@ public class CreeperBeams {
 
     // "missing, this palette looks like you stole it from a 2018 bootstrap webapp!"
     private static final float[][] COLORS = {
-            { 0.33f, 1f, 1f },
-            { 1f, 0.33f, 0.33f },
-            { 1f, 0.66f, 0f },
-            { 1f, 0.33f, 1f },
+            DyeColor.LIGHT_BLUE.getColorComponents(),
+            DyeColor.PINK.getColorComponents(),
+            DyeColor.ORANGE.getColorComponents(),
+            DyeColor.MAGENTA.getColorComponents(),
     };
+    private static final float[] LIME_COLOR_COMPONENTS = DyeColor.LIME.getColorComponents();
 
     private static final int FLOOR_Y = 68;
     private static final int BASE_Y = 74;
@@ -80,8 +82,8 @@ public class CreeperBeams {
                 return;
             }
             Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 3.5, base.getZ() + 0.5);
-            ArrayList<BlockPos> targets = findTargets(player, world, base);
-            beams = findLines(player, world, creeperPos, targets);
+            ArrayList<BlockPos> targets = findTargets(world, base);
+            beams = findLines(creeperPos, targets);
         }
 
         // update the beam states
@@ -102,7 +104,7 @@ public class CreeperBeams {
                 player.getBoundingBox().expand(50D),
                 EntityPredicates.VALID_ENTITY);
 
-        if (creepers.size() == 0) {
+        if (creepers.isEmpty()) {
             return null;
         }
 
@@ -121,23 +123,22 @@ public class CreeperBeams {
     }
 
     // find the sea lanterns (and the ONE prismarine ty hypixel) in the room
-    private static ArrayList<BlockPos> findTargets(ClientPlayerEntity player, ClientWorld world, BlockPos basePos) {
+    private static ArrayList<BlockPos> findTargets(ClientWorld world, BlockPos basePos) {
         ArrayList<BlockPos> targets = new ArrayList<>();
 
         BlockPos start = new BlockPos(basePos.getX() - 15, BASE_Y + 12, basePos.getZ() - 15);
         BlockPos end = new BlockPos(basePos.getX() + 16, FLOOR_Y, basePos.getZ() + 16);
 
-        for (BlockPos bp : BlockPos.iterate(start, end)) {
-            if (isTarget(world, bp)) {
-                targets.add(new BlockPos(bp));
+        for (BlockPos pos : BlockPos.iterate(start, end)) {
+            if (isTarget(world, pos)) {
+                targets.add(new BlockPos(pos));
             }
         }
         return targets;
     }
 
     // generate lines between targets and finally find the solution
-    private static ArrayList<Beam> findLines(ClientPlayerEntity player, ClientWorld world, Vec3d creeperPos,
-            ArrayList<BlockPos> targets) {
+    private static ArrayList<Beam> findLines(Vec3d creeperPos, ArrayList<BlockPos> targets) {
 
         ArrayList<ObjectDoublePair<Beam>> allLines = new ArrayList<>();
 
@@ -157,7 +158,7 @@ public class CreeperBeams {
         // this feels a bit heavy-handed, but it works for now.
 
         ArrayList<Beam> result = new ArrayList<>();
-        allLines.sort((a, b) -> Double.compare(a.rightDouble(), b.rightDouble()));
+        allLines.sort(Comparator.comparingDouble(ObjectDoublePair::rightDouble));
 
         while (result.size() < 4 && !allLines.isEmpty()) {
             Beam solution = allLines.get(0).left();
@@ -179,7 +180,7 @@ public class CreeperBeams {
     private static void render(WorldRenderContext wrc) {
 
         // don't render if solved or disabled
-        if (solved || !SkyblockerConfigManager.get().locations.dungeons.creepersolver) {
+        if (solved || !SkyblockerConfigManager.get().locations.dungeons.creeperSolver) {
             return;
         }
 
@@ -241,9 +242,9 @@ public class CreeperBeams {
                 RenderHelper.renderOutline(wrc, outlineTwo, color, 3);
                 RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2);
             } else {
-                RenderHelper.renderOutline(wrc, outlineOne, new float[] { 0.33f, 1f, 0.33f }, 1);
-                RenderHelper.renderOutline(wrc, outlineTwo, new float[] { 0.33f, 1f, 0.33f }, 1);
-                RenderHelper.renderLinesFromPoints(wrc, line, new float[] { 0.33f, 1f, 0.33f }, 0.75f, 1);
+                RenderHelper.renderOutline(wrc, outlineOne, LIME_COLOR_COMPONENTS, 1);
+                RenderHelper.renderOutline(wrc, outlineTwo, LIME_COLOR_COMPONENTS, 1);
+                RenderHelper.renderLinesFromPoints(wrc, line, LIME_COLOR_COMPONENTS, 0.75f, 1);
             }
         }
     }
