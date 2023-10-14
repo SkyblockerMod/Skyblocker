@@ -247,6 +247,14 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.blazesolver = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+                .option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.creepersolver"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.creepersolver.@Tooltip")))
+						.binding(defaults.locations.dungeons.creepersolver,
+								() -> config.locations.dungeons.creepersolver,
+								newValue -> config.locations.dungeons.creepersolver = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia"))
 						.binding(defaults.locations.dungeons.solveTrivia,
@@ -262,7 +270,7 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.solveTicTacToe = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-				
+
 				//Livid Color
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor"))

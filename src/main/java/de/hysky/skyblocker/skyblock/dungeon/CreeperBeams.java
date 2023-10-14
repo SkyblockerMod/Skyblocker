@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -177,8 +178,8 @@ public class CreeperBeams {
 
     private static void render(WorldRenderContext wrc) {
 
-        // don't render if solved
-        if (solved) {
+        // don't render if solved or disabled
+        if (solved || !SkyblockerConfigManager.get().locations.dungeons.creepersolver) {
             return;
         }
 

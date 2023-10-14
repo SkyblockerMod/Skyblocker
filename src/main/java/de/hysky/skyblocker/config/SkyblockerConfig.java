@@ -527,6 +527,9 @@ public class SkyblockerConfig {
 		
 		@SerialEntry
 		public boolean blazesolver = true;
+
+        @SerialEntry
+		public boolean creepersolver = true;
 		
 		@SerialEntry
 		public boolean solveTrivia = true;
