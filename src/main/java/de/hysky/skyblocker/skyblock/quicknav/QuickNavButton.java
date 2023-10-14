@@ -99,7 +99,7 @@ public class QuickNavButton extends ClickableWidget {
         } else {
             y += (this.index >= 6) ? 4 : -2;
         }
-        int height = this.height - ((this.toggled || this.index >= 6) ? 0 : 4);
+        int height = this.height - ((this.toggled ) ? 0 : 4);
 
         context.drawGuiTexture(BUTTON_TEXTURES, this.getX(), y, this.width, height);
 
