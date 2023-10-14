@@ -45,10 +45,12 @@ public class CompactorPreviewTooltipComponent implements TooltipComponent {
         context.drawTexture(INVENTORY_TEXTURE, x + 7 + dimensions.rightInt() * 18, y + 7 + dimensions.leftInt() * 18, 169, 25, 7, 7);
 
         for (IntObjectPair<ItemStack> entry : items) {
-            int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;
-            int itemY = y + entry.leftInt() / dimensions.rightInt() * 18 + 8;
-            context.drawItem(entry.right(), itemX, itemY);
-            context.drawItemInSlot(textRenderer, entry.right(), itemX, itemY);
+            if (entry.right() != null) {
+                int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;
+                int itemY = y + entry.leftInt() / dimensions.rightInt() * 18 + 8;
+                context.drawItem(entry.right(), itemX, itemY);
+                context.drawItemInSlot(textRenderer, entry.right(), itemX, itemY);
+            }
         }
     }
 }
