@@ -2,10 +2,10 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
@@ -21,13 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.net.http.HttpHeaders;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class PriceInfoTooltip {
@@ -55,7 +49,7 @@ public class PriceInfoTooltip {
         String neuName = name;
         if (name == null || internalID == null) return;
 
-        if(name.startsWith("ISSHINY_")){
+        if (name.startsWith("ISSHINY_")) {
             name = "SHINY_" + internalID;
             neuName = internalID;
         }
@@ -207,11 +201,6 @@ public class PriceInfoTooltip {
         }
     }
 
-    public static NbtCompound getItemNBT(ItemStack stack) {
-        if (stack == null) return null;
-        return stack.getNbt();
-    }
-
     /**
      * this method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
      * Currently, there are two types of timestamps the legacy which is built like this
@@ -227,21 +216,17 @@ public class PriceInfoTooltip {
      * @return if the item have a "Timestamp" it will be shown formated on the tooltip
      */
     public static String getTimestamp(ItemStack stack) {
-        NbtCompound tag = getItemNBT(stack);
+        NbtCompound ea = ItemUtils.getExtraAttributes(stack);
 
-        if (tag != null && tag.contains("ExtraAttributes", 10)) {
-            NbtCompound ea = tag.getCompound("ExtraAttributes");
+        if (ea != null && ea.contains("timestamp", 8)) {
+            SimpleDateFormat nbtFormat = new SimpleDateFormat("MM/dd/yy");
 
-            if (ea.contains("timestamp", 8)) {
-                SimpleDateFormat nbtFormat = new SimpleDateFormat("MM/dd/yy");
-
-                try {
-                    Date date = nbtFormat.parse(ea.getString("timestamp"));
-                    SimpleDateFormat skyblockerFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
-                    return skyblockerFormat.format(date);
-                } catch (ParseException e) {
-                    LOGGER.warn("[Skyblocker-tooltip] getTimestamp", e);
-                }
+            try {
+                Date date = nbtFormat.parse(ea.getString("timestamp"));
+                SimpleDateFormat skyblockerFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+                return skyblockerFormat.format(date);
+            } catch (ParseException e) {
+                LOGGER.warn("[Skyblocker-tooltip] getTimestamp", e);
             }
         }
 
@@ -249,23 +234,19 @@ public class PriceInfoTooltip {
     }
 
     public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
-        NbtCompound tag = getItemNBT(stack);
-        if (tag == null || !tag.contains("ExtraAttributes", 10)) {
-            return null;
-        }
-        NbtCompound ea = tag.getCompound("ExtraAttributes");
+        NbtCompound ea = ItemUtils.getExtraAttributes(stack);
 
-        if (!ea.contains("id", 8)) {
+        if (ea == null || !ea.contains(ItemUtils.ID, 8)) {
             return null;
         }
-        String internalName = ea.getString("id");
+        String internalName = ea.getString(ItemUtils.ID);
 
         if (internalIDOnly) {
             return internalName;
         }
 
         // Transformation to API format.
-        if (ea.contains("is_shiny")){
+        if (ea.contains("is_shiny")) {
             return "ISSHINY_" + internalName;
         }
 
@@ -364,7 +345,7 @@ public class PriceInfoTooltip {
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
             if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
-            	SkyblockerConfig.Average type = SkyblockerConfigManager.get().general.itemTooltip.avg;
+                SkyblockerConfig.Average type = SkyblockerConfigManager.get().general.itemTooltip.avg;
 
                 if (type == SkyblockerConfig.Average.BOTH || oneDayAvgPricesJson == null || threeDayAvgPricesJson == null || minute % 5 == 0) {
                     futureList.add(CompletableFuture.runAsync(() -> {
@@ -401,33 +382,33 @@ public class PriceInfoTooltip {
     private static JsonObject downloadPrices(String type) {
         try {
             String url = apiAddresses.get(type);
-            
+
             if (type.equals("npc") || type.equals("museum") || type.equals("motes")) {
                 HttpHeaders headers = Http.sendHeadRequest(url);
                 long combinedHash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
-            	
+
                 switch (type) {
                     case "npc": if (npcHash == combinedHash) return npcPricesJson; else npcHash = combinedHash;
                     case "museum": if (museumHash == combinedHash) return isMuseumJson; else museumHash = combinedHash;
                     case "motes": if (motesHash == combinedHash) return motesPricesJson; else motesHash = combinedHash;
                 }
             }
-            
+
             String apiResponse = Http.sendGetRequest(url);
-            
+
             return new Gson().fromJson(apiResponse, JsonObject.class);
         } catch (Exception e) {
             LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
             return null;
         }
     }
-    
+
     public static JsonObject getBazaarPrices() {
-    	return bazaarPricesJson;
+        return bazaarPricesJson;
     }
-    
+
     public static JsonObject getLBINPrices() {
-    	return lowestPricesJson;
+        return lowestPricesJson;
     }
 
     static {

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -11,14 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.Nullable;
 
 public class SearchResultsWidget implements Drawable {
     private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_forward"), new Identifier("recipe_book/page_forward_highlighted"));
@@ -198,10 +198,10 @@ public class SearchResultsWidget implements Drawable {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (ResultButtonWidget button : resultButtons)
             if (button.mouseClicked(mouseX, mouseY, mouseButton)) {
-                if (button.itemStack.getNbt() == null) {
+                String internalName = ItemUtils.getItemId(button.itemStack);
+                if (internalName.isEmpty()) {
                     continue;
                 }
-                String internalName = button.itemStack.getNbt().getCompound("ExtraAttributes").getString("id");
                 List<SkyblockCraftingRecipe> recipes = ItemRegistry.getRecipes(internalName);
                 if (!recipes.isEmpty()) {
                     this.recipeResults = recipes;

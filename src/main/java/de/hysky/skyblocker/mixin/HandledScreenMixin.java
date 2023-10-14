@@ -6,12 +6,8 @@ import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.item.BackpackPreview;
-import de.hysky.skyblocker.skyblock.item.CompactorDeletorPreview;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import net.minecraft.client.MinecraftClient;
@@ -89,7 +85,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         // Compactor Preview
         if (SkyblockerConfigManager.get().general.compactorDeletorPreview) {
             ItemStack stack = focusedSlot.getStack();
-            Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemRegistry.getInternalName(stack));
+            Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
             if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, matcher.group("type"), matcher.group("size"), x, y)) {
                 ci.cancel();
             }

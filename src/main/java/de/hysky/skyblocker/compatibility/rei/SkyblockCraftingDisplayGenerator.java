@@ -2,6 +2,7 @@ package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
 import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.utils.ItemUtils;
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
@@ -19,7 +20,11 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
         if (!(entry.getValue() instanceof ItemStack)) return Optional.empty();
         EntryStack<ItemStack> inputItem = EntryStacks.of((ItemStack) entry.getValue());
         List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipesStream()
-                .filter(recipe -> ItemRegistry.getInternalName(recipe.getResult()).equals(ItemRegistry.getInternalName(inputItem.getValue())))
+                .filter(recipe -> {
+                    ItemStack itemStack = inputItem.getValue();
+                    ItemStack itemStack1 = recipe.getResult();
+                    return ItemUtils.getItemId(itemStack1).equals(ItemUtils.getItemId(itemStack));
+                })
                 .toList();
 
         return Optional.of(generateDisplays(filteredRecipes));
@@ -32,8 +37,10 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
         List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipesStream()
                 .filter(recipe -> {
                     for (ItemStack item : recipe.getGrid()) {
-                        if(!ItemRegistry.getInternalName(item).isEmpty() && ItemRegistry.getInternalName(item).equals(ItemRegistry.getInternalName(inputItem.getValue())))
-                            return true;
+                        if(!ItemUtils.getItemId(item).isEmpty()) {
+                            ItemStack itemStack = inputItem.getValue();
+                            if (ItemUtils.getItemId(item).equals(ItemUtils.getItemId(itemStack))) return true;
+                        }
                     }
                     return false;
                 })

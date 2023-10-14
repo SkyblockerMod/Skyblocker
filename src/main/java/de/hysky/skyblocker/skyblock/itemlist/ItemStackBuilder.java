@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepo;
 import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.ItemStack;
@@ -45,8 +46,8 @@ public class ItemStackBuilder {
         root.put("tag", tag);
 
         NbtCompound extra = new NbtCompound();
-        tag.put("ExtraAttributes", extra);
-        extra.put("id", NbtString.of(internalName));
+        tag.put(ItemUtils.EXTRA_ATTRIBUTES, extra);
+        extra.put(ItemUtils.ID, NbtString.of(internalName));
 
         NbtCompound display = new NbtCompound();
         tag.put("display", display);

@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -31,11 +30,7 @@ public class WikiLookup {
 
     public static String getSkyblockId(Slot slot) {
         //Grabbing the skyblock NBT data
-        ItemStack selectedStack = slot.getStack();
-        NbtCompound nbt = selectedStack.getSubNbt("ExtraAttributes");
-        if (nbt != null) {
-            id = nbt.getString("id");
-        }
+        ItemUtils.getItemIdOptional(slot.getStack()).ifPresent(newId -> id = newId);
         return id;
     }
 

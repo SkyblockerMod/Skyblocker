@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -12,7 +13,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 
 public class CustomArmorDyeColors {
@@ -32,38 +32,34 @@ public class CustomArmorDyeColors {
 	@SuppressWarnings("SameReturnValue")
 	private static int customizeDyeColor(FabricClientCommandSource source, String hex) {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
-		NbtCompound nbt = (heldItem != null) ? heldItem.getNbt() : null;
 
 		if (hex != null && !isHexadecimalColor(hex)) {
 			source.sendError(Text.translatable("skyblocker.customDyeColors.invalidHex"));
 			return Command.SINGLE_SUCCESS;
 		}
 
-		if (Utils.isOnSkyblock() && heldItem != null) {
+	if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.getItem() instanceof DyeableItem) {
-				if (nbt != null && nbt.contains("ExtraAttributes")) {
-					NbtCompound extraAttributes = nbt.getCompound("ExtraAttributes");
-					String itemUuid = extraAttributes.contains("uuid") ? extraAttributes.getString("uuid") : null;
+				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
-					if (itemUuid != null) {
-						Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;
+				if (!itemUuid.isEmpty()) {
+					Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;
 
-						if (hex == null) {
-							if (customDyeColors.containsKey(itemUuid)) {
-								customDyeColors.removeInt(itemUuid);
-								SkyblockerConfigManager.save();
-								source.sendFeedback(Text.translatable("skyblocker.customDyeColors.removed"));
-							} else {
-								source.sendFeedback(Text.translatable("skyblocker.customDyeColors.neverHad"));
-							}
-						} else {
-							customDyeColors.put(itemUuid, Integer.decode("0x" + hex.replace("#", "")).intValue());
+					if (hex == null) {
+						if (customDyeColors.containsKey(itemUuid)) {
+							customDyeColors.removeInt(itemUuid);
 							SkyblockerConfigManager.save();
-							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.added"));
+							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.removed"));
+						} else {
+							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.neverHad"));
 						}
 					} else {
-						source.sendError(Text.translatable("skyblocker.customDyeColors.noItemUuid"));
+						customDyeColors.put(itemUuid, Integer.decode("0x" + hex.replace("#", "")).intValue());
+						SkyblockerConfigManager.save();
+						source.sendFeedback(Text.translatable("skyblocker.customDyeColors.added"));
 					}
+				} else {
+					source.sendError(Text.translatable("skyblocker.customDyeColors.noItemUuid"));
 				}
 			} else {
 				source.sendError(Text.translatable("skyblocker.customDyeColors.notDyeable"));

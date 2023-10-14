@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -65,9 +66,9 @@ public class ItemRegistry {
             }
 
         items.sort((lhs, rhs) -> {
-            String lhsInternalName = getInternalName(lhs);
+            String lhsInternalName = ItemUtils.getItemId(lhs);
             String lhsFamilyName = lhsInternalName.replaceAll(".\\d+$", "");
-            String rhsInternalName = getInternalName(rhs);
+            String rhsInternalName = ItemUtils.getItemId(rhs);
             String rhsFamilyName = rhsInternalName.replaceAll(".\\d+$", "");
             if (lhsFamilyName.equals(rhsFamilyName)) {
                 if (lhsInternalName.length() != rhsInternalName.length())
@@ -100,14 +101,16 @@ public class ItemRegistry {
 
     public static List<SkyblockCraftingRecipe> getRecipes(String internalName) {
         List<SkyblockCraftingRecipe> result = new ArrayList<>();
+        for (SkyblockCraftingRecipe recipe : recipes) {
+            if (ItemUtils.getItemId(recipe.result).equals(internalName)) result.add(recipe);
+        }
         for (SkyblockCraftingRecipe recipe : recipes)
-            if (getInternalName(recipe.result).equals(internalName)) result.add(recipe);
-        for (SkyblockCraftingRecipe recipe : recipes)
-            for (ItemStack ingredient : recipe.grid)
-                if (!ingredient.getItem().equals(Items.AIR) && getInternalName(ingredient).equals(internalName)) {
+            for (ItemStack ingredient : recipe.grid) {
+                if (!ingredient.getItem().equals(Items.AIR) && ItemUtils.getItemId(ingredient).equals(internalName)) {
                     result.add(recipe);
                     break;
                 }
+            }
         return result;
     }
 
@@ -117,17 +120,6 @@ public class ItemRegistry {
 
     public static Stream<ItemStack> getItemsStream() {
         return items.stream();
-    }
-
-    /**
-     * Get Internal name of an ItemStack
-     *
-     * @param itemStack ItemStack to get internal name from
-     * @return internal name of the given ItemStack
-     */
-    public static String getInternalName(ItemStack itemStack) {
-        if (itemStack.getNbt() == null) return "";
-        return itemStack.getNbt().getCompound("ExtraAttributes").getString("id");
     }
 
     public static ItemStack getItemStack(String internalName) {

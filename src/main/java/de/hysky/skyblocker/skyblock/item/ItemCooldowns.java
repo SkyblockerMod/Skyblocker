@@ -34,7 +34,7 @@ public class ItemCooldowns {
         if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return;
 
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
-        if (usedItemId == null) return;
+        if (usedItemId.isEmpty()) return;
 
         if (state.isIn(BlockTags.LOGS)) {
             if (usedItemId.equals(JUNGLE_AXE_ID)) {
@@ -53,7 +53,7 @@ public class ItemCooldowns {
         if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return TypedActionResult.pass(ItemStack.EMPTY);
 
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
-        if (usedItemId != null && usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
+        if (usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
             if (!isOnCooldown(GRAPPLING_HOOK_ID) && !isWearingBatArmor(player)) {
                 ITEM_COOLDOWNS.put(GRAPPLING_HOOK_ID, new CooldownEntry(2000));
             }
