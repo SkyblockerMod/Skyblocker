@@ -40,7 +40,7 @@ public class PriceInfoTooltip {
     private static JsonObject lowestPricesJson;
     private static JsonObject isMuseumJson;
     private static JsonObject motesPricesJson;
-    private static boolean nullMsgSend = false;
+    private static volatile boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
     private static long npcHash = 0;
@@ -353,7 +353,7 @@ public class PriceInfoTooltip {
 
     // If these options is true beforehand, the client will get first data of these options while loading.
     // After then, it will only fetch the data if it is on Skyblock.
-    public static int minute = -1;
+    public static volatile int minute = -1;
 
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(() -> {
@@ -395,7 +395,7 @@ public class PriceInfoTooltip {
             minute++;
             CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
                     .whenComplete((unused, throwable) -> nullMsgSend = false);
-        }, 1200);
+        }, 1200, true);
     }
 
     private static JsonObject downloadPrices(String type) {
