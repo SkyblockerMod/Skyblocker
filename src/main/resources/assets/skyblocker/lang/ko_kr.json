@@ -148,7 +148,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "지도 활성화",
     "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "지도 크기",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Three Weirdos 퍼즐 해결",
-    "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "블레이즈 퍼즐 해결",
+    "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver": "블레이즈 퍼즐 해결",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "Trivia 퍼즐 해결",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "터미널 해결",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "색상 선택 해결",

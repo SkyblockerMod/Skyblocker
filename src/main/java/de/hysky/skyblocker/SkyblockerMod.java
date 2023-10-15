@@ -8,10 +8,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.*;
-import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
-import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
@@ -105,6 +102,7 @@ public class SkyblockerMod implements ClientModInitializer {
         QuiverWarning.init();
         SpecialEffects.init();
         ItemProtection.init();
+        CreeperBeams.init();
         ItemRarityBackgrounds.init();
         containerSolverManager.init();
         statusBarTracker.init();

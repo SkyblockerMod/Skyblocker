@@ -47,8 +47,8 @@ public class SkyblockerConfig {
 
 		/* REGEX Explanation
 		 * "Pets" : simple match on letters
-         * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
-         */
+		 * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
+		 */
 		@SerialEntry
 		public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets(:? \\(\\d+\\/\\d+\\))?", "/pets");
 
@@ -332,16 +332,16 @@ public class SkyblockerConfig {
 		public boolean enableCommandArgShortcuts = true;
 	}
 	
-    public static class QuiverWarning {
-    	@SerialEntry
-        public boolean enableQuiverWarning = true;
-    	
-    	@SerialEntry
-        public boolean enableQuiverWarningInDungeons = true;
-    	
-    	@SerialEntry
-        public boolean enableQuiverWarningAfterDungeon = true;
-    }
+	public static class QuiverWarning {
+		@SerialEntry
+		public boolean enableQuiverWarning = true;
+
+		@SerialEntry
+		public boolean enableQuiverWarningInDungeons = true;
+
+		@SerialEntry
+		public boolean enableQuiverWarningAfterDungeon = true;
+	}
 
 	public static class Hitbox {
 		@SerialEntry
@@ -526,7 +526,10 @@ public class SkyblockerConfig {
 		public boolean solveThreeWeirdos = true;
 		
 		@SerialEntry
-		public boolean blazesolver = true;
+		public boolean blazeSolver = true;
+
+		@SerialEntry
+		public boolean creeperSolver = true;
 		
 		@SerialEntry
 		public boolean solveTrivia = true;

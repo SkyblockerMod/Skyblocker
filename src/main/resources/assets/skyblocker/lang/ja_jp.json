@@ -36,7 +36,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons": "ダンジョン",
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "ダンジョンのマップ表示を有効にする",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "嘘つきを当てるパズルのソルバー",
-    "text.autoconfig.skyblocker.option.locations.dungeons.blazesolver": "ブレイズパズルのソルバー",
+    "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver": "ブレイズパズルのソルバー",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveTrivia": "クイズのソルバー",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "F7のターミナルソルバー",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "select Coloredのソルバー",
