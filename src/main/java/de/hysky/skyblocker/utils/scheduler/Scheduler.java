@@ -48,6 +48,7 @@ public class Scheduler {
      *
      * @param task  the task to run
      * @param delay the delay in ticks
+     * @param multithreaded whether to run the task on the schedulers dedicated thread pool
      */
     public void schedule(Runnable task, int delay, boolean multithreaded) {
         if (delay >= 0) {
@@ -62,6 +63,7 @@ public class Scheduler {
      *
      * @param task   the task to run
      * @param period the period in ticks
+     * @param multithreaded whether to run the task on the schedulers dedicated thread pool
      */
     public void scheduleCyclic(Runnable task, int period, boolean multithreaded) {
         if (period > 0) {
@@ -131,7 +133,7 @@ public class Scheduler {
      * A task that that is scheduled to execute once after the {@code interval}, or that is run every {@code interval} ticks.
      */
     protected record ScheduledTask(Runnable task, int interval, boolean cyclic, boolean multithreaded) implements Runnable {
-        protected ScheduledTask(Runnable task, boolean multithreaded) {
+        private ScheduledTask(Runnable task, boolean multithreaded) {
             this(task, -1, false, multithreaded);
         }
 

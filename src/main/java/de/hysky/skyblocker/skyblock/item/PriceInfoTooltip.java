@@ -353,7 +353,7 @@ public class PriceInfoTooltip {
 
     // If these options is true beforehand, the client will get first data of these options while loading.
     // After then, it will only fetch the data if it is on Skyblock.
-    public static volatile int minute = -1;
+    public static int minute = -1;
 
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(() -> {
