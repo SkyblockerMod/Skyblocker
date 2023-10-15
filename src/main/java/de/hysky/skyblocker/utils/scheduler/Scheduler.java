@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.scheduler;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.brigadier.Command;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 /**
@@ -21,8 +24,23 @@ public class Scheduler {
     public static final Scheduler INSTANCE = new Scheduler();
     private int currentTick = 0;
     private final AbstractInt2ObjectMap<List<ScheduledTask>> tasks = new Int2ObjectOpenHashMap<>();
+    private final ExecutorService executors = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("Skyblocker-Scheduler-%d").build());
 
     protected Scheduler() {
+    }
+    
+    /**
+     * @see #schedule(Runnable, int, boolean)
+     */
+    public void schedule(Runnable task, int delay) {
+        schedule(task, delay, false);
+    }
+    
+    /**
+     * @see #scheduleCyclic(Runnable, int, boolean)
+     */
+    public void scheduleCyclic(Runnable task, int period) {
+        scheduleCyclic(task, period, false);
     }
 
     /**
@@ -30,10 +48,11 @@ public class Scheduler {
      *
      * @param task  the task to run
      * @param delay the delay in ticks
+     * @param multithreaded whether to run the task on the schedulers dedicated thread pool
      */
-    public void schedule(Runnable task, int delay) {
+    public void schedule(Runnable task, int delay, boolean multithreaded) {
         if (delay >= 0) {
-            addTask(new ScheduledTask(task), currentTick + delay);
+            addTask(new ScheduledTask(task, multithreaded), currentTick + delay);
         } else {
             LOGGER.warn("Scheduled a task with negative delay");
         }
@@ -44,10 +63,11 @@ public class Scheduler {
      *
      * @param task   the task to run
      * @param period the period in ticks
+     * @param multithreaded whether to run the task on the schedulers dedicated thread pool
      */
-    public void scheduleCyclic(Runnable task, int period) {
+    public void scheduleCyclic(Runnable task, int period, boolean multithreaded) {
         if (period > 0) {
-            addTask(new CyclicTask(task, period), currentTick);
+            addTask(new ScheduledTask(task, period, true, multithreaded), currentTick);
         } else {
             LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
         }
@@ -74,7 +94,7 @@ public class Scheduler {
             //noinspection ForLoopReplaceableByForEach (or else we get a ConcurrentModificationException)
             for (int i = 0; i < currentTickTasks.size(); i++) {
                 ScheduledTask task = currentTickTasks.get(i);
-                if (!runTask(task)) {
+                if (!runTask(task, task.multithreaded)) {
                     tasks.computeIfAbsent(currentTick + 1, key -> new ArrayList<>()).add(task);
                 }
             }
@@ -89,8 +109,13 @@ public class Scheduler {
      * @param task the task to run
      * @return {@code true} if the task is run, and {@link false} if task is not run.
      */
-    protected boolean runTask(Runnable task) {
-        task.run();
+    protected boolean runTask(Runnable task, boolean multithreaded) {
+        if (multithreaded) {
+            executors.execute(task);
+        } else {
+            task.run();
+        }
+
         return true;
     }
 
@@ -105,36 +130,18 @@ public class Scheduler {
     }
 
     /**
-     * A task that runs every period ticks. More specifically, this task reschedules itself to run again after period ticks every time it runs.
+     * A task that that is scheduled to execute once after the {@code interval}, or that is run every {@code interval} ticks.
      */
-    protected class CyclicTask extends ScheduledTask {
-        private final int period;
-
-        CyclicTask(Runnable inner, int period) {
-            super(inner);
-            this.period = period;
+    protected record ScheduledTask(Runnable task, int interval, boolean cyclic, boolean multithreaded) implements Runnable {
+        private ScheduledTask(Runnable task, boolean multithreaded) {
+            this(task, -1, false, multithreaded);
         }
 
         @Override
         public void run() {
-            super.run();
-            addTask(this, currentTick + period);
-        }
-    }
+            task.run();
 
-    /**
-     * A task that runs at a specific tick, relative to {@link #currentTick}.
-     */
-    protected static class ScheduledTask implements Runnable {
-        private final Runnable inner;
-
-        public ScheduledTask(Runnable inner) {
-            this.inner = inner;
-        }
-
-        @Override
-        public void run() {
-            inner.run();
+            if (cyclic) INSTANCE.addTask(this, INSTANCE.currentTick + interval);
         }
     }
 }

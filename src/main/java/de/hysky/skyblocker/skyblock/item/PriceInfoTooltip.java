@@ -34,7 +34,7 @@ public class PriceInfoTooltip {
     private static JsonObject lowestPricesJson;
     private static JsonObject isMuseumJson;
     private static JsonObject motesPricesJson;
-    private static boolean nullMsgSend = false;
+    private static volatile boolean nullMsgSend = false;
     private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
     private static long npcHash = 0;
@@ -376,7 +376,7 @@ public class PriceInfoTooltip {
             minute++;
             CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
                     .whenComplete((unused, throwable) -> nullMsgSend = false);
-        }, 1200);
+        }, 1200, true);
     }
 
     private static JsonObject downloadPrices(String type) {
