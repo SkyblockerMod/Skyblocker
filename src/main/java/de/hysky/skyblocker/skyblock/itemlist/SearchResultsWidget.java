@@ -72,7 +72,7 @@ public class SearchResultsWidget implements Drawable {
         if (!searchText.equals(this.searchText)) {
             this.searchText = searchText;
             this.searchResults.clear();
-            for (ItemStack entry : ItemRegistry.items) {
+            for (ItemStack entry : ItemRepository.getItems()) {
                 String name = entry.getName().toString().toLowerCase(Locale.ENGLISH);
                 if (entry.getNbt() == null) {
                     continue;
@@ -93,16 +93,16 @@ public class SearchResultsWidget implements Drawable {
             SkyblockCraftingRecipe recipe = this.recipeResults.get(this.currentPage);
             for (ResultButtonWidget button : resultButtons)
                 button.clearItemStack();
-            resultButtons.get(5).setItemStack(recipe.grid.get(0));
-            resultButtons.get(6).setItemStack(recipe.grid.get(1));
-            resultButtons.get(7).setItemStack(recipe.grid.get(2));
-            resultButtons.get(10).setItemStack(recipe.grid.get(3));
-            resultButtons.get(11).setItemStack(recipe.grid.get(4));
-            resultButtons.get(12).setItemStack(recipe.grid.get(5));
-            resultButtons.get(15).setItemStack(recipe.grid.get(6));
-            resultButtons.get(16).setItemStack(recipe.grid.get(7));
-            resultButtons.get(17).setItemStack(recipe.grid.get(8));
-            resultButtons.get(14).setItemStack(recipe.result);
+            resultButtons.get(5).setItemStack(recipe.getGrid().get(0));
+            resultButtons.get(6).setItemStack(recipe.getGrid().get(1));
+            resultButtons.get(7).setItemStack(recipe.getGrid().get(2));
+            resultButtons.get(10).setItemStack(recipe.getGrid().get(3));
+            resultButtons.get(11).setItemStack(recipe.getGrid().get(4));
+            resultButtons.get(12).setItemStack(recipe.getGrid().get(5));
+            resultButtons.get(15).setItemStack(recipe.getGrid().get(6));
+            resultButtons.get(16).setItemStack(recipe.getGrid().get(7));
+            resultButtons.get(17).setItemStack(recipe.getGrid().get(8));
+            resultButtons.get(14).setItemStack(recipe.getResult());
         } else {
             for (int i = 0; i < resultButtons.size(); ++i) {
                 int index = this.currentPage * resultButtons.size() + i;
@@ -122,7 +122,7 @@ public class SearchResultsWidget implements Drawable {
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
             //Craft text - usually a requirement for the recipe
-            String craftText = this.recipeResults.get(this.currentPage).craftText;
+            String craftText = this.recipeResults.get(this.currentPage).getCraftText();
             if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) {
             	drawTooltip(textRenderer, context, craftText, this.parentX + 11, this.parentY + 31, mouseX, mouseY);
             	craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS;
@@ -130,7 +130,7 @@ public class SearchResultsWidget implements Drawable {
             context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
 
             //Item name
-            Text resultText = this.recipeResults.get(this.currentPage).result.getName();
+            Text resultText = this.recipeResults.get(this.currentPage).getResult().getName();
             if (textRenderer.getWidth(Formatting.strip(resultText.getString())) > MAX_TEXT_WIDTH) {
             	drawTooltip(textRenderer, context, resultText, this.parentX + 11, this.parentY + 43, mouseX, mouseY);
             	resultText = Text.literal(getLegacyFormatting(resultText.getString()) + textRenderer.trimToWidth(Formatting.strip(resultText.getString()), MAX_TEXT_WIDTH) + ELLIPSIS).setStyle(resultText.getStyle());
@@ -202,7 +202,7 @@ public class SearchResultsWidget implements Drawable {
                 if (internalName.isEmpty()) {
                     continue;
                 }
-                List<SkyblockCraftingRecipe> recipes = ItemRegistry.getRecipes(internalName);
+                List<SkyblockCraftingRecipe> recipes = ItemRepository.getRecipes(internalName);
                 if (!recipes.isEmpty()) {
                     this.recipeResults = recipes;
                     this.currentPage = 0;

@@ -375,6 +375,28 @@ public class GeneralCategory {
 								.build())
 						.build())
 
+				//Wiki Lookup
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup.@Tooltip")))
+								.binding(defaults.general.wikiLookup.enableWikiLookup,
+										() -> config.general.wikiLookup.enableWikiLookup,
+										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip")))
+								.binding(defaults.general.wikiLookup.officialWiki,
+										() -> config.general.wikiLookup.officialWiki,
+										newValue -> config.general.wikiLookup.officialWiki = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
+
 				//Special Effects
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.specialEffects"))

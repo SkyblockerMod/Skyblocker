@@ -61,7 +61,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     @Inject(at = @At("HEAD"), method = "keyPressed")
     public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         if (this.client != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
-            WikiLookup.openWiki(this.focusedSlot);
+            WikiLookup.openWiki(this.focusedSlot, client.player);
         }
     }
 

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
-import com.google.gson.JsonObject;
+import io.github.moulberry.repo.data.NEUCraftingRecipe;
+import io.github.moulberry.repo.data.NEUIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import org.slf4j.Logger;
@@ -11,37 +12,31 @@ import java.util.List;
 
 public class SkyblockCraftingRecipe {
     private static final Logger LOGGER = LoggerFactory.getLogger(SkyblockCraftingRecipe.class);
-    String craftText = "";
-    final List<ItemStack> grid = new ArrayList<>(9);
-    ItemStack result;
+    private final String craftText;
+    private final List<ItemStack> grid = new ArrayList<>(9);
+    private ItemStack result;
 
-    public static SkyblockCraftingRecipe fromJsonObject(JsonObject jsonObj) {
-        SkyblockCraftingRecipe recipe = new SkyblockCraftingRecipe();
-        if (jsonObj.has("crafttext")) recipe.craftText = jsonObj.get("crafttext").getAsString();
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("A1").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("A2").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("A3").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("B1").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("B2").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("B3").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("C1").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("C2").getAsString()));
-        recipe.grid.add(getItemStack(jsonObj.getAsJsonObject("recipe").get("C3").getAsString()));
-        recipe.result = ItemRegistry.itemsMap.get(jsonObj.get("internalname").getAsString());
+    public SkyblockCraftingRecipe(String craftText) {
+        this.craftText = craftText;
+    }
+
+    public static SkyblockCraftingRecipe fromNEURecipe(NEUCraftingRecipe neuCraftingRecipe) {
+        SkyblockCraftingRecipe recipe = new SkyblockCraftingRecipe(neuCraftingRecipe.getExtraText() != null ? neuCraftingRecipe.getExtraText() : "");
+        for (NEUIngredient input : neuCraftingRecipe.getInputs()) {
+            recipe.grid.add(getItemStack(input));
+        }
+        recipe.result = getItemStack(neuCraftingRecipe.getOutput());
         return recipe;
     }
 
-    private static ItemStack getItemStack(String internalName) {
-        try {
-            if (internalName.length() > 0) {
-                int count = internalName.split(":").length == 1 ? 1 : Integer.parseInt(internalName.split(":")[1]);
-                internalName = internalName.split(":")[0];
-                ItemStack itemStack = ItemRegistry.itemsMap.get(internalName).copy();
-                itemStack.setCount(count);
-                return itemStack;
+    private static ItemStack getItemStack(NEUIngredient input) {
+        if (input != NEUIngredient.SENTINEL_EMPTY) {
+            ItemStack stack = ItemRepository.getItemStack(input.getItemId());
+            if (stack != null) {
+                return stack.copyWithCount((int) input.getAmount());
+            } else {
+                LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", input.getItemId());
             }
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker-Recipe] " + internalName, e);
         }
         return Items.AIR.getDefaultStack();
     }

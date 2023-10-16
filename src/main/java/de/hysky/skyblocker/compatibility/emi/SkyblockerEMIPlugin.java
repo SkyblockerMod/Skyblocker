@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.compatibility.emi;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -21,9 +21,9 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
-        ItemRegistry.getItemsStream().map(EmiStack::of).forEach(registry::addEmiStack);
+        ItemRepository.getItemsStream().map(EmiStack::of).forEach(registry::addEmiStack);
         registry.addCategory(SKYBLOCK);
         registry.addWorkstation(SKYBLOCK, EmiStack.of(Items.CRAFTING_TABLE));
-        ItemRegistry.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
+        ItemRepository.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
     }
 }
