@@ -3,6 +3,9 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -137,6 +140,11 @@ public class CustomArmorTrims {
 	}
 
 	public record ArmorTrimId(@SerialEntry Identifier material, @SerialEntry Identifier pattern) implements Pair<Identifier, Identifier> {
+		public static final Codec<ArmorTrimId> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
+				Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))
+				.apply(instance, ArmorTrimId::new));
+		
 		@Override
 		public Identifier left() {
 			return material();
