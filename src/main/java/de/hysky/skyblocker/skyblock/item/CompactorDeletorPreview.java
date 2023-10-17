@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
@@ -43,7 +43,7 @@ public class CompactorDeletorPreview {
         NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
         if (extraAttributes == null) return false;
         // Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
-        List<IntObjectPair<ItemStack>> slots = extraAttributes.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRegistry.getItemStack(extraAttributes.getString(slot)))).toList();
+        List<IntObjectPair<ItemStack>> slots = extraAttributes.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRepository.getItemStack(extraAttributes.getString(slot)))).toList();
 
         List<TooltipComponent> components = tooltips.stream().map(Text::asOrderedText).map(TooltipComponent::of).collect(Collectors.toList());
         IntIntPair dimensions = DIMENSIONS.getOrDefault(size, DEFAULT_DIMENSION);

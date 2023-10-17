@@ -4,8 +4,6 @@ plugins {
 	id 'com.modrinth.minotaur' version '2.+'
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
-
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
@@ -59,7 +57,7 @@ dependencies {
 
 	// EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-//	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}" TODO uncomment when EMI is updated
+	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// Renderer (https://github.com/0x3C50/Renderer)
 	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}") {
@@ -80,8 +78,8 @@ dependencies {
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
 	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 
-	// neu repoparser | implement it if this is being used
-	// include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
+	// NEU RepoParser
+	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
 }
 
 loom {

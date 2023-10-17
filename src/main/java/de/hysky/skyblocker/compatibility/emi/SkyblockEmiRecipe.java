@@ -16,7 +16,7 @@ public class SkyblockEmiRecipe extends EmiCraftingRecipe {
     private final String craftText;
 
     public SkyblockEmiRecipe(SkyblockCraftingRecipe recipe) {
-        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()).comparison(Comparison.compareNbt()), Identifier.of("skyblock", ItemUtils.getItemId(recipe.getResult()).toLowerCase().replace(';', '_')));
+        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()).comparison(Comparison.compareNbt()), Identifier.of("skyblock", ItemUtils.getItemId(recipe.getResult()).toLowerCase().replace(';', '_') + "_" + recipe.getResult().getCount()));
         this.craftText = recipe.getCraftText();
     }
 

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
@@ -29,6 +29,6 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
-        entryRegistry.addEntries(ItemRegistry.getItemsStream().map(EntryStacks::of).toList());
+        entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
     }
 }
