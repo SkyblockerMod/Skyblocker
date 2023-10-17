@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -105,21 +105,18 @@ public class ItemUtils {
         return extraAttributes != null ? extraAttributes.getString(UUID) : "";
     }
 
+    public static boolean hasCustomDurability(@NotNull ItemStack stack) {
+        NbtCompound extraAttributes = getExtraAttributes(stack);
+        return extraAttributes != null && (extraAttributes.contains("drill_fuel") || extraAttributes.getString(ID).equals("PICKONIMBUS"));
+    }
+
     @Nullable
-    public static Durability getDurability(@NotNull ItemStack stack) {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().locations.dwarvenMines.enableDrillFuel || stack.isEmpty()) {
-            return null;
-        }
-
-        if (getExtraAttributesOptional(stack).filter(extraAttributes -> extraAttributes.contains("drill_fuel") || extraAttributes.getString(ItemUtils.ID).equals("PICKONIMBUS")).isEmpty()) {
-            return null;
-        }
-
+    public static IntIntPair getDurability(@NotNull ItemStack stack) {
         int current = 0;
         int max = 0;
         String clearFormatting;
 
-        for (String line : ItemUtils.getTooltipStrings(stack)) {
+        for (String line : getTooltipStrings(stack)) {
             clearFormatting = Formatting.strip(line);
             if (line.contains("Fuel: ")) {
                 if (clearFormatting != null) {
@@ -127,7 +124,7 @@ public class ItemUtils {
                     String[] split = clear.split("/");
                     current = Integer.parseInt(split[0]);
                     max = Integer.parseInt(split[1]) * 1000;
-                    return new Durability(current, max);
+                    return IntIntPair.of(current, max);
                 }
             } else if (line.contains("uses.")) {
                 if (clearFormatting != null) {
@@ -138,7 +135,7 @@ public class ItemUtils {
                         current = Integer.parseInt(usesString);
                         max = 5000;
                     }
-                    return new Durability(current, max);
+                    return IntIntPair.of(current, max);
                 }
             }
         }
@@ -152,8 +149,5 @@ public class ItemUtils {
         } catch (CommandSyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public record Durability(int current, int max) {
     }
 }
