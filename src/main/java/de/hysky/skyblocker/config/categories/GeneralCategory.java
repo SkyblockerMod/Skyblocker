@@ -503,6 +503,26 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
+
+				//Flame Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay"))
+						.collapsed(true)
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameHeight"))
+								.binding(defaults.general.flameOverlay.flameHeight,
+										() -> config.general.flameOverlay.flameHeight,
+										newValue -> config.general.flameOverlay.flameHeight = newValue)
+								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.5f).step(0.01f))
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameOpacity"))
+								.binding(defaults.general.flameOverlay.flameOpacity,
+										() -> config.general.flameOverlay.flameOpacity,
+										newValue -> config.general.flameOverlay.flameOpacity = newValue)
+								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.8f).step(0.1f))
+								.build())
+						.build())
 				.build();
 	}
 }
