@@ -26,7 +26,7 @@ public class TitleContainerConfigScreen extends Screen {
     private float hudX = SkyblockerConfigManager.get().general.titleContainer.x;
     private float hudY = SkyblockerConfigManager.get().general.titleContainer.y;
     private final Screen parent;
-    private boolean changedScale, changedOrientation, changedAlignment;
+    private boolean changedScale;
     
     protected TitleContainerConfigScreen() {
     	this(null);
@@ -141,7 +141,6 @@ public class TitleContainerConfigScreen extends Screen {
                 case MIDDLE -> SkyblockerConfig.Alignment.RIGHT;
                 case RIGHT -> SkyblockerConfig.Alignment.LEFT;
             };
-            changedAlignment = true;
         }
         if (keyCode == GLFW.GLFW_KEY_E) {
         	SkyblockerConfig.Alignment current = SkyblockerConfigManager.get().general.titleContainer.alignment;
@@ -150,7 +149,6 @@ public class TitleContainerConfigScreen extends Screen {
                 case MIDDLE -> SkyblockerConfig.Alignment.LEFT;
                 case RIGHT -> SkyblockerConfig.Alignment.MIDDLE;
             };
-            changedAlignment = true;
         }
         if (keyCode == GLFW.GLFW_KEY_R) {
         	SkyblockerConfig.Direction current = SkyblockerConfigManager.get().general.titleContainer.direction;
@@ -158,7 +156,6 @@ public class TitleContainerConfigScreen extends Screen {
                 case HORIZONTAL -> SkyblockerConfig.Direction.VERTICAL;
                 case VERTICAL -> SkyblockerConfig.Direction.HORIZONTAL;
             };
-            changedOrientation = true;
         }
         if (keyCode == GLFW.GLFW_KEY_EQUAL) {
             SkyblockerConfigManager.get().general.titleContainer.titleContainerScale += 10;
@@ -182,17 +179,9 @@ public class TitleContainerConfigScreen extends Screen {
             OptionGroup group = category.groups().stream().filter(grp -> grp.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.general.titleContainer"))).findFirst().orElseThrow();
                     	
             Option<?> scaleOpt = group.options().get(0);
-            Option<?> xOpt = group.options().get(1);
-            Option<?> yOpt = group.options().get(2);
-            Option<?> orientationOpt = group.options().get(3);
-            Option<?> horizontalAlignmentOpt = group.options().get(4);
         	
             // Refresh the value in the config with the bound value
             if (changedScale) scaleOpt.forgetPendingValue();
-            xOpt.forgetPendingValue();
-            yOpt.forgetPendingValue();
-            if (changedOrientation) orientationOpt.forgetPendingValue();
-            if (changedAlignment) horizontalAlignmentOpt.forgetPendingValue();
         }
         
         SkyblockerConfigManager.save();

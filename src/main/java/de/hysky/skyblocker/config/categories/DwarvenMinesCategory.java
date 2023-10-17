@@ -7,7 +7,6 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -73,20 +72,6 @@ public class DwarvenMinesCategory {
 										() -> config.locations.dwarvenMines.dwarvenHud.enableBackground,
 										newValue -> config.locations.dwarvenMines.dwarvenHud.enableBackground = newValue)
 								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.x"))
-								.binding(defaults.locations.dwarvenMines.dwarvenHud.x,
-										() -> config.locations.dwarvenMines.dwarvenHud.x,
-										newValue -> config.locations.dwarvenMines.dwarvenHud.x = newValue)
-								.controller(IntegerFieldControllerBuilder::create)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y"))
-								.binding(defaults.locations.dwarvenMines.dwarvenHud.y,
-										() -> config.locations.dwarvenMines.dwarvenHud.y,
-										newValue -> config.locations.dwarvenMines.dwarvenHud.y = newValue)
-								.controller(IntegerFieldControllerBuilder::create)
 								.build())
 						.build())
 				.build();

@@ -2,13 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -61,20 +56,8 @@ public class DungeonMapConfigScreen extends Screen {
 	public void close() {
 		SkyblockerConfigManager.get().locations.dungeons.mapX = hudX;
 		SkyblockerConfigManager.get().locations.dungeons.mapY = hudY;
-		
-        if (parent instanceof YACLScreen yaclScreen) {
-            ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.locations.dungeons"))).findFirst().orElseThrow();
-            OptionGroup group = category.groups().get(0); // Internally index 0 is the group created for all ungrouped options
-                    	
-            Option<?> xOpt = group.options().stream().filter(opt -> opt.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.locations.dungeons.mapX"))).findFirst().orElseThrow();
-            Option<?> yOpt = group.options().stream().filter(opt -> opt.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.locations.dungeons.mapY"))).findFirst().orElseThrow();
-        	
-            // Refresh the value in the config with the bound value
-            xOpt.forgetPendingValue();
-            yOpt.forgetPendingValue();
-        }
-		
 		SkyblockerConfigManager.save();
+		
 		this.client.setScreen(parent);
 	}
 }

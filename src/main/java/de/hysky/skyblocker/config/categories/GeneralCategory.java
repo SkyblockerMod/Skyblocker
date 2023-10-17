@@ -5,7 +5,6 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
-import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
@@ -420,34 +419,6 @@ public class GeneralCategory {
 										() -> config.general.titleContainer.titleContainerScale,
 										newValue -> config.general.titleContainer.titleContainerScale = newValue)
 								.controller(opt -> FloatFieldControllerBuilder.create(opt).range(30f, 140f))
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.x"))
-								.binding(defaults.general.titleContainer.x,
-										() -> config.general.titleContainer.x,
-										newValue -> config.general.titleContainer.x = newValue)
-								.controller(IntegerFieldControllerBuilder::create)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.y"))
-								.binding(defaults.general.titleContainer.y,
-										() -> config.general.titleContainer.y,
-										newValue -> config.general.titleContainer.y = newValue)
-								.controller(IntegerFieldControllerBuilder::create)
-								.build())
-						.option(Option.<SkyblockerConfig.Direction>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.direction"))
-								.binding(defaults.general.titleContainer.direction,
-										() -> config.general.titleContainer.direction,
-										newValue -> config.general.titleContainer.direction = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.Alignment>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.alignment"))
-								.binding(defaults.general.titleContainer.alignment,
-										() -> config.general.titleContainer.alignment,
-										newValue -> config.general.titleContainer.alignment = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.config"))
