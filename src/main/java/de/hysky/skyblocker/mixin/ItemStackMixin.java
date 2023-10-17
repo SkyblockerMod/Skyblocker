@@ -4,48 +4,90 @@ package de.hysky.skyblocker.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.ItemUtils.Durability;
 import de.hysky.skyblocker.utils.Utils;
+import dev.cbyrne.betterinject.annotations.Inject;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
+
+	@Shadow
+	public abstract int getDamage();
+
+	@Shadow
+	public abstract void setDamage(int damage);
+
+	@Unique
+	private int maxDamage;
+
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
 	private Text skyblocker$customItemNames(Text original) {
-		if (Utils.isOnSkyblock())  {
+		if (Utils.isOnSkyblock()) {
 			return SkyblockerConfigManager.get().general.customItemNames.getOrDefault(ItemUtils.getItemUuid((ItemStack) (Object) this), original);
 		}
 
 		return original;
 	}
 
+	/**
+	 * Updates the durability of this item stack every tick when in the inventory.
+	 */
+	@Inject(method = "inventoryTick", at = @At("TAIL"))
+	private void skyblocker$updateDamage() {
+		if (!skyblocker$shouldProcess()) {
+			return;
+		}
+		skyblocker$getAndCacheDurability();
+	}
+
 	@ModifyReturnValue(method = "getDamage", at = @At("RETURN"))
 	private int skyblocker$handleDamage(int original) {
-		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
-		if (dur != null) {
-			return dur.max() - dur.current();
+		// If the durability is already calculated, the original value should be the damage
+		if (!skyblocker$shouldProcess() || maxDamage != 0) {
+			return original;
 		}
-		return original;
+		return skyblocker$getAndCacheDurability() ? getDamage() : original;
 	}
 
 	@ModifyReturnValue(method = "getMaxDamage", at = @At("RETURN"))
 	private int skyblocker$handleMaxDamage(int original) {
-		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
-		if (dur != null) {
-			return dur.max();
+		if (!skyblocker$shouldProcess()) {
+			return original;
 		}
-		return original;
+		// If the max damage is already calculated, return it
+		if (maxDamage != 0) {
+			return maxDamage;
+		}
+		return skyblocker$getAndCacheDurability() ? maxDamage : original;
 	}
 
 	@ModifyReturnValue(method = "isDamageable", at = @At("RETURN"))
 	private boolean skyblocker$handleDamageable(boolean original) {
-		Durability dur = ItemUtils.getDurability((ItemStack) (Object) this);
-		if (dur != null) {
-			return true;
+		return skyblocker$shouldProcess() || original;
+	}
+
+	@Unique
+	private boolean skyblocker$shouldProcess() {
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().locations.dwarvenMines.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+	}
+
+	@Unique
+	private boolean skyblocker$getAndCacheDurability() {
+		// Calculate the durability
+		IntIntPair durability = ItemUtils.getDurability((ItemStack) (Object) this);
+		// Return if calculating the durability failed
+		if (durability == null) {
+			return false;
 		}
-		return original;
+		// Saves the calculated durability
+		maxDamage = durability.rightInt();
+		setDamage(durability.rightInt() - durability.leftInt());
+		return true;
 	}
 }
