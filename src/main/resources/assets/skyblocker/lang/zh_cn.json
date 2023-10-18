@@ -243,5 +243,14 @@
     "text.autoconfig.skyblocker.option.general.quiverWarning": "箭袋提示",
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarning": "启用箭袋提示",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay": "物品信息显示",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator": "启用利润计算器"
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator": "启用利润计算器",
+    "text.autoconfig.skyblocker.option.general.fairySouls.highlightOnlyNearbySouls.@Tooltip": "当此功能启用时, 在玩家半径50格以内的仙女之魂将被高亮",
+    "text.autoconfig.skyblocker.option.general.fairySouls.highlightFoundSouls": "将已找到的仙女之魂高亮",
+    "text.autoconfig.skyblocker.option.general.fairySouls.highlightOnlyNearbySouls": "仅高亮附近的仙女之魂",
+    "text.skyblocker.quit_discard": "不保存退出",
+    "text.skyblocker.quit_config": "修改未保存",
+    "text.skyblocker.quit_config_sure": "确定退出吗? 你的修改将不会被保存!",
+    "text.autoconfig.skyblocker.option.general.wikiLookup": "查阅 wiki",
+    "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki": "使用Hypixel官方 Wiki",
+    "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip": "在查阅时使用Hypixel 官方 wiki 代替 Fandom wiki"
 }
