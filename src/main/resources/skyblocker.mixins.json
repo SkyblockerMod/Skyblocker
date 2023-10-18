@@ -16,6 +16,7 @@
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
     "InGameHudMixin",
+    "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
     "ItemMixin",
     "ItemStackMixin",

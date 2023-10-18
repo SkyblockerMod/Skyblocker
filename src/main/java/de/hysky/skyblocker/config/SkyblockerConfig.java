@@ -210,6 +210,9 @@ public class SkyblockerConfig {
 		public TeleportOverlay teleportOverlay = new TeleportOverlay();
 
 		@SerialEntry
+		public FlameOverlay flameOverlay = new FlameOverlay();
+
+		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
 
 		@SerialEntry
@@ -389,6 +392,14 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableWitherImpact = true;
+	}
+
+	public static class FlameOverlay {
+		@SerialEntry
+		public float flameHeight = 0f;
+
+		@SerialEntry
+		public float flameOpacity = 0f;
 	}
 
 	public enum Direction {
