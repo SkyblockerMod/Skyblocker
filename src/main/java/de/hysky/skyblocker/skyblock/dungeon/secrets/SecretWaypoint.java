@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
@@ -75,7 +76,25 @@ public class SecretWaypoint {
      * Renders the secret waypoint, including a filled cube, a beacon beam, the name, and the distance from the player.
      */
     void render(WorldRenderContext context) {
-        RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
+        switch (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.waypointType) {
+            case WAYPOINT: {
+                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
+                
+                break;
+            }
+            case OUTLINE: {
+                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, 5F, true);
+
+                break;
+            }
+            case OUTLINED_WAYPOINT : {
+                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
+                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, 5F, true);
+
+                break;
+            }
+        }
+        
         Vec3d posUp = centerPos.add(0, 1, 0);
         RenderHelper.renderText(context, name, posUp, true);
         double distance = context.camera().getPos().distanceTo(centerPos);

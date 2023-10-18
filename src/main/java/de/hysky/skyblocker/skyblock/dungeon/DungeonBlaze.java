@@ -128,11 +128,11 @@ public class DungeonBlaze {
      */
     private static void renderBlazeOutline(ArmorStandEntity blaze, ArmorStandEntity nextBlaze, WorldRenderContext wrc) {
         Box blazeBox = blaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-        RenderHelper.renderOutline(wrc, blazeBox, GREEN_COLOR_COMPONENTS, 5f);
+        RenderHelper.renderOutline(wrc, blazeBox, GREEN_COLOR_COMPONENTS, 5f, false);
 
         if (nextBlaze != null && nextBlaze.isAlive() && nextBlaze != blaze) {
             Box nextBlazeBox = nextBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-            RenderHelper.renderOutline(wrc, nextBlazeBox, WHITE_COLOR_COMPONENTS, 5f);
+            RenderHelper.renderOutline(wrc, nextBlazeBox, WHITE_COLOR_COMPONENTS, 5f, false);
 
             Vec3d blazeCenter = blazeBox.getCenter();
             Vec3d nextBlazeCenter = nextBlazeBox.getCenter();

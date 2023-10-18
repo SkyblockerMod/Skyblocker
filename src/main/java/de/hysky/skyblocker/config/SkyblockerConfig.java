@@ -572,6 +572,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean noInitSecretWaypoints = false;
+		
+		@SerialEntry
+		public WaypointType waypointType = WaypointType.WAYPOINT;
 
 		@SerialEntry
 		public boolean enableEntranceWaypoints = true;
@@ -602,6 +605,21 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableDefaultWaypoints = true;
+	}
+	
+	public enum WaypointType {
+		WAYPOINT,
+		OUTLINE,
+		OUTLINED_WAYPOINT;
+		
+		@Override
+		public String toString() {
+			return switch (this) {
+				case WAYPOINT -> "Waypoint";
+				case OUTLINE -> "Outline";
+				case OUTLINED_WAYPOINT -> "Outlined Waypoint";
+			};
+		}
 	}
 
 	public static class DungeonChestProfit {

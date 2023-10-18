@@ -238,6 +238,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints": "Do Not Initialize Secret Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints.@Tooltip": "This option can save around 20 MB of ram if enabled, but Secret Waypoint will require a restart after turning off this option to work.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType": "Waypoint Type",
+  "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType.@Tooltip": "Waypoint: The standard waypoint.\n\nOutline: Outlines the secret in a box.\n\nOutlined Waypoint: Displays both a waypoint and an outline.",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableEntranceWaypoints" : "Enable Entrance Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableSuperboomWaypoints" : "Enable Superboom Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableChestWaypoints" : "Enable Chest Waypoints",
