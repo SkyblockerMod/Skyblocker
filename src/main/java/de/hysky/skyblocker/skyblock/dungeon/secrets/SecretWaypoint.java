@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
-
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -77,24 +76,14 @@ public class SecretWaypoint {
      */
     void render(WorldRenderContext context) {
         switch (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.waypointType) {
-            case WAYPOINT: {
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
-                
-                break;
-            }
-            case OUTLINE: {
-                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, 5F, true);
-
-                break;
-            }
-            case OUTLINED_WAYPOINT : {
+            case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
+            case OUTLINE -> RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, 5F, true);
+            case OUTLINED_WAYPOINT -> {
                 RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
                 RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, 5F, true);
-
-                break;
             }
         }
-        
+
         Vec3d posUp = centerPos.add(0, 1, 0);
         RenderHelper.renderText(context, name, posUp, true);
         double distance = context.camera().getPos().distanceTo(centerPos);
