@@ -174,6 +174,7 @@ public class TitleContainerConfigScreen extends Screen {
         SkyblockerConfigManager.get().general.titleContainer.x = (int) hudX;
         SkyblockerConfigManager.get().general.titleContainer.y = (int) hudY;
         
+        //TODO Come up with a better, less hacky solution for this in the future (:
         if (parent instanceof YACLScreen yaclScreen) {
             ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.category.general"))).findFirst().orElseThrow();
             OptionGroup group = category.groups().stream().filter(grp -> grp.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.general.titleContainer"))).findFirst().orElseThrow();
