@@ -26,5 +26,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor": "Profit Colour",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor": "Loss Colour",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor": "Incomplete Colour",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "The colour to display when the price data is incomplete."
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "The colour to display when the price data is incomplete.",
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a coloured background behind an item, the colour represents the item's rarity."
 }
