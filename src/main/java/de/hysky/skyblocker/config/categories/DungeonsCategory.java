@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.SkyblockerConfig.WaypointType;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -42,6 +43,21 @@ public class DungeonsCategory {
 										newValue -> config.locations.dungeons.secretWaypoints.noInitSecretWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.flag(OptionFlag.GAME_RESTART)
+								.build())
+						.option(Option.<WaypointType>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType.@Tooltip")))
+								.binding(defaults.locations.dungeons.secretWaypoints.waypointType,
+										() -> config.locations.dungeons.secretWaypoints.waypointType,
+										newValue -> config.locations.dungeons.secretWaypoints.waypointType = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.showSecretText"))
+								.binding(defaults.locations.dungeons.secretWaypoints.showSecretText,
+										() -> config.locations.dungeons.secretWaypoints.showSecretText,
+										newValue -> config.locations.dungeons.secretWaypoints.showSecretText = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableEntranceWaypoints"))

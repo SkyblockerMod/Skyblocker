@@ -78,7 +78,7 @@ public class RenderHelper {
      * Renders the outline of a box with the specified color components and line width.
      * This does not use renderer since renderer draws outline using debug lines with a fixed width.
      */
-    public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float lineWidth) {
+    public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float lineWidth, boolean throughWalls) {
         if (FrustumUtils.isVisible(box)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
@@ -90,6 +90,7 @@ public class RenderHelper {
             RenderSystem.lineWidth(lineWidth);
             RenderSystem.disableCull();
             RenderSystem.enableDepthTest();
+            RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
             matrices.push();
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
@@ -102,6 +103,7 @@ public class RenderHelper {
             RenderSystem.lineWidth(1f);
             RenderSystem.enableCull();
             RenderSystem.disableDepthTest();
+            RenderSystem.depthFunc(GL11.GL_LEQUAL);
         }
     }
 
