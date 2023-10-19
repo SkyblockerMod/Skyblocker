@@ -78,7 +78,7 @@ public class NEURepoManager {
                 recursiveDelete(dir);
             } catch (Exception ex) {
                 if (MinecraftClient.getInstance().player != null)
-                    MinecraftClient.getInstance().player.sendMessage(Text.translatable("skyblocker.updaterepository.failed"), false);
+                    MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updaterepository.failed")), false);
                 return;
             }
             loadRepository();

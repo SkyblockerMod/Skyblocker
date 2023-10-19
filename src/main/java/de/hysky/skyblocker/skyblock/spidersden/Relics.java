@@ -8,6 +8,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -105,12 +106,12 @@ public class Relics {
                 .then(literal("relics")
                         .then(literal("markAllFound").executes(context -> {
                             Relics.markAllFound();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.relics.markAllFound"));
+                            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.relics.markAllFound")));
                             return 1;
                         }))
                         .then(literal("markAllMissing").executes(context -> {
                             Relics.markAllMissing();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.relics.markAllMissing"));
+                            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.relics.markAllMissing")));
                             return 1;
                         }))));
     }
