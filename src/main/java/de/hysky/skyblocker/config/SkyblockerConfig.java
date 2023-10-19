@@ -575,6 +575,9 @@ public class SkyblockerConfig {
 		
 		@SerialEntry
 		public WaypointType waypointType = WaypointType.WAYPOINT;
+		
+		@SerialEntry
+		public boolean showSecretText = true;
 
 		@SerialEntry
 		public boolean enableEntranceWaypoints = true;
@@ -609,15 +612,19 @@ public class SkyblockerConfig {
 	
 	public enum WaypointType {
 		WAYPOINT,
-		OUTLINE,
-		OUTLINED_WAYPOINT;
+		OUTLINED_WAYPOINT,
+		HIGHLIGHT,
+		OUTLINED_HIGHLIGHT,
+		OUTLINE;
 		
 		@Override
 		public String toString() {
 			return switch (this) {
 				case WAYPOINT -> "Waypoint";
-				case OUTLINE -> "Outline";
 				case OUTLINED_WAYPOINT -> "Outlined Waypoint";
+				case HIGHLIGHT -> "Highlight";
+				case OUTLINED_HIGHLIGHT -> "Outlined Highlight";
+				case OUTLINE -> "Outline";
 			};
 		}
 	}

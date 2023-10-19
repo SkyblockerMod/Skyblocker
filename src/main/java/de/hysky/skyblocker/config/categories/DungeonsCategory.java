@@ -53,6 +53,13 @@ public class DungeonsCategory {
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.showSecretText"))
+								.binding(defaults.locations.dungeons.secretWaypoints.showSecretText,
+										() -> config.locations.dungeons.secretWaypoints.showSecretText,
+										newValue -> config.locations.dungeons.secretWaypoints.showSecretText = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableEntranceWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableEntranceWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableEntranceWaypoints,

@@ -18,6 +18,8 @@ import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 
 public class SecretWaypoint {
+    private static final float HIGHLIGHT_ALPHA = 0.5f;
+    private static final float LINE_WIDTH = 5f;
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
     final int secretIndex;
     final Category category;
@@ -75,19 +77,29 @@ public class SecretWaypoint {
      * Renders the secret waypoint, including a filled cube, a beacon beam, the name, and the distance from the player.
      */
     void render(WorldRenderContext context) {
-        switch (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.waypointType) {
-            case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
-            case OUTLINE -> RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, 5F, true);
+    	SkyblockerConfig.SecretWaypoints config = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
+
+        switch (config.waypointType) {
+            case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
             case OUTLINED_WAYPOINT -> {
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, 0.5F);
-                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, 5F, true);
+                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
+                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, LINE_WIDTH, true);
             }
+            case HIGHLIGHT -> RenderHelper.renderFilledThroughWalls(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
+            case OUTLINED_HIGHLIGHT -> {
+                RenderHelper.renderFilledThroughWalls(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
+                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, LINE_WIDTH, true);
+            }
+            //TODO In the future, shrink the box for wither essence and items so its more realistic
+            case OUTLINE -> RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, LINE_WIDTH, true);
         }
 
-        Vec3d posUp = centerPos.add(0, 1, 0);
-        RenderHelper.renderText(context, name, posUp, true);
-        double distance = context.camera().getPos().distanceTo(centerPos);
-        RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+        if (config.showSecretText) {
+            Vec3d posUp = centerPos.add(0, 1, 0);
+            RenderHelper.renderText(context, name, posUp, true);
+            double distance = context.camera().getPos().distanceTo(centerPos);
+            RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+        }
     }
 
     enum Category {
