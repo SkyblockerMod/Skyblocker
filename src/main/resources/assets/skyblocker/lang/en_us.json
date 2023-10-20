@@ -128,7 +128,7 @@
   "text.autoconfig.skyblocker.option.quickNav.button": "Button %d",
   "text.autoconfig.skyblocker.option.quickNav.button.render": "Render",
   "text.autoconfig.skyblocker.option.quickNav.button.item": "Item",
-  "text.autoconfig.skyblocker.option.quickNav.button.item.itemName": "Item name",
+  "text.autoconfig.skyblocker.option.quickNav.button.item.itemName": "Item ID",
   "text.autoconfig.skyblocker.option.quickNav.button.item.count": "Item Count",
   "text.autoconfig.skyblocker.option.quickNav.button.item.nbt": "NBT",
   "text.autoconfig.skyblocker.option.quickNav.button.uiTitle": "UI Title",
