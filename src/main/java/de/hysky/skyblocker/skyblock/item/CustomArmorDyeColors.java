@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -34,7 +35,7 @@ public class CustomArmorDyeColors {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (hex != null && !isHexadecimalColor(hex)) {
-			source.sendError(Text.translatable("skyblocker.customDyeColors.invalidHex"));
+			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.invalidHex")));
 			return Command.SINGLE_SUCCESS;
 		}
 
@@ -49,24 +50,24 @@ public class CustomArmorDyeColors {
 						if (customDyeColors.containsKey(itemUuid)) {
 							customDyeColors.removeInt(itemUuid);
 							SkyblockerConfigManager.save();
-							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.removed"));
+							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.removed")));
 						} else {
-							source.sendFeedback(Text.translatable("skyblocker.customDyeColors.neverHad"));
+							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.neverHad")));
 						}
 					} else {
 						customDyeColors.put(itemUuid, Integer.decode("0x" + hex.replace("#", "")).intValue());
 						SkyblockerConfigManager.save();
-						source.sendFeedback(Text.translatable("skyblocker.customDyeColors.added"));
+						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.added")));
 					}
 				} else {
-					source.sendError(Text.translatable("skyblocker.customDyeColors.noItemUuid"));
+					source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.noItemUuid")));
 				}
 			} else {
-				source.sendError(Text.translatable("skyblocker.customDyeColors.notDyeable"));
+				source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.notDyeable")));
 				return Command.SINGLE_SUCCESS;
 			}
 		} else {
-			source.sendError(Text.translatable("skyblocker.customDyeColors.unableToSetColor"));
+			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.unableToSetColor")));
 		}
 
 		return Command.SINGLE_SUCCESS;

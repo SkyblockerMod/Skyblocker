@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -44,18 +45,18 @@ public class ItemProtection {
 					protectedItems.add(itemUuid);
 					SkyblockerConfigManager.save();
 
-					source.sendFeedback(Text.translatable("skyblocker.itemProtection.added", heldItem.getName()));
+					source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
 				} else {
 					protectedItems.remove(itemUuid);
 					SkyblockerConfigManager.save();
 
-					source.sendFeedback(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName()));
+					source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
 				}
 			} else {
-				source.sendFeedback(Text.translatable("skyblocker.itemProtection.noItemUuid"));
+				source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
 			}
 		} else {
-			source.sendFeedback(Text.translatable("skyblocker.itemProtection.unableToProtect"));
+			source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.unableToProtect")));
 		}
 
 		return Command.SINGLE_SUCCESS;

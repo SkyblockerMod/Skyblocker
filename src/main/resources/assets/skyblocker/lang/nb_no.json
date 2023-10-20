@@ -76,7 +76,7 @@
     "text.autoconfig.skyblocker.option.general.bars": "Helse, mana, forsvar og XP-barer",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "Experience Bar stilling",
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "Du kan velge hvor mange dager med gjennomsnittspris som skal være",
-    "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cVareprisinformasjon på verktøytips fornyes om maks 60 sekunder. Hvis ikke, sjekk latest.log",
+    "skyblocker.itemTooltip.nullMessage": "§cVareprisinformasjon på verktøytips fornyes om maks 60 sekunder. Hvis ikke, sjekk latest.log",
     "text.autoconfig.skyblocker.option.quickNav.button1": "Knapp 1",
     "text.autoconfig.skyblocker.option.quickNav.button1.item.itemName": "Gjenstand navn",
     "text.autoconfig.skyblocker.option.quickNav.button3.render": "Rendering",

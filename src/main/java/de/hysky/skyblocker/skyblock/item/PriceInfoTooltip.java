@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -196,7 +197,7 @@ public class PriceInfoTooltip {
 
     private static void nullWarning() {
         if (!nullMsgSend && client.player != null) {
-            client.player.sendMessage(Text.translatable("skyblocker.itemTooltip.nullMessage"), false);
+            client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")), false);
             nullMsgSend = true;
         }
     }

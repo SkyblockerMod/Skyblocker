@@ -8,6 +8,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -117,12 +118,12 @@ public class FairySouls {
                 .then(literal("fairySouls")
                         .then(literal("markAllInCurrentIslandFound").executes(context -> {
                             FairySouls.markAllFairiesOnCurrentIslandFound();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllFound"));
+                            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.fairySouls.markAllFound")));
                             return 1;
                         }))
                         .then(literal("markAllInCurrentIslandMissing").executes(context -> {
                             FairySouls.markAllFairiesOnCurrentIslandMissing();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllMissing"));
+                            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.fairySouls.markAllMissing")));
                             return 1;
                         }))));
     }

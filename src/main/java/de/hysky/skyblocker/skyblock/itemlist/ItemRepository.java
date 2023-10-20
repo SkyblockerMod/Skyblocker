@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
@@ -88,7 +89,7 @@ public class ItemRepository {
 
     private static void warnNoWikiLink(PlayerEntity player) {
         if (player != null) {
-            player.sendMessage(Text.of("[Skyblocker] Unable to locate a wiki article for this item..."), false);
+            player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.wikiLookup.noArticleFound")), false);
         }
     }
 
