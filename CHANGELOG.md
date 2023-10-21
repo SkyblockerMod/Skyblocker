@@ -23,19 +23,19 @@
 * Add Support for Custom toString Function for Enum Dropdowns by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/344
 * Item cooldown display by @Grayray75 in https://github.com/SkyblockerMod/Skyblocker/pull/332
 * Update Loom and Gradle by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/345
-* Hook actual durability for Pickonimbus/Drills by @0xallie in https://github.com/SkyblockerMod/Skyblocker/pull/341
+* Hook actual durability for Pickonimbus/Drills by @alexiayaa in https://github.com/SkyblockerMod/Skyblocker/pull/341
 * Optimize Scoreboard Stuff by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/346
 * me.xrmvizzy -> de.hysky by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/348
 * Fix potential NPE by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/352
 * fix blaze by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/356
-* Fix Golden Goblin Slayer showing up as Goblin Slayer on commission HUD by @0xallie in https://github.com/SkyblockerMod/Skyblocker/pull/347
+* Fix Golden Goblin Slayer showing up as Goblin Slayer on commission HUD by @alexiayaa in https://github.com/SkyblockerMod/Skyblocker/pull/347
 * Refactor Utils by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/354
 * Refactor NBT Parsing by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/350
 * fix quick nav background texture by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/359
 * update issue template by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/360
 * Creeper beam puzzle solver by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/355
 * Scheduler Multithreaded Support + Refactor by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/361
-* Update Fetchur solver by @0xallie in https://github.com/SkyblockerMod/Skyblocker/pull/363
+* Update Fetchur solver by @alexiayaa in https://github.com/SkyblockerMod/Skyblocker/pull/363
 * Codec-based Test by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/367
 * Optimize Drill Fuel and Picko Durability with Caching by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/366
 * fix issue_template by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/369
@@ -49,7 +49,7 @@
 * Patch Float/Double Field Controller Bug by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/377
 
 ## New Contributors
-* @0xallie made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/341
+* @alexiayaa made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/341
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.14.0...v1.15.0
 ___

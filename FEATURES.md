@@ -1,13 +1,13 @@
 ### Dungeon Features:
-- **Secrets Highlight:** Fully configurable
+- **Secrets Waypoint Highlight:** Fully configurable
 - **Minimap**
 - **Starred Mob Glow**
-- **Puzzle Helper:**
-    - *Croesus*
+- **Croesus Helper**
+- **Puzzle Solver:**
     - *Three Weirdos*
     - *Blaze*
     - *Creeper Beams*
-    - *Trivia*
+    - *Quiz - Ouro the Omniscient*
     - *Tic Tac Toe*
     - *Terminal:*
         - *Order*
