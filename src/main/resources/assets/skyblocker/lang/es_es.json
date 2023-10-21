@@ -65,8 +65,6 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Resolver Fetchur",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Interfaz de Dwarven",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Habilitado",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.x": "X",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "Y",
     "text.autoconfig.skyblocker.category.messages": "Mensajes",
     "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "Deshabilitado",
     "text.autoconfig.skyblocker.option.messages.chatFilterResult.FILTER": "Filtro",
