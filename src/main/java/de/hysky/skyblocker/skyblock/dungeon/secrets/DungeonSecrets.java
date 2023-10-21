@@ -7,6 +7,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -37,6 +41,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
@@ -149,7 +155,9 @@ public class DungeonSecrets {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
-                .then(literal("markAsMissing").then(markSecretsCommand(false)))))));
+                .then(literal("markAsMissing").then(markSecretsCommand(false)))
+                .then(literal("getPos").executes(context -> registerPosCommand(context.getSource(), false)))
+                .then(literal("getFacingPos").executes(context -> registerPosCommand(context.getSource(), true)))))));
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
@@ -221,6 +229,32 @@ public class DungeonSecrets {
             }
             return Command.SINGLE_SUCCESS;
         });
+    }
+    
+    //TODO This logic can be split into a separate method for when we want to allow for adding custom waypoints
+    private static int registerPosCommand(FabricClientCommandSource source, boolean facing) {
+    	if (currentRoom != null && currentRoom.getDirection() != null) {
+            MinecraftClient client = MinecraftClient.getInstance();
+            
+            if (facing && (client.crosshairTarget == null || client.crosshairTarget.getType() != HitResult.Type.BLOCK)) {
+            	source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.unableToFindPos")));
+
+            	return Command.SINGLE_SUCCESS;
+            }
+
+            BlockPos blockToCheck = facing && client.crosshairTarget instanceof BlockHitResult blockHitResult ? blockHitResult.getBlockPos() : client.player.getBlockPos();
+            IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(currentRoom.getSegments().stream().mapToInt(Vector2ic::x).toArray()));
+            IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(currentRoom.getSegments().stream().mapToInt(Vector2ic::y).toArray()));
+            Vector2ic physicalCornerPos = DungeonMapUtils.getPhysicalCornerPos(currentRoom.getDirection(), segmentsX, segmentsY);
+
+            BlockPos relativePos = DungeonMapUtils.actualToRelative(currentRoom.getDirection(), physicalCornerPos, blockToCheck);
+
+            source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.posMessage", relativePos.getX(), relativePos.getY(), relativePos.getZ())));
+    	} else {
+    	    source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.unableToFindPos")));
+    	}
+
+        return Command.SINGLE_SUCCESS;
     }
 
     /**

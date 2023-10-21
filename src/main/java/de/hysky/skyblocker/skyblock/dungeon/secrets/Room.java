@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -72,6 +73,7 @@ public class Room {
      */
     private TriState matched = TriState.DEFAULT;
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
+    private Direction direction = null;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -90,6 +92,16 @@ public class Room {
 
     public boolean isMatched() {
         return matched == TriState.TRUE;
+    }
+    
+    @Nullable
+    public Direction getDirection() {
+        return direction;
+    }
+    
+    @NotNull
+    public Set<Vector2ic> getSegments() {
+        return segments;
     }
 
     @Override
@@ -297,6 +309,8 @@ public class Room {
         }
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
+        this.direction = direction;
+
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());
     }
 
