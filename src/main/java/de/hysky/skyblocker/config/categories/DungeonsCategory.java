@@ -226,20 +226,6 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.mapScaling = newValue)
 						.controller(FloatFieldControllerBuilder::create)
 						.build())
-				.option(Option.<Integer>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mapX"))
-						.binding(defaults.locations.dungeons.mapX,
-								() -> config.locations.dungeons.mapX,
-								newValue -> config.locations.dungeons.mapX = newValue)
-						.controller(IntegerFieldControllerBuilder::create)
-						.build())
-				.option(Option.<Integer>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mapY"))
-						.binding(defaults.locations.dungeons.mapY,
-								() -> config.locations.dungeons.mapY,
-								newValue -> config.locations.dungeons.mapY = newValue)
-						.controller(IntegerFieldControllerBuilder::create)
-						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow"))
 						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip")))

@@ -57,6 +57,7 @@ public class DungeonMapConfigScreen extends Screen {
 		SkyblockerConfigManager.get().locations.dungeons.mapX = hudX;
 		SkyblockerConfigManager.get().locations.dungeons.mapY = hudY;
 		SkyblockerConfigManager.save();
+		
 		this.client.setScreen(parent);
 	}
 }
