@@ -23,6 +23,7 @@ public class ItemUtils {
     public static final String ID = "id";
     public static final String UUID = "uuid";
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
+    public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
 
     public static List<Text> getTooltips(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -121,7 +122,7 @@ public class ItemUtils {
             return IntIntPair.of(pickonimbusDurability, 5000);
         }
 
-        String drillFuel = Formatting.strip(getTooltip(stack, line -> line.contains("Fuel: ")));
+        String drillFuel = Formatting.strip(getTooltip(stack, FUEL_PREDICATE));
         if (drillFuel != null) {
             String[] drillFuelStrings = NOT_DURABILITY.matcher(drillFuel).replaceAll("").trim().split("/");
             return IntIntPair.of(Integer.parseInt(drillFuelStrings[0]), Integer.parseInt(drillFuelStrings[1]) * 1000);
