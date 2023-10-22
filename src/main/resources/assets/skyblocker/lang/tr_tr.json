@@ -39,8 +39,6 @@
     "text.autoconfig.skyblocker.option.messages.hideMana": "Aksiyon barındaki mana tüketimlerini gizle",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "FancyBar ile daha iyi bir deneyim sunar",
     "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Menülerdeki boş eşya açıklamalarını gizle",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.y": "Y",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.x": "X",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Arka planı göster",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Etkinleştir",
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "Kaç günlük ortalamanın gösterileceğini seçebilirsiniz",
