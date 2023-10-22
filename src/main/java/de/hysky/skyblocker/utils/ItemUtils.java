@@ -116,6 +116,7 @@ public class ItemUtils {
         if (extraAttributes == null) return null;
 
         // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
+        // TODO Cache the max durability and only update the current durability on inventory tick
 
         int pickonimbusDurability = extraAttributes.getInt("pickonimbus_durability");
         if (pickonimbusDurability > 0) {
