@@ -164,6 +164,9 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableLeverWaypoints" : "Enable Lever Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableFairySoulWaypoints" : "Enable Fairy Soul Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableStonkWaypoints" : "Enable Stonk Waypoints",
+  "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableAotvWaypoints" : "Enable AOTV Waypoints",
+  "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enablePearlWaypoints": "Enable Pearl Waypoints",
+  "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints" : "Enable Default Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip" : "This includes all waypoints that do not belong to a category.",
   "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit": "Dungeon Chest Profit Calculator",
@@ -272,7 +275,7 @@
   "skyblocker.dungeons.secrets.markSecretMissing": "§rMarked secret #%d as missing.",
   "skyblocker.dungeons.secrets.markSecretFoundUnable": "§cUnable to mark secret #%d as found.",
   "skyblocker.dungeons.secrets.markSecretMissingUnable": "§cUnable to mark secret #%d as missing.",
-  "skyblocker.dungeons.secrets.posMessage": "§rRoom Pos: X: %d, Y: %d, Z: %d",
+  "skyblocker.dungeons.secrets.posMessage": "§rRoom: %s, X: %d, Y: %d, Z: %d",
   "skyblocker.dungeons.secrets.unableToFindPos": "§cUnable to find room position! (Are you in a dungeon room, are you facing a block?)",
 
   "skyblocker.fishing.reelNow": "Reel in now!",

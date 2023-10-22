@@ -123,6 +123,21 @@ public class DungeonsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableAotvWaypoints"))
+								.binding(defaults.locations.dungeons.secretWaypoints.enableAotvWaypoints,
+										() -> config.locations.dungeons.secretWaypoints.enableAotvWaypoints,
+										newValue -> config.locations.dungeons.secretWaypoints.enableAotvWaypoints = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enablePearlWaypoints"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip")))
+								.binding(defaults.locations.dungeons.secretWaypoints.enablePearlWaypoints,
+										() -> config.locations.dungeons.secretWaypoints.enablePearlWaypoints,
+										newValue -> config.locations.dungeons.secretWaypoints.enablePearlWaypoints = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip")))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableDefaultWaypoints,

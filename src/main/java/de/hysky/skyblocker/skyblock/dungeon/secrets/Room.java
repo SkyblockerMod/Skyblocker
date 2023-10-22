@@ -74,6 +74,7 @@ public class Room {
     private TriState matched = TriState.DEFAULT;
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
     private Direction direction = null;
+    private String name = null;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -90,6 +91,11 @@ public class Room {
         return type;
     }
 
+    @NotNull
+    public Set<Vector2ic> getSegments() {
+        return segments;
+    }
+
     public boolean isMatched() {
         return matched == TriState.TRUE;
     }
@@ -99,9 +105,9 @@ public class Room {
         return direction;
     }
     
-    @NotNull
-    public Set<Vector2ic> getSegments() {
-        return segments;
+    @Nullable
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -310,6 +316,7 @@ public class Room {
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
         this.direction = direction;
+        this.name = name;
 
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());
     }

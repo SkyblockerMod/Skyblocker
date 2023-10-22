@@ -605,6 +605,12 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableStonkWaypoints = true;
+		
+		@SerialEntry
+		public boolean enableAotvWaypoints = true;
+		
+		@SerialEntry
+		public boolean enablePearlWaypoints = true;
 
 		@SerialEntry
 		public boolean enableDefaultWaypoints = true;

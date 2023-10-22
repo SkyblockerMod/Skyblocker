@@ -249,7 +249,7 @@ public class DungeonSecrets {
 
             BlockPos relativePos = DungeonMapUtils.actualToRelative(currentRoom.getDirection(), physicalCornerPos, blockToCheck);
 
-            source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.posMessage", relativePos.getX(), relativePos.getY(), relativePos.getZ())));
+            source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
     	} else {
     	    source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.unableToFindPos")));
     	}
