@@ -377,6 +377,13 @@ public class DungeonSecrets {
         if (overlay && isCurrentRoomMatched()) {
             currentRoom.onChatMessage(text.getString());
         }
+
+        String message = text.getString();
+
+        if (message.equals("[BOSS] Bonzo: Gratz for making it this far, but I'm basically unbeatable.") || message.equals("[BOSS] Scarf: This is where the journey ends for you, Adventurers.")
+            || message.equals("[BOSS] The Professor: I was burdened with terrible news recently...") || message.equals("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")
+            || message.equals("[BOSS] Livid: Welcome, you've arrived right on time. I am Livid, the Master of Shadows.") || message.equals("[BOSS] Sadan: So you made it all the way here... Now you wish to defy me? Sadan?!")
+            || message.equals("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) reset();
     }
 
     /**
@@ -474,7 +481,7 @@ public class DungeonSecrets {
     }
 
     /**
-     * Resets fields when leaving a dungeon.
+     * Resets fields when leaving a dungeon or entering boss.
      */
     private static void reset() {
         mapEntrancePos = null;
