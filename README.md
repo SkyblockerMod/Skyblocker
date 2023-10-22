@@ -204,4 +204,4 @@ Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
 Norwegian Nynorsk ([KdGaming0](https://github.com/KdGaming0)) \
 Turkish ([Fix3dll](https://github.com/Fix3dll)) \
 Canadian English ([AzureAaron](https://github.com/AzureAaron)) \
-Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro))
+Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro) & [AurinVPK](https://github.com/AurinVPK))
