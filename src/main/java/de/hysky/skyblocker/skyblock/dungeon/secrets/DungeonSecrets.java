@@ -7,14 +7,14 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ByteMap;
-import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.Object2ByteMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -37,7 +37,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -149,7 +152,9 @@ public class DungeonSecrets {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
-                .then(literal("markAsMissing").then(markSecretsCommand(false)))))));
+                .then(literal("markAsMissing").then(markSecretsCommand(false)))
+                .then(literal("getRelativePos").executes(context -> getRelativePos(context.getSource())))
+                .then(literal("getRelativeTargetPos").executes(context -> getRelativeTargetPos(context.getSource())))))));
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
@@ -204,8 +209,9 @@ public class DungeonSecrets {
 
     /**
      * Loads the json from the given {@link BufferedReader} into the given {@link Map}.
+     *
      * @param reader the reader to read the json from
-     * @param map the map to load into
+     * @param map    the map to load into
      */
     private static void loadJson(BufferedReader reader, Map<String, JsonElement> map) {
         SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
@@ -221,6 +227,30 @@ public class DungeonSecrets {
             }
             return Command.SINGLE_SUCCESS;
         });
+    }
+
+    private static int getRelativePos(FabricClientCommandSource source) {
+        return getRelativePos(source, source.getPlayer().getBlockPos());
+    }
+
+    private static int getRelativeTargetPos(FabricClientCommandSource source) {
+        if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
+            return getRelativePos(source, blockHitResult.getBlockPos());
+        } else {
+            source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.noTarget")));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int getRelativePos(FabricClientCommandSource source, BlockPos pos) {
+        Room room = getRoomAtPhysical(pos);
+        if (isRoomMatched(room)) {
+            BlockPos relativePos = currentRoom.actualToRelative(pos);
+            source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
+        } else {
+            source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     /**
@@ -340,9 +370,16 @@ public class DungeonSecrets {
      * Used to detect when all secrets in a room are found.
      */
     private static void onChatMessage(Text text, boolean overlay) {
+        String message = text.getString();
+
         if (overlay && isCurrentRoomMatched()) {
-            currentRoom.onChatMessage(text.getString());
+            currentRoom.onChatMessage(message);
         }
+
+        if (message.equals("[BOSS] Bonzo: Gratz for making it this far, but I'm basically unbeatable.") || message.equals("[BOSS] Scarf: This is where the journey ends for you, Adventurers.")
+                || message.equals("[BOSS] The Professor: I was burdened with terrible news recently...") || message.equals("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")
+                || message.equals("[BOSS] Livid: Welcome, you've arrived right on time. I am Livid, the Master of Shadows.") || message.equals("[BOSS] Sadan: So you made it all the way here... Now you wish to defy me? Sadan?!")
+                || message.equals("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) reset();
     }
 
     /**
@@ -411,6 +448,19 @@ public class DungeonSecrets {
     }
 
     /**
+     * Gets the room at the given physical position.
+     *
+     * @param pos the physical position
+     * @return the room at the given physical position, or null if there is no room at the given physical position
+     * @see #rooms
+     * @see DungeonMapUtils#getPhysicalRoomPos(Vec3i)
+     */
+    @Nullable
+    private static Room getRoomAtPhysical(Vec3i pos) {
+        return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
+    }
+
+    /**
      * Calls {@link #isRoomMatched(Room)} on {@link #currentRoom}.
      *
      * @return {@code true} if {@link #currentRoom} is not null and {@link #isRoomMatched(Room)}
@@ -440,7 +490,7 @@ public class DungeonSecrets {
     }
 
     /**
-     * Resets fields when leaving a dungeon.
+     * Resets fields when leaving a dungeon or entering boss.
      */
     private static void reset() {
         mapEntrancePos = null;

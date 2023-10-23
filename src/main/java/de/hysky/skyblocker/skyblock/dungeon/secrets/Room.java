@@ -5,10 +5,10 @@ import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -23,7 +23,6 @@ import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -72,6 +71,9 @@ public class Room {
      */
     private TriState matched = TriState.DEFAULT;
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
+    private String name;
+    private Direction direction;
+    private Vector2ic physicalCornerPos;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -90,6 +92,13 @@ public class Room {
 
     public boolean isMatched() {
         return matched == TriState.TRUE;
+    }
+
+    /**
+     * Not null if {@link #isMatched()}.
+     */
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -186,8 +195,8 @@ public class Room {
         if (pos.getY() < 66 || pos.getY() > 73) {
             return true;
         }
-        int x = MathHelper.floorMod(pos.getX() - 8, 32);
-        int z = MathHelper.floorMod(pos.getZ() - 8, 32);
+        int x = Math.floorMod(pos.getX() - 8, 32);
+        int z = Math.floorMod(pos.getZ() - 8, 32);
         return (x < 13 || x > 17 || z > 2 && z < 28) && (z < 13 || z > 17 || x > 2 && x < 28);
     }
 
@@ -217,7 +226,7 @@ public class Room {
      *     </ul>
      *     <li> If there are exactly one room matching: </li>
      *     <ul>
-     *         <li> Call {@link #roomMatched(String, Direction, Vector2ic)}. </li>
+     *         <li> Call {@link #roomMatched()}. </li>
      *         <li> Discard the no longer needed fields to save memory. </li>
      *         <li> Return {@code true} </li>
      *     </ul>
@@ -256,7 +265,10 @@ public class Room {
             // If one room matches, load the secrets for that room and discard the no longer needed fields.
             for (Triple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
                 if (directionRooms.getRight().size() == 1) {
-                    roomMatched(directionRooms.getRight().get(0), directionRooms.getLeft(), directionRooms.getMiddle());
+                    name = directionRooms.getRight().get(0);
+                    direction = directionRooms.getLeft();
+                    physicalCornerPos = directionRooms.getMiddle();
+                    roomMatched();
                     discard();
                     return true;
                 }
@@ -286,7 +298,7 @@ public class Room {
      * @param directionRooms the direction, position, and name of the room
      */
     @SuppressWarnings("JavadocReference")
-    private void roomMatched(String name, Direction direction, Vector2ic physicalCornerPos) {
+    private void roomMatched() {
         Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
         for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
@@ -297,6 +309,7 @@ public class Room {
         }
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
+
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());
     }
 
@@ -320,6 +333,20 @@ public class Room {
         possibleRooms = null;
         checkedBlocks = null;
         doubleCheckBlocks = 0;
+    }
+
+    /**
+     * Fails if !{@link #isMatched()}
+     */
+    protected BlockPos actualToRelative(BlockPos pos) {
+        return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
+    }
+
+    /**
+     * Fails if !{@link #isMatched()}
+     */
+    protected BlockPos relativeToActual(BlockPos pos) {
+        return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
     }
 
     /**

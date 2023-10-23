@@ -112,6 +112,8 @@ public class SecretWaypoint {
         LEVER(secretWaypoints -> secretWaypoints.enableLeverWaypoints, 250, 217, 2),
         FAIRYSOUL(secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, 255, 85, 255),
         STONK(secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
+        AOTV(secretWaypoints -> secretWaypoints.enableAotvWaypoints, 252, 98, 3),
+        PEARL(secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
         DEFAULT(secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
         private final Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate;
         private final float[] colorComponents;
@@ -135,6 +137,8 @@ public class SecretWaypoint {
                 case "lever" -> Category.LEVER;
                 case "fairysoul" -> Category.FAIRYSOUL;
                 case "stonk" -> Category.STONK;
+                case "aotv" -> Category.AOTV;
+                case "pearl" -> Category.PEARL;
                 default -> Category.DEFAULT;
             };
         }
