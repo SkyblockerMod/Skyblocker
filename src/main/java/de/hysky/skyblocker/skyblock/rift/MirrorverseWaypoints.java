@@ -21,7 +21,7 @@ import java.io.IOException;
 public class MirrorverseWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Identifier WAYPOINTS_JSON = new Identifier(SkyblockerMod.NAMESPACE, "mirrorverse_waypoints.json");
+	private static final Identifier WAYPOINTS_JSON = new Identifier(SkyblockerMod.NAMESPACE, "rift/mirrorverse_waypoints.json");
 	private static final BlockPos[] LAVA_PATH_WAYPOINTS = new BlockPos[107];
 	private static final BlockPos[] UPSIDE_DOWN_WAYPOINTS = new BlockPos[66];
 	private static final BlockPos[] TURBULATOR_WAYPOINTS = new BlockPos[27];

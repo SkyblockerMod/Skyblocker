@@ -730,6 +730,12 @@ public class SkyblockerConfig {
 	public static class Rift {
 		@SerialEntry
 		public boolean mirrorverseWaypoints = true;
+		
+		@SerialEntry
+		public boolean enigmaSoulWaypoints = false;
+		
+		@SerialEntry
+		public boolean highlightFoundEnigmaSouls = true;
 
 		@SerialEntry
 		public int mcGrubberStacks = 0;
