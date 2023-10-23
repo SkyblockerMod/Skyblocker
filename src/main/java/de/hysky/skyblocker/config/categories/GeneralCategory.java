@@ -200,18 +200,18 @@ public class GeneralCategory {
 								.build())
 						.build())
 
-                //Mythological Ritual
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual.enableMythologicalRitualHelper"))
-                                .binding(defaults.general.mythologicalRitual.enableMythologicalRitualHelper,
-                                        () -> config.general.mythologicalRitual.enableMythologicalRitualHelper,
-                                        newValue -> config.general.mythologicalRitual.enableMythologicalRitualHelper = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
+				//Mythological Ritual
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual.enableMythologicalRitualHelper"))
+								.binding(defaults.general.mythologicalRitual.enableMythologicalRitualHelper,
+										() -> config.general.mythologicalRitual.enableMythologicalRitualHelper,
+										newValue -> config.general.mythologicalRitual.enableMythologicalRitualHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 
 				//Item Cooldown
 				.group(OptionGroup.createBuilder()
