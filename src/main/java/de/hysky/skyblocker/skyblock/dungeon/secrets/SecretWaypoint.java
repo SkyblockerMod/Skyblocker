@@ -4,37 +4,35 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
-public class SecretWaypoint {
-    private static final float HIGHLIGHT_ALPHA = 0.5f;
-    private static final float LINE_WIDTH = 5f;
+public class SecretWaypoint extends Waypoint {
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
+    private static final SkyblockerConfig.SecretWaypoints config = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
+    private static final Supplier<Type> typeSupplier = () -> config.waypointType;
     final int secretIndex;
     final Category category;
     private final Text name;
-    private final BlockPos pos;
     private final Vec3d centerPos;
-    private boolean missing;
 
     SecretWaypoint(int secretIndex, JsonObject waypoint, String name, BlockPos pos) {
+        super(pos, typeSupplier, Category.get(waypoint).colorComponents);
         this.secretIndex = secretIndex;
         this.category = Category.get(waypoint);
         this.name = Text.of(name);
-        this.pos = pos;
         this.centerPos = pos.toCenterPos();
-        this.missing = true;
     }
 
     static ToDoubleFunction<SecretWaypoint> getSquaredDistanceToFunction(Entity entity) {
@@ -45,8 +43,9 @@ public class SecretWaypoint {
         return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos) <= 36D;
     }
 
-    boolean shouldRender() {
-        return category.isEnabled() && missing;
+    @Override
+    protected boolean shouldRender() {
+        return super.shouldRender() && category.isEnabled();
     }
 
     boolean needsInteraction() {
@@ -65,34 +64,13 @@ public class SecretWaypoint {
         return category.isBat();
     }
 
-    void setFound() {
-        this.missing = false;
-    }
-
-    void setMissing() {
-        this.missing = true;
-    }
-
     /**
      * Renders the secret waypoint, including a filled cube, a beacon beam, the name, and the distance from the player.
      */
-    void render(WorldRenderContext context) {
-    	SkyblockerConfig.SecretWaypoints config = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
-
-        switch (config.waypointType) {
-            case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
-            case OUTLINED_WAYPOINT -> {
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
-                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, LINE_WIDTH, true);
-            }
-            case HIGHLIGHT -> RenderHelper.renderFilledThroughWalls(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
-            case OUTLINED_HIGHLIGHT -> {
-                RenderHelper.renderFilledThroughWalls(context, pos, category.colorComponents, HIGHLIGHT_ALPHA);
-                RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, LINE_WIDTH, true);
-            }
-            //TODO In the future, shrink the box for wither essence and items so its more realistic
-            case OUTLINE -> RenderHelper.renderOutline(context, new Box(pos), category.colorComponents, LINE_WIDTH, true);
-        }
+    @Override
+    protected void render(WorldRenderContext context) {
+        //TODO In the future, shrink the box for wither essence and items so its more realistic
+        super.render(context);
 
         if (config.showSecretText) {
             Vec3d posUp = centerPos.add(0, 1, 0);

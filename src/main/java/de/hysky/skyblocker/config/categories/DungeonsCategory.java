@@ -2,7 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.SkyblockerConfig.WaypointType;
+import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -44,7 +44,7 @@ public class DungeonsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.flag(OptionFlag.GAME_RESTART)
 								.build())
-						.option(Option.<WaypointType>createBuilder()
+						.option(Option.<Type>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType.@Tooltip")))
 								.binding(defaults.locations.dungeons.secretWaypoints.waypointType,
