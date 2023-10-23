@@ -220,6 +220,9 @@
 
   "text.autoconfig.skyblocker.option.locations.rift": "The Rift",
   "text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints": "Enable Mirrorverse Waypoints",
+  "text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints": "Enable Enigma Soul Waypoints",
+  "text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints.@Tooltip": "Note: Many enigma souls have a small task you must complete in order to get it, so its recommended to also watch a YouTube video when finding them.",
+  "text.autoconfig.skyblocker.option.locations.rift.highlightFoundEnigmaSouls": "Highlight Found Enigma Souls",
   "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks": "McGrubber Stacks",
   "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip": "Used for calculating Motes sell prices.",
 
@@ -278,6 +281,8 @@
   "skyblocker.rift.iceNow": "Ice now!",
   "skyblocker.rift.mania": "Mania!",
   "skyblocker.rift.stakeNow": "Stake now!",
+  "skyblocker.rift.enigmaSouls.markAllFound": "§rMarked all enigma souls as found!",
+  "skyblocker.rift.enigmaSouls.markAllMissing": "§rMarked all enigma souls as missing!",
   "skyblocker.fairySouls.markAllFound": "§rMarked all fairy souls in the current island as found",
   "skyblocker.fairySouls.markAllMissing": "§rMarked all fairy souls in the current island as missing",
   "skyblocker.relics.markAllFound": "§rMarked all relics as found",
