@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -146,26 +147,35 @@ public class BackpackPreview {
         int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
         int y = Math.max(0, mouseY - 16);
 
-        RenderSystem.disableDepthTest();
-        RenderSystem.setShaderTexture(0, TEXTURE);
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.translate(0f, 0f, 400f);
+
+        RenderSystem.enableDepthTest();
         context.drawTexture(TEXTURE, x, y, 0, 0, 176, 7);
         for (int i = 0; i < rows; ++i) {
             context.drawTexture(TEXTURE, x, y + i * 18 + 7, 0, 7, 176, 18);
         }
         context.drawTexture(TEXTURE, x, y + rows * 18 + 7, 0, 25, 176, 7);
-        RenderSystem.enableDepthTest();
 
-        MatrixStack matrices = context.getMatrices();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         for (int i = 9; i < storage[index].size(); ++i) {
+            ItemStack currentStack = storage[index].getStack(i);
             int itemX = x + (i - 9) % 9 * 18 + 8;
             int itemY = y + (i - 9) / 9 * 18 + 8;
+
+            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
+                ItemRarityBackgrounds.tryDraw(currentStack, context, itemX, itemY);
+            }
+
             matrices.push();
-            matrices.translate(0, 0, 200);
-            context.drawItem(storage[index].getStack(i), itemX, itemY);
-            context.drawItemInSlot(textRenderer, storage[index].getStack(i), itemX, itemY);
+            matrices.translate(0f, 0f, 200f);
+            context.drawItem(currentStack, itemX, itemY);
+            context.drawItemInSlot(textRenderer, currentStack, itemX, itemY);
             matrices.pop();
         }
+
+        matrices.pop();
 
         return true;
     }
