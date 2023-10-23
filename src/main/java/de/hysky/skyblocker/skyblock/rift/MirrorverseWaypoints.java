@@ -26,7 +26,7 @@ public class MirrorverseWaypoints {
 	private static final BlockPos[] UPSIDE_DOWN_WAYPOINTS = new BlockPos[66];
 	private static final BlockPos[] TURBULATOR_WAYPOINTS = new BlockPos[27];
 	private static final float[] COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
-	
+
 	private static CompletableFuture<Void> waypointsLoaded;
 
 	/**
@@ -62,8 +62,7 @@ public class MirrorverseWaypoints {
 					TURBULATOR_WAYPOINTS[i] = new BlockPos(point.get("x").getAsInt(), point.get("y").getAsInt(), point.get("z").getAsInt());
 				}
 			} catch (IOException e) {
-				LOGGER.info("[Skyblocker] Mirrorverse Waypoints failed to load ;(");
-				e.printStackTrace();
+				LOGGER.error("[Skyblocker] Mirrorverse Waypoints failed to load ;(", e);
 			}
 		});
 	}
