@@ -17,6 +17,7 @@ public class TheRift {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MirrorverseWaypoints::render);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EnigmaSouls::render);
+        ClientLifecycleEvents.CLIENT_STARTED.register(MirrorverseWaypoints::load);
         ClientLifecycleEvents.CLIENT_STARTED.register(EnigmaSouls::load);
         ClientLifecycleEvents.CLIENT_STOPPING.register(EnigmaSouls::save);
         ClientReceiveMessageEvents.GAME.register(EnigmaSouls::onMessage);
