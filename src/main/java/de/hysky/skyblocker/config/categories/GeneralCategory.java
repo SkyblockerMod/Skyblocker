@@ -2,12 +2,12 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
+import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
-import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -196,6 +196,19 @@ public class GeneralCategory {
 								.binding(defaults.general.fairySouls.highlightOnlyNearbySouls,
 										() -> config.general.fairySouls.highlightOnlyNearbySouls,
 										newValue -> config.general.fairySouls.highlightOnlyNearbySouls = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
+
+				//Mythological Ritual
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual.enableMythologicalRitualHelper"))
+								.binding(defaults.general.mythologicalRitual.enableMythologicalRitualHelper,
+										() -> config.general.mythologicalRitual.enableMythologicalRitualHelper,
+										newValue -> config.general.mythologicalRitual.enableMythologicalRitualHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())

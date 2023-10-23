@@ -19,6 +19,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,10 +41,15 @@ public class Utils {
      * The following fields store data returned from /locraw: {@link #profile}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
     @SuppressWarnings("JavadocDeclaration")
+    @NotNull
     private static String profile = "";
+    @NotNull
     private static String server = "";
+    @NotNull
     private static String gameType = "";
+    @NotNull
     private static String locationRaw = "";
+    @NotNull
     private static String map = "";
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
@@ -78,6 +84,7 @@ public class Utils {
     /**
      * @return the profile parsed from the player list.
      */
+    @NotNull
     public static String getProfile() {
         return profile;
     }
@@ -85,6 +92,7 @@ public class Utils {
     /**
      * @return the server parsed from /locraw.
      */
+    @NotNull
     public static String getServer() {
         return server;
     }
@@ -92,6 +100,7 @@ public class Utils {
     /**
      * @return the game type parsed from /locraw.
      */
+    @NotNull
     public static String getGameType() {
         return gameType;
     }
@@ -99,6 +108,7 @@ public class Utils {
     /**
      * @return the location raw parsed from /locraw.
      */
+    @NotNull
     public static String getLocationRaw() {
         return locationRaw;
     }
@@ -106,6 +116,7 @@ public class Utils {
     /**
      * @return the map parsed from /locraw.
      */
+    @NotNull
     public static String getMap() {
         return map;
     }

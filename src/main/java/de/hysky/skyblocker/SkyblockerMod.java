@@ -2,13 +2,13 @@ package de.hysky.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.*;
+import de.hysky.skyblocker.skyblock.diana.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
-import de.hysky.skyblocker.skyblock.item.*;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
+import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
@@ -16,6 +16,7 @@ import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
 import de.hysky.skyblocker.skyblock.special.SpecialEffects;
 import de.hysky.skyblocker.skyblock.spidersden.Relics;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -39,7 +40,7 @@ import java.nio.file.Path;
  * this class.
  */
 public class SkyblockerMod implements ClientModInitializer {
-    public static final String VERSION = FabricLoader.getInstance().getModContainer("skyblocker").get().getMetadata().getVersion().getFriendlyString();
+    public static final String VERSION = FabricLoader.getInstance().getModContainer("skyblocker").orElseThrow().getMetadata().getVersion().getFriendlyString();
     public static final String NAMESPACE = "skyblocker";
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -76,6 +77,7 @@ public class SkyblockerMod implements ClientModInitializer {
         WikiLookup.init();
         FairySouls.init();
         Relics.init();
+        MythologicalRitual.init();
         BackpackPreview.init();
         QuickNav.init();
         ItemCooldowns.init();

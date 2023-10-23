@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.config;
 
+import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -177,6 +177,9 @@ public class SkyblockerConfig {
 		public FairySouls fairySouls = new FairySouls();
 
 		@SerialEntry
+        public MythologicalRitual mythologicalRitual = new MythologicalRitual();
+
+		@SerialEntry
 		public ItemCooldown itemCooldown = new ItemCooldown();
 
 		@SerialEntry
@@ -320,6 +323,11 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean highlightOnlyNearbySouls = false;
+	}
+
+	public static class MythologicalRitual {
+		@SerialEntry
+		public boolean enableMythologicalRitualHelper = true;
 	}
 
 	public static class ItemCooldown {
@@ -653,7 +661,6 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Formatting incompleteColor = Formatting.BLUE;
-
 	}
 
 	public static class LividColor {
