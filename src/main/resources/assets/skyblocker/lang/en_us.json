@@ -276,7 +276,8 @@
   "skyblocker.dungeons.secrets.markSecretFoundUnable": "§cUnable to mark secret #%d as found.",
   "skyblocker.dungeons.secrets.markSecretMissingUnable": "§cUnable to mark secret #%d as missing.",
   "skyblocker.dungeons.secrets.posMessage": "§rRoom: %s, X: %d, Y: %d, Z: %d",
-  "skyblocker.dungeons.secrets.unableToFindPos": "§cUnable to find room position! (Are you in a dungeon room, are you facing a block?)",
+  "skyblocker.dungeons.secrets.noTarget": "§cNo target block found! (Are you pointing at a block in range?)",
+  "skyblocker.dungeons.secrets.notMatched": "§cThe current room is not matched! (Are you in a dungeon room?)",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",

@@ -7,18 +7,14 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import it.unimi.dsi.fastutil.objects.Object2ByteMap;
-import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.Object2ByteMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -156,8 +152,8 @@ public class DungeonSecrets {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
                 .then(literal("markAsMissing").then(markSecretsCommand(false)))
-                .then(literal("getPos").executes(context -> registerPosCommand(context.getSource(), false)))
-                .then(literal("getFacingPos").executes(context -> registerPosCommand(context.getSource(), true)))))));
+                .then(literal("getRelativePos").executes(context -> getRelativePos(context.getSource())))
+                .then(literal("getRelativeTargetPos").executes(context -> getRelativeTargetPos(context.getSource())))))));
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
@@ -212,8 +208,9 @@ public class DungeonSecrets {
 
     /**
      * Loads the json from the given {@link BufferedReader} into the given {@link Map}.
+     *
      * @param reader the reader to read the json from
-     * @param map the map to load into
+     * @param map    the map to load into
      */
     private static void loadJson(BufferedReader reader, Map<String, JsonElement> map) {
         SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
@@ -230,30 +227,27 @@ public class DungeonSecrets {
             return Command.SINGLE_SUCCESS;
         });
     }
-    
-    //TODO This logic can be split into a separate method for when we want to allow for adding custom waypoints
-    private static int registerPosCommand(FabricClientCommandSource source, boolean facing) {
-    	if (currentRoom != null && currentRoom.getDirection() != null) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            
-            if (facing && (client.crosshairTarget == null || client.crosshairTarget.getType() != HitResult.Type.BLOCK)) {
-            	source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.unableToFindPos")));
 
-            	return Command.SINGLE_SUCCESS;
-            }
+    private static int getRelativePos(FabricClientCommandSource source) {
+        return getRelativePos(source, source.getPlayer().getBlockPos());
+    }
 
-            BlockPos blockToCheck = facing && client.crosshairTarget instanceof BlockHitResult blockHitResult ? blockHitResult.getBlockPos() : client.player.getBlockPos();
-            IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(currentRoom.getSegments().stream().mapToInt(Vector2ic::x).toArray()));
-            IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(currentRoom.getSegments().stream().mapToInt(Vector2ic::y).toArray()));
-            Vector2ic physicalCornerPos = DungeonMapUtils.getPhysicalCornerPos(currentRoom.getDirection(), segmentsX, segmentsY);
+    private static int getRelativeTargetPos(FabricClientCommandSource source) {
+        if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
+            return getRelativePos(source, blockHitResult.getBlockPos());
+        } else {
+            source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.noTarget")));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 
-            BlockPos relativePos = DungeonMapUtils.actualToRelative(currentRoom.getDirection(), physicalCornerPos, blockToCheck);
-
+    private static int getRelativePos(FabricClientCommandSource source, BlockPos pos) {
+        if (isCurrentRoomMatched()) {
+            BlockPos relativePos = DungeonMapUtils.actualToRelative(currentRoom.getDirection(), currentRoom.getPhysicalCornerPos(), pos);
             source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
-    	} else {
-    	    source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.unableToFindPos")));
-    	}
-
+        } else {
+            source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+        }
         return Command.SINGLE_SUCCESS;
     }
 
@@ -374,16 +368,16 @@ public class DungeonSecrets {
      * Used to detect when all secrets in a room are found.
      */
     private static void onChatMessage(Text text, boolean overlay) {
-        if (overlay && isCurrentRoomMatched()) {
-            currentRoom.onChatMessage(text.getString());
-        }
-
         String message = text.getString();
 
+        if (overlay && isCurrentRoomMatched()) {
+            currentRoom.onChatMessage(message);
+        }
+
         if (message.equals("[BOSS] Bonzo: Gratz for making it this far, but I'm basically unbeatable.") || message.equals("[BOSS] Scarf: This is where the journey ends for you, Adventurers.")
-            || message.equals("[BOSS] The Professor: I was burdened with terrible news recently...") || message.equals("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")
-            || message.equals("[BOSS] Livid: Welcome, you've arrived right on time. I am Livid, the Master of Shadows.") || message.equals("[BOSS] Sadan: So you made it all the way here... Now you wish to defy me? Sadan?!")
-            || message.equals("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) reset();
+                || message.equals("[BOSS] The Professor: I was burdened with terrible news recently...") || message.equals("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")
+                || message.equals("[BOSS] Livid: Welcome, you've arrived right on time. I am Livid, the Master of Shadows.") || message.equals("[BOSS] Sadan: So you made it all the way here... Now you wish to defy me? Sadan?!")
+                || message.equals("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) reset();
     }
 
     /**

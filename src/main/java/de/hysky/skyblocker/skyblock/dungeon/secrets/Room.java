@@ -5,10 +5,10 @@ import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -73,8 +72,10 @@ public class Room {
      */
     private TriState matched = TriState.DEFAULT;
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
-    private Direction direction = null;
-    private String name = null;
+    private String name;
+    private Direction direction;
+
+    private Vector2ic physicalCornerPos;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -91,23 +92,29 @@ public class Room {
         return type;
     }
 
-    @NotNull
-    public Set<Vector2ic> getSegments() {
-        return segments;
-    }
-
     public boolean isMatched() {
         return matched == TriState.TRUE;
     }
-    
-    @Nullable
+
+    /**
+     * Not null if {@link #isMatched()}.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Not null if {@link #isMatched()}.
+     */
     public Direction getDirection() {
         return direction;
     }
-    
-    @Nullable
-    public String getName() {
-        return name;
+
+    /**
+     * Not null if {@link #isMatched()}.
+     */
+    public Vector2ic getPhysicalCornerPos() {
+        return physicalCornerPos;
     }
 
     @Override
@@ -235,7 +242,7 @@ public class Room {
      *     </ul>
      *     <li> If there are exactly one room matching: </li>
      *     <ul>
-     *         <li> Call {@link #roomMatched(String, Direction, Vector2ic)}. </li>
+     *         <li> Call {@link #roomMatched()}. </li>
      *         <li> Discard the no longer needed fields to save memory. </li>
      *         <li> Return {@code true} </li>
      *     </ul>
@@ -274,7 +281,10 @@ public class Room {
             // If one room matches, load the secrets for that room and discard the no longer needed fields.
             for (Triple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
                 if (directionRooms.getRight().size() == 1) {
-                    roomMatched(directionRooms.getRight().get(0), directionRooms.getLeft(), directionRooms.getMiddle());
+                    name = directionRooms.getRight().get(0);
+                    direction = directionRooms.getLeft();
+                    physicalCornerPos = directionRooms.getMiddle();
+                    roomMatched();
                     discard();
                     return true;
                 }
@@ -304,7 +314,7 @@ public class Room {
      * @param directionRooms the direction, position, and name of the room
      */
     @SuppressWarnings("JavadocReference")
-    private void roomMatched(String name, Direction direction, Vector2ic physicalCornerPos) {
+    private void roomMatched() {
         Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
         for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
@@ -315,8 +325,6 @@ public class Room {
         }
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
-        this.direction = direction;
-        this.name = name;
 
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());
     }
