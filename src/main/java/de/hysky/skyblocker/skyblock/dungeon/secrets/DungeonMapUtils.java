@@ -7,7 +7,6 @@ import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.NotNull;
@@ -173,7 +172,7 @@ public class DungeonMapUtils {
     @NotNull
     public static Vector2ic getPhysicalRoomPos(double x, double z) {
         Vector2i physicalPos = new Vector2i(x + 8.5, z + 8.5, RoundingMode.TRUNCATE);
-        return physicalPos.sub(MathHelper.floorMod(physicalPos.x(), 32), MathHelper.floorMod(physicalPos.y(), 32)).sub(8, 8);
+        return physicalPos.sub(Math.floorMod(physicalPos.x(), 32), Math.floorMod(physicalPos.y(), 32)).sub(8, 8);
     }
 
     public static Vector2ic[] getPhysicalPosFromMap(Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalEntrancePos, Vector2ic... mapPositions) {

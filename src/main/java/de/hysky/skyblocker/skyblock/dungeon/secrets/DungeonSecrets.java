@@ -40,6 +40,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -242,8 +243,9 @@ public class DungeonSecrets {
     }
 
     private static int getRelativePos(FabricClientCommandSource source, BlockPos pos) {
-        if (isCurrentRoomMatched()) {
-            BlockPos relativePos = DungeonMapUtils.actualToRelative(currentRoom.getDirection(), currentRoom.getPhysicalCornerPos(), pos);
+        Room room = getRoomAtPhysical(pos);
+        if (isRoomMatched(room)) {
+            BlockPos relativePos = currentRoom.actualToRelative(pos);
             source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
         } else {
             source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
@@ -442,6 +444,19 @@ public class DungeonSecrets {
      */
     @Nullable
     private static Room getRoomAtPhysical(Vec3d pos) {
+        return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
+    }
+
+    /**
+     * Gets the room at the given physical position.
+     *
+     * @param pos the physical position
+     * @return the room at the given physical position, or null if there is no room at the given physical position
+     * @see #rooms
+     * @see DungeonMapUtils#getPhysicalRoomPos(Vec3i)
+     */
+    @Nullable
+    private static Room getRoomAtPhysical(Vec3i pos) {
         return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
     }
 

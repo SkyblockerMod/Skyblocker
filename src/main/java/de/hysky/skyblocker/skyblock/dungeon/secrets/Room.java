@@ -23,7 +23,6 @@ import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -74,7 +73,6 @@ public class Room {
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
     private String name;
     private Direction direction;
-
     private Vector2ic physicalCornerPos;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
@@ -101,20 +99,6 @@ public class Room {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Not null if {@link #isMatched()}.
-     */
-    public Direction getDirection() {
-        return direction;
-    }
-
-    /**
-     * Not null if {@link #isMatched()}.
-     */
-    public Vector2ic getPhysicalCornerPos() {
-        return physicalCornerPos;
     }
 
     @Override
@@ -211,8 +195,8 @@ public class Room {
         if (pos.getY() < 66 || pos.getY() > 73) {
             return true;
         }
-        int x = MathHelper.floorMod(pos.getX() - 8, 32);
-        int z = MathHelper.floorMod(pos.getZ() - 8, 32);
+        int x = Math.floorMod(pos.getX() - 8, 32);
+        int z = Math.floorMod(pos.getZ() - 8, 32);
         return (x < 13 || x > 17 || z > 2 && z < 28) && (z < 13 || z > 17 || x > 2 && x < 28);
     }
 
@@ -349,6 +333,20 @@ public class Room {
         possibleRooms = null;
         checkedBlocks = null;
         doubleCheckBlocks = 0;
+    }
+
+    /**
+     * Fails if !{@link #isMatched()}
+     */
+    protected BlockPos actualToRelative(BlockPos pos) {
+        return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
+    }
+
+    /**
+     * Fails if !{@link #isMatched()}
+     */
+    protected BlockPos relativeToActual(BlockPos pos) {
+        return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
     }
 
     /**
