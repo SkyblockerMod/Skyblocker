@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,7 +16,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -107,7 +108,7 @@ public class DungeonSecrets {
     private static final Map<Vector2ic, Room> rooms = new HashMap<>();
     private static final Map<String, JsonElement> roomsJson = new HashMap<>();
     private static final Map<String, JsonElement> waypointsJson = new HashMap<>();
-    private static final Map<String, Waypoint> customWaypoints = new HashMap<>();
+    private static final Multimap<String, SecretWaypoint> customWaypoints = MultimapBuilder.hashKeys().arrayListValues().build();
     @Nullable
     private static CompletableFuture<Void> roomsLoaded;
     /**
@@ -137,6 +138,10 @@ public class DungeonSecrets {
 
     public static JsonArray getRoomWaypoints(String room) {
         return waypointsJson.get(room).getAsJsonArray();
+    }
+
+    public static Collection<SecretWaypoint> getCustomWaypoints(String room) {
+        return customWaypoints.get(room);
     }
 
     /**

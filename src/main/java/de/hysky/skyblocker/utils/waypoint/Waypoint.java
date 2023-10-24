@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 public class Waypoint {
     protected static final float DEFAULT_HIGHLIGHT_ALPHA = 0.5f;
     protected static final float DEFAULT_LINE_WIDTH = 5f;
-    protected final BlockPos pos;
+    public final BlockPos pos;
     private final Box box;
     private final Supplier<Type> typeSupplier;
     private final float[] colorComponents;

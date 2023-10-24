@@ -307,6 +307,9 @@ public class Room {
             BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
             secretWaypointsMutable.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
+        for (SecretWaypoint customWaypoint : DungeonSecrets.getCustomWaypoints(name)) {
+            secretWaypointsMutable.put(customWaypoint.secretIndex, customWaypoint.pos, customWaypoint);
+        }
         secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
 
