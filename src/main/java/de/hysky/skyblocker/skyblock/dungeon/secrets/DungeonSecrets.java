@@ -5,13 +5,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -24,6 +27,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.command.argument.BlockPosArgumentType;
+import net.minecraft.command.argument.PosArgument;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
@@ -33,6 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.resource.Resource;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -101,6 +107,7 @@ public class DungeonSecrets {
     private static final Map<Vector2ic, Room> rooms = new HashMap<>();
     private static final Map<String, JsonElement> roomsJson = new HashMap<>();
     private static final Map<String, JsonElement> waypointsJson = new HashMap<>();
+    private static final Map<String, Waypoint> customWaypoints = new HashMap<>();
     @Nullable
     private static CompletableFuture<Void> roomsLoaded;
     /**
@@ -154,7 +161,10 @@ public class DungeonSecrets {
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
                 .then(literal("markAsMissing").then(markSecretsCommand(false)))
                 .then(literal("getRelativePos").executes(context -> getRelativePos(context.getSource())))
-                .then(literal("getRelativeTargetPos").executes(context -> getRelativeTargetPos(context.getSource())))))));
+                .then(literal("getRelativeTargetPos").executes(context -> getRelativeTargetPos(context.getSource())))
+                .then(literal("addWaypoint").then(addWaypointCommand(false)))
+                .then(literal("addWaypointRelatively").then(addWaypointCommand(true)))
+        ))));
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
@@ -253,6 +263,42 @@ public class DungeonSecrets {
         return Command.SINGLE_SUCCESS;
     }
 
+    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, PosArgument>> addWaypointCommand(boolean relative) {
+        return argument("pos", BlockPosArgumentType.blockPos())
+                .then(argument("secretIndex", IntegerArgumentType.integer())
+                        .then(argument("category", SecretWaypoint.Category.CategoryArgumentType.category())
+                                .then(argument("name", StringArgumentType.greedyString()).executes(context -> {
+                                    // TODO Less hacky way with custom ClientBlockPosArgumentType
+                                    BlockPos pos = context.getArgument("pos", PosArgument.class).toAbsoluteBlockPos(new ServerCommandSource(null, context.getSource().getPosition(), context.getSource().getRotation(), null, 0, null, null, null, null));
+                                    return relative ? addWaypointRelative(context, pos) : addWaypoint(context, pos);
+                                }))
+                        )
+                );
+    }
+
+    private static int addWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        Room room = getRoomAtPhysical(pos);
+        if (isRoomMatched(room)) {
+            addWaypointRelative(context, room, room.actualToRelative(pos));
+        } else {
+            context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int addWaypointRelative(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        if (isCurrentRoomMatched()) {
+            addWaypointRelative(context, currentRoom, pos);
+        } else {
+            context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static void addWaypointRelative(CommandContext<FabricClientCommandSource> context, Room room, BlockPos pos) {
+        customWaypoints.put(room.getName(), new SecretWaypoint(IntegerArgumentType.getInteger(context, "secretIndex"), SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category"), StringArgumentType.getString(context, "name"), pos));
+    }
+
     /**
      * Updates the dungeon. The general idea is similar to the Dungeon Rooms Mod.
      * <p></p>
@@ -326,7 +372,8 @@ public class DungeonSecrets {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM ->
+                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {

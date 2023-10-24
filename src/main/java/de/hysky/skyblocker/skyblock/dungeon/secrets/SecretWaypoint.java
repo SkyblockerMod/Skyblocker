@@ -1,15 +1,20 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -28,9 +33,13 @@ public class SecretWaypoint extends Waypoint {
     private final Vec3d centerPos;
 
     SecretWaypoint(int secretIndex, JsonObject waypoint, String name, BlockPos pos) {
-        super(pos, typeSupplier, Category.get(waypoint).colorComponents);
+        this(secretIndex, Category.get(waypoint), name, pos);
+    }
+
+    SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
+        super(pos, typeSupplier, category.colorComponents);
         this.secretIndex = secretIndex;
-        this.category = Category.get(waypoint);
+        this.category = category;
         this.name = Text.of(name);
         this.centerPos = pos.toCenterPos();
     }
@@ -80,23 +89,26 @@ public class SecretWaypoint extends Waypoint {
         }
     }
 
-    enum Category {
-        ENTRANCE(secretWaypoints -> secretWaypoints.enableEntranceWaypoints, 0, 255, 0),
-        SUPERBOOM(secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, 255, 0, 0),
-        CHEST(secretWaypoints -> secretWaypoints.enableChestWaypoints, 2, 213, 250),
-        ITEM(secretWaypoints -> secretWaypoints.enableItemWaypoints, 2, 64, 250),
-        BAT(secretWaypoints -> secretWaypoints.enableBatWaypoints, 142, 66, 0),
-        WITHER(secretWaypoints -> secretWaypoints.enableWitherWaypoints, 30, 30, 30),
-        LEVER(secretWaypoints -> secretWaypoints.enableLeverWaypoints, 250, 217, 2),
-        FAIRYSOUL(secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, 255, 85, 255),
-        STONK(secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
-        AOTV(secretWaypoints -> secretWaypoints.enableAotvWaypoints, 252, 98, 3),
-        PEARL(secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
-        DEFAULT(secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
+    enum Category implements StringIdentifiable {
+        ENTRANCE("entrance", secretWaypoints -> secretWaypoints.enableEntranceWaypoints, 0, 255, 0),
+        SUPERBOOM("superboom", secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, 255, 0, 0),
+        CHEST("chest", secretWaypoints -> secretWaypoints.enableChestWaypoints, 2, 213, 250),
+        ITEM("item", secretWaypoints -> secretWaypoints.enableItemWaypoints, 2, 64, 250),
+        BAT("bat", secretWaypoints -> secretWaypoints.enableBatWaypoints, 142, 66, 0),
+        WITHER("wither", secretWaypoints -> secretWaypoints.enableWitherWaypoints, 30, 30, 30),
+        LEVER("lever", secretWaypoints -> secretWaypoints.enableLeverWaypoints, 250, 217, 2),
+        FAIRYSOUL("fairysoul", secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, 255, 85, 255),
+        STONK("stonk", secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
+        AOTV("aotv", secretWaypoints -> secretWaypoints.enableAotvWaypoints, 252, 98, 3),
+        PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
+        DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
+        private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
+        private final String name;
         private final Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate;
         private final float[] colorComponents;
 
-        Category(Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate, int... intColorComponents) {
+        Category(String name, Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate, int... intColorComponents) {
+            this.name = name;
             this.enabledPredicate = enabledPredicate;
             colorComponents = new float[intColorComponents.length];
             for (int i = 0; i < intColorComponents.length; i++) {
@@ -104,21 +116,8 @@ public class SecretWaypoint extends Waypoint {
             }
         }
 
-        private static Category get(JsonObject categoryJson) {
-            return switch (categoryJson.get("category").getAsString()) {
-                case "entrance" -> Category.ENTRANCE;
-                case "superboom" -> Category.SUPERBOOM;
-                case "chest" -> Category.CHEST;
-                case "item" -> Category.ITEM;
-                case "bat" -> Category.BAT;
-                case "wither" -> Category.WITHER;
-                case "lever" -> Category.LEVER;
-                case "fairysoul" -> Category.FAIRYSOUL;
-                case "stonk" -> Category.STONK;
-                case "aotv" -> Category.AOTV;
-                case "pearl" -> Category.PEARL;
-                default -> Category.DEFAULT;
-            };
+        private static Category get(JsonObject waypointJson) {
+            return CODEC.parse(JsonOps.INSTANCE, waypointJson.get("category")).resultOrPartial(DungeonSecrets.LOGGER::error).orElseThrow();
         }
 
         boolean needsInteraction() {
@@ -139,6 +138,25 @@ public class SecretWaypoint extends Waypoint {
 
         boolean isEnabled() {
             return enabledPredicate.test(SkyblockerConfigManager.get().locations.dungeons.secretWaypoints);
+        }
+
+        @Override
+        public String asString() {
+            return name;
+        }
+
+        static class CategoryArgumentType extends EnumArgumentType<Category> {
+            public CategoryArgumentType() {
+                super(Category.CODEC, Category::values);
+            }
+
+            public static CategoryArgumentType category() {
+                return new CategoryArgumentType();
+            }
+
+            public static Category getCategory(CommandContext<?> context, String name) {
+                return context.getArgument(name, Category.class);
+            }
         }
     }
 }
