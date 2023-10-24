@@ -44,7 +44,7 @@ public class SecretWaypoint extends Waypoint {
     }
 
     @Override
-    protected boolean shouldRender() {
+    public boolean shouldRender() {
         return super.shouldRender() && category.isEnabled();
     }
 
@@ -68,7 +68,7 @@ public class SecretWaypoint extends Waypoint {
      * Renders the secret waypoint, including a filled cube, a beacon beam, the name, and the distance from the player.
      */
     @Override
-    protected void render(WorldRenderContext context) {
+    public void render(WorldRenderContext context) {
         //TODO In the future, shrink the box for wither essence and items so its more realistic
         super.render(context);
 

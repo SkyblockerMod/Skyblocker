@@ -11,16 +11,20 @@ public class Waypoint {
     protected static final float DEFAULT_HIGHLIGHT_ALPHA = 0.5f;
     protected static final float DEFAULT_LINE_WIDTH = 5f;
     protected final BlockPos pos;
-    protected final Box box;
-    protected final Supplier<Type> typeSupplier;
-    protected final float[] colorComponents;
-    protected final float alpha;
-    protected final float lineWidth;
-    protected final boolean throughWalls;
-    protected boolean shouldRender;
+    private final Box box;
+    private final Supplier<Type> typeSupplier;
+    private final float[] colorComponents;
+    private final float alpha;
+    private final float lineWidth;
+    private final boolean throughWalls;
+    private boolean shouldRender;
 
     protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents) {
         this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA);
+    }
+
+    protected Waypoint(BlockPos pos, Type type, float[] colorComponents, float alpha) {
+        this(pos, () -> type, colorComponents, alpha);
     }
 
     protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha) {
@@ -46,7 +50,7 @@ public class Waypoint {
         this.shouldRender = shouldRender;
     }
 
-    protected boolean shouldRender() {
+    public boolean shouldRender() {
         return shouldRender;
     }
 
@@ -58,7 +62,7 @@ public class Waypoint {
         this.shouldRender = true;
     }
 
-    protected void render(WorldRenderContext context) {
+    public void render(WorldRenderContext context) {
         switch (typeSupplier.get()) {
             case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, colorComponents, alpha);
             case OUTLINED_WAYPOINT -> {

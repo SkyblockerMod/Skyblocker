@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -49,7 +50,7 @@ public class MythologicalRitual {
     private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
     @Nullable
     private static BlockPos lastDugBurrowPos;
-    private static GriffinBurrow previousBurrow = new GriffinBurrow();
+    private static GriffinBurrow previousBurrow = new GriffinBurrow(BlockPos.ORIGIN);
 
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MythologicalRitual::render);
@@ -82,7 +83,7 @@ public class MythologicalRitual {
                 if (MinecraftClient.getInstance().world == null || !MinecraftClient.getInstance().world.getBlockState(pos).isOf(Blocks.GRASS_BLOCK)) {
                     return;
                 }
-                GriffinBurrow burrow = griffinBurrows.computeIfAbsent(pos, pos1 -> new GriffinBurrow());
+                GriffinBurrow burrow = griffinBurrows.computeIfAbsent(pos, GriffinBurrow::new);
                 if (ParticleTypes.CRIT.equals(packet.getParameters().getType())) burrow.critParticle++;
                 if (ParticleTypes.ENCHANT.equals(packet.getParameters().getType())) burrow.enchantParticle++;
                 if (burrow.critParticle >= 5 && burrow.enchantParticle >= 5 && burrow.confirmed == TriState.FALSE) {
@@ -133,10 +134,9 @@ public class MythologicalRitual {
 
     public static void render(WorldRenderContext context) {
         if (isActive()) {
-            for (Map.Entry<BlockPos, GriffinBurrow> burrowEntry : griffinBurrows.entrySet()) {
-                GriffinBurrow burrow = burrowEntry.getValue();
-                if (burrow.confirmed == TriState.TRUE) {
-                    RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, burrowEntry.getKey(), ORANGE_COLOR_COMPONENTS, 0.25F);
+            for (GriffinBurrow burrow : griffinBurrows.values()) {
+                if (burrow.shouldRender()) {
+                    burrow.render(context);
                 }
                 if (burrow.confirmed != TriState.FALSE) {
                     if (burrow.nextBurrowPlane != null) {
@@ -186,7 +186,7 @@ public class MythologicalRitual {
         return SkyblockerConfigManager.get().general.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocationRaw().equals("hub");
     }
 
-    private static class GriffinBurrow {
+    private static class GriffinBurrow extends Waypoint {
         private int critParticle;
         private int enchantParticle;
         private TriState confirmed = TriState.FALSE;
@@ -196,9 +196,18 @@ public class MythologicalRitual {
         private Vec3d[] echoBurrowDirection;
         private Vec3d[] echoBurrowPlane;
 
+        private GriffinBurrow(BlockPos pos) {
+            super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);
+        }
+
         private void init() {
             confirmed = TriState.TRUE;
             regression.clear();
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return super.shouldRender() && confirmed == TriState.TRUE;
         }
     }
 }
