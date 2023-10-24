@@ -1,14 +1,17 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -151,6 +154,17 @@ public class Room {
                 throw new IllegalArgumentException("Shape " + shape.shape + " does not match segments: " + Arrays.toString(segments.toArray()));
             }
         };
+    }
+
+    protected void addWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        String roomName = getName();
+        SecretWaypoint secretWaypoint = new SecretWaypoint(IntegerArgumentType.getInteger(context, "secretIndex"), SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category"), StringArgumentType.getString(context, "name"), pos);
+        DungeonSecrets.addCustomWaypoint(roomName, secretWaypoint);
+        DungeonSecrets.getRoomsStream().filter(r -> roomName.equals(r.getName())).forEach(r -> {
+            BlockPos actualPos = r.relativeToActual(pos);
+            SecretWaypoint actualWaypoint = new SecretWaypoint(secretWaypoint.secretIndex, secretWaypoint.category, secretWaypoint.name, actualPos);
+            r.secretWaypoints.put(secretWaypoint.secretIndex, actualPos, actualWaypoint);
+        });
     }
 
     /**
@@ -299,18 +313,19 @@ public class Room {
      */
     @SuppressWarnings("JavadocReference")
     private void roomMatched() {
-        Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
+        secretWaypoints = HashBasedTable.create();
         for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
             int secretIndex = Integer.parseInt(secretName.substring(0, Character.isDigit(secretName.charAt(1)) ? 2 : 1));
             BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
-            secretWaypointsMutable.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
+            secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
         for (SecretWaypoint customWaypoint : DungeonSecrets.getCustomWaypoints(name)) {
-            secretWaypointsMutable.put(customWaypoint.secretIndex, customWaypoint.pos, customWaypoint);
+            BlockPos actualPos = relativeToActual(customWaypoint.pos);
+            SecretWaypoint actualWaypoint = new SecretWaypoint(customWaypoint.secretIndex, customWaypoint.category, customWaypoint.name, actualPos);
+            secretWaypoints.put(customWaypoint.secretIndex, actualPos, actualWaypoint);
         }
-        secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
         matched = TriState.TRUE;
 
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());

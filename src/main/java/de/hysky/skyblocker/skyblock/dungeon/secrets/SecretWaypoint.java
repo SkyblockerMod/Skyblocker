@@ -29,7 +29,7 @@ public class SecretWaypoint extends Waypoint {
     private static final Supplier<Type> typeSupplier = () -> config.waypointType;
     final int secretIndex;
     final Category category;
-    private final Text name;
+    final Text name;
     private final Vec3d centerPos;
 
     SecretWaypoint(int secretIndex, JsonObject waypoint, String name, BlockPos pos) {
@@ -37,10 +37,14 @@ public class SecretWaypoint extends Waypoint {
     }
 
     SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
+        this(secretIndex, category, Text.of(name), pos);
+    }
+
+    SecretWaypoint(int secretIndex, Category category, Text name, BlockPos pos) {
         super(pos, typeSupplier, category.colorComponents);
         this.secretIndex = secretIndex;
         this.category = category;
-        this.name = Text.of(name);
+        this.name = name;
         this.centerPos = pos.toCenterPos();
     }
 

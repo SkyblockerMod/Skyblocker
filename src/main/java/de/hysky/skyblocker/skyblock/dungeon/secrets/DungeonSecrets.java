@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -131,6 +132,10 @@ public class DungeonSecrets {
         return roomsLoaded != null && roomsLoaded.isDone();
     }
 
+    public static Stream<Room> getRoomsStream() {
+        return rooms.values().stream();
+    }
+
     @SuppressWarnings("unused")
     public static JsonObject getRoomMetadata(String room) {
         return roomsJson.get(room).getAsJsonObject();
@@ -142,6 +147,11 @@ public class DungeonSecrets {
 
     public static Collection<SecretWaypoint> getCustomWaypoints(String room) {
         return customWaypoints.get(room);
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean addCustomWaypoint(String room, SecretWaypoint waypoint) {
+        return customWaypoints.put(room, waypoint);
     }
 
     /**
@@ -284,7 +294,7 @@ public class DungeonSecrets {
     private static int addWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         Room room = getRoomAtPhysical(pos);
         if (isRoomMatched(room)) {
-            addWaypointRelative(context, room, room.actualToRelative(pos));
+            room.addWaypoint(context, room.actualToRelative(pos));
         } else {
             context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
         }
@@ -293,15 +303,11 @@ public class DungeonSecrets {
 
     private static int addWaypointRelative(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         if (isCurrentRoomMatched()) {
-            addWaypointRelative(context, currentRoom, pos);
+            currentRoom.addWaypoint(context, pos);
         } else {
             context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
         }
         return Command.SINGLE_SUCCESS;
-    }
-
-    private static void addWaypointRelative(CommandContext<FabricClientCommandSource> context, Room room, BlockPos pos) {
-        customWaypoints.put(room.getName(), new SecretWaypoint(IntegerArgumentType.getInteger(context, "secretIndex"), SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category"), StringArgumentType.getString(context, "name"), pos));
     }
 
     /**
@@ -377,8 +383,7 @@ public class DungeonSecrets {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM ->
-                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
