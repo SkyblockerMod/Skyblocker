@@ -24,6 +24,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -160,7 +161,11 @@ public class Room {
      * @see #addCustomWaypoint(int, SecretWaypoint.Category, String, BlockPos)
      */
     protected void addCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
-        addCustomWaypoint(IntegerArgumentType.getInteger(context, "secretIndex"), SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category"), StringArgumentType.getString(context, "name"), pos);
+        int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
+        SecretWaypoint.Category category = SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category");
+        String waypointName = StringArgumentType.getString(context, "name");
+        addCustomWaypoint(secretIndex, category, waypointName, pos);
+        context.getSource().sendFeedback(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName));
     }
 
     /**

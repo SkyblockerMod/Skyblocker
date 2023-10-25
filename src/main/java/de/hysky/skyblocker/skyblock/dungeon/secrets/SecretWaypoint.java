@@ -151,6 +151,11 @@ public class SecretWaypoint extends Waypoint {
         }
 
         @Override
+        public String toString() {
+            return name;
+        }
+
+        @Override
         public String asString() {
             return name;
         }
