@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -24,12 +23,13 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BackpackPreview {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
-    private static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/inventory_background.png");
+    private static final Identifier TEXTURE = new Identifier("textures/gui/container/generic_54.png");
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
     private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
     private static final int STORAGE_SIZE = 27;
@@ -56,7 +56,7 @@ public class BackpackPreview {
             // update save dir based on uuid and sb profile
             String uuid = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "");
             String profile = Utils.getProfile();
-            if (profile != null && !profile.isEmpty()) {
+            if (!profile.isEmpty()) {
                 save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + uuid + "/" + profile);
                 save_dir.toFile().mkdirs();
                 if (loaded.equals(uuid + "/" + profile)) {
@@ -84,7 +84,7 @@ public class BackpackPreview {
             if (file.isFile()) {
                 try {
                     NbtCompound root = NbtIo.read(file);
-                    storage[index] = new DummyInventory(root);
+                    storage[index] = new DummyInventory(Objects.requireNonNull(root));
                 } catch (Exception e) {
                     LOGGER.error("Failed to load backpack preview file: " + file.getName(), e);
                 }
@@ -152,11 +152,8 @@ public class BackpackPreview {
         matrices.translate(0f, 0f, 400f);
 
         RenderSystem.enableDepthTest();
-        context.drawTexture(TEXTURE, x, y, 0, 0, 176, 7);
-        for (int i = 0; i < rows; ++i) {
-            context.drawTexture(TEXTURE, x, y + i * 18 + 7, 0, 7, 176, 18);
-        }
-        context.drawTexture(TEXTURE, x, y + rows * 18 + 7, 0, 25, 176, 7);
+        context.drawTexture(TEXTURE, x, y, 0, 0, 176, rows * 18 + 17);
+        context.drawTexture(TEXTURE, x, y + rows * 18 + 17, 0, 126, 176, 96);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         for (int i = 9; i < storage[index].size(); ++i) {
