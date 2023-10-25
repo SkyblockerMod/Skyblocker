@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.diana;
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -11,17 +12,20 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -41,6 +45,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class MythologicalRitual {
     private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d)/4\\)");
     private static final float[] ORANGE_COLOR_COMPONENTS = DyeColor.ORANGE.getColorComponents();
+    private static long lastEchoTime;
     private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
     @Nullable
     private static BlockPos lastDugBurrowPos;
@@ -50,6 +55,7 @@ public class MythologicalRitual {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MythologicalRitual::render);
         AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
         UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
+        UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
         ClientReceiveMessageEvents.GAME.register(MythologicalRitual::onChatMessage);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
                 .then(literal("clearGriffinBurrows").executes(context -> {
@@ -102,6 +108,9 @@ public class MythologicalRitual {
                 burrow.nextBurrowPlane[2] = burrow.nextBurrowPlane[1].add(0, 100, 0);
                 burrow.nextBurrowPlane[3] = burrow.nextBurrowPlane[0].add(0, 100, 0);
             } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType())) {
+                if (System.currentTimeMillis() > lastEchoTime + 10_000) {
+                    return;
+                }
                 if (previousBurrow.echoBurrowDirection == null) {
                     previousBurrow.echoBurrowDirection = new Vec3d[2];
                 }
@@ -116,8 +125,8 @@ public class MythologicalRitual {
                 }
                 previousBurrow.echoBurrowPlane[0] = previousBurrow.echoBurrowDirection[0].add(echoBurrowDirection).subtract(0, 50, 0);
                 previousBurrow.echoBurrowPlane[1] = previousBurrow.echoBurrowDirection[0].subtract(echoBurrowDirection).subtract(0, 50, 0);
-                previousBurrow.echoBurrowPlane[2] = previousBurrow.echoBurrowPlane[0].add(0, 100, 0);
-                previousBurrow.echoBurrowPlane[3] = previousBurrow.echoBurrowPlane[1].add(0, 100, 0);
+                previousBurrow.echoBurrowPlane[2] = previousBurrow.echoBurrowPlane[1].add(0, 100, 0);
+                previousBurrow.echoBurrowPlane[3] = previousBurrow.echoBurrowPlane[0].add(0, 100, 0);
             }
         }
     }
@@ -155,6 +164,14 @@ public class MythologicalRitual {
             lastDugBurrowPos = pos;
         }
         return ActionResult.PASS;
+    }
+
+    public static TypedActionResult<ItemStack> onUseItem(PlayerEntity player, World world, Hand hand) {
+        ItemStack stack = player.getStackInHand(hand);
+        if (isActive() && ItemUtils.getItemId(stack).equals("ANCESTRAL_SPADE")) {
+            lastEchoTime = System.currentTimeMillis();
+        }
+        return TypedActionResult.pass(stack);
     }
 
     public static void onChatMessage(Text message, boolean overlay) {
