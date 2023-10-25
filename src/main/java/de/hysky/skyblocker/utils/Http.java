@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpClient.Version;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
@@ -15,6 +16,8 @@ import java.time.Duration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import org.jetbrains.annotations.NotNull;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.SharedConstants;
 
@@ -22,12 +25,19 @@ import net.minecraft.SharedConstants;
  * @implNote All http requests are sent using HTTP 2
  */
 public class Http {
+	private static final String NAME_2_UUID = "https://api.minecraftservices.com/minecraft/profile/lookup/name/";
+	private static final String HYPIXEL_PROXY = "https://api.azureaaron.net/hypixel/";
 	private static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getGameVersion().getName() + ")";
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
+			.followRedirects(Redirect.NORMAL)
 			.build();
 	
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
+		return sendCacheableGetRequest(url).content();
+	}
+	
+	private static ApiResponse sendCacheableGetRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
 				.header("Accept", "application/json")
@@ -41,7 +51,7 @@ public class Http {
 		InputStream decodedInputStream = getDecodedInputStream(response);
 		String body = new String(decodedInputStream.readAllBytes());
 		
-		return body;
+		return new ApiResponse(body, getCacheStatus(response.headers()));
 	}
 	
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
@@ -56,8 +66,21 @@ public class Http {
 		return response.headers();
 	}
 	
+	public static String sendName2UuidRequest(String name) throws IOException, InterruptedException {
+		return sendGetRequest(NAME_2_UUID + name);
+	}
+	
+	/**
+	 * @param endpoint the endpoint - do not include any leading or trailing slashes
+	 * @param query the query string - use empty string if n/a
+	 * @return the requested data with zero pre-processing applied
+	 */
+	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
+		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query);
+	}
+	
 	private static InputStream getDecodedInputStream(HttpResponse<InputStream> response) {
-		String encoding = getContentEncoding(response);
+		String encoding = getContentEncoding(response.headers());
 		
 		try {
 			switch (encoding) {
@@ -75,8 +98,8 @@ public class Http {
 		}
 	}
 	
-	private static String getContentEncoding(HttpResponse<InputStream> response) {
-		return response.headers().firstValue("Content-Encoding").orElse("");
+	private static String getContentEncoding(HttpHeaders headers) {
+		return headers.firstValue("Content-Encoding").orElse("");
 	}
 	
 	public static String getEtag(HttpHeaders headers) {
@@ -85,5 +108,22 @@ public class Http {
 	
 	public static String getLastModified(HttpHeaders headers) {
 		return headers.firstValue("Last-Modified").orElse("");
+	}
+	
+	/**
+	 * Returns the cache status of the resource
+	 * 
+	 * @see <a href="https://developers.cloudflare.com/cache/concepts/default-cache-behavior/#cloudflare-cache-responses">Cloudflare Cache Docs</a>
+	 */
+	public static String getCacheStatus(HttpHeaders headers) {
+		return headers.firstValue("CF-Cache-Status").orElse("UNKNOWN");
+	}
+	
+	//TODO If ever needed, we could just replace cache status with the response headers and go from there
+	public record ApiResponse(String content, String cacheStatus) {
+		
+		public boolean cached() {
+			return cacheStatus.equals("HIT");
+		}
 	}
 }
