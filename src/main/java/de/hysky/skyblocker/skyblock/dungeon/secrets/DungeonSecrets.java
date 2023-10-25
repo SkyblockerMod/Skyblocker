@@ -109,6 +109,9 @@ public class DungeonSecrets {
     private static final Map<Vector2ic, Room> rooms = new HashMap<>();
     private static final Map<String, JsonElement> roomsJson = new HashMap<>();
     private static final Map<String, JsonElement> waypointsJson = new HashMap<>();
+    /**
+     * The map of dungeon room names to custom waypoints relative to the room.
+     */
     private static final Multimap<String, SecretWaypoint> customWaypoints = MultimapBuilder.hashKeys().arrayListValues().build();
     @Nullable
     private static CompletableFuture<Void> roomsLoaded;
@@ -145,10 +148,16 @@ public class DungeonSecrets {
         return waypointsJson.get(room).getAsJsonArray();
     }
 
+    /**
+     * @see #customWaypoints
+     */
     public static Collection<SecretWaypoint> getCustomWaypoints(String room) {
         return customWaypoints.get(room);
     }
 
+    /**
+     * @see #customWaypoints
+     */
     @SuppressWarnings("UnusedReturnValue")
     public static boolean addCustomWaypoint(String room, SecretWaypoint waypoint) {
         return customWaypoints.put(room, waypoint);
@@ -285,25 +294,25 @@ public class DungeonSecrets {
                                 .then(argument("name", StringArgumentType.greedyString()).executes(context -> {
                                     // TODO Less hacky way with custom ClientBlockPosArgumentType
                                     BlockPos pos = context.getArgument("pos", PosArgument.class).toAbsoluteBlockPos(new ServerCommandSource(null, context.getSource().getPosition(), context.getSource().getRotation(), null, 0, null, null, null, null));
-                                    return relative ? addWaypointRelative(context, pos) : addWaypoint(context, pos);
+                                    return relative ? addCustomWaypointRelative(context, pos) : addCustomWaypoint(context, pos);
                                 }))
                         )
                 );
     }
 
-    private static int addWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+    private static int addCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         Room room = getRoomAtPhysical(pos);
         if (isRoomMatched(room)) {
-            room.addWaypoint(context, room.actualToRelative(pos));
+            room.addCustomWaypoint(context, room.actualToRelative(pos));
         } else {
             context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
         }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int addWaypointRelative(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+    private static int addCustomWaypointRelative(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         if (isCurrentRoomMatched()) {
-            currentRoom.addWaypoint(context, pos);
+            currentRoom.addCustomWaypoint(context, pos);
         } else {
             context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
         }

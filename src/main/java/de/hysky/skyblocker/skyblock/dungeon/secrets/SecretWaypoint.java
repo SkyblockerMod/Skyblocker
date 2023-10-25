@@ -17,6 +17,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -25,8 +26,8 @@ import java.util.function.ToDoubleFunction;
 
 public class SecretWaypoint extends Waypoint {
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
-    private static final SkyblockerConfig.SecretWaypoints config = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
-    private static final Supplier<Type> typeSupplier = () -> config.waypointType;
+    private static final SkyblockerConfig.SecretWaypoints CONFIG = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
+    private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.waypointType;
     final int secretIndex;
     final Category category;
     final Text name;
@@ -41,7 +42,7 @@ public class SecretWaypoint extends Waypoint {
     }
 
     SecretWaypoint(int secretIndex, Category category, Text name, BlockPos pos) {
-        super(pos, typeSupplier, category.colorComponents);
+        super(pos, TYPE_SUPPLIER, category.colorComponents);
         this.secretIndex = secretIndex;
         this.category = category;
         this.name = name;
@@ -85,12 +86,17 @@ public class SecretWaypoint extends Waypoint {
         //TODO In the future, shrink the box for wither essence and items so its more realistic
         super.render(context);
 
-        if (config.showSecretText) {
+        if (CONFIG.showSecretText) {
             Vec3d posUp = centerPos.add(0, 1, 0);
             RenderHelper.renderText(context, name, posUp, true);
             double distance = context.camera().getPos().distanceTo(centerPos);
             RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
         }
+    }
+
+    @NotNull
+    SecretWaypoint relativeToActual(Room room) {
+        return new SecretWaypoint(secretIndex, category, name, room.relativeToActual(pos));
     }
 
     enum Category implements StringIdentifiable {
@@ -158,7 +164,7 @@ public class SecretWaypoint extends Waypoint {
                 return new CategoryArgumentType();
             }
 
-            public static Category getCategory(CommandContext<?> context, String name) {
+            public static <S> Category getCategory(CommandContext<S> context, String name) {
                 return context.getArgument(name, Category.class);
             }
         }

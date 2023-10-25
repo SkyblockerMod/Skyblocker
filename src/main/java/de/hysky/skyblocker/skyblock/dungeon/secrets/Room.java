@@ -156,15 +156,36 @@ public class Room {
         };
     }
 
-    protected void addWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
-        String roomName = getName();
-        SecretWaypoint secretWaypoint = new SecretWaypoint(IntegerArgumentType.getInteger(context, "secretIndex"), SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category"), StringArgumentType.getString(context, "name"), pos);
-        DungeonSecrets.addCustomWaypoint(roomName, secretWaypoint);
-        DungeonSecrets.getRoomsStream().filter(r -> roomName.equals(r.getName())).forEach(r -> {
-            BlockPos actualPos = r.relativeToActual(pos);
-            SecretWaypoint actualWaypoint = new SecretWaypoint(secretWaypoint.secretIndex, secretWaypoint.category, secretWaypoint.name, actualPos);
-            r.secretWaypoints.put(secretWaypoint.secretIndex, actualPos, actualWaypoint);
-        });
+    /**
+     * @see #addCustomWaypoint(int, SecretWaypoint.Category, String, BlockPos)
+     */
+    protected void addCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        addCustomWaypoint(IntegerArgumentType.getInteger(context, "secretIndex"), SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category"), StringArgumentType.getString(context, "name"), pos);
+    }
+
+    /**
+     * Adds a custom waypoint relative to this room to {@link DungeonSecrets#customWaypoints} and all existing instances of this room.
+     *
+     * @param secretIndex  the index of the secret waypoint
+     * @param category     the category of the secret waypoint
+     * @param waypointName the name of the secret waypoint
+     * @param pos          the position of the secret waypoint relative to this room
+     */
+    @SuppressWarnings("JavadocReference")
+    private void addCustomWaypoint(int secretIndex, SecretWaypoint.Category category, String waypointName, BlockPos pos) {
+        SecretWaypoint waypoint = new SecretWaypoint(secretIndex, category, waypointName, pos);
+        DungeonSecrets.addCustomWaypoint(name, waypoint);
+        DungeonSecrets.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.addCustomWaypoint(waypoint));
+    }
+
+    /**
+     * Adds a custom waypoint relative to this room to this room.
+     *
+     * @param relativeWaypoint the secret waypoint relative to this room to add
+     */
+    private void addCustomWaypoint(SecretWaypoint relativeWaypoint) {
+        SecretWaypoint actualWaypoint = relativeWaypoint.relativeToActual(this);
+        secretWaypoints.put(actualWaypoint.secretIndex, actualWaypoint.pos, actualWaypoint);
     }
 
     /**
@@ -321,11 +342,7 @@ public class Room {
             BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
             secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
-        for (SecretWaypoint customWaypoint : DungeonSecrets.getCustomWaypoints(name)) {
-            BlockPos actualPos = relativeToActual(customWaypoint.pos);
-            SecretWaypoint actualWaypoint = new SecretWaypoint(customWaypoint.secretIndex, customWaypoint.category, customWaypoint.name, actualPos);
-            secretWaypoints.put(customWaypoint.secretIndex, actualPos, actualWaypoint);
-        }
+        DungeonSecrets.getCustomWaypoints(name).forEach(this::addCustomWaypoint);
         matched = TriState.TRUE;
 
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());
