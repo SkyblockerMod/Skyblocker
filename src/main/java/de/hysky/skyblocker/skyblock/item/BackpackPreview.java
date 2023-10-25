@@ -152,8 +152,9 @@ public class BackpackPreview {
         matrices.translate(0f, 0f, 400f);
 
         RenderSystem.enableDepthTest();
-        context.drawTexture(TEXTURE, x, y, 0, 0, 176, rows * 18 + 17);
-        context.drawTexture(TEXTURE, x, y + rows * 18 + 17, 0, 126, 176, 96);
+        context.drawTexture(TEXTURE, x, y, 0, 0, 176, 7);
+        context.drawTexture(TEXTURE, x, y + 7, 0, 17, 176, rows * 18);
+        context.drawTexture(TEXTURE, x, y + rows * 18 + 7, 0, 215, 176, 7);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         for (int i = 9; i < storage[index].size(); ++i) {
