@@ -38,13 +38,19 @@ public class Utils {
     private static boolean isInDungeons = false;
     private static boolean isInjected = false;
     /**
-     * The following fields store data returned from /locraw: {@link #profile}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     * The profile name parsed from the player list.
      */
-    @SuppressWarnings("JavadocDeclaration")
     @NotNull
     private static String profile = "";
+    /**
+     * The profile id parsed from the chat.
+     */
     @NotNull
     private static String profileId = "";
+    /**
+     * The following fields store data returned from /locraw: {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     */
+    @SuppressWarnings("JavadocDeclaration")
     @NotNull
     private static String server = "";
     @NotNull
