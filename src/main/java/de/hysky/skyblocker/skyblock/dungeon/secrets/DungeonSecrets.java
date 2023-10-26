@@ -11,6 +11,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -21,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -57,8 +59,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -70,6 +75,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
     private static final String DUNGEONS_PATH = "dungeons";
+    private static final Path CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -173,9 +179,10 @@ public class DungeonSecrets {
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
         CompletableFuture.runAsync(DungeonSecrets::load, MinecraftClient.getInstance()).exceptionally(e -> {
-            LOGGER.error("[Skyblocker] Failed to load dungeon secrets", e);
+            LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
             return null;
         });
+        ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonSecrets::saveCustomWaypoints);
         Scheduler.INSTANCE.scheduleCyclic(DungeonSecrets::update, 10);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonSecrets::render);
         ClientReceiveMessageEvents.GAME.register(DungeonSecrets::onChatMessage);
@@ -198,7 +205,7 @@ public class DungeonSecrets {
         for (Map.Entry<Identifier, Resource> resourceEntry : MinecraftClient.getInstance().getResourceManager().findResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton")).entrySet()) {
             String[] path = resourceEntry.getKey().getPath().split("/");
             if (path.length != 4) {
-                LOGGER.error("[Skyblocker] Failed to load dungeon secrets, invalid resource identifier {}", resourceEntry.getKey());
+                LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets, invalid resource identifier {}", resourceEntry.getKey());
                 break;
             }
             String dungeon = path[1];
@@ -211,9 +218,9 @@ public class DungeonSecrets {
                 synchronized (roomsMap) {
                     roomsMap.put(room, rooms);
                 }
-                LOGGER.debug("[Skyblocker] Loaded dungeon secrets dungeon {} room shape {} room {}", dungeon, roomShape, room);
+                LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon secrets dungeon {} room shape {} room {}", dungeon, roomShape, room);
             }).exceptionally(e -> {
-                LOGGER.error("[Skyblocker] Failed to load dungeon secrets dungeon {} room shape {} room {}", dungeon, roomShape, room, e);
+                LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets dungeon {} room shape {} room {}", dungeon, roomShape, room, e);
                 return null;
             }));
         }
@@ -221,16 +228,37 @@ public class DungeonSecrets {
             try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
                 loadJson(roomsReader, roomsJson);
                 loadJson(waypointsReader, waypointsJson);
-                LOGGER.debug("[Skyblocker] Loaded dungeon secrets json");
+                LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon secret waypoints json");
             } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to load dungeon secrets json", e);
+                LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secret waypoints json", e);
             }
         }));
-        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker] Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total in {} ms", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(Map::size).sum(), ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum(), System.currentTimeMillis() - startTime)).exceptionally(e -> {
-            LOGGER.error("[Skyblocker] Failed to load dungeon secrets", e);
+        dungeonFutures.add(CompletableFuture.runAsync(() -> {
+            try (BufferedReader customWaypointsReader = Files.newBufferedReader(CUSTOM_WAYPOINTS_DIR)) {
+                SkyblockerMod.GSON.fromJson(customWaypointsReader, JsonObject.class).asMap().forEach(
+                        (room, jsonElement) -> addCustomWaypoint(room, SecretWaypoint.CODEC.parse(JsonOps.INSTANCE, jsonElement).resultOrPartial(LOGGER::error).orElseThrow())
+                );
+                LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded custom dungeon secret waypoints");
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load custom dungeon secret waypoints", e);
+            }
+        }));
+        roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker Dungeon Secrets] Loaded dungeon secrets for {} dungeon(s), {} room shapes, {} rooms, and {} custom secret waypoints total in {} ms", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(Map::size).sum(), ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum(), customWaypoints.size(), System.currentTimeMillis() - startTime)).exceptionally(e -> {
+            LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
             return null;
         });
-        LOGGER.info("[Skyblocker] Started loading dungeon secrets in (blocked main thread for) {} ms", System.currentTimeMillis() - startTime);
+        LOGGER.info("[Skyblocker Dungeon Secrets] Started loading dungeon secrets in (blocked main thread for) {} ms", System.currentTimeMillis() - startTime);
+    }
+
+    private static void saveCustomWaypoints(MinecraftClient client) {
+        try (BufferedWriter writer = Files.newBufferedWriter(CUSTOM_WAYPOINTS_DIR)) {
+            JsonArray customWaypointsArray = new JsonArray();
+            customWaypoints.forEach((room, waypoint) -> customWaypointsArray.add(SecretWaypoint.CODEC.encodeStart(JsonOps.INSTANCE, waypoint).resultOrPartial(LOGGER::error).orElseThrow()));
+            SkyblockerMod.GSON.toJson(customWaypointsArray, writer);
+            LOGGER.info("[Skyblocker Dungeon Secrets] Saved custom dungeon secret waypoints");
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker Dungeon Secrets] Failed to save custom dungeon secret waypoints", e);
+        }
     }
 
     private static int[] readRoom(Resource resource) throws RuntimeException {
@@ -379,7 +407,7 @@ public class DungeonSecrets {
             }
             mapEntrancePos = mapEntrancePosAndSize.left();
             mapRoomSize = mapEntrancePosAndSize.rightInt();
-            LOGGER.info("[Skyblocker] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
+            LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
         }
 
         Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(client.player.getPos());
@@ -392,7 +420,8 @@ public class DungeonSecrets {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM ->
+                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
@@ -417,7 +446,7 @@ public class DungeonSecrets {
             }
             return newRoom;
         } catch (IllegalArgumentException e) {
-            LOGGER.error("[Skyblocker] Failed to create room", e);
+            LOGGER.error("[Skyblocker Dungeon Secrets] Failed to create room", e);
         }
         return null;
     }

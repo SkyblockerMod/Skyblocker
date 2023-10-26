@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -15,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +27,12 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 public class SecretWaypoint extends Waypoint {
+    public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
+            Category.CODEC.fieldOf("category").forGetter(secretWaypoint -> secretWaypoint.category),
+            Codecs.TEXT.fieldOf("name").forGetter(secretWaypoint -> secretWaypoint.name),
+            BlockPos.CODEC.fieldOf("pos").forGetter(secretWaypoint -> secretWaypoint.pos)
+    ).apply(instance, SecretWaypoint::new));
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
     private static final SkyblockerConfig.SecretWaypoints CONFIG = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
     private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.waypointType;
