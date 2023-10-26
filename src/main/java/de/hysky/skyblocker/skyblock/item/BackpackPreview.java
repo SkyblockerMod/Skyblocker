@@ -11,18 +11,17 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,15 +50,16 @@ public class BackpackPreview {
         Utils.update(); // force update isOnSkyblock to prevent crash on disconnect
         if (Utils.isOnSkyblock()) {
             // save all dirty storages
-            saveStorage();
+            saveStorages();
             // update save dir based on uuid and sb profile
             String uuid = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "");
-            String profile = Utils.getProfile();
+            String profile = Utils.getProfile(); //TODO switch to profile id
             if (!profile.isEmpty()) {
-                save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + uuid + "/" + profile);
+                String loading = uuid + "/" + profile;
+                save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + loading);
                 //noinspection ResultOfMethodCallIgnored
                 save_dir.toFile().mkdirs();
-                if (loaded.equals(uuid + "/" + profile)) {
+                if (loaded.equals(loading)) {
                     // mark currently opened storage as dirty
                     if (MinecraftClient.getInstance().currentScreen != null) {
                         String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
@@ -68,22 +68,20 @@ public class BackpackPreview {
                     }
                 } else {
                     // load storage again because uuid/profile changed
-                    loaded = uuid + "/" + profile;
-                    loadStorage();
+                    loaded = loading;
+                    loadStorages();
                 }
             }
         }
     }
 
-    public static void loadStorage() {
+    public static void loadStorages() {
         assert (save_dir != null);
         for (int index = 0; index < STORAGE_SIZE; ++index) {
-            storages[index] = null;
             File file = save_dir.resolve(index + ".nbt").toFile();
             if (file.isFile()) {
                 try {
-                    NbtCompound root = NbtIo.read(file);
-                    storages[index] = new Storage(new DummyInventory(Objects.requireNonNull(root)), root.getString("name"));
+                    storages[index] = Storage.fromNbt(Objects.requireNonNull(NbtIo.read(file)));
                 } catch (Exception e) {
                     LOGGER.error("Failed to load backpack preview file: " + file.getName(), e);
                 }
@@ -91,35 +89,21 @@ public class BackpackPreview {
         }
     }
 
-    private static void saveStorage() {
+    private static void saveStorages() {
         assert (save_dir != null);
         for (int index = 0; index < STORAGE_SIZE; ++index) {
             if (storages[index] != null && storages[index].dirty) {
-                try {
-                    NbtCompound root = new NbtCompound();
-                    NbtList list = new NbtList();
-                    for (int i = 9; i < storages[index].inventory.size(); ++i) {
-                        ItemStack stack = storages[index].inventory.getStack(i);
-                        NbtCompound item = new NbtCompound();
-                        if (stack.isEmpty()) {
-                            item.put("id", NbtString.of("minecraft:air"));
-                            item.put("Count", NbtInt.of(1));
-                        } else {
-                            item.put("id", NbtString.of(stack.getItem().toString()));
-                            item.put("Count", NbtInt.of(stack.getCount()));
-                            item.put("tag", stack.getNbt());
-                        }
-                        list.add(item);
-                    }
-                    root.put("list", list);
-                    root.put("size", NbtInt.of(storages[index].inventory.size() - 9));
-                    root.putString("name", storages[index].name);
-                    NbtIo.write(root, save_dir.resolve(index + ".nbt").toFile());
-                    storages[index].markClean();
-                } catch (Exception e) {
-                    LOGGER.error("Failed to save backpack preview file: " + index + ".nbt", e);
-                }
+                saveStorage(index);
             }
+        }
+    }
+
+    private static void saveStorage(int index) {
+        try {
+            NbtIo.write(storages[index].toNbt(), save_dir.resolve(index + ".nbt").toFile());
+            storages[index].markClean();
+        } catch (Exception e) {
+            LOGGER.error("Failed to save backpack preview file: " + index + ".nbt", e);
         }
     }
 
@@ -131,16 +115,14 @@ public class BackpackPreview {
         }
     }
 
-    public static boolean renderPreview(DrawContext context, int index, int mouseX, int mouseY) {
+    public static boolean renderPreview(DrawContext context, Screen screen, int index, int mouseX, int mouseY) {
         if (index >= 9 && index < 18) index -= 9;
         else if (index >= 27 && index < 45) index -= 18;
         else return false;
 
         if (storages[index] == null) return false;
-        int rows = (storages[index].inventory.size() - 9) / 9;
+        int rows = (storages[index].size() - 9) / 9;
 
-        Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (screen == null) return false;
         int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
         int y = Math.max(0, mouseY - 16);
 
@@ -149,27 +131,24 @@ public class BackpackPreview {
         matrices.translate(0f, 0f, 400f);
 
         RenderSystem.enableDepthTest();
-        context.drawTexture(TEXTURE, x, y, 0, 0, 176, 7);
-        context.drawTexture(TEXTURE, x, y + 7, 0, 17, 176, rows * 18);
-        context.drawTexture(TEXTURE, x, y + rows * 18 + 7, 0, 215, 176, 7);
+        context.drawTexture(TEXTURE, x, y, 0, 0, 176, rows * 18 + 17);
+        context.drawTexture(TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawText(textRenderer, storages[index].name, x + 8, y + 6, 0x404040, false);
 
-        for (int i = 9; i < storages[index].inventory.size(); ++i) {
-            ItemStack currentStack = storages[index].inventory.getStack(i);
+        matrices.translate(0f, 0f, 200f);
+        for (int i = 9; i < storages[index].size(); ++i) {
+            ItemStack currentStack = storages[index].getStack(i);
             int itemX = x + (i - 9) % 9 * 18 + 8;
-            int itemY = y + (i - 9) / 9 * 18 + 8;
+            int itemY = y + (i - 9) / 9 * 18 + 18;
 
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
                 ItemRarityBackgrounds.tryDraw(currentStack, context, itemX, itemY);
             }
 
-            matrices.push();
-            matrices.translate(0f, 0f, 200f);
             context.drawItem(currentStack, itemX, itemY);
             context.drawItemInSlot(textRenderer, currentStack, itemX, itemY);
-            matrices.pop();
         }
 
         matrices.pop();
@@ -190,77 +169,50 @@ public class BackpackPreview {
         private final String name;
         private boolean dirty;
 
-        public Storage(Inventory inventory, String name) {
+        private Storage(Inventory inventory, String name) {
             this(inventory, name, false);
         }
 
-        public Storage(Inventory inventory, String name, boolean dirty) {
+        private Storage(Inventory inventory, String name, boolean dirty) {
             this.inventory = inventory;
             this.name = name;
             this.dirty = dirty;
         }
 
-        public void markDirty() {
+        private int size() {
+            return inventory.size();
+        }
+
+        private ItemStack getStack(int index) {
+            return inventory.getStack(index);
+        }
+
+        private void markDirty() {
             dirty = true;
         }
 
-        public void markClean() {
+        private void markClean() {
             dirty = false;
         }
-    }
 
-    static class DummyInventory implements Inventory {
-        private final List<ItemStack> stacks;
-
-        public DummyInventory(NbtCompound root) {
-            stacks = new ArrayList<>(root.getInt("size") + 9);
-            for (int i = 0; i < 9; ++i) stacks.add(ItemStack.EMPTY);
-            root.getList("list", NbtCompound.COMPOUND_TYPE).forEach(item ->
-                    stacks.add(ItemStack.fromNbt((NbtCompound) item))
-            );
+        @NotNull
+        private static Storage fromNbt(NbtCompound root) {
+            SimpleInventory inventory = new SimpleInventory(root.getInt("size"));
+            inventory.readNbtList(root.getList("list", NbtCompound.COMPOUND_TYPE));
+            return new Storage(inventory, root.getString("name"));
         }
 
-        @Override
-        public int size() {
-            return stacks.size();
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public ItemStack getStack(int slot) {
-            return stacks.get(slot);
-        }
-
-        @Override
-        public ItemStack removeStack(int slot, int amount) {
-            return null;
-        }
-
-        @Override
-        public ItemStack removeStack(int slot) {
-            return null;
-        }
-
-        @Override
-        public void setStack(int slot, ItemStack stack) {
-            stacks.set(slot, stack);
-        }
-
-        @Override
-        public void markDirty() {
-        }
-
-        @Override
-        public boolean canPlayerUse(PlayerEntity player) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
+        @NotNull
+        private NbtCompound toNbt() {
+            NbtCompound root = new NbtCompound();
+            NbtList list = new NbtList();
+            for (int i = 0; i < size(); ++i) {
+                list.add(getStack(i).writeNbt(new NbtCompound()));
+            }
+            root.put("list", list);
+            root.put("size", NbtInt.of(size()));
+            root.putString("name", name);
+            return root;
         }
     }
 }
