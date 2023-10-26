@@ -38,13 +38,19 @@ public class Utils {
     private static boolean isInDungeons = false;
     private static boolean isInjected = false;
     /**
-     * The following fields store data returned from /locraw: {@link #profile}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     * The profile name parsed from the player list.
      */
-    @SuppressWarnings("JavadocDeclaration")
     @NotNull
     private static String profile = "";
+    /**
+     * The profile id parsed from the chat.
+     */
     @NotNull
     private static String profileId = "";
+    /**
+     * The following fields store data returned from /locraw: {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     */
+    @SuppressWarnings("JavadocDeclaration")
     @NotNull
     private static String server = "";
     @NotNull
@@ -90,7 +96,7 @@ public class Utils {
     public static String getProfile() {
         return profile;
     }
-    
+
     @NotNull
     public static String getProfileId() {
         return profileId;
@@ -330,7 +336,7 @@ public class Utils {
     }
 
     /**
-     * Parses the /locraw reply from the server and updates the players profile id
+     * Parses the /locraw reply from the server and updates the player's profile id
      *
      * @return not display the message in chat is the command is sent by the mod
      */
@@ -356,11 +362,11 @@ public class Utils {
                 return shouldFilter;
             }
         }
-        
+
         if (isOnSkyblock && message.startsWith("Profile ID: ")) {
             profileId = message.replace("Profile ID: ", "");
         }
-        
+
         return true;
     }
 
