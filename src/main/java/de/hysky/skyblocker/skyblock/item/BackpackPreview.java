@@ -38,13 +38,16 @@ public class BackpackPreview {
 
     private static final Storage[] storages = new Storage[STORAGE_SIZE];
 
-    private static String loaded = ""; // profile id currently loaded
-    private static Path save_dir = null;
+    /**
+     * The profile id of the currently loaded backpack preview.
+     */
+    private static String loaded;
+    private static Path saveDir;
 
     public static void init() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof HandledScreen<?> handledScreen) {
-                updateStorage(handledScreen);
+                ScreenEvents.remove(screen).register(screen1 -> updateStorage(handledScreen));
             }
         });
     }
@@ -56,42 +59,32 @@ public class BackpackPreview {
             saveStorages();
             // update save dir based on sb profile id
             String profileId = Utils.getProfileId();
-            if (!profileId.isEmpty()) {
-                save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + profileId);
+            if (!profileId.equals(loaded)) {
+                saveDir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + profileId);
                 //noinspection ResultOfMethodCallIgnored
-                save_dir.toFile().mkdirs();
-                if (loaded.equals(profileId)) {
-                    // mark currently opened storage as dirty
-                    if (MinecraftClient.getInstance().currentScreen != null) {
-                        String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
-                        int index = getStorageIndexFromTitle(title);
-                        if (index != -1) storages[index].markDirty();
-                    }
-                } else {
-                    // load storage again because profile id changed
-                    loaded = profileId;
-                    loadStorages();
-                }
+                saveDir.toFile().mkdirs();
+                // load storage again because profile id changed
+                loaded = profileId;
+                loadStorages();
             }
         }
     }
 
-    public static void loadStorages() {
-        assert (save_dir != null);
+    private static void loadStorages() {
         for (int index = 0; index < STORAGE_SIZE; ++index) {
-            File file = save_dir.resolve(index + ".nbt").toFile();
-            if (file.isFile()) {
+            storages[index] = null;
+            File storageFile = saveDir.resolve(index + ".nbt").toFile();
+            if (storageFile.isFile()) {
                 try {
-                    storages[index] = Storage.fromNbt(Objects.requireNonNull(NbtIo.read(file)));
+                    storages[index] = Storage.fromNbt(Objects.requireNonNull(NbtIo.read(storageFile)));
                 } catch (Exception e) {
-                    LOGGER.error("Failed to load backpack preview file: " + file.getName(), e);
+                    LOGGER.error("Failed to load backpack preview file: " + storageFile.getName(), e);
                 }
             }
         }
     }
 
     private static void saveStorages() {
-        assert (save_dir != null);
         for (int index = 0; index < STORAGE_SIZE; ++index) {
             if (storages[index] != null && storages[index].dirty) {
                 saveStorage(index);
@@ -101,18 +94,18 @@ public class BackpackPreview {
 
     private static void saveStorage(int index) {
         try {
-            NbtIo.write(storages[index].toNbt(), save_dir.resolve(index + ".nbt").toFile());
+            NbtIo.write(storages[index].toNbt(), saveDir.resolve(index + ".nbt").toFile());
             storages[index].markClean();
         } catch (Exception e) {
             LOGGER.error("Failed to save backpack preview file: " + index + ".nbt", e);
         }
     }
 
-    public static void updateStorage(HandledScreen<?> screen) {
-        String title = screen.getTitle().getString();
+    private static void updateStorage(HandledScreen<?> handledScreen) {
+        String title = handledScreen.getTitle().getString();
         int index = getStorageIndexFromTitle(title);
         if (index != -1) {
-            storages[index] = new Storage(screen.getScreenHandler().slots.get(0).inventory, title, true);
+            storages[index] = new Storage(handledScreen.getScreenHandler().slots.get(0).inventory, title, true);
         }
     }
 
@@ -170,10 +163,6 @@ public class BackpackPreview {
         private final String name;
         private boolean dirty;
 
-        private Storage(Inventory inventory, String name) {
-            this(inventory, name, false);
-        }
-
         private Storage(Inventory inventory, String name, boolean dirty) {
             this.inventory = inventory;
             this.name = name;
@@ -188,10 +177,6 @@ public class BackpackPreview {
             return inventory.getStack(index);
         }
 
-        private void markDirty() {
-            dirty = true;
-        }
-
         private void markClean() {
             dirty = false;
         }
@@ -199,7 +184,7 @@ public class BackpackPreview {
         @NotNull
         private static Storage fromNbt(NbtCompound root) {
             SimpleInventory inventory = new SimpleInventory(root.getList("list", NbtCompound.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(ItemStack::fromNbt).toArray(ItemStack[]::new));
-            return new Storage(inventory, root.getString("name"));
+            return new Storage(inventory, root.getString("name"), false);
         }
 
         @NotNull
