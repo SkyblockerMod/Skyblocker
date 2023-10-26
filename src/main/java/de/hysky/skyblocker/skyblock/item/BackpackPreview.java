@@ -14,7 +14,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtInt;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -35,7 +38,7 @@ public class BackpackPreview {
 
     private static final Storage[] storages = new Storage[STORAGE_SIZE];
 
-    private static String loaded = ""; // uuid + sb profile currently loaded
+    private static String loaded = ""; // profile id currently loaded
     private static Path save_dir = null;
 
     public static void init() {
@@ -51,15 +54,13 @@ public class BackpackPreview {
         if (Utils.isOnSkyblock()) {
             // save all dirty storages
             saveStorages();
-            // update save dir based on uuid and sb profile
-            String uuid = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "");
-            String profile = Utils.getProfile(); //TODO switch to profile id
-            if (!profile.isEmpty()) {
-                String loading = uuid + "/" + profile;
-                save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + loading);
+            // update save dir based on sb profile id
+            String profileId = Utils.getProfileId();
+            if (!profileId.isEmpty()) {
+                save_dir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + profileId);
                 //noinspection ResultOfMethodCallIgnored
                 save_dir.toFile().mkdirs();
-                if (loaded.equals(loading)) {
+                if (loaded.equals(profileId)) {
                     // mark currently opened storage as dirty
                     if (MinecraftClient.getInstance().currentScreen != null) {
                         String title = MinecraftClient.getInstance().currentScreen.getTitle().getString();
@@ -67,8 +68,8 @@ public class BackpackPreview {
                         if (index != -1) storages[index].markDirty();
                     }
                 } else {
-                    // load storage again because uuid/profile changed
-                    loaded = loading;
+                    // load storage again because profile id changed
+                    loaded = profileId;
                     loadStorages();
                 }
             }
@@ -197,8 +198,7 @@ public class BackpackPreview {
 
         @NotNull
         private static Storage fromNbt(NbtCompound root) {
-            SimpleInventory inventory = new SimpleInventory(root.getInt("size"));
-            inventory.readNbtList(root.getList("list", NbtCompound.COMPOUND_TYPE));
+            SimpleInventory inventory = new SimpleInventory(root.getList("list", NbtCompound.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(ItemStack::fromNbt).toArray(ItemStack[]::new));
             return new Storage(inventory, root.getString("name"));
         }
 

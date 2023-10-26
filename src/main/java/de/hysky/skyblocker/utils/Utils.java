@@ -44,6 +44,8 @@ public class Utils {
     @NotNull
     private static String profile = "";
     @NotNull
+    private static String profileId = "";
+    @NotNull
     private static String server = "";
     @NotNull
     private static String gameType = "";
@@ -87,6 +89,11 @@ public class Utils {
     @NotNull
     public static String getProfile() {
         return profile;
+    }
+
+    @NotNull
+    public static String getProfileId() {
+        return profileId;
     }
 
     /**
@@ -323,7 +330,7 @@ public class Utils {
     }
 
     /**
-     * Parses the /locraw reply from the server
+     * Parses the /locraw reply from the server and updates the player's profile id
      *
      * @return not display the message in chat is the command is sent by the mod
      */
@@ -349,6 +356,11 @@ public class Utils {
                 return shouldFilter;
             }
         }
+
+        if (isOnSkyblock && message.startsWith("Profile ID: ")) {
+            profileId = message.replace("Profile ID: ", "");
+        }
+
         return true;
     }
 
