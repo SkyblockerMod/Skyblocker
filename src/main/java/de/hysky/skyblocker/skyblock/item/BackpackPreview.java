@@ -58,13 +58,13 @@ public class BackpackPreview {
             // save all dirty storages
             saveStorages();
             // update save dir based on sb profile id
-            String profileId = Utils.getProfileId();
-            if (!profileId.equals(loaded)) {
-                saveDir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + profileId);
+            String id = MinecraftClient.getInstance().getSession().getUuidOrNull() + "/" + Utils.getProfileId();
+            if (!id.equals(loaded)) {
+                saveDir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + id);
                 //noinspection ResultOfMethodCallIgnored
                 saveDir.toFile().mkdirs();
                 // load storage again because profile id changed
-                loaded = profileId;
+                loaded = id;
                 loadStorages();
             }
         }
