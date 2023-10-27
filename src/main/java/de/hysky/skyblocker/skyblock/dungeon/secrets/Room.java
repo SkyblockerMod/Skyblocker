@@ -5,7 +5,6 @@ import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -32,6 +31,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -159,12 +159,12 @@ public class Room {
     }
 
     /**
-     * @see #addCustomWaypoint(int, SecretWaypoint.Category, String, BlockPos)
+     * @see #addCustomWaypoint(int, SecretWaypoint.Category, Text, BlockPos)
      */
     protected void addCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
         SecretWaypoint.Category category = SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category");
-        String waypointName = StringArgumentType.getString(context, "name");
+        Text waypointName = context.getArgument("name", Text.class);
         addCustomWaypoint(secretIndex, category, waypointName, pos);
         context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName)));
     }
@@ -178,20 +178,57 @@ public class Room {
      * @param pos          the position of the secret waypoint relative to this room
      */
     @SuppressWarnings("JavadocReference")
-    private void addCustomWaypoint(int secretIndex, SecretWaypoint.Category category, String waypointName, BlockPos pos) {
+    private void addCustomWaypoint(int secretIndex, SecretWaypoint.Category category, Text waypointName, BlockPos pos) {
         SecretWaypoint waypoint = new SecretWaypoint(secretIndex, category, waypointName, pos);
         DungeonSecrets.addCustomWaypoint(name, waypoint);
         DungeonSecrets.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.addCustomWaypoint(waypoint));
     }
 
     /**
-     * Adds a custom waypoint relative to this room to this room.
+     * Adds a custom waypoint relative to this room to this instance of the room.
      *
      * @param relativeWaypoint the secret waypoint relative to this room to add
      */
     private void addCustomWaypoint(SecretWaypoint relativeWaypoint) {
         SecretWaypoint actualWaypoint = relativeWaypoint.relativeToActual(this);
         secretWaypoints.put(actualWaypoint.secretIndex, actualWaypoint.pos, actualWaypoint);
+    }
+
+    /**
+     * @see #removeCustomWaypoint(BlockPos)
+     */
+    protected void removeCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        SecretWaypoint waypoint = removeCustomWaypoint(pos);
+        if (waypoint != null) {
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointRemoved", pos.getX(), pos.getY(), pos.getZ(), name, waypoint.secretIndex, waypoint.category, waypoint.name)));
+        } else {
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointNotFound", pos.getX(), pos.getY(), pos.getZ(), name)));
+        }
+    }
+
+    /**
+     * Removes a custom waypoint relative to this room from {@link DungeonSecrets#customWaypoints} and all existing instances of this room.
+     * @param pos the position of the secret waypoint relative to this room
+     * @return the removed secret waypoint or {@code null} if there was no secret waypoint at the given position
+     */
+    @SuppressWarnings("JavadocReference")
+    @Nullable
+    private SecretWaypoint removeCustomWaypoint(BlockPos pos) {
+        SecretWaypoint waypoint = DungeonSecrets.removeCustomWaypoint(name, pos);
+        if (waypoint != null) {
+            DungeonSecrets.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.removeCustomWaypoint(waypoint.secretIndex, pos));
+        }
+        return waypoint;
+    }
+
+    /**
+     * Removes a custom waypoint relative to this room from this instance of the room.
+     * @param secretIndex the index of the secret waypoint
+     * @param relativePos the position of the secret waypoint relative to this room
+     */
+    private void removeCustomWaypoint(int secretIndex, BlockPos relativePos) {
+        BlockPos actualPos = relativeToActual(relativePos);
+        secretWaypoints.remove(secretIndex, actualPos);
     }
 
     /**

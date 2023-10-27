@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -32,6 +31,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.PosArgument;
+import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
@@ -179,6 +179,14 @@ public class DungeonSecrets {
     }
 
     /**
+     * @see #customWaypoints
+     */
+    @Nullable
+    public static SecretWaypoint removeCustomWaypoint(String room, BlockPos pos) {
+        return customWaypoints.remove(room, pos);
+    }
+
+    /**
      * Loads the dungeon secrets asynchronously from {@code /assets/skyblocker/dungeons}.
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
      */
@@ -202,8 +210,10 @@ public class DungeonSecrets {
                 .then(literal("markAsMissing").then(markSecretsCommand(false)))
                 .then(literal("getRelativePos").executes(DungeonSecrets::getRelativePos))
                 .then(literal("getRelativeTargetPos").executes(DungeonSecrets::getRelativeTargetPos))
-                .then(literal("addWaypoint").then(addWaypointCommand(false)))
-                .then(literal("addWaypointRelatively").then(addWaypointCommand(true)))
+                .then(literal("addWaypoint").then(addCustomWaypointCommand(false)))
+                .then(literal("addWaypointRelatively").then(addCustomWaypointCommand(true)))
+                .then(literal("removeWaypoint").then(removeCustomWaypointCommand(false)))
+                .then(literal("removeWaypointRelatively").then(removeCustomWaypointCommand(true)))
         ))));
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
@@ -291,8 +301,8 @@ public class DungeonSecrets {
     }
 
     private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, Integer>> markSecretsCommand(boolean found) {
-        return argument("secret", IntegerArgumentType.integer()).executes(context -> {
-            int secretIndex = IntegerArgumentType.getInteger(context, "secret");
+        return argument("secretIndex", IntegerArgumentType.integer()).executes(context -> {
+            int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
             if (markSecrets(secretIndex, found)) {
                 context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));
             } else {
@@ -326,11 +336,11 @@ public class DungeonSecrets {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, PosArgument>> addWaypointCommand(boolean relative) {
+    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, PosArgument>> addCustomWaypointCommand(boolean relative) {
         return argument("pos", BlockPosArgumentType.blockPos())
                 .then(argument("secretIndex", IntegerArgumentType.integer())
                         .then(argument("category", SecretWaypoint.Category.CategoryArgumentType.category())
-                                .then(argument("name", StringArgumentType.greedyString()).executes(context -> {
+                                .then(argument("name", TextArgumentType.text()).executes(context -> {
                                     // TODO Less hacky way with custom ClientBlockPosArgumentType
                                     BlockPos pos = context.getArgument("pos", PosArgument.class).toAbsoluteBlockPos(new ServerCommandSource(null, context.getSource().getPosition(), context.getSource().getRotation(), null, 0, null, null, null, null));
                                     return relative ? addCustomWaypointRelative(context, pos) : addCustomWaypoint(context, pos);
@@ -352,6 +362,34 @@ public class DungeonSecrets {
     private static int addCustomWaypointRelative(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         if (isCurrentRoomMatched()) {
             currentRoom.addCustomWaypoint(context, pos);
+        } else {
+            context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, PosArgument>> removeCustomWaypointCommand(boolean relative) {
+        return argument("pos", BlockPosArgumentType.blockPos())
+                .executes(context -> {
+                    // TODO Less hacky way with custom ClientBlockPosArgumentType
+                    BlockPos pos = context.getArgument("pos", PosArgument.class).toAbsoluteBlockPos(new ServerCommandSource(null, context.getSource().getPosition(), context.getSource().getRotation(), null, 0, null, null, null, null));
+                    return relative ? removeCustomWaypointRelative(context, pos) : removeCustomWaypoint(context, pos);
+                });
+    }
+
+    private static int removeCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        Room room = getRoomAtPhysical(pos);
+        if (isRoomMatched(room)) {
+            room.removeCustomWaypoint(context, room.actualToRelative(pos));
+        } else {
+            context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int removeCustomWaypointRelative(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        if (isCurrentRoomMatched()) {
+            currentRoom.removeCustomWaypoint(context, pos);
         } else {
             context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
         }
@@ -431,8 +469,7 @@ public class DungeonSecrets {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM ->
-                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
