@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
@@ -165,7 +166,7 @@ public class Room {
         SecretWaypoint.Category category = SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category");
         String waypointName = StringArgumentType.getString(context, "name");
         addCustomWaypoint(secretIndex, category, waypointName, pos);
-        context.getSource().sendFeedback(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName));
+        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName)));
     }
 
     /**
@@ -347,7 +348,7 @@ public class Room {
             BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
             secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
-        DungeonSecrets.getCustomWaypoints(name).forEach(this::addCustomWaypoint);
+        DungeonSecrets.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
         matched = TriState.TRUE;
 
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());

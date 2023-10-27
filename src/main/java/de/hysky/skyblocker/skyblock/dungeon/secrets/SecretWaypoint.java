@@ -33,6 +33,7 @@ public class SecretWaypoint extends Waypoint {
             Codecs.TEXT.fieldOf("name").forGetter(secretWaypoint -> secretWaypoint.name),
             BlockPos.CODEC.fieldOf("pos").forGetter(secretWaypoint -> secretWaypoint.pos)
     ).apply(instance, SecretWaypoint::new));
+    public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
     private static final SkyblockerConfig.SecretWaypoints CONFIG = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
     private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.waypointType;

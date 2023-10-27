@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -118,7 +118,7 @@ public class DungeonSecrets {
     /**
      * The map of dungeon room names to custom waypoints relative to the room.
      */
-    private static final Multimap<String, SecretWaypoint> customWaypoints = MultimapBuilder.hashKeys().arrayListValues().build();
+    private static final Table<String, BlockPos, SecretWaypoint> customWaypoints = HashBasedTable.create();
     @Nullable
     private static CompletableFuture<Void> roomsLoaded;
     /**
@@ -157,16 +157,25 @@ public class DungeonSecrets {
     /**
      * @see #customWaypoints
      */
-    public static Collection<SecretWaypoint> getCustomWaypoints(String room) {
-        return customWaypoints.get(room);
+    public static Map<BlockPos, SecretWaypoint> getCustomWaypoints(String room) {
+        return customWaypoints.row(room);
     }
 
     /**
      * @see #customWaypoints
      */
     @SuppressWarnings("UnusedReturnValue")
-    public static boolean addCustomWaypoint(String room, SecretWaypoint waypoint) {
-        return customWaypoints.put(room, waypoint);
+    public static SecretWaypoint addCustomWaypoint(String room, SecretWaypoint waypoint) {
+        return customWaypoints.put(room, waypoint.pos, waypoint);
+    }
+
+    /**
+     * @see #customWaypoints
+     */
+    public static void addCustomWaypoints(String room, Collection<SecretWaypoint> waypoints) {
+        for (SecretWaypoint waypoint : waypoints) {
+            addCustomWaypoint(room, waypoint);
+        }
     }
 
     /**
@@ -191,8 +200,8 @@ public class DungeonSecrets {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
                 .then(literal("markAsMissing").then(markSecretsCommand(false)))
-                .then(literal("getRelativePos").executes(context -> getRelativePos(context.getSource())))
-                .then(literal("getRelativeTargetPos").executes(context -> getRelativeTargetPos(context.getSource())))
+                .then(literal("getRelativePos").executes(DungeonSecrets::getRelativePos))
+                .then(literal("getRelativeTargetPos").executes(DungeonSecrets::getRelativeTargetPos))
                 .then(literal("addWaypoint").then(addWaypointCommand(false)))
                 .then(literal("addWaypointRelatively").then(addWaypointCommand(true)))
         ))));
@@ -235,8 +244,8 @@ public class DungeonSecrets {
         }));
         dungeonFutures.add(CompletableFuture.runAsync(() -> {
             try (BufferedReader customWaypointsReader = Files.newBufferedReader(CUSTOM_WAYPOINTS_DIR)) {
-                SkyblockerMod.GSON.fromJson(customWaypointsReader, JsonObject.class).asMap().forEach(
-                        (room, jsonElement) -> addCustomWaypoint(room, SecretWaypoint.CODEC.parse(JsonOps.INSTANCE, jsonElement).resultOrPartial(LOGGER::error).orElseThrow())
+                SkyblockerMod.GSON.fromJson(customWaypointsReader, JsonObject.class).asMap().forEach((room, waypointsJson) ->
+                        addCustomWaypoints(room, SecretWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, waypointsJson).resultOrPartial(LOGGER::error).orElseThrow())
                 );
                 LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded custom dungeon secret waypoints");
             } catch (Exception e) {
@@ -252,9 +261,11 @@ public class DungeonSecrets {
 
     private static void saveCustomWaypoints(MinecraftClient client) {
         try (BufferedWriter writer = Files.newBufferedWriter(CUSTOM_WAYPOINTS_DIR)) {
-            JsonArray customWaypointsArray = new JsonArray();
-            customWaypoints.forEach((room, waypoint) -> customWaypointsArray.add(SecretWaypoint.CODEC.encodeStart(JsonOps.INSTANCE, waypoint).resultOrPartial(LOGGER::error).orElseThrow()));
-            SkyblockerMod.GSON.toJson(customWaypointsArray, writer);
+            JsonObject customWaypointsJson = new JsonObject();
+            customWaypoints.rowMap().forEach((room, waypoints) ->
+                    customWaypointsJson.add(room, SecretWaypoint.LIST_CODEC.encodeStart(JsonOps.INSTANCE, new ArrayList<>(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow())
+            );
+            SkyblockerMod.GSON.toJson(customWaypointsJson, writer);
             LOGGER.info("[Skyblocker Dungeon Secrets] Saved custom dungeon secret waypoints");
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Dungeon Secrets] Failed to save custom dungeon secret waypoints", e);
@@ -291,15 +302,15 @@ public class DungeonSecrets {
         });
     }
 
-    private static int getRelativePos(FabricClientCommandSource source) {
-        return getRelativePos(source, source.getPlayer().getBlockPos());
+    private static int getRelativePos(CommandContext<FabricClientCommandSource> context) {
+        return getRelativePos(context.getSource(), context.getSource().getPlayer().getBlockPos());
     }
 
-    private static int getRelativeTargetPos(FabricClientCommandSource source) {
+    private static int getRelativeTargetPos(CommandContext<FabricClientCommandSource> context) {
         if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
-            return getRelativePos(source, blockHitResult.getBlockPos());
+            return getRelativePos(context.getSource(), blockHitResult.getBlockPos());
         } else {
-            source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.noTarget")));
+            context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.noTarget")));
         }
         return Command.SINGLE_SUCCESS;
     }
