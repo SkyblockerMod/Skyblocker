@@ -51,7 +51,7 @@ public class Http {
 		InputStream decodedInputStream = getDecodedInputStream(response);
 		String body = new String(decodedInputStream.readAllBytes());
 		
-		return new ApiResponse(body, getCacheStatus(response.headers()));
+		return new ApiResponse(body, response.statusCode(), getCacheStatus(response.headers()));
 	}
 	
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
@@ -120,7 +120,11 @@ public class Http {
 	}
 	
 	//TODO If ever needed, we could just replace cache status with the response headers and go from there
-	public record ApiResponse(String content, String cacheStatus) {
+	public record ApiResponse(String content, int statusCode, String cacheStatus) {
+		
+		public boolean ok() {
+			return statusCode == 200;
+		}
 		
 		public boolean cached() {
 			return cacheStatus.equals("HIT");

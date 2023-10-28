@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -103,13 +102,7 @@ public class TeleportOverlay {
         @SuppressWarnings("DataFlowIssue")
         BlockState state = client.world.getBlockState(pos);
         if (!state.isAir() && client.world.getBlockState(pos.up()).isAir() && client.world.getBlockState(pos.up(2)).isAir()) {
-            RenderSystem.polygonOffset(-1f, -10f);
-            RenderSystem.enablePolygonOffset();
-
             RenderHelper.renderFilledIfVisible(wrc, pos, COLOR_COMPONENTS, 0.5f);
-
-            RenderSystem.polygonOffset(0f, 0f);
-            RenderSystem.disablePolygonOffset();
         }
     }
 }

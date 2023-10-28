@@ -59,11 +59,6 @@ dependencies {
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
-	// Renderer (https://github.com/0x3C50/Renderer)
-	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}") {
-		exclude group: "io.github.ladysnake" exclude module: "satin"
-	}
-
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
 	// Mixin Extras (https://github.com/LlamaLad7/MixinExtras)

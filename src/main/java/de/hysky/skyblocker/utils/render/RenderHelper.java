@@ -5,7 +5,6 @@ import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import me.x150.renderer.render.Renderer3d;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -22,8 +21,6 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-
 public class RenderHelper {
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
@@ -36,20 +33,46 @@ public class RenderHelper {
 
     public static void renderFilledThroughWalls(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
-            Renderer3d.renderThroughWalls();
-            renderFilled(context, pos, colorComponents, alpha);
-            Renderer3d.stopRenderThroughWalls();
+            renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, true);
         }
     }
 
     public static void renderFilledIfVisible(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         if (OcclusionCulling.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
-            renderFilled(context, pos, colorComponents, alpha);
+            renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, false);
         }
     }
-
-    private static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
-        Renderer3d.renderFilled(context.matrixStack(), new Color(colorComponents[0], colorComponents[1], colorComponents[2], alpha), Vec3d.of(pos), ONE);
+    
+    private static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+        MatrixStack matrices = context.matrixStack();
+        Vec3d camera = context.camera().getPos();
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder buffer = tessellator.getBuffer();
+        
+        matrices.push();
+        matrices.translate(-camera.x, -camera.y, -camera.z);
+        
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.polygonOffset(-1f, -10f);
+        RenderSystem.enablePolygonOffset();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+        RenderSystem.disableCull();
+        
+        buffer.begin(DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+        WorldRenderer.renderFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+        tessellator.draw();
+        
+        matrices.pop();
+        RenderSystem.polygonOffset(0f, 0f);
+        RenderSystem.disablePolygonOffset();
+        RenderSystem.disableBlend();
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.enableCull();
     }
 
     private static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
