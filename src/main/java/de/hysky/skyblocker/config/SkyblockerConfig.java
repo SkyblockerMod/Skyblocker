@@ -178,7 +178,7 @@ public class SkyblockerConfig {
 		public FairySouls fairySouls = new FairySouls();
 
 		@SerialEntry
-        public MythologicalRitual mythologicalRitual = new MythologicalRitual();
+		public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
 		@SerialEntry
 		public ItemCooldown itemCooldown = new ItemCooldown();
@@ -485,6 +485,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableMuseumDate = true;
+
+		@SerialEntry
+		public boolean enableExoticCheck = true;
 	}
 
 	public static class ItemInfoDisplay {

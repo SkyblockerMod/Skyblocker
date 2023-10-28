@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.exotic.CheckExotic;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -39,7 +38,6 @@ public class PriceInfoTooltip {
     private static JsonObject motesPricesJson;
     public static JsonObject colorJson;
     private static volatile boolean nullMsgSend = false;
-    private final static Gson gson = new Gson();
     private static final Map<String, String> apiAddresses;
     private static long npcHash = 0;
     private static long museumHash = 0;
@@ -62,7 +60,7 @@ public class PriceInfoTooltip {
             return;
         }
 
-        if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableExoticCheck) {
             if (colorJson == null) {
                 nullWarning();
             } else if (stack.getNbt() != null) {
@@ -416,11 +414,11 @@ public class PriceInfoTooltip {
             if (SkyblockerConfigManager.get().general.itemTooltip.enableMotesPrice && motesPricesJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> motesPricesJson = downloadPrices("motes")));
 
-            if (SkyblockerConfig.get().general.itemTooltip.enableExoticCheck && colorJson == null)
+            if (SkyblockerConfigManager.get().general.itemTooltip.enableExoticCheck && colorJson == null)
                 futureList.add(CompletableFuture.runAsync(() -> colorJson = downloadPrices("color")));
 
             minute++;
-            CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
+            CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new))
                     .whenComplete((unused, throwable) -> nullMsgSend = false);
         }, 1200, true);
     }

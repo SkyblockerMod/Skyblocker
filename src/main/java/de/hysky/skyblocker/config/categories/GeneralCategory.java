@@ -356,6 +356,13 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableMuseumDate = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticCheck"))
+								.binding(defaults.general.itemTooltip.enableExoticCheck,
+										() -> config.general.itemTooltip.enableExoticCheck,
+										newValue -> config.general.itemTooltip.enableExoticCheck = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 
 				//Item Info Display

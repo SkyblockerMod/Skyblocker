@@ -1,7 +1,6 @@
-package me.xmrvizzy.skyblocker.skyblock.item.exotic;
+package de.hysky.skyblocker.skyblock.item;
 
-import me.xmrvizzy.skyblocker.skyblock.item.PriceInfoTooltip;
-import me.xmrvizzy.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Constants;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
