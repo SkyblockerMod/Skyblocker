@@ -71,6 +71,7 @@ public class RenderHelper {
         RenderSystem.disablePolygonOffset();
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
         RenderSystem.enableCull();
     }
 
