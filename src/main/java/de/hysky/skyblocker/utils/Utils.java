@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -365,6 +366,8 @@ public class Utils {
 
         if (isOnSkyblock && message.startsWith("Profile ID: ")) {
             profileId = message.replace("Profile ID: ", "");
+            
+            MuseumItemCache.tick(profileId);
         }
 
         return true;
