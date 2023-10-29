@@ -82,10 +82,6 @@ public enum TooltipInfoType implements Runnable {
         return data;
     }
 
-    public void setData(JsonObject data) {
-        this.data = data;
-    }
-
     /**
      * Checks if the data has the given member name and sends a warning message if data is null.
      *
@@ -135,18 +131,13 @@ public enum TooltipInfoType implements Runnable {
     @Override
     public void run() {
         try {
-            if (this.cacheable) {
+            if (cacheable) {
                 HttpHeaders headers = Http.sendHeadRequest(address);
-                long combinedHash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
-
-                switch (this) {
-                    case NPC, MOTES, MUSEUM, COLOR:
-                        if (this.hash == combinedHash) return;
-                        else this.hash = combinedHash;
-                }
+                long hash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
+                if (this.hash == hash) return;
+                else this.hash = hash;
             }
-
-            setData(SkyblockerMod.GSON.fromJson(Http.sendGetRequest(address), JsonObject.class));
+            data = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(address), JsonObject.class);
         } catch (Exception e) {
             ItemTooltip.LOGGER.warn("[Skyblocker] Failed to download " + this + " prices!", e);
         }
