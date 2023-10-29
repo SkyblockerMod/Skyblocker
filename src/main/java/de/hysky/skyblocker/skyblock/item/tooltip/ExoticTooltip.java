@@ -78,6 +78,7 @@ public class ExoticTooltip {
         EXOTIC("exotic", Formatting.GOLD);
         private final String name;
         private final Formatting formatting;
+
         DyeType(String name, Formatting formatting) {
             this.name = name;
             this.formatting = formatting;

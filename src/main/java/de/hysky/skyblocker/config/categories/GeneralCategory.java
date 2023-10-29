@@ -358,6 +358,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip.@Tooltip")))
 								.binding(defaults.general.itemTooltip.enableExoticTooltip,
 										() -> config.general.itemTooltip.enableExoticTooltip,
 										newValue -> config.general.itemTooltip.enableExoticTooltip = newValue)
