@@ -1,20 +1,23 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.utils.Constants;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.StringIdentifiable;
 
-public class ExoticCheck {
+public class ExoticTooltip {
     public static String getExpectedHex(String id) {
-        String color = PriceInfoTooltip.colorJson.get(id).getAsString();
+        if (!ItemTooltip.colorJson.has(id)) {
+            return null;
+        }
+        String color = ItemTooltip.colorJson.get(id).getAsString();
         if (color != null) {
             String[] RGBValues = color.split(",");
-            String hex = String.format("%02x%02x%02x", Integer.parseInt(RGBValues[0]), Integer.parseInt(RGBValues[1]), Integer.parseInt(RGBValues[2]));
-            return hex.toUpperCase();
+            return String.format("%02X%02X%02X", Integer.parseInt(RGBValues[0]), Integer.parseInt(RGBValues[1]), Integer.parseInt(RGBValues[2]));
         } else {
-            System.out.println("Color is null");
+            ItemTooltip.LOGGER.warn("[Skyblocker Exotics] No expected color data found for id {}", id);
             return null;
         }
     }
@@ -46,42 +49,50 @@ public class ExoticCheck {
         return false;
     }
 
-    public static String checkDyeType(String hex) {
+    public static DyeType checkDyeType(String hex) {
         if (Constants.CRYSTAL_HEXES.contains(hex)) {
-            return "CRYSTAL";
+            return DyeType.CRYSTAL;
         }
         if (Constants.FAIRY_HEXES.contains(hex)) {
-            return "FAIRY";
+            return DyeType.FAIRY;
         }
         if (Constants.OG_FAIRY_HEXES.contains(hex)) {
-            return "OG_FAIRY";
+            return DyeType.OG_FAIRY;
         }
         if (Constants.SPOOK.contains(hex)) {
-            return "SPOOK";
+            return DyeType.SPOOK;
         }
         if (Constants.GLITCHED.contains(hex)) {
-            return "GLITCHED";
+            return DyeType.GLITCHED;
         }
-        return "EXOTIC";
+        return DyeType.EXOTIC;
     }
 
     public static boolean intendedDyed(NbtCompound ItemData) {
         return ItemData.getCompound("ExtraAttributes").contains("dye_item");
     }
 
-    public static Formatting getFormattingColor(String s) {
-        return switch (s) {
-            case "CRYSTAL" -> Formatting.AQUA;
-            case "FAIRY" -> Formatting.LIGHT_PURPLE;
-            case "OG_FAIRY" -> Formatting.DARK_PURPLE;
-            case "SPOOK" -> Formatting.RED;
-            case "GLITCHED" -> Formatting.BLUE;
-            case "EXOTIC" -> Formatting.GOLD;
-            default -> Formatting.DARK_GRAY;
-        };
-    }
+    public enum DyeType implements StringIdentifiable {
+        CRYSTAL("crystal", Formatting.AQUA),
+        FAIRY("fairy", Formatting.LIGHT_PURPLE),
+        OG_FAIRY("og_fairy", Formatting.DARK_PURPLE),
+        SPOOK("spook", Formatting.RED),
+        GLITCHED("glitched", Formatting.BLUE),
+        EXOTIC("exotic", Formatting.GOLD);
+        private final String name;
+        private final Formatting formatting;
+        DyeType(String name, Formatting formatting) {
+            this.name = name;
+            this.formatting = formatting;
+        }
 
-    public static MutableText getTranslatedText(String s) {
-        return Text.translatable("skyblocker.exotic." + s.toLowerCase());
+        @Override
+        public String asString() {
+            return name;
+        }
+
+        public MutableText getTranslatedText() {
+            return Text.translatable("skyblocker.exotic." + name).formatted(formatting);
+        }
     }
 }

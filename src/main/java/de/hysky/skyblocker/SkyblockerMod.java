@@ -9,6 +9,8 @@ import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
@@ -73,7 +75,7 @@ public class SkyblockerMod implements ClientModInitializer {
         NEURepoManager.init();
         ItemRepository.init();
         HotbarSlotLock.init();
-        PriceInfoTooltip.init();
+        ItemTooltip.init();
         WikiLookup.init();
         FairySouls.init();
         Relics.init();

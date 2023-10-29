@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -26,7 +26,7 @@ public class TeleportOverlay {
     private static void render(WorldRenderContext wrc) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
-            String itemId = PriceInfoTooltip.getInternalNameFromNBT(heldItem, true);
+            String itemId = ItemTooltip.getInternalNameFromNBT(heldItem, true);
             NbtCompound extraAttributes = ItemUtils.getExtraAttributes(heldItem);
 
             if (itemId != null) {
