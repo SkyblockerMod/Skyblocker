@@ -357,10 +357,10 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticCheck"))
-								.binding(defaults.general.itemTooltip.enableExoticCheck,
-										() -> config.general.itemTooltip.enableExoticCheck,
-										newValue -> config.general.itemTooltip.enableExoticCheck = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip"))
+								.binding(defaults.general.itemTooltip.enableExoticTooltip,
+										() -> config.general.itemTooltip.enableExoticTooltip,
+										newValue -> config.general.itemTooltip.enableExoticTooltip = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())

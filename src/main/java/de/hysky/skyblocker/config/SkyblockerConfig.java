@@ -487,7 +487,7 @@ public class SkyblockerConfig {
 		public boolean enableMuseumDate = true;
 
 		@SerialEntry
-		public boolean enableExoticCheck = true;
+		public boolean enableExoticTooltip = true;
 	}
 
 	public static class ItemInfoDisplay {

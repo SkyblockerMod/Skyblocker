@@ -77,7 +77,7 @@
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Enable Museum & Date",
-  "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticCheck": "Enable Exotic Check",
+  "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip": "Enable Exotic Tooltip",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay": "Item Info Display",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo": "Attribute Shard Info",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Displays the attribute's level as the stack count and the initials of the attribute's name.",

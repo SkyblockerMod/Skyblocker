@@ -21,7 +21,7 @@ public enum TooltipInfoType implements Runnable {
     THREE_DAY_AVERAGE("https://moulberry.codes/auction_averages_lbin/3day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     MOTES("https://hysky.de/api/motesprice", itemTooltip -> itemTooltip.enableMotesPrice, itemTooltip -> itemTooltip.enableMotesPrice && Utils.isInTheRift(), true),
     MUSEUM("https://hysky.de/api/museum", itemTooltip -> itemTooltip.enableMuseumDate, true),
-    COLOR("https://hysky.de/api/color", itemTooltip -> itemTooltip.enableExoticCheck, true);
+    COLOR("https://hysky.de/api/color", itemTooltip -> itemTooltip.enableExoticTooltip, true);
 
     private final String address;
     private final Predicate<SkyblockerConfig.ItemTooltip> dataEnabled;
