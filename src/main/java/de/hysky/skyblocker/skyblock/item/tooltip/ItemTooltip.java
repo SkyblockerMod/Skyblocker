@@ -5,7 +5,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -20,27 +19,15 @@ import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.http.HttpHeaders;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 
 public class ItemTooltip {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    private static final SkyblockerConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
-    private static final Map<InfoType, String> API_ADDRESSES = Map.of(
-            InfoType.NPC, "https://hysky.de/api/npcprice",
-            InfoType.BAZAAR, "https://hysky.de/api/bazaar",
-            InfoType.LOWEST_BINS, "https://hysky.de/api/auctions/lowestbins",
-            InfoType.ONE_DAY_AVERAGE, "https://moulberry.codes/auction_averages_lbin/1day.json",
-            InfoType.THREE_DAY_AVERAGE, "https://moulberry.codes/auction_averages_lbin/3day.json",
-            InfoType.MOTES, "https://hysky.de/api/motesprice",
-            InfoType.MUSEUM, "https://hysky.de/api/museum",
-            InfoType.COLOR, "https://hysky.de/api/color"
-    );
+    protected static final SkyblockerConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
 
     public static void getTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
@@ -63,46 +50,40 @@ public class ItemTooltip {
         int count = stack.getCount();
         boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
 
-        if (InfoType.NPC.isEnabled(config)) {
-            if (InfoType.NPC.hasOrNullWarning(internalID)) {
-                lines.add(Text.literal(String.format("%-21s", "NPC Price:"))
-                        .formatted(Formatting.YELLOW)
-                        .append(getCoinsMessage(InfoType.NPC.data.get(internalID).getAsDouble(), count)));
-            }
+        if (TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+            lines.add(Text.literal(String.format("%-21s", "NPC Price:"))
+                    .formatted(Formatting.YELLOW)
+                    .append(getCoinsMessage(TooltipInfoType.NPC.getData().get(internalID).getAsDouble(), count)));
         }
 
         boolean bazaarExist = false;
 
-        if (InfoType.BAZAAR.isEnabled(config) && !bazaarOpened) {
-            if (InfoType.BAZAAR.hasOrNullWarning(name)) {
-                JsonObject getItem = InfoType.BAZAAR.data.getAsJsonObject(name);
-                lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
-                        .formatted(Formatting.GOLD)
-                        .append(getItem.get("buyPrice").isJsonNull()
-                                ? Text.literal("No data").formatted(Formatting.RED)
-                                : getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
-                lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
-                        .formatted(Formatting.GOLD)
-                        .append(getItem.get("sellPrice").isJsonNull()
-                                ? Text.literal("No data").formatted(Formatting.RED)
-                                : getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
-                bazaarExist = true;
-            }
+        if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name) && !bazaarOpened) {
+            JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(name);
+            lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
+                    .formatted(Formatting.GOLD)
+                    .append(getItem.get("buyPrice").isJsonNull()
+                            ? Text.literal("No data").formatted(Formatting.RED)
+                            : getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
+            lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
+                    .formatted(Formatting.GOLD)
+                    .append(getItem.get("sellPrice").isJsonNull()
+                            ? Text.literal("No data").formatted(Formatting.RED)
+                            : getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
+            bazaarExist = true;
         }
 
         // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
         boolean lbinExist = false;
-        if (InfoType.LOWEST_BINS.isEnabled(config) && !bazaarOpened && !bazaarExist) {
-            if (InfoType.LOWEST_BINS.hasOrNullWarning(name)) {
-                lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
-                        .formatted(Formatting.GOLD)
-                        .append(getCoinsMessage(InfoType.LOWEST_BINS.data.get(name).getAsDouble(), count)));
-                lbinExist = true;
-            }
+        if (TooltipInfoType.LOWEST_BINS.isTooltipEnabledAndHasOrNullWarning(name) && !bazaarOpened && !bazaarExist) {
+            lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
+                    .formatted(Formatting.GOLD)
+                    .append(getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), count)));
+            lbinExist = true;
         }
 
         if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
-            if (InfoType.ONE_DAY_AVERAGE.data == null || InfoType.THREE_DAY_AVERAGE.data == null) {
+            if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 nullWarning();
             } else {
                 /*
@@ -139,9 +120,9 @@ public class ItemTooltip {
                         lines.add(
                                 Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
-                                        .append(InfoType.ONE_DAY_AVERAGE.data.get(neuName) == null
+                                        .append(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName) == null
                                                 ? Text.literal("No data").formatted(Formatting.RED)
-                                                : getCoinsMessage(InfoType.ONE_DAY_AVERAGE.data.get(neuName).getAsDouble(), count)
+                                                : getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), count)
                                         )
                         );
                     }
@@ -149,9 +130,9 @@ public class ItemTooltip {
                         lines.add(
                                 Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
-                                        .append(InfoType.THREE_DAY_AVERAGE.data.get(neuName) == null
+                                        .append(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName) == null
                                                 ? Text.literal("No data").formatted(Formatting.RED)
-                                                : getCoinsMessage(InfoType.THREE_DAY_AVERAGE.data.get(neuName).getAsDouble(), count)
+                                                : getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), count)
                                         )
                         );
                     }
@@ -159,19 +140,17 @@ public class ItemTooltip {
             }
         }
 
-        if (InfoType.MOTES.isEnabled(config) && Utils.isInTheRift()) {
-            if (InfoType.MOTES.hasOrNullWarning(internalID)) {
-                lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
-                        .formatted(Formatting.LIGHT_PURPLE)
-                        .append(getMotesMessage(InfoType.MOTES.data.get(internalID).getAsInt(), count)));
-            }
+        if (TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+            lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
+                    .formatted(Formatting.LIGHT_PURPLE)
+                    .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), count)));
         }
 
-        if (InfoType.MUSEUM.isEnabled(config) && !bazaarOpened) {
+        if (TooltipInfoType.MUSEUM.isTooltipEnabled() && !bazaarOpened) {
             String timestamp = getTimestamp(stack);
 
-            if (InfoType.MUSEUM.hasOrNullWarning(internalID)) {
-                String itemCategory = InfoType.MUSEUM.data.get(internalID).getAsString();
+            if (TooltipInfoType.MUSEUM.hasOrNullWarning(internalID)) {
+                String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
                 String format = switch (itemCategory) {
                     case "Weapons" -> "%-18s";
                     case "Armor" -> "%-19s";
@@ -187,30 +166,26 @@ public class ItemTooltip {
             }
         }
 
-        if (InfoType.COLOR.isEnabled(config)) {
-            if (InfoType.COLOR.data == null) {
-                nullWarning();
-            } else if (stack.getNbt() != null) {
-                final NbtElement color = stack.getNbt().getCompound("display").get("color");
+        if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.getNbt() != null) {
+            final NbtElement color = stack.getNbt().getCompound("display").get("color");
 
-                if (color != null) {
-                    String colorHex = String.format("%06X", Integer.parseInt(color.asString()));
-                    String expectedHex = ExoticTooltip.getExpectedHex(internalID);
+            if (color != null) {
+                String colorHex = String.format("%06X", Integer.parseInt(color.asString()));
+                String expectedHex = ExoticTooltip.getExpectedHex(internalID);
 
-                    boolean correctLine = false;
-                    for (Text text : lines) {
-                        String existingTooltip = text.getString() + " ";
-                        if (existingTooltip.startsWith("Color: ")) {
-                            correctLine = true;
+                boolean correctLine = false;
+                for (Text text : lines) {
+                    String existingTooltip = text.getString() + " ";
+                    if (existingTooltip.startsWith("Color: ")) {
+                        correctLine = true;
 
-                            addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, existingTooltip);
-                            break;
-                        }
+                        addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, existingTooltip);
+                        break;
                     }
+                }
 
-                    if (!correctLine) {
-                        addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, "");
-                    }
+                if (!correctLine) {
+                    addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, "");
                 }
             }
         }
@@ -223,7 +198,7 @@ public class ItemTooltip {
         }
     }
 
-    private static void nullWarning() {
+    public static void nullWarning() {
         if (!sentNullWarning && client.player != null) {
             client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")), false);
             sentNullWarning = true;
@@ -262,6 +237,7 @@ public class ItemTooltip {
         return "";
     }
 
+    // TODO What in the world is this?
     public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
         NbtCompound ea = ItemUtils.getExtraAttributes(stack);
 
@@ -374,112 +350,30 @@ public class ItemTooltip {
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
 
-            if (InfoType.NPC.isEnabled(config) && InfoType.NPC.data == null)
-                futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.NPC)));
-
-            if (InfoType.BAZAAR.isEnabled(config) || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
-                futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.BAZAAR)));
-
-            if (InfoType.LOWEST_BINS.isEnabled(config) || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator)
-                futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.LOWEST_BINS)));
+            TooltipInfoType.NPC.downloadIfEnabled(futureList);
+            TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
+            TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
 
             if (config.enableAvgBIN) {
                 SkyblockerConfig.Average type = config.avg;
 
-                if (type == SkyblockerConfig.Average.BOTH || InfoType.ONE_DAY_AVERAGE.data == null || InfoType.THREE_DAY_AVERAGE.data == null || minute % 5 == 0) {
-                    futureList.add(CompletableFuture.runAsync(() -> {
-                        downloadPrices(InfoType.ONE_DAY_AVERAGE);
-                        downloadPrices(InfoType.THREE_DAY_AVERAGE);
-                    }));
+                if (type == SkyblockerConfig.Average.BOTH || TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null || minute % 5 == 0) {
+                    TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
+                    TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
                 } else if (type == SkyblockerConfig.Average.ONE_DAY) {
-                    futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.ONE_DAY_AVERAGE)));
+                    TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
                 } else if (type == SkyblockerConfig.Average.THREE_DAY) {
-                    futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.THREE_DAY_AVERAGE)));
+                    TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
                 }
             }
 
-            if (InfoType.MOTES.isEnabled(config) && InfoType.MOTES.data == null)
-                futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.MOTES)));
-
-            if (InfoType.MUSEUM.isEnabled(config) && InfoType.MUSEUM.data == null)
-                futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.MUSEUM)));
-
-            if (InfoType.COLOR.isEnabled(config) && InfoType.COLOR.data == null)
-                futureList.add(CompletableFuture.runAsync(() -> downloadPrices(InfoType.COLOR)));
+            TooltipInfoType.MOTES.downloadIfEnabled(futureList);
+            TooltipInfoType.MUSEUM.downloadIfEnabled(futureList);
+            TooltipInfoType.COLOR.downloadIfEnabled(futureList);
 
             minute++;
             CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new))
                     .whenComplete((unused, throwable) -> sentNullWarning = false);
         }, 1200, true);
-    }
-
-    private static void downloadPrices(InfoType type) {
-        try {
-            String url = API_ADDRESSES.get(type);
-
-            if (type.cacheable) {
-                HttpHeaders headers = Http.sendHeadRequest(url);
-                long combinedHash = Http.getEtag(headers).hashCode() + Http.getLastModified(headers).hashCode();
-
-                switch (type) {
-                    case NPC, MOTES, MUSEUM, COLOR:
-                        if (type.hash == combinedHash) return;
-                        else type.hash = combinedHash;
-                }
-            }
-
-            type.setData(SkyblockerMod.GSON.fromJson(Http.sendGetRequest(url), JsonObject.class));
-        } catch (Exception e) {
-            LOGGER.warn("[Skyblocker] Failed to download " + type + " prices!", e);
-        }
-    }
-
-    public static JsonObject getBazaarPrices() {
-        return InfoType.BAZAAR.data;
-    }
-
-    public static JsonObject getLBINPrices() {
-        return InfoType.LOWEST_BINS.data;
-    }
-
-    public enum InfoType {
-        NPC(itemTooltip -> itemTooltip.enableNPCPrice, true),
-        BAZAAR(itemTooltip -> itemTooltip.enableBazaarPrice, false),
-        LOWEST_BINS(itemTooltip -> itemTooltip.enableLowestBIN, false),
-        ONE_DAY_AVERAGE(itemTooltip -> itemTooltip.enableAvgBIN, false),
-        THREE_DAY_AVERAGE(itemTooltip -> itemTooltip.enableAvgBIN, false),
-        MOTES(itemTooltip -> itemTooltip.enableMotesPrice, true),
-        MUSEUM(itemTooltip -> itemTooltip.enableMuseumDate, true),
-        COLOR(itemTooltip -> itemTooltip.enableExoticCheck, true);
-
-        private final Predicate<SkyblockerConfig.ItemTooltip> enabledPredicate;
-        private JsonObject data;
-        private final boolean cacheable;
-        private long hash;
-
-        InfoType(Predicate<SkyblockerConfig.ItemTooltip> enabledPredicate, boolean cacheable) {
-            this(enabledPredicate, null, false);
-        }
-
-        InfoType(Predicate<SkyblockerConfig.ItemTooltip> enabledPredicate, JsonObject data, boolean cacheable) {
-            this.enabledPredicate = enabledPredicate;
-            this.data = data;
-            this.cacheable = cacheable;
-        }
-
-        public boolean isEnabled(SkyblockerConfig.ItemTooltip config) {
-            return enabledPredicate.test(config);
-        }
-
-        public boolean hasOrNullWarning(String memberName) {
-            if (data == null) {
-                nullWarning();
-                return false;
-            } else return data.has(memberName);
-        }
-
-        public void setData(JsonObject data) {
-            this.data = data;
-        }
     }
 }

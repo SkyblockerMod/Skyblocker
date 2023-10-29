@@ -9,10 +9,7 @@ import net.minecraft.util.StringIdentifiable;
 
 public class ExoticTooltip {
     public static String getExpectedHex(String id) {
-        if (!ItemTooltip.colorJson.has(id)) {
-            return null;
-        }
-        String color = ItemTooltip.colorJson.get(id).getAsString();
+        String color = TooltipInfoType.COLOR.getData().get(id).getAsString();
         if (color != null) {
             String[] RGBValues = color.split(",");
             return String.format("%02X%02X%02X", Integer.parseInt(RGBValues[0]), Integer.parseInt(RGBValues[1]), Integer.parseInt(RGBValues[2]));
