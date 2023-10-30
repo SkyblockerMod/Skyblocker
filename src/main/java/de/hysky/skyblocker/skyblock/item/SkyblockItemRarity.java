@@ -13,7 +13,7 @@ public enum SkyblockItemRarity {
 	RARE(Formatting.BLUE),
 	UNCOMMON(Formatting.GREEN),
 	COMMON(Formatting.WHITE);
-	
+
 	public final float r;
 	public final float g;
 	public final float b;

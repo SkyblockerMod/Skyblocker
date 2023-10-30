@@ -21,7 +21,7 @@ public class TitleContainerConfigScreen extends Screen {
     private float hudX = SkyblockerConfigManager.get().general.titleContainer.x;
     private float hudY = SkyblockerConfigManager.get().general.titleContainer.y;
     private final Screen parent;
-    
+
     protected TitleContainerConfigScreen() {
     	this(null);
     }

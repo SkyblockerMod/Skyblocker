@@ -92,12 +92,12 @@ public class ItemStackBuilder {
             enchantments.add(new NbtCompound());
             tag.put("Enchantments", enchantments);
         }
-        
+
         // Add firework star color
         Matcher explosionColorMatcher = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)\\]\\}").matcher(nbttag);
         if (explosionColorMatcher.find()) {
             NbtCompound explosion = new NbtCompound();
-            
+
             explosion.putInt("Type", FireworkRocketItem.Type.SMALL_BALL.getId()); //Forget about the actual ball type because it probably doesn't matter
             explosion.putIntArray("Colors", new int[] { Integer.parseInt(explosionColorMatcher.group("color")) });
             tag.put("Explosion", explosion);

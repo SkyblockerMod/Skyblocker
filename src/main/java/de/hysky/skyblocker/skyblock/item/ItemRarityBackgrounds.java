@@ -39,27 +39,27 @@ public class ItemRarityBackgrounds {
 			Map.entry("COMMON", SkyblockItemRarity.COMMON)
 	);
 	private static final Int2ReferenceOpenHashMap<SkyblockItemRarity> CACHE = new Int2ReferenceOpenHashMap<>();
-	
+
 	public static void init() {
 		//Clear the cache every 5 minutes, ints are very compact!
 		Scheduler.INSTANCE.scheduleCyclic(CACHE::clear, 4800);
-		
+
 		//Clear cache after a screen where items can be upgraded in rarity closes
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			String title = screen.getTitle().getString();
-			
+
 			if (Utils.isOnSkyblock() && (title.equals("The Hex") || title.equals("Craft Item") || title.equals("Anvil") || title.equals("Reforge Anvil"))) {
 				ScreenEvents.remove(screen).register(screen1 -> CACHE.clear());
 			}
 		});
 	}
-	
+
 	public static void tryDraw(ItemStack stack, DrawContext context, int x, int y) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		
+
 		if (client.player != null) {
 			SkyblockItemRarity itemRarity = getItemRarity(stack, client.player);
-			
+
 			if (itemRarity != null) draw(context, x, y, itemRarity);
 		}
 	}
@@ -73,30 +73,30 @@ public class ItemRarityBackgrounds {
 		int hashCode = itemUuid.isEmpty() ? System.identityHashCode(stack) : itemUuid.hashCode();
 
 		if (CACHE.containsKey(hashCode)) return CACHE.get(hashCode);
-				
+
 		List<Text> tooltip = stack.getTooltip(player, TooltipContext.BASIC);
 		String[] stringifiedTooltip = tooltip.stream().map(Text::getString).toArray(String[]::new);
-		
+
 		for (String rarityString : LORE_RARITIES.keySet()) {
 			if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarityString))) {
 				SkyblockItemRarity rarity = LORE_RARITIES.get(rarityString);
-				
+
 				CACHE.put(hashCode, rarity);
 				return rarity;
 			}
 		}
-		
+
 		CACHE.put(hashCode, null);
 		return null;
 	}
-	
+
 	private static void draw(DrawContext context, int x, int y, SkyblockItemRarity rarity) {
 		//Enable blending to handle HUD translucency
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
 		context.drawSprite(x, y, 0, 16, 16, SPRITE.get(), rarity.r, rarity.g, rarity.b, SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity);
-		
+
 		RenderSystem.disableBlend();
 	}
 }

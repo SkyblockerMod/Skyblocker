@@ -22,7 +22,7 @@ public class DungeonsCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons"))
-				
+
 				//Dungeon Secret Waypoints
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints"))
@@ -115,7 +115,7 @@ public class DungeonsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit"))
 						.collapsed(true)
@@ -181,7 +181,7 @@ public class DungeonsCategory {
 								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
 								.build())
 						.build())
-				
+
 				//Others
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper"))
@@ -292,7 +292,7 @@ public class DungeonsCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Terminal Solvers
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.terminals"))

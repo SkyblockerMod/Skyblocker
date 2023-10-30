@@ -38,11 +38,11 @@ public class SkyblockerConfigManager {
 						.registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
 					.build())
 			.build();
-	
+
 	public static SkyblockerConfig get() {
 		return HANDLER.instance();
 	}
-	
+
 	/**
 	 * This method is caller sensitive and can only be called by the mod initializer,
 	 * this is enforced.
@@ -51,15 +51,15 @@ public class SkyblockerConfigManager {
 		if (StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass() != SkyblockerMod.class) {
 			throw new RuntimeException("Skyblocker: Called config init from an illegal place!");
 		}
-		
+
 		HANDLER.load();
 		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
 	}
-	
+
 	public static void save() {
 		HANDLER.save();
 	}
-	
+
 	public static Screen createGUI(Screen parent) {
 		return YetAnotherConfigLib.create(HANDLER, (defaults, config, builder) -> builder
 				.title(Text.translatable("text.autoconfig.skyblocker.title"))
@@ -72,7 +72,7 @@ public class SkyblockerConfigManager {
 				.category(MessageFilterCategory.create(defaults, config))
 				.category(DiscordRPCCategory.create(defaults, config))).generateScreen(parent);
 	}
-	
+
 	/**
 	 * Registers an options command with the given name. Used for registering both options and config as valid commands.
 	 *

@@ -13,7 +13,7 @@ public class DungeonMapConfigScreen extends Screen {
 	private int hudX = SkyblockerConfigManager.get().locations.dungeons.mapX;
 	private int hudY = SkyblockerConfigManager.get().locations.dungeons.mapY;
 	private final Screen parent;
-	
+
 	protected DungeonMapConfigScreen() {
 		this(null);
 	}

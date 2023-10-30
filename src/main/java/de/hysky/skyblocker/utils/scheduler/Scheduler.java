@@ -28,14 +28,14 @@ public class Scheduler {
 
     protected Scheduler() {
     }
-    
+
     /**
      * @see #schedule(Runnable, int, boolean)
      */
     public void schedule(Runnable task, int delay) {
         schedule(task, delay, false);
     }
-    
+
     /**
      * @see #scheduleCyclic(Runnable, int, boolean)
      */

@@ -16,7 +16,7 @@ public class SlayersCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.slayer"))
-				
+
 				//Vampire Slayer
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer"))
@@ -110,7 +110,7 @@ public class SlayersCategory {
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
 								.build())
 						.build())
-				
+
 				.build();
 	}
 }

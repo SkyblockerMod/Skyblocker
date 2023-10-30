@@ -16,7 +16,7 @@ import java.util.List;
 public class SkyblockerConfig {
 	@SerialEntry
 	public int version = 1;
-	
+
 	@SerialEntry
 	public General general = new General();
 
@@ -117,7 +117,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public String uiTitle;
-		
+
 		@SerialEntry
 		public String clickEvent;
 	}
@@ -137,10 +137,10 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public String itemName;
-		
+
 		@SerialEntry
 		public int count;
-		
+
 		@SerialEntry
 		public String nbt;
 	}
@@ -148,16 +148,16 @@ public class SkyblockerConfig {
 	public static class General {
 		@SerialEntry
 		public boolean acceptReparty = true;
-		
+
 		@SerialEntry
 		public boolean backpackPreviewWithoutShift = false;
-		
+
 		@SerialEntry
 		public boolean compactorDeletorPreview = true;
-		
+
 		@SerialEntry
 		public boolean hideEmptyTooltips = true;
-		
+
 		@SerialEntry
 		public boolean hideStatusEffectOverlay = false;
 
@@ -181,7 +181,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Shortcuts shortcuts = new Shortcuts();
-		
+
 		@SerialEntry
 		public QuiverWarning quiverWarning = new QuiverWarning();
 
@@ -193,7 +193,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
-		
+
 		@SerialEntry
 		public SpecialEffects specialEffects = new SpecialEffects();
 
@@ -208,7 +208,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
-		
+
 		@SerialEntry
 		public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
@@ -228,10 +228,10 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int tabHudScale = 100;
-		
+
 		@SerialEntry
 		public boolean plainPlayerNames = false;
-		
+
 		@SerialEntry
 		public NameSorting nameSorting = NameSorting.DEFAULT;
 	}
@@ -259,13 +259,13 @@ public class SkyblockerConfig {
 	public static class BarPositions {
 		@SerialEntry
 		public BarPosition healthBarPosition = BarPosition.LAYER1;
-		
+
 		@SerialEntry
 		public BarPosition manaBarPosition = BarPosition.LAYER1;
-		
+
 		@SerialEntry
 		public BarPosition defenceBarPosition = BarPosition.LAYER1;
-		
+
 		@SerialEntry
 		public BarPosition experienceBarPosition = BarPosition.LAYER1;
 
@@ -292,10 +292,10 @@ public class SkyblockerConfig {
 	public static class Experiments {
 		@SerialEntry
 		public boolean enableChronomatronSolver = true;
-		
+
 		@SerialEntry
 		public boolean enableSuperpairsSolver = true;
-		
+
 		@SerialEntry
 		public boolean enableUltrasequencerSolver = true;
 	}
@@ -308,10 +308,10 @@ public class SkyblockerConfig {
 	public static class FairySouls {
 		@SerialEntry
 		public boolean enableFairySoulsHelper = false;
-		
+
 		@SerialEntry
 		public boolean highlightFoundSouls = true;
-		
+
 		@SerialEntry
 		public boolean highlightOnlyNearbySouls = false;
 	}
@@ -324,14 +324,14 @@ public class SkyblockerConfig {
 	public static class Shortcuts {
 		@SerialEntry
 		public boolean enableShortcuts = true;
-		
+
 		@SerialEntry
 		public boolean enableCommandShortcuts = true;
-		
+
 		@SerialEntry
 		public boolean enableCommandArgShortcuts = true;
 	}
-	
+
 	public static class QuiverWarning {
 		@SerialEntry
 		public boolean enableQuiverWarning = true;
@@ -346,7 +346,7 @@ public class SkyblockerConfig {
 	public static class Hitbox {
 		@SerialEntry
 		public boolean oldFarmlandHitbox = true;
-		
+
 		@SerialEntry
 		public boolean oldLeverHitbox = false;
 	}
@@ -354,16 +354,16 @@ public class SkyblockerConfig {
 	public static class TitleContainer {
 		@SerialEntry
 		public float titleContainerScale = 100;
-		
+
 		@SerialEntry
 		public int x = 540;
-		
+
 		@SerialEntry
 		public int y = 10;
-		
+
 		@SerialEntry
 		public Direction direction = Direction.HORIZONTAL;
-		
+
 		@SerialEntry
 		public Alignment alignment = Alignment.MIDDLE;
 	}
@@ -371,19 +371,19 @@ public class SkyblockerConfig {
 	public static class TeleportOverlay {
 		@SerialEntry
 		public boolean enableTeleportOverlays = true;
-		
+
 		@SerialEntry
 		public boolean enableWeirdTransmission = true;
-		
+
 		@SerialEntry
 		public boolean enableInstantTransmission = true;
-		
+
 		@SerialEntry
 		public boolean enableEtherTransmission = true;
-		
+
 		@SerialEntry
 		public boolean enableSinrecallTransmission = true;
-		
+
 		@SerialEntry
 		public boolean enableWitherImpact = true;
 	}
@@ -419,10 +419,10 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Info info = Info.LOCATION;
-		
+
 		@SerialEntry
 		public boolean cycleMode = false;
-		
+
 		@SerialEntry
 		public String customMessage = "Playing Skyblock";
 	}
@@ -444,22 +444,22 @@ public class SkyblockerConfig {
 	public static class ItemTooltip {
 		@SerialEntry
 		public boolean enableNPCPrice = true;
-		
+
 		@SerialEntry
 		public boolean enableMotesPrice = true;
-		
+
 		@SerialEntry
 		public boolean enableAvgBIN = true;
-		
+
 		@SerialEntry
 		public Average avg = Average.THREE_DAY;
-		
+
 		@SerialEntry
 		public boolean enableLowestBIN = true;
-		
+
 		@SerialEntry
 		public boolean enableBazaarPrice = true;
-		
+
 		@SerialEntry
 		public boolean enableMuseumDate = true;
 	}
@@ -467,14 +467,14 @@ public class SkyblockerConfig {
 	public static class ItemInfoDisplay {
 		@SerialEntry
 		public boolean attributeShardInfo = true;
-		
+
 		@SerialEntry
 		public boolean itemRarityBackgrounds = false;
 
 		@SerialEntry
 		public float itemRarityBackgroundsOpacity = 1f;
 	}
-	
+
 	public static class SpecialEffects {
 		@SerialEntry
 		public boolean rareDungeonDropEffects = true;
@@ -492,7 +492,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Rift rift = new Rift();
-		
+
 		@SerialEntry
 		public SpidersDen spidersDen = new SpidersDen();
 	}
@@ -500,46 +500,46 @@ public class SkyblockerConfig {
 	public static class Dungeons {
 		@SerialEntry
 		public SecretWaypoints secretWaypoints = new SecretWaypoints();
-		
+
 		@SerialEntry
 		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
-		
+
 		@SerialEntry
 		public boolean croesusHelper = true;
-		
+
 		@SerialEntry
 		public boolean enableMap = true;
-		
+
 		@SerialEntry
 		public float mapScaling = 1f;
-		
+
 		@SerialEntry
 		public int mapX = 2;
-		
+
 		@SerialEntry
 		public int mapY = 2;
-		
+
 		@SerialEntry
 		public boolean starredMobGlow = true;
-		
+
 		@SerialEntry
 		public boolean solveThreeWeirdos = true;
-		
+
 		@SerialEntry
 		public boolean blazeSolver = true;
 
 		@SerialEntry
 		public boolean creeperSolver = true;
-		
+
 		@SerialEntry
 		public boolean solveTrivia = true;
-		
+
 		@SerialEntry
 		public boolean solveTicTacToe = true;
-		
+
 		@SerialEntry
 		public LividColor lividColor = new LividColor();
-		
+
 		@SerialEntry
 		public Terminals terminals = new Terminals();
 	}
@@ -547,72 +547,72 @@ public class SkyblockerConfig {
 	public static class SecretWaypoints {
 		@SerialEntry
 		public boolean enableSecretWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean noInitSecretWaypoints = false;
-		
+
 		@SerialEntry
 		public boolean enableEntranceWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableSuperboomWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableChestWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableItemWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableBatWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableWitherWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableLeverWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableFairySoulWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableStonkWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableDefaultWaypoints = true;
 	}
-	
+
 	public static class DungeonChestProfit {
 		@SerialEntry
 		public boolean enableProfitCalculator = true;
-		
+
 		@SerialEntry
 		public boolean includeKismet = false;
-		
+
 		@SerialEntry
 		public boolean includeEssence = true;
-		
+
 		@SerialEntry
 		public int neutralThreshold = 1000;
-		
+
 		@SerialEntry
 		public Formatting neutralColor = Formatting.DARK_GRAY;
-		
+
 		@SerialEntry
 		public Formatting profitColor = Formatting.DARK_GREEN;
-		
+
 		@SerialEntry
 		public Formatting lossColor = Formatting.RED;
-		
+
 		@SerialEntry
 		public Formatting incompleteColor = Formatting.BLUE;
-		
+
 	}
 
 	public static class LividColor {
 		@SerialEntry
 		public boolean enableLividColor = true;
-		
+
 		@SerialEntry
 		public String lividColorText = "The livid color is [color]";
 	}
@@ -620,10 +620,10 @@ public class SkyblockerConfig {
 	public static class Terminals {
 		@SerialEntry
 		public boolean solveColor = true;
-		
+
 		@SerialEntry
 		public boolean solveOrder = true;
-		
+
 		@SerialEntry
 		public boolean solveStartsWith = true;
 	}
@@ -631,13 +631,13 @@ public class SkyblockerConfig {
 	public static class DwarvenMines {
 		@SerialEntry
 		public boolean enableDrillFuel = true;
-		
+
 		@SerialEntry
 		public boolean solveFetchur = true;
-		
+
 		@SerialEntry
 		public boolean solvePuzzler = true;
-		
+
 		@SerialEntry
 		public DwarvenHud dwarvenHud = new DwarvenHud();
 	}
@@ -645,16 +645,16 @@ public class SkyblockerConfig {
 	public static class DwarvenHud {
 		@SerialEntry
 		public boolean enabled = true;
-		
+
 		@SerialEntry
 		public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
-		
+
 		@SerialEntry
 		public boolean enableBackground = true;
-		
+
 		@SerialEntry
 		public int x = 10;
-		
+
 		@SerialEntry
 		public int y = 10;
 	}
@@ -675,7 +675,7 @@ public class SkyblockerConfig {
 	public static class Barn {
 		@SerialEntry
 		public boolean solveHungryHiker = true;
-		
+
 		@SerialEntry
 		public boolean solveTreasureHunter = true;
 	}
@@ -683,20 +683,20 @@ public class SkyblockerConfig {
 	public static class Rift {
 		@SerialEntry
 		public boolean mirrorverseWaypoints = true;
-		
+
 		@SerialEntry
 		public int mcGrubberStacks = 0;
 	}
-	
+
 	public static class SpidersDen {
 		@SerialEntry
 		public Relics relics = new Relics();
 	}
-	
+
 	public static class Relics {
 		@SerialEntry
 		public boolean enableRelicsHelper = false;
-		
+
 		@SerialEntry
 		public boolean highlightFoundRelics = true;
 	}
@@ -709,34 +709,34 @@ public class SkyblockerConfig {
 	public static class VampireSlayer {
 		@SerialEntry
 		public boolean enableEffigyWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean compactEffigyWaypoints;
-		
+
 		@SerialEntry
 		public int effigyUpdateFrequency = 5;
-		
+
 		@SerialEntry
 		public boolean enableHolyIceIndicator = true;
-		
+
 		@SerialEntry
 		public int holyIceIndicatorTickDelay = 10;
 
 		@SerialEntry
 		public int holyIceUpdateFrequency = 5;
-		
+
 		@SerialEntry
 		public boolean enableHealingMelonIndicator = true;
-		
+
 		@SerialEntry
 		public float healingMelonHealthThreshold = 4f;
-		
+
 		@SerialEntry
 		public boolean enableSteakStakeIndicator = true;
 
 		@SerialEntry
 		public int steakStakeUpdateFrequency = 5;
-		
+
 		@SerialEntry
 		public boolean enableManiaIndicator = true;
 
@@ -747,34 +747,34 @@ public class SkyblockerConfig {
 	public static class Messages {
 		@SerialEntry
 		public ChatFilterResult hideAbility = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideHeal = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideAOTE = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideAds = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideCombo = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
-		
+
 		@SerialEntry
 		public boolean hideMana = false;
 	}

@@ -26,7 +26,7 @@ public class Http {
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.build();
-	
+
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
@@ -36,14 +36,14 @@ public class Http {
 				.version(Version.HTTP_2)
 				.uri(URI.create(url))
 				.build();
-		
+
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
 		InputStream decodedInputStream = getDecodedInputStream(response);
 		String body = new String(decodedInputStream.readAllBytes());
-		
+
 		return body;
 	}
-	
+
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.method("HEAD", BodyPublishers.noBody())
@@ -51,14 +51,14 @@ public class Http {
 				.version(Version.HTTP_2)
 				.uri(URI.create(url))
 				.build();
-		
+
 		HttpResponse<Void> response = HTTP_CLIENT.send(request, BodyHandlers.discarding());		
 		return response.headers();
 	}
-	
+
 	private static InputStream getDecodedInputStream(HttpResponse<InputStream> response) {
 		String encoding = getContentEncoding(response);
-		
+
 		try {
 			switch (encoding) {
 				case "":
@@ -74,15 +74,15 @@ public class Http {
 			throw new UncheckedIOException(e);
 		}
 	}
-	
+
 	private static String getContentEncoding(HttpResponse<InputStream> response) {
 		return response.headers().firstValue("Content-Encoding").orElse("");
 	}
-	
+
 	public static String getEtag(HttpHeaders headers) {
 		return headers.firstValue("Etag").orElse("");
 	}
-	
+
 	public static String getLastModified(HttpHeaders headers) {
 		return headers.firstValue("Last-Modified").orElse("");
 	}

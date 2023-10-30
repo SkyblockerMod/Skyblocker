@@ -45,11 +45,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
      */
     @Unique
     private static final int OUT_OF_BOUNDS_SLOT = -999;
-	
+
     @Shadow
     @Nullable
     protected Slot focusedSlot;
-    
+
     @Shadow
     @Final
     protected T handler;
@@ -133,7 +133,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
             }
         }
     }
-    
+
     /**
      * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks)
      * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item
@@ -147,7 +147,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
                 if (ItemProtection.isItemProtected(cursorStack)) ci.cancel();
             }
-            
+
             if (slot != null) {
                 // When you click your drop key while hovering over an item
                 if (actionType == SlotActionType.THROW) {
@@ -155,33 +155,33 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
                     if (ItemProtection.isItemProtected(stack)) ci.cancel();
                 }
-            	
+
                 //Prevent salvaging
                 if (this.getTitle().getString().equals("Salvage Items")) {
                     ItemStack stack = slot.getStack();
 
                     if (ItemProtection.isItemProtected(stack)) ci.cancel();
                 }
-                
+
                 //Prevent selling to NPC shops
                 if (this.client != null && this.handler instanceof GenericContainerScreenHandler genericContainerScreenHandler && genericContainerScreenHandler.getRows() == 6) {
                     ItemStack sellItem = this.handler.slots.get(49).getStack();
-                	
+
                     if (sellItem.getName().getString().equals("Sell Item") || skyblocker$doesLoreContain(sellItem, this.client, "buyback")) {
                         ItemStack stack = slot.getStack();
-                    	
+
                         if (ItemProtection.isItemProtected(stack)) ci.cancel();
                     }
                 }
             }
     	}
     }
-    
+
     //TODO make this a util method somewhere else, eventually
     private static boolean skyblocker$doesLoreContain(ItemStack stack, MinecraftClient client, String searchString) {
         return stack.getTooltip(client.player, TooltipContext.BASIC).stream().map(Text::getString).anyMatch(line -> line.contains(searchString));
     }
-    
+
     @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
     private void skyblocker$drawItemRarityBackground(DrawContext context, Slot slot, CallbackInfo ci) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);

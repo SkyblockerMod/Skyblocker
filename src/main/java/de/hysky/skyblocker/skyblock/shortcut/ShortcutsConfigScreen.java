@@ -19,7 +19,7 @@ public class ShortcutsConfigScreen extends Screen {
     private boolean initialized;
     private double scrollAmount;
     private final Screen parent;
-    
+
     public ShortcutsConfigScreen() {
     	this(null);
     }
