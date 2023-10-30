@@ -31,12 +31,11 @@ public class CreeperBeams {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreeperBeams.class.getName());
 
-    // "missing, this palette looks like you stole it from a 2018 bootstrap webapp!"
     private static final float[][] COLORS = {
             DyeColor.LIGHT_BLUE.getColorComponents(),
             DyeColor.PINK.getColorComponents(),
-            DyeColor.ORANGE.getColorComponents(),
-            DyeColor.MAGENTA.getColorComponents(),
+            DyeColor.YELLOW.getColorComponents(),
+            DyeColor.RED.getColorComponents(),
     };
     private static final float[] LIME_COLOR_COMPONENTS = DyeColor.LIME.getColorComponents();
 
@@ -81,7 +80,7 @@ public class CreeperBeams {
             if (base == null) {
                 return;
             }
-            Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 3.5, base.getZ() + 0.5);
+            Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 1.75, base.getZ() + 0.5);
             ArrayList<BlockPos> targets = findTargets(world, base);
             beams = findLines(creeperPos, targets);
         }
