@@ -3,14 +3,13 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
-
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.Formatting;
 
 // this widget shows info about fire sales when in the hub.
@@ -55,14 +54,10 @@ public class FireSaleWidget extends Widget {
             float total = Float.parseFloat(m.group("total")) * 1000;
             Text prgressTxt = Text.literal(String.format("%s/%.0f", avail, total));
             float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
-            ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt, pcntToCol(pcnt));
+            ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt, Colors.pcntToCol(pcnt));
             this.addComponent(pc);
         }
 
-    }
-
-    private int pcntToCol(float pcnt) {
-        return MathHelper.hsvToRgb( pcnt / 300f, 0.9f, 0.9f);
     }
 
 }

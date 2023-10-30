@@ -3,14 +3,14 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
+import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
 
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
@@ -47,17 +47,13 @@ public class CommsWidget extends Widget {
             String progress = m.group("progress");
 
             if (progress.equals("DONE")) {
-                pc = new ProgressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f, pcntToCol(100));
+                pc = new ProgressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f, Colors.pcntToCol(100));
             } else {
                 float pcnt = Float.parseFloat(progress.substring(0, progress.length() - 1));
-                pc = new ProgressComponent(Ico.BOOK, Text.of(name), pcnt, pcntToCol(pcnt));
+                pc = new ProgressComponent(Ico.BOOK, Text.of(name), pcnt, Colors.pcntToCol(pcnt));
             }
             this.addComponent(pc);
         }
-    }
-
-    private int pcntToCol(float pcnt) {
-        return MathHelper.hsvToRgb(pcnt / 300f, 0.9f, 0.9f);
     }
 
 }

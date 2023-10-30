@@ -3,15 +3,15 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.rift;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
 
 public class RiftProgressWidget extends Widget {
 
@@ -75,10 +75,6 @@ public class RiftProgressWidget extends Widget {
 
     }
 
-    private static int pcntToCol(float pcnt) {
-        return MathHelper.hsvToRgb(pcnt / 300f, 0.9f, 0.9f);
-    }
-
     private void addTimecharmsComponent(int pos) {
         Matcher m = PlayerListMgr.regexAt(pos, TIMECHARMS_PATTERN);
 
@@ -88,7 +84,7 @@ public class RiftProgressWidget extends Widget {
         Text progressText = Text.literal(current + "/" + total);
 
         ProgressComponent pc = new ProgressComponent(Ico.NETHER_STAR, Text.literal("Timecharms"), progressText,
-                pcnt, pcntToCol(pcnt));
+                pcnt, Colors.pcntToCol(pcnt));
 
         this.addComponent(pc);
     }
@@ -102,7 +98,7 @@ public class RiftProgressWidget extends Widget {
         Text progressText = Text.literal(current + "/" + total);
 
         ProgressComponent pc = new ProgressComponent(Ico.HEART_OF_THE_SEA, Text.literal("Enigma Souls"),
-                progressText, pcnt, pcntToCol(pcnt));
+                progressText, pcnt, Colors.pcntToCol(pcnt));
 
         this.addComponent(pc);
     }
@@ -116,7 +112,7 @@ public class RiftProgressWidget extends Widget {
         Text progressText = Text.literal(current + "/" + total);
 
         ProgressComponent pc = new ProgressComponent(Ico.BONE, Text.literal("Montezuma"), progressText, pcnt,
-                pcntToCol(pcnt));
+                Colors.pcntToCol(pcnt));
 
         this.addComponent(pc);
     }
