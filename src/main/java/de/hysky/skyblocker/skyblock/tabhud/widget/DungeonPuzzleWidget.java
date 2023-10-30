@@ -37,9 +37,16 @@ public class DungeonPuzzleWidget extends Widget {
             if (m == null) {
                 break;
             }
+
+            Formatting statcol = switch (m.group("status")) {
+                case "✔" -> Formatting.GREEN;
+                case "✖" -> Formatting.RED;
+                default -> Formatting.WHITE;
+            };
+
             Text t = Text.literal(m.group("name") + ": ")
                     .append(Text.literal("[").formatted(Formatting.GRAY))
-                    .append(m.group("status"))
+                    .append(Text.literal(m.group("status")).formatted(statcol))
                     .append(Text.literal("]").formatted(Formatting.GRAY));
             IcoTextComponent itc = new IcoTextComponent(Ico.SIGN, t);
             this.addComponent(itc);
@@ -47,6 +54,7 @@ public class DungeonPuzzleWidget extends Widget {
             // code points for puzzle status chars unsolved and solved: 10022, 10004
             // not sure which one is which
             // still need to find out codepoint for the puzzle failed char
+            m.group("status").codePoints().forEach(System.out::println);
         }
         if (pos == 48) {
             this.addComponent(
