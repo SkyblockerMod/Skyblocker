@@ -85,12 +85,11 @@ public class FancyStatusBars {
         bars[bar].anchorNum = location;
 
         // Count how many bars are in each location
-        int layer1Count = 0, layer2Count = 0, rightCount = 0;
+        int layer1Count = 0, layer2Count = 0;
         for (int i = 0; i < 4; i++) {
             switch (bars[i].anchorNum) {
                 case 0 -> layer1Count++;
                 case 1 -> layer2Count++;
-                case 2 -> rightCount++;
             }
         }
 
