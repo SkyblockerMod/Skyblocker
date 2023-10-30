@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 
 public class LividColor {
@@ -23,14 +24,12 @@ public class LividColor {
         if (tenTicks != 0) {
             if (SkyblockerConfigManager.get().locations.dungeons.lividColor.enableLividColor && Utils.isInDungeons() && client.world != null) {
                 if (tenTicks == 1) {
-                    MessageScheduler.INSTANCE.sendMessageAfterCooldown(SkyblockerConfigManager.get().locations.dungeons.lividColor.lividColorText.replace("[color]", "red"));
-                    tenTicks = 0;
+                    onLividColorFound("red");
                     return;
                 }
-                String key = client.world.getBlockState(new BlockPos(5, 110, 42)).getBlock().getTranslationKey();
-                if (key.startsWith("block.minecraft.") && key.endsWith("wool") && !key.endsWith("red_wool")) {
-                    MessageScheduler.INSTANCE.sendMessageAfterCooldown(SkyblockerConfigManager.get().locations.dungeons.lividColor.lividColorText.replace("[color]", key.substring(16, key.length() - 5)));
-                    tenTicks = 0;
+                String key = Registries.BLOCK.getId(client.world.getBlockState(new BlockPos(5, 110, 42)).getBlock()).getPath();
+                if (key.endsWith("wool") && !key.equals("red_wool")) {
+                    onLividColorFound(key.substring(0, key.length() - 5));
                     return;
                 }
                 tenTicks--;
@@ -38,5 +37,10 @@ public class LividColor {
                 tenTicks = 0;
             }
         }
+    }
+
+    private static void onLividColorFound(String color) {
+        MessageScheduler.INSTANCE.sendMessageAfterCooldown(SkyblockerConfigManager.get().locations.dungeons.lividColor.lividColorText.replace("[color]", color));
+        tenTicks = 0;
     }
 }
