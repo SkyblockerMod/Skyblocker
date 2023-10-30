@@ -35,7 +35,7 @@ public class PlayerListMgr {
 
 		ClientPlayNetworkHandler cpnwh = MinecraftClient.getInstance().getNetworkHandler();
 
-		// check is needed, else game crash on server leave
+		// check is needed, else game crashes on server leave
 		if (cpnwh != null) {
 			playerList = cpnwh.getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList();
 		}
