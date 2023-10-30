@@ -9,7 +9,6 @@ import de.hysky.skyblocker.skyblock.dungeon.ThreeWeirdos;
 import de.hysky.skyblocker.skyblock.dungeon.Trivia;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
-import de.hysky.skyblocker.skyblock.filters.*;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
