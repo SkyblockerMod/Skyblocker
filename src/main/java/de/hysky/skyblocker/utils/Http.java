@@ -49,9 +49,11 @@ public class Http {
 		
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
 		InputStream decodedInputStream = getDecodedInputStream(response);
-		String body = new String(decodedInputStream.readAllBytes());
 		
-		return new ApiResponse(body, response.statusCode(), getCacheStatus(response.headers()));
+		String body = new String(decodedInputStream.readAllBytes());
+		HttpHeaders headers = response.headers();
+		
+		return new ApiResponse(body, response.statusCode(), getCacheStatus(headers), getAge(headers));
 	}
 	
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
@@ -66,8 +68,8 @@ public class Http {
 		return response.headers();
 	}
 	
-	public static String sendName2UuidRequest(String name) throws IOException, InterruptedException {
-		return sendGetRequest(NAME_2_UUID + name);
+	public static ApiResponse sendName2UuidRequest(String name) throws IOException, InterruptedException {
+		return sendCacheableGetRequest(NAME_2_UUID + name);
 	}
 	
 	/**
@@ -115,12 +117,16 @@ public class Http {
 	 * 
 	 * @see <a href="https://developers.cloudflare.com/cache/concepts/default-cache-behavior/#cloudflare-cache-responses">Cloudflare Cache Docs</a>
 	 */
-	public static String getCacheStatus(HttpHeaders headers) {
+	private static String getCacheStatus(HttpHeaders headers) {
 		return headers.firstValue("CF-Cache-Status").orElse("UNKNOWN");
 	}
 	
+	private static int getAge(HttpHeaders headers) {
+		return Integer.parseInt(headers.firstValue("Age").orElse("-1"));
+	}
+	
 	//TODO If ever needed, we could just replace cache status with the response headers and go from there
-	public record ApiResponse(String content, int statusCode, String cacheStatus) {
+	public record ApiResponse(String content, int statusCode, String cacheStatus, int age) implements AutoCloseable {
 		
 		public boolean ok() {
 			return statusCode == 200;
@@ -128,6 +134,12 @@ public class Http {
 		
 		public boolean cached() {
 			return cacheStatus.equals("HIT");
+		}
+
+		@Override
+		public void close() {
+			//Allows for nice syntax when dealing with api requests in try catch blocks
+			//Maybe one day we'll have some resources to free
 		}
 	}
 }
