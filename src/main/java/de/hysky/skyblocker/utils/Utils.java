@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -180,7 +180,7 @@ public class Utils {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;
-                        ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+                        ItemTooltipCallback.EVENT.register(ItemTooltip::getTooltip);
                     }
                     isOnSkyblock = true;
                     SkyblockEvents.JOIN.invoker().onSkyblockJoin();

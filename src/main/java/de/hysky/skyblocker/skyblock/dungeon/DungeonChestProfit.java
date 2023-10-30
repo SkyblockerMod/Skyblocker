@@ -4,7 +4,8 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixin.accessor.ScreenAccessor;
-import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -54,7 +55,7 @@ public class DungeonChestProfit {
 
 					if (!stack.isEmpty()) {
 						String name = stack.getName().getString();
-						String id = PriceInfoTooltip.getInternalNameFromNBT(stack, false);
+						String id = ItemTooltip.getInternalNameFromNBT(stack, false);
 
 						//Regular item price
 						if (id != null) {
@@ -128,8 +129,8 @@ public class DungeonChestProfit {
 	 * was based on complete data.
 	 */
 	private static IntBooleanPair getItemPrice(String id) {
-		JsonObject bazaarPrices = PriceInfoTooltip.getBazaarPrices();
-		JsonObject lbinPrices = PriceInfoTooltip.getLBINPrices();
+		JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
+		JsonObject lbinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
 		if (bazaarPrices == null || lbinPrices == null) return IntBooleanPair.of(0, false);
 

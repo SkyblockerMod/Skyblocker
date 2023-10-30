@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
