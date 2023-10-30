@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config;
 
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -582,7 +583,7 @@ public class SkyblockerConfig {
 		public boolean noInitSecretWaypoints = false;
 		
 		@SerialEntry
-		public WaypointType waypointType = WaypointType.WAYPOINT;
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 		
 		@SerialEntry
 		public boolean showSecretText = true;
@@ -622,25 +623,6 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableDefaultWaypoints = true;
-	}
-	
-	public enum WaypointType {
-		WAYPOINT,
-		OUTLINED_WAYPOINT,
-		HIGHLIGHT,
-		OUTLINED_HIGHLIGHT,
-		OUTLINE;
-		
-		@Override
-		public String toString() {
-			return switch (this) {
-				case WAYPOINT -> "Waypoint";
-				case OUTLINED_WAYPOINT -> "Outlined Waypoint";
-				case HIGHLIGHT -> "Highlight";
-				case OUTLINED_HIGHLIGHT -> "Outlined Highlight";
-				case OUTLINE -> "Outline";
-			};
-		}
 	}
 
 	public static class DungeonChestProfit {

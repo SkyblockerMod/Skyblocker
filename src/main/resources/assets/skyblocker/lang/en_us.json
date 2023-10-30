@@ -275,6 +275,9 @@
   "skyblocker.dungeons.secrets.posMessage": "§rRoom: %s, X: %d, Y: %d, Z: %d",
   "skyblocker.dungeons.secrets.noTarget": "§cNo target block found! (Are you pointing at a block in range?)",
   "skyblocker.dungeons.secrets.notMatched": "§cThe current room is not matched! (Are you in a dungeon room?)",
+  "skyblocker.dungeons.secrets.customWaypointAdded": "§rAdded a custom waypoint at X: %d, Y: %d, Z: %d for room %s secret #%d of category %s with name '%s'.",
+  "skyblocker.dungeons.secrets.customWaypointRemoved": "§rRemoved custom waypoint at X: %d, Y: %d, Z: %d for room %s secret #%d of category %s with name '%s'.",
+  "skyblocker.dungeons.secrets.customWaypointNotFound": "§cNo custom waypoint found at X: %d, Y: %d, Z: %d for room %s.",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",

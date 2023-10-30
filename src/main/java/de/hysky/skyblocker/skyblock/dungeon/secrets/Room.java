@@ -1,14 +1,17 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -21,12 +24,14 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -151,6 +156,79 @@ public class Room {
                 throw new IllegalArgumentException("Shape " + shape.shape + " does not match segments: " + Arrays.toString(segments.toArray()));
             }
         };
+    }
+
+    /**
+     * @see #addCustomWaypoint(int, SecretWaypoint.Category, Text, BlockPos)
+     */
+    protected void addCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
+        SecretWaypoint.Category category = SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category");
+        Text waypointName = context.getArgument("name", Text.class);
+        addCustomWaypoint(secretIndex, category, waypointName, pos);
+        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName)));
+    }
+
+    /**
+     * Adds a custom waypoint relative to this room to {@link DungeonSecrets#customWaypoints} and all existing instances of this room.
+     *
+     * @param secretIndex  the index of the secret waypoint
+     * @param category     the category of the secret waypoint
+     * @param waypointName the name of the secret waypoint
+     * @param pos          the position of the secret waypoint relative to this room
+     */
+    @SuppressWarnings("JavadocReference")
+    private void addCustomWaypoint(int secretIndex, SecretWaypoint.Category category, Text waypointName, BlockPos pos) {
+        SecretWaypoint waypoint = new SecretWaypoint(secretIndex, category, waypointName, pos);
+        DungeonSecrets.addCustomWaypoint(name, waypoint);
+        DungeonSecrets.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.addCustomWaypoint(waypoint));
+    }
+
+    /**
+     * Adds a custom waypoint relative to this room to this instance of the room.
+     *
+     * @param relativeWaypoint the secret waypoint relative to this room to add
+     */
+    private void addCustomWaypoint(SecretWaypoint relativeWaypoint) {
+        SecretWaypoint actualWaypoint = relativeWaypoint.relativeToActual(this);
+        secretWaypoints.put(actualWaypoint.secretIndex, actualWaypoint.pos, actualWaypoint);
+    }
+
+    /**
+     * @see #removeCustomWaypoint(BlockPos)
+     */
+    protected void removeCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
+        SecretWaypoint waypoint = removeCustomWaypoint(pos);
+        if (waypoint != null) {
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointRemoved", pos.getX(), pos.getY(), pos.getZ(), name, waypoint.secretIndex, waypoint.category, waypoint.name)));
+        } else {
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointNotFound", pos.getX(), pos.getY(), pos.getZ(), name)));
+        }
+    }
+
+    /**
+     * Removes a custom waypoint relative to this room from {@link DungeonSecrets#customWaypoints} and all existing instances of this room.
+     * @param pos the position of the secret waypoint relative to this room
+     * @return the removed secret waypoint or {@code null} if there was no secret waypoint at the given position
+     */
+    @SuppressWarnings("JavadocReference")
+    @Nullable
+    private SecretWaypoint removeCustomWaypoint(BlockPos pos) {
+        SecretWaypoint waypoint = DungeonSecrets.removeCustomWaypoint(name, pos);
+        if (waypoint != null) {
+            DungeonSecrets.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.removeCustomWaypoint(waypoint.secretIndex, pos));
+        }
+        return waypoint;
+    }
+
+    /**
+     * Removes a custom waypoint relative to this room from this instance of the room.
+     * @param secretIndex the index of the secret waypoint
+     * @param relativePos the position of the secret waypoint relative to this room
+     */
+    private void removeCustomWaypoint(int secretIndex, BlockPos relativePos) {
+        BlockPos actualPos = relativeToActual(relativePos);
+        secretWaypoints.remove(secretIndex, actualPos);
     }
 
     /**
@@ -299,15 +377,15 @@ public class Room {
      */
     @SuppressWarnings("JavadocReference")
     private void roomMatched() {
-        Table<Integer, BlockPos, SecretWaypoint> secretWaypointsMutable = HashBasedTable.create();
+        secretWaypoints = HashBasedTable.create();
         for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
             int secretIndex = Integer.parseInt(secretName.substring(0, Character.isDigit(secretName.charAt(1)) ? 2 : 1));
             BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
-            secretWaypointsMutable.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
+            secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
-        secretWaypoints = ImmutableTable.copyOf(secretWaypointsMutable);
+        DungeonSecrets.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
         matched = TriState.TRUE;
 
         DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());

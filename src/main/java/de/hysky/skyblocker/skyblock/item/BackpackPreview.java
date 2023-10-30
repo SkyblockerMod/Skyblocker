@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -60,7 +60,7 @@ public class BackpackPreview {
             // update save dir based on sb profile id
             String id = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "") + "/" + Utils.getProfileId();
             if (!id.equals(loaded)) {
-                saveDir = FabricLoader.getInstance().getConfigDir().resolve("skyblocker/backpack-preview/" + id);
+                saveDir = SkyblockerMod.CONFIG_DIR.resolve("backpack-preview/" + id);
                 //noinspection ResultOfMethodCallIgnored
                 saveDir.toFile().mkdirs();
                 // load storage again because profile id changed
