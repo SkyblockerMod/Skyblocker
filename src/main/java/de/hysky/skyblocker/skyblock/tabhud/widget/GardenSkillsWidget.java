@@ -24,9 +24,11 @@ public class GardenSkillsWidget extends Widget {
     // group 1: skill name and level
     // group 2: progress to next level (without "%")
     private static final Pattern SKILL_PATTERN = Pattern
-            .compile("\\S*: (?<skill>[A-Za-z]* [0-9]*): (?<progress>\\S*)%");
-    // same, but with leading space
-    private static final Pattern MS_PATTERN = Pattern.compile("\\S*: (?<skill>[A-Za-z]* [0-9]*): (?<progress>\\S*)%");
+            .compile("Skills: (?<skill>[A-Za-z]* [0-9]*): (?<progress>[0-9.MAX]*)%?");
+
+    // same, more or less
+    private static final Pattern MS_PATTERN = Pattern
+            .compile("Milestone: (?<milestone>[A-Za-z ]* [0-9]*): (?<progress>[0-9.]*)%");
 
     public GardenSkillsWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
@@ -43,9 +45,14 @@ public class GardenSkillsWidget extends Widget {
             String strpcnt = m.group("progress");
             String skill = m.group("skill");
 
-            float pcnt = Float.parseFloat(strpcnt);
-            pc = new ProgressComponent(Ico.LANTERN, Text.of(skill), pcnt,
-                    Formatting.GOLD.getColorValue());
+            if (strpcnt.equals("MAX")) {
+                pc = new ProgressComponent(Ico.LANTERN, Text.of(skill), Text.of("MAX"), 100f,
+                        Formatting.RED.getColorValue());
+            } else {
+                float pcnt = Float.parseFloat(strpcnt);
+                pc = new ProgressComponent(Ico.LANTERN, Text.of(skill), pcnt,
+                        Formatting.GOLD.getColorValue());
+            }
         }
 
         this.addComponent(pc);
@@ -66,10 +73,10 @@ public class GardenSkillsWidget extends Widget {
             pc2 = new ProgressComponent();
         } else {
             String strpcnt = m.group("progress");
-            String skill = m.group("skill");
+            String milestone = m.group("milestone");
 
             float pcnt = Float.parseFloat(strpcnt);
-            pc2 = new ProgressComponent(Ico.MILESTONE, Text.of(skill), pcnt,
+            pc2 = new ProgressComponent(Ico.MILESTONE, Text.of(milestone), pcnt,
                     Formatting.GREEN.getColorValue());
 
         }
