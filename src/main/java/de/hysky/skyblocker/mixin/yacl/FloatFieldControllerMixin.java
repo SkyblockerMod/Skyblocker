@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 public abstract class FloatFieldControllerMixin extends NumberFieldController<Float> {
 	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
 
-	
+
 	public FloatFieldControllerMixin(Option<Float> option, Function<Float, Text> displayFormatter) {
 		super(option, displayFormatter);
 	}

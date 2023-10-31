@@ -36,7 +36,7 @@ public class Http {
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(url).content();
 	}
-	
+
 	private static ApiResponse sendCacheableGetRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
@@ -80,10 +80,10 @@ public class Http {
 	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query);
 	}
-	
+
 	private static InputStream getDecodedInputStream(HttpResponse<InputStream> response) {
 		String encoding = getContentEncoding(response.headers());
-		
+
 		try {
 			switch (encoding) {
 				case "":

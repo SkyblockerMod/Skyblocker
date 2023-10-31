@@ -30,14 +30,14 @@ public class MixinPlugin implements IMixinConfigPlugin {
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		//OptiFabric Compatibility
 		if (mixinClassName.endsWith("WorldRendererMixin") && OPTIFABRIC_LOADED) return false;
-		
+
 		//YACL#103 Patch
 		if (mixinClassName.endsWith("DoubleFieldControllerMixin") || mixinClassName.endsWith("FloatFieldControllerMixin") || mixinClassName.endsWith("IntegerFieldControllerMixin") || mixinClassName.endsWith("LongFieldControllerMixin") || mixinClassName.endsWith("NumberFieldControllerMixin")) {
 			if (YACL_VERSION.equals("3.2.1+1.20.2")) {
 				LOGGER.info("[Skyblocker] Applying patch for " + targetClassName + " from " + mixinClassName);
 			} else {
 				LOGGER.info("[Skyblocker] Skipping patch on " + targetClassName + " due to an Unknown YACL version being found! Version: {}", YACL_VERSION);
-				
+
 				return false;
 			}
 		}

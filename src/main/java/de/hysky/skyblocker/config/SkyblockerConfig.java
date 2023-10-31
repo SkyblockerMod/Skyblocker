@@ -623,7 +623,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableAotvWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enablePearlWaypoints = true;
 
@@ -734,7 +734,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enigmaSoulWaypoints = false;
-		
+
 		@SerialEntry
 		public boolean highlightFoundEnigmaSouls = true;
 

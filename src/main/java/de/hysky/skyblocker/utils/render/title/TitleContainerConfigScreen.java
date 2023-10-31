@@ -184,7 +184,7 @@ public class TitleContainerConfigScreen extends Screen {
             // Refresh the value in the config with the bound value
             if (changedScale) scaleOpt.forgetPendingValue();
         }
-        
+
         SkyblockerConfigManager.save();
         this.client.setScreen(parent);
     }

@@ -42,16 +42,16 @@ public class RenderHelper {
             renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, false);
         }
     }
-    
+
     private static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
         BufferBuilder buffer = tessellator.getBuffer();
-        
+
         matrices.push();
         matrices.translate(-camera.x, -camera.y, -camera.z);
-        
+
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.polygonOffset(-1f, -10f);
@@ -61,11 +61,11 @@ public class RenderHelper {
         RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
         RenderSystem.disableCull();
-        
+
         buffer.begin(DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
         WorldRenderer.renderFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
         tessellator.draw();
-        
+
         matrices.pop();
         RenderSystem.polygonOffset(0f, 0f);
         RenderSystem.disablePolygonOffset();

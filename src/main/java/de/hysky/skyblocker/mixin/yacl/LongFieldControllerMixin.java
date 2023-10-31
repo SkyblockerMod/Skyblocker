@@ -14,16 +14,16 @@ import net.minecraft.text.Text;
 @Mixin(value = LongFieldController.class, remap = false)
 public abstract class LongFieldControllerMixin extends NumberFieldController<Long> {
 	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
-	
+
 	public LongFieldControllerMixin(Option<Long> option, Function<Long, Text> displayFormatter) {
 		super(option, displayFormatter);
 	}
-	
+
 	@Overwrite
 	public String getString() {
 		return NUMBER_FORMAT.format(option().pendingValue());
 	}
-	
+
 	@Overwrite
 	public boolean isInputValid(String input) {
 		return super.isInputValid(input);
