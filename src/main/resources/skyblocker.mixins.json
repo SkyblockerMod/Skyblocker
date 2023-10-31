@@ -16,6 +16,7 @@
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
     "InGameHudMixin",
+    "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
     "ItemMixin",
     "ItemStackMixin",
@@ -35,7 +36,12 @@
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
-    "accessor.WorldRendererAccessor"
+    "accessor.WorldRendererAccessor",
+    "yacl.DoubleFieldControllerMixin",
+    "yacl.FloatFieldControllerMixin",
+    "yacl.IntegerFieldControllerMixin",
+    "yacl.LongFieldControllerMixin",
+    "yacl.NumberFieldControllerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

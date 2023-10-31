@@ -1,23 +1,25 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
 public class WikiLookup {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WikiLookup.class);
     public static KeyBinding wikiLookup;
-    static final MinecraftClient client = MinecraftClient.getInstance();
-    static String id;
+    private static String id;
 
     public static void init() {
         wikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -28,22 +30,22 @@ public class WikiLookup {
         ));
     }
 
-    public static String getSkyblockId(Slot slot) {
+    public static void getSkyblockId(Slot slot) {
         //Grabbing the skyblock NBT data
         ItemUtils.getItemIdOptional(slot.getStack()).ifPresent(newId -> id = newId);
-        return id;
     }
 
-    public static void openWiki(Slot slot) {
-        if (Utils.isOnSkyblock()) {
-            id = getSkyblockId(slot);
+    public static void openWiki(Slot slot, PlayerEntity player) {
+        if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
+            getSkyblockId(slot);
             try {
-                String wikiLink = ItemRegistry.getWikiLink(id);
+                String wikiLink = ItemRepository.getWikiLink(id, player);
                 CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink));
             } catch (IndexOutOfBoundsException | IllegalStateException e) {
-                e.printStackTrace();
-                if (client.player != null)
-                    client.player.sendMessage(Text.of("Error while retrieving wiki article..."), false);
+                LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
+                if (player != null) {
+                    player.sendMessage(Text.of("[Skyblocker] Error while retrieving wiki article, see logs..."), false);
+                }
             }
         }
     }

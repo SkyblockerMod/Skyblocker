@@ -4,8 +4,6 @@ plugins {
 	id 'com.modrinth.minotaur' version '2.+'
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
-
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
@@ -59,12 +57,7 @@ dependencies {
 
 	// EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-//	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}" TODO uncomment when EMI is updated
-
-	// Renderer (https://github.com/0x3C50/Renderer)
-	include modImplementation("com.github.0x3C50:Renderer:${project.renderer_version}") {
-		exclude group: "io.github.ladysnake" exclude module: "satin"
-	}
+	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
@@ -74,14 +67,17 @@ dependencies {
 	// BetterInject (https://github.com/caoimhebyrne/BetterInject)
 	include implementation(annotationProcessor("com.github.cbyrneee:BetterInject:${project.betterinject_version}"))
 
-	// https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit used pull data from the NEU item repo
-	include implementation("org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r")
-
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
 	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 
-	// neu repoparser | implement it if this is being used
-	// include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
+	// NEU RepoParser
+	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
+
+	// JGit used pull data from the NEU item repo
+	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")
+
+	// Apache Commons Math
+	include implementation("org.apache.commons:commons-math3:${project.commons_math_version}")
 }
 
 loom {

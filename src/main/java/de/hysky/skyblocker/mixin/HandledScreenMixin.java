@@ -6,7 +6,11 @@ import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
@@ -41,7 +45,7 @@ import java.util.regex.Matcher;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen {
     /**
-     * This is the slot id returned for when a click is outside of the screen's bounds
+     * This is the slot id returned for when a click is outside the screen's bounds
      */
     @Unique
     private static final int OUT_OF_BOUNDS_SLOT = -999;
@@ -61,7 +65,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     @Inject(at = @At("HEAD"), method = "keyPressed")
     public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         if (this.client != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
-            WikiLookup.openWiki(this.focusedSlot);
+            WikiLookup.openWiki(this.focusedSlot, client.player);
         }
     }
 
@@ -78,7 +82,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
         // Backpack Preview
         boolean shiftDown = SkyblockerConfigManager.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-        if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, focusedSlot.getIndex(), x, y)) {
+        if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, this, focusedSlot.getIndex(), x, y)) {
             ci.cancel();
         }
 
@@ -140,7 +144,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
      */
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At("HEAD"), cancellable = true)
     private void skyblocker$onSlotInteract(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
-    	if (Utils.isOnSkyblock()) {
+        if (Utils.isOnSkyblock()) {
             // When you try and drop the item by picking it up then clicking outside of the screen
             if (slotId == OUT_OF_BOUNDS_SLOT) {
                 ItemStack cursorStack = this.handler.getCursorStack();
@@ -174,7 +178,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
                     }
                 }
             }
-    	}
+        }
     }
 
     //TODO make this a util method somewhere else, eventually
@@ -184,6 +188,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
     private void skyblocker$drawItemRarityBackground(DrawContext context, Slot slot, CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds)
+            ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
     }
 }

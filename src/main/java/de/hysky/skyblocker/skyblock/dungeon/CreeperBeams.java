@@ -237,12 +237,12 @@ public class CreeperBeams {
         // render either in a color if not created or faintly green if created
         public void render(WorldRenderContext wrc, float[] color) {
             if (toDo) {
-                RenderHelper.renderOutline(wrc, outlineOne, color, 3);
-                RenderHelper.renderOutline(wrc, outlineTwo, color, 3);
+                RenderHelper.renderOutline(wrc, outlineOne, color, 3, false);
+                RenderHelper.renderOutline(wrc, outlineTwo, color, 3, false);
                 RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2);
             } else {
-                RenderHelper.renderOutline(wrc, outlineOne, LIME_COLOR_COMPONENTS, 1);
-                RenderHelper.renderOutline(wrc, outlineTwo, LIME_COLOR_COMPONENTS, 1);
+                RenderHelper.renderOutline(wrc, outlineOne, LIME_COLOR_COMPONENTS, 1, false);
+                RenderHelper.renderOutline(wrc, outlineTwo, LIME_COLOR_COMPONENTS, 1, false);
                 RenderHelper.renderLinesFromPoints(wrc, line, LIME_COLOR_COMPONENTS, 0.75f, 1);
             }
         }

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import it.unimi.dsi.fastutil.ints.IntIntPair;

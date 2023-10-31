@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.rei;
 
-import de.hysky.skyblocker.skyblock.itemlist.ItemRegistry;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
@@ -19,7 +19,7 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
     public Optional<List<SkyblockCraftingDisplay>> getRecipeFor(EntryStack<?> entry) {
         if (!(entry.getValue() instanceof ItemStack)) return Optional.empty();
         EntryStack<ItemStack> inputItem = EntryStacks.of((ItemStack) entry.getValue());
-        List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipesStream()
+        List<SkyblockCraftingRecipe> filteredRecipes = ItemRepository.getRecipesStream()
                 .filter(recipe -> {
                     ItemStack itemStack = inputItem.getValue();
                     ItemStack itemStack1 = recipe.getResult();
@@ -34,7 +34,7 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
     public Optional<List<SkyblockCraftingDisplay>> getUsageFor(EntryStack<?> entry) {
         if (!(entry.getValue() instanceof ItemStack)) return Optional.empty();
         EntryStack<ItemStack> inputItem = EntryStacks.of((ItemStack) entry.getValue());
-        List<SkyblockCraftingRecipe> filteredRecipes = ItemRegistry.getRecipesStream()
+        List<SkyblockCraftingRecipe> filteredRecipes = ItemRepository.getRecipesStream()
                 .filter(recipe -> {
                     for (ItemStack item : recipe.getGrid()) {
                         if(!ItemUtils.getItemId(item).isEmpty()) {

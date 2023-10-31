@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -42,6 +43,21 @@ public class DungeonsCategory {
 										newValue -> config.locations.dungeons.secretWaypoints.noInitSecretWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.flag(OptionFlag.GAME_RESTART)
+								.build())
+						.option(Option.<Type>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType.@Tooltip")))
+								.binding(defaults.locations.dungeons.secretWaypoints.waypointType,
+										() -> config.locations.dungeons.secretWaypoints.waypointType,
+										newValue -> config.locations.dungeons.secretWaypoints.waypointType = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.showSecretText"))
+								.binding(defaults.locations.dungeons.secretWaypoints.showSecretText,
+										() -> config.locations.dungeons.secretWaypoints.showSecretText,
+										newValue -> config.locations.dungeons.secretWaypoints.showSecretText = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableEntranceWaypoints"))
@@ -104,6 +120,21 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.secretWaypoints.enableStonkWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableStonkWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableStonkWaypoints = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableAotvWaypoints"))
+								.binding(defaults.locations.dungeons.secretWaypoints.enableAotvWaypoints,
+										() -> config.locations.dungeons.secretWaypoints.enableAotvWaypoints,
+										newValue -> config.locations.dungeons.secretWaypoints.enableAotvWaypoints = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enablePearlWaypoints"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip")))
+								.binding(defaults.locations.dungeons.secretWaypoints.enablePearlWaypoints,
+										() -> config.locations.dungeons.secretWaypoints.enablePearlWaypoints,
+										newValue -> config.locations.dungeons.secretWaypoints.enablePearlWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -210,19 +241,13 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.mapScaling = newValue)
 						.controller(FloatFieldControllerBuilder::create)
 						.build())
-				.option(Option.<Integer>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mapX"))
-						.binding(defaults.locations.dungeons.mapX,
-								() -> config.locations.dungeons.mapX,
-								newValue -> config.locations.dungeons.mapX = newValue)
-						.controller(IntegerFieldControllerBuilder::create)
-						.build())
-				.option(Option.<Integer>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mapY"))
-						.binding(defaults.locations.dungeons.mapY,
-								() -> config.locations.dungeons.mapY,
-								newValue -> config.locations.dungeons.mapY = newValue)
-						.controller(IntegerFieldControllerBuilder::create)
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretsTracker"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretsTracker.@Tooltip")))
+						.binding(defaults.locations.dungeons.playerSecretsTracker,
+								() -> config.locations.dungeons.playerSecretsTracker,
+								newValue -> config.locations.dungeons.playerSecretsTracker = newValue)
+						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow"))

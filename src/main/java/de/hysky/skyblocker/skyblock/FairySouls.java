@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,7 +8,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.NEURepo;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -64,25 +65,10 @@ public class FairySouls {
     }
 
     private static void loadFairySouls() {
-        fairySoulsLoaded = NEURepo.runAsyncAfterLoad(() -> {
-            try (BufferedReader reader = new BufferedReader(new FileReader(NEURepo.LOCAL_REPO_DIR.resolve("constants").resolve("fairy_souls.json").toFile()))) {
-                for (Map.Entry<String, JsonElement> fairySoulJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
-                    if (fairySoulJson.getKey().equals("//") || fairySoulJson.getKey().equals("Max Souls")) {
-                        if (fairySoulJson.getKey().equals("Max Souls")) {
-                            maxSouls = fairySoulJson.getValue().getAsInt();
-                        }
-                        continue;
-                    }
-                    ImmutableSet.Builder<BlockPos> fairySoulsForLocation = ImmutableSet.builder();
-                    for (JsonElement fairySoul : fairySoulJson.getValue().getAsJsonArray().asList()) {
-                        fairySoulsForLocation.add(PosUtils.parsePosString(fairySoul.getAsString()));
-                    }
-                    fairySouls.put(fairySoulJson.getKey(), fairySoulsForLocation.build());
-                }
-                LOGGER.debug("[Skyblocker] Loaded fairy soul locations");
-            } catch (IOException e) {
-                LOGGER.error("[Skyblocker] Failed to load fairy soul locations", e);
-            }
+        fairySoulsLoaded = NEURepoManager.runAsyncAfterLoad(() -> {
+            maxSouls = NEURepoManager.NEU_REPO.getConstants().getFairySouls().getMaxSouls();
+            NEURepoManager.NEU_REPO.getConstants().getFairySouls().getSoulLocations().forEach((location, fairySoulsForLocation) -> fairySouls.put(location, fairySoulsForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableSet())));
+            LOGGER.debug("[Skyblocker] Loaded {} fairy souls across {} locations", fairySouls.values().stream().mapToInt(Set::size).sum(), fairySouls.size());
 
             try (BufferedReader reader = new BufferedReader(new FileReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json").toFile()))) {
                 for (Map.Entry<String, JsonElement> foundFairiesForProfileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
@@ -101,6 +87,7 @@ public class FairySouls {
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker] Failed to load found fairy souls", e);
             }
+            LOGGER.info("[Skyblocker] Loaded {} fairy souls across {} locations and {} found fairy souls across {} locations in {} profiles", fairySouls.values().stream().mapToInt(Set::size).sum(), fairySouls.size(), foundFairies.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Set::size).sum(), foundFairies.values().stream().mapToInt(Map::size).sum(), foundFairies.size());
         });
     }
 
@@ -131,12 +118,12 @@ public class FairySouls {
                 .then(literal("fairySouls")
                         .then(literal("markAllInCurrentIslandFound").executes(context -> {
                             FairySouls.markAllFairiesOnCurrentIslandFound();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllFound"));
+                            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.fairySouls.markAllFound")));
                             return 1;
                         }))
                         .then(literal("markAllInCurrentIslandMissing").executes(context -> {
                             FairySouls.markAllFairiesOnCurrentIslandMissing();
-                            context.getSource().sendFeedback(Text.translatable("skyblocker.fairySouls.markAllMissing"));
+                            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.fairySouls.markAllMissing")));
                             return 1;
                         }))));
     }

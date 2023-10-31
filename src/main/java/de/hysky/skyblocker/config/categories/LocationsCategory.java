@@ -46,6 +46,21 @@ public class LocationsCategory {
 										newValue -> config.locations.rift.mirrorverseWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints.@Tooltip")))
+								.binding(defaults.locations.rift.enigmaSoulWaypoints,
+										() -> config.locations.rift.enigmaSoulWaypoints,
+										newValue -> config.locations.rift.enigmaSoulWaypoints = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.highlightFoundEnigmaSouls"))
+								.binding(defaults.locations.rift.highlightFoundEnigmaSouls,
+										() -> config.locations.rift.highlightFoundEnigmaSouls,
+										newValue -> config.locations.rift.highlightFoundEnigmaSouls = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip")))

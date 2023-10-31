@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -42,9 +43,9 @@ public class CustomItemNames {
 						//Remove custom item name when the text argument isn't passed
 						customItemNames.remove(itemUuid);
 						SkyblockerConfigManager.save();
-						source.sendFeedback(Text.translatable("skyblocker.customItemNames.removed"));
+						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.removed")));
 					} else {
-						source.sendFeedback(Text.translatable("skyblocker.customItemNames.neverHad"));
+						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.neverHad")));
 					}
 				} else {
 					//If the text is provided then set the item's custom name to it
@@ -55,13 +56,13 @@ public class CustomItemNames {
 
 					customItemNames.put(itemUuid, text);
 					SkyblockerConfigManager.save();
-					source.sendFeedback(Text.translatable("skyblocker.customItemNames.added"));
+					source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.added")));
 				}
 			} else {
-				source.sendError(Text.translatable("skyblocker.customItemNames.noItemUuid"));
+				source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.noItemUuid")));
 			}
 		} else {
-			source.sendError(Text.translatable("skyblocker.customItemNames.unableToSetName"));
+			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.unableToSetName")));
 		}
 
 		return Command.SINGLE_SUCCESS;

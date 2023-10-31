@@ -3,8 +3,13 @@ package de.hysky.skyblocker.utils.render.title;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -21,6 +26,7 @@ public class TitleContainerConfigScreen extends Screen {
     private float hudX = SkyblockerConfigManager.get().general.titleContainer.x;
     private float hudY = SkyblockerConfigManager.get().general.titleContainer.y;
     private final Screen parent;
+    private boolean changedScale;
 
     protected TitleContainerConfigScreen() {
     	this(null);
@@ -153,17 +159,32 @@ public class TitleContainerConfigScreen extends Screen {
         }
         if (keyCode == GLFW.GLFW_KEY_EQUAL) {
             SkyblockerConfigManager.get().general.titleContainer.titleContainerScale += 10;
+            changedScale = true;
         }
         if (keyCode == GLFW.GLFW_KEY_MINUS) {
             SkyblockerConfigManager.get().general.titleContainer.titleContainerScale -= 10;
+            changedScale = true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
+
 
     @Override
     public void close() {
         SkyblockerConfigManager.get().general.titleContainer.x = (int) hudX;
         SkyblockerConfigManager.get().general.titleContainer.y = (int) hudY;
+
+        //TODO Come up with a better, less hacky solution for this in the future (:
+        if (parent instanceof YACLScreen yaclScreen) {
+            ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.category.general"))).findFirst().orElseThrow();
+            OptionGroup group = category.groups().stream().filter(grp -> grp.name().getString().equals(I18n.translate("text.autoconfig.skyblocker.option.general.titleContainer"))).findFirst().orElseThrow();
+
+            Option<?> scaleOpt = group.options().get(0);
+
+            // Refresh the value in the config with the bound value
+            if (changedScale) scaleOpt.forgetPendingValue();
+        }
+        
         SkyblockerConfigManager.save();
         this.client.setScreen(parent);
     }

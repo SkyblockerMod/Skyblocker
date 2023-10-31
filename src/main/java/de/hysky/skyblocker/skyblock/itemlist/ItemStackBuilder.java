@@ -1,45 +1,41 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepo;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import io.github.moulberry.repo.constants.PetNumbers;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.Rarity;
 import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemStackBuilder {
-    private final static Path PETNUMS_PATH = NEURepo.LOCAL_REPO_DIR.resolve("constants/petnums.json");
-    private static JsonObject petNums;
+    private static Map<String, Map<Rarity, PetNumbers>> petNums;
 
     public static void loadPetNums() {
         try {
-            petNums = JsonParser.parseString(Files.readString(PETNUMS_PATH)).getAsJsonObject();
+            petNums = NEURepoManager.NEU_REPO.getConstants().getPetNumbers();
         } catch (Exception e) {
-            ItemRegistry.LOGGER.error("Failed to load petnums.json");
+            ItemRepository.LOGGER.error("Failed to load petnums.json");
         }
     }
 
-    public static ItemStack parseJsonObj(JsonObject obj) {
-        String internalName = obj.get("internalname").getAsString();
+    public static ItemStack fromNEUItem(NEUItem item) {
+        String internalName = item.getSkyblockItemId();
 
         List<Pair<String, String>> injectors = new ArrayList<>(petData(internalName));
 
         NbtCompound root = new NbtCompound();
-        root.put("Count", NbtByte.of((byte)1));
+        root.put("Count", NbtByte.of((byte) 1));
 
-        String id = obj.get("itemid").getAsString();
-        int damage = obj.get("damage").getAsInt();
+        String id = item.getMinecraftItemId();
+        int damage = item.getDamage();
         root.put("id", NbtString.of(ItemFixerUpper.convertItemId(id, damage)));
 
         NbtCompound tag = new NbtCompound();
@@ -52,16 +48,14 @@ public class ItemStackBuilder {
         NbtCompound display = new NbtCompound();
         tag.put("display", display);
 
-        String name = injectData(obj.get("displayname").getAsString(), injectors);
+        String name = injectData(item.getDisplayName(), injectors);
         display.put("Name", NbtString.of(Text.Serializer.toJson(Text.of(name))));
 
         NbtList lore = new NbtList();
         display.put("Lore", lore);
-        obj.get("lore").getAsJsonArray().forEach(el ->
-                lore.add(NbtString.of(Text.Serializer.toJson(Text.of(injectData(el.getAsString(), injectors)))))
-        );
+        item.getLore().forEach(el -> lore.add(NbtString.of(Text.Serializer.toJson(Text.of(injectData(el, injectors))))));
 
-        String nbttag = obj.get("nbttag").getAsString();
+        String nbttag = item.getNbttag();
         // add skull texture
         Matcher skullUuid = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"").matcher(nbttag);
         Matcher skullTexture = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"").matcher(nbttag);
@@ -94,53 +88,54 @@ public class ItemStackBuilder {
         }
 
         // Add firework star color
-        Matcher explosionColorMatcher = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)\\]\\}").matcher(nbttag);
+        Matcher explosionColorMatcher = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)]\\}").matcher(nbttag);
         if (explosionColorMatcher.find()) {
             NbtCompound explosion = new NbtCompound();
 
             explosion.putInt("Type", FireworkRocketItem.Type.SMALL_BALL.getId()); //Forget about the actual ball type because it probably doesn't matter
-            explosion.putIntArray("Colors", new int[] { Integer.parseInt(explosionColorMatcher.group("color")) });
+            explosion.putIntArray("Colors", new int[]{Integer.parseInt(explosionColorMatcher.group("color"))});
             tag.put("Explosion", explosion);
         }
 
         return ItemStack.fromNbt(root);
     }
 
-    // TODO: fix stats for GOLDEN_DRAGON (lv1 -> lv200)
     private static List<Pair<String, String>> petData(String internalName) {
         List<Pair<String, String>> list = new ArrayList<>();
 
         String petName = internalName.split(";")[0];
-        if (!internalName.contains(";") || !petNums.has(petName)) return list;
+        if (!internalName.contains(";") || !petNums.containsKey(petName)) return list;
 
-        list.add(new Pair<>("\\{LVL\\}", "1 ➡ 100"));
-
-        final String[] rarities = {
-                "COMMON",
-                "UNCOMMON",
-                "RARE",
-                "EPIC",
-                "LEGENDARY",
-                "MYTHIC"
+        final Rarity[] rarities = {
+                Rarity.COMMON,
+                Rarity.UNCOMMON,
+                Rarity.RARE,
+                Rarity.EPIC,
+                Rarity.LEGENDARY,
+                Rarity.MYTHIC,
         };
-        String rarity = rarities[Integer.parseInt(internalName.split(";")[1])];
-        JsonObject data = petNums.get(petName).getAsJsonObject().get(rarity).getAsJsonObject();
+        Rarity rarity = rarities[Integer.parseInt(internalName.split(";")[1])];
+        PetNumbers data = petNums.get(petName).get(rarity);
 
-        JsonObject statNumsMin = data.get("1").getAsJsonObject().get("statNums").getAsJsonObject();
-        JsonObject statNumsMax = data.get("100").getAsJsonObject().get("statNums").getAsJsonObject();
-        Set<Map.Entry<String, JsonElement>> entrySet = statNumsMin.entrySet();
-        for (Map.Entry<String, JsonElement> entry : entrySet) {
+        int minLevel = data.getLowLevel();
+        int maxLevel = data.getHighLevel();
+        list.add(new Pair<>("\\{LVL\\}", minLevel + " ➡ " + maxLevel));
+
+        Map<String, Double> statNumsMin = data.getStatsAtLowLevel().getStatNumbers();
+        Map<String, Double> statNumsMax = data.getStatsAtHighLevel().getStatNumbers();
+        Set<Map.Entry<String, Double>> entrySet = statNumsMin.entrySet();
+        for (Map.Entry<String, Double> entry : entrySet) {
             String key = entry.getKey();
-            String left = "\\{" + key+ "\\}";
-            String right = statNumsMin.get(key).getAsString() + " ➡ " + statNumsMax.get(key).getAsString();
+            String left = "\\{" + key + "\\}";
+            String right = statNumsMin.get(key) + " ➡ " + statNumsMax.get(key);
             list.add(new Pair<>(left, right));
         }
 
-        JsonArray otherNumsMin = data.get("1").getAsJsonObject().get("otherNums").getAsJsonArray();
-        JsonArray otherNumsMax = data.get("100").getAsJsonObject().get("otherNums").getAsJsonArray();
+        List<Double> otherNumsMin = data.getStatsAtLowLevel().getOtherNumbers();
+        List<Double> otherNumsMax = data.getStatsAtHighLevel().getOtherNumbers();
         for (int i = 0; i < otherNumsMin.size(); ++i) {
             String left = "\\{" + i + "\\}";
-            String right = otherNumsMin.get(i).getAsString() + " ➡ " + otherNumsMax.get(i).getAsString();
+            String right = otherNumsMin.get(i) + " ➡ " + otherNumsMax.get(i);
             list.add(new Pair<>(left, right));
         }
 
@@ -148,8 +143,9 @@ public class ItemStackBuilder {
     }
 
     private static String injectData(String string, List<Pair<String, String>> injectors) {
-        for (Pair<String, String> injector : injectors)
+        for (Pair<String, String> injector : injectors) {
             string = string.replaceAll(injector.getLeft(), injector.getRight());
+        }
         return string;
     }
 }

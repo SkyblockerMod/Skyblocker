@@ -17,7 +17,7 @@
     "text.autoconfig.skyblocker.option.messages.hideAds": "Sembunyikan Iklan dari Chat Publik",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableNPCPrice": "Aktifkan Harga NPC",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Aktifkan Harga BIN Terendah",
-    "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cInformasi harga item yang ditampilkan dalam tooltip akan diperbarui dalam jangka waktu maks. 60 detik. Jika pembaharuan gagal silahkan check latest.log",
+    "skyblocker.itemTooltip.nullMessage": "§cInformasi harga item yang ditampilkan dalam tooltip akan diperbarui dalam jangka waktu maks. 60 detik. Jika pembaharuan gagal silahkan check latest.log",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "Aktifkan Rata-rata Harga BIN",
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg": "Tipe Rata-rata",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Aktifkan Harga Jual Beli Bazaar",

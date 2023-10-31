@@ -38,7 +38,7 @@ public class ItemListWidget extends RecipeBookWidget {
         this.searchField = ((RecipeBookWidgetAccessor) this).getSearchField();
         int x = (this.parentWidth - 147) / 2 - this.leftOffset;
         int y = (this.parentHeight - 166) / 2;
-        if (ItemRegistry.filesImported) {
+        if (ItemRepository.filesImported()) {
             this.results = new SearchResultsWidget(this.client, x, y);
             this.updateSearchResult();
         }
@@ -57,7 +57,7 @@ public class ItemListWidget extends RecipeBookWidget {
             context.drawTexture(TEXTURE, i, j, 1, 1, 147, 166);
             this.searchField = ((RecipeBookWidgetAccessor) this).getSearchField();
 
-            if (!ItemRegistry.filesImported && !this.searchField.isFocused() && this.searchField.getText().isEmpty()) {
+            if (!ItemRepository.filesImported() && !this.searchField.isFocused() && this.searchField.getText().isEmpty()) {
                 Text hintText = (Text.literal("Loading...")).formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
                 context.drawTextWithShadow(this.client.textRenderer, hintText, i + 25, j + 14, -1);
             } else if (!this.searchField.isFocused() && this.searchField.getText().isEmpty()) {
@@ -66,7 +66,7 @@ public class ItemListWidget extends RecipeBookWidget {
             } else {
                 this.searchField.render(context, mouseX, mouseY, delta);
             }
-            if (ItemRegistry.filesImported) {
+            if (ItemRepository.filesImported()) {
                 if (results == null) {
                     int x = (this.parentWidth - 147) / 2 - this.leftOffset;
                     int y = (this.parentHeight - 166) / 2;
@@ -81,14 +81,14 @@ public class ItemListWidget extends RecipeBookWidget {
 
     @Override
     public void drawTooltip(DrawContext context, int x, int y, int mouseX, int mouseY) {
-        if (this.isOpen() && ItemRegistry.filesImported && results != null) {
+        if (this.isOpen() && ItemRepository.filesImported() && results != null) {
             this.results.drawTooltip(context, mouseX, mouseY);
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && ItemRegistry.filesImported && this.searchField != null && results != null) {
+        if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && ItemRepository.filesImported() && this.searchField != null && results != null) {
             if (this.searchField.mouseClicked(mouseX, mouseY, button)) {
                 this.results.closeRecipeView();
                 this.searchField.setFocused(true);

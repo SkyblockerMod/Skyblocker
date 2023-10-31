@@ -2,13 +2,12 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
+import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
-import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
-import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -201,6 +200,19 @@ public class GeneralCategory {
 								.build())
 						.build())
 
+				//Mythological Ritual
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.mythologicalRitual.enableMythologicalRitualHelper"))
+								.binding(defaults.general.mythologicalRitual.enableMythologicalRitualHelper,
+										() -> config.general.mythologicalRitual.enableMythologicalRitualHelper,
+										newValue -> config.general.mythologicalRitual.enableMythologicalRitualHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
+
 				//Item Cooldown
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemCooldown"))
@@ -344,6 +356,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableMuseumDate = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip.@Tooltip")))
+								.binding(defaults.general.itemTooltip.enableExoticTooltip,
+										() -> config.general.itemTooltip.enableExoticTooltip,
+										newValue -> config.general.itemTooltip.enableExoticTooltip = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 
 				//Item Info Display
@@ -372,6 +392,28 @@ public class GeneralCategory {
 										() -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
 										newValue -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity = newValue)
 								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0f, 1f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
+								.build())
+						.build())
+
+				//Wiki Lookup
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup.@Tooltip")))
+								.binding(defaults.general.wikiLookup.enableWikiLookup,
+										() -> config.general.wikiLookup.enableWikiLookup,
+										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip")))
+								.binding(defaults.general.wikiLookup.officialWiki,
+										() -> config.general.wikiLookup.officialWiki,
+										newValue -> config.general.wikiLookup.officialWiki = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 
@@ -420,34 +462,6 @@ public class GeneralCategory {
 										() -> config.general.titleContainer.titleContainerScale,
 										newValue -> config.general.titleContainer.titleContainerScale = newValue)
 								.controller(opt -> FloatFieldControllerBuilder.create(opt).range(30f, 140f))
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.x"))
-								.binding(defaults.general.titleContainer.x,
-										() -> config.general.titleContainer.x,
-										newValue -> config.general.titleContainer.x = newValue)
-								.controller(IntegerFieldControllerBuilder::create)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.y"))
-								.binding(defaults.general.titleContainer.y,
-										() -> config.general.titleContainer.y,
-										newValue -> config.general.titleContainer.y = newValue)
-								.controller(IntegerFieldControllerBuilder::create)
-								.build())
-						.option(Option.<SkyblockerConfig.Direction>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.direction"))
-								.binding(defaults.general.titleContainer.direction,
-										() -> config.general.titleContainer.direction,
-										newValue -> config.general.titleContainer.direction = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.Alignment>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.alignment"))
-								.binding(defaults.general.titleContainer.alignment,
-										() -> config.general.titleContainer.alignment,
-										newValue -> config.general.titleContainer.alignment = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.titleContainer.config"))
@@ -501,6 +515,26 @@ public class GeneralCategory {
 										() -> config.general.teleportOverlay.enableWitherImpact,
 										newValue -> config.general.teleportOverlay.enableWitherImpact = newValue)
 								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
+
+				//Flame Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay"))
+						.collapsed(true)
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameHeight"))
+								.binding(defaults.general.flameOverlay.flameHeight,
+										() -> config.general.flameOverlay.flameHeight,
+										newValue -> config.general.flameOverlay.flameHeight = newValue)
+								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.5f).step(0.01f))
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameOpacity"))
+								.binding(defaults.general.flameOverlay.flameOpacity,
+										() -> config.general.flameOverlay.flameOpacity,
+										newValue -> config.general.flameOverlay.flameOpacity = newValue)
+								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.8f).step(0.1f))
 								.build())
 						.build())
 				.build();

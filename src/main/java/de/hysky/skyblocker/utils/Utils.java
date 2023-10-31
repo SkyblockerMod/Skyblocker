@@ -3,7 +3,8 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.item.PriceInfoTooltip;
+import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -19,6 +20,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,19 +33,32 @@ import java.util.List;
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
+    private static final String DUNGEONS_LOCATION = "dungeon";
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
-    private static boolean isInDungeons = false;
     private static boolean isInjected = false;
     /**
-     * The following fields store data returned from /locraw: {@link #profile}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     * The profile name parsed from the player list.
+     */
+    @NotNull
+    private static String profile = "";
+    /**
+     * The profile id parsed from the chat.
+     */
+    @NotNull
+    private static String profileId = "";
+    /**
+     * The following fields store data returned from /locraw: {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
     @SuppressWarnings("JavadocDeclaration")
-    private static String profile = "";
+    @NotNull
     private static String server = "";
+    @NotNull
     private static String gameType = "";
+    @NotNull
     private static String locationRaw = "";
+    @NotNull
     private static String map = "";
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
@@ -64,7 +79,7 @@ public class Utils {
     }
 
     public static boolean isInDungeons() {
-        return isInDungeons;
+        return getLocationRaw().equals(DUNGEONS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInTheRift() {
@@ -78,13 +93,20 @@ public class Utils {
     /**
      * @return the profile parsed from the player list.
      */
+    @NotNull
     public static String getProfile() {
         return profile;
+    }
+
+    @NotNull
+    public static String getProfileId() {
+        return profileId;
     }
 
     /**
      * @return the server parsed from /locraw.
      */
+    @NotNull
     public static String getServer() {
         return server;
     }
@@ -92,6 +114,7 @@ public class Utils {
     /**
      * @return the game type parsed from /locraw.
      */
+    @NotNull
     public static String getGameType() {
         return gameType;
     }
@@ -99,6 +122,7 @@ public class Utils {
     /**
      * @return the location raw parsed from /locraw.
      */
+    @NotNull
     public static String getLocationRaw() {
         return locationRaw;
     }
@@ -106,6 +130,7 @@ public class Utils {
     /**
      * @return the map parsed from /locraw.
      */
+    @NotNull
     public static String getMap() {
         return map;
     }
@@ -139,7 +164,6 @@ public class Utils {
                 sidebar = Collections.emptyList();
             } else {
                 isOnSkyblock = false;
-                isInDungeons = false;
                 return;
             }
         }
@@ -155,7 +179,7 @@ public class Utils {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;
-                        ItemTooltipCallback.EVENT.register(PriceInfoTooltip::onInjectTooltip);
+                        ItemTooltipCallback.EVENT.register(ItemTooltip::getTooltip);
                     }
                     isOnSkyblock = true;
                     SkyblockEvents.JOIN.invoker().onSkyblockJoin();
@@ -163,7 +187,6 @@ public class Utils {
             } else {
                 onLeaveSkyblock();
             }
-            isInDungeons = fabricLoader.isDevelopmentEnvironment() || isOnSkyblock && string.contains("The Catacombs");
         } else if (isOnHypixel) {
             isOnHypixel = false;
             onLeaveSkyblock();
@@ -180,7 +203,6 @@ public class Utils {
     private static void onLeaveSkyblock() {
         if (isOnSkyblock) {
             isOnSkyblock = false;
-            isInDungeons = false;
             SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
         }
     }
@@ -312,7 +334,7 @@ public class Utils {
     }
 
     /**
-     * Parses the /locraw reply from the server
+     * Parses the /locraw reply from the server and updates the player's profile id
      *
      * @return not display the message in chat is the command is sent by the mod
      */
@@ -338,6 +360,13 @@ public class Utils {
                 return shouldFilter;
             }
         }
+
+        if (isOnSkyblock && message.startsWith("Profile ID: ")) {
+            profileId = message.replace("Profile ID: ", "");
+            
+            MuseumItemCache.tick(profileId);
+        }
+
         return true;
     }
 

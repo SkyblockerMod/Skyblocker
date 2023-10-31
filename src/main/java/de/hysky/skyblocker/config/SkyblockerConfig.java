@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.config;
 
+import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -177,6 +178,9 @@ public class SkyblockerConfig {
 		public FairySouls fairySouls = new FairySouls();
 
 		@SerialEntry
+		public MythologicalRitual mythologicalRitual = new MythologicalRitual();
+
+		@SerialEntry
 		public ItemCooldown itemCooldown = new ItemCooldown();
 
 		@SerialEntry
@@ -195,6 +199,9 @@ public class SkyblockerConfig {
 		public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
 
 		@SerialEntry
+		public WikiLookup wikiLookup = new WikiLookup();
+
+		@SerialEntry
 		public SpecialEffects specialEffects = new SpecialEffects();
 
 		@SerialEntry
@@ -205,6 +212,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public TeleportOverlay teleportOverlay = new TeleportOverlay();
+
+		@SerialEntry
+		public FlameOverlay flameOverlay = new FlameOverlay();
 
 		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
@@ -316,6 +326,11 @@ public class SkyblockerConfig {
 		public boolean highlightOnlyNearbySouls = false;
 	}
 
+	public static class MythologicalRitual {
+		@SerialEntry
+		public boolean enableMythologicalRitualHelper = true;
+	}
+
 	public static class ItemCooldown {
 		@SerialEntry
 		public boolean enableItemCooldowns = true;
@@ -386,6 +401,14 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableWitherImpact = true;
+	}
+
+	public static class FlameOverlay {
+		@SerialEntry
+		public float flameHeight = 0f;
+
+		@SerialEntry
+		public float flameOpacity = 0f;
 	}
 
 	public enum Direction {
@@ -462,6 +485,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableMuseumDate = true;
+
+		@SerialEntry
+		public boolean enableExoticTooltip = true;
 	}
 
 	public static class ItemInfoDisplay {
@@ -473,6 +499,14 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public float itemRarityBackgroundsOpacity = 1f;
+	}
+
+	public static class WikiLookup {
+		@SerialEntry
+		public boolean enableWikiLookup = true;
+
+		@SerialEntry
+		public boolean officialWiki = false;
 	}
 
 	public static class SpecialEffects {
@@ -520,6 +554,9 @@ public class SkyblockerConfig {
 		public int mapY = 2;
 
 		@SerialEntry
+		public boolean playerSecretsTracker = false;
+
+		@SerialEntry
 		public boolean starredMobGlow = true;
 
 		@SerialEntry
@@ -552,6 +589,12 @@ public class SkyblockerConfig {
 		public boolean noInitSecretWaypoints = false;
 
 		@SerialEntry
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		@SerialEntry
+		public boolean showSecretText = true;
+
+		@SerialEntry
 		public boolean enableEntranceWaypoints = true;
 
 		@SerialEntry
@@ -577,6 +620,12 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableStonkWaypoints = true;
+
+		@SerialEntry
+		public boolean enableAotvWaypoints = true;
+		
+		@SerialEntry
+		public boolean enablePearlWaypoints = true;
 
 		@SerialEntry
 		public boolean enableDefaultWaypoints = true;
@@ -606,7 +655,6 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Formatting incompleteColor = Formatting.BLUE;
-
 	}
 
 	public static class LividColor {
@@ -683,6 +731,12 @@ public class SkyblockerConfig {
 	public static class Rift {
 		@SerialEntry
 		public boolean mirrorverseWaypoints = true;
+
+		@SerialEntry
+		public boolean enigmaSoulWaypoints = false;
+		
+		@SerialEntry
+		public boolean highlightFoundEnigmaSouls = true;
 
 		@SerialEntry
 		public int mcGrubberStacks = 0;

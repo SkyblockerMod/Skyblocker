@@ -3,8 +3,12 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
@@ -105,38 +109,43 @@ public class CustomArmorTrims {
 						if (customArmorTrims.containsKey(itemUuid)) {
 							customArmorTrims.remove(itemUuid);
 							SkyblockerConfigManager.save();
-							source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.removed"));
+							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.removed")));
 						} else {
-							source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.neverHad"));
+							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.neverHad")));
 						}
 					} else {
 						// Ensure that the material & trim are valid
 						ArmorTrimId trimId = new ArmorTrimId(material, pattern);
 						if (TRIMS_CACHE.get(trimId) == null) {
-							source.sendError(Text.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern"));
+							source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern")));
 
 							return Command.SINGLE_SUCCESS;
 						}
 
 						customArmorTrims.put(itemUuid, trimId);
 						SkyblockerConfigManager.save();
-						source.sendFeedback(Text.translatable("skyblocker.customArmorTrims.added"));
+						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.added")));
 					}
 				} else {
-					source.sendError(Text.translatable("skyblocker.customArmorTrims.noItemUuid"));
+					source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.noItemUuid")));
 				}
 			} else {
-				source.sendError(Text.translatable("skyblocker.customArmorTrims.notAnArmorPiece"));
+				source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.notAnArmorPiece")));
 				return Command.SINGLE_SUCCESS;
 			}
 		} else {
-			source.sendError(Text.translatable("skyblocker.customArmorTrims.unableToSetTrim"));
+			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.unableToSetTrim")));
 		}
 
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public record ArmorTrimId(@SerialEntry Identifier material, @SerialEntry Identifier pattern) implements Pair<Identifier, Identifier> {
+		public static final Codec<ArmorTrimId> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
+				Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))
+				.apply(instance, ArmorTrimId::new));
+		
 		@Override
 		public Identifier left() {
 			return material();

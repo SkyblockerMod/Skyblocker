@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -12,34 +12,34 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class ItemUtils {
-    private final static Pattern WHITESPACES = Pattern.compile("^\\s*$");
     public static final String EXTRA_ATTRIBUTES = "ExtraAttributes";
     public static final String ID = "id";
     public static final String UUID = "uuid";
+    public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
+    public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
 
-    public static List<Text> getTooltip(ItemStack item) {
+    public static List<Text> getTooltips(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
         return client.player == null || item == null ? Collections.emptyList() : item.getTooltip(client.player, TooltipContext.Default.BASIC);
     }
 
-    public static List<String> getTooltipStrings(ItemStack item) {
-        List<Text> lines = getTooltip(item);
-        List<String> list = new ArrayList<>();
-
-        for (Text line : lines) {
+    @Nullable
+    public static String getTooltip(ItemStack item, Predicate<String> predicate) {
+        for (Text line : getTooltips(item)) {
             String string = line.getString();
-            if (!WHITESPACES.matcher(string).matches())
-                list.add(string);
+            if (predicate.test(string)) {
+                return string;
+            }
         }
 
-        return list;
+        return null;
     }
 
     /**
@@ -98,49 +98,35 @@ public class ItemUtils {
      * Gets the UUID of the item stack from the {@code ExtraAttributes} NBT tag.
      *
      * @param stack the item stack to get the UUID from
-     * @return the UUID of the item stack, or null if the item stack is null or does not have a UUID
+     * @return the UUID of the item stack, or an empty string if the item stack is null or does not have a UUID
      */
     public static String getItemUuid(@NotNull ItemStack stack) {
         NbtCompound extraAttributes = getExtraAttributes(stack);
         return extraAttributes != null ? extraAttributes.getString(UUID) : "";
     }
 
+    public static boolean hasCustomDurability(@NotNull ItemStack stack) {
+        NbtCompound extraAttributes = getExtraAttributes(stack);
+        return extraAttributes != null && (extraAttributes.contains("drill_fuel") || extraAttributes.getString(ID).equals("PICKONIMBUS"));
+    }
+
     @Nullable
-    public static Durability getDurability(@NotNull ItemStack stack) {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().locations.dwarvenMines.enableDrillFuel || stack.isEmpty()) {
-            return null;
+    public static IntIntPair getDurability(@NotNull ItemStack stack) {
+        NbtCompound extraAttributes = getExtraAttributes(stack);
+        if (extraAttributes == null) return null;
+
+        // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
+        // TODO Cache the max durability and only update the current durability on inventory tick
+
+        int pickonimbusDurability = extraAttributes.getInt("pickonimbus_durability");
+        if (pickonimbusDurability > 0) {
+            return IntIntPair.of(pickonimbusDurability, 5000);
         }
 
-        if (getExtraAttributesOptional(stack).filter(extraAttributes -> extraAttributes.contains("drill_fuel") || extraAttributes.getString(ItemUtils.ID).equals("PICKONIMBUS")).isEmpty()) {
-            return null;
-        }
-
-        int current = 0;
-        int max = 0;
-        String clearFormatting;
-
-        for (String line : ItemUtils.getTooltipStrings(stack)) {
-            clearFormatting = Formatting.strip(line);
-            if (line.contains("Fuel: ")) {
-                if (clearFormatting != null) {
-                    String clear = Pattern.compile("[^0-9 /]").matcher(clearFormatting).replaceAll("").trim();
-                    String[] split = clear.split("/");
-                    current = Integer.parseInt(split[0]);
-                    max = Integer.parseInt(split[1]) * 1000;
-                    return new Durability(current, max);
-                }
-            } else if (line.contains("uses.")) {
-                if (clearFormatting != null) {
-                    int startIndex = clearFormatting.lastIndexOf("after") + 6;
-                    int endIndex = clearFormatting.indexOf("uses", startIndex);
-                    if (startIndex >= 0 && endIndex > startIndex) {
-                        String usesString = clearFormatting.substring(startIndex, endIndex).trim();
-                        current = Integer.parseInt(usesString);
-                        max = 5000;
-                    }
-                    return new Durability(current, max);
-                }
-            }
+        String drillFuel = Formatting.strip(getTooltip(stack, FUEL_PREDICATE));
+        if (drillFuel != null) {
+            String[] drillFuelStrings = NOT_DURABILITY.matcher(drillFuel).replaceAll("").trim().split("/");
+            return IntIntPair.of(Integer.parseInt(drillFuelStrings[0]), Integer.parseInt(drillFuelStrings[1]) * 1000);
         }
 
         return null;
@@ -152,8 +138,5 @@ public class ItemUtils {
         } catch (CommandSyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public record Durability(int current, int max) {
     }
 }
