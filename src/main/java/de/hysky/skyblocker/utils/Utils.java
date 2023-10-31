@@ -33,10 +33,10 @@ import java.util.List;
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
+    private static final String DUNGEONS_LOCATION = "dungeon";
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
-    private static boolean isInDungeons = false;
     private static boolean isInjected = false;
     /**
      * The profile name parsed from the player list.
@@ -79,7 +79,7 @@ public class Utils {
     }
 
     public static boolean isInDungeons() {
-        return isInDungeons;
+        return getLocationRaw().equals(DUNGEONS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInTheRift() {
@@ -164,7 +164,6 @@ public class Utils {
                 sidebar = Collections.emptyList();
             } else {
                 isOnSkyblock = false;
-                isInDungeons = false;
                 return;
             }
         }
@@ -188,7 +187,6 @@ public class Utils {
             } else {
                 onLeaveSkyblock();
             }
-            isInDungeons = fabricLoader.isDevelopmentEnvironment() || isOnSkyblock && string.contains("The Catacombs");
         } else if (isOnHypixel) {
             isOnHypixel = false;
             onLeaveSkyblock();
@@ -205,7 +203,6 @@ public class Utils {
     private static void onLeaveSkyblock() {
         if (isOnSkyblock) {
             isOnSkyblock = false;
-            isInDungeons = false;
             SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
         }
     }

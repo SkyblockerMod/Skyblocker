@@ -552,6 +552,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int mapY = 2;
+		
+		@SerialEntry
+		public boolean playerSecretsTracker = false;
 
 		@SerialEntry
 		public boolean starredMobGlow = true;

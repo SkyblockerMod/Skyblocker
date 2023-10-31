@@ -73,9 +73,7 @@ public class MuseumItemCache {
 	
 	private static void updateData4ProfileMember(String uuid, String profileId) {
 		CompletableFuture.runAsync(() -> {
-			try {
-				ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId);
-				
+			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {				
 				//The request was successful
 				if (response.ok()) {
 					JsonObject profileData = JsonParser.parseString(response.content()).getAsJsonObject();
