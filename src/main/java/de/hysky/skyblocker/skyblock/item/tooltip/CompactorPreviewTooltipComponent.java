@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.font.TextRenderer;
@@ -10,44 +9,37 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class CompactorPreviewTooltipComponent implements TooltipComponent {
-    private static final Identifier INVENTORY_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/inventory_background.png");
+    private static final Identifier TEXTURE = new Identifier("textures/gui/container/generic_54.png");
     private final Iterable<IntObjectPair<ItemStack>> items;
     private final IntIntPair dimensions;
 
-    public CompactorPreviewTooltipComponent(Iterable<IntObjectPair<ItemStack>> items, IntIntPair dimensions) {
+    CompactorPreviewTooltipComponent(Iterable<IntObjectPair<ItemStack>> items, IntIntPair dimensions) {
         this.items = items;
         this.dimensions = dimensions;
     }
 
     @Override
     public int getHeight() {
-        return dimensions.leftInt() * 18 + 14;
+        return dimensions.leftInt() * 18 + 17;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        return dimensions.rightInt() * 18 + 14;
+        return 176;
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
-        context.drawTexture(INVENTORY_TEXTURE, x, y, 0, 0, 7 + dimensions.rightInt() * 18, 7);
-        context.drawTexture(INVENTORY_TEXTURE, x + 7 + dimensions.rightInt() * 18, y, 169, 0, 7, 7);
+    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {        
+        context.drawTexture(TEXTURE, x, y, 0, 0, 176, dimensions.leftInt() * 18 + 17);
+        context.drawTexture(TEXTURE, x, y + dimensions.leftInt() * 18 + 17, 0, 215, 176, 7);
 
-        for (int i = 0; i < dimensions.leftInt(); i++) {
-            context.drawTexture(INVENTORY_TEXTURE, x, y + 7 + i * 18, 0, 7, 7, 18);
-            for (int j = 0; j < dimensions.rightInt(); j++) {
-                context.drawTexture(INVENTORY_TEXTURE, x + 7 + j * 18, y + 7 + i * 18, 7, 7, 18, 18);
-            }
-            context.drawTexture(INVENTORY_TEXTURE, x + 7 + dimensions.rightInt() * 18, y + 7 + i * 18, 169, 7, 7, 18);
-        }
-        context.drawTexture(INVENTORY_TEXTURE, x, y + 7 + dimensions.leftInt() * 18, 0, 25, 7 + dimensions.rightInt() * 18, 7);
-        context.drawTexture(INVENTORY_TEXTURE, x + 7 + dimensions.rightInt() * 18, y + 7 + dimensions.leftInt() * 18, 169, 25, 7, 7);
+        //Draw name - I don't think it needs to be translatable
+        context.drawText(textRenderer, "Contents", x + 8, y + 6, 0x404040, false);
 
         for (IntObjectPair<ItemStack> entry : items) {
             if (entry.right() != null) {
                 int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;
-                int itemY = y + entry.leftInt() / dimensions.rightInt() * 18 + 8;
+                int itemY = y + entry.leftInt() / dimensions.rightInt() * 18 + 18;
                 context.drawItem(entry.right(), itemX, itemY);
                 context.drawItemInSlot(textRenderer, entry.right(), itemX, itemY);
             }
