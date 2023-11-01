@@ -33,11 +33,11 @@ public class CreeperBeams {
 
     private static final float[][] COLORS = {
             DyeColor.LIGHT_BLUE.getColorComponents(),
-            DyeColor.PINK.getColorComponents(),
+            DyeColor.LIME.getColorComponents(),
             DyeColor.YELLOW.getColorComponents(),
-            DyeColor.RED.getColorComponents(),
+            DyeColor.MAGENTA.getColorComponents(),
     };
-    private static final float[] LIME_COLOR_COMPONENTS = DyeColor.LIME.getColorComponents();
+    private static final float[] GREEN_COLOR_COMPONENTS = DyeColor.GREEN.getColorComponents();
 
     private static final int FLOOR_Y = 68;
     private static final int BASE_Y = 74;
@@ -241,9 +241,9 @@ public class CreeperBeams {
                 RenderHelper.renderOutline(wrc, outlineTwo, color, 3, false);
                 RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2);
             } else {
-                RenderHelper.renderOutline(wrc, outlineOne, LIME_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderOutline(wrc, outlineTwo, LIME_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, LIME_COLOR_COMPONENTS, 0.75f, 1);
+                RenderHelper.renderOutline(wrc, outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
+                RenderHelper.renderOutline(wrc, outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
+                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1);
             }
         }
     }
