@@ -180,8 +180,10 @@ public class FairySouls {
     }
 
     public static void markAllFairiesOnCurrentIslandFound() {
-        initializeFoundFairiesForCurrentProfileAndLocation();
-        foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).addAll(fairySouls.get(Utils.getLocationRaw()));
+        if (fairySouls.get(Utils.getLocationRaw()) != null) {
+            initializeFoundFairiesForCurrentProfileAndLocation();
+            foundFairies.get(Utils.getProfile()).get(Utils.getLocationRaw()).addAll(fairySouls.get(Utils.getLocationRaw()));
+        }
     }
 
     public static void markAllFairiesOnCurrentIslandMissing() {
