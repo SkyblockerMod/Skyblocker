@@ -39,22 +39,19 @@ public class DungeonPuzzleWidget extends Widget {
             }
 
             Formatting statcol = switch (m.group("status")) {
-                case "✔" -> Formatting.GREEN;
-                case "✖" -> Formatting.RED;
-                default -> Formatting.WHITE;
+                case "✦" -> Formatting.GOLD; // Unsolved
+                case "✔" -> Formatting.GREEN; // Solved
+                case "✖" -> Formatting.RED; // Failed
+                default -> Formatting.WHITE; // Who knows if they'll add another puzzle state or not?
             };
 
             Text t = Text.literal(m.group("name") + ": ")
                     .append(Text.literal("[").formatted(Formatting.GRAY))
-                    .append(Text.literal(m.group("status")).formatted(statcol))
+                    .append(Text.literal(m.group("status")).formatted(statcol, Formatting.BOLD))
                     .append(Text.literal("]").formatted(Formatting.GRAY));
             IcoTextComponent itc = new IcoTextComponent(Ico.SIGN, t);
             this.addComponent(itc);
             pos++;
-            // code points for puzzle status chars unsolved and solved: 10022, 10004
-            // not sure which one is which
-            // still need to find out codepoint for the puzzle failed char
-            m.group("status").codePoints().forEach(System.out::println);
         }
         if (pos == 48) {
             this.addComponent(
