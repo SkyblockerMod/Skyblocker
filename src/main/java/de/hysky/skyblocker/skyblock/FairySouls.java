@@ -108,7 +108,6 @@ public class FairySouls {
                 foundFairiesJson.add(foundFairiesForProfile.getKey(), foundFairiesForProfileJson);
             }
             SkyblockerMod.GSON.toJson(foundFairiesJson, writer);
-            writer.close();
             LOGGER.info("[Skyblocker] Saved found fairy souls");
         } catch (IOException e) {
             LOGGER.error("[Skyblocker] Failed to write found fairy souls to file", e);
