@@ -13,7 +13,7 @@ public class DiscordRPCCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.richPresence"))
-				
+
 				//Uncategorized Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.richPresence.enableRichPresence"))

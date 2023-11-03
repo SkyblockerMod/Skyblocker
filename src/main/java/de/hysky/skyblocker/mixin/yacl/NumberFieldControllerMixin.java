@@ -17,7 +17,7 @@ import net.minecraft.util.math.MathHelper;
 public abstract class NumberFieldControllerMixin<T extends Number> implements ISliderController<T> {
 	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
 	private static final DecimalFormatSymbols DECIMAL_FORMAT_SYMBOLS = DecimalFormatSymbols.getInstance();
-	
+
 	@Overwrite
 	public void setFromString(String value) {
 		try {
@@ -26,16 +26,16 @@ public abstract class NumberFieldControllerMixin<T extends Number> implements IS
 			YACLConstants.LOGGER.warn("Failed to parse number: {}", value);
 		}
 	}
-	
+
 	@Overwrite
 	public boolean isInputValid(String input) {
 		input = input.replace(DECIMAL_FORMAT_SYMBOLS.getGroupingSeparator() + "", "");
 		ParsePosition parsePosition = new ParsePosition(0);
 		NUMBER_FORMAT.parse(input, parsePosition);
-		
+
 		return parsePosition.getIndex() == input.length();
 	}
-	
+
 	@Overwrite
 	protected String cleanupNumberString(String number) {
 		throw new UnsupportedOperationException("This method should no longer be called.");

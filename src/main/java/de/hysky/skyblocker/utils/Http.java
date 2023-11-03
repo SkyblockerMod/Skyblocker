@@ -32,11 +32,11 @@ public class Http {
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(Redirect.NORMAL)
 			.build();
-	
+
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(url).content();
 	}
-	
+
 	private static ApiResponse sendCacheableGetRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
@@ -46,16 +46,16 @@ public class Http {
 				.version(Version.HTTP_2)
 				.uri(URI.create(url))
 				.build();
-		
+
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
 		InputStream decodedInputStream = getDecodedInputStream(response);
-		
+
 		String body = new String(decodedInputStream.readAllBytes());
 		HttpHeaders headers = response.headers();
-		
+
 		return new ApiResponse(body, response.statusCode(), getCacheStatus(headers), getAge(headers));
 	}
-	
+
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.method("HEAD", BodyPublishers.noBody())
@@ -63,15 +63,15 @@ public class Http {
 				.version(Version.HTTP_2)
 				.uri(URI.create(url))
 				.build();
-		
-		HttpResponse<Void> response = HTTP_CLIENT.send(request, BodyHandlers.discarding());		
+
+		HttpResponse<Void> response = HTTP_CLIENT.send(request, BodyHandlers.discarding());
 		return response.headers();
 	}
-	
+
 	public static ApiResponse sendName2UuidRequest(String name) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(NAME_2_UUID + name);
 	}
-	
+
 	/**
 	 * @param endpoint the endpoint - do not include any leading or trailing slashes
 	 * @param query the query string - use empty string if n/a
@@ -80,10 +80,10 @@ public class Http {
 	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query);
 	}
-	
+
 	private static InputStream getDecodedInputStream(HttpResponse<InputStream> response) {
 		String encoding = getContentEncoding(response.headers());
-		
+
 		try {
 			switch (encoding) {
 				case "":
@@ -99,19 +99,19 @@ public class Http {
 			throw new UncheckedIOException(e);
 		}
 	}
-	
+
 	private static String getContentEncoding(HttpHeaders headers) {
 		return headers.firstValue("Content-Encoding").orElse("");
 	}
-	
+
 	public static String getEtag(HttpHeaders headers) {
 		return headers.firstValue("Etag").orElse("");
 	}
-	
+
 	public static String getLastModified(HttpHeaders headers) {
 		return headers.firstValue("Last-Modified").orElse("");
 	}
-	
+
 	/**
 	 * Returns the cache status of the resource
 	 * 
@@ -120,18 +120,18 @@ public class Http {
 	private static String getCacheStatus(HttpHeaders headers) {
 		return headers.firstValue("CF-Cache-Status").orElse("UNKNOWN");
 	}
-	
+
 	private static int getAge(HttpHeaders headers) {
 		return Integer.parseInt(headers.firstValue("Age").orElse("-1"));
 	}
-	
+
 	//TODO If ever needed, we could just replace cache status with the response headers and go from there
 	public record ApiResponse(String content, int statusCode, String cacheStatus, int age) implements AutoCloseable {
-		
+
 		public boolean ok() {
 			return statusCode == 200;
 		}
-		
+
 		public boolean cached() {
 			return cacheStatus.equals("HIT");
 		}

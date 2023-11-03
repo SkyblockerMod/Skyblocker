@@ -16,7 +16,7 @@ public class DwarvenMinesCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines"))
-				
+
 				//Uncategorized Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel"))
@@ -39,7 +39,7 @@ public class DwarvenMinesCategory {
 								newValue -> config.locations.dwarvenMines.solvePuzzler = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-				
+
 				//Dwarven HUD
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud"))

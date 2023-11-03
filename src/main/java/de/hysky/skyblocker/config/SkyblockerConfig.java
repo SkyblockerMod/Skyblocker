@@ -552,7 +552,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int mapY = 2;
-		
+
 		@SerialEntry
 		public boolean playerSecretsTracker = false;
 
@@ -587,10 +587,10 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean noInitSecretWaypoints = false;
-		
+
 		@SerialEntry
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
-		
+
 		@SerialEntry
 		public boolean showSecretText = true;
 
@@ -620,10 +620,10 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableStonkWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enableAotvWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enablePearlWaypoints = true;
 
@@ -731,10 +731,10 @@ public class SkyblockerConfig {
 	public static class Rift {
 		@SerialEntry
 		public boolean mirrorverseWaypoints = true;
-		
+
 		@SerialEntry
 		public boolean enigmaSoulWaypoints = false;
-		
+
 		@SerialEntry
 		public boolean highlightFoundEnigmaSouls = true;
 

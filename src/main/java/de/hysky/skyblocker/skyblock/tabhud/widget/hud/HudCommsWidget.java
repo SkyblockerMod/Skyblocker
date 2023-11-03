@@ -2,16 +2,16 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.hud;
 
 import java.util.List;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
+import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
 
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
@@ -56,7 +56,7 @@ public class HudCommsWidget extends Widget {
 
             Component comp;
             if (isFancy) {
-                comp = new ProgressComponent(Ico.BOOK, c, p, pcntToCol(p));
+                comp = new ProgressComponent(Ico.BOOK, c, p, Colors.pcntToCol(p));
             } else {
                 comp = new PlainTextComponent(
                         Text.literal(comm.commission() + ": ")
@@ -64,10 +64,6 @@ public class HudCommsWidget extends Widget {
             }
             this.addComponent(comp);
         }
-    }
-
-    private int pcntToCol(float pcnt) {
-        return MathHelper.hsvToRgb(pcnt / 300f, 0.9f, 0.9f);
     }
 
 }

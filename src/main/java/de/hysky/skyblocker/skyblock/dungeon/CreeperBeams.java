@@ -31,14 +31,13 @@ public class CreeperBeams {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreeperBeams.class.getName());
 
-    // "missing, this palette looks like you stole it from a 2018 bootstrap webapp!"
     private static final float[][] COLORS = {
             DyeColor.LIGHT_BLUE.getColorComponents(),
-            DyeColor.PINK.getColorComponents(),
-            DyeColor.ORANGE.getColorComponents(),
+            DyeColor.LIME.getColorComponents(),
+            DyeColor.YELLOW.getColorComponents(),
             DyeColor.MAGENTA.getColorComponents(),
     };
-    private static final float[] LIME_COLOR_COMPONENTS = DyeColor.LIME.getColorComponents();
+    private static final float[] GREEN_COLOR_COMPONENTS = DyeColor.GREEN.getColorComponents();
 
     private static final int FLOOR_Y = 68;
     private static final int BASE_Y = 74;
@@ -81,7 +80,7 @@ public class CreeperBeams {
             if (base == null) {
                 return;
             }
-            Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 3.5, base.getZ() + 0.5);
+            Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 1.75, base.getZ() + 0.5);
             ArrayList<BlockPos> targets = findTargets(world, base);
             beams = findLines(creeperPos, targets);
         }
@@ -242,9 +241,9 @@ public class CreeperBeams {
                 RenderHelper.renderOutline(wrc, outlineTwo, color, 3, false);
                 RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2);
             } else {
-                RenderHelper.renderOutline(wrc, outlineOne, LIME_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderOutline(wrc, outlineTwo, LIME_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, LIME_COLOR_COMPONENTS, 0.75f, 1);
+                RenderHelper.renderOutline(wrc, outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
+                RenderHelper.renderOutline(wrc, outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
+                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1);
             }
         }
     }

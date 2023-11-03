@@ -30,15 +30,15 @@ public class EffigyWaypoints {
         if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château")) return;
 
         UNBROKEN_EFFIGIES.clear();
-        
+
         try {
             for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
                 String line = Utils.STRING_SCOREBOARD.get(i);
-                
+
                 if (line.contains("Effigies")) {
                     List<Text> effigiesText = new ArrayList<>();
                     List<Text> prefixAndSuffix = Utils.TEXT_SCOREBOARD.get(i).getSiblings();
-                    
+
                     //Add contents of prefix and suffix to list
                     effigiesText.addAll(prefixAndSuffix.get(0).getSiblings());
                     effigiesText.addAll(prefixAndSuffix.get(1).getSiblings());

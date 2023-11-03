@@ -363,7 +363,7 @@ public class Utils {
 
         if (isOnSkyblock && message.startsWith("Profile ID: ")) {
             profileId = message.replace("Profile ID: ", "");
-            
+
             MuseumItemCache.tick(profileId);
         }
 

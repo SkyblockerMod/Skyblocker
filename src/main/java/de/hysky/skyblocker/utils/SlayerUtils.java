@@ -42,13 +42,13 @@ public class SlayerUtils {
         try {
             for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
                 String line = Utils.STRING_SCOREBOARD.get(i);
-                
+
                 if (line.contains("Slay the boss!")) return true;
             }
         } catch (NullPointerException e) {
             LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
         }
-        
+
         return false;
     }
 }

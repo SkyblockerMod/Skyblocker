@@ -14,7 +14,7 @@ public class LocationsCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.locations"))
-				
+
 				//Barn
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.barn"))
@@ -34,7 +34,7 @@ public class LocationsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				
+
 				//The Rift
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift"))
@@ -70,7 +70,7 @@ public class LocationsCategory {
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
 								.build())
 						.build())
-				
+
 				//Spider's Den
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.spidersDen"))

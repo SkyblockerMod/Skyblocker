@@ -69,7 +69,11 @@ public class ForgeWidget extends Widget {
                         c = new IcoFatTextComponent();
                     } else {
                         l1 = Text.literal(parts[0].substring(3)).formatted(Formatting.YELLOW);
-                        l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
+                        if (parts[1].equals("Ready!")) {
+                            l2 = Text.literal("Done!").formatted(Formatting.GREEN);
+                        } else {
+                            l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
+                        }
                         c = new IcoFatTextComponent(Ico.FIRE, l1, l2);
                     }
                 }

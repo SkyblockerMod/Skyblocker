@@ -13,7 +13,7 @@ public class MessageFilterCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.messages"))
-				
+
 				//Uncategorized Options
 				.option(Option.<ChatFilterResult>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.hideAbility"))

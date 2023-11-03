@@ -23,7 +23,7 @@ public class DwarvenHudConfigScreen extends Screen {
     protected DwarvenHudConfigScreen() {
         this(null);
     }
-    
+
     public DwarvenHudConfigScreen(Screen parent) {
     	super(Text.of("Dwarven HUD Config"));
     	this.parent = parent;
@@ -62,7 +62,7 @@ public class DwarvenHudConfigScreen extends Screen {
         SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x = hudX;
         SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y = hudY;
         SkyblockerConfigManager.save();
-        
+
         client.setScreen(parent);
     }
 }

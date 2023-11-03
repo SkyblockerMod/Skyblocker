@@ -145,7 +145,7 @@ public class CustomArmorTrims {
 				Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
 				Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))
 				.apply(instance, ArmorTrimId::new));
-		
+
 		@Override
 		public Identifier left() {
 			return material();

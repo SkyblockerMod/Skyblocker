@@ -14,7 +14,7 @@ public class QuickNavigationCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.quickNav"))
-				
+
 				//Toggle
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.enableQuickNav"))
@@ -23,7 +23,7 @@ public class QuickNavigationCategory {
 								newValue -> config.quickNav.enableQuickNav = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-				
+
 				//Button 1
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 1))
@@ -71,7 +71,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 2
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 2))
@@ -119,7 +119,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 3
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 3))
@@ -167,7 +167,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 4
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 4))
@@ -215,7 +215,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 5
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 5))
@@ -263,7 +263,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 6
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 6))
@@ -311,7 +311,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 7
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 7))
@@ -359,7 +359,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 8
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 8))
@@ -407,7 +407,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 9
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 9))
@@ -455,7 +455,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 10
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 10))
@@ -503,7 +503,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 11
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 11))
@@ -551,7 +551,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				//Button 12
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 12))
@@ -599,7 +599,7 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-				
+
 				.build();
 	}
 }
