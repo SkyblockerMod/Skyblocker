@@ -14,10 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 /**
  * Initializes the NEU repo, which contains item metadata and fairy souls location data. Clones the repo if it does not exist and checks for updates. Use {@link #runAsyncAfterLoad(Runnable)} to run code after the repo is initialized.
@@ -74,8 +76,7 @@ public class NEURepoManager {
         CompletableFuture.runAsync(() -> {
             try {
                 ItemRepository.setFilesImported(false);
-                File dir = NEURepoManager.LOCAL_REPO_DIR.toFile();
-                recursiveDelete(dir);
+                recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
             } catch (Exception ex) {
                 if (MinecraftClient.getInstance().player != null)
                     MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updaterepository.failed")), false);
@@ -86,14 +87,18 @@ public class NEURepoManager {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static void recursiveDelete(File dir) {
-        File[] children;
-        if (dir.isDirectory() && !Files.isSymbolicLink(dir.toPath()) && (children = dir.listFiles()) != null) {
-            for (File child : children) {
-                recursiveDelete(child);
-            }
+    private static void recursiveDelete(Path dir) throws IOException {
+        if (Files.isDirectory(dir) && !Files.isSymbolicLink(dir)) {
+            Files.list(dir).forEach(child -> {
+                try {
+                    recursiveDelete(child);
+                } catch (Exception e) {
+                    LOGGER.error("[Skyblocker] Encountered an exception while deleting a file! Path: {}", child.toAbsolutePath(), e);
+                }
+            });
         }
-        dir.delete();
+
+        Files.delete(dir);
     }
 
     /**

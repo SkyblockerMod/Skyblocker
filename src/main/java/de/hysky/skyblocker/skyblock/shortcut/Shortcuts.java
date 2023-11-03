@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -30,7 +33,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class Shortcuts {
     private static final Logger LOGGER = LoggerFactory.getLogger(Shortcuts.class);
-    private static final File SHORTCUTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("shortcuts.json").toFile();
+    private static final Path SHORTCUTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("shortcuts.json");
     @Nullable
     private static CompletableFuture<Void> shortcutsLoaded;
     public static final Map<String, String> commands = new HashMap<>();
@@ -52,7 +55,7 @@ public class Shortcuts {
             return;
         }
         shortcutsLoaded = CompletableFuture.runAsync(() -> {
-            try (BufferedReader reader = new BufferedReader(new FileReader(SHORTCUTS_FILE))) {
+            try (BufferedReader reader = Files.newBufferedReader(SHORTCUTS_FILE)) {
                 Type shortcutsType = new TypeToken<Map<String, Map<String, String>>>() {
                 }.getType();
                 Map<String, Map<String, String>> shortcuts = SkyblockerMod.GSON.fromJson(reader, shortcutsType);
@@ -61,7 +64,7 @@ public class Shortcuts {
                 commands.putAll(shortcuts.get("commands"));
                 commandArgs.putAll(shortcuts.get("commandArgs"));
                 LOGGER.info("[Skyblocker] Loaded {} command shortcuts and {} command argument shortcuts", commands.size(), commandArgs.size());
-            } catch (FileNotFoundException e) {
+            } catch (NoSuchFileException e) {
                 registerDefaultShortcuts();
                 LOGGER.warn("[Skyblocker] Shortcuts file not found, using default shortcuts. This is normal when using for the first time.");
             } catch (IOException e) {
@@ -140,7 +143,7 @@ public class Shortcuts {
         JsonObject shortcutsJson = new JsonObject();
         shortcutsJson.add("commands", SkyblockerMod.GSON.toJsonTree(commands));
         shortcutsJson.add("commandArgs", SkyblockerMod.GSON.toJsonTree(commandArgs));
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(SHORTCUTS_FILE))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(SHORTCUTS_FILE)) {
             SkyblockerMod.GSON.toJson(shortcutsJson, writer);
             LOGGER.info("[Skyblocker] Saved {} command shortcuts and {} command argument shortcuts", commands.size(), commandArgs.size());
         } catch (IOException e) {

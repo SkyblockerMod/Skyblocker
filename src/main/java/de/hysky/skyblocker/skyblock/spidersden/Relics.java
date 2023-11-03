@@ -29,6 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -68,7 +70,7 @@ public class Relics {
                 LOGGER.error("[Skyblocker] Failed to load relics locations", e);
             }
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json").toFile()))) {
+            try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json"))) {
                 for (Map.Entry<String, JsonElement> profileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     Set<BlockPos> foundRelicsForProfile = new HashSet<>();
                     for (JsonElement foundRelicsJson : profileJson.getValue().getAsJsonArray().asList()) {
@@ -77,7 +79,7 @@ public class Relics {
                     foundRelics.put(profileJson.getKey(), foundRelicsForProfile);
                 }
                 LOGGER.debug("[Skyblocker] Loaded found relics");
-            } catch (FileNotFoundException ignored) {
+            } catch (NoSuchFileException ignored) {
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker] Failed to load found relics", e);
             }
@@ -85,7 +87,7 @@ public class Relics {
     }
 
     private static void saveFoundRelics(MinecraftClient client) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json").toFile()))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json"))) {
             JsonObject json = new JsonObject();
             for (Map.Entry<String, Set<BlockPos>> foundRelicsForProfile : foundRelics.entrySet()) {
                 JsonArray foundRelicsJson = new JsonArray();

@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -70,7 +72,7 @@ public class FairySouls {
             NEURepoManager.NEU_REPO.getConstants().getFairySouls().getSoulLocations().forEach((location, fairySoulsForLocation) -> fairySouls.put(location, fairySoulsForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableSet())));
             LOGGER.debug("[Skyblocker] Loaded {} fairy souls across {} locations", fairySouls.values().stream().mapToInt(Set::size).sum(), fairySouls.size());
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json").toFile()))) {
+            try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
                 for (Map.Entry<String, JsonElement> foundFairiesForProfileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     Map<String, Set<BlockPos>> foundFairiesForProfile = new HashMap<>();
                     for (Map.Entry<String, JsonElement> foundFairiesForLocationJson : foundFairiesForProfileJson.getValue().getAsJsonObject().asMap().entrySet()) {
@@ -83,7 +85,7 @@ public class FairySouls {
                     foundFairies.put(foundFairiesForProfileJson.getKey(), foundFairiesForProfile);
                 }
                 LOGGER.debug("[Skyblocker] Loaded found fairy souls");
-            } catch (FileNotFoundException ignored) {
+            } catch (NoSuchFileException ignored) {
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker] Failed to load found fairy souls", e);
             }
@@ -92,7 +94,7 @@ public class FairySouls {
     }
 
     private static void saveFoundFairySouls(MinecraftClient client) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json").toFile()))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
             JsonObject foundFairiesJson = new JsonObject();
             for (Map.Entry<String, Map<String, Set<BlockPos>>> foundFairiesForProfile : foundFairies.entrySet()) {
                 JsonObject foundFairiesForProfileJson = new JsonObject();
