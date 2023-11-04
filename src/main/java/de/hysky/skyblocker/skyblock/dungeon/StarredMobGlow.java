@@ -8,6 +8,7 @@ import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -23,13 +24,19 @@ public class StarredMobGlow {
 					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy" -> {
 						return true;
 					}
+					default -> {
+						List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
+
+						if (!armorStands.isEmpty() && LividColor.shouldGlow(armorStands.get(0))) {
+							return true;
+						}
+					}
 				}
 			}
 
 			// Regular Mobs
 			if (!(entity instanceof ArmorStandEntity)) {
-				Box searchBox = box.expand(0, 2, 0);
-				List<ArmorStandEntity> armorStands = entity.getWorld().getEntitiesByClass(ArmorStandEntity.class, searchBox, EntityPredicates.NOT_MOUNTED);
+				List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
 
 				if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯")) return true;
 			}
@@ -39,6 +46,10 @@ public class StarredMobGlow {
 		}
 
 		return false;
+	}
+
+	private static List<ArmorStandEntity> getArmorStands(World world, Box box) {
+        return world.getEntitiesByClass(ArmorStandEntity.class, box.expand(0, 2, 0), EntityPredicates.NOT_MOUNTED);
 	}
 
 	public static int getGlowColor(Entity entity) {
