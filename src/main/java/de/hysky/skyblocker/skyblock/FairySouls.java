@@ -152,12 +152,20 @@ public class FairySouls {
 
     private static void markClosestFairyFound() {
         if (!fairySoulsLoaded.isDone()) return;
+
         PlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) {
             LOGGER.warn("[Skyblocker] Failed to mark closest fairy soul as found because player is null");
             return;
         }
-        fairySouls.get(Utils.getLocationRaw()).stream()
+
+        Set<BlockPos> soulsAtLoc = fairySouls.get(Utils.getLocationRaw());
+        if (soulsAtLoc == null) {
+            LOGGER.warn("[Skyblocker] Failed to mark closest fairy soul as found because soulsAtLoc is null. NEU repo probably failed to load.");
+            return;
+        }
+
+        soulsAtLoc.stream()
                 .filter(FairySouls::isFairySoulMissing)
                 .min(Comparator.comparingDouble(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos())))
                 .filter(fairySoulPos -> fairySoulPos.getSquaredDistance(player.getPos()) <= 16)
