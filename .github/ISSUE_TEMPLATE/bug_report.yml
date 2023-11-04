@@ -28,16 +28,16 @@ body:
     id: logs
     attributes:
       label: Log output
-      description: 'Please upload a client log file by dragging and dropping it into this section. Usually this is found at `.minecraft/logs/latest.log`. If you are not sure how to find `.minecraft`, please see this article: https://minecraft.fandom.com/wiki/.minecraft#Locating_.minecraft. Please do not upload a compressed (`.log.gz`) file, they are very difficult for us to read when viewing issue reports. The log file instantly tells us important information like the versions of any other installed mods or if there are errors so it is very very important that you include it in your report.'
+      description: 'Please upload a client log file by dragging and dropping it into this section. Usually this is found at `.minecraft/logs/latest.log`. If you are not sure how to find `.minecraft`, please see this article: https://minecraft.wiki/w/.minecraft#Locating_.minecraft. Please do not upload a compressed (`.log.gz`) file, they are very difficult for us to read when viewing issue reports. The log file instantly tells us important information like the versions of any other installed mods or if there are errors so it is very very important that you include it in your report.'
   - type: dropdown
     id: minecraft-version
     attributes:
       label: Minecraft Version
       description: What version of Minecraft are you running? If you do not know what version you are using, look in the bottom left corner of the main menu in game.
       options:
-        - 1.20.2
-        - 1.20.1
-        - 1.20
+        - "1.20.2"
+        - "1.20.1"
+        - "1.20"
     validations:
       required: true
   - type: input
