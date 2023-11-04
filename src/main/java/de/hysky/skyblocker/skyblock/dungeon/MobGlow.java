@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
@@ -12,8 +13,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class StarredMobGlow {
-
+public class MobGlow {
 	public static boolean shouldMobGlow(Entity entity) {
 		Box box = entity.getBoundingBox();
 
@@ -23,7 +23,7 @@ public class StarredMobGlow {
 			// Minibosses
 			if (entity instanceof PlayerEntity) {
 				switch (name) {
-					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return true;
+					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 					case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
 					"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid": return LividColor.shouldGlow(name);
 				}
@@ -33,11 +33,11 @@ public class StarredMobGlow {
 			if (!(entity instanceof ArmorStandEntity)) {
 				List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
 
-				if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯")) return true;
+				if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯")) return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 			}
 
 			// Bats
-			return entity instanceof BatEntity;
+			return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow && entity instanceof BatEntity;
 		}
 
 		return false;

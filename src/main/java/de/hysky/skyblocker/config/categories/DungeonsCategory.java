@@ -293,11 +293,19 @@ public class DungeonsCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip")))
-								.binding(defaults.locations.dungeons.lividColor.enableLividColor,
-										() -> config.locations.dungeons.lividColor.enableLividColor,
-										newValue -> config.locations.dungeons.lividColor.enableLividColor = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorGlow"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorGlow.@Tooltip")))
+								.binding(defaults.locations.dungeons.lividColor.enableLividColorGlow,
+										() -> config.locations.dungeons.lividColor.enableLividColorGlow,
+										newValue -> config.locations.dungeons.lividColor.enableLividColorGlow = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText.@Tooltip")))
+								.binding(defaults.locations.dungeons.lividColor.enableLividColorText,
+										() -> config.locations.dungeons.lividColor.enableLividColorText,
+										newValue -> config.locations.dungeons.lividColor.enableLividColorText = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
