@@ -71,4 +71,20 @@ public class LividColor {
         List<Text> nameTexts = armorStand.getName().getSiblings();
         return !nameTexts.isEmpty() && nameTexts.get(0).getStyle().getColor() == TextColor.fromFormatting(color);
     }
+
+    public static int getGlowColor(String name) {
+        return switch (name) {
+            case "Arcade Livid" -> Formatting.YELLOW.getColorValue();
+            case "Crossed Livid" -> Formatting.LIGHT_PURPLE.getColorValue();
+            case "Doctor Livid" -> Formatting.GRAY.getColorValue();
+            case "Frog Livid" -> Formatting.DARK_GREEN.getColorValue();
+            case "Hockey Livid" -> Formatting.RED.getColorValue();
+            case "Purple Livid" -> Formatting.DARK_PURPLE.getColorValue();
+            case "Scream Livid" -> Formatting.BLUE.getColorValue();
+            case "Smile Livid" -> Formatting.GREEN.getColorValue();
+            case "Vendetta Livid" -> Formatting.WHITE.getColorValue();
+
+            default -> Formatting.WHITE.getColorValue();
+        };
+    }
 }

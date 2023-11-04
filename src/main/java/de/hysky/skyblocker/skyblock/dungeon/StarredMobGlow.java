@@ -24,7 +24,8 @@ public class StarredMobGlow {
 					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy" -> {
 						return true;
 					}
-					default -> {
+					case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
+					"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid" -> {
 						List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
 
 						if (!armorStands.isEmpty() && LividColor.shouldGlow(armorStands.get(0))) {
@@ -53,11 +54,15 @@ public class StarredMobGlow {
 	}
 
 	public static int getGlowColor(Entity entity) {
+		String name = entity.getName().getString();
+
 		if (entity instanceof PlayerEntity) {
-			return switch (entity.getName().getString()) {
+			return switch (name) {
 				case "Lost Adventurer" -> 0xfee15c;
 				case "Shadow Assassin" -> 0x5b2cb2;
 				case "Diamond Guy" -> 0x57c2f7;
+				case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
+				"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid" -> LividColor.getGlowColor(name);
 				default -> 0xf57738;
 			};
 		}
