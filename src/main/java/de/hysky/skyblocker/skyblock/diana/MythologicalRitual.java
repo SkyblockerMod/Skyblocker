@@ -108,7 +108,7 @@ public class MythologicalRitual {
                 burrow.nextBurrowPlane[1] = Vec3d.of(pos).subtract(nextBurrowDirection).subtract(0, 50, 0);
                 burrow.nextBurrowPlane[2] = burrow.nextBurrowPlane[1].add(0, 100, 0);
                 burrow.nextBurrowPlane[3] = burrow.nextBurrowPlane[0].add(0, 100, 0);
-            } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType())) {
+            } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType()) && packet.getCount() == 2) {
                 if (System.currentTimeMillis() > lastEchoTime + 10_000) {
                     return;
                 }
