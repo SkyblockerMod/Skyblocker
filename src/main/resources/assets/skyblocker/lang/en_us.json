@@ -84,6 +84,8 @@
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Displays the attribute's level as the stack count and the initials of the attribute's name.",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Backgrounds",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item, the color represents the item's rarity.",
+  "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle": "Item Rarity Background Style",
+  "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "Choose between a circular or a square background style!",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
   "text.autoconfig.skyblocker.option.general.wikiLookup": "Wiki Lookup",
   "text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup": "Enable Wiki Lookup",
