@@ -7,14 +7,10 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
 import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.List;
 import java.util.Map;
 
 public class LividColor {
@@ -67,9 +63,20 @@ public class LividColor {
         tenTicks = 0;
     }
 
-    public static boolean shouldGlow(Entity armorStand) {
-        List<Text> nameTexts = armorStand.getName().getSiblings();
-        return !nameTexts.isEmpty() && nameTexts.get(0).getStyle().getColor() == TextColor.fromFormatting(color);
+    public static boolean shouldGlow(String name) {
+        return switch (name) {
+            case "Arcade Livid" -> color == Formatting.YELLOW;
+            case "Crossed Livid" -> color == Formatting.LIGHT_PURPLE;
+            case "Doctor Livid" -> color == Formatting.GRAY;
+            case "Frog Livid" -> color == Formatting.DARK_GREEN;
+            case "Hockey Livid" -> color == Formatting.RED;
+            case "Purple Livid" -> color == Formatting.DARK_PURPLE;
+            case "Scream Livid" -> color == Formatting.BLUE;
+            case "Smile Livid" -> color == Formatting.GREEN;
+            case "Vendetta Livid" -> color == Formatting.WHITE;
+
+            default -> false;
+        };
     }
 
     public static int getGlowColor(String name) {

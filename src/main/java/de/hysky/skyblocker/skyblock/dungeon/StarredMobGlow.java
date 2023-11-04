@@ -18,20 +18,14 @@ public class StarredMobGlow {
 		Box box = entity.getBoundingBox();
 
 		if (Utils.isInDungeons() && !entity.isInvisible() && OcclusionCulling.isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
+			String name = entity.getName().getString();
+
 			// Minibosses
 			if (entity instanceof PlayerEntity) {
-				switch (entity.getName().getString()) {
-					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy" -> {
-						return true;
-					}
+				switch (name) {
+					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return true;
 					case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
-					"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid" -> {
-						List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
-
-						if (!armorStands.isEmpty() && LividColor.shouldGlow(armorStands.get(0))) {
-							return true;
-						}
-					}
+					"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid": return LividColor.shouldGlow(name);
 				}
 			}
 
