@@ -188,6 +188,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Enable Map",
   "text.autoconfig.skyblocker.option.locations.dungeons.mapScreen": "Dungeon Map Placement Config...",
   "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "Map Scaling",
+  "text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker": "Player Secrets Tracker",
+  "text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker.@Tooltip": "Tracks the amount of secrets people in your dungeon run are doing.",
   "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow": "Starred Mob Glow",
   "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",

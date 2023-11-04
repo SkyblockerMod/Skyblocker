@@ -242,8 +242,8 @@ public class DungeonsCategory {
 						.controller(FloatFieldControllerBuilder::create)
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretsTracker"))
-						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretsTracker.@Tooltip")))
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker.@Tooltip")))
 						.binding(defaults.locations.dungeons.playerSecretsTracker,
 								() -> config.locations.dungeons.playerSecretsTracker,
 								newValue -> config.locations.dungeons.playerSecretsTracker = newValue)
