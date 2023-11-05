@@ -189,7 +189,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.mapScreen": "Dungeon Map Placement Config...",
   "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "Map Scaling",
   "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow": "Starred Mob Glow",
-  "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible. Also applies it to the correct Livid in F5/M5.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver": "Solve Blaze Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver.@Tooltip": "Boxes the correct blaze in green, also draws a line to and boxes the next blaze to kill in white.",
