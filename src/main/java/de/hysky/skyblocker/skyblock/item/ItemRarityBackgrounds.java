@@ -1,8 +1,14 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.SkyblockerMod;
+
+import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -16,16 +22,10 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class ItemRarityBackgrounds {
-	private static final Identifier RARITY_BG_TEX = new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background");
-	private static final Supplier<Sprite> SPRITE = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(RARITY_BG_TEX);
+	private static final SkyblockerConfig.ItemInfoDisplay CONFIG = SkyblockerConfigManager.get().general.itemInfoDisplay;
+	private static final Supplier<Sprite> SPRITE = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(CONFIG.itemRarityBackgroundStyle.tex);
 	private static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
 			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),
 			Map.entry("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it

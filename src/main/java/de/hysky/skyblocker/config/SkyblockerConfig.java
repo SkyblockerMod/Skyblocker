@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -10,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -498,7 +500,29 @@ public class SkyblockerConfig {
 		public boolean itemRarityBackgrounds = false;
 
 		@SerialEntry
+		public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
+
+		@SerialEntry
 		public float itemRarityBackgroundsOpacity = 1f;
+	}
+
+	public enum RarityBackgroundStyle {
+		CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
+		SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+
+		public final Identifier tex;
+
+		private RarityBackgroundStyle(Identifier tex) {
+			this.tex = tex;
+		}
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case CIRCULAR -> "Circular";
+				case SQUARE -> "Square";
+			};
+		}
 	}
 
 	public static class WikiLookup {

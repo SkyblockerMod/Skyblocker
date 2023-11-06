@@ -386,6 +386,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemInfoDisplay.itemRarityBackgrounds = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<SkyblockerConfig.RarityBackgroundStyle>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.itemRarityBackgroundStyle,
+										() -> config.general.itemInfoDisplay.itemRarityBackgroundStyle,
+										newValue -> config.general.itemInfoDisplay.itemRarityBackgroundStyle = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundsOpacity"))
 								.binding(defaults.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
