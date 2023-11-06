@@ -184,7 +184,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Ativar mapa",
     "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "Tamanho do mapa",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "Cor do Livid",
-    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor": "Ativar cor para Livid",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText": "Ativar cor para Livid",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Guia dos terminais",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Guia de seleção colorido",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder": "Guia de clique em ordem",
@@ -238,5 +238,5 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow": "Brilho em Mobs com estrela",
     "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "Aplicar o efeito de brilho para Mobs estrelados que estão visíveis.",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveTicTacToe": "Guia para o Puzzle do jogo da velha",
-    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColor.@Tooltip": "Mandar a cor do Livid no chat durante a luta contra Livid."
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText.@Tooltip": "Mandar a cor do Livid no chat durante a luta contra Livid."
 }

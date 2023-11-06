@@ -659,7 +659,10 @@ public class SkyblockerConfig {
 
 	public static class LividColor {
 		@SerialEntry
-		public boolean enableLividColor = true;
+		public boolean enableLividColorGlow = true;
+
+		@SerialEntry
+		public boolean enableLividColorText = true;
 
 		@SerialEntry
 		public String lividColorText = "The livid color is [color]";
