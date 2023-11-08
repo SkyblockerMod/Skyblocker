@@ -36,12 +36,7 @@
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
-    "accessor.WorldRendererAccessor",
-    "yacl.DoubleFieldControllerMixin",
-    "yacl.FloatFieldControllerMixin",
-    "yacl.IntegerFieldControllerMixin",
-    "yacl.LongFieldControllerMixin",
-    "yacl.NumberFieldControllerMixin"
+    "accessor.WorldRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
