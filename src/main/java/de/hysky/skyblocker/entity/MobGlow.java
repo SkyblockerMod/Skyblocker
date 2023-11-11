@@ -1,6 +1,9 @@
-package de.hysky.skyblocker.skyblock.dungeon;
+package de.hysky.skyblocker.entity;
+
+import java.util.List;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
@@ -10,8 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class MobGlow {
 	public static boolean shouldMobGlow(Entity entity) {

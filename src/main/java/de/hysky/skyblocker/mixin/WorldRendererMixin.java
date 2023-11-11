@@ -9,7 +9,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
-import de.hysky.skyblocker.skyblock.dungeon.MobGlow;
+import de.hysky.skyblocker.entity.MobGlow;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
 
