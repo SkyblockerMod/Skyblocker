@@ -47,6 +47,14 @@ public class LocationsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.blobbercystGlow"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.blobbercystGlow.@Tooltip")))
+								.binding(defaults.locations.rift.blobbercystGlow,
+										() -> config.locations.rift.blobbercystGlow,
+										newValue -> config.locations.rift.blobbercystGlow = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints.@Tooltip")))
 								.binding(defaults.locations.rift.enigmaSoulWaypoints,
