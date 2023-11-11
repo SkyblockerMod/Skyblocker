@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.entity;
+package de.hysky.skyblocker.skyblock.entity;
 
 import java.util.List;
 
