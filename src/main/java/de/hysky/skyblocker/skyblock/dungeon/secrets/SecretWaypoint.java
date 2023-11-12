@@ -136,7 +136,7 @@ public class SecretWaypoint extends Waypoint {
         }
 
         private static Category get(JsonObject waypointJson) {
-            return CODEC.parse(JsonOps.INSTANCE, waypointJson.get("category")).resultOrPartial(DungeonSecrets.LOGGER::error).orElseThrow();
+            return CODEC.parse(JsonOps.INSTANCE, waypointJson.get("category")).resultOrPartial(DungeonSecrets.LOGGER::error).orElse(Category.DEFAULT);
         }
 
         boolean needsInteraction() {

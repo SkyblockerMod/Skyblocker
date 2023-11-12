@@ -110,7 +110,7 @@ public class Room {
 
     @Override
     public String toString() {
-        return "Room{type=" + type + ", shape=" + shape + ", matchState=" + matchState + ", segments=" + Arrays.toString(segments.toArray()) + "}";
+        return "Room{type=%s, segments=%s, shape=%s, matchState=%s, name=%s, direction=%s, physicalCornerPos=%s}".formatted(type, Arrays.toString(segments.toArray()), shape, matchState, name, direction, physicalCornerPos);
     }
 
     @NotNull
@@ -271,7 +271,7 @@ public class Room {
                 }
             }
         }).exceptionally(e -> {
-            DungeonSecrets.LOGGER.error("[Skyblocker Dungeon Secrets] Encountered an unknown error while matching room {}", this, e);
+            DungeonSecrets.LOGGER.error("[Skyblocker Dungeon Secrets] Encountered an unknown exception while matching room {}", this, e);
             return null;
         });
     }
@@ -335,28 +335,32 @@ public class Room {
         if (id == 0) {
             return false;
         }
-        possibleRooms.removeIf(directionRooms -> {
+        for (MutableTriple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
             int block = posIdToInt(DungeonMapUtils.actualToRelative(directionRooms.getLeft(), directionRooms.getMiddle(), pos), id);
-            directionRooms.getRight().removeIf(room -> Arrays.binarySearch(roomsData.get(room), block) < 0);
-            return directionRooms.getRight().isEmpty();
-        });
+            List<String> possibleDirectionRooms = new ArrayList<>();
+            for (String room : directionRooms.getRight()) {
+                if (Arrays.binarySearch(roomsData.get(room), block) >= 0) {
+                    possibleDirectionRooms.add(room);
+                }
+            }
+            directionRooms.setRight(possibleDirectionRooms);
+        }
 
         int matchingRoomsSize = possibleRooms.stream().map(Triple::getRight).mapToInt(Collection::size).sum();
         if (matchingRoomsSize == 0) {
             // If no rooms match, reset the fields and scan again after 50 ticks.
-            DungeonSecrets.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks + 1);
+            DungeonSecrets.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
             Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
             reset();
             return true;
         } else if (matchingRoomsSize == 1) {
             if (matchState == MatchState.MATCHING) {
                 // If one room matches, load the secrets for that room and set state to double-checking.
-                assert possibleRooms.size() == 1;
-                Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.get(0);
-                assert directionRoom.getRight().size() == 1;
+                Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.stream().filter(directionRooms -> directionRooms.getRight().size() == 1).findAny().orElseThrow();
                 name = directionRoom.getRight().get(0);
                 direction = directionRoom.getLeft();
                 physicalCornerPos = directionRoom.getMiddle();
+                DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
                 roomMatched();
                 return false;
             } else if (matchState == MatchState.DOUBLE_CHECKING && ++doubleCheckBlocks >= 10) {
@@ -402,7 +406,6 @@ public class Room {
         }
         DungeonSecrets.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
         matchState = MatchState.DOUBLE_CHECKING;
-        DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
     }
 
     /**
