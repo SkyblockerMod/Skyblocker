@@ -3,20 +3,23 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
-import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -32,10 +35,16 @@ import org.slf4j.Logger;
 
 public class RenderHelper {
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Identifier TRANSLUCENT_DRAW = new Identifier(SkyblockerMod.NAMESPACE, "translucent_draw");
     private static final MethodHandle SCHEDULE_DEFERRED_RENDER_TASK = getDeferredRenderTaskHandle();
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient client = MinecraftClient.getInstance();
+
+    public static void init() {
+        WorldRenderEvents.AFTER_TRANSLUCENT.addPhaseOrdering(Event.DEFAULT_PHASE, TRANSLUCENT_DRAW);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(TRANSLUCENT_DRAW, RenderHelper::drawTranslucents);
+    }
 
     public static void renderFilledThroughWallsWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         renderFilledThroughWalls(context, pos, colorComponents, alpha);
@@ -247,14 +256,12 @@ public class RenderHelper {
         matrices.pop();
     }
 
-    public static void drawGlobalObjectsAfterAfterTranslucent(VertexConsumerProvider.Immediate immediate) {
-    	//Filled Blocks
-    	immediate.draw(SRenderLayers.getFilled());
-    	immediate.draw(SRenderLayers.getFilledThroughWalls());
-
-    	//Beacon Beams
-    	immediate.draw(RenderLayer.getBeaconBeam(BeaconBlockEntityRenderer.BEAM_TEXTURE, false));
-    	immediate.draw(RenderLayer.getBeaconBeam(BeaconBlockEntityRenderer.BEAM_TEXTURE, true));
+    /**
+     * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
+     */
+    private static void drawTranslucents(WorldRenderContext context) {
+        //Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why
+        ((VertexConsumerProvider.Immediate) context.consumers()).draw();
     }
 
     public static void runOnRenderThread(Runnable runnable) {
