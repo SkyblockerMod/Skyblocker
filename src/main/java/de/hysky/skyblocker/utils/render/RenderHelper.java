@@ -12,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
+import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
@@ -76,13 +77,8 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
 
-            Tessellator tessellator = RenderSystem.renderThreadTesselator();
-            BufferBuilder buffer = tessellator.getBuffer();
-            VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(buffer);
+            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickDelta(), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, colorComponents);
 
-            BeaconBlockEntityRendererInvoker.renderBeam(matrices, consumer, context.tickDelta(), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, colorComponents);
-
-            consumer.draw();
             matrices.pop();
         }
     }
@@ -251,13 +247,14 @@ public class RenderHelper {
         matrices.pop();
     }
 
-    public static void drawGlobalObjectsAfterTranslucent() {
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
-    	VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-
+    public static void drawGlobalObjectsAfterAfterTranslucent(VertexConsumerProvider.Immediate immediate) {
+    	//Filled Blocks
     	immediate.draw(SRenderLayers.getFilled());
     	immediate.draw(SRenderLayers.getFilledThroughWalls());
+
+    	//Beacon Beams
+    	immediate.draw(RenderLayer.getBeaconBeam(BeaconBlockEntityRenderer.BEAM_TEXTURE, false));
+    	immediate.draw(RenderLayer.getBeaconBeam(BeaconBlockEntityRenderer.BEAM_TEXTURE, true));
     }
 
     public static void runOnRenderThread(Runnable runnable) {
