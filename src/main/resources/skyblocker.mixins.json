@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "AbstractInventoryScreenMixin",
+    "AfterTranslucentMixin",
     "ArmorTrimMixin",
     "BatEntityMixin",
     "ClientPlayerEntityMixin",

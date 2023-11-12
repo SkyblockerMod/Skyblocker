@@ -46,33 +46,16 @@ public class RenderHelper {
     private static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
 
         matrices.push();
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.polygonOffset(-1f, -10f);
-        RenderSystem.enablePolygonOffset();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
-        RenderSystem.disableCull();
+        VertexConsumerProvider consumers = context.consumers();
+        VertexConsumer buffer = throughWalls ? consumers.getBuffer(SRenderLayers.getFilledThroughWalls()) : consumers.getBuffer(SRenderLayers.getFilled());
 
-        buffer.begin(DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
         WorldRenderer.renderFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
-        tessellator.draw();
 
         matrices.pop();
-        RenderSystem.polygonOffset(0f, 0f);
-        RenderSystem.disablePolygonOffset();
-        RenderSystem.disableBlend();
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        RenderSystem.enableCull();
     }
 
     private static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
@@ -258,6 +241,15 @@ public class RenderHelper {
         matrices.pop();
     }
 
+    public static void drawGlobalObjectsAfterTranslucent() {
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder buffer = tessellator.getBuffer();
+    	VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
+    	
+    	immediate.draw(SRenderLayers.getFilled());
+    	immediate.draw(SRenderLayers.getFilledThroughWalls());
+    }
+
     /**
      * Adds the title to {@link TitleContainer} and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
      * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
@@ -284,8 +276,8 @@ public class RenderHelper {
     }
 
     private static void playNotificationSound() {
-        if (MinecraftClient.getInstance().player != null) {
-            MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
+        if (client.player != null) {
+            client.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
         }
     }
 
