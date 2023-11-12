@@ -11,12 +11,12 @@ public class Waypoint {
     protected static final float DEFAULT_HIGHLIGHT_ALPHA = 0.5f;
     protected static final float DEFAULT_LINE_WIDTH = 5f;
     public final BlockPos pos;
-    private final Box box;
-    private final Supplier<Type> typeSupplier;
-    private final float[] colorComponents;
-    private final float alpha;
-    private final float lineWidth;
-    private final boolean throughWalls;
+    final Box box;
+    final Supplier<Type> typeSupplier;
+    final float[] colorComponents;
+    final float alpha;
+    final float lineWidth;
+    final boolean throughWalls;
     private boolean shouldRender;
 
     protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents) {
