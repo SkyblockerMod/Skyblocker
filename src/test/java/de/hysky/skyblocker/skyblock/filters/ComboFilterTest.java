@@ -9,7 +9,7 @@ public class ComboFilterTest extends ChatFilterTest<ComboFilter> {
 
     @Test
     void testComboMF() {
-        assertMatches("+5 Kill Combo +3% ✯ Magic Find");
+        assertMatches("+5 Kill Combo +3✯ Magic Find");
     }
 
     @Test
@@ -18,8 +18,13 @@ public class ComboFilterTest extends ChatFilterTest<ComboFilter> {
     }
 
     @Test
-    void testComboEXP() {
-        assertMatches("+20 Kill Combo +15% Combat Exp");
+    void testComboWisdom() {
+        assertMatches("+20 Kill Combo +15☯ Combat Wisdom");
+    }
+
+    @Test
+    void testComboNoBonus() {
+        assertMatches("+50 Kill Combo");
     }
 
     @Test
