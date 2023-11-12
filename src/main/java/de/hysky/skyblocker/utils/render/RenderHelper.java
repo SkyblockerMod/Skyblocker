@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.logging.LogUtils;
+
 import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -17,11 +19,19 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.slf4j.Logger;
 
 public class RenderHelper {
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final MethodHandle SCHEDULE_DEFERRED_RENDER_TASK = getDeferredRenderTaskHandle();
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -253,7 +263,17 @@ public class RenderHelper {
     public static void runOnRenderThread(Runnable runnable) {
         if (RenderSystem.isOnRenderThread()) {
             runnable.run();
-        } else {
+
+            return;
+        } else if (SCHEDULE_DEFERRED_RENDER_TASK != null) { //Sodium
+            try {
+                SCHEDULE_DEFERRED_RENDER_TASK.invokeExact(runnable);
+            } catch (Throwable t) {
+                LOGGER.error("[Skyblocker] Failed to schedule a render task!", t);
+            }
+
+            return;
+        } else { //Vanilla
             RenderSystem.recordRenderCall(() -> runnable.run());
         }
     }
@@ -291,5 +311,18 @@ public class RenderHelper {
 
     public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+    }
+    
+    private static MethodHandle getDeferredRenderTaskHandle() {
+        try {
+            Class<?> deferredTaskClass = Class.forName("me.jellysquid.mods.sodium.client.render.util.DeferredRenderTask");
+
+            MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            MethodType mt = MethodType.methodType(void.class, Runnable.class);
+
+            return lookup.findStatic(deferredTaskClass, "schedule", mt);
+        } catch (Throwable ignored) {}
+
+        return null;
     }
 }
