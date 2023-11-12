@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.special;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.Enchantments;
@@ -58,15 +58,10 @@ public class SpecialEffects {
 						ItemStack stack = getStackFromName(matcher.group("item"));
 
 						if (!stack.isEmpty()) {
-							if (RenderSystem.isOnRenderThread()) {
+							RenderHelper.runOnRenderThread(() -> {
 								client.particleManager.addEmitter(client.player, ParticleTypes.PORTAL, 30);
 								client.gameRenderer.showFloatingItem(stack);
-							} else {
-								RenderSystem.recordRenderCall(() -> {
-									client.particleManager.addEmitter(client.player, ParticleTypes.PORTAL, 30);
-									client.gameRenderer.showFloatingItem(stack);
-								});
-							}
+							});
 						}
 					}
 				}

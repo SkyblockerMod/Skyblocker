@@ -245,9 +245,17 @@ public class RenderHelper {
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
         BufferBuilder buffer = tessellator.getBuffer();
     	VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-    	
+
     	immediate.draw(SRenderLayers.getFilled());
     	immediate.draw(SRenderLayers.getFilledThroughWalls());
+    }
+
+    public static void runOnRenderThread(Runnable runnable) {
+        if (RenderSystem.isOnRenderThread()) {
+            runnable.run();
+        } else {
+            RenderSystem.recordRenderCall(() -> runnable.run());
+        }
     }
 
     /**
