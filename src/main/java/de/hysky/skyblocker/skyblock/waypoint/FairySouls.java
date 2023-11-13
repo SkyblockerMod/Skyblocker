@@ -12,7 +12,6 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -97,18 +96,18 @@ public class FairySouls {
     }
 
     private static void saveFoundFairySouls(MinecraftClient client) {
-        try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
-            Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
-            for (Map.Entry<String, Map<BlockPos, ProfileAwareWaypoint>> fairiesForLocation : fairySouls.entrySet()) {
-                for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
-                    for (String profile : fairySoul.foundProfiles) {
-                        foundFairies.putIfAbsent(profile, new HashMap<>());
-                        foundFairies.get(profile).putIfAbsent(fairiesForLocation.getKey(), new HashSet<>());
-                        foundFairies.get(profile).get(fairiesForLocation.getKey()).add(fairySoul.pos);
-                    }
+        Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
+        for (Map.Entry<String, Map<BlockPos, ProfileAwareWaypoint>> fairiesForLocation : fairySouls.entrySet()) {
+            for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
+                for (String profile : fairySoul.foundProfiles) {
+                    foundFairies.computeIfAbsent(profile, profile_ -> new HashMap<>());
+                    foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), location_ -> new HashSet<>());
+                    foundFairies.get(profile).get(fairiesForLocation.getKey()).add(fairySoul.pos);
                 }
             }
+        }
 
+        try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
             JsonObject foundFairiesJson = new JsonObject();
             for (Map.Entry<String, Map<String, Set<BlockPos>>> foundFairiesForProfile : foundFairies.entrySet()) {
                 JsonObject foundFairiesForProfileJson = new JsonObject();
@@ -152,8 +151,7 @@ public class FairySouls {
                 if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(context.camera().getPos()) > 2500) {
                     continue;
                 }
-                float[] colorComponents = fairySoulNotFound ? DyeColor.GREEN.getColorComponents() : DyeColor.RED.getColorComponents();
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoul.pos, colorComponents, 0.5F);
+                fairySoul.render(context);
             }
         }
     }
@@ -184,7 +182,7 @@ public class FairySouls {
                 .filter(Waypoint::shouldRender)
                 .min(Comparator.comparingDouble(fairySoul -> fairySoul.pos.getSquaredDistance(player.getPos())))
                 .filter(fairySoul -> fairySoul.pos.getSquaredDistance(player.getPos()) <= 16)
-                .ifPresent(ProfileAwareWaypoint::setFound);
+                .ifPresent(Waypoint::setFound);
     }
 
     public static void markAllFairiesOnCurrentIslandFound() {
