@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Test;
 
 public class WaypointTest {
     private Waypoint.Type type;
+    private final float[] colorComponents = new float[]{0f, 0.5f, 1f};
 
     @Test
     void testDefaultConstructor() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, new float[]{0f, 0.5f, 1f});
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents);
         Assertions.assertEquals(BlockPos.ORIGIN, waypoint.pos);
         Assertions.assertEquals(new Box(BlockPos.ORIGIN), waypoint.box);
         Assertions.assertEquals(type, waypoint.typeSupplier.get());
@@ -25,37 +26,37 @@ public class WaypointTest {
 
     @Test
     void testTypeConstructor() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, Waypoint.Type.WAYPOINT, new float[]{0, 0, 0}, Waypoint.DEFAULT_HIGHLIGHT_ALPHA);
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, Waypoint.Type.WAYPOINT, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA);
         Assertions.assertEquals(Waypoint.Type.WAYPOINT, waypoint.typeSupplier.get());
     }
 
     @Test
     void testAlphaConstructor() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, new float[]{0, 0, 0}, 1f);
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, 1f);
         Assertions.assertEquals(1f, waypoint.alpha);
     }
 
     @Test
     void testLineWidthConstructor() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, new float[]{0, 0, 0}, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, 10f);
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, 10f);
         Assertions.assertEquals(10f, waypoint.lineWidth);
     }
 
     @Test
     void testThroughWallsConstructor() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, new float[]{0, 0, 0}, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, false);
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, false);
         Assertions.assertFalse(waypoint.throughWalls);
     }
 
     @Test
     void testShouldRenderConstructor() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, new float[]{0, 0, 0}, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, true, false);
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, true, false);
         Assertions.assertFalse(waypoint.shouldRender());
     }
 
     @Test
     void testFound() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, new float[]{0, 0, 0});
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents);
         Assertions.assertTrue(waypoint.shouldRender());
         waypoint.setFound();
         Assertions.assertFalse(waypoint.shouldRender());
@@ -65,7 +66,7 @@ public class WaypointTest {
 
     @Test
     void testType() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, new float[]{0, 0, 0});
+        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents);
         Assertions.assertEquals(type, waypoint.typeSupplier.get());
         type = Waypoint.Type.WAYPOINT;
         Assertions.assertEquals(type, waypoint.typeSupplier.get());

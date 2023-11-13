@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.FairySouls;
+import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import net.minecraft.client.MinecraftClient;

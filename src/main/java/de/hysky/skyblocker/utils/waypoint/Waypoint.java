@@ -62,19 +62,25 @@ public class Waypoint {
         this.shouldRender = true;
     }
 
+    protected float[] getColorComponents() {
+        return colorComponents;
+    }
+
     public void render(WorldRenderContext context) {
         switch (typeSupplier.get()) {
-            case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, colorComponents, alpha);
+            case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, getColorComponents(), alpha);
             case OUTLINED_WAYPOINT -> {
+                float[] colorComponents = getColorComponents();
                 RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, colorComponents, alpha);
                 RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
             }
-            case HIGHLIGHT -> RenderHelper.renderFilledThroughWalls(context, pos, colorComponents, alpha);
+            case HIGHLIGHT -> RenderHelper.renderFilledThroughWalls(context, pos, getColorComponents(), alpha);
             case OUTLINED_HIGHLIGHT -> {
+                float[] colorComponents = getColorComponents();
                 RenderHelper.renderFilledThroughWalls(context, pos, colorComponents, alpha);
                 RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
             }
-            case OUTLINE -> RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
+            case OUTLINE -> RenderHelper.renderOutline(context, box, getColorComponents(), lineWidth, throughWalls);
         }
     }
 

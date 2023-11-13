@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.spidersden;
+package de.hysky.skyblocker.skyblock.waypoint;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
