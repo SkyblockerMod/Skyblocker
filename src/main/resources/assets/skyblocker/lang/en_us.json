@@ -228,6 +228,8 @@
 
   "text.autoconfig.skyblocker.option.locations.rift": "The Rift",
   "text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints": "Enable Mirrorverse Waypoints",
+  "text.autoconfig.skyblocker.option.locations.rift.blobbercystGlow": "Blobbercyst Glow",
+  "text.autoconfig.skyblocker.option.locations.rift.blobbercystGlow.@Tooltip": "Applies the glowing effect to the Blobbercysts from the BACTE fight.",
   "text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints": "Enable Enigma Soul Waypoints",
   "text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints.@Tooltip": "Note: Many enigma souls have a small task you must complete in order to get it, so its recommended to also watch a YouTube video when finding them.",
   "text.autoconfig.skyblocker.option.locations.rift.highlightFoundEnigmaSouls": "Highlight Found Enigma Souls",
