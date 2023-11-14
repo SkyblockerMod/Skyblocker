@@ -350,10 +350,18 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate"))
-								.binding(defaults.general.itemTooltip.enableMuseumDate,
-										() -> config.general.itemTooltip.enableMuseumDate,
-										newValue -> config.general.itemTooltip.enableMuseumDate = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableObtainedDate"))
+								.binding(defaults.general.itemTooltip.enableObtainedDate,
+										() -> config.general.itemTooltip.enableObtainedDate,
+										newValue -> config.general.itemTooltip.enableObtainedDate = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumInfo"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumInfo.@Tooltip")))
+								.binding(defaults.general.itemTooltip.enableMuseumInfo,
+										() -> config.general.itemTooltip.enableMuseumInfo,
+										newValue -> config.general.itemTooltip.enableMuseumInfo = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()

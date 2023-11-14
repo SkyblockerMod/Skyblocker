@@ -486,7 +486,10 @@ public class SkyblockerConfig {
 		public boolean enableBazaarPrice = true;
 
 		@SerialEntry
-		public boolean enableMuseumDate = true;
+		public boolean enableObtainedDate = true;
+
+		@SerialEntry
+		public boolean enableMuseumInfo = true;
 
 		@SerialEntry
 		public boolean enableExoticTooltip = true;

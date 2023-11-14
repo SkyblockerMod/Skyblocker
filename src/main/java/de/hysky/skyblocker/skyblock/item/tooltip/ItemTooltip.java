@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -146,23 +147,38 @@ public class ItemTooltip {
                     .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), count)));
         }
 
-        if (TooltipInfoType.MUSEUM.isTooltipEnabled() && !bazaarOpened) {
+        if (TooltipInfoType.OBTAINED.isTooltipEnabled()) {
             String timestamp = getTimestamp(stack);
 
-            if (TooltipInfoType.MUSEUM.hasOrNullWarning(internalID)) {
-                String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
-                String format = switch (itemCategory) {
-                    case "Weapons" -> "%-18s";
-                    case "Armor" -> "%-19s";
-                    default -> "%-20s";
-                };
-                lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
-                        .formatted(Formatting.LIGHT_PURPLE)
-                        .append(Text.literal(timestamp).formatted(Formatting.RED)));
-            } else if (!timestamp.isEmpty()) {
+            if (!timestamp.isEmpty()) {
                 lines.add(Text.literal(String.format("%-21s", "Obtained: "))
                         .formatted(Formatting.LIGHT_PURPLE)
                         .append(Text.literal(timestamp).formatted(Formatting.RED)));
+            }
+        }
+
+        if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID) && !bazaarOpened) {
+            String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
+            String format = switch (itemCategory) {
+                case "Weapons" -> "%-18s";
+                case "Armor" -> "%-19s";
+                default -> "%-20s";
+            };
+
+            //Special case the special category so that it doesn't always display not donated
+            if (itemCategory.equals("Special")) {
+                lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
+                        .formatted(Formatting.LIGHT_PURPLE));
+            } else {
+                NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
+                boolean isInMuseum = (extraAttributes.contains("donated_museum") && extraAttributes.getBoolean("donated_museum")) || MuseumItemCache.hasItemInMuseum(internalID);
+
+                Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
+
+                lines.add(Text.literal(String.format(format, "Museum (" + itemCategory + "):"))
+                        .formatted(Formatting.LIGHT_PURPLE)
+                        .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
+                        .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
             }
         }
 

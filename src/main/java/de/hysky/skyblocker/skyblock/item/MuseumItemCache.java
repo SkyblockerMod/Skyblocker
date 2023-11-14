@@ -128,7 +128,7 @@ public class MuseumItemCache {
 
 	public static boolean hasItemInMuseum(String id) {
 		String uuid = UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
-		ObjectOpenHashSet<String> collectedItemIds = MUSEUM_ITEM_CACHE.get(uuid).get(Utils.getProfileId()).collectedItemIds();
+		ObjectOpenHashSet<String> collectedItemIds = (!MUSEUM_ITEM_CACHE.containsKey(uuid) || Utils.getProfileId().isBlank() || !MUSEUM_ITEM_CACHE.get(uuid).containsKey(Utils.getProfileId())) ? null : MUSEUM_ITEM_CACHE.get(uuid).get(Utils.getProfileId()).collectedItemIds();
 
 		return collectedItemIds != null && collectedItemIds.contains(id);
 	}

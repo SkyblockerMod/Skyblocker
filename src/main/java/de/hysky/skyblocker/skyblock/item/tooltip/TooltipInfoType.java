@@ -20,7 +20,8 @@ public enum TooltipInfoType implements Runnable {
     ONE_DAY_AVERAGE("https://moulberry.codes/auction_averages_lbin/1day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     THREE_DAY_AVERAGE("https://moulberry.codes/auction_averages_lbin/3day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     MOTES("https://hysky.de/api/motesprice", itemTooltip -> itemTooltip.enableMotesPrice, itemTooltip -> itemTooltip.enableMotesPrice && Utils.isInTheRift(), true),
-    MUSEUM("https://hysky.de/api/museum", itemTooltip -> itemTooltip.enableMuseumDate, true),
+    OBTAINED(itemTooltip -> itemTooltip.enableObtainedDate),
+    MUSEUM("https://hysky.de/api/museum", itemTooltip -> itemTooltip.enableMuseumInfo, true),
     COLOR("https://hysky.de/api/color", itemTooltip -> itemTooltip.enableExoticTooltip, true);
 
     private final String address;
@@ -29,6 +30,13 @@ public enum TooltipInfoType implements Runnable {
     private JsonObject data;
     private final boolean cacheable;
     private long hash;
+
+    /**
+     * Use this for when you're adding tooltip info that has no data associated with it
+     */
+    TooltipInfoType(Predicate<SkyblockerConfig.ItemTooltip> enabled) {
+        this(null, itemTooltip -> false, enabled, null, false);
+    }
 
     /**
      * @param address   the address to download the data from
