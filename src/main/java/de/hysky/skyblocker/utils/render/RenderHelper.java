@@ -1,11 +1,16 @@
 package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.logging.LogUtils;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
@@ -14,17 +19,32 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.slf4j.Logger;
 
 public class RenderHelper {
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Identifier TRANSLUCENT_DRAW = new Identifier(SkyblockerMod.NAMESPACE, "translucent_draw");
+    private static final MethodHandle SCHEDULE_DEFERRED_RENDER_TASK = getDeferredRenderTaskHandle();
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient client = MinecraftClient.getInstance();
+
+    public static void init() {
+        WorldRenderEvents.AFTER_TRANSLUCENT.addPhaseOrdering(Event.DEFAULT_PHASE, TRANSLUCENT_DRAW);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(TRANSLUCENT_DRAW, RenderHelper::drawTranslucents);
+    }
 
     public static void renderFilledThroughWallsWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
         renderFilledThroughWalls(context, pos, colorComponents, alpha);
@@ -46,33 +66,16 @@ public class RenderHelper {
     private static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
 
         matrices.push();
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.polygonOffset(-1f, -10f);
-        RenderSystem.enablePolygonOffset();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
-        RenderSystem.disableCull();
+        VertexConsumerProvider consumers = context.consumers();
+        VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
 
-        buffer.begin(DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
         WorldRenderer.renderFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
-        tessellator.draw();
 
         matrices.pop();
-        RenderSystem.polygonOffset(0f, 0f);
-        RenderSystem.disablePolygonOffset();
-        RenderSystem.disableBlend();
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        RenderSystem.enableCull();
     }
 
     private static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
@@ -83,13 +86,8 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
 
-            Tessellator tessellator = RenderSystem.renderThreadTesselator();
-            BufferBuilder buffer = tessellator.getBuffer();
-            VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(buffer);
+            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickDelta(), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, colorComponents);
 
-            BeaconBlockEntityRendererInvoker.renderBeam(matrices, consumer, context.tickDelta(), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, colorComponents);
-
-            consumer.draw();
             matrices.pop();
         }
     }
@@ -259,6 +257,28 @@ public class RenderHelper {
     }
 
     /**
+     * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
+     */
+    private static void drawTranslucents(WorldRenderContext context) {
+        //Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why
+        ((VertexConsumerProvider.Immediate) context.consumers()).draw();
+    }
+
+    public static void runOnRenderThread(Runnable runnable) {
+        if (RenderSystem.isOnRenderThread()) {
+            runnable.run();
+        } else if (SCHEDULE_DEFERRED_RENDER_TASK != null) { //Sodium
+            try {
+                SCHEDULE_DEFERRED_RENDER_TASK.invokeExact(runnable);
+            } catch (Throwable t) {
+                LOGGER.error("[Skyblocker] Failed to schedule a render task!", t);
+            }
+        } else { //Vanilla
+            RenderSystem.recordRenderCall(runnable::run);
+        }
+    }
+
+    /**
      * Adds the title to {@link TitleContainer} and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
      * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
      *
@@ -284,12 +304,26 @@ public class RenderHelper {
     }
 
     private static void playNotificationSound() {
-        if (MinecraftClient.getInstance().player != null) {
-            MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
+        if (client.player != null) {
+            client.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
         }
     }
 
     public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+    }
+
+    // TODO Get rid of reflection once the new Sodium is released
+    private static MethodHandle getDeferredRenderTaskHandle() {
+        try {
+            Class<?> deferredTaskClass = Class.forName("me.jellysquid.mods.sodium.client.render.util.DeferredRenderTask");
+
+            MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            MethodType mt = MethodType.methodType(void.class, Runnable.class);
+
+            return lookup.findStatic(deferredTaskClass, "schedule", mt);
+        } catch (Throwable ignored) {}
+
+        return null;
     }
 }

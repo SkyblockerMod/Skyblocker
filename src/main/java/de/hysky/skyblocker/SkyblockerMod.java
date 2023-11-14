@@ -27,6 +27,7 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolverManager;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -115,6 +116,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SecretsTracker.init();
         ApiUtils.init();
         Debug.init();
+        RenderHelper.init();
         containerSolverManager.init();
         statusBarTracker.init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
