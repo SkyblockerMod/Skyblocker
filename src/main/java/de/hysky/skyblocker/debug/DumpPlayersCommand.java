@@ -1,16 +1,14 @@
 package de.hysky.skyblocker.debug;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class DumpPlayersCommand {
 	
@@ -20,14 +18,13 @@ public class DumpPlayersCommand {
 						.then(literal("dumpPlayers")
 								.executes(context -> {
 									FabricClientCommandSource source = context.getSource();
-									MinecraftClient client = source.getClient();
-									
-									client.world.getEntities().forEach(e -> {
+
+									source.getWorld().getEntities().forEach(e -> {
 										if (e instanceof PlayerEntity player) {
-											source.sendFeedback(Text.of("\"" + player.getName().getString() + "\""));
+											source.sendFeedback(Text.of("'" + player.getName().getString() + "'"));
 										}
 									});
-									
+
 									return Command.SINGLE_SUCCESS;
 								}))));
 	}
