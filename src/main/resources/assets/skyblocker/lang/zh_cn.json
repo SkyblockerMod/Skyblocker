@@ -26,7 +26,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.BOTH": "同时显示",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "显示最低BIN（立即购买）价格",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "显示集市购买/卖出价格",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "显示博物馆与日期信息",
     "text.autoconfig.skyblocker.option.general.hitbox": "碰撞箱",
     "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "启用1.8的农田碰撞箱",
     "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "启用1.8的拉杆碰撞箱",

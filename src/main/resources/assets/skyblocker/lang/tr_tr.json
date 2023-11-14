@@ -8,7 +8,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.THREE_DAY": "3 günlük",
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.BOTH": "İkisi de",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Pazar alış/satış fiyatını göster",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Müze ve tarih bilgisini göster",
     "text.autoconfig.skyblocker.option.general.hitbox": "Hitbox'lar",
     "skyblocker.itemTooltip.nullMessage": "§cEşya açıklamasındaki ürün fiyat bilgisi en fazla 60 saniye içinde yenilenecektir. Aksi takdirde latest.log dosyasını kontrol edin",
     "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "1.8 tarım hitboxlarını etkinleştir",

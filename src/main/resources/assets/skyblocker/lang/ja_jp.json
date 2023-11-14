@@ -19,7 +19,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "何日間の平均の値段を表示するか選べます",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "最安価の表示を表示する",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "バザーでの売り買いの値段を表示する",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "ミュージアムに寄付したか、またその日を表示する",
     "text.autoconfig.skyblocker.option.general.hitbox": "ヒットボックス",
     "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "バージョン1.8での作物のヒットボックスを使う",
     "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "バージョン1.8でのレバーのヒットボックスを使う",

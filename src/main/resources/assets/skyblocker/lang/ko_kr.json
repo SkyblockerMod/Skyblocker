@@ -26,7 +26,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.BOTH": "둘 다",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "최저 BIN 가격 활성화",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Bazaar 매매 가격 활성화",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Museum 과 날짜 활성화",
     "text.autoconfig.skyblocker.option.general.hitbox": "히트박스",
     "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "1.8 농지 히트박스 활성화",
     "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "1.8 레버 히트박스 활성화",

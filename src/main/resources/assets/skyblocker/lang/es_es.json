@@ -25,7 +25,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.BOTH": "Ambos",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Habilitar el precio mas bajo de BIN",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Habilitar los precios de compra/venta del Bazar",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Habilitar Fecha del Museo",
     "text.autoconfig.skyblocker.option.general.hitbox": "Cajas de Colisión",
     "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "Habilitar la Caja de Colisión de la 1.8 para la tierra de cultivo",
     "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "Habilitar la Caja de Colisión de la 1.8 para la palanca",
