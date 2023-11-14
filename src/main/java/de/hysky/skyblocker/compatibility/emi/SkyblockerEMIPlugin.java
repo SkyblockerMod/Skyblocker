@@ -7,6 +7,7 @@ import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
+import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
@@ -21,7 +22,10 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
-        ItemRepository.getItemsStream().map(EmiStack::of).forEach(registry::addEmiStack);
+        ItemRepository.getItemsStream().map(EmiStack::of).forEach(emiStack -> {
+            registry.addEmiStack(emiStack);
+            registry.setDefaultComparison(emiStack, Comparison.compareNbt());
+        });
         registry.addCategory(SKYBLOCK);
         registry.addWorkstation(SKYBLOCK, EmiStack.of(Items.CRAFTING_TABLE));
         ItemRepository.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);

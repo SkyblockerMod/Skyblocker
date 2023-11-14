@@ -20,6 +20,8 @@ import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -27,6 +29,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 public class SecretWaypoint extends Waypoint {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
     public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
             Category.CODEC.fieldOf("category").forGetter(secretWaypoint -> secretWaypoint.category),
@@ -35,8 +38,8 @@ public class SecretWaypoint extends Waypoint {
     ).apply(instance, SecretWaypoint::new));
     public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
-    private static final SkyblockerConfig.SecretWaypoints CONFIG = SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
-    private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.waypointType;
+    private static final Supplier<SkyblockerConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
+    private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final int secretIndex;
     final Category category;
     final Text name;
@@ -95,7 +98,7 @@ public class SecretWaypoint extends Waypoint {
         //TODO In the future, shrink the box for wither essence and items so its more realistic
         super.render(context);
 
-        if (CONFIG.showSecretText) {
+        if (CONFIG.get().showSecretText) {
             Vec3d posUp = centerPos.add(0, 1, 0);
             RenderHelper.renderText(context, name, posUp, true);
             double distance = context.camera().getPos().distanceTo(centerPos);
@@ -135,8 +138,8 @@ public class SecretWaypoint extends Waypoint {
             }
         }
 
-        private static Category get(JsonObject waypointJson) {
-            return CODEC.parse(JsonOps.INSTANCE, waypointJson.get("category")).resultOrPartial(DungeonSecrets.LOGGER::error).orElseThrow();
+        static Category get(JsonObject waypointJson) {
+            return CODEC.parse(JsonOps.INSTANCE, waypointJson.get("category")).resultOrPartial(LOGGER::error).orElse(Category.DEFAULT);
         }
 
         boolean needsInteraction() {

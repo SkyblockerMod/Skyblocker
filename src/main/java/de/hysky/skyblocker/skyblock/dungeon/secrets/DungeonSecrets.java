@@ -255,7 +255,7 @@ public class DungeonSecrets {
         dungeonFutures.add(CompletableFuture.runAsync(() -> {
             try (BufferedReader customWaypointsReader = Files.newBufferedReader(CUSTOM_WAYPOINTS_DIR)) {
                 SkyblockerMod.GSON.fromJson(customWaypointsReader, JsonObject.class).asMap().forEach((room, waypointsJson) ->
-                        addCustomWaypoints(room, SecretWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, waypointsJson).resultOrPartial(LOGGER::error).orElseThrow())
+                        addCustomWaypoints(room, SecretWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, waypointsJson).resultOrPartial(LOGGER::error).orElseGet(ArrayList::new))
                 );
                 LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded custom dungeon secret waypoints");
             } catch (Exception e) {
@@ -273,7 +273,7 @@ public class DungeonSecrets {
         try (BufferedWriter writer = Files.newBufferedWriter(CUSTOM_WAYPOINTS_DIR)) {
             JsonObject customWaypointsJson = new JsonObject();
             customWaypoints.rowMap().forEach((room, waypoints) ->
-                    customWaypointsJson.add(room, SecretWaypoint.LIST_CODEC.encodeStart(JsonOps.INSTANCE, new ArrayList<>(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow())
+                    customWaypointsJson.add(room, SecretWaypoint.LIST_CODEC.encodeStart(JsonOps.INSTANCE, new ArrayList<>(waypoints.values())).resultOrPartial(LOGGER::error).orElseGet(JsonArray::new))
             );
             SkyblockerMod.GSON.toJson(customWaypointsJson, writer);
             LOGGER.info("[Skyblocker Dungeon Secrets] Saved custom dungeon secret waypoints");

@@ -760,6 +760,9 @@ public class SkyblockerConfig {
 		public boolean mirrorverseWaypoints = true;
 
 		@SerialEntry
+		public boolean blobbercystGlow = true;
+
+		@SerialEntry
 		public boolean enigmaSoulWaypoints = false;
 
 		@SerialEntry

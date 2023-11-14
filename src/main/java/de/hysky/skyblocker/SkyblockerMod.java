@@ -3,6 +3,7 @@ package de.hysky.skyblocker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.diana.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.dungeon.*;
@@ -114,6 +115,7 @@ public class SkyblockerMod implements ClientModInitializer {
         MuseumItemCache.init();
         SecretsTracker.init();
         ApiUtils.init();
+        Debug.init();
         RenderHelper.init();
         containerSolverManager.init();
         statusBarTracker.init();
