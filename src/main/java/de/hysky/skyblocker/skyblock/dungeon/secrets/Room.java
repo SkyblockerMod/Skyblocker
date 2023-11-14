@@ -41,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Room {
+    private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
     @NotNull
     private final Type type;
@@ -70,11 +71,12 @@ public class Room {
     private int doubleCheckBlocks;
     /**
      * Represents the matching state of the room with the following possible values:
-     * <li>{@link TriState#DEFAULT} means that the room has not been checked, is being processed, or does not {@link Type#needsScanning() need to be processed}.
-     * <li>{@link TriState#FALSE} means that the room has been checked and there is no match.
-     * <li>{@link TriState#TRUE} means that the room has been checked and there is a match.
+     * <li>{@link MatchState#MATCHING} means that the room has not been checked, is being processed, or does not {@link Type#needsScanning() need to be processed}.</li>
+     * <li>{@link MatchState#DOUBLE_CHECKING} means that the room has a unique match and is being double checked.</li>
+     * <li>{@link MatchState#MATCHED} means that the room has a unique match ans has been double checked.</li>
+     * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
      */
-    private TriState matched = TriState.DEFAULT;
+    private MatchState matchState = MatchState.MATCHING;
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
     private String name;
     private Direction direction;
@@ -96,7 +98,7 @@ public class Room {
     }
 
     public boolean isMatched() {
-        return matched == TriState.TRUE;
+        return matchState == MatchState.DOUBLE_CHECKING || matchState == MatchState.MATCHED;
     }
 
     /**
@@ -108,7 +110,7 @@ public class Room {
 
     @Override
     public String toString() {
-        return "Room{type=" + type + ", shape=" + shape + ", matched=" + matched + ", segments=" + Arrays.toString(segments.toArray()) + "}";
+        return "Room{type=%s, segments=%s, shape=%s, matchState=%s, name=%s, direction=%s, physicalCornerPos=%s}".formatted(type, Arrays.toString(segments.toArray()), shape, matchState, name, direction, physicalCornerPos);
     }
 
     @NotNull
@@ -208,6 +210,7 @@ public class Room {
 
     /**
      * Removes a custom waypoint relative to this room from {@link DungeonSecrets#customWaypoints} and all existing instances of this room.
+     *
      * @param pos the position of the secret waypoint relative to this room
      * @return the removed secret waypoint or {@code null} if there was no secret waypoint at the given position
      */
@@ -223,6 +226,7 @@ public class Room {
 
     /**
      * Removes a custom waypoint relative to this room from this instance of the room.
+     *
      * @param secretIndex the index of the secret waypoint
      * @param relativePos the position of the secret waypoint relative to this room
      */
@@ -237,7 +241,7 @@ public class Room {
      * This method returns immediately if any of the following conditions are met:
      * <ul>
      *     <li> The room does not need to be scanned and matched. (When the room is not of type {@link Type.ROOM}, {@link Type.PUZZLE}, or {@link Type.TRAP}. See {@link Type#needsScanning()}) </li>
-     *     <li> The room has been matched or failed to match and is on cooldown. See {@link #matched}. </li>
+     *     <li> The room has been matched or failed to match and is on cooldown. See {@link #matchState}. </li>
      *     <li> {@link #findRoom The previous update} has not completed. </li>
      * </ul>
      * Then this method tries to match this room through:
@@ -251,7 +255,7 @@ public class Room {
     @SuppressWarnings("JavadocReference")
     protected void update() {
         // Logical AND has higher precedence than logical OR
-        if (!type.needsScanning() || matched != TriState.DEFAULT || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
+        if (!type.needsScanning() || matchState != MatchState.MATCHING && matchState != MatchState.DOUBLE_CHECKING || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
@@ -266,6 +270,9 @@ public class Room {
                     break;
                 }
             }
+        }).exceptionally(e -> {
+            DungeonSecrets.LOGGER.error("[Skyblocker Dungeon Secrets] Encountered an unknown exception while matching room {}", this, e);
+            return null;
         });
     }
 
@@ -297,16 +304,24 @@ public class Room {
      *     </ul>
      *     <li> If there are no matching rooms left: </li>
      *     <ul>
-     *         <li> Terminate matching by setting {@link #matched} to {@link TriState#FALSE}. </li>
+     *         <li> Terminate matching by setting {@link #matchState} to {@link TriState#FALSE}. </li>
      *         <li> Schedule another matching attempt in 50 ticks (2.5 seconds). </li>
      *         <li> Reset {@link #possibleRooms} and {@link #checkedBlocks} with {@link #reset()}. </li>
      *         <li> Return {@code true} </li>
      *     </ul>
      *     <li> If there are exactly one room matching: </li>
      *     <ul>
-     *         <li> Call {@link #roomMatched()}. </li>
-     *         <li> Discard the no longer needed fields to save memory. </li>
-     *         <li> Return {@code true} </li>
+     *         <li> If {@link #matchState} is {@link MatchState#MATCHING}: </li>
+     *         <ul>
+     *             <li> Call {@link #roomMatched()}. </li>
+     *             <li> Return {@code false}. </li>
+     *         </ul>
+     *         <li> If {@link #matchState} is {@link MatchState#DOUBLE_CHECKING}: </li>
+     *         <ul>
+     *             <li> Set the match state to {@link MatchState#MATCHED}. </li>
+     *             <li> Discard the no longer needed fields to save memory. </li>
+     *             <li> Return {@code true}. </li>
+     *         </ul>
      *     </ul>
      *     <li> Return {@code false} </li>
      * </ul>
@@ -334,26 +349,29 @@ public class Room {
         int matchingRoomsSize = possibleRooms.stream().map(Triple::getRight).mapToInt(Collection::size).sum();
         if (matchingRoomsSize == 0) {
             // If no rooms match, reset the fields and scan again after 50 ticks.
-            matched = TriState.FALSE;
-            DungeonSecrets.LOGGER.warn("[Skyblocker] No dungeon room matches after checking {} block(s)", checkedBlocks.size());
-            Scheduler.INSTANCE.schedule(() -> matched = TriState.DEFAULT, 50);
+            DungeonSecrets.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
+            Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
             reset();
             return true;
-        } else if (matchingRoomsSize == 1 && ++doubleCheckBlocks >= 10) {
-            // If one room matches, load the secrets for that room and discard the no longer needed fields.
-            for (Triple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
-                if (directionRooms.getRight().size() == 1) {
-                    name = directionRooms.getRight().get(0);
-                    direction = directionRooms.getLeft();
-                    physicalCornerPos = directionRooms.getMiddle();
-                    roomMatched();
-                    discard();
-                    return true;
-                }
+        } else if (matchingRoomsSize == 1) {
+            if (matchState == MatchState.MATCHING) {
+                // If one room matches, load the secrets for that room and set state to double-checking.
+                Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.stream().filter(directionRooms -> directionRooms.getRight().size() == 1).findAny().orElseThrow();
+                name = directionRoom.getRight().get(0);
+                direction = directionRoom.getLeft();
+                physicalCornerPos = directionRoom.getMiddle();
+                DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
+                roomMatched();
+                return false;
+            } else if (matchState == MatchState.DOUBLE_CHECKING && ++doubleCheckBlocks >= 10) {
+                // If double-checked, set state to matched and discard the no longer needed fields.
+                DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
+                discard();
+                return true;
             }
-            return false; // This should never happen, we just checked that there is one possible room, and the return true in the loop should activate
+            return false;
         } else {
-            DungeonSecrets.LOGGER.debug("[Skyblocker] {} room(s) remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
+            DungeonSecrets.LOGGER.debug("[Skyblocker Dungeon Secrets] {} room(s) remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
             return false;
         }
     }
@@ -371,7 +389,7 @@ public class Room {
 
     /**
      * Loads the secret waypoints for the room from {@link DungeonSecrets#waypointsJson} once it has been matched
-     * and sets {@link #matched} to {@link TriState#TRUE}.
+     * and sets {@link #matchState} to {@link MatchState#DOUBLE_CHECKING}.
      *
      * @param directionRooms the direction, position, and name of the room
      */
@@ -381,25 +399,29 @@ public class Room {
         for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
-            int secretIndex = Integer.parseInt(secretName.substring(0, Character.isDigit(secretName.charAt(1)) ? 2 : 1));
+            Matcher secretIndexMatcher = SECRET_INDEX.matcher(secretName);
+            int secretIndex = secretIndexMatcher.find() ? Integer.parseInt(secretIndexMatcher.group(1)) : 0;
             BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
             secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
         DungeonSecrets.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
-        matched = TriState.TRUE;
-
-        DungeonSecrets.LOGGER.info("[Skyblocker] Room {} matched after checking {} block(s)", name, checkedBlocks.size());
+        matchState = MatchState.DOUBLE_CHECKING;
     }
 
     /**
      * Resets fields for another round of matching after room matching fails.
      */
     private void reset() {
+        matchState = MatchState.FAILED;
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
         checkedBlocks = new HashSet<>();
         doubleCheckBlocks = 0;
+        secretWaypoints = null;
+        name = null;
+        direction = null;
+        physicalCornerPos = null;
     }
 
     /**
@@ -407,6 +429,7 @@ public class Room {
      * These fields are no longer needed and are discarded to save memory.
      */
     private void discard() {
+        matchState = MatchState.MATCHED;
         roomsData = null;
         possibleRooms = null;
         checkedBlocks = null;
@@ -473,7 +496,7 @@ public class Room {
         BlockState state = world.getBlockState(hitResult.getBlockPos());
         if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
             secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
-                    .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
+                    .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
         } else if (state.isOf(Blocks.LEVER)) {
             secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::isLever).forEach(SecretWaypoint::setFound);
         }
@@ -491,7 +514,7 @@ public class Room {
             return;
         }
         secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(collector))).filter(SecretWaypoint.getRangePredicate(collector))
-                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} picked up a {} from a {} secret, setting secret #{} as found", collector.getName().getString(), itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
+                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} picked up a {} from a {} secret, setting secret #{} as found", collector.getName().getString(), itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
     /**
@@ -502,7 +525,7 @@ public class Room {
      */
     protected void onBatRemoved(AmbientEntity bat) {
         secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat)))
-                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
+                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
     /**
@@ -574,5 +597,9 @@ public class Room {
 
     public enum Direction {
         NW, NE, SW, SE
+    }
+
+    public enum MatchState {
+        MATCHING, DOUBLE_CHECKING, MATCHED, FAILED
     }
 }
