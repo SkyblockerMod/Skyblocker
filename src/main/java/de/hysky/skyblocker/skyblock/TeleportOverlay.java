@@ -102,7 +102,7 @@ public class TeleportOverlay {
         @SuppressWarnings("DataFlowIssue")
         BlockState state = client.world.getBlockState(pos);
         if (!state.isAir() && client.world.getBlockState(pos.up()).isAir() && client.world.getBlockState(pos.up(2)).isAir()) {
-            RenderHelper.renderFilledIfVisible(wrc, pos, COLOR_COMPONENTS, 0.5f);
+            RenderHelper.renderFilled(wrc, pos, COLOR_COMPONENTS, 0.5f, false);
         }
     }
 }

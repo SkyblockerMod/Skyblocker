@@ -46,20 +46,20 @@ public class RenderHelper {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TRANSLUCENT_DRAW, RenderHelper::drawTranslucents);
     }
 
-    public static void renderFilledThroughWallsWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
-        renderFilledThroughWalls(context, pos, colorComponents, alpha);
+    public static void renderFilledWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, pos, colorComponents, alpha, throughWalls);
         renderBeaconBeam(context, pos, colorComponents);
     }
 
-    public static void renderFilledThroughWalls(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
-        if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
-            renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, true);
-        }
-    }
-
-    public static void renderFilledIfVisible(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha) {
-        if (OcclusionCulling.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
-            renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, false);
+    public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
+        if (throughWalls) {
+            if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
+                renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, true);
+            }
+        } else {
+            if (OcclusionCulling.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
+                renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, false);
+            }
         }
     }
 

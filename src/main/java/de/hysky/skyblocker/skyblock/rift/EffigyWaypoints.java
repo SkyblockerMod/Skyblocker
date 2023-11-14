@@ -58,11 +58,11 @@ public class EffigyWaypoints {
             for (BlockPos effigy : UNBROKEN_EFFIGIES) {
                 float[] colorComponents = DyeColor.RED.getColorComponents();
                 if (SkyblockerConfigManager.get().slayer.vampireSlayer.compactEffigyWaypoints) {
-                    RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, effigy.down(6), colorComponents, 0.5F);
+                    RenderHelper.renderFilledWithBeaconBeam(context, effigy.down(6), colorComponents, 0.5F, true);
                 } else {
-                    RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, effigy, colorComponents, 0.5F);
+                    RenderHelper.renderFilledWithBeaconBeam(context, effigy, colorComponents, 0.5F, true);
                     for (int i = 1; i < 6; i++) {
-                        RenderHelper.renderFilledThroughWalls(context, effigy.down(i), colorComponents, 0.5F - (0.075F * i));
+                        RenderHelper.renderFilled(context, effigy.down(i), colorComponents, 0.5F - (0.075F * i), true);
                     }
                 }
             }

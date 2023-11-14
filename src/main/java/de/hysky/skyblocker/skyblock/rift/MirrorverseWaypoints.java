@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.DyeColor;
@@ -18,13 +18,15 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class MirrorverseWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
+	private static final Supplier<Waypoint.Type> WAYPOINT_TYPE = () -> Waypoint.Type.HIGHLIGHT;
 	private static final Identifier WAYPOINTS_JSON = new Identifier(SkyblockerMod.NAMESPACE, "rift/mirrorverse_waypoints.json");
-	private static final BlockPos[] LAVA_PATH_WAYPOINTS = new BlockPos[107];
-	private static final BlockPos[] UPSIDE_DOWN_WAYPOINTS = new BlockPos[66];
-	private static final BlockPos[] TURBULATOR_WAYPOINTS = new BlockPos[27];
+	private static Waypoint[] LAVA_PATH_WAYPOINTS;
+	private static Waypoint[] UPSIDE_DOWN_WAYPOINTS;
+	private static Waypoint[] TURBULATOR_WAYPOINTS;
 	private static final float[] COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
 
 	private static CompletableFuture<Void> waypointsLoaded;
@@ -35,51 +37,44 @@ public class MirrorverseWaypoints {
 	static void load(MinecraftClient client) {
 		waypointsLoaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(WAYPOINTS_JSON)) {
-				JsonObject file = JsonParser.parseReader(reader).getAsJsonObject();
-				JsonArray sections = file.get("sections").getAsJsonArray();
+				JsonArray sections = JsonParser.parseReader(reader).getAsJsonObject().get("sections").getAsJsonArray();
 
 				/// Lava Path
-				JsonArray lavaPathWaypoints = sections.get(0).getAsJsonObject().get("waypoints").getAsJsonArray();
-
-				for (int i = 0; i < lavaPathWaypoints.size(); i++) {
-					JsonObject point = lavaPathWaypoints.get(i).getAsJsonObject();
-					LAVA_PATH_WAYPOINTS[i] = new BlockPos(point.get("x").getAsInt(), point.get("y").getAsInt(), point.get("z").getAsInt());
-				}
+				LAVA_PATH_WAYPOINTS = loadWaypoints(sections.get(0).getAsJsonObject().get("waypoints").getAsJsonArray());
 
 				/// Upside Down Parkour
-				JsonArray upsideDownParkourWaypoints = sections.get(1).getAsJsonObject().get("waypoints").getAsJsonArray();
-
-				for (int i = 0; i < upsideDownParkourWaypoints.size(); i++) {
-					JsonObject point = upsideDownParkourWaypoints.get(i).getAsJsonObject();
-					UPSIDE_DOWN_WAYPOINTS[i] = new BlockPos(point.get("x").getAsInt(), point.get("y").getAsInt(), point.get("z").getAsInt());
-				}
+				UPSIDE_DOWN_WAYPOINTS = loadWaypoints(sections.get(1).getAsJsonObject().get("waypoints").getAsJsonArray());
 
 				/// Turbulator Parkour
-				JsonArray turbulatorParkourWaypoints = sections.get(2).getAsJsonObject().get("waypoints").getAsJsonArray();
-
-				for (int i = 0; i < turbulatorParkourWaypoints.size(); i++) {
-					JsonObject point = turbulatorParkourWaypoints.get(i).getAsJsonObject();
-					TURBULATOR_WAYPOINTS[i] = new BlockPos(point.get("x").getAsInt(), point.get("y").getAsInt(), point.get("z").getAsInt());
-				}
+				TURBULATOR_WAYPOINTS = loadWaypoints(sections.get(2).getAsJsonObject().get("waypoints").getAsJsonArray());
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Mirrorverse Waypoints failed to load ;(", e);
 			}
 		});
 	}
 
+	private static Waypoint[] loadWaypoints(JsonArray waypointsJson) {
+		Waypoint[] waypoints = new Waypoint[waypointsJson.size()];
+		for (int i = 0; i < waypointsJson.size(); i++) {
+			JsonObject point = waypointsJson.get(i).getAsJsonObject();
+			waypoints[i] = new Waypoint(new BlockPos(point.get("x").getAsInt(), point.get("y").getAsInt(), point.get("z").getAsInt()), WAYPOINT_TYPE, COLOR_COMPONENTS, false);
+		}
+		return waypoints;
+	}
+
 	protected static void render(WorldRenderContext wrc) {
 		//I would also check for the mirrorverse location but the scoreboard stuff is not performant at all...
 		if (Utils.isInTheRift() && SkyblockerConfigManager.get().locations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
-			for (BlockPos pos : LAVA_PATH_WAYPOINTS) {
-				RenderHelper.renderFilledIfVisible(wrc, pos, COLOR_COMPONENTS, 0.5f);
+			for (Waypoint waypoint : LAVA_PATH_WAYPOINTS) {
+				waypoint.render(wrc);
 			}
 
-			for (BlockPos pos : UPSIDE_DOWN_WAYPOINTS) {
-				RenderHelper.renderFilledIfVisible(wrc, pos, COLOR_COMPONENTS, 0.5f);
+			for (Waypoint waypoint : UPSIDE_DOWN_WAYPOINTS) {
+				waypoint.render(wrc);
 			}
 
-			for (BlockPos pos : TURBULATOR_WAYPOINTS) {
-				RenderHelper.renderFilledIfVisible(wrc, pos, COLOR_COMPONENTS, 0.5f);
+			for (Waypoint waypoint : TURBULATOR_WAYPOINTS) {
+				waypoint.render(wrc);
 			}
 		}
 	}

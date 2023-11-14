@@ -31,12 +31,6 @@ public class WaypointTest {
     }
 
     @Test
-    void testAlphaConstructor() {
-        Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, 1f);
-        Assertions.assertEquals(1f, waypoint.alpha);
-    }
-
-    @Test
     void testLineWidthConstructor() {
         Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, 10f);
         Assertions.assertEquals(10f, waypoint.lineWidth);
