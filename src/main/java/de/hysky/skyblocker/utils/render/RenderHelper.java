@@ -71,7 +71,7 @@ public class RenderHelper {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         VertexConsumerProvider consumers = context.consumers();
-        VertexConsumer buffer = throughWalls ? consumers.getBuffer(SRenderLayers.getFilledThroughWalls()) : consumers.getBuffer(SRenderLayers.getFilled());
+        VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
 
         WorldRenderer.renderFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
@@ -267,18 +267,14 @@ public class RenderHelper {
     public static void runOnRenderThread(Runnable runnable) {
         if (RenderSystem.isOnRenderThread()) {
             runnable.run();
-
-            return;
         } else if (SCHEDULE_DEFERRED_RENDER_TASK != null) { //Sodium
             try {
                 SCHEDULE_DEFERRED_RENDER_TASK.invokeExact(runnable);
             } catch (Throwable t) {
                 LOGGER.error("[Skyblocker] Failed to schedule a render task!", t);
             }
-
-            return;
         } else { //Vanilla
-            RenderSystem.recordRenderCall(() -> runnable.run());
+            RenderSystem.recordRenderCall(runnable::run);
         }
     }
 
@@ -316,7 +312,8 @@ public class RenderHelper {
     public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
-    
+
+    // TODO Get rid of reflection once the new Sodium is released
     private static MethodHandle getDeferredRenderTaskHandle() {
         try {
             Class<?> deferredTaskClass = Class.forName("me.jellysquid.mods.sodium.client.render.util.DeferredRenderTask");

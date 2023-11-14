@@ -12,13 +12,13 @@ import net.minecraft.client.render.RenderPhase.Transparency;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.render.VertexFormats;
 
-public class SRenderLayers {
+public class SkyblockerRenderLayers {
 	private static final Transparency DEFAULT_TRANSPARENCY = new Transparency("default_transparency", () -> {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-	}, () -> RenderSystem.disableBlend());
+	}, RenderSystem::disableBlend);
 	
-	private static final MultiPhase FILLED = RenderLayer.of("filled", VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP, RenderLayer.CUTOUT_BUFFER_SIZE, false, true, MultiPhaseParameters.builder()
+	public static final MultiPhase FILLED = RenderLayer.of("filled", VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP, RenderLayer.CUTOUT_BUFFER_SIZE, false, true, MultiPhaseParameters.builder()
 			.program(RenderPhase.COLOR_PROGRAM)
 			.cull(Cull.DISABLE_CULLING)
 			.layering(RenderPhase.POLYGON_OFFSET_LAYERING)
@@ -26,19 +26,11 @@ public class SRenderLayers {
 			.depthTest(DepthTest.LEQUAL_DEPTH_TEST)
 			.build(false));
 	
-	private static final MultiPhase FILLED_THROUGH_WALLS = RenderLayer.of("filled_through_walls", VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP, RenderLayer.CUTOUT_BUFFER_SIZE, false, true, MultiPhaseParameters.builder()
+	public static final MultiPhase FILLED_THROUGH_WALLS = RenderLayer.of("filled_through_walls", VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP, RenderLayer.CUTOUT_BUFFER_SIZE, false, true, MultiPhaseParameters.builder()
 			.program(RenderPhase.COLOR_PROGRAM)
 			.cull(Cull.DISABLE_CULLING)
 			.layering(RenderPhase.POLYGON_OFFSET_LAYERING)
 			.transparency(DEFAULT_TRANSPARENCY)
 			.depthTest(DepthTest.ALWAYS_DEPTH_TEST)
 			.build(false));
-	
-	public static MultiPhase getFilled() {
-		return FILLED;
-	}
-		
-	public static MultiPhase getFilledThroughWalls() {
-		return FILLED_THROUGH_WALLS;
-	}
 }
