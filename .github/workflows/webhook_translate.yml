@@ -49,7 +49,7 @@ jobs:
               "url": "https://translate.hysky.de/projects/Skyblocker/skyblocker",
               "color": 5808639,
               "image": {
-                "url": "https://translate.hysky.de/widgets/Skyblocker/-/skyblocker/88x31-grey.png"
+                "url": "https://translate.hysky.de/widgets/Skyblocker/-/skyblocker/88x31-grey.png?uuid='$(uuidgen)'"
               }
             }
           ],
