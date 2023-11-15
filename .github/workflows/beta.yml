@@ -7,6 +7,8 @@ on:
     paths-ignore:
       - 'src/main/resources/assets/skyblocker/lang/**'
   pull_request:
+    paths-ignore:
+      - 'src/main/resources/assets/skyblocker/lang/**'
 
 
 jobs:
