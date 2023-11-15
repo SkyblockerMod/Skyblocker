@@ -42,7 +42,7 @@ To access the configuration menu, you must install [Mod Menu](https://modrinth.c
 | Config option          | Description                                                                                                                                                   |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Enable Bars            | Change Minecraft health ui with skyblocker [custom ui](https://user-images.githubusercontent.com/27798256/170806938-f858f0ae-4d8b-4767-9b53-8fe5a65edf56.png) |
-| Configure Bar Position | [Customize Bar Positions](https://cdn.discordapp.com/attachments/1103292463558438993/1103292498345984070/healt-layer.png)                                     |
+| Configure Bar Position | [Customize Bar Positions](https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/Health%20and%20Status%20Bars/Status%20Bars.png)            |
 </details>
 
 <details>
