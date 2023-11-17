@@ -15,16 +15,17 @@ public class GardenVisitorsWidget extends Widget {
 
     @Override
     public void updateContent() {
-        if (PlayerListMgr.textAt(54) == null) {
+    	int offset = (PlayerListMgr.strAt(46) != null) ? 1 : 0;
+
+        if (PlayerListMgr.textAt(54 + offset) == null) {
             this.addComponent(new PlainTextComponent(Text.literal("No visitors!").formatted(Formatting.GRAY)));
             return;
         }
 
-        for (int i = 54; i < 59; i++) {
+        for (int i = 54 + offset; i < 59 + offset; i++) {
             String text = PlayerListMgr.strAt(i);
             if (text != null)
                 this.addComponent(new PlainTextComponent(Text.literal(text)));
         }
-
     }
 }
