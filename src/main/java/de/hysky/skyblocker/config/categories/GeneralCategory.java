@@ -275,7 +275,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Waypoint.Type>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip")))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.generalNote")))
 								.binding(defaults.general.waypoints.waypointType,
 										() -> config.general.waypoints.waypointType,
 										newValue -> config.general.waypoints.waypointType = newValue)
