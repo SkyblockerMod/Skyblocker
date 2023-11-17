@@ -10,6 +10,7 @@ public class Ico {
     public static final ItemStack MAP = new ItemStack(Items.FILLED_MAP);
     public static final ItemStack NTAG = new ItemStack(Items.NAME_TAG);
     public static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
+    public static final ItemStack AMETHYST_SHARD = new ItemStack(Items.AMETHYST_SHARD);
     public static final ItemStack CLOCK = new ItemStack(Items.CLOCK);
     public static final ItemStack DIASWORD = new ItemStack(Items.DIAMOND_SWORD);
     public static final ItemStack DBUSH = new ItemStack(Items.DEAD_BUSH);

@@ -22,7 +22,7 @@ public class PowderWidget extends Widget {
     @Override
     public void updateContent() {
         this.addSimpleIcoText(Ico.MITHRIL, "Mithril:", Formatting.AQUA, 46);
-        this.addSimpleIcoText(Ico.EMERALD, "Gemstone:", Formatting.DARK_PURPLE, 47);
+        this.addSimpleIcoText(Ico.AMETHYST_SHARD, "Gemstone:", Formatting.DARK_PURPLE, 47);
 
     }
 
