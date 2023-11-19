@@ -1,4 +1,4 @@
-<img height="150" src="https://hysky.de/skyblocker.png" />
+<img height="150" src="https://hysky.de/skyblocker.png"  alt="Skyblocker logo"/>
 
 ## Skyblocker
 
@@ -10,7 +10,7 @@ or **/skyblocker config**
 
 Skyblocker has a variety of configurations. \
 To access the configuration menu, you must install [Mod Menu](https://modrinth.com/mod/modmenu).
-<figure><a href="https://cdn.discordapp.com/attachments/895564321520750602/1165269183429361674/Bildschirmfoto_vom_2023-10-21_14-43-26.png"><img src="https://cdn.discordapp.com/attachments/895564321520750602/1165269183429361674/Bildschirmfoto_vom_2023-10-21_14-43-26.png" alt="Mod Menu" style="width:100%"></a><figcaption align = "center"><b>Skyblocker config</b></figcaption></figure>
+<figure><a href="https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/Settings/Page%201%20General.png"><img src="https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/Settings/Page%201%20General.png" alt="Mod Menu" style="width:100%"></a><figcaption align = "center"><b>Skyblocker config</b></figcaption></figure>
 
 ### List of Configuration
 
@@ -39,10 +39,10 @@ To access the configuration menu, you must install [Mod Menu](https://modrinth.c
 <details>
 <summary> Health, Mana, Defence & XP Bars </summary>
 
-|Config option|Description|
-|---|---|
-|Enable Bars| Change Minecraft health ui with skyblocker [custom ui](https://user-images.githubusercontent.com/27798256/170806938-f858f0ae-4d8b-4767-9b53-8fe5a65edf56.png)|
-|Configure Bar Position|[Customize Bar Positions](https://cdn.discordapp.com/attachments/1103292463558438993/1103292498345984070/healt-layer.png)|
+| Config option          | Description                                                                                                                                                   |
+|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Enable Bars            | Change Minecraft health ui with skyblocker [custom ui](https://user-images.githubusercontent.com/27798256/170806938-f858f0ae-4d8b-4767-9b53-8fe5a65edf56.png) |
+| Configure Bar Position | [Customize Bar Positions](https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/Health%20and%20Status%20Bars/Status%20Bars.png)            |
 </details>
 
 <details>
@@ -111,9 +111,9 @@ To access the configuration menu, you must install [Mod Menu](https://modrinth.c
 <details>
 <summary> Item List </summary>
 
-| Config option    | Description                                                                                                              |
-|------------------|--------------------------------------------------------------------------------------------------------------------------|
-| Enable Item List | Acitvate [recipe viewer](https://cdn-raw.modrinth.com/data/y6DuFGwJ/images/cf9f8077067b9781686f23116f163d529c21c404.png) |
+| Config option    | Description                                                                                                                                              |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Enable Item List | Acitvate [recipe viewer](https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/User%20Interface%20Enhancements/Recipe%20Book%202.png) |
 </details>
 
 <details>
@@ -363,49 +363,49 @@ Used to display multiple titles at once, Example use: Vampire Slayer
 <details>
 <summary> Quick Navigation </summary>
 
-|Config option|Description|
-|---|---|
-|Enable Quick Navigation|Enable [Quicknav](https://cdn.discordapp.com/attachments/1103292463558438993/1103358576870817866/quick-nav.png)|
+| Config option           | Description                                                                                                                              |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| Enable Quick Navigation | Enable [Quicknav](https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/User%20Interface%20Enhancements/Quicknav.png) |
 <details>
 <summary> Button 1-12 </summary>
 
-|Config option|Description|
-|---|---|
-|Render|To show the tab|
-|Item name| The name of the item e.g. iron_boots |
-|NBT| NBT tag of the item e.g. custom head id on skull item|
-|UI Title| Title of the tab|
-|Click event|The command that is executed when you click the tab|
+| Config option | Description                                           |
+|---------------|-------------------------------------------------------|
+| Render        | To show the tab                                       |
+| Item name     | The name of the item e.g. iron_boots                  |
+| NBT           | NBT tag of the item e.g. custom head id on skull item |
+| UI Title      | Title of the tab                                      |
+| Click event   | The command that is executed when you click the tab   |
 </details>
 </details>
 
 <details>
 <summary> Messages </summary>
 
-| Config option                                  | Description                             |
-|------------------------------------------------|-----------------------------------------|
-| Hide Ability Cooldown                          | Disable,Filter or Move to action bar    |
-| Hide Heal Messages                             | Disable,Filter or Move to action bar    |
-| Hide AOTE Messages                             | Disable,Filter or Move to action bar    |
-| Hide Implosion Message                         | Disable,Filter or Move to action bar    |
-| Hide Molten Wave Message                       | Disable,Filter or Move to action bar    |
-| Hide Ads from Public Chat                      | Disable,Filter or Move to action bar    |
-| Hide Teleport Pad Messages                     | Disable,Filter or Move to action bar    |
-| Hide Combo Messages                            | Disable,Filter or Move to action bar    |
-| Hide Autopet Messages                          | Disable,Filter or Move to action bar    |
+| Config option                                  | Description                               |
+|------------------------------------------------|-------------------------------------------|
+| Hide Ability Cooldown                          | Disable,Filter or Move to action bar      |
+| Hide Heal Messages                             | Disable,Filter or Move to action bar      |
+| Hide AOTE Messages                             | Disable,Filter or Move to action bar      |
+| Hide Implosion Message                         | Disable,Filter or Move to action bar      |
+| Hide Molten Wave Message                       | Disable,Filter or Move to action bar      |
+| Hide Ads from Public Chat                      | Disable,Filter or Move to action bar      |
+| Hide Teleport Pad Messages                     | Disable,Filter or Move to action bar      |
+| Hide Combo Messages                            | Disable,Filter or Move to action bar      |
+| Hide Autopet Messages                          | Disable,Filter or Move to action bar      |
 | Hide Show Off Messages                         | Filters messages from the `/show command` |
-| Hide Mana Consumption Messages from Action Bar | Activate or deactivate                  |
+| Hide Mana Consumption Messages from Action Bar | Activate or deactivate                    |
 </details>
 
 <details>
 <summary> Discord Rich Presence </summary>
 
-|Config option|Description|
-|---|---|
-|Enable|Activate [Discord Rich Presence](https://cdn-raw.modrinth.com/data/y6DuFGwJ/images/f6314d0ae0fc24d77fb3371e59b7abfe4774a17e.png)|
-|Skyblock Info|Choose between Location,Purse and Bits|
-|Cycle Skyblock Info| Cycles between the three options|
-|Custom Message| Show a custom message|
+| Config option       | Description                                                                                                                      |
+|---------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| Enable              | Activate [Discord Rich Presence](https://cdn-raw.modrinth.com/data/y6DuFGwJ/images/f6314d0ae0fc24d77fb3371e59b7abfe4774a17e.png) |
+| Skyblock Info       | Choose between Location,Purse and Bits                                                                                           |
+| Cycle Skyblock Info | Cycles between the three options                                                                                                 |
+| Custom Message      | Show a custom message                                                                                                            |
 </details>
 
 ## 🖼️ Images
@@ -539,6 +539,6 @@ Looking for an affordable and reliable hosting platform for your Minecraft serve
 As a special offer for our audience, you can **<u>[use the discount code "Skyblocker" during checkout to get 15% off your first month](https://billing.kinetichosting.net/aff.php?aff=315)</u>**.
 This helps to cover our server costs.
 
-[![Kinetic-hosting](https://cdn.discordapp.com/attachments/1098004599757099150/1099460202924879902/Skyblocker.png)](https://billing.kinetichosting.net/aff.php?aff=315)
+[![Kinetic-hosting](https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/other/Kinetic-Hosting_Skyblocker.png)](https://billing.kinetichosting.net/aff.php?aff=315)
 
 So what are you waiting for? Click on the **<u>[link](https://billing.kinetichosting.net/aff.php?aff=315)</u>** to check out Kinetic Hosting and start playing with your friends today!
