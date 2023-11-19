@@ -31,6 +31,7 @@ public class MessageFilterCategory {
 						.build())
 				.option(Option.<ChatFilterResult>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.hideAOTE"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.messages.hideAOTE.@Tooltip")))
 						.binding(defaults.messages.hideAOTE,
 								() -> config.messages.hideAOTE,
 								newValue -> config.messages.hideAOTE = newValue)
