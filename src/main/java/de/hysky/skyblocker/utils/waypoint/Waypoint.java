@@ -11,28 +11,28 @@ public class Waypoint {
     protected static final float DEFAULT_HIGHLIGHT_ALPHA = 0.5f;
     protected static final float DEFAULT_LINE_WIDTH = 5f;
     public final BlockPos pos;
-    private final Box box;
-    private final Supplier<Type> typeSupplier;
-    private final float[] colorComponents;
-    private final float alpha;
-    private final float lineWidth;
-    private final boolean throughWalls;
+    final Box box;
+    final Supplier<Type> typeSupplier;
+    final float[] colorComponents;
+    final float alpha;
+    final float lineWidth;
+    final boolean throughWalls;
     private boolean shouldRender;
 
     protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents) {
-        this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA);
+        this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, DEFAULT_LINE_WIDTH);
     }
 
     protected Waypoint(BlockPos pos, Type type, float[] colorComponents, float alpha) {
-        this(pos, () -> type, colorComponents, alpha);
-    }
-
-    protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha) {
-        this(pos, typeSupplier, colorComponents, alpha, DEFAULT_LINE_WIDTH);
+        this(pos, () -> type, colorComponents, alpha, DEFAULT_LINE_WIDTH);
     }
 
     protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth) {
         this(pos, typeSupplier, colorComponents, alpha, lineWidth, true);
+    }
+
+    public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, boolean throughWalls) {
+        this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, DEFAULT_LINE_WIDTH, throughWalls);
     }
 
     protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
@@ -62,19 +62,25 @@ public class Waypoint {
         this.shouldRender = true;
     }
 
+    protected float[] getColorComponents() {
+        return colorComponents;
+    }
+
     public void render(WorldRenderContext context) {
         switch (typeSupplier.get()) {
-            case WAYPOINT -> RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, colorComponents, alpha);
+            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, getColorComponents(), alpha, throughWalls);
             case OUTLINED_WAYPOINT -> {
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, pos, colorComponents, alpha);
+                float[] colorComponents = getColorComponents();
+                RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
                 RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
             }
-            case HIGHLIGHT -> RenderHelper.renderFilledThroughWalls(context, pos, colorComponents, alpha);
+            case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, getColorComponents(), alpha, throughWalls);
             case OUTLINED_HIGHLIGHT -> {
-                RenderHelper.renderFilledThroughWalls(context, pos, colorComponents, alpha);
+                float[] colorComponents = getColorComponents();
+                RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
                 RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
             }
-            case OUTLINE -> RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
+            case OUTLINE -> RenderHelper.renderOutline(context, box, getColorComponents(), lineWidth, throughWalls);
         }
     }
 

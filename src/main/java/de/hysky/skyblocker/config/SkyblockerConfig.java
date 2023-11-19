@@ -189,6 +189,9 @@ public class SkyblockerConfig {
 		public Shortcuts shortcuts = new Shortcuts();
 
 		@SerialEntry
+		public Waypoints waypoints = new Waypoints();
+
+		@SerialEntry
 		public QuiverWarning quiverWarning = new QuiverWarning();
 
 		@SerialEntry
@@ -254,8 +257,8 @@ public class SkyblockerConfig {
 		@Override
 		public String toString() {
 			return switch (this) {
-			case DEFAULT -> "Default";
-			case ALPHABETICAL -> "Alphabetical";
+				case DEFAULT -> "Default";
+				case ALPHABETICAL -> "Alphabetical";
 			};
 		}
 	}
@@ -293,10 +296,10 @@ public class SkyblockerConfig {
 
 		public int toInt() {
 			return switch (this) {
-			case LAYER1 -> 0;
-			case LAYER2 -> 1;
-			case RIGHT -> 2;
-			case NONE -> -1;
+				case LAYER1 -> 0;
+				case LAYER2 -> 1;
+				case RIGHT -> 2;
+				case NONE -> -1;
 			};
 		}
 	}
@@ -347,6 +350,14 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableCommandArgShortcuts = true;
+	}
+
+	public static class Waypoints {
+		@SerialEntry
+		public boolean enableWaypoints = true;
+
+		@SerialEntry
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 	}
 
 	public static class QuiverWarning {
@@ -419,8 +430,8 @@ public class SkyblockerConfig {
 		@Override
 		public String toString() {
 			return switch (this) {
-			case HORIZONTAL -> "Horizontal";
-			case VERTICAL -> "Vertical";
+				case HORIZONTAL -> "Horizontal";
+				case VERTICAL -> "Vertical";
 			};
 		}
 	}
@@ -431,9 +442,9 @@ public class SkyblockerConfig {
 		@Override
 		public String toString() {
 			return switch (this) {
-			case LEFT -> "Left";
-			case RIGHT -> "Right";
-			case MIDDLE -> "Middle";
+				case LEFT -> "Left";
+				case RIGHT -> "Right";
+				case MIDDLE -> "Middle";
 			};
 		}
 	}
@@ -515,7 +526,7 @@ public class SkyblockerConfig {
 
 		public final Identifier tex;
 
-		private RarityBackgroundStyle(Identifier tex) {
+		RarityBackgroundStyle(Identifier tex) {
 			this.tex = tex;
 		}
 
@@ -743,9 +754,9 @@ public class SkyblockerConfig {
 		@Override
 		public String toString() {
 			return switch (this) {
-			case SIMPLE -> "Simple";
-			case FANCY -> "Fancy";
-			case CLASSIC -> "Classic";
+				case SIMPLE -> "Simple";
+				case FANCY -> "Fancy";
+				case CLASSIC -> "Classic";
 			};
 		}
 	}

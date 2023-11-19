@@ -45,8 +45,8 @@ public class DungeonsCategory {
 								.flag(OptionFlag.GAME_RESTART)
 								.build())
 						.option(Option.<Type>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.waypointType.@Tooltip")))
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip")))
 								.binding(defaults.locations.dungeons.secretWaypoints.waypointType,
 										() -> config.locations.dungeons.secretWaypoints.waypointType,
 										newValue -> config.locations.dungeons.secretWaypoints.waypointType = newValue)

@@ -1,38 +1,19 @@
 package de.hysky.skyblocker.skyblock.rift;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -43,13 +24,27 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class EnigmaSouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnigmaSouls.class);
+	private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().general.waypoints.waypointType;
 	private static final Identifier WAYPOINTS_JSON = new Identifier(SkyblockerMod.NAMESPACE, "rift/enigma_soul_waypoints.json");
-	private static final BlockPos[] SOUL_WAYPOINTS = new BlockPos[42];
+	private static final Map<BlockPos, ProfileAwareWaypoint> SOUL_WAYPOINTS = new HashMap<>(42);
 	private static final Path FOUND_SOULS_FILE = SkyblockerMod.CONFIG_DIR.resolve("found_enigma_souls.json");
-	private static final Object2ObjectOpenHashMap<String, ObjectOpenHashSet<BlockPos>> FOUND_SOULS = new Object2ObjectOpenHashMap<>();
 	private static final float[] GREEN = DyeColor.GREEN.getColorComponents();
 	private static final float[] RED = DyeColor.RED.getColorComponents();
 
@@ -64,7 +59,8 @@ public class EnigmaSouls {
 
 				for (int i = 0; i < waypoints.size(); i++) {
 					JsonObject waypoint = waypoints.get(i).getAsJsonObject();
-					SOUL_WAYPOINTS[i] = new BlockPos(waypoint.get("x").getAsInt(), waypoint.get("y").getAsInt(), waypoint.get("z").getAsInt());
+					BlockPos pos = new BlockPos(waypoint.get("x").getAsInt(), waypoint.get("y").getAsInt(), waypoint.get("z").getAsInt());
+					SOUL_WAYPOINTS.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, GREEN, RED));
 				}
 
 			} catch (IOException e) {
@@ -74,13 +70,9 @@ public class EnigmaSouls {
 			//Load found souls
 			try (BufferedReader reader = Files.newBufferedReader(FOUND_SOULS_FILE)) {
 				for (Map.Entry<String, JsonElement> profile : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
-					ObjectOpenHashSet<BlockPos> foundSoulsOnProfile = new ObjectOpenHashSet<>();
-
 					for (JsonElement foundSoul : profile.getValue().getAsJsonArray().asList()) {
-						foundSoulsOnProfile.add(PosUtils.parsePosString(foundSoul.getAsString()));
+						SOUL_WAYPOINTS.get(PosUtils.parsePosString(foundSoul.getAsString())).setFound();
 					}
-
-					FOUND_SOULS.put(profile.getKey(), foundSoulsOnProfile);
 				}
 			} catch (NoSuchFileException ignored) {
 			} catch (IOException e) {
@@ -90,9 +82,16 @@ public class EnigmaSouls {
 	}
 
 	static void save(MinecraftClient client) {
-		JsonObject json = new JsonObject();
+		Map<String, Set<BlockPos>> foundSouls = new HashMap<>();
+		for (ProfileAwareWaypoint soul : SOUL_WAYPOINTS.values()) {
+			for (String profile : soul.foundProfiles) {
+				foundSouls.computeIfAbsent(profile, profile_ -> new HashSet<>());
+				foundSouls.get(profile).add(soul.pos);
+			}
+		}
 
-		for (Map.Entry<String, ObjectOpenHashSet<BlockPos>> foundSoulsForProfile : FOUND_SOULS.entrySet()) {
+		JsonObject json = new JsonObject();
+		for (Map.Entry<String, Set<BlockPos>> foundSoulsForProfile : foundSouls.entrySet()) {
 			JsonArray foundSoulsJson = new JsonArray();
 
 			for (BlockPos foundSoul : foundSoulsForProfile.getValue()) {
@@ -109,15 +108,15 @@ public class EnigmaSouls {
 		}
 	}
 
-	static void render(WorldRenderContext wrc) {
+	static void render(WorldRenderContext context) {
 		SkyblockerConfig.Rift config = SkyblockerConfigManager.get().locations.rift;
 
 		if (Utils.isInTheRift() && config.enigmaSoulWaypoints && soulsLoaded.isDone()) {
-			for (BlockPos pos : SOUL_WAYPOINTS) {
-				if (isSoulMissing(pos)) {
-					RenderHelper.renderFilledThroughWallsWithBeaconBeam(wrc, pos, GREEN, 0.5f);
+			for (Waypoint soul : SOUL_WAYPOINTS.values()) {
+				if (soul.shouldRender()) {
+					soul.render(context);
 				} else if (config.highlightFoundEnigmaSouls) {
-					RenderHelper.renderFilledThroughWallsWithBeaconBeam(wrc, pos, RED, 0.5f);
+					soul.render(context);
 				}
 			}
 		}
@@ -127,7 +126,8 @@ public class EnigmaSouls {
 		if (Utils.isInTheRift() && !overlay) {
 			String message = text.getString();
 
-			if (message.equals("You have already found that Enigma Soul!") || Formatting.strip(message).equals("SOUL! You unlocked an Enigma Soul!")) markClosestSoulAsFound();
+			if (message.equals("You have already found that Enigma Soul!") || Formatting.strip(message).equals("SOUL! You unlocked an Enigma Soul!"))
+				markClosestSoulAsFound();
 		}
 	}
 
@@ -136,13 +136,13 @@ public class EnigmaSouls {
 				.then(literal("rift")
 						.then(literal("enigmaSouls")
 								.then(literal("markAllFound").executes(context -> {
-									markAllFound();
+									SOUL_WAYPOINTS.values().forEach(Waypoint::setFound);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.rift.enigmaSouls.markAllFound")));
 
 									return Command.SINGLE_SUCCESS;
 								}))
 								.then(literal("markAllMissing").executes(context -> {
-									markAllMissing();
+									SOUL_WAYPOINTS.values().forEach(Waypoint::setMissing);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.rift.enigmaSouls.markAllMissing")));
 
 									return Command.SINGLE_SUCCESS;
@@ -154,30 +154,10 @@ public class EnigmaSouls {
 
 		if (!soulsLoaded.isDone() || player == null) return;
 
-		Arrays.stream(SOUL_WAYPOINTS)
-		.filter(EnigmaSouls::isSoulMissing)
-		.min(Comparator.comparingDouble(soulPos -> soulPos.getSquaredDistance(player.getPos())))
-		.filter(soulPos -> soulPos.getSquaredDistance(player.getPos()) <= 16)
-		.ifPresent(soulPos -> {
-			FOUND_SOULS.computeIfAbsent(Utils.getProfile(), profile -> new ObjectOpenHashSet<>());
-			FOUND_SOULS.get(Utils.getProfile()).add(soulPos);
-		});
-	}
-
-	private static boolean isSoulMissing(BlockPos soulPos) {
-		ObjectOpenHashSet<BlockPos> foundSoulsOnProfile = FOUND_SOULS.get(Utils.getProfile());
-
-		return foundSoulsOnProfile == null || !foundSoulsOnProfile.contains(soulPos);
-	}
-
-	private static void markAllFound() {
-		FOUND_SOULS.computeIfAbsent(Utils.getProfile(), profile -> new ObjectOpenHashSet<>());
-		FOUND_SOULS.get(Utils.getProfile()).addAll(List.of(SOUL_WAYPOINTS));
-	}
-
-	private static void markAllMissing() {
-		ObjectOpenHashSet<BlockPos> foundSoulsOnProfile = FOUND_SOULS.get(Utils.getProfile());
-
-		if (foundSoulsOnProfile != null) foundSoulsOnProfile.clear();
+		SOUL_WAYPOINTS.values().stream()
+				.filter(Waypoint::shouldRender)
+				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getPos())))
+				.filter(soul -> soul.pos.getSquaredDistance(player.getPos()) <= 16)
+				.ifPresent(Waypoint::setFound);
 	}
 }

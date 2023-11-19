@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.diana;
+package de.hysky.skyblocker.skyblock.waypoint;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;

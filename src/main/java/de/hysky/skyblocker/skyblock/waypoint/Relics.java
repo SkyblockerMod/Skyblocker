@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.spidersden;
+package de.hysky.skyblocker.skyblock.waypoint;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -11,7 +11,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -28,21 +29,24 @@ import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Relics {
     private static final Logger LOGGER = LoggerFactory.getLogger(Relics.class);
+    private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().general.waypoints.waypointType;
     private static CompletableFuture<Void> relicsLoaded;
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private static int totalRelics = 0;
-    private static final List<BlockPos> relics = new ArrayList<>();
-    private static final Map<String, Set<BlockPos>> foundRelics = new HashMap<>();
+    private static final Map<BlockPos, ProfileAwareWaypoint> relics = new HashMap<>();
 
     public static void init() {
         ClientLifecycleEvents.CLIENT_STARTED.register(Relics::loadRelics);
@@ -61,7 +65,8 @@ public class Relics {
                     } else if (json.getKey().equals("locations")) {
                         for (JsonElement locationJson : json.getValue().getAsJsonArray().asList()) {
                             JsonObject posData = locationJson.getAsJsonObject();
-                            relics.add(new BlockPos(posData.get("x").getAsInt(), posData.get("y").getAsInt(), posData.get("z").getAsInt()));
+                            BlockPos pos = new BlockPos(posData.get("x").getAsInt(), posData.get("y").getAsInt(), posData.get("z").getAsInt());
+                            relics.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, DyeColor.YELLOW.getColorComponents(), DyeColor.BROWN.getColorComponents()));
                         }
                     }
                 }
@@ -72,11 +77,9 @@ public class Relics {
 
             try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json"))) {
                 for (Map.Entry<String, JsonElement> profileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
-                    Set<BlockPos> foundRelicsForProfile = new HashSet<>();
                     for (JsonElement foundRelicsJson : profileJson.getValue().getAsJsonArray().asList()) {
-                        foundRelicsForProfile.add(PosUtils.parsePosString(foundRelicsJson.getAsString()));
+                        relics.get(PosUtils.parsePosString(foundRelicsJson.getAsString())).setFound(profileJson.getKey());
                     }
-                    foundRelics.put(profileJson.getKey(), foundRelicsForProfile);
                 }
                 LOGGER.debug("[Skyblocker] Loaded found relics");
             } catch (NoSuchFileException ignored) {
@@ -87,6 +90,14 @@ public class Relics {
     }
 
     private static void saveFoundRelics(MinecraftClient client) {
+        Map<String, Set<BlockPos>> foundRelics = new HashMap<>();
+        for (ProfileAwareWaypoint relic : relics.values()) {
+            for (String profile : relic.foundProfiles) {
+                foundRelics.computeIfAbsent(profile, profile_ -> new HashSet<>());
+                foundRelics.get(profile).add(relic.pos);
+            }
+        }
+
         try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json"))) {
             JsonObject json = new JsonObject();
             for (Map.Entry<String, Set<BlockPos>> foundRelicsForProfile : foundRelics.entrySet()) {
@@ -107,12 +118,12 @@ public class Relics {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
                 .then(literal("relics")
                         .then(literal("markAllFound").executes(context -> {
-                            Relics.markAllFound();
+                            relics.values().forEach(ProfileAwareWaypoint::setFound);
                             context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.relics.markAllFound")));
                             return 1;
                         }))
                         .then(literal("markAllMissing").executes(context -> {
-                            Relics.markAllMissing();
+                            relics.values().forEach(ProfileAwareWaypoint::setMissing);
                             context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.relics.markAllMissing")));
                             return 1;
                         }))));
@@ -122,11 +133,10 @@ public class Relics {
         SkyblockerConfig.Relics config = SkyblockerConfigManager.get().locations.spidersDen.relics;
 
         if (config.enableRelicsHelper && relicsLoaded.isDone() && Utils.getLocationRaw().equals("combat_1")) {
-            for (BlockPos fairySoulPos : relics) {
-                boolean isRelicMissing = isRelicMissing(fairySoulPos);
+            for (ProfileAwareWaypoint relic : relics.values()) {
+                boolean isRelicMissing = relic.shouldRender();
                 if (!isRelicMissing && !config.highlightFoundRelics) continue;
-                float[] colorComponents = isRelicMissing ? DyeColor.YELLOW.getColorComponents() : DyeColor.BROWN.getColorComponents();
-                RenderHelper.renderFilledThroughWallsWithBeaconBeam(context, fairySoulPos, colorComponents, 0.5F);
+                relic.render(context);
             }
         }
     }
@@ -145,30 +155,10 @@ public class Relics {
             LOGGER.warn("[Skyblocker] Failed to mark closest relic as found because player is null");
             return;
         }
-        relics.stream()
-                .filter(Relics::isRelicMissing)
-                .min(Comparator.comparingDouble(relicPos -> relicPos.getSquaredDistance(player.getPos())))
-                .filter(relicPos -> relicPos.getSquaredDistance(player.getPos()) <= 16)
-                .ifPresent(relicPos -> {
-                    foundRelics.computeIfAbsent(Utils.getProfile(), profileKey -> new HashSet<>());
-                    foundRelics.get(Utils.getProfile()).add(relicPos);
-                });
-    }
-
-    private static boolean isRelicMissing(BlockPos relicPos) {
-        Set<BlockPos> foundRelicsForProfile = foundRelics.get(Utils.getProfile());
-        return foundRelicsForProfile == null || !foundRelicsForProfile.contains(relicPos);
-    }
-
-    private static void markAllFound() {
-        foundRelics.computeIfAbsent(Utils.getProfile(), profileKey -> new HashSet<>());
-        foundRelics.get(Utils.getProfile()).addAll(relics);
-    }
-
-    private static void markAllMissing() {
-        Set<BlockPos> foundRelicsForProfile = foundRelics.get(Utils.getProfile());
-        if (foundRelicsForProfile != null) {
-            foundRelicsForProfile.clear();
-        }
+        relics.values().stream()
+                .filter(Waypoint::shouldRender)
+                .min(Comparator.comparingDouble(relic -> relic.pos.getSquaredDistance(player.getPos())))
+                .filter(relic -> relic.pos.getSquaredDistance(player.getPos()) <= 16)
+                .ifPresent(Waypoint::setFound);
     }
 }

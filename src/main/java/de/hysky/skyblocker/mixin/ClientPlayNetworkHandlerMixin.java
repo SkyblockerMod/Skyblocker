@@ -3,7 +3,7 @@ package de.hysky.skyblocker.mixin;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.skyblock.FishingHelper;
-import de.hysky.skyblocker.skyblock.diana.MythologicalRitual;
+import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
 import de.hysky.skyblocker.utils.Utils;
 import dev.cbyrne.betterinject.annotations.Inject;
