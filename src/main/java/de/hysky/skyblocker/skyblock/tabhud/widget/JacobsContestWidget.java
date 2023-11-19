@@ -62,7 +62,7 @@ public class JacobsContestWidget extends Widget {
             if (item == null) {
                 itc = new IcoTextComponent();
             } else {
-                String cropName = item.group("crop").trim();
+                String cropName = item.group("crop").trim(); //Trimming is needed because during a contest the space separator will be caught
                 itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.of(cropName));
             }
             tc.addToCell(0, i - 77, itc);
