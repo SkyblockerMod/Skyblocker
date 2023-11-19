@@ -21,7 +21,8 @@ public class JacobsContestWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Jacob's Contest").formatted(Formatting.YELLOW,
             Formatting.BOLD);
 
-    private static final Pattern CROP_PATTERN = Pattern.compile("(?:☘|○) (?<crop>[A-Za-z ]+)");
+    //TODO Properly match the contest placement and display it
+    private static final Pattern CROP_PATTERN = Pattern.compile("(?:☘|○) (?<crop>[A-Za-z ]+)(?:.+)?");
 
     private static final HashMap<String, ItemStack> FARM_DATA = new HashMap<>();
 
@@ -61,7 +62,7 @@ public class JacobsContestWidget extends Widget {
             if (item == null) {
                 itc = new IcoTextComponent();
             } else {
-                String cropName = item.group("crop");
+                String cropName = item.group("crop").trim();
                 itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.of(cropName));
             }
             tc.addToCell(0, i - 77, itc);
