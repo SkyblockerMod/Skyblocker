@@ -373,7 +373,7 @@ public class SkyblockerConfig {
 
 	public static class Hitbox {
 		@SerialEntry
-		public boolean oldFarmlandHitbox = true;
+		public boolean oldFarmlandHitbox = false;
 
 		@SerialEntry
 		public boolean oldLeverHitbox = false;
