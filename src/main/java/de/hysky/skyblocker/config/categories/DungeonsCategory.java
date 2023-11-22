@@ -204,8 +204,8 @@ public class DungeonsCategory {
 								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
 								.build())
 						.option(Option.<Formatting>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor.@Tooltip")))
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.chestValue.incompleteColor"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.chestValue.incompleteColor.@Tooltip")))
 								.binding(defaults.locations.dungeons.dungeonChestProfit.incompleteColor,
 										() -> config.locations.dungeons.dungeonChestProfit.incompleteColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.incompleteColor = newValue)

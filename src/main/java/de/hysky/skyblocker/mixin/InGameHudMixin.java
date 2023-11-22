@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.FancyStatusBars;
-import de.hysky.skyblocker.skyblock.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;

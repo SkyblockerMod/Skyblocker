@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.mixin;
 
-import de.hysky.skyblocker.skyblock.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
