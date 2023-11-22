@@ -35,7 +35,7 @@ public class ResultButtonWidget extends ClickableWidget {
     }
 
     @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         MinecraftClient client = MinecraftClient.getInstance();
         // this.drawTexture(matrices, this.x, this.y, 29, 206, this.width, this.height);
         context.drawGuiTexture(BACKGROUND_TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
