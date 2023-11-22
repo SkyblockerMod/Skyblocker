@@ -266,18 +266,21 @@ public class Utils {
             ObjectArrayList<Text> textLines = new ObjectArrayList<>();
             ObjectArrayList<String> stringLines = new ObjectArrayList<>();
 
-            for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
-                Team team = scoreboard.getPlayerTeam(score.getPlayerName());
+            for (ScoreHolder scoreHolder : scoreboard.getKnownScoreHolders()) {
+                //Limit to just objectives displayed in the scoreboard (specifically sidebar objective)
+                if (scoreboard.getScoreHolderObjectives(scoreHolder).containsKey(objective)) {
+                    Team team = scoreboard.getScoreHolderTeam(scoreHolder.getNameForScoreboard());
 
-                if (team != null) {
-                    Text textLine = Text.empty().append(team.getPrefix().copy()).append(team.getSuffix().copy());
-                    String strLine = team.getPrefix().getString() + team.getSuffix().getString();
+                    if (team != null) {
+                        Text textLine = Text.empty().append(team.getPrefix().copy()).append(team.getSuffix().copy());
+                        String strLine = team.getPrefix().getString() + team.getSuffix().getString();
 
-                    if (!strLine.trim().isEmpty()) {
-                        String formatted = Formatting.strip(strLine);
+                        if (!strLine.trim().isEmpty()) {
+                            String formatted = Formatting.strip(strLine);
 
-                        textLines.add(textLine);
-                        stringLines.add(formatted);
+                            textLines.add(textLine);
+                            stringLines.add(formatted);
+                        }
                     }
                 }
             }

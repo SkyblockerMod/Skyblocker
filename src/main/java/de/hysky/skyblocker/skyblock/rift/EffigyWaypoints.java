@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class EffigyWaypoints {
                     effigiesText.addAll(prefixAndSuffix.get(1).getSiblings());
 
                     for (int i2 = 1; i2 < effigiesText.size(); i2++) {
-                        if (effigiesText.get(i2).getStyle().getColor() == TextColor.parse("gray")) UNBROKEN_EFFIGIES.add(EFFIGIES.get(i2 - 1));
+                        if (effigiesText.get(i2).getStyle().getColor().equals(TextColor.fromFormatting(Formatting.GRAY))) UNBROKEN_EFFIGIES.add(EFFIGIES.get(i2 - 1));
                     }
                 }
             }

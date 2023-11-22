@@ -49,11 +49,11 @@ public class ItemStackBuilder {
         tag.put("display", display);
 
         String name = injectData(item.getDisplayName(), injectors);
-        display.put("Name", NbtString.of(Text.Serializer.toJson(Text.of(name))));
+        display.put("Name", NbtString.of(Text.Serialization.toJsonString(Text.of(name))));
 
         NbtList lore = new NbtList();
         display.put("Lore", lore);
-        item.getLore().forEach(el -> lore.add(NbtString.of(Text.Serializer.toJson(Text.of(injectData(el, injectors))))));
+        item.getLore().forEach(el -> lore.add(NbtString.of(Text.Serialization.toJsonString(Text.of(injectData(el, injectors))))));
 
         String nbttag = item.getNbttag();
         // add skull texture

@@ -13,8 +13,9 @@ import de.hysky.skyblocker.utils.Utils;
 @Mixin(value = YggdrasilMinecraftSessionService.class, remap = false)
 public class YggdrasilMinecraftSessionServiceMixin {
 
-	@WrapOperation(method = "getSecurePropertyValue", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+    //TODO see if a new version of this is needed or not
+	/*@WrapOperation(method = "getSecurePropertyValue", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
 	private void skyblocker$dontLogMissingSignaturesOrTamperedProperties(Logger logger, String message, Object property, Operation<Void> operation) {
 		if (!Utils.isOnHypixel()) operation.call(logger, message, property);
-	}
+	}*/
 }

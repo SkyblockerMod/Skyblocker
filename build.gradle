@@ -19,6 +19,7 @@ repositories {
 	maven { url "https://maven.terraformersmc.com/releases" }
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.isxander.dev/releases" }
+	maven { url "https://maven.isxander.dev/snapshots" } //For minecraft snapshots
 	maven {
 		url 'https://repo.maven.apache.org/maven2'
 		name 'Maven Central'
@@ -51,11 +52,11 @@ dependencies {
 
 	// REI
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
-	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	//modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	// EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
