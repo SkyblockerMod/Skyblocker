@@ -3,18 +3,21 @@ package de.hysky.skyblocker.skyblock;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
 import de.hysky.skyblocker.mixin.accessor.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -35,17 +38,31 @@ public class ChestValue {
 	private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ScreenEvents.afterTick(screen).register(screen_ -> {
-			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen && genericContainerScreen.getScreenHandler().getType() == ScreenHandlerType.GENERIC_9X6) {
+		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
 				Text title = screen.getTitle();
 				String titleString = title.getString();
-				if (SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator && DUNGEON_CHESTS.contains(titleString)) {
-					((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString, client));
-				} else if (SkyblockerConfigManager.get().general.chestValue.enableChestValue && titleString.contains("Chest") && DUNGEON_CHESTS.stream().filter(titleString::contains).findAny().isEmpty()) {
-					((ScreenAccessor) screen).setTitle(getChestValue(genericContainerScreen.getScreenHandler(), title, titleString));
+				if (DUNGEON_CHESTS.contains(titleString)) {
+					if (SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator) {
+						ScreenEvents.afterTick(screen).register(screen_ ->
+								((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString, client))
+						);
+					}
+				} else if (SkyblockerConfigManager.get().general.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
+					Screens.getButtons(screen).add(ButtonWidget
+							.builder(Text.literal("$"), buttonWidget -> {
+								Screens.getButtons(screen).remove(buttonWidget);
+								ScreenEvents.afterTick(screen).register(screen_ ->
+										((ScreenAccessor) screen).setTitle(getChestValue(genericContainerScreen.getScreenHandler(), title, titleString))
+								);
+							})
+							.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
+							.tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.general.chestValue.@Tooltip")))
+							.build()
+					);
 				}
 			}
-		}));
+		});
 	}
 
 	private static Text getDungeonChestProfit(GenericContainerScreenHandler handler, Text title, String titleString, MinecraftClient client) {
@@ -154,7 +171,7 @@ public class ChestValue {
 				}
 			}
 
-			return Text.literal(titleString.replaceFirst(" [\\d,]+ Coins$", "")).append(getValueText(value, hasIncompleteData));
+			return Text.literal(titleString).append(getValueText(value, hasIncompleteData));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Value Calculator] Failed to calculate dungeon chest value! ", e);
 		}
