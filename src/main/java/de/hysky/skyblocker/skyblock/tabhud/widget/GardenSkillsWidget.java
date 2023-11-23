@@ -26,6 +26,8 @@ public class GardenSkillsWidget extends Widget {
     private static final Pattern SKILL_PATTERN = Pattern
             .compile("Skills: (?<skill>[A-Za-z]* [0-9]*): (?<progress>[0-9.MAX]*)%?");
 
+    private static final Pattern GARDEN_LEVEL_PATTERN = Pattern.compile("Garden Level: (?<level>[IVX0-9]+)(?: \\((?<progress>[0-9.]+)% to [IVX0-9]+\\))?");
+
     // same, more or less
     private static final Pattern MS_PATTERN = Pattern
             .compile("Milestone: (?<milestone>[A-Za-z ]* [0-9]*): (?<progress>[0-9.]*)%");
@@ -36,26 +38,46 @@ public class GardenSkillsWidget extends Widget {
 
     @Override
     public void updateContent() {
-        ProgressComponent pc;
-        Matcher m = PlayerListMgr.regexAt(66, SKILL_PATTERN);
-        if (m == null) {
-            pc = new ProgressComponent();
+        ProgressComponent spc;
+        Matcher skillMatcher = PlayerListMgr.regexAt(66, SKILL_PATTERN);
+        if (skillMatcher == null) {
+        	spc = new ProgressComponent();
         } else {
 
-            String strpcnt = m.group("progress");
-            String skill = m.group("skill");
+            String strpcnt = skillMatcher.group("progress");
+            String skill = skillMatcher.group("skill");
 
             if (strpcnt.equals("MAX")) {
-                pc = new ProgressComponent(Ico.LANTERN, Text.of(skill), Text.of("MAX"), 100f,
+                spc = new ProgressComponent(Ico.LANTERN, Text.of(skill), Text.of("MAX"), 100f,
                         Formatting.RED.getColorValue());
             } else {
                 float pcnt = Float.parseFloat(strpcnt);
-                pc = new ProgressComponent(Ico.LANTERN, Text.of(skill), pcnt,
+                spc = new ProgressComponent(Ico.LANTERN, Text.of(skill), pcnt,
                         Formatting.GOLD.getColorValue());
             }
         }
 
-        this.addComponent(pc);
+        this.addComponent(spc);
+
+        ProgressComponent glpc;
+        Matcher glMatcher = PlayerListMgr.regexAt(45, GARDEN_LEVEL_PATTERN);
+
+        if (glMatcher == null) {
+            glpc = new ProgressComponent();
+        } else {
+            String level = glMatcher.group("level");
+
+            if (level.equals("15") || level.equals("XV")) {
+                glpc = new ProgressComponent(Ico.SEEDS, Text.literal("Garden Level " + level), 100f, Formatting.RED.getColorValue());
+            } else {
+            	String strpcnt = glMatcher.group("progress");
+            	float pcnt = Float.parseFloat(strpcnt);
+
+                glpc = new ProgressComponent(Ico.SEEDS, Text.literal("Garden Level " + level), pcnt, Formatting.DARK_GREEN.getColorValue());
+            }
+        }
+
+        this.addComponent(glpc);
 
         Text speed = Widget.simpleEntryText(67, "SPD", Formatting.WHITE);
         IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
@@ -66,22 +88,21 @@ public class GardenSkillsWidget extends Widget {
         tc.addToCell(0, 0, spd);
         tc.addToCell(1, 0, ffo);
         this.addComponent(tc);
+        
+        this.addComponent(new IcoTextComponent(Ico.HOE, PlayerListMgr.textAt(70)));
 
         ProgressComponent pc2;
-        m = PlayerListMgr.regexAt(69, MS_PATTERN);
-        if (m == null) {
+        Matcher milestoneMatcher = PlayerListMgr.regexAt(69, MS_PATTERN);
+        if (milestoneMatcher == null) {
             pc2 = new ProgressComponent();
         } else {
-            String strpcnt = m.group("progress");
-            String milestone = m.group("milestone");
+            String strpcnt = milestoneMatcher.group("progress");
+            String milestone = milestoneMatcher.group("milestone");
 
             float pcnt = Float.parseFloat(strpcnt);
             pc2 = new ProgressComponent(Ico.MILESTONE, Text.of(milestone), pcnt,
                     Formatting.GREEN.getColorValue());
-
         }
         this.addComponent(pc2);
-
     }
-
 }

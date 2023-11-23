@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -20,11 +20,11 @@ public class ComposterWidget extends Widget {
 
     @Override
     public void updateContent() {
-        this.addSimpleIcoText(Ico.SAPLING, "Organic Matter:", Formatting.YELLOW, 48);
-        this.addSimpleIcoText(Ico.FURNACE, "Fuel:", Formatting.BLUE, 49);
-        this.addSimpleIcoText(Ico.CLOCK, "Time Left:", Formatting.RED, 50);
-        this.addSimpleIcoText(Ico.COMPOSTER, "Stored Compost:", Formatting.DARK_GREEN, 51);
+        int offset = (PlayerListMgr.strAt(46) != null) ? 1 : 0;
 
+        this.addSimpleIcoText(Ico.SAPLING, "Organic Matter:", Formatting.YELLOW, 48 + offset);
+        this.addSimpleIcoText(Ico.FURNACE, "Fuel:", Formatting.BLUE, 49 + offset);
+        this.addSimpleIcoText(Ico.CLOCK, "Time Left:", Formatting.RED, 50 + offset);
+        this.addSimpleIcoText(Ico.COMPOSTER, "Stored Compost:", Formatting.DARK_GREEN, 51 + offset);
     }
-
 }

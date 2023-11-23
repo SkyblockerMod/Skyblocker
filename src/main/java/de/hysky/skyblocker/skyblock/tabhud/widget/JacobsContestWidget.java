@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -18,6 +20,9 @@ public class JacobsContestWidget extends Widget {
 
     private static final MutableText TITLE = Text.literal("Jacob's Contest").formatted(Formatting.YELLOW,
             Formatting.BOLD);
+
+    //TODO Properly match the contest placement and display it
+    private static final Pattern CROP_PATTERN = Pattern.compile("(?:☘|○) (?<crop>[A-Za-z ]+)(?:.+)?");
 
     private static final HashMap<String, ItemStack> FARM_DATA = new HashMap<>();
 
@@ -41,22 +46,27 @@ public class JacobsContestWidget extends Widget {
 
     @Override
     public void updateContent() {
-        this.addSimpleIcoText(Ico.CLOCK, "Starts in:", Formatting.GOLD, 76);
+        Text jacobStatus = PlayerListMgr.textAt(76);
+
+        if (jacobStatus.getString().equals("ACTIVE")) {
+            this.addComponent(new IcoTextComponent(Ico.CLOCK, jacobStatus));
+        } else {
+            this.addSimpleIcoText(Ico.CLOCK, "Starts in:", Formatting.GOLD, 76);
+        }
 
         TableComponent tc = new TableComponent(1, 3, Formatting.YELLOW  .getColorValue());
 
         for (int i = 77; i < 80; i++) {
-            String item = PlayerListMgr.strAt(i);
+            Matcher item = PlayerListMgr.regexAt(i, CROP_PATTERN);
             IcoTextComponent itc;
             if (item == null) {
                 itc = new IcoTextComponent();
             } else {
-                itc = new IcoTextComponent(FARM_DATA.get(item), Text.of(item));
+                String cropName = item.group("crop").trim(); //Trimming is needed because during a contest the space separator will be caught
+                itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.of(cropName));
             }
             tc.addToCell(0, i - 77, itc);
         }
         this.addComponent(tc);
-
     }
-
 }

@@ -10,6 +10,7 @@ public class Ico {
     public static final ItemStack MAP = new ItemStack(Items.FILLED_MAP);
     public static final ItemStack NTAG = new ItemStack(Items.NAME_TAG);
     public static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
+    public static final ItemStack AMETHYST_SHARD = new ItemStack(Items.AMETHYST_SHARD);
     public static final ItemStack CLOCK = new ItemStack(Items.CLOCK);
     public static final ItemStack DIASWORD = new ItemStack(Items.DIAMOND_SWORD);
     public static final ItemStack DBUSH = new ItemStack(Items.DEAD_BUSH);
@@ -48,8 +49,10 @@ public class Ico {
     public static final ItemStack B_ROD = new ItemStack(Items.BLAZE_ROD);
     public static final ItemStack BOW = new ItemStack(Items.BOW);
     public static final ItemStack COPPER = new ItemStack(Items.COPPER_INGOT);
+    public static final ItemStack NETHERITE_UPGRADE_ST = new ItemStack(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
     public static final ItemStack COMPOSTER = new ItemStack(Items.COMPOSTER);
     public static final ItemStack SAPLING = new ItemStack(Items.OAK_SAPLING);
+    public static final ItemStack SEEDS = new ItemStack(Items.WHEAT_SEEDS);
     public static final ItemStack MILESTONE = new ItemStack(Items.LODESTONE);
     public static final ItemStack PICKAXE = new ItemStack(Items.IRON_PICKAXE);
     public static final ItemStack NETHER_STAR = new ItemStack(Items.NETHER_STAR);
