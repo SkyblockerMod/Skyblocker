@@ -55,7 +55,7 @@ public class SkyblockerConfigManager {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
 				Screens.getButtons(screen).add(ButtonWidget
-						.builder(Text.literal("⚙"), buttonWidget -> client.setScreen(createGUI(screen)))
+						.builder(Text.literal("\uD83D\uDD27"), buttonWidget -> client.setScreen(createGUI(screen)))
 						.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
 						.tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.title")))
 						.build());
