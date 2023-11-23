@@ -3,12 +3,15 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
@@ -270,5 +273,27 @@ public class DungeonMapUtils {
         }
         DungeonSecrets.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
         return segments.toArray(Vector2ic[]::new);
+    }
+
+    public static BlockPos getWitherBloodDoorPos(World world, Collection<Vector2ic> physicalPositions) {
+        BlockPos.Mutable doorPos = new BlockPos.Mutable();
+        for (Vector2ic pos : physicalPositions) {
+            if (hasWitherOrBloodDoor(world, pos, doorPos)) {
+                return doorPos;
+            }
+        }
+        return null;
+    }
+
+    private static boolean hasWitherOrBloodDoor(World world, Vector2ic pos, BlockPos.Mutable doorPos) {
+        return isWitherOrBloodDoor(world, doorPos.set(pos.x() - 2, 69, pos.y() + 14)) ||
+                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 14, 69, pos.y() - 2)) ||
+                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 14, 69, pos.y() + 30)) ||
+                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 30, 69, pos.y() + 14));
+    }
+
+    private static boolean isWitherOrBloodDoor(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        return state.isOf(Blocks.COAL_BLOCK) || state.isOf(Blocks.RED_TERRACOTTA);
     }
 }

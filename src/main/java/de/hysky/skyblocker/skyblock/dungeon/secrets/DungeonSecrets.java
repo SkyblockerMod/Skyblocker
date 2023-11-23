@@ -32,6 +32,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.PosArgument;
 import net.minecraft.command.argument.TextArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
@@ -66,6 +67,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
@@ -76,6 +79,7 @@ public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
     private static final String DUNGEONS_PATH = "dungeons";
     private static final Path CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
+    private static final Pattern KEY_FOUND = Pattern.compile("^(?<name>\\w+) has obtained (?<type>Blood|Wither) Key!$");
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -469,7 +473,8 @@ public class DungeonSecrets {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM ->
+                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
@@ -517,6 +522,33 @@ public class DungeonSecrets {
 
         if (overlay && isCurrentRoomMatched()) {
             currentRoom.onChatMessage(message);
+        }
+
+        if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight) {
+            Matcher matcher = KEY_FOUND.matcher(message);
+            if (matcher.matches()) {
+                String name = matcher.group("name");
+                MinecraftClient client = MinecraftClient.getInstance();
+                if (client.player != null && client.player.getGameProfile().getName().equals(name)) {
+                    if (currentRoom != null) {
+                        currentRoom.keyFound();
+                    } else {
+                        LOGGER.warn("[Skyblocker Dungeon Door] The current room at the current player {} does not exist", name);
+                    }
+                } else if (client.world != null) {
+                    Optional<Vec3d> posOptional = client.world.getPlayers().stream().filter(player -> player.getGameProfile().getName().equals(name)).findAny().map(Entity::getPos);
+                    if (posOptional.isPresent()) {
+                        Room room = getRoomAtPhysical(posOptional.get());
+                        if (room != null) {
+                            room.keyFound();
+                        } else {
+                            LOGGER.warn("[Skyblocker Dungeon Door] Failed to find room at player {} with position {}", name, posOptional.get());
+                        }
+                    } else {
+                        LOGGER.warn("[Skyblocker Dungeon Door] Failed to find player {}", name);
+                    }
+                }
+            }
         }
 
         if (message.equals("[BOSS] Bonzo: Gratz for making it this far, but I'm basically unbeatable.") || message.equals("[BOSS] Scarf: This is where the journey ends for you, Adventurers.")

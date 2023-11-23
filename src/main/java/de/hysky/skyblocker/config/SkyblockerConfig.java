@@ -574,6 +574,9 @@ public class SkyblockerConfig {
 		public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
 		@SerialEntry
+		public DoorHighlight doorHighlight = new DoorHighlight();
+
+		@SerialEntry
 		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
 		@SerialEntry
@@ -667,6 +670,29 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableDefaultWaypoints = true;
+	}
+
+	public static class DoorHighlight {
+		@SerialEntry
+		public boolean enableDoorHighlight = true;
+
+		@SerialEntry
+		public Type doorHighlightType = Type.OUTLINED_HIGHLIGHT;
+
+		public enum Type {
+			HIGHLIGHT,
+			OUTLINED_HIGHLIGHT,
+			OUTLINE;
+
+			@Override
+			public String toString() {
+				return switch (this) {
+					case HIGHLIGHT -> "Highlight";
+					case OUTLINED_HIGHLIGHT -> "Outlined Highlight";
+					case OUTLINE -> "Outline";
+				};
+			}
+		}
 	}
 
 	public static class DungeonChestProfit {

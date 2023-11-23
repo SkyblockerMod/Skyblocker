@@ -52,13 +52,17 @@ public class RenderHelper {
     }
 
     public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, throughWalls);
+    }
+
+    public static void renderFilled(WorldRenderContext context, BlockPos pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
         if (throughWalls) {
-            if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
-                renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, true);
+            if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
+                renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, true);
             }
         } else {
-            if (OcclusionCulling.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
-                renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, false);
+            if (OcclusionCulling.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
+                renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, false);
             }
         }
     }

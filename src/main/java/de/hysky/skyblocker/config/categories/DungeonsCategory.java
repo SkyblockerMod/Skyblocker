@@ -147,6 +147,9 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
+				//Dungeon Door Highlight
+
+				//Dungeon Chest Profit
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit"))
 						.collapsed(true)

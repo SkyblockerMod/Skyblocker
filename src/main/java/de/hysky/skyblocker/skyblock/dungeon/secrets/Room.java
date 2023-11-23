@@ -6,7 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
@@ -25,8 +27,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -43,10 +48,14 @@ import java.util.regex.Pattern;
 public class Room {
     private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
+    private static final Vec3d DOOR_SIZE = new Vec3d(3, 4, 3);
+    private static final float[] RED_COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
+    private static final float[] GREEN_COLOR_COMPONENTS = DyeColor.GREEN.getColorComponents();
     @NotNull
     private final Type type;
     @NotNull
     private final Set<Vector2ic> segments;
+
     /**
      * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
      */
@@ -81,6 +90,12 @@ public class Room {
     private String name;
     private Direction direction;
     private Vector2ic physicalCornerPos;
+
+    @Nullable
+    private BlockPos doorPos;
+    @Nullable
+    private Box doorBox;
+    private boolean keyFound;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -238,7 +253,8 @@ public class Room {
     /**
      * Updates the room.
      * <p></p>
-     * This method returns immediately if any of the following conditions are met:
+     * First, this method tries to find a wither door and blood door.
+     * Then, this method returns immediately if any of the following conditions are met:
      * <ul>
      *     <li> The room does not need to be scanned and matched. (When the room is not of type {@link Type.ROOM}, {@link Type.PUZZLE}, or {@link Type.TRAP}. See {@link Type#needsScanning()}) </li>
      *     <li> The room has been matched or failed to match and is on cooldown. See {@link #matchState}. </li>
@@ -254,14 +270,27 @@ public class Room {
      */
     @SuppressWarnings("JavadocReference")
     protected void update() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientWorld world = client.world;
+        if (world == null) {
+            return;
+        }
+
+        // Wither and blood door
+        if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight && doorPos == null) {
+            doorPos = DungeonMapUtils.getWitherBloodDoorPos(world, segments);
+            if (doorPos != null) {
+                doorBox = new Box(doorPos.getX(), doorPos.getY(), doorPos.getZ(), doorPos.getX() + DOOR_SIZE.getX(), doorPos.getY() + DOOR_SIZE.getY(), doorPos.getZ() + DOOR_SIZE.getZ());
+            }
+        }
+
+        // Room scanning and matching
         // Logical AND has higher precedence than logical OR
         if (!type.needsScanning() || matchState != MatchState.MATCHING && matchState != MatchState.DOUBLE_CHECKING || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
             return;
         }
-        MinecraftClient client = MinecraftClient.getInstance();
         ClientPlayerEntity player = client.player;
-        ClientWorld world = client.world;
-        if (player == null || world == null) {
+        if (player == null) {
             return;
         }
         findRoom = CompletableFuture.runAsync(() -> {
@@ -459,6 +488,18 @@ public class Room {
                 secretWaypoint.render(context);
             }
         }
+        if (!SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight || doorPos == null) {
+            return;
+        }
+        float[] colorComponents = keyFound ? GREEN_COLOR_COMPONENTS : RED_COLOR_COMPONENTS;
+        switch (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.doorHighlightType) {
+            case HIGHLIGHT -> RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);
+            case OUTLINED_HIGHLIGHT -> {
+                RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);
+                RenderHelper.renderOutline(context, doorBox, colorComponents, 5, true);
+            }
+            case OUTLINE -> RenderHelper.renderOutline(context, doorBox, colorComponents, 5, true);
+        }
     }
 
     /**
@@ -548,6 +589,10 @@ public class Room {
             secret.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
             return true;
         }
+    }
+
+    protected void keyFound() {
+        keyFound = true;
     }
 
     public enum Type {
