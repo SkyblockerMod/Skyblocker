@@ -148,6 +148,25 @@ public class DungeonsCategory {
 						.build())
 
 				//Dungeon Door Highlight
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.doorHighlight"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.doorHighlight.enableDoorHighlight"))
+								.binding(defaults.locations.dungeons.doorHighlight.enableDoorHighlight,
+										() -> config.locations.dungeons.doorHighlight.enableDoorHighlight,
+										newValue -> config.locations.dungeons.doorHighlight.enableDoorHighlight = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<SkyblockerConfig.DoorHighlight.Type>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.doorHighlight.doorHighlightType"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.doorHighlight.doorHighlightType.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote")))
+								.binding(defaults.locations.dungeons.doorHighlight.doorHighlightType,
+										() -> config.locations.dungeons.doorHighlight.doorHighlightType,
+										newValue -> config.locations.dungeons.doorHighlight.doorHighlightType = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.build())
 
 				//Dungeon Chest Profit
 				.group(OptionGroup.createBuilder()

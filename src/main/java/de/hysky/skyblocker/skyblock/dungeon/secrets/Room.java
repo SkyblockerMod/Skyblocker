@@ -27,7 +27,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -49,8 +48,8 @@ public class Room {
     private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
     private static final Vec3d DOOR_SIZE = new Vec3d(3, 4, 3);
-    private static final float[] RED_COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
-    private static final float[] GREEN_COLOR_COMPONENTS = DyeColor.GREEN.getColorComponents();
+    private static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
+    private static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
     @NotNull
     private final Type type;
     @NotNull
@@ -480,14 +479,17 @@ public class Room {
     }
 
     /**
-     * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints}.
+     * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
      */
     protected void render(WorldRenderContext context) {
-        for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
-            if (secretWaypoint.shouldRender()) {
-                secretWaypoint.render(context);
+        if (isMatched()) {
+            for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
+                if (secretWaypoint.shouldRender()) {
+                    secretWaypoint.render(context);
+                }
             }
         }
+
         if (!SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight || doorPos == null) {
             return;
         }

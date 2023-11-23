@@ -79,7 +79,7 @@ public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
     private static final String DUNGEONS_PATH = "dungeons";
     private static final Path CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
-    private static final Pattern KEY_FOUND = Pattern.compile("^(?<name>\\w+) has obtained (?<type>Blood|Wither) Key!$");
+    private static final Pattern KEY_FOUND = Pattern.compile("^(?:\\[.+] )?(?<name>\\w+) has obtained (?<type>Wither|Blood) Key!$");
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -473,8 +473,7 @@ public class DungeonSecrets {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM ->
-                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
@@ -505,25 +504,33 @@ public class DungeonSecrets {
     }
 
     /**
-     * Renders the secret waypoints in {@link #currentRoom} if {@link #isCurrentRoomMatched()}.
+     * Renders the secret waypoints in {@link #currentRoom} if {@link #shouldProcess()} and {@link #currentRoom} is not null.
      */
     private static void render(WorldRenderContext context) {
-        if (isCurrentRoomMatched()) {
+        if (shouldProcess() && currentRoom != null) {
             currentRoom.render(context);
         }
     }
 
     /**
-     * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()}.
-     * Used to detect when all secrets in a room are found.
+     * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
+     * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
+     * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
+     * Then, it calls {@link Room#keyFound()} on {@link #currentRoom} if the client's player is the one who obtained the key.
+     * Otherwise, it calls {@link Room#keyFound()} on the room the player who obtained the key is in.
      */
     private static void onChatMessage(Text text, boolean overlay) {
+        if (!shouldProcess()) {
+            return;
+        }
+
         String message = text.getString();
 
         if (overlay && isCurrentRoomMatched()) {
             currentRoom.onChatMessage(message);
         }
 
+        // Process key found messages for door highlight
         if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight) {
             Matcher matcher = KEY_FOUND.matcher(message);
             if (matcher.matches()) {
