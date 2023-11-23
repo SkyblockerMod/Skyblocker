@@ -40,6 +40,7 @@ public class MuseumItemCache {
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
 	private static final Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>> MUSEUM_ITEM_CACHE = new Object2ObjectOpenHashMap<>();
 	private static final Type MAP_TYPE = new TypeToken<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>>>() {}.getType();
+	private static final String ERROR_LOG_TEMPLATE = "[Skyblocker] Failed to refresh museum item data for profile {}";
 
 	private static CompletableFuture<Void> loaded;
 
@@ -77,39 +78,61 @@ public class MuseumItemCache {
 				//The request was successful
 				if (response.ok()) {
 					JsonObject profileData = JsonParser.parseString(response.content()).getAsJsonObject();
-					JsonObject memberData = profileData.get("members").getAsJsonObject().get(uuid).getAsJsonObject();
+					JsonObject members = profileData.getAsJsonObject("members");
 
-					//We call them sets because it could either be a singular item or an entire armour set
-					Map<String, JsonElement> donatedSets = memberData.get("items").getAsJsonObject().asMap();
+					if (members.has(uuid)) {
+						JsonObject memberData = members.get(uuid).getAsJsonObject();
 
-					//Set of all found item ids on profile
-					ObjectOpenHashSet<String> itemIds = new ObjectOpenHashSet<>();
+						//We call them sets because it could either be a singular item or an entire armour set
+						Map<String, JsonElement> donatedSets = memberData.get("items").getAsJsonObject().asMap();
 
-					for (Map.Entry<String, JsonElement> donatedSet : donatedSets.entrySet()) {
-						//Item is plural here because the nbt is a list
-						String itemsData = donatedSet.getValue().getAsJsonObject().get("items").getAsJsonObject().get("data").getAsString();
-						NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData))).getList("i", NbtElement.COMPOUND_TYPE);
+						//Set of all found item ids on profile
+						ObjectOpenHashSet<String> itemIds = new ObjectOpenHashSet<>();
 
-						for (int i = 0; i < items.size(); i++) {
-							NbtCompound tag = items.getCompound(i).getCompound("tag");
+						for (Map.Entry<String, JsonElement> donatedSet : donatedSets.entrySet()) {
+							//Item is plural here because the nbt is a list
+							String itemsData = donatedSet.getValue().getAsJsonObject().get("items").getAsJsonObject().get("data").getAsString();
+							NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData))).getList("i", NbtElement.COMPOUND_TYPE);
 
-							if (tag.contains("ExtraAttributes")) {
-								NbtCompound extraAttributes = tag.getCompound("ExtraAttributes");
+							for (int i = 0; i < items.size(); i++) {
+								NbtCompound tag = items.getCompound(i).getCompound("tag");
 
-								if (extraAttributes.contains("id")) itemIds.add(extraAttributes.getString("id"));
+								if (tag.contains("ExtraAttributes")) {
+									NbtCompound extraAttributes = tag.getCompound("ExtraAttributes");
+
+									if (extraAttributes.contains("id")) itemIds.add(extraAttributes.getString("id"));
+								}
 							}
 						}
+
+						MUSEUM_ITEM_CACHE.get(uuid).put(profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
+						save();
+
+						LOGGER.info("[Skyblocker] Successfully updated museum item cache for profile {}", profileId);
+					} else {
+						//If the player's Museum API is disabled
+						putEmpty(uuid, profileId);
+
+						LOGGER.warn(ERROR_LOG_TEMPLATE + " because the Museum API is disabled!", profileId);
 					}
+				} else {
+					//If the request returns a non 200 status code
+					putEmpty(uuid, profileId);
 
-					MUSEUM_ITEM_CACHE.get(uuid).put(profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
-					save();
-
-					LOGGER.info("[Skyblocker] Successfully updated museum item cache for profile {}", profileId);
+					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Status Code: {}", profileId, response.statusCode());
 				}
 			} catch (Exception e) {
-				LOGGER.error("[Skyblocker] Failed to refresh museum item data for profile {}", profileId, e);
+				//If an exception was somehow thrown
+				putEmpty(uuid, profileId);
+
+				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
 		});
+	}
+
+	private static void putEmpty(String uuid, String profileId) {
+		MUSEUM_ITEM_CACHE.get(uuid).put(profileId, new ProfileMuseumData(System.currentTimeMillis(), ObjectOpenHashSet.of()));
+		save();
 	}
 
 	/**
