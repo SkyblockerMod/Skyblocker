@@ -60,8 +60,6 @@ public class CompactorDeletorPreview {
         // Add the preview tooltip component
         components.add(targetIndex, new CompactorPreviewTooltipComponent(slots, dimensions));
 
-        // Render accompanying text
-        components.add(targetIndex, TooltipComponent.of(Text.literal("Contents:").asOrderedText()));
         if (extraAttributes.contains("PERSONAL_DELETOR_ACTIVE")) {
             components.add(targetIndex, TooltipComponent.of(Text.literal("Active: ")
                     .append(extraAttributes.getBoolean("PERSONAL_DELETOR_ACTIVE") ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
