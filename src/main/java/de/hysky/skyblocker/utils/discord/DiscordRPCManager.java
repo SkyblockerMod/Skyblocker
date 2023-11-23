@@ -75,10 +75,10 @@ public class DiscordRPCManager {
                 if (SkyblockerConfigManager.get().richPresence.enableRichPresence && Utils.isOnSkyblock()) {
                     if (!DiscordIPC.isConnected()) {
                         if (DiscordIPC.start(934607927837356052L, null)) {
-                            LOGGER.info("[Skyblocker] Discord RPC started successfully");
+                            LOGGER.info("[Skyblocker] Discord RPC connected successfully");
                         } else {
                             if (initialization) {
-                                LOGGER.error("[Skyblocker] Discord RPC failed to start");
+                                LOGGER.error("[Skyblocker] Discord RPC failed to connect");
                             }
                             return;
                         }
@@ -86,9 +86,9 @@ public class DiscordRPCManager {
                     DiscordIPC.setActivity(buildPresence());
                 } else if (DiscordIPC.isConnected()) {
                     DiscordIPC.stop();
-                    LOGGER.info("[Skyblocker] Discord RPC stopped");
+                    LOGGER.info("[Skyblocker] Discord RPC disconnected");
                 } else if (initialization) {
-                    LOGGER.info("[Skyblocker] Discord RPC is currently disabled");
+                    LOGGER.info("[Skyblocker] Discord RPC is currently disabled, will not connect");
                 }
             });
         }
