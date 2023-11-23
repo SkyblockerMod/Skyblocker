@@ -1,31 +1,29 @@
 package de.hysky.skyblocker.config;
 
-import java.lang.StackWalker.Option;
-import java.nio.file.Path;
-
 import com.google.gson.FieldNamingPolicy;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.categories.*;
+import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
-import de.hysky.skyblocker.config.categories.DiscordRPCCategory;
-import de.hysky.skyblocker.config.categories.DungeonsCategory;
-import de.hysky.skyblocker.config.categories.DwarvenMinesCategory;
-import de.hysky.skyblocker.config.categories.GeneralCategory;
-import de.hysky.skyblocker.config.categories.LocationsCategory;
-import de.hysky.skyblocker.config.categories.MessageFilterCategory;
-import de.hysky.skyblocker.config.categories.QuickNavigationCategory;
-import de.hysky.skyblocker.config.categories.SlayersCategory;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.lang.StackWalker.Option;
+import java.nio.file.Path;
 
 public class SkyblockerConfigManager {
 	private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
@@ -34,8 +32,8 @@ public class SkyblockerConfigManager {
 					.setPath(PATH)
 					.setJson5(false)
 					.appendGsonBuilder(builder -> builder
-						.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-						.registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
+							.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+							.registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
 					.build())
 			.build();
 
@@ -54,6 +52,15 @@ public class SkyblockerConfigManager {
 
 		HANDLER.load();
 		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
+		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+			if (screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
+				Screens.getButtons(screen).add(ButtonWidget
+						.builder(Text.literal("⚙"), buttonWidget -> client.setScreen(createGUI(screen)))
+						.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
+						.tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.title")))
+						.build());
+			}
+		});
 	}
 
 	public static void save() {
