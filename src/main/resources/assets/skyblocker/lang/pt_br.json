@@ -177,8 +177,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralThreshold": "Limite neutro",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor": "Cor do lucro",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor": "Cor de prejuízo",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor": "Cor incompleta",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "A cor exibida quando a data de preço é incompleta.",
     "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Acinzentar os baús que já foram abertos.",
     "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Ativar mapa",
     "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "Tamanho do mapa",
