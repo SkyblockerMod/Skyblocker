@@ -32,6 +32,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.PosArgument;
 import net.minecraft.command.argument.TextArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
@@ -66,6 +67,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
@@ -76,6 +79,7 @@ public class DungeonSecrets {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
     private static final String DUNGEONS_PATH = "dungeons";
     private static final Path CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
+    private static final Pattern KEY_FOUND = Pattern.compile("^(?:\\[.+] )?(?<name>\\w+) has obtained (?<type>Wither|Blood) Key!$");
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -500,23 +504,58 @@ public class DungeonSecrets {
     }
 
     /**
-     * Renders the secret waypoints in {@link #currentRoom} if {@link #isCurrentRoomMatched()}.
+     * Renders the secret waypoints in {@link #currentRoom} if {@link #shouldProcess()} and {@link #currentRoom} is not null.
      */
     private static void render(WorldRenderContext context) {
-        if (isCurrentRoomMatched()) {
+        if (shouldProcess() && currentRoom != null) {
             currentRoom.render(context);
         }
     }
 
     /**
-     * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()}.
-     * Used to detect when all secrets in a room are found.
+     * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
+     * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
+     * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
+     * Then, it calls {@link Room#keyFound()} on {@link #currentRoom} if the client's player is the one who obtained the key.
+     * Otherwise, it calls {@link Room#keyFound()} on the room the player who obtained the key is in.
      */
     private static void onChatMessage(Text text, boolean overlay) {
+        if (!shouldProcess()) {
+            return;
+        }
+
         String message = text.getString();
 
         if (overlay && isCurrentRoomMatched()) {
             currentRoom.onChatMessage(message);
+        }
+
+        // Process key found messages for door highlight
+        if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight) {
+            Matcher matcher = KEY_FOUND.matcher(message);
+            if (matcher.matches()) {
+                String name = matcher.group("name");
+                MinecraftClient client = MinecraftClient.getInstance();
+                if (client.player != null && client.player.getGameProfile().getName().equals(name)) {
+                    if (currentRoom != null) {
+                        currentRoom.keyFound();
+                    } else {
+                        LOGGER.warn("[Skyblocker Dungeon Door] The current room at the current player {} does not exist", name);
+                    }
+                } else if (client.world != null) {
+                    Optional<Vec3d> posOptional = client.world.getPlayers().stream().filter(player -> player.getGameProfile().getName().equals(name)).findAny().map(Entity::getPos);
+                    if (posOptional.isPresent()) {
+                        Room room = getRoomAtPhysical(posOptional.get());
+                        if (room != null) {
+                            room.keyFound();
+                        } else {
+                            LOGGER.warn("[Skyblocker Dungeon Door] Failed to find room at player {} with position {}", name, posOptional.get());
+                        }
+                    } else {
+                        LOGGER.warn("[Skyblocker Dungeon Door] Failed to find player {}", name);
+                    }
+                }
+            }
         }
 
         if (message.equals("[BOSS] Bonzo: Gratz for making it this far, but I'm basically unbeatable.") || message.equals("[BOSS] Scarf: This is where the journey ends for you, Adventurers.")
