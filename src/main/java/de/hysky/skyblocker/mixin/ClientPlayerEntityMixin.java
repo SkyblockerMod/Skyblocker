@@ -3,7 +3,7 @@ package de.hysky.skyblocker.mixin;
 import com.mojang.authlib.GameProfile;
 
 import dev.cbyrne.betterinject.annotations.Inject;
-import de.hysky.skyblocker.skyblock.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.rift.HealingMelonIndicator;
 import de.hysky.skyblocker.utils.Utils;

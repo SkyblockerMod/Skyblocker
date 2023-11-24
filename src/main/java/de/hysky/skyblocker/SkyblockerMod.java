@@ -98,7 +98,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DungeonMap.init();
         DungeonSecrets.init();
         DungeonBlaze.init();
-        DungeonChestProfit.init();
+        ChestValue.init();
         TheRift.init();
         TitleContainer.init();
         ScreenMaster.init();

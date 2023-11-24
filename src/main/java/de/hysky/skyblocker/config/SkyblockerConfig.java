@@ -207,6 +207,9 @@ public class SkyblockerConfig {
 		public WikiLookup wikiLookup = new WikiLookup();
 
 		@SerialEntry
+		public ChestValue chestValue = new ChestValue();
+
+		@SerialEntry
 		public SpecialEffects specialEffects = new SpecialEffects();
 
 		@SerialEntry
@@ -545,6 +548,17 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean officialWiki = false;
+	}
+
+	public static class ChestValue {
+		@SerialEntry
+		public boolean enableChestValue = true;
+
+		@SerialEntry
+		public Formatting color = Formatting.DARK_GREEN;
+
+		@SerialEntry
+		public Formatting incompleteColor = Formatting.BLUE;
 	}
 
 	public static class SpecialEffects {
