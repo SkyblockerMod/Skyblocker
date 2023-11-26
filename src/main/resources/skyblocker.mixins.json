@@ -36,7 +36,8 @@
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
-    "accessor.WorldRendererAccessor"
+    "accessor.WorldRendererAccessor",
+    "discordipc.ConnectionMixin"
   ],
   "injectors": {
     "defaultRequire": 1
