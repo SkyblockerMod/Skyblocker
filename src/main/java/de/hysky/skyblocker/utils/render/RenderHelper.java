@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
@@ -23,15 +22,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
+import org.slf4j.Logger;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
-import org.slf4j.Logger;
 
 public class RenderHelper {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -168,11 +167,12 @@ public class RenderHelper {
         buffer.begin(DrawMode.LINE_STRIP, VertexFormats.LINES);
 
         for (int i = 0; i < points.length; i++) {
-            Vec3d normalVec = points[(i + 1) % points.length].subtract(points[i]).normalize();
+            Vec3d nextPoint = points[i + 1 == points.length ? i - 1 : i + 1];
+            Vector3f normalVec = new Vector3f((float) nextPoint.getX(), (float) nextPoint.getY(), (float) nextPoint.getZ()).sub((float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).normalize().mul(normalMatrix);
             buffer
                     .vertex(positionMatrix, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ())
                     .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                    .normal(normalMatrix, (float) normalVec.x, (float) normalVec.y, (float) normalVec.z)
+                    .normal(normalVec.x, normalVec.y, normalVec.z)
                     .next();
         }
 
@@ -326,7 +326,8 @@ public class RenderHelper {
             MethodType mt = MethodType.methodType(void.class, Runnable.class);
 
             return lookup.findStatic(deferredTaskClass, "schedule", mt);
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
 
         return null;
     }

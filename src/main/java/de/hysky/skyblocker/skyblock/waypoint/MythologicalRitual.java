@@ -100,14 +100,11 @@ public class MythologicalRitual {
                 if (Double.isNaN(slope)) {
                     return;
                 }
-                Vec3d nextBurrowDirection = new Vec3d(100, 0, slope * 100).normalize().multiply(100);
-                if (burrow.nextBurrowPlane == null) {
-                    burrow.nextBurrowPlane = new Vec3d[4];
+                Vec3d nextBurrowDirection = new Vec3d(100, 0, slope * 100).normalize();
+                if (burrow.nextBurrowLine == null) {
+                    burrow.nextBurrowLine = new Vec3d[1001];
                 }
-                burrow.nextBurrowPlane[0] = Vec3d.of(pos).add(nextBurrowDirection).subtract(0, 50, 0);
-                burrow.nextBurrowPlane[1] = Vec3d.of(pos).subtract(nextBurrowDirection).subtract(0, 50, 0);
-                burrow.nextBurrowPlane[2] = burrow.nextBurrowPlane[1].add(0, 100, 0);
-                burrow.nextBurrowPlane[3] = burrow.nextBurrowPlane[0].add(0, 100, 0);
+                fillLine(burrow.nextBurrowLine, Vec3d.of(pos), nextBurrowDirection);
             } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType()) && packet.getCount() == 2) {
                 if (System.currentTimeMillis() > lastEchoTime + 10_000) {
                     return;
@@ -120,15 +117,22 @@ public class MythologicalRitual {
                 if (previousBurrow.echoBurrowDirection[0] == null || previousBurrow.echoBurrowDirection[1] == null) {
                     return;
                 }
-                Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize().multiply(100);
-                if (previousBurrow.echoBurrowPlane == null) {
-                    previousBurrow.echoBurrowPlane = new Vec3d[4];
+                Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize();
+                if (previousBurrow.echoBurrowLine == null) {
+                    previousBurrow.echoBurrowLine = new Vec3d[1001];
                 }
-                previousBurrow.echoBurrowPlane[0] = previousBurrow.echoBurrowDirection[0].add(echoBurrowDirection).subtract(0, 50, 0);
-                previousBurrow.echoBurrowPlane[1] = previousBurrow.echoBurrowDirection[0].subtract(echoBurrowDirection).subtract(0, 50, 0);
-                previousBurrow.echoBurrowPlane[2] = previousBurrow.echoBurrowPlane[1].add(0, 100, 0);
-                previousBurrow.echoBurrowPlane[3] = previousBurrow.echoBurrowPlane[0].add(0, 100, 0);
+                fillLine(previousBurrow.echoBurrowLine, previousBurrow.echoBurrowDirection[0], echoBurrowDirection);
             }
+        }
+    }
+
+    static void fillLine(Vec3d[] line, Vec3d start, Vec3d direction) {
+        assert line.length % 2 == 1;
+        int middle = line.length / 2;
+        line[middle] = start;
+        for (int i = 0; i < middle; i++) {
+            line[middle + 1 + i] = line[middle + i].add(direction);
+            line[middle - 1 - i] = line[middle - i].subtract(direction);
         }
     }
 
@@ -139,11 +143,11 @@ public class MythologicalRitual {
                     burrow.render(context);
                 }
                 if (burrow.confirmed != TriState.FALSE) {
-                    if (burrow.nextBurrowPlane != null) {
-                        RenderHelper.renderQuad(context, burrow.nextBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, true);
+                    if (burrow.nextBurrowLine != null) {
+                        RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F);
                     }
-                    if (burrow.echoBurrowPlane != null) {
-                        RenderHelper.renderQuad(context, burrow.echoBurrowPlane, ORANGE_COLOR_COMPONENTS, 0.25F, true);
+                    if (burrow.echoBurrowLine != null) {
+                        RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F);
                     }
                 }
             }
@@ -191,10 +195,12 @@ public class MythologicalRitual {
         private int enchantParticle;
         private TriState confirmed = TriState.FALSE;
         private final SimpleRegression regression = new SimpleRegression();
-        private Vec3d[] nextBurrowPlane;
+        @Nullable
+        private Vec3d[] nextBurrowLine;
         @Nullable
         private Vec3d[] echoBurrowDirection;
-        private Vec3d[] echoBurrowPlane;
+        @Nullable
+        private Vec3d[] echoBurrowLine;
 
         private GriffinBurrow(BlockPos pos) {
             super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);
