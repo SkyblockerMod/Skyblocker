@@ -15,8 +15,12 @@
         - *Item Name*
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
-- **Livid Color Helper**
+- **Livid Color Highlight**
 - **Reparty:** Type /rp to reparty and enable auto-rejoin.
+- **AOTV & Pearl Secret Waypoints**
+- **Custom Dungeon Secrets**
+- **Player Secrets Tracker**
+- **Wither & Blood Door Highlight**
 
 ### Item and Armor Customization:
 - *Item Renaming*
@@ -39,6 +43,8 @@
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
+- **Enigma soul waypoint**
+- **Blobbercysts Glow**
 
 ### Spider's Den Features:
 - **Hidden Relic Helper**
@@ -57,6 +63,7 @@
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
 - **Item Rarity Backgrounds**
+  - Circle or Square
 - **Item Cooldown Display**
 - **Configure Fire-Overlay Height**
 
@@ -64,12 +71,13 @@
 - **Attribute Shard Info Display**
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
-- **Price Tooltip:** (Provides information on)
+- **Item Tooltip:** (Provides information on)
     - *NPC Prices*
     - *Motes Prices*
     - *bazaar (average, lowest bin)*
     - *Auction House*
     - *Museum*
+    - *Exotic Armor Identifier*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
@@ -92,6 +100,7 @@
 ### Miscellaneous Solvers:
 - **Experiments Solvers**
 - **Fishing Helper:** Includes sound notifications.
+- **Mythological Ritual Helper**
 
 ### Miscellaneous Features:
 - **Roughly Enough Items (REI) and EMI Support**
@@ -99,3 +108,6 @@
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
 - **OptiFabric Compatibility**
+- **Waypoints API**
+- **Config Button in Skyblock Menu**
+- **ChestValue**

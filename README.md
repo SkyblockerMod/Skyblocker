@@ -3,13 +3,14 @@
 ## Skyblocker
 
 [![modrinth statistic](https://img.shields.io/modrinth/dt/skyblocker-liap?color=00AF5C&label=Download&labelColor=cecece00AF5C&logo=modrinth)](https://modrinth.com/mod/skyblocker-liap)
+[![curseforge statistic](https://img.shields.io/curseforge/dt/936169?logo=curseforge&color=orange)](https://www.curseforge.com/minecraft/mc-mods/skyblocker)
 [![github statistic](https://img.shields.io/github/downloads/SkyblockerMod/skyblocker/total?labelColor=cecece&color=000000&label=Download&logo=github&logoColor=black)](https://github.com/SkyblockerMod/Skyblocker/releases/latest)
 [![Build Beta](https://img.shields.io/github/actions/workflow/status/SkyblockerMod/Skyblocker/beta.yml?labelColor=cecece&label=beta&logo=github&logoColor=black)](https://github.com/SkyblockerMod/Skyblocker/actions/workflows/beta.yml)
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
-[![modrinth statistic](https://img.shields.io/badge/buy%20me%20coffee-skyblocker?color=434B57&logo=kofi)](https://ko-fi.com/wohlhabend)
+[![Ko-fi](https://img.shields.io/badge/buy%20me%20coffee-skyblocker?color=434B57&logo=kofi)](https://ko-fi.com/wohlhabend)
 [![Translated](https://translate.hysky.de/widgets/Skyblocker/-/skyblocker/svg-badge.svg)](https://translate.hysky.de/projects/Skyblocker/skyblocker/)
 
-Hypixel Skyblock Mod for Minecraft 1.17.x + 1.18.x + 1.19.x + 1.20.x
+Hypixel Skyblock Mod for Minecraft 1.20.x
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features
@@ -18,24 +19,28 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 <summary>open</summary>
 
 ### Dungeon Features:
-- **Secrets Highlight:** Fully configurable
+- **Secrets Waypoint Highlight:** Fully configurable
 - **Minimap**
 - **Starred Mob Glow**
-- **Puzzle Helper:**
-    - *Croesus*
-    - *Three Weirdos*
-    - *Blaze*
-    - *Creeper Beams*
-    - *Trivia*
-    - *Tic Tac Toe*
-    - *Terminal:*
-        - *Order*
-        - *Coloured Items*
-        - *Item Name*
+- **Croesus Helper**
+- **Puzzle Solver:**
+  - *Three Weirdos*
+  - *Blaze*
+  - *Creeper Beams*
+  - *Quiz - Ouro the Omniscient*
+  - *Tic Tac Toe*
+  - *Terminal:*
+    - *Order*
+    - *Coloured Items*
+    - *Item Name*
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
-- **Livid Color Helper**
+- **Livid Color Highlight**
 - **Reparty:** Type /rp to reparty and enable auto-rejoin.
+- **AOTV & Pearl Secret Waypoints**
+- **Custom Dungeon Secrets**
+- **Player Secrets Tracker**
+- **Wither & Blood Door Highlight**
 
 ### Item and Armor Customization:
 - *Item Renaming*
@@ -44,30 +49,32 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### Health and Status Bars:
 - **Bars:**
-    - *Health and absorption*
-    - *Mana*
-    - *Defense*
-    - *XP*
+  - *Health and absorption*
+  - *Mana*
+  - *Defense*
+  - *XP*
 
 ### Dwarven Mines:
 - **Dwarven Mines Solver:**
-    - *Fetchur*
-    - *Puzzler*
+  - *Fetchur*
+  - *Puzzler*
 - **Commission HUD**
-    - *Provides information on Dwarven Mines quests*
+  - *Provides information on Dwarven Mines quests*
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
+- **Enigma soul waypoint**
+- **Blobbercysts Glow**
 
 ### Spider's Den Features:
 - **Hidden Relic Helper**
 
 ### Slayer Helper:
 - **Vampire:**
-    - *Effigy Waypoints*
-    - *Healing Melon Indicator*
-    - *Twinclaws Ice Indicator*
-    - *Steak Stake Indicator*
+  - *Effigy Waypoints*
+  - *Healing Melon Indicator*
+  - *Twinclaws Ice Indicator*
+  - *Steak Stake Indicator*
 
 ### Visual Enhancements:
 - **Fancy Tab HUD:** Fully configurable with a resource pack.
@@ -76,6 +83,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
 - **Item Rarity Backgrounds**
+  - Circle or Square
 - **Item Cooldown Display**
 - **Configure Fire-Overlay Height**
 
@@ -83,34 +91,36 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Attribute Shard Info Display**
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
-- **Price Tooltip:** (Provides information on)
-    - *NPC Prices*
-    - *Motes Prices*
-    - *bazaar (average, lowest bin)*
-    - *Auction House*
-    - *Museum*
+- **Item Tooltip:** (Provides information on)
+  - *NPC Prices*
+  - *Motes Prices*
+  - *bazaar (average, lowest bin)*
+  - *Auction House*
+  - *Museum*
+  - *Exotic Armor Identifier*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
 
 ### Barn Features:
 - **Barn Solver:**
-    - *Treasure Hunter*
-    - *Hungry Hiker*
+  - *Treasure Hunter*
+  - *Hungry Hiker*
 
 ### Chat Features:
 - **Hide Messages:**
-    - *Ability Cooldown*
-    - *Heal*
-    - *Aspect of the End (AOTE)*
-    - *Implosion*
-    - *Molten Wave*
-    - *`/show command`*
-    - *Teleport Pad Messages*
+  - *Ability Cooldown*
+  - *Heal*
+  - *Aspect of the End (AOTE)*
+  - *Implosion*
+  - *Molten Wave*
+  - *`/show command`*
+  - *Teleport Pad Messages*
 
 ### Miscellaneous Solvers:
 - **Experiments Solvers**
 - **Fishing Helper:** Includes sound notifications.
+- **Mythological Ritual Helper**
 
 ### Miscellaneous Features:
 - **Roughly Enough Items (REI) and EMI Support**
@@ -118,6 +128,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
 - **OptiFabric Compatibility**
+- **Waypoints API**
+- **Config Button in Skyblock Menu**
+- **ChestValue**
 
 </details>
 
@@ -125,15 +138,16 @@ ___
 
 ## Commands
 
-|         command         |                option                 | comment                                             |
-|:-----------------------:|:-------------------------------------:|:----------------------------------------------------|
-|   /skyblocker config    |                                       | open config menu (modMenu not needed)               |
-|   /skyblocker options   |                                       | open config menu (modMenu not needed)               |
-|     /skyblocker hud     | dwarven / dungeonmap / titleContainer | move dwarven, dungeonmap or titleContainer          |
-|  /skyblocker shortcuts  |                                       | add/edit shortcuts                                  |
-|   /skyblocker custom    |  renameItem /  armorTrim / dyeColor   | Item and Armour customisation                       |
-| /skyblocker protectItem |                                       | When an item is protected it's safe from: <br /> - Being dropped while holding it, regardless of the slot being locked <br /> - Being dropped from picking it up in your inventory then clicking outside the screen <br /> - Being dropped via hovering over it and pressing the drop key |
-
+|         command         |                                   option                                   | comment                                                                                                                                                                                                                                                                                   |
+|:-----------------------:|:--------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   /skyblocker config    |                                                                            | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
+|   /skyblocker options   |                                                                            | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
+|     /skyblocker hud     |                   dwarven / dungeonmap / titleContainer                    | move dwarven, dungeonmap or titleContainer                                                                                                                                                                                                                                                |
+|  /skyblocker shortcuts  |                                                                            | add/edit shortcuts                                                                                                                                                                                                                                                                        |
+|   /skyblocker custom    |                     renameItem /  armorTrim / dyeColor                     | Item and Armour customisation                                                                                                                                                                                                                                                             |
+| /skyblocker protectItem |                                                                            | When an item is protected it's safe from: <br /> - Being dropped while holding it, regardless of the slot being locked <br /> - Being dropped from picking it up in your inventory then clicking outside the screen <br /> - Being dropped via hovering over it and pressing the drop key |
+|      /skyblocker   dungeons secrets     | addWaypoint \| addWaypointRelatively [pos] [secretIndex] [category] [name] |                                                                                                                                                                                                                                                                                           |
+|      /skyblocker   dungeons secrets     |              removeWaypoint \| removeWaypointRelatively [pos]              |                                                                                                                                                                                                                                                                                           |
 ---
 
 ## Images
@@ -159,7 +173,7 @@ information.
 
 ## Stargazers
 
-[![Stargazers repo roster for @LifeIsAParadox/Skyblocker](https://reporoster.com/stars/SkyblockerMod/Skyblocker)](https://github.com/SkyblockerMod/Skyblocker/stargazers)
+[![Stargazers repo roster for @LifeIsAParadox/Skyblocker](https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=skyblockermod&repo=skyblocker)](https://github.com/SkyblockerMod/Skyblocker/stargazers)
 
 ## Credits
 
@@ -204,4 +218,5 @@ Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
 Norwegian Nynorsk ([KdGaming0](https://github.com/KdGaming0)) \
 Turkish ([Fix3dll](https://github.com/Fix3dll)) \
 Canadian English ([AzureAaron](https://github.com/AzureAaron)) \
-Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro) & [AurinVPK](https://github.com/AurinVPK))
+Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro) & [AurinVPK](https://github.com/AurinVPK) & [yFelipeMC](https://github.com/yFelipeMC)) \
+Dutch ([mitch030504](https://github.com/mitch030504))
