@@ -33,7 +33,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "Можно выбрать, за сколько дней будет браться средняя цена",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Показать минимальную цену на BIN",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Показать цены на Bazaar-е",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Показать дату получения",
     "text.autoconfig.skyblocker.category.richPresence": "Активность в статусе Discord",
     "text.autoconfig.skyblocker.option.richPresence.info": "Отображаемая информация",
     "text.autoconfig.skyblocker.option.richPresence.info.@Tooltip": "Не имеет значения при цикличном отображении",

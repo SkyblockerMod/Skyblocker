@@ -2,7 +2,7 @@
     "text.autoconfig.skyblocker.option.general.bars": "Health, Mana, Defence & XP Bars",
     "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Grey out chests that have already been opened.",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor": "Livid Colour",
-    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText": "Enable Livid Colour",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText": "Enable Livid Colour Text",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText.@Tooltip": "Send the livid colour in the chat during the Livid boss fight.",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Livid Colour Text",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid colour.",
@@ -25,7 +25,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralColor": "Neutral Colour",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor": "Profit Colour",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor": "Loss Colour",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor": "Incomplete Colour",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "The colour to display when the price data is incomplete.",
-    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a coloured background behind an item, the colour represents the item's rarity."
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a coloured background behind an item, the colour represents the item's rarity.",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip.@Tooltip": "Displays the type of exotic below the item's name if an armour piece is exotic.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorGlow": "Enable Livid Colour Glow"
 }

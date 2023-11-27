@@ -30,7 +30,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAvgBIN": "顯示平均BIN（立即購買）價格",
     "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "檢視揹包預覽無需按住shift鍵",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "物品資訊訊息",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "顯示博物館与日期訊息",
     "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "啟用1.8的控制桿判定箱",
     "text.autoconfig.skyblocker.option.general.hitbox": "判定箱",
     "skyblocker.itemTooltip.nullMessage": "§c物品資訊裡面的價格訊息會在最多60秒內更新。如果沒有，請檢查latest.log",

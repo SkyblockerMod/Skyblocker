@@ -19,7 +19,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.@Tooltip": "Vous pouvez choisir sur combien de jours la moyenne est calculée",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableLowestBIN": "Afficher le prix minimal d'achat immédiat (BIN)",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Afficher le prix d'achat et de vente au Bazar",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumDate": "Afficher le musée et la date d'ajout",
     "text.autoconfig.skyblocker.option.general.hitbox": "Boites de collisions",
     "text.autoconfig.skyblocker.option.general.hitbox.oldFarmlandHitbox": "Hitbox 1.8 de la terre labourée",
     "text.autoconfig.skyblocker.option.general.hitbox.oldLeverHitbox": "Hitbox 1.8 du levier",
