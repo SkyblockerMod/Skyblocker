@@ -60,9 +60,6 @@ dependencies {
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
-	// Mixin Extras (https://github.com/LlamaLad7/MixinExtras)
-	include implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}"))
-
 	// BetterInject (https://github.com/caoimhebyrne/BetterInject)
 	include implementation(annotationProcessor("com.github.cbyrneee:BetterInject:${project.betterinject_version}"))
 
