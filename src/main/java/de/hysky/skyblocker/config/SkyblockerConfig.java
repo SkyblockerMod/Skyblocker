@@ -630,13 +630,13 @@ public class SkyblockerConfig {
 		public boolean solveTicTacToe = true;
 
 		@SerialEntry
+		public boolean fireFreezeStaffTimer = true;
+
+		@SerialEntry
 		public LividColor lividColor = new LividColor();
 
 		@SerialEntry
 		public Terminals terminals = new Terminals();
-
-		@SerialEntry
-		public boolean fireFreezeStaffTimer = true;
 	}
 
 	public static class SecretWaypoints {
