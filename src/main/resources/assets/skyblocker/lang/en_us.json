@@ -229,6 +229,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Colored",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveOrder": "Solve Click In Order",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveStartsWith": "Solve Starts With",
+  "text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer": "Fire Freeze Staff Timer (F3/M3)",
+  "text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer.@Tooltip": "Display a timer when to use a Fire Freeze Staff in the F3/M3 boss fight.",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Dwarven Mines",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Enable Drill Fuel",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Solve Fetchur",

@@ -634,6 +634,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Terminals terminals = new Terminals();
+
+		@SerialEntry
+		public boolean fireFreezeStaffTimer = true;
 	}
 
 	public static class SecretWaypoints {
