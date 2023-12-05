@@ -317,6 +317,14 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.solveTicTacToe = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer.@Tooltip")))
+						.binding(defaults.locations.dungeons.fireFreezeStaffTimer,
+								() -> config.locations.dungeons.fireFreezeStaffTimer,
+								newValue -> config.locations.dungeons.fireFreezeStaffTimer = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				//Livid Color
 				.group(OptionGroup.createBuilder()

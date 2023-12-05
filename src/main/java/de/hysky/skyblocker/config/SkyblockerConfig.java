@@ -630,6 +630,9 @@ public class SkyblockerConfig {
 		public boolean solveTicTacToe = true;
 
 		@SerialEntry
+		public boolean fireFreezeStaffTimer = true;
+
+		@SerialEntry
 		public LividColor lividColor = new LividColor();
 
 		@SerialEntry
