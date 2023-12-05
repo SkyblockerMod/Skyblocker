@@ -325,6 +325,14 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.fireFreezeStaffTimer = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.floor3GuardianHealthDisplay"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.floor3GuardianHealthDisplay.@Tooltip")))
+						.binding(defaults.locations.dungeons.floor3GuardianHealthDisplay,
+								() -> config.locations.dungeons.floor3GuardianHealthDisplay,
+								newValue -> config.locations.dungeons.floor3GuardianHealthDisplay = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				//Livid Color
 				.group(OptionGroup.createBuilder()

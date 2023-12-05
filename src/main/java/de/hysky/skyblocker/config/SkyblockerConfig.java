@@ -633,6 +633,9 @@ public class SkyblockerConfig {
 		public boolean fireFreezeStaffTimer = true;
 
 		@SerialEntry
+		public boolean floor3GuardianHealthDisplay = true;
+
+		@SerialEntry
 		public LividColor lividColor = new LividColor();
 
 		@SerialEntry
