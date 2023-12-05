@@ -8,7 +8,7 @@ import de.hysky.skyblocker.mixin.accessor.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.ints.IntBooleanPair;
+import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
@@ -67,7 +67,7 @@ public class ChestValue {
 
 	private static Text getDungeonChestProfit(GenericContainerScreenHandler handler, Text title, String titleString, MinecraftClient client) {
 		try {
-			int profit = 0;
+			long profit = 0;
 			boolean hasIncompleteData = false, usedKismet = false;
 			List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
 
@@ -85,12 +85,12 @@ public class ChestValue {
 
 				//Regular item price
 				if (id != null) {
-					IntBooleanPair priceData = getItemPrice(id);
+					LongBooleanPair priceData = getItemPrice(id);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
 					//Add the item price to the profit
-					profit += priceData.leftInt() * stack.getCount();
+					profit += priceData.leftLong() * stack.getCount();
 
 					continue;
 				}
@@ -103,12 +103,12 @@ public class ChestValue {
 						String type = matcher.group("type");
 						int amount = Integer.parseInt(matcher.group("amount"));
 
-						IntBooleanPair priceData = getItemPrice(("ESSENCE_" + type).toUpperCase());
+						LongBooleanPair priceData = getItemPrice(("ESSENCE_" + type).toUpperCase());
 
 						if (!priceData.rightBoolean()) hasIncompleteData = true;
 
 						//Add the price of the essence to the profit
-						profit += priceData.leftInt() * amount;
+						profit += priceData.leftLong() * amount;
 
 						continue;
 					}
@@ -133,11 +133,11 @@ public class ChestValue {
 			}
 
 			if (SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.includeKismet && usedKismet) {
-				IntBooleanPair kismetPriceData = getItemPrice("KISMET_FEATHER");
+				LongBooleanPair kismetPriceData = getItemPrice("KISMET_FEATHER");
 
 				if (!kismetPriceData.rightBoolean()) hasIncompleteData = true;
 
-				profit -= kismetPriceData.leftInt();
+				profit -= kismetPriceData.leftLong();
 			}
 
 			return Text.literal(titleString).append(getProfitText(profit, hasIncompleteData));
@@ -150,7 +150,7 @@ public class ChestValue {
 
 	private static Text getChestValue(GenericContainerScreenHandler handler, Text title, String titleString) {
 		try {
-			int value = 0;
+			long value = 0;
 			boolean hasIncompleteData = false;
 			List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
 
@@ -163,11 +163,11 @@ public class ChestValue {
 				String id = ItemTooltip.getInternalNameFromNBT(stack, false);
 
 				if (id != null) {
-					IntBooleanPair priceData = getItemPrice(id);
+					LongBooleanPair priceData = getItemPrice(id);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
-					value += priceData.leftInt() * stack.getCount();
+					value += priceData.leftLong() * stack.getCount();
 				}
 			}
 
@@ -180,27 +180,27 @@ public class ChestValue {
 	}
 
 	/**
-	 * @return An {@link IntBooleanPair} with the {@code left int} representing the item's price, and the {@code right boolean} indicating if the price
+	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price, and the {@code right boolean} indicating if the price
 	 * was based on complete data.
 	 */
-	private static IntBooleanPair getItemPrice(String id) {
+	private static LongBooleanPair getItemPrice(String id) {
 		JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
 		JsonObject lbinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
-		if (bazaarPrices == null || lbinPrices == null) return IntBooleanPair.of(0, false);
+		if (bazaarPrices == null || lbinPrices == null) return LongBooleanPair.of(0L, false);
 
 		if (bazaarPrices.has(id)) {
 			JsonObject item = bazaarPrices.get(id).getAsJsonObject();
 			boolean isPriceNull = item.get("sellPrice").isJsonNull();
 
-			return IntBooleanPair.of(isPriceNull ? 0 : (int) item.get("sellPrice").getAsDouble(), !isPriceNull);
+			return LongBooleanPair.of(isPriceNull ? 0L : (long) item.get("sellPrice").getAsDouble(), !isPriceNull);
 		}
 
 		if (lbinPrices.has(id)) {
-			return IntBooleanPair.of((int) lbinPrices.get(id).getAsDouble(), true);
+			return LongBooleanPair.of((long) lbinPrices.get(id).getAsDouble(), true);
 		}
 
-		return IntBooleanPair.of(0, false);
+		return LongBooleanPair.of(0L, false);
 	}
 
 	/**
@@ -210,21 +210,21 @@ public class ChestValue {
 		return stack.getTooltip(client.player, TooltipContext.BASIC).stream().map(Text::getString).filter(line -> line.contains(searchString)).findAny().orElse(null);
 	}
 
-	private static Text getProfitText(int profit, boolean hasIncompleteData) {
+	private static Text getProfitText(long profit, boolean hasIncompleteData) {
 		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit;
 		return getProfitText(profit, hasIncompleteData, config.neutralThreshold, config.neutralColor, config.profitColor, config.lossColor, config.incompleteColor);
 	}
 
-	static Text getProfitText(int profit, boolean hasIncompleteData, int neutralThreshold, Formatting neutralColor, Formatting profitColor, Formatting lossColor, Formatting incompleteColor) {
+	static Text getProfitText(long profit, boolean hasIncompleteData, int neutralThreshold, Formatting neutralColor, Formatting profitColor, Formatting lossColor, Formatting incompleteColor) {
 		return Text.literal((profit > 0 ? " +" : ' ') + FORMATTER.format(profit) + " Coins").formatted(hasIncompleteData ? incompleteColor : (Math.abs(profit) < neutralThreshold) ? neutralColor : (profit > 0) ? profitColor : lossColor);
 	}
 
-	private static Text getValueText(int value, boolean hasIncompleteData) {
+	private static Text getValueText(long value, boolean hasIncompleteData) {
 		SkyblockerConfig.ChestValue config = SkyblockerConfigManager.get().general.chestValue;
 		return getValueText(value, hasIncompleteData, config.color, config.incompleteColor);
 	}
 
-	static Text getValueText(int value, boolean hasIncompleteData, Formatting color, Formatting incompleteColor) {
+	static Text getValueText(long value, boolean hasIncompleteData, Formatting color, Formatting incompleteColor) {
 		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? incompleteColor : color);
 	}
 }
