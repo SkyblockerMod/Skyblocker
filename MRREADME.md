@@ -416,24 +416,28 @@ Click [#Gallery](https://modrinth.com/mod/skyblocker-liap/gallery) for images to
 <summary>open</summary>
 
 ### Dungeon Features:
-- **Secrets Highlight:** Fully configurable
+- **Secrets Waypoint Highlight:** Fully customizable
 - **Minimap**
 - **Starred Mob Glow**
-- **Puzzle Helper:**
-    - *Croesus*
-    - *Three Weirdos*
-    - *Blaze*
-    - *Creeper Beams*
-    - *Trivia*
-    - *Tic Tac Toe*
-    - *Terminal:*
-        - *Order*
-        - *Coloured Items*
-        - *Item Name*
+- **Croesus Helper**
+- **Puzzle Solver:**
+  - *Three Weirdos*
+  - *Blaze*
+  - *Creeper Beams*
+  - *Quiz - Ouro the Omniscient*
+  - *Tic Tac Toe*
+  - *Terminal:*
+    - *Order*
+    - *Coloured Items*
+    - *Item Name*
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
-- **Livid Color Helper**
+- **F3/M3 Fire Freeze Staff Timer**
+- **F5/M5 Livid Color Highlight**
 - **Reparty:** Type /rp to reparty and enable auto-rejoin.
+- **AOTV & Pearl Secret Waypoints**
+- **Player Secrets Tracker**
+- **Wither & Blood Door Highlight**
 
 ### Item and Armor Customization:
 - *Item Renaming*

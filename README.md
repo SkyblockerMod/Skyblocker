@@ -19,7 +19,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 <summary>open</summary>
 
 ### Dungeon Features:
-- **Secrets Waypoint Highlight:** Fully configurable
+- **Secrets Waypoint Highlight:** Fully customizable
 - **Minimap**
 - **Starred Mob Glow**
 - **Croesus Helper**
@@ -35,10 +35,10 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Item Name*
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
-- **Livid Color Highlight**
+- **F3/M3 Fire Freeze Staff Timer**
+- **F5/M5 Livid Color Highlight**
 - **Reparty:** Type /rp to reparty and enable auto-rejoin.
 - **AOTV & Pearl Secret Waypoints**
-- **Custom Dungeon Secrets**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
 
@@ -199,9 +199,9 @@ information.
 |:--------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
 |                                 [lantice3720](https://github.com/lantice3720)                                  |                                 [koloiyolo](https://github.com/koloiyolo)                                  |                                 [Futuremappermydud](https://github.com/Futuremappermydud)                                  |                                [viciscat](https://github.com/viciscat)                                |
 
-| [<img alt="Grayray75" src="https://github.com/Grayray75.png" width="100">](https://github.com/Grayray75) | [<img alt="alexiayaa" src="https://github.com/alexiayaa.png" width="100">](https://github.com/alexiayaa) |
-|:----------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------:|
-|                                   [Grayray75](https://github.com/Grayray75)                                    |                                   [alexiayaa](https://github.com/alexiayaa)                                    |        
+| [<img alt="Grayray75" src="https://github.com/Grayray75.png" width="100">](https://github.com/Grayray75) | [<img alt="alexiayaa" src="https://github.com/alexiayaa.png" width="100">](https://github.com/alexiayaa) | [<img alt="KhafraDev" src="https://github.com/KhafraDev.png" width="100">](https://github.com/KhafraDev) |
+|:----------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------:|-----|
+|                                   [Grayray75](https://github.com/Grayray75)                                    |                                   [alexiayaa](https://github.com/alexiayaa)                                    |  [KhafraDev](https://github.com/KhafraDev)   |        
 
 ### Translators
 
