@@ -83,7 +83,7 @@ public class QuickNavButton extends ClickableWidget {
      * @param mouseY the y-coordinate of the mouse cursor
      */
     @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         this.updateCoordinates();
         RenderSystem.disableDepthTest();
 

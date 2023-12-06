@@ -105,7 +105,7 @@ public class SecretsTracker {
 		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
 		if (playerEntity != null) {
 			if (success) {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).styled(Constants.WITH_COLOR.apply(0xf57542)), "§7" + secrets, getCacheText(cacheAge))));
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).withColor(0xf57542), "§7" + secrets, getCacheText(cacheAge))));
 			} else {
 				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")));
 			}

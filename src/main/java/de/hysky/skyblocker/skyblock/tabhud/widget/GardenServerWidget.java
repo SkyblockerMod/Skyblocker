@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.utils.Constants;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -34,7 +33,7 @@ public class GardenServerWidget extends Widget {
         this.addSimpleIcoText(Ico.EMERALD, "Gems:", Formatting.GREEN, 43);
 
         Text copperText = Widget.simpleEntryText(44, "Copper:", Formatting.WHITE);
-        ((MutableText) copperText.getSiblings().get(0)).styled(Constants.WITH_COLOR.apply(COPPER_COLOR));
+        ((MutableText) copperText.getSiblings().get(0)).withColor(COPPER_COLOR);
 
         this.addComponent(new IcoTextComponent(Ico.COPPER, copperText));
 

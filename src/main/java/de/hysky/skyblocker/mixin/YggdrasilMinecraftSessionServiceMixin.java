@@ -4,8 +4,7 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import de.hysky.skyblocker.utils.Utils;
@@ -13,8 +12,9 @@ import de.hysky.skyblocker.utils.Utils;
 @Mixin(value = YggdrasilMinecraftSessionService.class, remap = false)
 public class YggdrasilMinecraftSessionServiceMixin {
 
-	@WrapOperation(method = "getSecurePropertyValue", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
-	private void skyblocker$dontLogMissingSignaturesOrTamperedProperties(Logger logger, String message, Object property, Operation<Void> operation) {
-		if (!Utils.isOnHypixel()) operation.call(logger, message, property);
+	//TODO perhaps investigate if we could fix this
+	@WrapWithCondition(method = "unpackTextures", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 0, remap = false))
+	private boolean skyblocker$dontLogIncorrectEndingByteExceptions(Logger logger, String message, Throwable throwable) {
+		return !Utils.isOnHypixel() && throwable instanceof IllegalArgumentException;
 	}
 }

@@ -18,8 +18,14 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
     private final ShortcutsConfigScreen screen;
     private final List<Map<String, String>> shortcutMaps = new ArrayList<>();
 
-    public ShortcutsConfigListWidget(MinecraftClient minecraftClient, ShortcutsConfigScreen screen, int width, int height, int top, int bottom, int itemHeight) {
-        super(minecraftClient, width, height, top, bottom, itemHeight);
+    /**
+     * @param width the width of the widget
+     * @param height the height of the widget
+     * @param y the y coordinate to start rendering/placing the widget from
+     * @param itemHeight the height of each item
+     */
+    public ShortcutsConfigListWidget(MinecraftClient minecraftClient, ShortcutsConfigScreen screen, int width, int height, int y, int itemHeight) {
+        super(minecraftClient, width, height, y, itemHeight);
         this.screen = screen;
         ShortcutCategoryEntry commandCategory = new ShortcutCategoryEntry(Shortcuts.commands, "skyblocker.shortcuts.command.target", "skyblocker.shortcuts.command.replacement");
         if (Shortcuts.isShortcutsLoaded()) {

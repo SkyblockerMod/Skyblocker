@@ -33,6 +33,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtTagSizeTracker;
 import net.minecraft.util.Util;
 
 public class MuseumItemCache {
@@ -92,7 +93,7 @@ public class MuseumItemCache {
 						for (Map.Entry<String, JsonElement> donatedSet : donatedSets.entrySet()) {
 							//Item is plural here because the nbt is a list
 							String itemsData = donatedSet.getValue().getAsJsonObject().get("items").getAsJsonObject().get("data").getAsString();
-							NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData))).getList("i", NbtElement.COMPOUND_TYPE);
+							NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData)), NbtTagSizeTracker.ofUnlimitedBytes()).getList("i", NbtElement.COMPOUND_TYPE);
 
 							for (int i = 0; i < items.size(); i++) {
 								NbtCompound tag = items.getCompound(i).getCompound("tag");

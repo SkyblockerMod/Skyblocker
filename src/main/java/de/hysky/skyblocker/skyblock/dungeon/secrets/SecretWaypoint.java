@@ -14,9 +14,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public class SecretWaypoint extends Waypoint {
     public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
             Category.CODEC.fieldOf("category").forGetter(secretWaypoint -> secretWaypoint.category),
-            Codecs.TEXT.fieldOf("name").forGetter(secretWaypoint -> secretWaypoint.name),
+            TextCodecs.CODEC.fieldOf("name").forGetter(secretWaypoint -> secretWaypoint.name),
             BlockPos.CODEC.fieldOf("pos").forGetter(secretWaypoint -> secretWaypoint.pos)
     ).apply(instance, SecretWaypoint::new));
     public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();

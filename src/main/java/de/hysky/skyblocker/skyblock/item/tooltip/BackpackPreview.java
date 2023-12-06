@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -74,12 +75,12 @@ public class BackpackPreview {
     private static void loadStorages() {
         for (int index = 0; index < STORAGE_SIZE; ++index) {
             storages[index] = null;
-            File storageFile = saveDir.resolve(index + ".nbt").toFile();
-            if (storageFile.isFile()) {
+            Path storageFile = saveDir.resolve(index + ".nbt");
+            if (Files.isRegularFile(storageFile)) {
                 try {
                     storages[index] = Storage.fromNbt(Objects.requireNonNull(NbtIo.read(storageFile)));
                 } catch (Exception e) {
-                    LOGGER.error("Failed to load backpack preview file: " + storageFile.getName(), e);
+                    LOGGER.error("Failed to load backpack preview file: " + storageFile.getFileName().toString(), e);
                 }
             }
         }
@@ -95,7 +96,7 @@ public class BackpackPreview {
 
     private static void saveStorage(int index) {
         try {
-            NbtIo.write(storages[index].toNbt(), saveDir.resolve(index + ".nbt").toFile());
+            NbtIo.write(storages[index].toNbt(), saveDir.resolve(index + ".nbt"));
             storages[index].markClean();
         } catch (Exception e) {
             LOGGER.error("Failed to save backpack preview file: " + index + ".nbt", e);
