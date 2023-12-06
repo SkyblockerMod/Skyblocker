@@ -16,7 +16,6 @@ public class ShortcutsConfigScreen extends Screen {
     private ButtonWidget buttonDelete;
     private ButtonWidget buttonNew;
     private ButtonWidget buttonDone;
-    private boolean initialized;
     private double scrollAmount;
     private final Screen parent;
 
@@ -37,13 +36,7 @@ public class ShortcutsConfigScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        if (initialized) {
-            shortcutsConfigListWidget.setDimensions(width, height - 88);
-            shortcutsConfigListWidget.setY(32);
-        } else {
-            shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 88, 32, 25);
-            initialized = true;
-        }
+        shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32, 25);
         addDrawableChild(shortcutsConfigListWidget);
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().marginX(5).marginY(2);

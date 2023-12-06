@@ -11,7 +11,7 @@ import de.hysky.skyblocker.utils.Utils;
 @Mixin(targets = "net.minecraft.client.texture.PlayerSkinProvider$1")
 public class PlayerSkinProviderMixin {
 
-	@WrapWithCondition(method = "method_54647", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"))
+	@WrapWithCondition(method = "method_54647", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
 	private static boolean skyblocker$dontLogInvalidSignatureWarnings(Logger logger, String message, Object profileId) {
 		return !Utils.isOnHypixel();
 	}
