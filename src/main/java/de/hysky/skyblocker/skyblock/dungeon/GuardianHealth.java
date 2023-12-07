@@ -42,20 +42,20 @@ public class GuardianHealth {
                             GuardianEntity.class, bossRoom, guardianEntity -> true);
 
             for (GuardianEntity guardian : guardians) {
-                List<ArmorStandEntity> armorStand =
+                List<ArmorStandEntity> armorStands =
                         client.world.getEntitiesByType(
                                 EntityType.ARMOR_STAND,
                                 guardian.getBoundingBox().expand(0, 1, 0),
                                 GuardianHealth::isGuardianName);
 
-                for (ArmorStandEntity stand : armorStand) {
-                    String display = stand.getDisplayName().getString();
+                for (ArmorStandEntity armorStand : armorStands) {
+                    String display = armorStand.getDisplayName().getString();
                     boolean professor = display.contains("The Professor");
                     Matcher matcher =
                             professor
                                     ? professorRegex.matcher(display)
                                     : guardianRegex.matcher(display);
-                    matcher.find(); // name is validated in isGuardianName
+                    matcher.matches(); // name is validated in isGuardianName
 
                     String health = matcher.group(professor ? 1 : 2);
                     String quantity = matcher.group(professor ? 2 : 3);
@@ -64,7 +64,7 @@ public class GuardianHealth {
 
                     RenderHelper.renderText(
                             context,
-                            Text.literal(health + quantity).styled(style -> style.withColor(Formatting.GREEN)),
+                            Text.literal(health + quantity).formatted(Formatting.GREEN),
                             guardian.getPos(),
                             (float) (1 + (distance / 10)),
                             true);
