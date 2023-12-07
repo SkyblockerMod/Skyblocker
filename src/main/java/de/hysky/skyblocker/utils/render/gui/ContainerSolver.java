@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 
@@ -27,6 +28,10 @@ public abstract class ContainerSolver {
     }
 
     protected void reset() {
+    }
+
+    protected void markHighlightsDirty() {
+        SkyblockerMod.getInstance().containerSolverManager.markDirty();
     }
 
     protected abstract List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots);

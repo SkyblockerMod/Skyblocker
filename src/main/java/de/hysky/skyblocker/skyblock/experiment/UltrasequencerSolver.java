@@ -54,6 +54,7 @@ public class UltrasequencerSolver extends ExperimentSolver {
                 case WAIT -> {
                     if (genericContainerScreen.getScreenHandler().getInventory().getStack(49).getName().getString().startsWith("Timer: ")) {
                         setState(State.SHOW);
+                        markHighlightsDirty();
                     }
                 }
                 case END -> {
