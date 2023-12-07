@@ -1,4 +1,4 @@
-# Release 1.16.0 (1.20.3)
+# Release 1.16.0 (1.20.3 & 1.20.4)
 
 ## Highlight
 * Mythological Ritual Helper by @kevinthegreat1
@@ -9,6 +9,7 @@
 * Waypoints API & Custom Dungeon Secrets by @kevinthegreat1
 * Exotic Tooltip by @kevinthegreat1 and @StyStatic
 * F3/M3 Fire Freeze Staff Timer by @KhafraDev
+* F3/M3 Guardian Health Display by @KhafraDev
 * Livid Color Highlight by @kevinthegreat1
 * Fix unnoticed rooms in Secret Waypoints by @kevinthegreat1
 * Blobbercysts Glow by @AzureAaron
@@ -66,11 +67,12 @@
 * Add f3/m3 fire freeze staff timer by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/436
 * Fix Integer Overflow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/439
 * 1.20.3 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/443
+* add f3/m3 guardian health display by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/442
 
 ## New Contributors
 * @KhafraDev made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/436
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.15.0...v1.16.0+1.20.3
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.15.0...v1.16.0+1.20.4
 
 ___
 

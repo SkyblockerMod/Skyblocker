@@ -16,6 +16,7 @@
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
 - **F3/M3 Fire Freeze Staff Timer**
+- **F3/M3 Guardian Health Display**
 - **F5/M5 Livid Color Highlight**
 - **Reparty:** Type /rp to reparty and enable auto-rejoin.
 - **AOTV & Pearl Secret Waypoints**
