@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
@@ -27,6 +28,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -72,11 +74,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     @SuppressWarnings("DataFlowIssue")
     // makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
     @Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;II)V"), cancellable = true)
-    public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci) {
+    public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
         if (!Utils.isOnSkyblock()) return;
 
         // Hide Empty Tooltips
-        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && focusedSlot.getStack().getName().getString().equals(" ")) {
+        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
             ci.cancel();
         }
 
@@ -88,7 +90,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
         // Compactor Preview
         if (SkyblockerConfigManager.get().general.compactorDeletorPreview) {
-            ItemStack stack = focusedSlot.getStack();
             Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
             if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, matcher.group("type"), matcher.group("size"), x, y)) {
                 ci.cancel();
@@ -96,25 +97,24 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         }
     }
 
-    @Redirect(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;getStack()Lnet/minecraft/item/ItemStack;", ordinal = 0))
-    private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(Slot slot) {
-        return skyblocker$experimentSolvers$getStack(slot, null);
+    @ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "LOAD", ordinal = 0))
+    private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
+        return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
     }
 
-    @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 4), ordinal = 0)
+    @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
     private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, DrawContext context, Slot slot) {
         return skyblocker$experimentSolvers$getStack(slot, stack);
     }
 
-
     @Unique
-    private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, ItemStack stack) {
+    private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
         ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
         if ((currentSolver instanceof SuperpairsSolver || currentSolver instanceof UltrasequencerSolver) && ((ExperimentSolver) currentSolver).getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
             ItemStack itemStack = ((ExperimentSolver) currentSolver).getSlots().get(slot.getIndex());
-            return itemStack == null ? slot.getStack() : itemStack;
+            return itemStack == null ? stack : itemStack;
         }
-        return (stack != null) ? stack : slot.getStack();
+        return stack;
     }
 
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"))

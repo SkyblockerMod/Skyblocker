@@ -18,13 +18,13 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
 
     @Override
     public void setStackInSlot(int slot, int revision, ItemStack stack) {
-        SkyblockerMod.getInstance().containerSolverManager.markDirty();
         super.setStackInSlot(slot, revision, stack);
+        SkyblockerMod.getInstance().containerSolverManager.markDirty();
     }
 
     @Override
     public void updateSlotStacks(int revision, List<ItemStack> stacks, ItemStack cursorStack) {
-        SkyblockerMod.getInstance().containerSolverManager.markDirty();
         super.updateSlotStacks(revision, stacks, cursorStack);
+        SkyblockerMod.getInstance().containerSolverManager.markDirty();
     }
 }

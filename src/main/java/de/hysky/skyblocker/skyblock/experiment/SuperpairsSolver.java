@@ -38,18 +38,22 @@ public class SuperpairsSolver extends ExperimentSolver {
     }
 
     @Override
+    protected void reset() {
+        super.reset();
+        superpairsPrevClickedSlot = 0;
+        superpairsCurrentSlot = null;
+        superpairsDuplicatedSlots.clear();
+    }
+
+    @Override
     protected void tick(Screen screen) {
         if (isEnabled() && screen instanceof GenericContainerScreen genericContainerScreen && genericContainerScreen.getTitle().getString().startsWith("Superpairs (")) {
-            if (getState() == State.SHOW) {
-                if (genericContainerScreen.getScreenHandler().getInventory().getStack(4).isOf(Items.CAULDRON)) {
-                    reset();
-                } else if (getSlots().get(superpairsPrevClickedSlot) == null) {
-                    ItemStack itemStack = genericContainerScreen.getScreenHandler().getInventory().getStack(superpairsPrevClickedSlot);
-                    if (!(itemStack.isOf(Items.CYAN_STAINED_GLASS) || itemStack.isOf(Items.BLACK_STAINED_GLASS_PANE) || itemStack.isOf(Items.AIR))) {
-                        getSlots().entrySet().stream().filter((entry -> ItemStack.areEqual(entry.getValue(), itemStack))).findAny().ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getKey()));
-                        getSlots().put(superpairsPrevClickedSlot, itemStack);
-                        superpairsCurrentSlot = itemStack;
-                    }
+            if (getState() == State.SHOW && getSlots().get(superpairsPrevClickedSlot) == null) {
+                ItemStack itemStack = genericContainerScreen.getScreenHandler().getInventory().getStack(superpairsPrevClickedSlot);
+                if (!(itemStack.isOf(Items.CYAN_STAINED_GLASS) || itemStack.isOf(Items.BLACK_STAINED_GLASS_PANE) || itemStack.isOf(Items.AIR))) {
+                    getSlots().entrySet().stream().filter((entry -> ItemStack.areEqual(entry.getValue(), itemStack))).findAny().ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getKey()));
+                    getSlots().put(superpairsPrevClickedSlot, itemStack);
+                    superpairsCurrentSlot = itemStack;
                 }
             }
         } else {
