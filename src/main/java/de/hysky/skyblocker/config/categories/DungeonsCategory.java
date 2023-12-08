@@ -12,7 +12,6 @@ import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import de.hysky.skyblocker.config.controllers.EnumDropdownControllerBuilder;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -209,21 +208,21 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.dungeonChestProfit.neutralColor,
 										() -> config.locations.dungeons.dungeonChestProfit.neutralColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.neutralColor = newValue)
-								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
+								.controller(ConfigUtils.getEnumDropdownControllerFactory(ConfigUtils.FORMATTING_FORMATTER))
 								.build())
 						.option(Option.<Formatting>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor"))
 								.binding(defaults.locations.dungeons.dungeonChestProfit.profitColor,
 										() -> config.locations.dungeons.dungeonChestProfit.profitColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.profitColor = newValue)
-								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
+								.controller(ConfigUtils.getEnumDropdownControllerFactory(ConfigUtils.FORMATTING_FORMATTER))
 								.build())
 						.option(Option.<Formatting>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor"))
 								.binding(defaults.locations.dungeons.dungeonChestProfit.lossColor,
 										() -> config.locations.dungeons.dungeonChestProfit.lossColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.lossColor = newValue)
-								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
+								.controller(ConfigUtils.getEnumDropdownControllerFactory(ConfigUtils.FORMATTING_FORMATTER))
 								.build())
 						.option(Option.<Formatting>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.chestValue.incompleteColor"))
@@ -231,7 +230,7 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.dungeonChestProfit.incompleteColor,
 										() -> config.locations.dungeons.dungeonChestProfit.incompleteColor,
 										newValue -> config.locations.dungeons.dungeonChestProfit.incompleteColor = newValue)
-								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
+								.controller(ConfigUtils.getEnumDropdownControllerFactory(ConfigUtils.FORMATTING_FORMATTER))
 								.build())
 						.build())
 

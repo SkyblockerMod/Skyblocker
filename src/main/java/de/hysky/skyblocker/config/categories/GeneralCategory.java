@@ -2,7 +2,6 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.controllers.EnumDropdownControllerBuilder;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -474,7 +473,7 @@ public class GeneralCategory {
 								.binding(defaults.general.chestValue.color,
 										() -> config.general.chestValue.color,
 										newValue -> config.general.chestValue.color = newValue)
-								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
+								.controller(ConfigUtils.getEnumDropdownControllerFactory(ConfigUtils.FORMATTING_FORMATTER))
 								.build())
 						.option(Option.<Formatting>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.chestValue.incompleteColor"))
@@ -482,7 +481,7 @@ public class GeneralCategory {
 								.binding(defaults.general.chestValue.incompleteColor,
 										() -> config.general.chestValue.incompleteColor,
 										newValue -> config.general.chestValue.incompleteColor = newValue)
-								.controller(EnumDropdownControllerBuilder.getFactory(ConfigUtils.FORMATTING_TO_STRING))
+								.controller(ConfigUtils.getEnumDropdownControllerFactory(ConfigUtils.FORMATTING_FORMATTER))
 								.build())
 						.build())
 
