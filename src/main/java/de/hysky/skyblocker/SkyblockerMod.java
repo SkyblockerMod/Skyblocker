@@ -112,6 +112,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TicTacToe.init();
         QuiverWarning.init();
         SpecialEffects.init();
+        CrystalWishingCompassSolver.init();
         ItemProtection.init();
         CreeperBeams.init();
         ItemRarityBackgrounds.init();
