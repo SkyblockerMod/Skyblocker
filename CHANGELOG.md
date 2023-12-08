@@ -12,6 +12,7 @@
 * F3/M3 Guardian Health Display by @KhafraDev
 * Livid Color Highlight by @kevinthegreat1
 * Fix unnoticed rooms in Secret Waypoints by @kevinthegreat1
+* Fix minors bugs with Experiment Solvers by @kevinthegreat1
 * Blobbercysts Glow by @AzureAaron
 * Museum Item Obtained Tooltips (shows on item if already donated to museum) by @AzureAaron
 * Add Config Button in Skyblock Menu by @kevinthegreat1
@@ -68,6 +69,8 @@
 * Fix Integer Overflow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/439
 * 1.20.3 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/443
 * add f3/m3 guardian health display by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/442
+* Update Exeriment Solvers for 1.20.3/1.20.4 by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/437
+* YACL 1.20.4 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/445
 
 ## New Contributors
 * @KhafraDev made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/436
