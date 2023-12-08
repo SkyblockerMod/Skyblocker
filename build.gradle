@@ -30,6 +30,17 @@ repositories {
 	}
 	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
 	maven { url "https://repo.nea.moe/releases" } // For neu repoparser
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	} // For JEI
 }
 
 dependencies {
@@ -56,6 +67,10 @@ dependencies {
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
+	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
+	modCompileOnly "maven.modrinth:jei:${project.jei_version}"
+
+	// Discord IPC
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
