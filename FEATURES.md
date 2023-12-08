@@ -1,5 +1,5 @@
 ### Dungeon Features:
-- **Secrets Waypoint Highlight:** Fully configurable
+- **Secrets Waypoint Highlight:** Fully customizable
 - **Minimap**
 - **Starred Mob Glow**
 - **Croesus Helper**
@@ -15,10 +15,11 @@
         - *Item Name*
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
-- **Livid Color Highlight**
+- **F3/M3 Fire Freeze Staff Timer**
+- **F3/M3 Guardian Health Display**
+- **F5/M5 Livid Color Highlight**
 - **Reparty:** Type /rp to reparty and enable auto-rejoin.
 - **AOTV & Pearl Secret Waypoints**
-- **Custom Dungeon Secrets**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
 

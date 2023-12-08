@@ -1,3 +1,84 @@
+# Release 1.16.0 (1.20.3 & 1.20.4)
+
+## Highlight
+* Mythological Ritual Helper by @kevinthegreat1
+* Wither & Blood Door Highlight by @kevinthegreat1
+* Enigma soul waypoint by @AzureAaron
+* Player Secrets Tracker by @AzureAaron
+* ChestValue by @kevinthegreat1
+* Waypoints API & Custom Dungeon Secrets by @kevinthegreat1
+* Exotic Tooltip by @kevinthegreat1 and @StyStatic
+* F3/M3 Fire Freeze Staff Timer by @KhafraDev
+* F3/M3 Guardian Health Display by @KhafraDev
+* Livid Color Highlight by @kevinthegreat1
+* Fix unnoticed rooms in Secret Waypoints by @kevinthegreat1
+* Fix minors bugs with Experiment Solvers by @kevinthegreat1
+* Blobbercysts Glow by @AzureAaron
+* Museum Item Obtained Tooltips (shows on item if already donated to museum) by @AzureAaron
+* Add Config Button in Skyblock Menu by @kevinthegreat1
+* Backpack Preview support Custom texture packs by @kevinthegreat1
+* Fix Combo Filter by @AzureAaron
+
+## What's Changed
+* Mythological Ritual Helper by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/330
+* AOTV & Pearl Secret Waypoints by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/381
+* Update README.md by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/382
+* Enigma Soul Waypoints by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/383
+* Item Rarity Backgrounds compatibility with Backpack Preview by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/384
+* Fix echo detection activating by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/385
+* Refactor Backpack Preview by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/387
+* Hypixel Api Proxy + Profile Id Caching by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/386
+* Use Api Redirect by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/388
+* Museum Item Cache by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/389
+* Waypoints API & Custom Dungeon Secrets by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/390
+* Fix #353 by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/391
+* Exotic Tooltip & PriceInfoTooltip Cleanup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/393
+* Player Secrets Tracker by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/394
+* More cleanup by @msg-programs in https://github.com/SkyblockerMod/Skyblocker/pull/396
+* Improve Diana Solver Trigger Accuracy by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/399
+* Great Spook Emblem by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/400
+* Issue template fixes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/402
+* Prevent exception in fairy souls by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/403
+* NIO Refactor by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/404
+* The lost translation string by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/405
+* Livid Color Highlight by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/406
+* Square Item Rarity Background by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/407
+* Fix fairy soul solver NPE if we can't connect to NEU repo by @alexiayaa in https://github.com/SkyblockerMod/Skyblocker/pull/409
+* Update yacl to 3.3.0-beta.1 by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/410
+* Shortcuts fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/411
+* Fix Item Nbt Matching by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/412
+* Fix Secret Waypoints by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/413
+* Blobbercyst Glow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/414
+* Fix Combo Filter by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/416
+* Improve Obtained & Museum Item Tooltips by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/417
+* Batched Rendering + Future Sodium Compat by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/415
+* Hypixel API v2 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/419
+* Workflow fixes + fix #401 by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/421
+* Waypoint API by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/418
+* trigger modpack by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/424
+* Enhanced Museum Cache Error Handling by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/422
+* Fix Garden Tab + Small Things by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/423
+* Improve & Fix Compactor Preview by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/397
+* Update ChestValue by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/428
+* Add Wither & Blood Door Highlight by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/429
+* Add Config Button in Skyblock Menu by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/430
+* Update DiscordRPCManager by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/426
+* Update MythologicalRitual by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/427
+* Gift Giving Emblem by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/438
+* Add f3/m3 fire freeze staff timer by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/436
+* Fix Integer Overflow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/439
+* 1.20.3 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/443
+* add f3/m3 guardian health display by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/442
+* Update Exeriment Solvers for 1.20.3/1.20.4 by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/437
+* YACL 1.20.4 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/445
+
+## New Contributors
+* @KhafraDev made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/436
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.15.0...v1.16.0+1.20.4
+
+___
+
 # Release 1.16.0
 
 ## Highlight
@@ -63,6 +144,8 @@
 * Update MythologicalRitual by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/427
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.15.0...v1.16.0
+
+___
 
 # Release 1.15.0
 

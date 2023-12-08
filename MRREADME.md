@@ -1,18 +1,163 @@
 <img height="150" src="https://hysky.de/skyblocker.png"  alt="Skyblocker logo"/>
 
-## Skyblocker
+# Skyblocker
 
-Hypixel Skyblock Mod for Minecraft 1.20.2
+Hypixel Skyblock Mod for Minecraft 1.20.x
 
-## 🔧 Configuration - [Mod Menu](https://modrinth.com/mod/modmenu) not required
-open config with modmenu \
-or **/skyblocker config**
 
-Skyblocker has a variety of configurations. \
-To access the configuration menu, you must install [Mod Menu](https://modrinth.com/mod/modmenu).
-<figure><a href="https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/Settings/Page%201%20General.png"><img src="https://raw.githubusercontent.com/SkyblockerMod/Skyblocker-Assets/images/Settings/Page%201%20General.png" alt="Mod Menu" style="width:100%"></a><figcaption align = "center"><b>Skyblocker config</b></figcaption></figure>
+## 📖 Features
+<details>
+<summary> Dungeon Features </summary>
 
-### List of Configuration
+- **Secrets Waypoint Highlight:** Fully customizable
+- **Minimap**
+- **Starred Mob Glow**
+- **Croesus Helper**
+- **Puzzle Solver:**
+  - *Three Weirdos*
+  - *Blaze*
+  - *Creeper Beams*
+  - *Quiz - Ouro the Omniscient*
+  - *Tic Tac Toe*
+  - *Terminal:*
+    - *Order*
+    - *Coloured Items*
+    - *Item Name*
+- **Rare Drop Special Effects**
+- **Chest Profit Calculator**
+- **F3/M3 Fire Freeze Staff Timer**
+- **F3/M3 Guardian Health Display**
+- **F5/M5 Livid Color Highlight**
+- **Reparty:** Type /rp to reparty and enable auto-rejoin.
+- **AOTV & Pearl Secret Waypoints**
+- **Player Secrets Tracker**
+- **Wither & Blood Door Highlight**
+</details>
+
+<details>
+<summary> Item and Armor Customization </summary>
+
+- *Item Renaming*
+- *Custom Armor Dye Colors*
+- *Custom Armor Trims*
+</details>
+
+<details>
+<summary> Health and Status Bars </summary>
+
+- **Bars:**
+  - *Health and absorption*
+  - *Mana*
+  - *Defense*
+  - *XP*
+</details>
+
+<details>
+<summary> Dwarven Mines </summary>
+
+- **Dwarven Mines Solver:**
+  - *Fetchur*
+  - *Puzzler*
+- **Commission HUD**
+  - *Provides information on Dwarven Mines quests*
+</details>
+
+<details>
+<summary> Rift Features </summary>
+
+- **Mirrorverse Waypoints**
+</details>
+
+<details>
+<summary> Spider's Den Features </summary>
+
+- **Hidden Relic Helper**
+</details>
+
+<details>
+<summary> Slayer Helper </summary>
+
+- **Vampire:**
+  - *Effigy Waypoints*
+  - *Healing Melon Indicator*
+  - *Twinclaws Ice Indicator*
+  - *Steak Stake Indicator*
+</details>
+
+<details>
+<summary> Visual Enhancements </summary>
+
+- **Fancy Tab HUD:** Fully configurable with a resource pack.
+- **1.8 Hitbox for Lever and Farmland**
+- **Hide Status Effect Overlay**
+- **Personal Compactor/Deletor Preview**
+- **Hide Fake Players in Social Interactions Screen**
+- **Item Rarity Backgrounds**
+- **Item Cooldown Display**
+- **Configure Fire-Overlay Height**
+</details>
+
+<details>
+<summary> User Interface Enhancements </summary>
+
+- **Attribute Shard Info Display**
+- **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
+- **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
+- **Price Tooltip:** (Provides information on)
+  - *NPC Prices*
+  - *Motes Prices*
+  - *bazaar (average, lowest bin)*
+  - *Auction House*
+  - *Museum*
+- **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+- **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
+- **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
+</details>
+
+<details>
+<summary> Barn Features </summary>
+
+- **Barn Solver:**
+  - *Treasure Hunter*
+  - *Hungry Hiker*
+</details>
+
+<details>
+<summary> Chat Features </summary>
+
+- **Hide Messages:**
+  - *Ability Cooldown*
+  - *Heal*
+  - *Aspect of the End (AOTE)*
+  - *Implosion*
+  - *Molten Wave*
+  - *`/show command`*
+  - *Teleport Pad Messages*
+</details>
+
+<details>
+<summary> Miscellaneous Solvers </summary>
+
+- **Experiments Solvers**
+- **Fishing Helper:** Includes sound notifications.
+</details>
+
+<details>
+<summary> Miscellaneous Features </summary>
+
+- **Roughly Enough Items (REI) and EMI Support**
+- **Item Protection**
+- **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
+- **Wiki Lookup:** Press F4 to open the wiki page about the held item.
+- **OptiFabric Compatibility**
+</details>
+
+
+## 🔧 Configuration
+Open the config menu with **/skyblocker config**  
+or through [Mod Menu](https://modrinth.com/mod/modmenu)  
+
+### Config Options
 
 <details>
 <summary> General </summary>
@@ -408,129 +553,22 @@ Used to display multiple titles at once, Example use: Vampire Slayer
 | Custom Message      | Show a custom message                                                                                                            |
 </details>
 
+
 ## 🖼️ Images
 Click [#Gallery](https://modrinth.com/mod/skyblocker-liap/gallery) for images to this mod
-
-## 📖Features
-<details open>  
-<summary>open</summary>
-
-### Dungeon Features:
-- **Secrets Highlight:** Fully configurable
-- **Minimap**
-- **Starred Mob Glow**
-- **Puzzle Helper:**
-    - *Croesus*
-    - *Three Weirdos*
-    - *Blaze*
-    - *Creeper Beams*
-    - *Trivia*
-    - *Tic Tac Toe*
-    - *Terminal:*
-        - *Order*
-        - *Coloured Items*
-        - *Item Name*
-- **Rare Drop Special Effects**
-- **Chest Profit Calculator**
-- **Livid Color Helper**
-- **Reparty:** Type /rp to reparty and enable auto-rejoin.
-
-### Item and Armor Customization:
-- *Item Renaming*
-- *Custom Armor Dye Colors*
-- *Custom Armor Trims*
-
-### Health and Status Bars:
-- **Bars:**
-    - *Health and absorption*
-    - *Mana*
-    - *Defense*
-    - *XP*
-
-### Dwarven Mines:
-- **Dwarven Mines Solver:**
-    - *Fetchur*
-    - *Puzzler*
-- **Commission HUD**
-    - *Provides information on Dwarven Mines quests*
-
-### Rift Features:
-- **Mirrorverse Waypoints**
-
-### Spider's Den Features:
-- **Hidden Relic Helper**
-
-### Slayer Helper:
-- **Vampire:**
-    - *Effigy Waypoints*
-    - *Healing Melon Indicator*
-    - *Twinclaws Ice Indicator*
-    - *Steak Stake Indicator*
-
-### Visual Enhancements:
-- **Fancy Tab HUD:** Fully configurable with a resource pack.
-- **1.8 Hitbox for Lever and Farmland**
-- **Hide Status Effect Overlay**
-- **Personal Compactor/Deletor Preview**
-- **Hide Fake Players in Social Interactions Screen**
-- **Item Rarity Backgrounds**
-- **Item Cooldown Display**
-- **Configure Fire-Overlay Height**
-
-### User Interface Enhancements:
-- **Attribute Shard Info Display**
-- **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
-- **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
-- **Price Tooltip:** (Provides information on)
-    - *NPC Prices*
-    - *Motes Prices*
-    - *bazaar (average, lowest bin)*
-    - *Auction House*
-    - *Museum*
-- **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
-- **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
-- **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
-
-### Barn Features:
-- **Barn Solver:**
-    - *Treasure Hunter*
-    - *Hungry Hiker*
-
-### Chat Features:
-- **Hide Messages:**
-    - *Ability Cooldown*
-    - *Heal*
-    - *Aspect of the End (AOTE)*
-    - *Implosion*
-    - *Molten Wave*
-    - *`/show command`*
-    - *Teleport Pad Messages*
-
-### Miscellaneous Solvers:
-- **Experiments Solvers**
-- **Fishing Helper:** Includes sound notifications.
-
-### Miscellaneous Features:
-- **Roughly Enough Items (REI) and EMI Support**
-- **Item Protection**
-- **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about the held item.
-- **OptiFabric Compatibility**
-
-
-</details>
 
 
 ## [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 
 <details open>
-<summary>open</summary>
+<summary>Installation Instructions</summary>
 
 1. [Here](https://docs.modrinth.com/docs/modpacks/playing_modpacks) is a tutorial how to install it easy with a launcher.
 2. Download the [Skyblocker Modpack](https://modrinth.com/modpack/skyblocker-modpack/version/latest).
     * Drag and drop the .mrpack file into a Custom MC Launcher like [MultiMC](https://multimc.org/) or [Prism Launcher](https://prismlauncher.org/) and start the new instance.
 
 </details>
+
 
 ## Kinetic Hosting Affiliate - 15% off your first month
 
