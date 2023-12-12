@@ -2,24 +2,18 @@ package de.hysky.skyblocker.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.hysky.skyblocker.utils.Utils;
+import dev.cbyrne.betterinject.annotations.Inject;
 import net.minecraft.entity.data.DataTracker;
 
 @Mixin(DataTracker.class)
 public class DataTrackerMixin {
 
-	@WrapOperation(method = "writeUpdatedEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;copyToFrom(Lnet/minecraft/entity/data/DataTracker$Entry;Lnet/minecraft/entity/data/DataTracker$SerializedEntry;)V"))
-	public void skyblocker$ignoreInvalidDataExceptions(DataTracker dataTracker, DataTracker.Entry<?> to, DataTracker.SerializedEntry<?> from, Operation<Void> operation) {
-		if (Utils.isOnHypixel()) {
-			try {
-				operation.call(dataTracker, to, from);
-			} catch (IllegalStateException ignored) {} //These exceptions cause annoying small lag spikes for some reason
-		} else {
-			operation.call(dataTracker, to, from);
-		}
+	@Inject(method = "copyToFrom", at = @At(value = "NEW", target = "Ljava/lang/IllegalStateException;", shift = At.Shift.BEFORE), cancellable = true)
+	public void skyblocker$ignoreInvalidDataExceptions(CallbackInfo ci) {
+		//These exceptions cause annoying small lag spikes for some reason
+		if (Utils.isOnHypixel()) ci.cancel();
 	}
 }
