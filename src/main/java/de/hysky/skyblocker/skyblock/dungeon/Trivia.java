@@ -54,9 +54,10 @@ public class Trivia extends ChatPatternListener {
                 int year = (int) (diff / 446400 + 1);
                 solutions = Collections.singletonList("Year " + year);
             } else {
-                solutions = Arrays.asList(answers.get(trimmedQuestion));
+                String[] questionAnswers = answers.get(trimmedQuestion);
+                if (questionAnswers != null) solutions = Arrays.asList(questionAnswers);
             }
-        } catch (Exception e) { //Handle the broken wither lords quiz question, maybe we should try to accommodate it
+        } catch (Exception e) { //Hopefully the solver doesn't go south
             LOGGER.error("[Skyblocker] Failed to update the Trivia puzzle answers!", e);
         }
     }
