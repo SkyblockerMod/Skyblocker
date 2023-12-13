@@ -10,11 +10,15 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 
 import java.util.*;
 import java.util.regex.Matcher;
 
 public class Trivia extends ChatPatternListener {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final Map<String, String[]> answers;
     private List<String> solutions = Collections.emptyList();
 
@@ -42,14 +46,18 @@ public class Trivia extends ChatPatternListener {
     }
 
     private void updateSolutions(String question) {
-        String trimmedQuestion = question.trim();
-        if (trimmedQuestion.equals("What SkyBlock year is it?")) {
-            long currentTime = System.currentTimeMillis() / 1000L;
-            long diff = currentTime - 1560276000;
-            int year = (int) (diff / 446400 + 1);
-            solutions = Collections.singletonList("Year " + year);
-        } else {
-            solutions = Arrays.asList(answers.get(trimmedQuestion));
+        try {
+            String trimmedQuestion = question.trim();
+            if (trimmedQuestion.equals("What SkyBlock year is it?")) {
+                long currentTime = System.currentTimeMillis() / 1000L;
+                long diff = currentTime - 1560276000;
+                int year = (int) (diff / 446400 + 1);
+                solutions = Collections.singletonList("Year " + year);
+            } else {
+                solutions = Arrays.asList(answers.get(trimmedQuestion));
+            }
+        } catch (Exception e) { //Handle the broken wither lords quiz question, maybe we should try to accommodate it
+            LOGGER.error("[Skyblocker] Failed to update the Trivia puzzle answers!", e);
         }
     }
 
