@@ -194,6 +194,8 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
             this.category = category;
             target = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 - 160, 5, 150, 20, category.targetName);
             replacement = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 + 10, 5, 150, 20, category.replacementName);
+            target.setMaxLength(48);
+            replacement.setMaxLength(48);
             target.setText(targetString);
             replacement.setText(category.shortcutsMap.getOrDefault(targetString, ""));
             children = List.of(target, replacement);
