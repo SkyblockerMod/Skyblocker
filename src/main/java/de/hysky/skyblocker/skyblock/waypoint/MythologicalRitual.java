@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -58,9 +59,10 @@ public class MythologicalRitual {
         UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
         UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
         ClientReceiveMessageEvents.GAME.register(MythologicalRitual::onChatMessage);
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
                 .then(literal("clearGriffinBurrows").executes(context -> {
-                    griffinBurrows.clear();
+                    reset();
                     return Command.SINGLE_SUCCESS;
                 }))
                 .then(literal("clearGriffinBurrow")
@@ -188,6 +190,16 @@ public class MythologicalRitual {
 
     private static boolean isActive() {
         return SkyblockerConfigManager.get().general.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocationRaw().equals("hub");
+    }
+    
+    private static void reset() {
+        griffinBurrows.clear();
+        lastDugBurrowPos = null;
+        previousBurrow = new GriffinBurrow(BlockPos.ORIGIN);
+
+        // Put a root burrow so echo detection works without a previous burrow
+        previousBurrow.confirmed = TriState.DEFAULT;
+        griffinBurrows.put(BlockPos.ORIGIN, previousBurrow);
     }
 
     private static class GriffinBurrow extends Waypoint {
