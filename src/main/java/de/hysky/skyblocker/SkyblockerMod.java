@@ -104,6 +104,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TheRift.init();
         TitleContainer.init();
         ScreenMaster.init();
+        DungeonTextures.init();
         OcclusionCulling.init();
         TeleportOverlay.init();
         CustomItemNames.init();

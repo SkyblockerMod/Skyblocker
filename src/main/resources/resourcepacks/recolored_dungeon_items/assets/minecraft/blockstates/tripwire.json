@@ -1,0 +1,181 @@
+{
+	"variants": {
+		"powered=true,attached=true,east=false,north=false,south=false,west=false": {
+			"model": "block/tripwire_powered"
+		},
+		"powered=true,attached=true,east=false,north=false,south=false,west=true": {
+			"model": "block/tripwire_powered_n",
+			"y": 270
+		},
+		"powered=true,attached=true,east=false,north=false,south=true,west=false": {
+			"model": "block/tripwire_powered_n",
+			"y": 180
+		},
+		"powered=true,attached=true,east=false,north=false,south=true,west=true": {
+			"model": "block/tripwire_powered_ne",
+			"y": 180
+		},
+		"powered=true,attached=true,east=false,north=true,south=false,west=false": {
+			"model": "block/tripwire_powered_n"
+		},
+		"powered=true,attached=true,east=false,north=true,south=false,west=true": {
+			"model": "block/tripwire_powered_ne",
+			"y": 270
+		},
+		"powered=true,attached=true,east=false,north=true,south=true,west=false": {
+			"model": "block/tripwire_powered_ns"
+		},
+		"powered=true,attached=true,east=false,north=true,south=true,west=true": {
+			"model": "block/tripwire_powered_nse",
+			"y": 180
+		},
+		"powered=true,attached=true,east=true,north=false,south=false,west=false": {
+			"model": "block/tripwire_powered_n",
+			"y": 90
+		},
+		"powered=true,attached=true,east=true,north=false,south=false,west=true": {
+			"model": "block/tripwire_powered_ns",
+			"y": 90
+		},
+		"powered=true,attached=true,east=true,north=false,south=true,west=false": {
+			"model": "block/tripwire_powered_ne",
+			"y": 90
+		},
+		"powered=true,attached=true,east=true,north=false,south=true,west=true": {
+			"model": "block/tripwire_powered_nse",
+			"y": 90
+		},
+		"powered=true,attached=true,east=true,north=true,south=false,west=false": {
+			"model": "block/tripwire_powered_ne"
+		},
+		"powered=true,attached=true,east=true,north=true,south=false,west=true": {
+			"model": "block/tripwire_powered_nse",
+			"y": 270
+		},
+		"powered=true,attached=true,east=true,north=true,south=true,west=false": {
+			"model": "block/tripwire_powered_nse"
+		},
+		"powered=true,attached=true,east=true,north=true,south=true,west=true": {
+			"model": "block/tripwire_powered_nsew"
+		},
+		"powered=true,attached=false,east=false,north=false,south=false,west=false": {
+			"model": "block/tripwire"
+		},
+		"powered=false,attached=false,east=false,north=false,south=false,west=false": {
+			"model": "block/tripwire"
+		},
+		"powered=false,attached=false,east=false,north=false,south=false,west=true": {
+			"model": "block/tripwire_n",
+			"y": 270
+		},
+		"powered=false,attached=false,east=false,north=false,south=true,west=false": {
+			"model": "block/tripwire_n",
+			"y": 180
+		},
+		"powered=false,attached=false,east=false,north=false,south=true,west=true": {
+			"model": "block/tripwire_ne",
+			"y": 180
+		},
+		"powered=false,attached=false,east=false,north=true,south=false,west=false": {
+			"model": "block/tripwire_n"
+		},
+		"powered=false,attached=false,east=false,north=true,south=false,west=true": {
+			"model": "block/tripwire_ne",
+			"y": 270
+		},
+		"powered=false,attached=false,east=false,north=true,south=true,west=false": {
+			"model": "block/tripwire_ns"
+		},
+		"powered=false,attached=false,east=false,north=true,south=true,west=true": {
+			"model": "block/tripwire_nse",
+			"y": 180
+		},
+		"powered=false,attached=false,east=true,north=false,south=false,west=false": {
+			"model": "block/tripwire_n",
+			"y": 90
+		},
+		"powered=false,attached=false,east=true,north=false,south=false,west=true": {
+			"model": "block/tripwire_ns",
+			"y": 90
+		},
+		"powered=false,attached=false,east=true,north=false,south=true,west=false": {
+			"model": "block/tripwire_ne",
+			"y": 90
+		},
+		"powered=false,attached=false,east=true,north=false,south=true,west=true": {
+			"model": "block/tripwire_nse",
+			"y": 90
+		},
+		"powered=false,attached=false,east=true,north=true,south=false,west=false": {
+			"model": "block/tripwire_ne"
+		},
+		"powered=false,attached=false,east=true,north=true,south=false,west=true": {
+			"model": "block/tripwire_nse",
+			"y": 270
+		},
+		"powered=false,attached=false,east=true,north=true,south=true,west=false": {
+			"model": "block/tripwire_nse"
+		},
+		"powered=false,attached=false,east=true,north=true,south=true,west=true": {
+			"model": "block/tripwire_nsew"
+		},
+		"powered=false,attached=true,east=false,north=false,south=false,west=false": {
+			"model": "block/tripwire_attached"
+		},
+		"powered=false,attached=true,east=false,north=false,south=false,west=true": {
+			"model": "block/tripwire_attached_n",
+			"y": 270
+		},
+		"powered=false,attached=true,east=false,north=false,south=true,west=false": {
+			"model": "block/tripwire_attached_n",
+			"y": 180
+		},
+		"powered=false,attached=true,east=false,north=false,south=true,west=true": {
+			"model": "block/tripwire_attached_ne",
+			"y": 180
+		},
+		"powered=false,attached=true,east=false,north=true,south=false,west=false": {
+			"model": "block/tripwire_attached_n"
+		},
+		"powered=false,attached=true,east=false,north=true,south=false,west=true": {
+			"model": "block/tripwire_attached_ne",
+			"y": 270
+		},
+		"powered=false,attached=true,east=false,north=true,south=true,west=false": {
+			"model": "block/tripwire_attached_ns"
+		},
+		"powered=false,attached=true,east=false,north=true,south=true,west=true": {
+			"model": "block/tripwire_attached_nse",
+			"y": 180
+		},
+		"powered=false,attached=true,east=true,north=false,south=false,west=false": {
+			"model": "block/tripwire_attached_n",
+			"y": 90
+		},
+		"powered=false,attached=true,east=true,north=false,south=false,west=true": {
+			"model": "block/tripwire_attached_ns",
+			"y": 90
+		},
+		"powered=false,attached=true,east=true,north=false,south=true,west=false": {
+			"model": "block/tripwire_attached_ne",
+			"y": 90
+		},
+		"powered=false,attached=true,east=true,north=false,south=true,west=true": {
+			"model": "block/tripwire_attached_nse",
+			"y": 90
+		},
+		"powered=false,attached=true,east=true,north=true,south=false,west=false": {
+			"model": "block/tripwire_attached_ne"
+		},
+		"powered=false,attached=true,east=true,north=true,south=false,west=true": {
+			"model": "block/tripwire_attached_nse",
+			"y": 270
+		},
+		"powered=false,attached=true,east=true,north=true,south=true,west=false": {
+			"model": "block/tripwire_attached_nse"
+		},
+		"powered=false,attached=true,east=true,north=true,south=true,west=true": {
+			"model": "block/tripwire_attached_nsew"
+		}
+	}
+}

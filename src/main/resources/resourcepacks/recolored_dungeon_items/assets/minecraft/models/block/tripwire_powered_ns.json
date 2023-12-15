@@ -1,0 +1,6 @@
+{
+	"parent": "block/tripwire_ns",
+	"textures": {
+		"particle": "block/red_wool"
+	}
+}
