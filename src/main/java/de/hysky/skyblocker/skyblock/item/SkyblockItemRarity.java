@@ -4,6 +4,7 @@ import net.minecraft.util.Formatting;
 
 public enum SkyblockItemRarity {
 	ADMIN(Formatting.DARK_RED),
+	ULTIMATE(Formatting.DARK_RED),
 	VERY_SPECIAL(Formatting.RED),
 	SPECIAL(Formatting.RED),
 	DIVINE(Formatting.AQUA),

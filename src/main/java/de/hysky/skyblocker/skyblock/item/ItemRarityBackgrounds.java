@@ -28,6 +28,7 @@ public class ItemRarityBackgrounds {
 	private static final Supplier<Sprite> SPRITE = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(CONFIG.itemRarityBackgroundStyle.tex);
 	private static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
 			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),
+			Map.entry("ULTIMATE", SkyblockItemRarity.ULTIMATE),
 			Map.entry("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
 			Map.entry("DIVINE", SkyblockItemRarity.DIVINE),
 			Map.entry("MYTHIC", SkyblockItemRarity.MYTHIC),
@@ -36,8 +37,7 @@ public class ItemRarityBackgrounds {
 			Map.entry("EPIC", SkyblockItemRarity.EPIC),
 			Map.entry("RARE", SkyblockItemRarity.RARE),
 			Map.entry("UNCOMMON", SkyblockItemRarity.UNCOMMON),
-			Map.entry("COMMON", SkyblockItemRarity.COMMON)
-	);
+			Map.entry("COMMON", SkyblockItemRarity.COMMON));
 	private static final Int2ReferenceOpenHashMap<SkyblockItemRarity> CACHE = new Int2ReferenceOpenHashMap<>();
 
 	public static void init() {
