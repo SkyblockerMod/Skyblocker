@@ -113,7 +113,7 @@
     "skyblocker.fairySouls.markAllFound": "将当前岛屿上的全部仙女之魂标记为已发现",
     "text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "值越小，更新越频繁（可能会导致卡顿）",
     "text.autoconfig.skyblocker.option.general.shortcuts": "更精简的命令",
-    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "使用 \"/skyblocker shortcuts\" 以编辑命令的精简版本, 以下选项必须至少启用之一方可有效. (仅在Hypixel服务器可用)",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "使用 \"/skyblocker shortcuts\" 以编辑命令的精简版本, 以下选项必须至少启用之一方可有效. (此功能在空岛生存外也可使用)",
     "text.autoconfig.skyblocker.option.general.teleportOverlay": "传送类技能目标位置显示",
     "text.autoconfig.skyblocker.option.general.teleportOverlay.enableTeleportOverlays": "启用传送类技能目标位置显示",
     "text.autoconfig.skyblocker.option.general.teleportOverlay.enableWeirdTransmission": "启用 Weird Transmission 目标位置显示",
@@ -149,5 +149,13 @@
     "text.skyblocker.quit_config_sure": "确定退出吗? 你的修改将不会被保存!",
     "text.autoconfig.skyblocker.option.general.wikiLookup": "查阅 wiki",
     "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki": "使用Hypixel官方 Wiki",
-    "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip": "在查阅时使用Hypixel 官方 wiki 代替 Fandom wiki"
+    "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip": "在查阅时使用Hypixel 官方 wiki 代替 Fandom wiki",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableObtainedDate": "显示获取时间",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts.@Tooltip": "此功能可用较短的别名替换较长的原始命令，使用 \"/skyblocker shortcuts\" 以编辑. (“更精简的命令”功能必须启用才可生效)",
+    "text.autoconfig.skyblocker.option.general.waypoints": "路径点",
+    "text.autoconfig.skyblocker.option.general.waypoints.enableWaypoints": "启用路径点",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType": "路径点类型",
+    "text.skyblocker.open": "开启",
+    "text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup": "启用 wiki 查阅功能",
+    "text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup.@Tooltip": "指针悬停于物品之下按 F4 键打开 wiki 相关条目"
 }
