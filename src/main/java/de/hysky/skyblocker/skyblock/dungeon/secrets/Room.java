@@ -129,12 +129,16 @@ public class Room {
 
     @NotNull
     private Shape getShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
-        return switch (segments.size()) {
-            case 1 -> Shape.ONE_BY_ONE;
-            case 2 -> Shape.ONE_BY_TWO;
-            case 3 -> segmentsX.size() == 2 && segmentsY.size() == 2 ? Shape.L_SHAPE : Shape.ONE_BY_THREE;
-            case 4 -> segmentsX.size() == 2 && segmentsY.size() == 2 ? Shape.TWO_BY_TWO : Shape.ONE_BY_FOUR;
-            default -> throw new IllegalArgumentException("There are no matching room shapes with this set of physical positions: " + Arrays.toString(segments.toArray()));
+        return switch (type) {
+            case PUZZLE -> Shape.PUZZLE;
+            case TRAP -> Shape.TRAP;
+            default -> switch (segments.size()) {
+                case 1 -> Shape.ONE_BY_ONE;
+                case 2 -> Shape.ONE_BY_TWO;
+                case 3 -> segmentsX.size() == 2 && segmentsY.size() == 2 ? Shape.L_SHAPE : Shape.ONE_BY_THREE;
+                case 4 -> segmentsX.size() == 2 && segmentsY.size() == 2 ? Shape.TWO_BY_TWO : Shape.ONE_BY_FOUR;
+                default -> throw new IllegalArgumentException("There are no matching room shapes with this set of physical positions: " + Arrays.toString(segments.toArray()));
+            };
         };
     }
 
@@ -150,7 +154,7 @@ public class Room {
     @NotNull
     private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
         return switch (shape) {
-            case ONE_BY_ONE, TWO_BY_TWO -> Direction.values();
+            case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP -> Direction.values();
             case ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {
                 if (segmentsX.size() > 1 && segmentsY.size() == 1) {
                     yield new Direction[]{Direction.NW, Direction.SE};
@@ -629,7 +633,9 @@ public class Room {
         ONE_BY_THREE("1x3"),
         ONE_BY_FOUR("1x4"),
         L_SHAPE("L-shape"),
-        TWO_BY_TWO("2x2");
+        TWO_BY_TWO("2x2"),
+        PUZZLE("puzzle"),
+        TRAP("trap");
         final String shape;
 
         Shape(String shape) {
