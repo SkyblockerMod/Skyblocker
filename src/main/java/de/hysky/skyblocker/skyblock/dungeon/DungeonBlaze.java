@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -29,20 +31,30 @@ public class DungeonBlaze {
     private static final float[] GREEN_COLOR_COMPONENTS = {0.0F, 1.0F, 0.0F};
     private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
 
+    private static boolean inBlaze;
     private static ArmorStandEntity highestBlaze = null;
     private static ArmorStandEntity lowestBlaze = null;
     private static ArmorStandEntity nextHighestBlaze = null;
     private static ArmorStandEntity nextLowestBlaze = null;
 
     public static void init() {
+        DungeonEvents.PUZZLE_MATCHED.register(room -> {
+            if (room.getName().startsWith("blaze-room")) {
+                inBlaze = true;
+            }
+        });
         Scheduler.INSTANCE.scheduleCyclic(DungeonBlaze::update, 4);
         WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> inBlaze = false);
     }
 
     /**
      * Updates the state of Blaze entities and triggers the rendering process if necessary.
      */
     public static void update() {
+        if (!inBlaze) {
+            return;
+        }
         ClientWorld world = MinecraftClient.getInstance().world;
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (world == null || player == null || !Utils.isInDungeons()) return;

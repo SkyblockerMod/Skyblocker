@@ -124,7 +124,6 @@ public class SkyblockerMod implements ClientModInitializer {
         statusBarTracker.init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
-        Scheduler.INSTANCE.scheduleCyclic(TicTacToe::tick, 4);
         Scheduler.INSTANCE.scheduleCyclic(LividColor::update, 10);
         Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
         Scheduler.INSTANCE.scheduleCyclic(DwarvenHud::update, 40);
