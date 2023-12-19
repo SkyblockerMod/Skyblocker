@@ -239,7 +239,6 @@
     "text.autoconfig.skyblocker.option.locations.spidersDen": "Covil da Aranha",
     "text.autoconfig.skyblocker.option.locations.barn.solveTreasureHunter": "Guia sobre Treasure Hunter",
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableSecretWaypoints": "Ativar marcadores de segredos para dungeon",
-    "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints": "Não iniciar marcadores de segredos",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "Escolha entre um estilo de fundo circular ou quadrado!",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle": "Estilo de fundo da raridade do item",
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints": "Marcadores de segredos da dungeon",
@@ -281,6 +280,5 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "Se ativado, o preço de uma Kismet usada será subtraído no cálculo da margem de lucro",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence": "Incluir essência",
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.showSecretText": "Exibir texto secreto",
-    "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints.@Tooltip": "Essa opção pode salvar por volta de 20 MB de ram se ativada, mas os marcadores de segredos vão precisar de um reinício do jogo após desligar essa opção para funcionar.",
     "text.autoconfig.skyblocker.option.quickNav.button.clickEvent": "Evento ao clicar"
 }

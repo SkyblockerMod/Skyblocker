@@ -644,10 +644,10 @@ public class SkyblockerConfig {
 
 	public static class SecretWaypoints {
 		@SerialEntry
-		public boolean enableSecretWaypoints = true;
+		public boolean enableRoomMatching = true;
 
 		@SerialEntry
-		public boolean noInitSecretWaypoints = false;
+		public boolean enableSecretWaypoints = true;
 
 		@SerialEntry
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;

@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -381,6 +382,7 @@ public class Room {
         int matchingRoomsSize = possibleRooms.stream().map(Triple::getRight).mapToInt(Collection::size).sum();
         if (matchingRoomsSize == 0) {
             // If no rooms match, reset the fields and scan again after 50 ticks.
+            matchState = MatchState.FAILED;
             DungeonSecrets.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
             Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
             reset();
@@ -397,7 +399,9 @@ public class Room {
                 return false;
             } else if (matchState == MatchState.DOUBLE_CHECKING && ++doubleCheckBlocks >= 10) {
                 // If double-checked, set state to matched and discard the no longer needed fields.
-                DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
+                matchState = MatchState.MATCHED;
+                DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
+                DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} confirmed after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
                 discard();
                 return true;
             }
@@ -444,7 +448,6 @@ public class Room {
      * Resets fields for another round of matching after room matching fails.
      */
     private void reset() {
-        matchState = MatchState.FAILED;
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
@@ -461,7 +464,6 @@ public class Room {
      * These fields are no longer needed and are discarded to save memory.
      */
     private void discard() {
-        matchState = MatchState.MATCHED;
         roomsData = null;
         possibleRooms = null;
         checkedBlocks = null;
@@ -486,7 +488,7 @@ public class Room {
      * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
      */
     protected void render(WorldRenderContext context) {
-        if (isMatched()) {
+        if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
             for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
                 if (secretWaypoint.shouldRender()) {
                     secretWaypoint.render(context);

@@ -195,7 +195,7 @@ public class DungeonSecrets {
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
      */
     public static void init() {
-        if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.noInitSecretWaypoints) {
+        if (!SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableRoomMatching) {
             return;
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
@@ -426,9 +426,6 @@ public class DungeonSecrets {
      */
     @SuppressWarnings("JavadocReference")
     private static void update() {
-        if (!SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints) {
-            return;
-        }
         if (!Utils.isInDungeons()) {
             if (mapEntrancePos != null) {
                 reset();
@@ -663,12 +660,12 @@ public class DungeonSecrets {
     }
 
     /**
-     * Checks if the player is in a dungeon and {@link de.hysky.skyblocker.config.SkyblockerConfig.Dungeons#secretWaypoints Secret Waypoints} is enabled.
+     * Checks if {@link de.hysky.skyblocker.config.SkyblockerConfig.SecretWaypoints#enableRoomMatching room matching} is enabled and the player is in a dungeon.
      *
-     * @return whether dungeon secrets should be processed
+     * @return whether room matching and dungeon secrets should be processed
      */
     private static boolean shouldProcess() {
-        return SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && Utils.isInDungeons();
+        return SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableRoomMatching && Utils.isInDungeons();
     }
 
     /**
