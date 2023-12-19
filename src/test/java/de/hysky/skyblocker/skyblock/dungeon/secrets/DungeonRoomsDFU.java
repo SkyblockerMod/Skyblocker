@@ -21,7 +21,7 @@ import java.util.zip.InflaterInputStream;
  * Utility class to convert the old dungeon rooms data from Dungeon Rooms Mod to a new format.
  * The new format is similar to <a href="https://quantizr.github.io/posts/how-it-works/">DRM's format</a>, but uses ints instead of longs and a custom numeric block id to store the block states.
  * The first byte is the x position, the second byte is the y position, the third byte is the z position, and the fourth byte is the custom numeric block id.
- * Use {@link DungeonSecrets#NUMERIC_ID} to get the custom numeric block id of a block.
+ * Use {@link DungeonManager#NUMERIC_ID} to get the custom numeric block id of a block.
  * Run this manually when updating dungeon rooms data with DRM's data in {@code src/test/resources/assets/skyblocker/dungeons/dungeonrooms}.
  */
 public class DungeonRoomsDFU {
@@ -131,7 +131,7 @@ public class DungeonRoomsDFU {
         if (newId == null) {
             newId = ItemIdFix.fromId(oldId / 100);
         }
-        return x << 24 | y << 16 | z << 8 | DungeonSecrets.NUMERIC_ID.getByte(newId);
+        return x << 24 | y << 16 | z << 8 | DungeonManager.NUMERIC_ID.getByte(newId);
     }
 
     private static CompletableFuture<Void> save() {

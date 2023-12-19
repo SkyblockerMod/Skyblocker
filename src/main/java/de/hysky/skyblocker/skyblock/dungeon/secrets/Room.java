@@ -103,7 +103,7 @@ public class Room {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
-        roomsData = DungeonSecrets.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(), Collections.emptyMap());
+        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(), Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
@@ -191,7 +191,7 @@ public class Room {
     }
 
     /**
-     * Adds a custom waypoint relative to this room to {@link DungeonSecrets#customWaypoints} and all existing instances of this room.
+     * Adds a custom waypoint relative to this room to {@link DungeonManager#customWaypoints} and all existing instances of this room.
      *
      * @param secretIndex  the index of the secret waypoint
      * @param category     the category of the secret waypoint
@@ -201,8 +201,8 @@ public class Room {
     @SuppressWarnings("JavadocReference")
     private void addCustomWaypoint(int secretIndex, SecretWaypoint.Category category, Text waypointName, BlockPos pos) {
         SecretWaypoint waypoint = new SecretWaypoint(secretIndex, category, waypointName, pos);
-        DungeonSecrets.addCustomWaypoint(name, waypoint);
-        DungeonSecrets.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.addCustomWaypoint(waypoint));
+        DungeonManager.addCustomWaypoint(name, waypoint);
+        DungeonManager.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.addCustomWaypoint(waypoint));
     }
 
     /**
@@ -228,7 +228,7 @@ public class Room {
     }
 
     /**
-     * Removes a custom waypoint relative to this room from {@link DungeonSecrets#customWaypoints} and all existing instances of this room.
+     * Removes a custom waypoint relative to this room from {@link DungeonManager#customWaypoints} and all existing instances of this room.
      *
      * @param pos the position of the secret waypoint relative to this room
      * @return the removed secret waypoint or {@code null} if there was no secret waypoint at the given position
@@ -236,9 +236,9 @@ public class Room {
     @SuppressWarnings("JavadocReference")
     @Nullable
     private SecretWaypoint removeCustomWaypoint(BlockPos pos) {
-        SecretWaypoint waypoint = DungeonSecrets.removeCustomWaypoint(name, pos);
+        SecretWaypoint waypoint = DungeonManager.removeCustomWaypoint(name, pos);
         if (waypoint != null) {
-            DungeonSecrets.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.removeCustomWaypoint(waypoint.secretIndex, pos));
+            DungeonManager.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.removeCustomWaypoint(waypoint.secretIndex, pos));
         }
         return waypoint;
     }
@@ -290,7 +290,7 @@ public class Room {
 
         // Room scanning and matching
         // Logical AND has higher precedence than logical OR
-        if (!type.needsScanning() || matchState != MatchState.MATCHING && matchState != MatchState.DOUBLE_CHECKING || !DungeonSecrets.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
+        if (!type.needsScanning() || matchState != MatchState.MATCHING && matchState != MatchState.DOUBLE_CHECKING || !DungeonManager.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
             return;
         }
         ClientPlayerEntity player = client.player;
@@ -304,7 +304,7 @@ public class Room {
                 }
             }
         }).exceptionally(e -> {
-            DungeonSecrets.LOGGER.error("[Skyblocker Dungeon Secrets] Encountered an unknown exception while matching room {}", this, e);
+            DungeonManager.LOGGER.error("[Skyblocker Dungeon Secrets] Encountered an unknown exception while matching room {}", this, e);
             return null;
         });
     }
@@ -323,7 +323,7 @@ public class Room {
      * <p></p>
      * This method:
      * <ul>
-     *     <li> Checks if the block type is included in the dungeon rooms data. See {@link DungeonSecrets#NUMERIC_ID}. </li>
+     *     <li> Checks if the block type is included in the dungeon rooms data. See {@link DungeonManager#NUMERIC_ID}. </li>
      *     <li> For each possible direction: </li>
      *     <ul>
      *         <li> Rotate and convert the position to a relative position. See {@link DungeonMapUtils#actualToRelative(Direction, Vector2ic, BlockPos)}. </li>
@@ -364,7 +364,7 @@ public class Room {
      * @return whether room matching should end. Either a match is found or there are no valid rooms left
      */
     private boolean checkBlock(ClientWorld world, BlockPos pos) {
-        byte id = DungeonSecrets.NUMERIC_ID.getByte(Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).toString());
+        byte id = DungeonManager.NUMERIC_ID.getByte(Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).toString());
         if (id == 0) {
             return false;
         }
@@ -383,7 +383,7 @@ public class Room {
         if (matchingRoomsSize == 0) {
             // If no rooms match, reset the fields and scan again after 50 ticks.
             matchState = MatchState.FAILED;
-            DungeonSecrets.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
+            DungeonManager.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
             Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
             reset();
             return true;
@@ -394,20 +394,20 @@ public class Room {
                 name = directionRoom.getRight().get(0);
                 direction = directionRoom.getLeft();
                 physicalCornerPos = directionRoom.getMiddle();
-                DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
+                DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
                 roomMatched();
                 return false;
             } else if (matchState == MatchState.DOUBLE_CHECKING && ++doubleCheckBlocks >= 10) {
                 // If double-checked, set state to matched and discard the no longer needed fields.
                 matchState = MatchState.MATCHED;
                 DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
-                DungeonSecrets.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} confirmed after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
+                DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} confirmed after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
                 discard();
                 return true;
             }
             return false;
         } else {
-            DungeonSecrets.LOGGER.debug("[Skyblocker Dungeon Secrets] {} room(s) remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
+            DungeonManager.LOGGER.debug("[Skyblocker Dungeon Secrets] {} room(s) remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
             return false;
         }
     }
@@ -424,7 +424,7 @@ public class Room {
     }
 
     /**
-     * Loads the secret waypoints for the room from {@link DungeonSecrets#waypointsJson} once it has been matched
+     * Loads the secret waypoints for the room from {@link DungeonManager#waypointsJson} once it has been matched
      * and sets {@link #matchState} to {@link MatchState#DOUBLE_CHECKING}.
      *
      * @param directionRooms the direction, position, and name of the room
@@ -432,7 +432,7 @@ public class Room {
     @SuppressWarnings("JavadocReference")
     private void roomMatched() {
         secretWaypoints = HashBasedTable.create();
-        for (JsonElement waypointElement : DungeonSecrets.getRoomWaypoints(name)) {
+        for (JsonElement waypointElement : DungeonManager.getRoomWaypoints(name)) {
             JsonObject waypoint = waypointElement.getAsJsonObject();
             String secretName = waypoint.get("secretName").getAsString();
             Matcher secretIndexMatcher = SECRET_INDEX.matcher(secretName);
@@ -440,7 +440,7 @@ public class Room {
             BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
             secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
         }
-        DungeonSecrets.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
+        DungeonManager.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
         matchState = MatchState.DOUBLE_CHECKING;
     }
 
@@ -586,7 +586,7 @@ public class Room {
      */
     private void onSecretFound(SecretWaypoint secretWaypoint, String msg, Object... args) {
         secretWaypoints.row(secretWaypoint.secretIndex).values().forEach(SecretWaypoint::setFound);
-        DungeonSecrets.LOGGER.info(msg, args);
+        DungeonManager.LOGGER.info(msg, args);
     }
 
     protected boolean markSecrets(int secretIndex, boolean found) {

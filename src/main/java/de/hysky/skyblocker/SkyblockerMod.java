@@ -6,7 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.dungeon.*;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.item.*;
@@ -96,7 +96,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FishingHelper.init();
         TabHud.init();
         DungeonMap.init();
-        DungeonSecrets.init();
+        DungeonManager.init();
         DungeonBlaze.init();
         ChestValue.init();
         FireFreezeStaffTimer.init();

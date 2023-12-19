@@ -75,8 +75,8 @@ import java.util.zip.InflaterInputStream;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class DungeonSecrets {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonSecrets.class);
+public class DungeonManager {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonManager.class);
     private static final String DUNGEONS_PATH = "dungeons";
     private static final Path CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
     private static final Pattern KEY_FOUND = Pattern.compile("^(?:\\[.+] )?(?<name>\\w+) has obtained (?<type>Wither|Blood) Key!$");
@@ -199,21 +199,21 @@ public class DungeonSecrets {
             return;
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
-        CompletableFuture.runAsync(DungeonSecrets::load, MinecraftClient.getInstance()).exceptionally(e -> {
+        CompletableFuture.runAsync(DungeonManager::load, MinecraftClient.getInstance()).exceptionally(e -> {
             LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
             return null;
         });
-        ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonSecrets::saveCustomWaypoints);
-        Scheduler.INSTANCE.scheduleCyclic(DungeonSecrets::update, 10);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonSecrets::render);
-        ClientReceiveMessageEvents.GAME.register(DungeonSecrets::onChatMessage);
-        ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonSecrets::onChatMessage);
+        ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
+        Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 10);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
+        ClientReceiveMessageEvents.GAME.register(DungeonManager::onChatMessage);
+        ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonManager::onChatMessage);
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
                 .then(literal("markAsMissing").then(markSecretsCommand(false)))
-                .then(literal("getRelativePos").executes(DungeonSecrets::getRelativePos))
-                .then(literal("getRelativeTargetPos").executes(DungeonSecrets::getRelativeTargetPos))
+                .then(literal("getRelativePos").executes(DungeonManager::getRelativePos))
+                .then(literal("getRelativeTargetPos").executes(DungeonManager::getRelativeTargetPos))
                 .then(literal("addWaypoint").then(addCustomWaypointCommand(false)))
                 .then(literal("addWaypointRelatively").then(addCustomWaypointCommand(true)))
                 .then(literal("removeWaypoint").then(removeCustomWaypointCommand(false)))

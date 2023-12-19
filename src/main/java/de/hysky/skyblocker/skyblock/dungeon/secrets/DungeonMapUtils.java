@@ -271,7 +271,7 @@ public class DungeonMapUtils {
                 queue.add(newMapPos);
             }
         }
-        DungeonSecrets.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
+        DungeonManager.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
         return segments.toArray(Vector2ic[]::new);
     }
 
