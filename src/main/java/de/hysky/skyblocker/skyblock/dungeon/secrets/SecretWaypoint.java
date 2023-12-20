@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 public class SecretWaypoint extends Waypoint {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
     public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
             Category.CODEC.fieldOf("category").forGetter(secretWaypoint -> secretWaypoint.category),
@@ -39,7 +39,7 @@ public class SecretWaypoint extends Waypoint {
     public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
     private static final Supplier<SkyblockerConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
-    private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
+    static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final int secretIndex;
     final Category category;
     final Text name;

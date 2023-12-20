@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -52,8 +53,8 @@ public class Room {
     private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
     private static final Vec3d DOOR_SIZE = new Vec3d(3, 4, 3);
-    private static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
-    private static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
+    protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
+    protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
     @NotNull
     private final Type type;
     @NotNull
@@ -67,11 +68,11 @@ public class Room {
     /**
      * The room data containing all rooms for a specific dungeon and {@link #shape}.
      */
-    Map<String, int[]> roomsData;
+    protected Map<String, int[]> roomsData;
     /**
      * Contains all possible dungeon rooms for this room. The list is gradually shrunk by checking blocks until only one room is left.
      */
-    List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
+    protected List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
     /**
      * Contains all blocks that have been checked to prevent checking the same block multiple times.
      */
@@ -88,12 +89,13 @@ public class Room {
      * <li>{@link MatchState#MATCHED} means that the room has a unique match ans has been double checked.</li>
      * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
      */
-    private MatchState matchState = MatchState.MATCHING;
+    protected MatchState matchState = MatchState.MATCHING;
     private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
     private String name;
     private Direction direction;
     private Vector2ic physicalCornerPos;
 
+    protected List<Room> subRooms = new ArrayList<>();
     @Nullable
     private BlockPos doorPos;
     @Nullable
@@ -124,6 +126,13 @@ public class Room {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Not null if {@link #isMatched()}.
+     */
+    public Direction getDirection() {
+        return direction;
     }
 
     @Override
@@ -283,6 +292,10 @@ public class Room {
             return;
         }
 
+        for (Room subRoom : subRooms) {
+            subRoom.update();
+        }
+
         // Wither and blood door
         if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight && doorPos == null) {
             doorPos = DungeonMapUtils.getWitherBloodDoorPos(world, segments);
@@ -366,7 +379,7 @@ public class Room {
      * @param pos   the position of the block to check
      * @return whether room matching should end. Either a match is found or there are no valid rooms left
      */
-    private boolean checkBlock(ClientWorld world, BlockPos pos) {
+    protected boolean checkBlock(ClientWorld world, BlockPos pos) {
         byte id = DungeonManager.NUMERIC_ID.getByte(Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).toString());
         if (id == 0) {
             return false;
@@ -422,7 +435,7 @@ public class Room {
      * @param id  the custom numeric block id
      * @return the encoded integer
      */
-    private int posIdToInt(BlockPos pos, byte id) {
+    protected int posIdToInt(BlockPos pos, byte id) {
         return pos.getX() << 24 | pos.getY() << 16 | pos.getZ() << 8 | id;
     }
 
@@ -435,13 +448,16 @@ public class Room {
     @SuppressWarnings("JavadocReference")
     private void roomMatched() {
         secretWaypoints = HashBasedTable.create();
-        for (JsonElement waypointElement : DungeonManager.getRoomWaypoints(name)) {
-            JsonObject waypoint = waypointElement.getAsJsonObject();
-            String secretName = waypoint.get("secretName").getAsString();
-            Matcher secretIndexMatcher = SECRET_INDEX.matcher(secretName);
-            int secretIndex = secretIndexMatcher.find() ? Integer.parseInt(secretIndexMatcher.group(1)) : 0;
-            BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
-            secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
+        JsonArray secretWaypointsJson = DungeonManager.getRoomWaypoints(name);
+        if (secretWaypointsJson != null) {
+            for (JsonElement waypointElement : secretWaypointsJson) {
+                JsonObject waypoint = waypointElement.getAsJsonObject();
+                String secretName = waypoint.get("secretName").getAsString();
+                Matcher secretIndexMatcher = SECRET_INDEX.matcher(secretName);
+                int secretIndex = secretIndexMatcher.find() ? Integer.parseInt(secretIndexMatcher.group(1)) : 0;
+                BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
+                secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
+            }
         }
         DungeonManager.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
         matchState = MatchState.DOUBLE_CHECKING;
@@ -450,7 +466,7 @@ public class Room {
     /**
      * Resets fields for another round of matching after room matching fails.
      */
-    private void reset() {
+    protected void reset() {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
@@ -491,6 +507,10 @@ public class Room {
      * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
      */
     protected void render(WorldRenderContext context) {
+        for (Room subRoom : subRooms) {
+            subRoom.render(context);
+        }
+
         if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
             for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
                 if (secretWaypoint.shouldRender()) {
@@ -632,7 +652,7 @@ public class Room {
         }
     }
 
-    enum Shape {
+    protected enum Shape {
         ONE_BY_ONE("1x1"),
         ONE_BY_TWO("1x2"),
         ONE_BY_THREE("1x3"),
@@ -653,7 +673,7 @@ public class Room {
         }
     }
 
-    enum Direction implements StringIdentifiable {
+    public enum Direction implements StringIdentifiable {
         NW("northwest"), NE("northeast"), SW("southwest"), SE("southeast");
         private static final Codec<Direction> CODEC = StringIdentifiable.createCodec(Direction::values);
         private final String name;
@@ -682,7 +702,7 @@ public class Room {
         }
     }
 
-    private enum MatchState {
+    protected enum MatchState {
         MATCHING, DOUBLE_CHECKING, MATCHED, FAILED
     }
 }
