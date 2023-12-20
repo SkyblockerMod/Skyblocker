@@ -12,10 +12,14 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -27,8 +31,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.PosArgument;
 import net.minecraft.command.argument.TextArgumentType;
@@ -41,6 +46,7 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
+import net.minecraft.registry.Registry;
 import net.minecraft.resource.Resource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -52,6 +58,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.MutableTriple;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,7 +90,7 @@ public class DungeonManager {
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
-     * @implNote Not using {@link net.minecraft.registry.Registry#getId(Object) Registry#getId(Block)} and {@link net.minecraft.block.Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
+     * @implNote Not using {@link Registry#getId(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
      */
     @SuppressWarnings("JavadocReference")
     protected static final Object2ByteMap<String> NUMERIC_ID = new Object2ByteOpenHashMap<>(Map.ofEntries(
@@ -402,7 +409,52 @@ public class DungeonManager {
     }
 
     private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
-        return argument("room", StringArgumentType.string()).then(argument("direction", Room.Direction.DirectionArgumentType.direction()));
+        return argument("room", StringArgumentType.string()).suggests((context, builder) -> CommandSource.suggestMatching(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
+            if (physicalEntrancePos == null || mapEntrancePos == null || mapRoomSize == 0) {
+                context.getSource().sendError(Constants.PREFIX.get().append(Text.literal("§cYou are not in a dungeon")));
+                return Command.SINGLE_SUCCESS;
+            }
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.player == null || client.world == null) {
+                context.getSource().sendError(Constants.PREFIX.get().append(Text.literal("§cFailed to get player or world")));
+                return Command.SINGLE_SUCCESS;
+            }
+            ItemStack stack = client.player.getInventory().main.get(8);
+            if (!stack.isOf(Items.FILLED_MAP)) {
+                context.getSource().sendError(Constants.PREFIX.get().append(Text.literal("§cFailed to get dungeon map")));
+                return Command.SINGLE_SUCCESS;
+            }
+            MapState map = FilledMapItem.getMapState(FilledMapItem.getMapId(stack), client.world);
+            if (map == null) {
+                context.getSource().sendError(Constants.PREFIX.get().append(Text.literal("§cFailed to get dungeon map state")));
+                return Command.SINGLE_SUCCESS;
+            }
+
+            String roomName = StringArgumentType.getString(context, "room");
+            Room.Direction direction = Room.Direction.DirectionArgumentType.getDirection(context, "direction");
+
+            Room room = null;
+            int[] roomData;
+            if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
+                room = new DebugRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(client.player.getPos()));
+            } else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
+                room = new DebugRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(client.player.getPos()));
+            } else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
+                room = new DebugRoom(Room.Type.ROOM, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, DungeonMapUtils.getPhysicalRoomPos(client.player.getPos())), mapRoomSize, Room.Type.ROOM.color)));
+            }
+
+            if (room == null) {
+                context.getSource().sendError(Constants.PREFIX.get().append(Text.literal("§cFailed to find room with name " + roomName)));
+                return Command.SINGLE_SUCCESS;
+            }
+            IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(room.segments.stream().mapToInt(Vector2ic::x).toArray()));
+            IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(room.segments.stream().mapToInt(Vector2ic::y).toArray()));
+            room.roomsData = Map.of(roomName, roomData);
+            room.possibleRooms = List.of(MutableTriple.of(direction, DungeonMapUtils.getPhysicalCornerPos(direction, segmentsX, segmentsY), List.of(roomName)));
+            Scheduler.INSTANCE.scheduleCyclic(room::update, 10);
+
+            return Command.SINGLE_SUCCESS;
+        }));
     }
 
     /**
@@ -438,16 +490,15 @@ public class DungeonManager {
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
-        ClientPlayerEntity player = client.player;
-        if (player == null || client.world == null) {
+        if (client.player == null || client.world == null) {
             return;
         }
         if (physicalEntrancePos == null) {
-            Vec3d playerPos = player.getPos();
+            Vec3d playerPos = client.player.getPos();
             physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
             currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
         }
-        ItemStack stack = player.getInventory().main.get(8);
+        ItemStack stack = client.player.getInventory().main.get(8);
         if (!stack.isOf(Items.FILLED_MAP)) {
             return;
         }
@@ -665,7 +716,7 @@ public class DungeonManager {
     }
 
     /**
-     * Checks if {@link de.hysky.skyblocker.config.SkyblockerConfig.SecretWaypoints#enableRoomMatching room matching} is enabled and the player is in a dungeon.
+     * Checks if {@link SkyblockerConfig.SecretWaypoints#enableRoomMatching room matching} is enabled and the player is in a dungeon.
      *
      * @return whether room matching and dungeon secrets should be processed
      */

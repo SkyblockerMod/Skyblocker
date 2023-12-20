@@ -57,7 +57,7 @@ public class Room {
     @NotNull
     private final Type type;
     @NotNull
-    private final Set<Vector2ic> segments;
+    final Set<Vector2ic> segments;
 
     /**
      * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
@@ -67,11 +67,11 @@ public class Room {
     /**
      * The room data containing all rooms for a specific dungeon and {@link #shape}.
      */
-    private Map<String, int[]> roomsData;
+    Map<String, int[]> roomsData;
     /**
      * Contains all possible dungeon rooms for this room. The list is gradually shrunk by checking blocks until only one room is left.
      */
-    private List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
+    List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
     /**
      * Contains all blocks that have been checked to prevent checking the same block multiple times.
      */
@@ -632,7 +632,7 @@ public class Room {
         }
     }
 
-    private enum Shape {
+    enum Shape {
         ONE_BY_ONE("1x1"),
         ONE_BY_TWO("1x2"),
         ONE_BY_THREE("1x3"),
