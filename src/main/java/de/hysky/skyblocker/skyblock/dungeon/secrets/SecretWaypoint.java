@@ -173,15 +173,15 @@ public class SecretWaypoint extends Waypoint {
         }
 
         static class CategoryArgumentType extends EnumArgumentType<Category> {
-            public CategoryArgumentType() {
+            CategoryArgumentType() {
                 super(Category.CODEC, Category::values);
             }
 
-            public static CategoryArgumentType category() {
+            static CategoryArgumentType category() {
                 return new CategoryArgumentType();
             }
 
-            public static <S> Category getCategory(CommandContext<S> context, String name) {
+            static <S> Category getCategory(CommandContext<S> context, String name) {
                 return context.getArgument(name, Category.class);
             }
         }

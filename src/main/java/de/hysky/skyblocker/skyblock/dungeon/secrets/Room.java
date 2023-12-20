@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
@@ -23,11 +24,13 @@ import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -650,11 +653,36 @@ public class Room {
         }
     }
 
-    public enum Direction {
-        NW, NE, SW, SE
+    enum Direction implements StringIdentifiable {
+        NW("northwest"), NE("northeast"), SW("southwest"), SE("southeast");
+        private static final Codec<Direction> CODEC = StringIdentifiable.createCodec(Direction::values);
+        private final String name;
+
+        Direction(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String asString() {
+            return name;
+        }
+
+        static class DirectionArgumentType extends EnumArgumentType<Direction> {
+            DirectionArgumentType() {
+                super(CODEC, Direction::values);
+            }
+
+            static DirectionArgumentType direction() {
+                return new DirectionArgumentType();
+            }
+
+            static <S> Direction getDirection(CommandContext<S> context, String name) {
+                return context.getArgument(name, Direction.class);
+            }
+        }
     }
 
-    public enum MatchState {
+    private enum MatchState {
         MATCHING, DOUBLE_CHECKING, MATCHED, FAILED
     }
 }

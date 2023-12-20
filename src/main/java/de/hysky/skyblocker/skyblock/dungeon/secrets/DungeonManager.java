@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
@@ -218,6 +218,7 @@ public class DungeonManager {
                 .then(literal("addWaypointRelatively").then(addCustomWaypointCommand(true)))
                 .then(literal("removeWaypoint").then(removeCustomWaypointCommand(false)))
                 .then(literal("removeWaypointRelatively").then(removeCustomWaypointCommand(true)))
+                .then(literal("matchAgainst").then(matchAgainstCommand()))
         ))));
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
@@ -304,7 +305,7 @@ public class DungeonManager {
         SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
     }
 
-    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, Integer>> markSecretsCommand(boolean found) {
+    private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
         return argument("secretIndex", IntegerArgumentType.integer()).executes(context -> {
             int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
             if (markSecrets(secretIndex, found)) {
@@ -340,7 +341,7 @@ public class DungeonManager {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, PosArgument>> addCustomWaypointCommand(boolean relative) {
+    private static RequiredArgumentBuilder<FabricClientCommandSource, PosArgument> addCustomWaypointCommand(boolean relative) {
         return argument("pos", BlockPosArgumentType.blockPos())
                 .then(argument("secretIndex", IntegerArgumentType.integer())
                         .then(argument("category", SecretWaypoint.Category.CategoryArgumentType.category())
@@ -372,7 +373,7 @@ public class DungeonManager {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static ArgumentBuilder<FabricClientCommandSource, RequiredArgumentBuilder<FabricClientCommandSource, PosArgument>> removeCustomWaypointCommand(boolean relative) {
+    private static RequiredArgumentBuilder<FabricClientCommandSource, PosArgument> removeCustomWaypointCommand(boolean relative) {
         return argument("pos", BlockPosArgumentType.blockPos())
                 .executes(context -> {
                     // TODO Less hacky way with custom ClientBlockPosArgumentType
@@ -398,6 +399,10 @@ public class DungeonManager {
             context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
         }
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
+        return argument("room", StringArgumentType.string()).then(argument("direction", Room.Direction.DirectionArgumentType.direction()));
     }
 
     /**
