@@ -215,7 +215,7 @@ public class DungeonManager {
             return null;
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
-        Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 10);
+        Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
         ClientReceiveMessageEvents.GAME.register(DungeonManager::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonManager::onChatMessage);
@@ -554,6 +554,10 @@ public class DungeonManager {
             }
         }
         if (room != null && currentRoom != room) {
+            if (currentRoom != null && room.getType() == Room.Type.FAIRY) {
+                currentRoom.nextRoom = room;
+                room.keyFound = currentRoom.keyFound;
+            }
             currentRoom = room;
         }
         currentRoom.tick();

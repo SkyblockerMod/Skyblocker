@@ -99,11 +99,16 @@ public class Room implements Tickable, Renderable {
 
     protected List<Tickable> tickables = new ArrayList<>();
     protected List<Renderable> renderables = new ArrayList<>();
+    /**
+     * Stores the next room in the dungeon. Currently only used if the next room is the fairy room.
+     */
+    @Nullable
+    protected Room nextRoom;
     @Nullable
     private BlockPos doorPos;
     @Nullable
     private Box doorBox;
-    private boolean keyFound;
+    protected boolean keyFound;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -633,6 +638,9 @@ public class Room implements Tickable, Renderable {
     }
 
     protected void keyFound() {
+        if (nextRoom != null && nextRoom.type == Type.FAIRY) {
+            nextRoom.keyFound = true;
+        }
         keyFound = true;
     }
 
