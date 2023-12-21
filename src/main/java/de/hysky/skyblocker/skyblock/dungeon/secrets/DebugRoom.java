@@ -1,24 +1,36 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.MutableTriple;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2ic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class DebugRoom extends Room {
     private final List<Waypoint> checkedBlocks = Collections.synchronizedList(new ArrayList<>());
 
-    public DebugRoom(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
+    public DebugRoom(Type type, Vector2ic... physicalPositions) {
         super(type, physicalPositions);
+    }
+
+    public static DebugRoom ofSinglePossibleRoom(Type type, Vector2ic physicalPositions, String roomName, int[] roomData, Direction direction) {
+        return ofSinglePossibleRoom(type, new Vector2ic[]{physicalPositions}, roomName, roomData, direction);
+    }
+
+    public static DebugRoom ofSinglePossibleRoom(Type type, Vector2ic[] physicalPositions, String roomName, int[] roomData, Direction direction) {
+        DebugRoom room = new DebugRoom(type, physicalPositions);
+        IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(room.segments.stream().mapToInt(Vector2ic::x).toArray()));
+        IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(room.segments.stream().mapToInt(Vector2ic::y).toArray()));
+        room.roomsData = Map.of(roomName, roomData);
+        room.possibleRooms = List.of(MutableTriple.of(direction, DungeonMapUtils.getPhysicalCornerPos(direction, segmentsX, segmentsY), List.of(roomName)));
+        return room;
     }
 
     @Override
@@ -37,7 +49,7 @@ public class DebugRoom extends Room {
     }
 
     @Override
-    protected void render(WorldRenderContext context) {
+    public void render(WorldRenderContext context) {
         super.render(context);
         synchronized (checkedBlocks) {
             for (Waypoint checkedBlock : checkedBlocks) {

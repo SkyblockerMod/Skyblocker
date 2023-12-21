@@ -1,14 +1,10 @@
-package de.hysky.skyblocker.skyblock.dungeon;
+package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -26,33 +22,30 @@ import java.util.List;
 /**
  * This class provides functionality to render outlines around Blaze entities
  */
-public class DungeonBlaze {
+public class DungeonBlaze extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
     private static final float[] GREEN_COLOR_COMPONENTS = {0.0F, 1.0F, 0.0F};
     private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
+    private static final DungeonBlaze INSTANCE = new DungeonBlaze("blaze", "blaze-room-1-high", "blaze-room-1-low");
 
-    private static boolean inBlaze;
     private static ArmorStandEntity highestBlaze = null;
     private static ArmorStandEntity lowestBlaze = null;
     private static ArmorStandEntity nextHighestBlaze = null;
     private static ArmorStandEntity nextLowestBlaze = null;
 
+    private DungeonBlaze(String puzzleName, String... roomName) {
+        super(puzzleName, roomName);
+    }
+
     public static void init() {
-        DungeonEvents.PUZZLE_MATCHED.register(room -> {
-            if (room.getName().startsWith("blaze-room")) {
-                inBlaze = true;
-            }
-        });
-        Scheduler.INSTANCE.scheduleCyclic(DungeonBlaze::update, 4);
-        WorldRenderEvents.BEFORE_DEBUG_RENDER.register(DungeonBlaze::blazeRenderer);
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> inBlaze = false);
     }
 
     /**
      * Updates the state of Blaze entities and triggers the rendering process if necessary.
      */
-    public static void update() {
-        if (!inBlaze) {
+    @Override
+    public void tick() {
+        if (!shouldSolve()) {
             return;
         }
         ClientWorld world = MinecraftClient.getInstance().world;
@@ -116,7 +109,8 @@ public class DungeonBlaze {
      *
      * @param wrc The WorldRenderContext used for rendering.
      */
-    public static void blazeRenderer(WorldRenderContext wrc) {
+    @Override
+    public void render(WorldRenderContext wrc) {
         try {
             if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfigManager.get().locations.dungeons.blazeSolver) {
                 if (highestBlaze.getY() < 69) {

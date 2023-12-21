@@ -11,7 +11,9 @@ import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
@@ -49,7 +51,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Room {
+public class Room implements Tickable, Renderable {
     private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
     private static final Vec3d DOOR_SIZE = new Vec3d(3, 4, 3);
@@ -80,7 +82,7 @@ public class Room {
     /**
      * The task that is used to check blocks. This is used to ensure only one such task can run at a time.
      */
-    private CompletableFuture<Void> findRoom;
+    protected CompletableFuture<Void> findRoom;
     private int doubleCheckBlocks;
     /**
      * Represents the matching state of the room with the following possible values:
@@ -95,7 +97,8 @@ public class Room {
     private Direction direction;
     private Vector2ic physicalCornerPos;
 
-    protected List<Room> subRooms = new ArrayList<>();
+    protected List<Tickable> tickables = new ArrayList<>();
+    protected List<Renderable> renderables = new ArrayList<>();
     @Nullable
     private BlockPos doorPos;
     @Nullable
@@ -266,6 +269,11 @@ public class Room {
         secretWaypoints.remove(secretIndex, actualPos);
     }
 
+    public <T extends Tickable & Renderable> void addSubProcess(T process) {
+        tickables.add(process);
+        renderables.add(process);
+    }
+
     /**
      * Updates the room.
      * <p></p>
@@ -285,15 +293,16 @@ public class Room {
      * </ul>
      */
     @SuppressWarnings("JavadocReference")
-    protected void update() {
+    @Override
+    public void tick() {
         MinecraftClient client = MinecraftClient.getInstance();
         ClientWorld world = client.world;
         if (world == null) {
             return;
         }
 
-        for (Room subRoom : subRooms) {
-            subRoom.update();
+        for (Tickable tickable : tickables) {
+            tickable.tick();
         }
 
         // Wither and blood door
@@ -506,9 +515,10 @@ public class Room {
     /**
      * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
      */
-    protected void render(WorldRenderContext context) {
-        for (Room subRoom : subRooms) {
-            subRoom.render(context);
+    @Override
+    public void render(WorldRenderContext context) {
+        for (Renderable renderable : renderables) {
+            renderable.render(context);
         }
 
         if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {

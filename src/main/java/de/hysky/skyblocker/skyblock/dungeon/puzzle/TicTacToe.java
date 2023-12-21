@@ -1,14 +1,10 @@
-package de.hysky.skyblocker.skyblock.dungeon;
+package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -28,25 +24,22 @@ import java.util.List;
 /**
  * Thanks to Danker for a reference implementation!
  */
-public class TicTacToe {
+public class TicTacToe extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToe.class);
 	private static final float[] RED_COLOR_COMPONENTS = {1.0F, 0.0F, 0.0F};
-	private static boolean inTicTacToe;
+	private static final TicTacToe INSTANCE = new TicTacToe("tic-tac-toe", "tic-tac-toe-1");
 	private static Box nextBestMoveToMake = null;
 
-	public static void init() {
-		DungeonEvents.PUZZLE_MATCHED.register(room -> {
-			if (room.getName().startsWith("tic-tac-toe")) {
-				inTicTacToe = true;
-			}
-		});
-		Scheduler.INSTANCE.scheduleCyclic(TicTacToe::tick, 4);
-		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(TicTacToe::solutionRenderer);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> inTicTacToe = false);
+	private TicTacToe(String puzzleName, String... roomName) {
+		super(puzzleName, roomName);
 	}
 
-	public static void tick() {
-		if (!inTicTacToe) {
+	public static void init() {
+	}
+
+	@Override
+	public void tick() {
+		if (!shouldSolve()) {
 			return;
 		}
 
@@ -139,7 +132,8 @@ public class TicTacToe {
 		}
 	}
 
-	private static void solutionRenderer(WorldRenderContext context) {
+	@Override
+	public void render(WorldRenderContext context) {
 		try {
 			if (SkyblockerConfigManager.get().locations.dungeons.solveTicTacToe && nextBestMoveToMake != null) {
 				RenderHelper.renderOutline(context, nextBestMoveToMake, RED_COLOR_COMPONENTS, 5, false);

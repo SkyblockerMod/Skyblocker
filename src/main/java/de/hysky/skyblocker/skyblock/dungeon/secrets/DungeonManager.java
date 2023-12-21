@@ -18,9 +18,6 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -43,6 +40,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -59,7 +57,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.MutableTriple;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -200,6 +197,10 @@ public class DungeonManager {
         return customWaypoints.remove(room, pos);
     }
 
+    public static Room getCurrentRoom() {
+        return currentRoom;
+    }
+
     /**
      * Loads the dungeon secrets asynchronously from {@code /assets/skyblocker/dungeons}.
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
@@ -232,12 +233,13 @@ public class DungeonManager {
         if (Debug.debugEnabled()) {
             ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                     .then(literal("matchAgainst").then(matchAgainstCommand()))
-                    .then(literal("clearSubRooms").executes(context -> {
+                    .then(literal("clearSubProcesses").executes(context -> {
                         if (currentRoom != null) {
-                            currentRoom.subRooms.clear();
-                            context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCleared sub rooms in the current room"));
+                            currentRoom.tickables.clear();
+                            currentRoom.renderables.clear();
+                            context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCleared sub processes in the current room."));
                         } else {
-                            context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null"));
+                            context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
                         }
                         return Command.SINGLE_SUCCESS;
                     }))
@@ -427,55 +429,56 @@ public class DungeonManager {
     private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
         return argument("room", StringArgumentType.string()).suggests((context, builder) -> CommandSource.suggestMatching(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
             if (physicalEntrancePos == null || mapEntrancePos == null || mapRoomSize == 0) {
-                context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon"));
+                context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
                 return Command.SINGLE_SUCCESS;
             }
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player == null || client.world == null) {
-                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get player or world"));
+                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get player or world."));
                 return Command.SINGLE_SUCCESS;
             }
             ItemStack stack = client.player.getInventory().main.get(8);
             if (!stack.isOf(Items.FILLED_MAP)) {
-                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map"));
+                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map."));
                 return Command.SINGLE_SUCCESS;
             }
             MapState map = FilledMapItem.getMapState(FilledMapItem.getMapId(stack), client.world);
             if (map == null) {
-                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map state"));
+                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map state."));
                 return Command.SINGLE_SUCCESS;
             }
 
             String roomName = StringArgumentType.getString(context, "room");
             Room.Direction direction = Room.Direction.DirectionArgumentType.getDirection(context, "direction");
 
-            Room room = null;
-            int[] roomData;
-            if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
-                room = new DebugRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(client.player.getPos()));
-            } else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
-                room = new DebugRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(client.player.getPos()));
-            } else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
-                room = new DebugRoom(Room.Type.ROOM, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, DungeonMapUtils.getMapRoomPos(map, mapEntrancePos, mapRoomSize), mapRoomSize, Room.Type.ROOM.color)));
-            }
-
+            Room room = newDebugRoom(roomName, direction, client.player, map);
             if (room == null) {
-                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to find room with name " + roomName));
+                context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to find room with name " + roomName + "."));
                 return Command.SINGLE_SUCCESS;
             }
-            IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(room.segments.stream().mapToInt(Vector2ic::x).toArray()));
-            IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(room.segments.stream().mapToInt(Vector2ic::y).toArray()));
-            room.roomsData = Map.of(roomName, roomData);
-            room.possibleRooms = List.of(MutableTriple.of(direction, DungeonMapUtils.getPhysicalCornerPos(direction, segmentsX, segmentsY), List.of(roomName)));
             if (currentRoom != null) {
-                currentRoom.subRooms.add(room);
-                context.getSource().sendFeedback(Constants.PREFIX.get().append("§rMatching room " + roomName + " with direction " + direction + " against current room"));
+                currentRoom.addSubProcess(room);
+                context.getSource().sendFeedback(Constants.PREFIX.get().append("§rMatching room " + roomName + " with direction " + direction + " against current room."));
             } else {
-                context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null"));
+                context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
             }
 
             return Command.SINGLE_SUCCESS;
         }));
+    }
+
+    @Nullable
+    private static Room newDebugRoom(String roomName, Room.Direction direction, PlayerEntity player, MapState map) {
+        Room room = null;
+        int[] roomData;
+        if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
+            room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
+        } else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
+            room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
+        } else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
+            room = DebugRoom.ofSinglePossibleRoom(Room.Type.ROOM, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, DungeonMapUtils.getMapRoomPos(map, mapEntrancePos, mapRoomSize), mapRoomSize, Room.Type.ROOM.color)), roomName, roomData, direction);
+        }
+        return room;
     }
 
     /**
@@ -499,7 +502,7 @@ public class DungeonManager {
      *         <li> Create a new room. </li>
      *     </ul>
      *     <li> Sets {@link #currentRoom} to the current room, either created from the previous step or from {@link #rooms}. </li>
-     *     <li> Calls {@link Room#update()} on {@link #currentRoom}. </li>
+     *     <li> Calls {@link Room#tick()} on {@link #currentRoom}. </li>
      * </ul>
      */
     @SuppressWarnings("JavadocReference")
@@ -553,7 +556,7 @@ public class DungeonManager {
         if (room != null && currentRoom != room) {
             currentRoom = room;
         }
-        currentRoom.update();
+        currentRoom.tick();
     }
 
     /**
