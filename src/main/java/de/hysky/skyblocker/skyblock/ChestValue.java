@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,21 +209,13 @@ public class ChestValue {
 		return stack.getTooltip(client.player, TooltipContext.BASIC).stream().map(Text::getString).filter(line -> line.contains(searchString)).findAny().orElse(null);
 	}
 
-	private static Text getProfitText(long profit, boolean hasIncompleteData) {
+	static Text getProfitText(long profit, boolean hasIncompleteData) {
 		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit;
-		return getProfitText(profit, hasIncompleteData, config.neutralThreshold, config.neutralColor, config.profitColor, config.lossColor, config.incompleteColor);
+		return Text.literal((profit > 0 ? " +" : ' ') + FORMATTER.format(profit) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : (Math.abs(profit) < config.neutralThreshold) ? config.neutralColor : (profit > 0) ? config.profitColor : config.lossColor);
 	}
 
-	static Text getProfitText(long profit, boolean hasIncompleteData, int neutralThreshold, Formatting neutralColor, Formatting profitColor, Formatting lossColor, Formatting incompleteColor) {
-		return Text.literal((profit > 0 ? " +" : ' ') + FORMATTER.format(profit) + " Coins").formatted(hasIncompleteData ? incompleteColor : (Math.abs(profit) < neutralThreshold) ? neutralColor : (profit > 0) ? profitColor : lossColor);
-	}
-
-	private static Text getValueText(long value, boolean hasIncompleteData) {
+	static Text getValueText(long value, boolean hasIncompleteData) {
 		SkyblockerConfig.ChestValue config = SkyblockerConfigManager.get().general.chestValue;
-		return getValueText(value, hasIncompleteData, config.color, config.incompleteColor);
-	}
-
-	static Text getValueText(long value, boolean hasIncompleteData, Formatting color, Formatting incompleteColor) {
-		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? incompleteColor : color);
+		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : config.color);
 	}
 }
