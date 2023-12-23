@@ -34,7 +34,7 @@
   "mixins": [
     "skyblocker.mixins.json"
   ],
-  "accesswidener": "skyblocker.accesswidener",
+  "accessWidener": "skyblocker.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.0",
     "fabric-api": ">=0.91.1+1.20.3",
