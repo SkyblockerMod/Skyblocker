@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.mixin;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonSecrets;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.passive.BatEntity;
@@ -16,6 +16,6 @@ public abstract class BatEntityMixin extends AmbientEntity {
     @Override
     public void onRemoved() {
         super.onRemoved();
-        DungeonSecrets.onBatRemoved(this);
+        DungeonManager.onBatRemoved(this);
     }
 }

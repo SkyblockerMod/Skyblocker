@@ -28,20 +28,20 @@ public class DungeonsCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableRoomMatching"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableRoomMatching.@Tooltip")))
+								.binding(defaults.locations.dungeons.secretWaypoints.enableRoomMatching,
+										() -> config.locations.dungeons.secretWaypoints.enableRoomMatching,
+										newValue -> config.locations.dungeons.secretWaypoints.enableRoomMatching = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.flag(OptionFlag.GAME_RESTART)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableSecretWaypoints"))
 								.binding(defaults.locations.dungeons.secretWaypoints.enableSecretWaypoints,
 										() -> config.locations.dungeons.secretWaypoints.enableSecretWaypoints,
 										newValue -> config.locations.dungeons.secretWaypoints.enableSecretWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.noInitSecretWaypoints.@Tooltip")))
-								.binding(defaults.locations.dungeons.secretWaypoints.noInitSecretWaypoints,
-										() -> config.locations.dungeons.secretWaypoints.noInitSecretWaypoints,
-										newValue -> config.locations.dungeons.secretWaypoints.noInitSecretWaypoints = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.flag(OptionFlag.GAME_RESTART)
 								.build())
 						.option(Option.<Type>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType"))

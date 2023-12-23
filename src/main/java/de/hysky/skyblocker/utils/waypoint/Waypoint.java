@@ -19,15 +19,15 @@ public class Waypoint {
     final boolean throughWalls;
     private boolean shouldRender;
 
-    protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents) {
+    public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents) {
         this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, DEFAULT_LINE_WIDTH);
     }
 
-    protected Waypoint(BlockPos pos, Type type, float[] colorComponents, float alpha) {
+    public Waypoint(BlockPos pos, Type type, float[] colorComponents, float alpha) {
         this(pos, () -> type, colorComponents, alpha, DEFAULT_LINE_WIDTH);
     }
 
-    protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth) {
+    public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth) {
         this(pos, typeSupplier, colorComponents, alpha, lineWidth, true);
     }
 
@@ -35,11 +35,11 @@ public class Waypoint {
         this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, DEFAULT_LINE_WIDTH, throughWalls);
     }
 
-    protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
+    public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
         this(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, true);
     }
 
-    protected Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls, boolean shouldRender) {
+    public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls, boolean shouldRender) {
         this.pos = pos;
         this.box = new Box(pos);
         this.typeSupplier = typeSupplier;

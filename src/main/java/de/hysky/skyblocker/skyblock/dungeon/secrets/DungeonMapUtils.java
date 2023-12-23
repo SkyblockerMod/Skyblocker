@@ -130,7 +130,7 @@ public class DungeonMapUtils {
             return null;
         }
         Vector2ic offset = new Vector2i(mapEntrancePos.x() % mapRoomSizeWithGap, mapEntrancePos.y() % mapRoomSizeWithGap);
-        return mapPos.add(2, 2).sub(offset).sub(mapPos.x() % mapRoomSizeWithGap, mapPos.y() % mapRoomSizeWithGap).add(offset);
+        return mapPos.add(2, 2).sub(offset).sub(Math.floorMod(mapPos.x(), mapRoomSizeWithGap), Math.floorMod(mapPos.y(), mapRoomSizeWithGap)).add(offset);
     }
 
     /**
@@ -271,7 +271,7 @@ public class DungeonMapUtils {
                 queue.add(newMapPos);
             }
         }
-        DungeonSecrets.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
+        DungeonManager.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
         return segments.toArray(Vector2ic[]::new);
     }
 

@@ -1,13 +1,10 @@
-package de.hysky.skyblocker.skyblock.dungeon;
+package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -27,8 +24,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class CreeperBeams {
-
+public class CreeperBeams extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreeperBeams.class.getName());
 
     private static final float[][] COLORS = {
@@ -41,27 +37,30 @@ public class CreeperBeams {
 
     private static final int FLOOR_Y = 68;
     private static final int BASE_Y = 74;
+    private static final CreeperBeams INSTANCE = new CreeperBeams("creeper", "creeper-room");
 
     private static ArrayList<Beam> beams = new ArrayList<>();
     private static BlockPos base = null;
-    private static boolean solved = false;
+
+    private CreeperBeams(String puzzleName, String... roomName) {
+        super(puzzleName, roomName);
+    }
 
     public static void init() {
-        Scheduler.INSTANCE.scheduleCyclic(CreeperBeams::update, 20);
-        WorldRenderEvents.BEFORE_DEBUG_RENDER.register(CreeperBeams::render);
-        ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
-    private static void reset() {
+    @Override
+    public void reset() {
+        super.reset();
         beams.clear();
         base = null;
-        solved = false;
     }
 
-    private static void update() {
+    @Override
+    public void tick() {
 
         // don't do anything if the room is solved
-        if (solved) {
+        if (!shouldSolve()) {
             return;
         }
 
@@ -90,7 +89,7 @@ public class CreeperBeams {
 
         // check if the room is solved
         if (!isTarget(world, base)) {
-            solved = true;
+            reset();
         }
     }
 
@@ -176,10 +175,11 @@ public class CreeperBeams {
         return result;
     }
 
-    private static void render(WorldRenderContext wrc) {
+    @Override
+    public void render(WorldRenderContext wrc) {
 
         // don't render if solved or disabled
-        if (solved || !SkyblockerConfigManager.get().locations.dungeons.creeperSolver) {
+        if (!shouldSolve() || !SkyblockerConfigManager.get().locations.dungeons.creeperSolver) {
             return;
         }
 
