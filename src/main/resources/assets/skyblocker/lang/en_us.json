@@ -166,7 +166,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableRoomMatching": "Enable Room Matching",
-  "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableRoomMatching.@Tooltip": "Disabling this option can save around 20 MB of ram, but Secret Waypoint and some puzzle solvers require this option to be enabled.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableRoomMatching.@Tooltip": "Disabling this option can save around 20 MB of RAM, but Secret Waypoint and §lsome puzzle solvers §rrequire this option to be enabled.",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.showSecretText": "Show Secret Text",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableEntranceWaypoints" : "Enable Entrance Waypoints",
