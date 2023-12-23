@@ -90,8 +90,13 @@ public class SecretWaypoint extends Waypoint {
         return category.isBat();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj) || obj instanceof SecretWaypoint other && secretIndex == other.secretIndex && category == other.category && name.equals(other.name) && pos.equals(other.pos);
+    }
+
     /**
-     * Renders the secret waypoint, including a filled cube, a beacon beam, the name, and the distance from the player.
+     * Renders the secret waypoint, including a waypoint through {@link Waypoint#render(WorldRenderContext)}, the name, and the distance from the player.
      */
     @Override
     public void render(WorldRenderContext context) {
