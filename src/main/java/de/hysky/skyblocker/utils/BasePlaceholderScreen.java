@@ -11,10 +11,10 @@ public abstract class BasePlaceholderScreen extends Screen {
     }
 
     @Override
-    public void render(final DrawContext guiGraphics, final int i, final int j, final float f) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
     }
 
     @Override
-    public void renderBackground(final DrawContext guiGraphics, final int i, final int j, final float f) {
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
     }
 }
