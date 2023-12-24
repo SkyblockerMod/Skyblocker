@@ -15,17 +15,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import dev.cbyrne.betterinject.annotations.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
-
-    @Shadow
-    public abstract void setScreen(@Nullable Screen screen);
-
-    @Shadow
-    protected abstract void reset(Screen screen);
 
     @Shadow
     @Nullable
@@ -43,23 +37,20 @@ public abstract class MinecraftClientMixin {
     }
 
     //Remove Downloading Terrain Screen and Reconfiguring Screen
-    @Inject(at = @At("HEAD"), method = "setScreen", cancellable = true)
-    public void setScreen(final Screen screen, final CallbackInfo ci) {
+    @ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
+    public Screen modifySetScreen(Screen screen) {
         if (Utils.isOnSkyblock()) {
             if (screen instanceof DownloadingTerrainScreen) {
-                ci.cancel();
-                this.setScreen(null);
+                return null;
             } else if (screen instanceof ReconfiguringScreen && this.getNetworkHandler() != null) {
-                ci.cancel();
-                this.setScreen(new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection()));
+                return new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
             }
         }
+        return screen;
     }
 
-    @Redirect(method = "joinWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;reset(Lnet/minecraft/client/gui/screen/Screen;)V"))
-    private void joinWorld(final MinecraftClient minecraft, final Screen screen) {
-        if (Utils.isOnSkyblock()) {
-            this.reset(new JoinWorldPlaceholderScreen());
-        }
+    @ModifyArg(method = "joinWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;reset(Lnet/minecraft/client/gui/screen/Screen;)V"), index = 0)
+    private Screen modifyJoinWorld(Screen screen) {
+        return Utils.isOnSkyblock() ? new JoinWorldPlaceholderScreen() : screen;
     }
 }
