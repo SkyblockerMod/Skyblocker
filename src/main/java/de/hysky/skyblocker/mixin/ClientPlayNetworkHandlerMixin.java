@@ -46,6 +46,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private boolean skyblocker$cancelTeamWarning(Logger instance, String format, Object... arg) {
         return !Utils.isOnHypixel();
     }
+    
+    @WrapWithCondition(method = { "onScoreboardScoreUpdate", "onScoreboardScoreReset" }, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+    private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, String objectiveName) {
+        return !Utils.isOnHypixel();
+    }
 
     @Inject(method = "onParticle", at = @At("RETURN"))
     private void skyblocker$onParticle(ParticleS2CPacket packet) {
