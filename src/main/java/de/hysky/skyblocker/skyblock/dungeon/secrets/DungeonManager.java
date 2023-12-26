@@ -16,9 +16,11 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteMaps;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -91,7 +93,7 @@ public class DungeonManager {
      * @implNote Not using {@link Registry#getId(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
      */
     @SuppressWarnings("JavadocReference")
-    protected static final Object2ByteMap<String> NUMERIC_ID = new Object2ByteOpenHashMap<>(Map.ofEntries(
+    protected static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMaps.unmodifiable(new Object2ByteOpenHashMap<>(Map.ofEntries(
             Map.entry("minecraft:stone", (byte) 1),
             Map.entry("minecraft:diorite", (byte) 2),
             Map.entry("minecraft:polished_diorite", (byte) 3),
@@ -113,7 +115,7 @@ public class DungeonManager {
             Map.entry("minecraft:gray_terracotta", (byte) 19),
             Map.entry("minecraft:cyan_terracotta", (byte) 20),
             Map.entry("minecraft:black_terracotta", (byte) 21)
-    ));
+    )));
     /**
      * Block data for dungeon rooms. See {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU} for format details and how it's generated.
      * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
@@ -502,7 +504,7 @@ public class DungeonManager {
      *         <li> Create a new room. </li>
      *     </ul>
      *     <li> Sets {@link #currentRoom} to the current room, either created from the previous step or from {@link #rooms}. </li>
-     *     <li> Calls {@link Room#tick()} on {@link #currentRoom}. </li>
+     *     <li> Calls {@link Tickable#tick(MinecraftClient)} on {@link #currentRoom}. </li>
      * </ul>
      */
     @SuppressWarnings("JavadocReference")
@@ -560,7 +562,7 @@ public class DungeonManager {
             }
             currentRoom = room;
         }
-        currentRoom.tick();
+        currentRoom.tick(client);
     }
 
     /**
@@ -728,7 +730,7 @@ public class DungeonManager {
      *
      * @return {@code true} if {@link #currentRoom} is not null and {@link #isRoomMatched(Room)}
      */
-    private static boolean isCurrentRoomMatched() {
+    public static boolean isCurrentRoomMatched() {
         return isRoomMatched(currentRoom);
     }
 

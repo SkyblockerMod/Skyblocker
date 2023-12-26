@@ -26,15 +26,15 @@ public class DungeonBlaze extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
     private static final float[] GREEN_COLOR_COMPONENTS = {0.0F, 1.0F, 0.0F};
     private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
-    private static final DungeonBlaze INSTANCE = new DungeonBlaze("blaze", "blaze-room-1-high", "blaze-room-1-low");
+    private static final DungeonBlaze INSTANCE = new DungeonBlaze();
 
     private static ArmorStandEntity highestBlaze = null;
     private static ArmorStandEntity lowestBlaze = null;
     private static ArmorStandEntity nextHighestBlaze = null;
     private static ArmorStandEntity nextLowestBlaze = null;
 
-    private DungeonBlaze(String puzzleName, String... roomName) {
-        super(puzzleName, roomName);
+    private DungeonBlaze() {
+        super("blaze", "blaze-room-1-high", "blaze-room-1-low");
     }
 
     public static void init() {
@@ -44,14 +44,12 @@ public class DungeonBlaze extends DungeonPuzzle {
      * Updates the state of Blaze entities and triggers the rendering process if necessary.
      */
     @Override
-    public void tick() {
+    public void tick(MinecraftClient client) {
         if (!shouldSolve()) {
             return;
         }
-        ClientWorld world = MinecraftClient.getInstance().world;
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (world == null || player == null || !Utils.isInDungeons()) return;
-        List<ObjectIntPair<ArmorStandEntity>> blazes = getBlazesInWorld(world, player);
+        if (client.world == null || client.player == null || !Utils.isInDungeons()) return;
+        List<ObjectIntPair<ArmorStandEntity>> blazes = getBlazesInWorld(client.world, client.player);
         sortBlazes(blazes);
         updateBlazeEntities(blazes);
     }

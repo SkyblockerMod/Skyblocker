@@ -299,20 +299,18 @@ public class Room implements Tickable, Renderable {
      */
     @SuppressWarnings("JavadocReference")
     @Override
-    public void tick() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientWorld world = client.world;
-        if (world == null) {
+    public void tick(MinecraftClient client) {
+        if (client.world == null) {
             return;
         }
 
         for (Tickable tickable : tickables) {
-            tickable.tick();
+            tickable.tick(client);
         }
 
         // Wither and blood door
         if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight && doorPos == null) {
-            doorPos = DungeonMapUtils.getWitherBloodDoorPos(world, segments);
+            doorPos = DungeonMapUtils.getWitherBloodDoorPos(client.world, segments);
             if (doorPos != null) {
                 doorBox = new Box(doorPos.getX(), doorPos.getY(), doorPos.getZ(), doorPos.getX() + DOOR_SIZE.getX(), doorPos.getY() + DOOR_SIZE.getY(), doorPos.getZ() + DOOR_SIZE.getZ());
             }
@@ -329,7 +327,7 @@ public class Room implements Tickable, Renderable {
         }
         findRoom = CompletableFuture.runAsync(() -> {
             for (BlockPos pos : BlockPos.iterate(player.getBlockPos().add(-5, -5, -5), player.getBlockPos().add(5, 5, 5))) {
-                if (segments.contains(DungeonMapUtils.getPhysicalRoomPos(pos)) && notInDoorway(pos) && checkedBlocks.add(pos) && checkBlock(world, pos)) {
+                if (segments.contains(DungeonMapUtils.getPhysicalRoomPos(pos)) && notInDoorway(pos) && checkedBlocks.add(pos) && checkBlock(client.world, pos)) {
                     break;
                 }
             }
@@ -506,14 +504,14 @@ public class Room implements Tickable, Renderable {
     /**
      * Fails if !{@link #isMatched()}
      */
-    protected BlockPos actualToRelative(BlockPos pos) {
+    public BlockPos actualToRelative(BlockPos pos) {
         return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
     }
 
     /**
      * Fails if !{@link #isMatched()}
      */
-    protected BlockPos relativeToActual(BlockPos pos) {
+    public BlockPos relativeToActual(BlockPos pos) {
         return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
     }
 

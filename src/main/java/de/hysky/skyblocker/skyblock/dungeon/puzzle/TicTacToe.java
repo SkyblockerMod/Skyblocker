@@ -8,8 +8,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
@@ -27,33 +25,29 @@ import java.util.List;
 public class TicTacToe extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToe.class);
 	private static final float[] RED_COLOR_COMPONENTS = {1.0F, 0.0F, 0.0F};
-	private static final TicTacToe INSTANCE = new TicTacToe("tic-tac-toe", "tic-tac-toe-1");
+	private static final TicTacToe INSTANCE = new TicTacToe();
 	private static Box nextBestMoveToMake = null;
 
-	private TicTacToe(String puzzleName, String... roomName) {
-		super(puzzleName, roomName);
+	private TicTacToe() {
+		super("tic-tac-toe", "tic-tac-toe-1");
 	}
 
 	public static void init() {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(MinecraftClient client) {
 		if (!shouldSolve()) {
 			return;
 		}
 
-		MinecraftClient client = MinecraftClient.getInstance();
-		ClientWorld world = client.world;
-		ClientPlayerEntity player = client.player;
-
 		nextBestMoveToMake = null;
 
-		if (world == null || player == null || !Utils.isInDungeons()) return;
+		if (client.world == null || client.player == null || !Utils.isInDungeons()) return;
 
 		//Search within 21 blocks for item frames that contain maps
-		Box searchBox = new Box(player.getX() - 21, player.getY() - 21, player.getZ() - 21, player.getX() + 21, player.getY() + 21, player.getZ() + 21);
-		List<ItemFrameEntity> itemFramesThatHoldMaps = world.getEntitiesByClass(ItemFrameEntity.class, searchBox, ItemFrameEntity::containsMap);
+		Box searchBox = new Box(client.player.getX() - 21, client.player.getY() - 21, client.player.getZ() - 21, client.player.getX() + 21, client.player.getY() + 21, client.player.getZ() + 21);
+		List<ItemFrameEntity> itemFramesThatHoldMaps = client.world.getEntitiesByClass(ItemFrameEntity.class, searchBox, ItemFrameEntity::containsMap);
 
 		try {
 			//Only attempt to solve if its the player's turn
@@ -64,7 +58,7 @@ public class TicTacToe extends DungeonPuzzle {
 				char facing = 'X';
 
 				for (ItemFrameEntity itemFrame : itemFramesThatHoldMaps) {
-					MapState mapState = world.getMapState(FilledMapItem.getMapName(itemFrame.getMapId().getAsInt()));
+					MapState mapState = client.world.getMapState(FilledMapItem.getMapName(itemFrame.getMapId().getAsInt()));
 
 					if (mapState == null) continue;
 
@@ -86,7 +80,7 @@ public class TicTacToe extends DungeonPuzzle {
 							facing = 'Z';
 						}
 
-						Block block = world.getBlockState(blockPos).getBlock();
+						Block block = client.world.getBlockState(blockPos).getBlock();
 						if (block == Blocks.AIR || block == Blocks.STONE_BUTTON) {
 							leftmostRow = blockPos;
 							column = i;

@@ -17,7 +17,7 @@ import java.util.Set;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public abstract class DungeonPuzzle implements Tickable, Renderable {
-    private final String puzzleName;
+    protected final String puzzleName;
     @NotNull
     private final Set<String> roomNames;
     private boolean shouldSolve;
@@ -35,7 +35,7 @@ public abstract class DungeonPuzzle implements Tickable, Renderable {
                 shouldSolve = true;
             }
         });
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("solvePuzzle").then(literal(puzzleName).executes(context -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(puzzleName).then(literal("solve").executes(context -> {
             Room currentRoom = DungeonManager.getCurrentRoom();
             if (currentRoom != null) {
                 currentRoom.addSubProcess(this);
@@ -44,7 +44,7 @@ public abstract class DungeonPuzzle implements Tickable, Renderable {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
             }
             return Command.SINGLE_SUCCESS;
-        }))))));
+        })))))));
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
     }
 
