@@ -13,6 +13,8 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -22,6 +24,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeverBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -65,8 +68,9 @@ public class Waterboard extends DungeonPuzzle {
     private final boolean[] doors = new boolean[5];
     private final Result[] results = new Result[64];
     private int currentCombination;
-    private int bestCombination = -1;
+    private final IntList bestCombinations = new IntArrayList();
 
+    // TODO Water lever X: 15, Y: 60, Z: 5
     private Waterboard() {
         super("waterboard", "water-puzzle");
         UseBlockCallback.EVENT.register(this::onUseBlock);
@@ -85,7 +89,7 @@ public class Waterboard extends DungeonPuzzle {
                         context.getSource().sendFeedback(Constants.PREFIX.get().append(Integer.toBinaryString(INSTANCE.currentCombination)));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printBestCombination").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(Integer.toBinaryString(INSTANCE.bestCombination)));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.bestCombinations.toString()));
                         return Command.SINGLE_SUCCESS;
                     }))
             )))));
@@ -128,8 +132,8 @@ public class Waterboard extends DungeonPuzzle {
                 simulateCombinations();
                 clearSwitches();
             }
-            if (bestCombination < 0 || changed.doorChanged()) {
-                bestCombination = findBestCombination();
+            if (bestCombinations.isEmpty() || changed.doorChanged()) {
+                findBestCombinations();
             }
         }).exceptionally(e -> {
             LOGGER.error("[Skyblocker Waterboard] Encountered an unknown exception while solving waterboard.", e);
@@ -140,35 +144,39 @@ public class Waterboard extends DungeonPuzzle {
     private Changed updateBoard(@Nullable World world) {
         if (world == null || !DungeonManager.isCurrentRoomMatched()) return Changed.NONE;
 
+        // Parse the waterboard.
         Room room = DungeonManager.getCurrentRoom();
         BlockPos.Mutable pos = new BlockPos.Mutable(24, 78, 26);
         Changed changed = Changed.NONE;
-        boolean[] changedSwitches = new boolean[6];
         for (int row = 0; row < cells.length; pos.move(cells[row].length, -1, 0), row++) {
-            for (int col = 0; col < cells[row].length; pos.move(-1, 0, 0), col++) {
+            for (int col = 0; col < cells[row].length; pos.move(Direction.WEST), col++) {
                 Cell cell = parseBlock(world, room, pos);
                 if (!cell.equals(cells[row][col])) {
-                    if (cells[row][col] instanceof SwitchCell switchCell) {
-                        changedSwitches[switchCell.id] = true;
-                    }
                     cells[row][col] = cell;
                     changed = changed.onCellChanged();
                 }
             }
         }
+
+        // Parse door states.
         pos.set(15, 57, 15);
-        for (int i = 0; i < 5; i++, pos.move(0, 0, 1)) {
+        for (int i = 0; i < 5; pos.move(Direction.SOUTH), i++) {
             boolean door = world.getBlockState(room.relativeToActual(pos)).isAir();
             if (doors[i] != door) {
                 doors[i] = door;
                 changed = changed.onDoorChanged();
             }
         }
-        for (int switch_ = 0; switch_ < 6; switch_++) {
-            if (changedSwitches[switch_]) {
-                currentCombination ^= 1 << switch_;
-            }
-        }
+
+        // Parse current combination of switches based on the levers.
+        currentCombination = 0;
+        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(20, 61, 10))).get(LeverBlock.POWERED) ? 1 : 0;
+        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(20, 61, 15))).get(LeverBlock.POWERED) ? 1 << 1 : 0;
+        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(20, 61, 20))).get(LeverBlock.POWERED) ? 1 << 2 : 0;
+        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(10, 61, 20))).get(LeverBlock.POWERED) ? 1 << 3 : 0;
+        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(10, 61, 15))).get(LeverBlock.POWERED) ? 1 << 4 : 0;
+        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(10, 61, 10))).get(LeverBlock.POWERED) ? 1 << 5 : 0;
+
         return changed;
     }
 
@@ -180,8 +188,8 @@ public class Waterboard extends DungeonPuzzle {
             return new SwitchCell(switch_);
         }
         // Check if the block is an opened switch by checking the block behind it.
-        int switchBehind = SWITCHES.getInt(world.getBlockState(room.relativeToActual(pos.move(0, 0, 1))).getBlock());
-        pos.move(0, 0, -1);
+        int switchBehind = SWITCHES.getInt(world.getBlockState(room.relativeToActual(pos.move(Direction.SOUTH))).getBlock());
+        pos.move(Direction.NORTH);
         if (switchBehind-- > 0) {
             return SwitchCell.ofOpened(switchBehind);
         }
@@ -288,20 +296,22 @@ public class Waterboard extends DungeonPuzzle {
         return direction ? Integer.MAX_VALUE : Integer.MIN_VALUE + 1;
     }
 
-    private int findBestCombination() {
-        int bestCombination = -1;
-        int bestScore = 0;
-        boolean[] newDoors = new boolean[5];
-        for (int combination = 0; combination < (1 << 6); combination++) {
+    private void findBestCombinations() {
+        bestCombinations.clear();
+        for (int combination = 0, bestScore = 0; combination < (1 << 6); combination++) {
+            boolean[] newDoors = new boolean[5];
             for (int i = 0; i < 5; i++) {
                 newDoors[i] = results[combination].reachedDoors[i] ^ doors[i];
             }
             int newScore = Booleans.countTrue(newDoors);
-            if (newScore > bestScore) {
-                bestCombination = combination;
+            if (newScore >= bestScore) {
+                if (newScore > bestScore) {
+                    bestCombinations.clear();
+                    bestScore = newScore;
+                }
+                bestCombinations.add(combination);
             }
         }
-        return bestCombination;
     }
 
     @Override
@@ -310,16 +320,16 @@ public class Waterboard extends DungeonPuzzle {
         Room room = DungeonManager.getCurrentRoom();
 
         // Render the current path of the water.
-        if (currentCombination > 0) {
-            Result currentResult = results[currentCombination];
-            if (currentResult != null) {
-                for (Map.Entry<Vector2ic, Integer> entry : currentResult.path.entries()) {
-                    BlockPos.Mutable pos = new BlockPos.Mutable(24 - entry.getKey().x(), 78 - entry.getKey().y(), 26);
-                    BlockPos start = room.relativeToActual(pos);
-                    BlockPos middle = room.relativeToActual(pos.move(Direction.WEST, entry.getValue()));
-                    BlockPos end = room.relativeToActual(pos.move(Direction.DOWN));
-                    RenderHelper.renderLinesFromPoints(context, new Vec3d[]{Vec3d.ofCenter(start), Vec3d.ofCenter(middle), Vec3d.ofCenter(end)}, LIME_COLOR_COMPONENTS, 1f, 5f, true);
-                }
+        BlockPos.Mutable pos = new BlockPos.Mutable(15, 79, 26);
+        RenderHelper.renderLinesFromPoints(context, new Vec3d[]{Vec3d.ofCenter(room.relativeToActual(pos)), Vec3d.ofCenter(room.relativeToActual(pos.move(Direction.DOWN)))}, LIME_COLOR_COMPONENTS, 1f, 5f, true);
+        Result currentResult = results[currentCombination];
+        if (currentResult != null) {
+            for (Map.Entry<Vector2ic, Integer> entry : currentResult.path.entries()) {
+                Vec3d start = Vec3d.ofCenter(room.relativeToActual(pos.set(24 - entry.getKey().x(), 78 - entry.getKey().y(), 26)));
+                Vec3d middle = Vec3d.ofCenter(room.relativeToActual(pos.move(Direction.WEST, entry.getValue())));
+                Vec3d end = Vec3d.ofCenter(room.relativeToActual(pos.move(Direction.DOWN)));
+                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{start, middle}, LIME_COLOR_COMPONENTS, 1f, 5f, true);
+                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{middle, end}, LIME_COLOR_COMPONENTS, 1f, 5f, true);
             }
         }
     }
@@ -339,7 +349,7 @@ public class Waterboard extends DungeonPuzzle {
         Arrays.fill(doors, false);
         Arrays.fill(results, null);
         currentCombination = 0;
-        bestCombination = -1;
+        bestCombinations.clear();
     }
 
     public void clearSwitches() {
