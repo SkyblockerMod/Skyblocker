@@ -235,11 +235,11 @@ public class CreeperBeams extends DungeonPuzzle {
             if (toDo) {
                 RenderHelper.renderOutline(wrc, outlineOne, color, 3, false);
                 RenderHelper.renderOutline(wrc, outlineTwo, color, 3, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2);
+                RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2, false);
             } else {
                 RenderHelper.renderOutline(wrc, outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
                 RenderHelper.renderOutline(wrc, outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1);
+                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1, false);
             }
         }
     }

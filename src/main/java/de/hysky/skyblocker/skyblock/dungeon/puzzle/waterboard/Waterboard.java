@@ -318,8 +318,7 @@ public class Waterboard extends DungeonPuzzle {
                     BlockPos start = room.relativeToActual(pos);
                     BlockPos middle = room.relativeToActual(pos.move(Direction.WEST, entry.getValue()));
                     BlockPos end = room.relativeToActual(pos.move(Direction.DOWN));
-                    LOGGER.info("Rendering line from {} to {} to {}", start, middle, end);
-                    RenderHelper.renderLinesFromPoints(context, new Vec3d[]{Vec3d.ofCenter(start), Vec3d.ofCenter(middle), Vec3d.ofCenter(end)}, LIME_COLOR_COMPONENTS, 0.5f, 5);
+                    RenderHelper.renderLinesFromPoints(context, new Vec3d[]{Vec3d.ofCenter(start), Vec3d.ofCenter(middle), Vec3d.ofCenter(end)}, LIME_COLOR_COMPONENTS, 1f, 5f, true);
                 }
             }
         }

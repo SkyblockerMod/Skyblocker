@@ -141,7 +141,7 @@ public class DungeonBlaze extends DungeonPuzzle {
             Vec3d blazeCenter = blazeBox.getCenter();
             Vec3d nextBlazeCenter = nextBlazeBox.getCenter();
 
-            RenderHelper.renderLinesFromPoints(wrc, new Vec3d[]{blazeCenter, nextBlazeCenter}, WHITE_COLOR_COMPONENTS, 1f, 5f);
+            RenderHelper.renderLinesFromPoints(wrc, new Vec3d[]{blazeCenter, nextBlazeCenter}, WHITE_COLOR_COMPONENTS, 1f, 5f, false);
         }
     }
 
