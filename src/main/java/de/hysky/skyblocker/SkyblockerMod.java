@@ -12,7 +12,7 @@ import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.CreeperBeams;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonBlaze;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TicTacToe;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.Waterboard;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
