@@ -15,7 +15,6 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -39,7 +38,7 @@ public class ItemUtils {
 
     public static List<Text> getTooltips(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
-        return client.player == null || item == null ? Collections.emptyList() : item.getTooltip(client.player, TooltipContext.Default.BASIC);
+        return client == null ? item.getTooltip(null, TooltipContext.Default.BASIC) : item.getTooltip(client.player, TooltipContext.Default.BASIC);
     }
 
     @Nullable
