@@ -295,6 +295,8 @@
 
   "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "text.autoconfig.skyblocker.option.general.hideStatusEffectOverlay": "Hide Status Effect Overlay",
+  "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues": "Correct Transparent Skin Pixels",
+  "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues.@Tooltip": "When enabled, the alpha values of pixels in skin textures are no longer stripped while in Skyblock.\n\nThis results in the \"filler\" pixels on items using Player Heads to now be completely transparent, although this may have some side effects in odd cases.",
 
   "skyblocker.updaterepository.failed":  "§cUpdating local repository failed. Remove files manually and restart game.",
 

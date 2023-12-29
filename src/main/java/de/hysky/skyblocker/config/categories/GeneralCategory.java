@@ -55,6 +55,15 @@ public class GeneralCategory {
 								newValue -> config.general.hideStatusEffectOverlay = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues.@Tooltip")))
+						.binding(defaults.general.dontStripSkinAlphaValues,
+								() -> config.general.dontStripSkinAlphaValues,
+								newValue -> config.general.dontStripSkinAlphaValues = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.flag(OptionFlag.ASSET_RELOAD)
+						.build())
 
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
