@@ -9,16 +9,14 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -144,27 +142,12 @@ public class ItemUtils {
     }
 
     public static List<Text> getNbtTooltips(ItemStack item) {
-        List<Text> tooltips = new ArrayList<>();
-
         NbtCompound displayNbt = item.getSubNbt("display");
-        if (displayNbt == null) {
-            return tooltips;
+        if (displayNbt == null || !displayNbt.contains("Lore", NbtElement.LIST_TYPE)) {
+            return Collections.emptyList();
         }
 
-        if (displayNbt.contains("Lore", NbtElement.LIST_TYPE)) {
-            NbtList loreList = displayNbt.getList("Lore", NbtElement.STRING_TYPE);
-
-            for (int i = 0; i < loreList.size(); i++) {
-                try {
-                    MutableText loreText = Text.Serialization.fromJson(loreList.getString(i));
-                    if (loreText != null) {
-                        tooltips.add(Texts.setStyleIfAbsent(loreText, ItemStackAccessor.getLORE_STYLE()));
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        return tooltips;
+        return displayNbt.getList("Lore", NbtElement.STRING_TYPE).stream().map(NbtElement::asString).map(Text.Serialization::fromJson).filter(Objects::nonNull).map(text -> Texts.setStyleIfAbsent(text, ItemStackAccessor.getLORE_STYLE())).map(Text.class::cast).toList();
     }
 
     public static ItemStack getSkyblockerStack() {
