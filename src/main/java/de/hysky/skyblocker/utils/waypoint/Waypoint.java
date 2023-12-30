@@ -19,6 +19,10 @@ public class Waypoint {
     final boolean throughWalls;
     private boolean shouldRender;
 
+    public Waypoint(BlockPos pos, Type type, float[] colorComponents) {
+        this(pos, type, colorComponents, DEFAULT_HIGHLIGHT_ALPHA);
+    }
+
     public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents) {
         this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, DEFAULT_LINE_WIDTH);
     }
@@ -60,6 +64,10 @@ public class Waypoint {
 
     public void setMissing() {
         this.shouldRender = true;
+    }
+
+    public void toggle() {
+        this.shouldRender = !this.shouldRender;
     }
 
     protected float[] getColorComponents() {

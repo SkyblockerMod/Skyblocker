@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.primitives.Booleans;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -13,6 +12,8 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -32,12 +33,12 @@ import net.minecraft.fluid.WaterFluid;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class Waterboard extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(Waterboard.class);
     public static final Waterboard INSTANCE = new Waterboard();
-    private static final Object2IntMap<Block> SWITCHES = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
+    private static final Object2IntMap<Block> SWITCH_BLOCKS = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
             Blocks.COAL_BLOCK, 1,
             Blocks.GOLD_BLOCK, 2,
             Blocks.QUARTZ_BLOCK, 3,
@@ -60,17 +61,30 @@ public class Waterboard extends DungeonPuzzle {
             Blocks.EMERALD_BLOCK, 5,
             Blocks.TERRACOTTA, 6
     )));
+    private static final BlockPos[] SWITCH_POSITIONS = new BlockPos[]{
+            new BlockPos(20, 61, 10),
+            new BlockPos(20, 61, 15),
+            new BlockPos(20, 61, 20),
+            new BlockPos(10, 61, 20),
+            new BlockPos(10, 61, 15),
+            new BlockPos(10, 61, 10)
+    };
+    public static final BlockPos WATER_LEVER = new BlockPos(15, 60, 5);
     private static final float[] LIME_COLOR_COMPONENTS = DyeColor.LIME.getColorComponents();
 
     private CompletableFuture<Void> solve;
     private final Cell[][] cells = new Cell[19][19];
     private final Switch[] switches = new Switch[]{new Switch(0), new Switch(1), new Switch(2), new Switch(3), new Switch(4), new Switch(5)};
-    private final boolean[] doors = new boolean[5];
+    private int doors = 0;
     private final Result[] results = new Result[64];
     private int currentCombination;
     private final IntList bestCombinations = new IntArrayList();
+    private final Waypoint[] waypoints = new Waypoint[7];
+    /**
+     * Used to check the water lever state since the block state does not update immediately after the lever is toggled.
+     */
+    private boolean bestCombinationsUpdated;
 
-    // TODO Water lever X: 15, Y: 60, Z: 5
     private Waterboard() {
         super("waterboard", "water-puzzle");
         UseBlockCallback.EVENT.register(this::onUseBlock);
@@ -80,7 +94,7 @@ public class Waterboard extends DungeonPuzzle {
                         context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(cells)));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printDoors").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(Arrays.toString(INSTANCE.doors)));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(Integer.toBinaryString(INSTANCE.doors)));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printSimulationResults").then(argument("combination", IntegerArgumentType.integer(0, 63)).executes(context -> {
                         context.getSource().sendFeedback(Constants.PREFIX.get().append(results[IntegerArgumentType.getInteger(context, "combination")].toString()));
@@ -119,11 +133,12 @@ public class Waterboard extends DungeonPuzzle {
 
     @Override
     public void tick(MinecraftClient client) {
-        if (solve != null && !solve.isDone()) {
+        if (client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
             return;
         }
+        Room room = DungeonManager.getCurrentRoom();
         solve = CompletableFuture.runAsync(() -> {
-            Changed changed = updateBoard(client.world);
+            Changed changed = updateBoard(client.world, room);
             if (changed == Changed.NONE) {
                 return;
             }
@@ -134,18 +149,23 @@ public class Waterboard extends DungeonPuzzle {
             }
             if (bestCombinations.isEmpty() || changed.doorChanged()) {
                 findBestCombinations();
+                bestCombinationsUpdated = true;
             }
         }).exceptionally(e -> {
             LOGGER.error("[Skyblocker Waterboard] Encountered an unknown exception while solving waterboard.", e);
             return null;
         });
+        if (waypoints[0] == null) {
+            for (int i = 0; i < 6; i++) {
+                waypoints[i] = new Waypoint(room.relativeToActual(SWITCH_POSITIONS[i]), Waypoint.Type.HIGHLIGHT, LIME_COLOR_COMPONENTS);
+            }
+            waypoints[6] = new Waypoint(room.relativeToActual(WATER_LEVER), Waypoint.Type.HIGHLIGHT, LIME_COLOR_COMPONENTS);
+            waypoints[6].setFound();
+        }
     }
 
-    private Changed updateBoard(@Nullable World world) {
-        if (world == null || !DungeonManager.isCurrentRoomMatched()) return Changed.NONE;
-
+    private Changed updateBoard(World world, Room room) {
         // Parse the waterboard.
-        Room room = DungeonManager.getCurrentRoom();
         BlockPos.Mutable pos = new BlockPos.Mutable(24, 78, 26);
         Changed changed = Changed.NONE;
         for (int row = 0; row < cells.length; pos.move(cells[row].length, -1, 0), row++) {
@@ -160,22 +180,20 @@ public class Waterboard extends DungeonPuzzle {
 
         // Parse door states.
         pos.set(15, 57, 15);
+        int prevDoors = doors;
+        doors = 0;
         for (int i = 0; i < 5; pos.move(Direction.SOUTH), i++) {
-            boolean door = world.getBlockState(room.relativeToActual(pos)).isAir();
-            if (doors[i] != door) {
-                doors[i] = door;
-                changed = changed.onDoorChanged();
-            }
+            doors |= world.getBlockState(room.relativeToActual(pos)).isAir() ? 1 << i : 0;
+        }
+        if (doors != prevDoors) {
+            changed = changed.onDoorChanged();
         }
 
         // Parse current combination of switches based on the levers.
         currentCombination = 0;
-        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(20, 61, 10))).get(LeverBlock.POWERED) ? 1 : 0;
-        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(20, 61, 15))).get(LeverBlock.POWERED) ? 1 << 1 : 0;
-        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(20, 61, 20))).get(LeverBlock.POWERED) ? 1 << 2 : 0;
-        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(10, 61, 20))).get(LeverBlock.POWERED) ? 1 << 3 : 0;
-        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(10, 61, 15))).get(LeverBlock.POWERED) ? 1 << 4 : 0;
-        currentCombination |= world.getBlockState(room.relativeToActual(pos.set(10, 61, 10))).get(LeverBlock.POWERED) ? 1 << 5 : 0;
+        for (int i = 0; i < 6; i++) {
+            currentCombination |= getSwitchState(world, room, i);
+        }
 
         return changed;
     }
@@ -183,12 +201,12 @@ public class Waterboard extends DungeonPuzzle {
     private Cell parseBlock(World world, Room room, BlockPos.Mutable pos) {
         // Check if the block is a switch.
         BlockState state = world.getBlockState(room.relativeToActual(pos));
-        int switch_ = SWITCHES.getInt(state.getBlock());
+        int switch_ = SWITCH_BLOCKS.getInt(state.getBlock());
         if (switch_-- > 0) {
             return new SwitchCell(switch_);
         }
         // Check if the block is an opened switch by checking the block behind it.
-        int switchBehind = SWITCHES.getInt(world.getBlockState(room.relativeToActual(pos.move(Direction.SOUTH))).getBlock());
+        int switchBehind = SWITCH_BLOCKS.getInt(world.getBlockState(room.relativeToActual(pos.move(Direction.SOUTH))).getBlock());
         pos.move(Direction.NORTH);
         if (switchBehind-- > 0) {
             return SwitchCell.ofOpened(switchBehind);
@@ -196,6 +214,11 @@ public class Waterboard extends DungeonPuzzle {
 
         // Check if the block is empty otherwise the block is a wall.
         return state.isAir() || state.isOf(Blocks.WATER) ? Cell.EMPTY : Cell.BLOCK;
+    }
+
+    private static int getSwitchState(World world, Room room, int i) {
+        BlockState state = world.getBlockState(room.relativeToActual(SWITCH_POSITIONS[i]));
+        return state.contains(LeverBlock.POWERED) && state.get(LeverBlock.POWERED) ? 1 << i : 0;
     }
 
     private void updateSwitches() {
@@ -236,11 +259,11 @@ public class Waterboard extends DungeonPuzzle {
                 // Check if the water has reached a door.
                 if (water.y == 18) {
                     switch (water.x) {
-                        case 0 -> result.reachedDoors[4] = true;
-                        case 4 -> result.reachedDoors[3] = true;
-                        case 9 -> result.reachedDoors[2] = true;
-                        case 14 -> result.reachedDoors[1] = true;
-                        case 18 -> result.reachedDoors[0] = true;
+                        case 0 -> result.reachedDoors |= 1 << 4;
+                        case 4 -> result.reachedDoors |= 1 << 3;
+                        case 9 -> result.reachedDoors |= 1 << 2;
+                        case 14 -> result.reachedDoors |= 1 << 1;
+                        case 18 -> result.reachedDoors |= 1;
                     }
                     watersIt.remove();
                     continue;
@@ -256,19 +279,21 @@ public class Waterboard extends DungeonPuzzle {
                 int leftFlowDownOffset = findFlowDown(water, false);
                 int rightFlowDownOffset = findFlowDown(water, true);
                 // Check if left down is in range and is closer than right down.
-                if (-leftFlowDownOffset <= ((WaterFluid) Fluids.WATER).getFlowSpeed(null) && -leftFlowDownOffset < rightFlowDownOffset) {
+                // Note 1: The yarn name "getFlowSpeed" is incorrect as it actually returns the maximum distance that water will check for a hole to flow towards.
+                // Note 2: Skyblock's maximum offset is 5 instead of 4 for some reason.
+                if (-leftFlowDownOffset <= ((WaterFluid) Fluids.WATER).getFlowSpeed(null) + 1 && -leftFlowDownOffset < rightFlowDownOffset) {
                     result.putPath(water, leftFlowDownOffset);
                     water.add(leftFlowDownOffset, 1);
                     continue;
                 }
                 // Check if right down is in range and closer than left down.
-                if (rightFlowDownOffset <= ((WaterFluid) Fluids.WATER).getFlowSpeed(null) && rightFlowDownOffset < -leftFlowDownOffset) {
+                if (rightFlowDownOffset <= ((WaterFluid) Fluids.WATER).getFlowSpeed(null) + 1 && rightFlowDownOffset < -leftFlowDownOffset) {
                     result.putPath(water, rightFlowDownOffset);
                     water.add(rightFlowDownOffset, 1);
                     continue;
                 }
 
-                // Else flow to both sides.
+                // Else flow to both sides if in range.
                 if (leftFlowDownOffset > Integer.MIN_VALUE + 1) {
                     result.putPath(water, leftFlowDownOffset);
                     newWaters.add(new Vector2i(water).add(leftFlowDownOffset, 1));
@@ -288,7 +313,7 @@ public class Waterboard extends DungeonPuzzle {
      * Finds the first block on the left that can flow down.
      */
     private int findFlowDown(Vector2i water, boolean direction) {
-        for (int i = 0; water.x + i >= 0 && water.x + i < 19 && cells[water.y][water.x + i].isOpen(); i += direction ? 1 : -1) {
+        for (int i = 0; water.x + i >= 0 && water.x + i < 19 && i > -8 && i < 8 && cells[water.y][water.x + i].isOpen(); i += direction ? 1 : -1) {
             if (cells[water.y + 1][water.x + i].isOpen()) {
                 return i;
             }
@@ -299,11 +324,7 @@ public class Waterboard extends DungeonPuzzle {
     private void findBestCombinations() {
         bestCombinations.clear();
         for (int combination = 0, bestScore = 0; combination < (1 << 6); combination++) {
-            boolean[] newDoors = new boolean[5];
-            for (int i = 0; i < 5; i++) {
-                newDoors[i] = results[combination].reachedDoors[i] ^ doors[i];
-            }
-            int newScore = Booleans.countTrue(newDoors);
+            int newScore = Integer.bitCount(results[combination].reachedDoors ^ doors);
             if (newScore >= bestScore) {
                 if (newScore > bestScore) {
                     bestCombinations.clear();
@@ -318,6 +339,26 @@ public class Waterboard extends DungeonPuzzle {
     public void render(WorldRenderContext context) {
         if (!DungeonManager.isCurrentRoomMatched()) return;
         Room room = DungeonManager.getCurrentRoom();
+
+        // Render the best combination.
+        @SuppressWarnings("resource")
+        BlockState state = context.world().getBlockState(room.relativeToActual(WATER_LEVER));
+        // bestCombinationsUpdated is needed because bestCombinations does not update immediately after the lever is turned off.
+        if (waypoints[0] != null && bestCombinationsUpdated && state.contains(LeverBlock.POWERED) && !state.get(LeverBlock.POWERED)) {
+            bestCombinations.intStream().mapToObj(bestCombination -> currentCombination ^ bestCombination).min(Comparator.comparingInt(Integer::bitCount)).ifPresent(bestDifference -> {
+                for (int i = 0; i < 6; i++) {
+                    if ((bestDifference & 1 << i) != 0) {
+                        waypoints[i].render(context);
+                    }
+                }
+                if (bestDifference == 0 && !waypoints[6].shouldRender()) {
+                    waypoints[6].setMissing();
+                }
+            });
+        }
+        if (waypoints[6] != null && waypoints[6].shouldRender()) {
+            waypoints[6].render(context);
+        }
 
         // Render the current path of the water.
         BlockPos.Mutable pos = new BlockPos.Mutable(15, 79, 26);
@@ -334,7 +375,15 @@ public class Waterboard extends DungeonPuzzle {
         }
     }
 
-    private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, HitResult result) {
+    private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
+        BlockState state = world.getBlockState(blockHitResult.getBlockPos());
+        if (blockHitResult.getType() == HitResult.Type.BLOCK && waypoints[6] != null && DungeonManager.isCurrentRoomMatched() && blockHitResult.getBlockPos().equals(DungeonManager.getCurrentRoom().relativeToActual(WATER_LEVER)) && state.contains(LeverBlock.POWERED)) {
+            if (!state.get(LeverBlock.POWERED)) {
+                bestCombinationsUpdated = false;
+                Scheduler.INSTANCE.schedule(() -> waypoints[6].setMissing(), 50);
+            }
+            waypoints[6].setFound();
+        }
         return ActionResult.PASS;
     }
 
@@ -346,10 +395,11 @@ public class Waterboard extends DungeonPuzzle {
             Arrays.fill(row, null);
         }
         clearSwitches();
-        Arrays.fill(doors, false);
+        doors = 0;
         Arrays.fill(results, null);
         currentCombination = 0;
         bestCombinations.clear();
+        Arrays.fill(waypoints, null);
     }
 
     public void clearSwitches() {
@@ -384,10 +434,9 @@ public class Waterboard extends DungeonPuzzle {
         }
     }
 
-    public record Result(boolean[] reachedDoors, Multimap<Vector2ic, Integer> path) {
-        public Result() {
-            this(new boolean[5], MultimapBuilder.hashKeys().arrayListValues().build());
-        }
+    public static class Result {
+        private int reachedDoors;
+        private final Multimap<Vector2ic, Integer> path = MultimapBuilder.hashKeys().arrayListValues().build();
 
         public boolean putPath(Vector2i water, int offset) {
             return path.put(new Vector2i(water), offset);
@@ -395,7 +444,7 @@ public class Waterboard extends DungeonPuzzle {
 
         @Override
         public String toString() {
-            return "Result[reachedDoors=" + Arrays.toString(reachedDoors) + ", path=" + path + ']';
+            return "Result[reachedDoors=" + Integer.toBinaryString(reachedDoors) + ", path=" + path + ']';
         }
     }
 }
