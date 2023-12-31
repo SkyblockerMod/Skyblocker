@@ -13,6 +13,8 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.util.Identifier;
+
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,8 +50,13 @@ public abstract class ClientPlayNetworkHandlerMixin {
     }
     
     @WrapWithCondition(method = { "onScoreboardScoreUpdate", "onScoreboardScoreReset" }, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
-    private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, String objectiveName) {
+    private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
         return !Utils.isOnHypixel();
+    }
+    
+    @WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+    private boolean skyblocker$dropBadlionPacketWarnings(Logger instance, String message, Object identifier) {
+        return !(Utils.isOnHypixel() && ((Identifier) identifier).getNamespace().equals("badlion"));
     }
 
     @Inject(method = "onParticle", at = @At("RETURN"))
