@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -74,7 +75,7 @@ public class LividColor {
         LividColor.color = WOOL_TO_FORMATTING.get(color);
         if (SkyblockerConfigManager.get().locations.dungeons.lividColor.enableLividColorText) {
             String colorString = Registries.BLOCK.getId(color).getPath();
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(SkyblockerConfigManager.get().locations.dungeons.lividColor.lividColorText.replaceAll("\\[color]", colorString.substring(0, colorString.length() - 5)));
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + SkyblockerConfigManager.get().locations.dungeons.lividColor.lividColorText.replaceAll("\\[color]", colorString.substring(0, colorString.length() - 5)));
         }
         tenTicks = 0;
     }

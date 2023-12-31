@@ -147,6 +147,7 @@ public class DungeonManager {
     @Nullable
     private static Vector2ic physicalEntrancePos;
     private static Room currentRoom;
+    private static boolean inBoss;
 
     public static boolean isRoomsLoaded() {
         return roomsLoaded != null && roomsLoaded.isDone();
@@ -201,6 +202,10 @@ public class DungeonManager {
 
     public static Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public static boolean isInBoss() {
+        return inBoss;
     }
 
     /**
@@ -644,7 +649,10 @@ public class DungeonManager {
         if (message.equals("[BOSS] Bonzo: Gratz for making it this far, but I'm basically unbeatable.") || message.equals("[BOSS] Scarf: This is where the journey ends for you, Adventurers.")
                 || message.equals("[BOSS] The Professor: I was burdened with terrible news recently...") || message.equals("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")
                 || message.equals("[BOSS] Livid: Welcome, you've arrived right on time. I am Livid, the Master of Shadows.") || message.equals("[BOSS] Sadan: So you made it all the way here... Now you wish to defy me? Sadan?!")
-                || message.equals("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) reset();
+                || message.equals("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) {
+            reset();
+            inBoss = true;
+        }
     }
 
     /**
@@ -763,5 +771,6 @@ public class DungeonManager {
         physicalEntrancePos = null;
         rooms.clear();
         currentRoom = null;
+        inBoss = false;
     }
 }

@@ -591,6 +591,9 @@ public class SkyblockerConfig {
 		public DoorHighlight doorHighlight = new DoorHighlight();
 
 		@SerialEntry
+		public DungeonScore dungeonScore = new DungeonScore();
+
+		@SerialEntry
 		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
 		@SerialEntry
@@ -713,6 +716,20 @@ public class SkyblockerConfig {
 				};
 			}
 		}
+	}
+
+	public static class DungeonScore {
+		@SerialEntry
+		public boolean enableDungeonScore270 = true;
+
+		@SerialEntry
+		public String dungeonScore270Message = "270 Score Reached!";
+
+		@SerialEntry
+		public boolean enableDungeonScore300 = true;
+
+		@SerialEntry
+		public String dungeonScore300Message = "300 Score Reached!";
 	}
 
 	public static class DungeonChestProfit {
