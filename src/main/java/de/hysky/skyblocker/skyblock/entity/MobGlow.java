@@ -19,7 +19,7 @@ public class MobGlow {
 	public static boolean shouldMobGlow(Entity entity) {
 		Box box = entity.getBoundingBox();
 
-		if (!entity.isInvisible() && OcclusionCulling.isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
+		if (!entity.isInvisible() && OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
 			String name = entity.getName().getString();
 
 			// Dungeons

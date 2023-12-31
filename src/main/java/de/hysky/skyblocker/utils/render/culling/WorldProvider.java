@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class WorldProvider implements DataProvider {
 	private final static MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private ClientWorld world = null;
+	protected ClientWorld world = null;
 
 	@Override
 	public boolean prepareChunk(int chunkX, int chunkZ) {

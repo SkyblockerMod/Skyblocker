@@ -60,7 +60,7 @@ public class RenderHelper {
                 renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, true);
             }
         } else {
-            if (OcclusionCulling.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
+            if (OcclusionCulling.getRegularCuller().isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
                 renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, false);
             }
         }
