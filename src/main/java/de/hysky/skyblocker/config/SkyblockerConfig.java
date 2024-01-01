@@ -163,6 +163,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean hideStatusEffectOverlay = false;
+		
+		@SerialEntry
+		public boolean dontStripSkinAlphaValues = true;
 
 		@SerialEntry
 		public TabHudConf tabHud = new TabHudConf();

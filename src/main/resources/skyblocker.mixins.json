@@ -26,6 +26,7 @@
     "MinecraftClientMixin",
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
+    "PlayerSkinTextureMixin",
     "ScoreboardMixin",
     "SocialInteractionsPlayerListWidgetMixin",
     "WorldRendererMixin",
