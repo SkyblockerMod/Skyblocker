@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  * A scheduler for running tasks at a later time. Tasks will be run synchronously on the main client thread. Use the instance stored in {@link #INSTANCE}. Do not instantiate this class.
  */
 public class Scheduler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
     public static final Scheduler INSTANCE = new Scheduler();
     private int currentTick = 0;
     private final AbstractInt2ObjectMap<List<ScheduledTask>> tasks = new Int2ObjectOpenHashMap<>();
