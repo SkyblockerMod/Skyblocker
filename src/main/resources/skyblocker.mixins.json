@@ -36,6 +36,7 @@
     "accessor.DrawContextInvoker",
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",
+    "accessor.ItemStackAccessor",
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
@@ -44,8 +45,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "accessor.ItemStackAccessor"
-  ]
+  }
 }
