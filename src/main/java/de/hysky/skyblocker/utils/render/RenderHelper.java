@@ -140,8 +140,9 @@ public class RenderHelper {
      * @param colorComponents An array of R, G and B color components
      * @param alpha           The alpha of the lines
      * @param lineWidth       The width of the lines
+     * @param throughWalls    Whether to render through walls or not
      */
-    public static void renderLinesFromPoints(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, float lineWidth) {
+    public static void renderLinesFromPoints(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
         Vec3d camera = context.camera().getPos();
         MatrixStack matrices = context.matrixStack();
 
@@ -163,6 +164,7 @@ public class RenderHelper {
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
         buffer.begin(DrawMode.LINE_STRIP, VertexFormats.LINES);
 
@@ -182,6 +184,7 @@ public class RenderHelper {
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
         RenderSystem.lineWidth(1f);
         RenderSystem.enableCull();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {

@@ -146,10 +146,10 @@ public class MythologicalRitual {
                 }
                 if (burrow.confirmed != TriState.FALSE) {
                     if (burrow.nextBurrowLine != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F);
+                        RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
                     if (burrow.echoBurrowLine != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F);
+                        RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
                 }
             }

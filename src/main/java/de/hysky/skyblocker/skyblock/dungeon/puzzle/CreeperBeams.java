@@ -37,13 +37,13 @@ public class CreeperBeams extends DungeonPuzzle {
 
     private static final int FLOOR_Y = 68;
     private static final int BASE_Y = 74;
-    private static final CreeperBeams INSTANCE = new CreeperBeams("creeper", "creeper-room");
+    private static final CreeperBeams INSTANCE = new CreeperBeams();
 
     private static ArrayList<Beam> beams = new ArrayList<>();
     private static BlockPos base = null;
 
-    private CreeperBeams(String puzzleName, String... roomName) {
-        super(puzzleName, roomName);
+    private CreeperBeams() {
+        super("creeper", "creeper-room");
     }
 
     public static void init() {
@@ -57,38 +57,34 @@ public class CreeperBeams extends DungeonPuzzle {
     }
 
     @Override
-    public void tick() {
+    public void tick(MinecraftClient client) {
 
         // don't do anything if the room is solved
         if (!shouldSolve()) {
             return;
         }
 
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientWorld world = client.world;
-        ClientPlayerEntity player = client.player;
-
         // clear state if not in dungeon
-        if (world == null || player == null || !Utils.isInDungeons()) {
+        if (client.world == null || client.player == null || !Utils.isInDungeons()) {
             return;
         }
 
         // try to find base if not found and solve
         if (base == null) {
-            base = findCreeperBase(player, world);
+            base = findCreeperBase(client.player, client.world);
             if (base == null) {
                 return;
             }
             Vec3d creeperPos = new Vec3d(base.getX() + 0.5, BASE_Y + 1.75, base.getZ() + 0.5);
-            ArrayList<BlockPos> targets = findTargets(world, base);
+            ArrayList<BlockPos> targets = findTargets(client.world, base);
             beams = findLines(creeperPos, targets);
         }
 
         // update the beam states
-        beams.forEach(b -> b.updateState(world));
+        beams.forEach(b -> b.updateState(client.world));
 
         // check if the room is solved
-        if (!isTarget(world, base)) {
+        if (!isTarget(client.world, base)) {
             reset();
         }
     }
@@ -239,11 +235,11 @@ public class CreeperBeams extends DungeonPuzzle {
             if (toDo) {
                 RenderHelper.renderOutline(wrc, outlineOne, color, 3, false);
                 RenderHelper.renderOutline(wrc, outlineTwo, color, 3, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2);
+                RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2, false);
             } else {
                 RenderHelper.renderOutline(wrc, outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
                 RenderHelper.renderOutline(wrc, outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1);
+                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1, false);
             }
         }
     }
