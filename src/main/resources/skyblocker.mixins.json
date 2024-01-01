@@ -36,6 +36,7 @@
     "accessor.DrawContextInvoker",
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",
+    "accessor.ItemStackAccessor",
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",

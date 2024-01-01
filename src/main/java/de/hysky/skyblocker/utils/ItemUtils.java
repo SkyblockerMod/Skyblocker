@@ -3,20 +3,22 @@ package de.hysky.skyblocker.utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import de.hysky.skyblocker.mixin.accessor.ItemStackAccessor;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
+import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -35,23 +37,6 @@ public class ItemUtils {
             context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item Nbt: " + context.getSource().getPlayer().getMainHandStack().writeNbt(new NbtCompound())));
             return Command.SINGLE_SUCCESS;
         });
-    }
-
-    public static List<Text> getTooltips(ItemStack item) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        return client.player == null || item == null ? Collections.emptyList() : item.getTooltip(client.player, TooltipContext.Default.BASIC);
-    }
-
-    @Nullable
-    public static String getTooltip(ItemStack item, Predicate<String> predicate) {
-        for (Text line : getTooltips(item)) {
-            String string = line.getString();
-            if (predicate.test(string)) {
-                return string;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -135,13 +120,34 @@ public class ItemUtils {
             return IntIntPair.of(pickonimbusDurability, 5000);
         }
 
-        String drillFuel = Formatting.strip(getTooltip(stack, FUEL_PREDICATE));
+        String drillFuel = Formatting.strip(getNbtTooltip(stack, FUEL_PREDICATE));
         if (drillFuel != null) {
             String[] drillFuelStrings = NOT_DURABILITY.matcher(drillFuel).replaceAll("").trim().split("/");
             return IntIntPair.of(Integer.parseInt(drillFuelStrings[0]), Integer.parseInt(drillFuelStrings[1]) * 1000);
         }
 
         return null;
+    }
+
+    @Nullable
+    public static String getNbtTooltip(ItemStack item, Predicate<String> predicate) {
+        for (Text line : getNbtTooltips(item)) {
+            String string = line.getString();
+            if (predicate.test(string)) {
+                return string;
+            }
+        }
+
+        return null;
+    }
+
+    public static List<Text> getNbtTooltips(ItemStack item) {
+        NbtCompound displayNbt = item.getSubNbt("display");
+        if (displayNbt == null || !displayNbt.contains("Lore", NbtElement.LIST_TYPE)) {
+            return Collections.emptyList();
+        }
+
+        return displayNbt.getList("Lore", NbtElement.STRING_TYPE).stream().map(NbtElement::asString).map(Text.Serialization::fromJson).filter(Objects::nonNull).map(text -> Texts.setStyleIfAbsent(text, ItemStackAccessor.getLORE_STYLE())).map(Text.class::cast).toList();
     }
 
     public static ItemStack getSkyblockerStack() {
