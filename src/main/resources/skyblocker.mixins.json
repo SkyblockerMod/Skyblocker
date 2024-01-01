@@ -8,7 +8,6 @@
     "ArmorTrimMixin",
     "BatEntityMixin",
     "ClientPlayerEntityMixin",
-    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "DataTrackerMixin",
     "DrawContextMixin",

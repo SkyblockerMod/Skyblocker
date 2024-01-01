@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ClientPlayerBlockBreakEvent;
 import de.hysky.skyblocker.utils.ItemUtils;
+import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +26,7 @@ public class ItemCooldowns {
     private static final Map<String, CooldownEntry> ITEM_COOLDOWNS = new HashMap<>();
 
     public static void init() {
-        ClientPlayerBlockBreakEvent.AFTER.register(ItemCooldowns::afterBlockBreak);
+        ClientPlayerBlockBreakEvents.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
     }
 
