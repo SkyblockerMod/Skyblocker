@@ -14,7 +14,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -184,7 +183,9 @@ public class ItemTooltip {
         }
 
         if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.getNbt() != null) {
-            if (stack.getItem() instanceof DyeableItem item && item.hasColor(stack)) {
+            boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(ItemUtils.getItemUuid(stack));
+
+            if (!hasCustomDye && stack.getItem() instanceof DyeableItem item && item.hasColor(stack)) {
                 String colorHex = String.format("%06X", item.getColor(stack));
                 String expectedHex = ExoticTooltip.getExpectedHex(internalID);
 
