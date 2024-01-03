@@ -20,7 +20,7 @@ public class MixinsTest {
 	@Test
 	public void auditMixins() {
 		//Ensure that the transformer is active so that the Mixins can be audited
-		Assertions.assertTrue(MixinEnvironment.getCurrentEnvironment().getActiveTransformer() instanceof IMixinTransformer);
+		Assertions.assertInstanceOf(IMixinTransformer.class, MixinEnvironment.getCurrentEnvironment().getActiveTransformer());
 
 		//If this fails check the report to get the full stack trace
 		MixinEnvironment.getCurrentEnvironment().audit();
