@@ -75,7 +75,7 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the status of Goldor?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Storm?", new String[]{"The Wither Lords"});
         answers.put("What is the status of Necron?", new String[]{"The Wither Lords"});
-        answers.put("What is the status of Maxor, Storm, Goldor and Necron?", new String[]{"The Wither Lords"});
+        answers.put("What is the status of Maxor, Storm, Goldor, and Necron?", new String[]{"The Wither Lords"});
         answers.put("Which brother is on the Spider's Den?", new String[]{"Rick"});
         answers.put("What is the name of Rick's brother?", new String[]{"Pat"});
         answers.put("What is the name of the Painter in the Hub?", new String[]{"Marco"});
