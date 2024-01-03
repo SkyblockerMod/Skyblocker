@@ -87,6 +87,14 @@ public class MessageFilterCategory {
 								newValue -> config.messages.hideShowOff = newValue)
 						.controller(ConfigUtils::createEnumCyclingListController)
 						.build())
+				.option(Option.<ChatFilterResult>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.hideToggleSkyMall"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.messages.hideToggleSkyMall.@Tooltip")))
+						.binding(defaults.messages.hideToggleSkyMall,
+								() -> config.messages.hideToggleSkyMall,
+								newValue -> config.messages.hideToggleSkyMall = newValue)
+						.controller(ConfigUtils::createEnumCyclingListController)
+						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.hideMana"))
 						.binding(defaults.messages.hideMana,

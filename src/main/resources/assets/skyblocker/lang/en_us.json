@@ -274,6 +274,8 @@
   "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Gives a better experience with FancyBar",
   "text.autoconfig.skyblocker.option.messages.hideShowOff": "Hide Show Off Messages",
   "text.autoconfig.skyblocker.option.messages.hideShowOff.@Tooltip": "Filters messages from the /show command",
+  "text.autoconfig.skyblocker.option.messages.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
+  "text.autoconfig.skyblocker.option.messages.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
   "text.autoconfig.skyblocker.category.slayer": "Slayers",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer": "Vampire Slayer",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableEffigyWaypoints": "Enable Effigy Waypoints",

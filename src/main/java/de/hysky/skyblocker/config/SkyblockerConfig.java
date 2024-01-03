@@ -923,6 +923,9 @@ public class SkyblockerConfig {
 		public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
 
 		@SerialEntry
+		public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
+
+		@SerialEntry
 		public boolean hideMana = false;
 	}
 
