@@ -5,6 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Cell.SwitchCell;
@@ -133,7 +134,7 @@ public class Waterboard extends DungeonPuzzle {
 
     @Override
     public void tick(MinecraftClient client) {
-        if (client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
+        if (!SkyblockerConfigManager.get().locations.dungeons.solveWaterboard || client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();
@@ -337,7 +338,7 @@ public class Waterboard extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (!DungeonManager.isCurrentRoomMatched()) return;
+        if (!SkyblockerConfigManager.get().locations.dungeons.solveWaterboard || !DungeonManager.isCurrentRoomMatched()) return;
         Room room = DungeonManager.getCurrentRoom();
 
         // Render the best combination.
@@ -377,7 +378,7 @@ public class Waterboard extends DungeonPuzzle {
 
     private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
         BlockState state = world.getBlockState(blockHitResult.getBlockPos());
-        if (blockHitResult.getType() == HitResult.Type.BLOCK && waypoints[6] != null && DungeonManager.isCurrentRoomMatched() && blockHitResult.getBlockPos().equals(DungeonManager.getCurrentRoom().relativeToActual(WATER_LEVER)) && state.contains(LeverBlock.POWERED)) {
+        if (SkyblockerConfigManager.get().locations.dungeons.solveWaterboard && blockHitResult.getType() == HitResult.Type.BLOCK && waypoints[6] != null && DungeonManager.isCurrentRoomMatched() && blockHitResult.getBlockPos().equals(DungeonManager.getCurrentRoom().relativeToActual(WATER_LEVER)) && state.contains(LeverBlock.POWERED)) {
             if (!state.get(LeverBlock.POWERED)) {
                 bestCombinationsUpdated = false;
                 Scheduler.INSTANCE.schedule(() -> waypoints[6].setMissing(), 50);
