@@ -1,5 +1,6 @@
 package de.hysky.skyblocker;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -19,7 +20,7 @@ public class MixinsTest {
 	@Test
 	public void auditMixins() {
 		//Ensure that the transformer is active so that the Mixins can be audited
-		assert MixinEnvironment.getCurrentEnvironment().getActiveTransformer() instanceof IMixinTransformer;
+		Assertions.assertTrue(MixinEnvironment.getCurrentEnvironment().getActiveTransformer() instanceof IMixinTransformer);
 
 		//If this fails check the report to get the full stack trace
 		MixinEnvironment.getCurrentEnvironment().audit();
