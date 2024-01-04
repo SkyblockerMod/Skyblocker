@@ -636,6 +636,9 @@ public class SkyblockerConfig {
 		public boolean solveTicTacToe = true;
 
 		@SerialEntry
+		public boolean solveWaterboard = true;
+
+		@SerialEntry
 		public boolean fireFreezeStaffTimer = true;
 
 		@SerialEntry

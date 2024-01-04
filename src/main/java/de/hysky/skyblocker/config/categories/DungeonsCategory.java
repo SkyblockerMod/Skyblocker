@@ -355,6 +355,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveWaterboard"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveWaterboard.@Tooltip")))
+						.binding(defaults.locations.dungeons.solveWaterboard,
+								() -> config.locations.dungeons.solveWaterboard,
+								newValue -> config.locations.dungeons.solveWaterboard = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer"))
 						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer.@Tooltip")))
 						.binding(defaults.locations.dungeons.fireFreezeStaffTimer,
