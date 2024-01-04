@@ -167,6 +167,44 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
+				//Dungeon Score
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore", 270))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore.@Tooltip", 270)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore270,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore270,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore270 = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonScoreMessage", 270))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip", 270, 270)))
+								.binding(defaults.locations.dungeons.dungeonScore.dungeonScore270Message,
+										() -> config.locations.dungeons.dungeonScore.dungeonScore270Message,
+										newValue -> config.locations.dungeons.dungeonScore.dungeonScore270Message = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore", 300))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore.@Tooltip", 300)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore300,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore300,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore300 = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonScoreMessage", 300))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip", 300, 300)))
+								.binding(defaults.locations.dungeons.dungeonScore.dungeonScore300Message,
+										() -> config.locations.dungeons.dungeonScore.dungeonScore300Message,
+										newValue -> config.locations.dungeons.dungeonScore.dungeonScore300Message = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.build())
+
 				//Dungeon Chest Profit
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit"))

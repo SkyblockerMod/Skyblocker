@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.utils.scheduler;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.StringHelper;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A scheduler for sending chat messages or commands. Use the instance in {@link #INSTANCE}. Do not instantiate this class.
@@ -34,13 +36,17 @@ public class MessageScheduler extends Scheduler {
     }
 
     private void sendMessage(String message) {
-        if (MinecraftClient.getInstance().player != null) {
-            if (message.startsWith("/")) {
-                MinecraftClient.getInstance().player.networkHandler.sendCommand(message.substring(1));
-            } else {
-                MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(message);
-                MinecraftClient.getInstance().player.networkHandler.sendChatMessage(message);
-            }
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player == null) {
+            Scheduler.LOGGER.error("[Skyblocker Message Scheduler] Tried to send a message while player is null: {}", message);
+            return;
+        }
+        message = StringHelper.truncateChat(StringUtils.normalizeSpace(message.trim()));
+        if (message.startsWith("/")) {
+            client.player.networkHandler.sendCommand(message.substring(1));
+        } else {
+            client.inGameHud.getChatHud().addToMessageHistory(message);
+            client.player.networkHandler.sendChatMessage(message);
         }
     }
 
