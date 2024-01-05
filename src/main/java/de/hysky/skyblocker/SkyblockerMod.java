@@ -83,6 +83,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SkyblockerConfigManager.init();
         NEURepoManager.init();
         ItemRepository.init();
+        PlayerHeadHashCache.init();
         HotbarSlotLock.init();
         ItemTooltip.init();
         WikiLookup.init();
