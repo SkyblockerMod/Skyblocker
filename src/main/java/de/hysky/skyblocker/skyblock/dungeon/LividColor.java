@@ -10,6 +10,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
@@ -38,13 +40,14 @@ public class LividColor {
             "Doctor Livid", Formatting.GRAY,
             "Vendetta Livid", Formatting.WHITE
     );
+    public static final SkyblockerConfig.LividColor CONFIG = SkyblockerConfigManager.get().locations.dungeons.lividColor;
     private static int tenTicks = 0;
     private static Formatting color;
 
     public static void init() {
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             SkyblockerConfig.LividColor config = SkyblockerConfigManager.get().locations.dungeons.lividColor;
-            if ((config.enableLividColorText || config.enableLividColorGlow) && message.getString().equals("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) {
+            if ((config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow) && message.getString().equals("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) {
                 tenTicks = 8;
             }
         });
@@ -54,14 +57,14 @@ public class LividColor {
         MinecraftClient client = MinecraftClient.getInstance();
         if (tenTicks != 0) {
             SkyblockerConfig.LividColor config = SkyblockerConfigManager.get().locations.dungeons.lividColor;
-            if ((config.enableLividColorText || config.enableLividColorGlow) && Utils.isInDungeons() && client.world != null) {
+            if ((config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow) && Utils.isInDungeons() && client.world != null) {
                 if (tenTicks == 1) {
-                    onLividColorFound(Blocks.RED_WOOL);
+                    onLividColorFound(client, Blocks.RED_WOOL);
                     return;
                 }
                 Block color = client.world.getBlockState(new BlockPos(5, 110, 42)).getBlock();
                 if (WOOL_TO_FORMATTING.containsKey(color) && !color.equals(Blocks.RED_WOOL)) {
-                    onLividColorFound(color);
+                    onLividColorFound(client, color);
                     return;
                 }
                 tenTicks--;
@@ -71,11 +74,21 @@ public class LividColor {
         }
     }
 
-    private static void onLividColorFound(Block color) {
+    private static void onLividColorFound(MinecraftClient client, Block color) {
         LividColor.color = WOOL_TO_FORMATTING.get(color);
-        if (SkyblockerConfigManager.get().locations.dungeons.lividColor.enableLividColorText) {
-            String colorString = Registries.BLOCK.getId(color).getPath();
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + SkyblockerConfigManager.get().locations.dungeons.lividColor.lividColorText.replaceAll("\\[color]", colorString.substring(0, colorString.length() - 5)));
+        String colorString = Registries.BLOCK.getId(color).getPath();
+        colorString = colorString.substring(0, colorString.length() - 5).toUpperCase();
+        String[] messageParts = CONFIG.lividColorText.split("\\[color]");
+        MutableText message = Constants.PREFIX.get().append(messageParts[0]);
+        for (int i = 1; i < messageParts.length; i++) {
+            message = message.append(Text.literal(colorString).formatted(LividColor.color)).append(Text.of(messageParts[i]));
+        }
+        if (CONFIG.enableLividColorText) {
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(message.getString());
+        }
+        if (CONFIG.enableLividColorTitle) {
+            client.inGameHud.setDefaultTitleFade();
+            client.inGameHud.setTitle(message);
         }
         tenTicks = 0;
     }

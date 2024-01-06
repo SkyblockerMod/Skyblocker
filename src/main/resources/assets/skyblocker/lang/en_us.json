@@ -230,6 +230,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorGlow.@Tooltip": "Applies the glowing effect to the correct Livid in F5/M5.",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText": "Enable Livid Color Text",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText.@Tooltip": "Send the livid color in the chat during the Livid boss fight.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle": "Enable Livid Color Title",
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip": "Display the livid color in the title during the Livid boss fight.",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Livid Color Text",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid color.",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Terminal Solvers",

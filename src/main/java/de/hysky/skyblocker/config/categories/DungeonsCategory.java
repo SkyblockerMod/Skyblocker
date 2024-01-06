@@ -399,6 +399,14 @@ public class DungeonsCategory {
 										newValue -> config.locations.dungeons.lividColor.enableLividColorText = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip")))
+								.binding(defaults.locations.dungeons.lividColor.enableLividColorTitle,
+										() -> config.locations.dungeons.lividColor.enableLividColorTitle,
+										newValue -> config.locations.dungeons.lividColor.enableLividColorTitle = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip")))
