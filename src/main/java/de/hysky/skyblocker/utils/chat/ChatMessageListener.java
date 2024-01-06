@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils.chat;
 
-import de.hysky.skyblocker.skyblock.filters.*;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
@@ -9,6 +7,8 @@ import de.hysky.skyblocker.skyblock.dungeon.puzzle.ThreeWeirdos;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.Trivia;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
+import de.hysky.skyblocker.skyblock.filters.*;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -54,7 +54,8 @@ public interface ChatMessageListener {
                 new TeleportPadFilter(),
                 new AutopetFilter(),
                 new ShowOffFilter(),
-                new ToggleSkyMallFilter()
+                new ToggleSkyMallFilter(),
+                new MimicFilter()
         };
         // Register all listeners to EVENT
         for (ChatMessageListener listener : listeners) {

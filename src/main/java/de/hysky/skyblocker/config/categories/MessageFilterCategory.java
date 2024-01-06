@@ -102,6 +102,14 @@ public class MessageFilterCategory {
 								newValue -> config.messages.hideMana = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<ChatFilterResult>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.hideMimicKill"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.messages.hideMimicKill.@Tooltip")))
+						.binding(defaults.messages.hideMimicKill,
+								() -> config.messages.hideMimicKill,
+								newValue -> config.messages.hideMimicKill = newValue)
+						.controller(ConfigUtils::createEnumCyclingListController)
+						.build())
 				.build();
 	}
 }
