@@ -35,7 +35,6 @@ public class DungeonScore {
     private static final Pattern SECRETS_PATTERN = Pattern.compile("Secrets Found: (?<secper>\\d+\\.?\\d*)%");
     private static final Pattern PUZZLES_PATTERN = Pattern.compile(".+?(?=:): \\[(?<state>.)](?: \\(\\w+\\))?");
     private static final Pattern PUZZLE_COUNT_PATTERN = Pattern.compile("Puzzles: \\((?<count>\\d+)\\)");
-    private static final Pattern TIME_PATTERN = Pattern.compile("Time: (?:(?<hours>\\d+(?=h))?h? ?(?<minutes>\\d+(?=m))?m? ?(?<seconds>\\d+(?=s))s|Soon!)");
     private static final Pattern CRYPTS_PATTERN = Pattern.compile("Crypts: (?<crypts>\\d+)");
     private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
     private static final Pattern DUNGEON_START_PATTERN = Pattern.compile("(?:Auto-closing|Starting) in: \\d:\\d+");
@@ -49,6 +48,7 @@ public class DungeonScore {
     //Caching the dungeon start state to prevent unnecessary scoreboard pattern matching after dungeon starts
     private static boolean isDungeonStarted;
     private static boolean isMayorPaul;
+    private static long startingTime;
     private static final HashMap<String, FloorRequirement> floorRequirements = new HashMap<>(Map.ofEntries(
             Map.entry("E", new FloorRequirement(30, 1200)),
             Map.entry("F1", new FloorRequirement(30, 600)),
@@ -135,6 +135,7 @@ public class DungeonScore {
         isDungeonStarted = true;
         puzzleCount = getPuzzleCount();
         isMayorPaul = Utils.getMayor().equals("Paul");
+        startingTime = System.currentTimeMillis();
     }
 
     private static int calculateScore() {
@@ -158,16 +159,8 @@ public class DungeonScore {
     }
 
     private static int calculateTimeScore() {
-        Matcher timeMatcher = PlayerListMgr.regexAt(45, TIME_PATTERN);
-        if (timeMatcher == null) {
-            LOGGER.error("Time pattern doesn't match");
-            return 0;
-        }
         int score = 100;
-        int hours = Optional.ofNullable(timeMatcher.group("hours")).map(Integer::parseInt).orElse(0);
-        int minutes = Optional.ofNullable(timeMatcher.group("minutes")).map(Integer::parseInt).orElse(0);
-        int seconds = Optional.ofNullable(timeMatcher.group("seconds")).map(Integer::parseInt).orElse(0);
-        int timeSpent = hours * 3600 + minutes * 60 + seconds;
+        int timeSpent = (int) (System.currentTimeMillis() - startingTime) / 1000;
         int timeRequirement = floorRequirements.get(currentFloor).timeLimit;
         if (timeSpent < timeRequirement) return score;
 
