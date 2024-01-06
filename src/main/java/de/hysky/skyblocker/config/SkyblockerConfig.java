@@ -606,6 +606,9 @@ public class SkyblockerConfig {
 		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
 		@SerialEntry
+		public MimicMessages mimicMessages = new MimicMessages();
+
+		@SerialEntry
 		public boolean croesusHelper = true;
 
 		@SerialEntry
@@ -783,6 +786,14 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Formatting incompleteColor = Formatting.BLUE;
+	}
+
+	public static class MimicMessages {
+		@SerialEntry
+		public boolean sendMimicMessages = true;
+
+		@SerialEntry
+		public String mimicMessage = "Mimic dead!";
 	}
 
 	public static class LividColor {
@@ -968,6 +979,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
+
+		@SerialEntry
+		public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
 
 		@SerialEntry
 		public boolean hideMana = false;

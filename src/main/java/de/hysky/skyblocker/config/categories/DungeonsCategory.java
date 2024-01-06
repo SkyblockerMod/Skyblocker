@@ -2,17 +2,12 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
-import dev.isxander.yacl3.api.ButtonOption;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionFlag;
-import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -417,6 +412,27 @@ public class DungeonsCategory {
 								() -> config.locations.dungeons.allowDroppingProtectedItems,
 								newValue -> config.locations.dungeons.allowDroppingProtectedItems = newValue)
 						.controller(ConfigUtils::createBooleanController)
+						.build())
+				//Mimic Messages
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.sendMimicMessages"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.sendMimicMessages.@Tooltip")))
+								.binding(defaults.locations.dungeons.mimicMessages.sendMimicMessages,
+										() -> config.locations.dungeons.mimicMessages.sendMimicMessages,
+										newValue -> config.locations.dungeons.mimicMessages.sendMimicMessages = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.mimicMessage"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.mimicMessage.@Tooltip")))
+								.binding(defaults.locations.dungeons.mimicMessages.mimicMessage,
+										() -> config.locations.dungeons.mimicMessages.mimicMessage,
+										newValue -> config.locations.dungeons.mimicMessages.mimicMessage = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
 						.build())
 
 				// Livid Color
