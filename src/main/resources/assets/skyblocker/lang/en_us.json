@@ -14,6 +14,7 @@
   "text.autoconfig.skyblocker.title": "Skyblocker Settings",
 
   "text.autoconfig.skyblocker.category.general": "General",
+  "text.autoconfig.skyblocker.option.general.enableTips": "Enable Tips",
   "text.autoconfig.skyblocker.option.general.bars": "Health, Mana, Defence & XP Bars",
   "text.autoconfig.skyblocker.option.general.bars.enableBars": "Enable Bars",
   "text.autoconfig.skyblocker.option.general.bars.barpositions": "Configure Bar Positions",
@@ -387,6 +388,14 @@
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid in order to protect it!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
+
+  "skyblocker.tips.enabled": "§aEnabled Tips.",
+  "skyblocker.tips.disabled": "§cDisabled Tips.",
+  "skyblocker.tips.clickEnable": "§a[Click to Enable Tips]",
+  "skyblocker.tips.clickDisable": "§c[Click to Disable Tips]",
+  "skyblocker.tips.clickNextTip": "§a[Click for Next Tip]",
+  "skyblocker.tips.tip": "§aTip: %s\n",
+  "skyblocker.tips.customArmorTrims": "You can set custom armor trims on your armor using /skyblocker custom armorTrim.",
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }

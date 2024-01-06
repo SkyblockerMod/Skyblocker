@@ -21,6 +21,13 @@ public class GeneralCategory {
 
 				//Ungrouped Options
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.enableTips"))
+						.binding(defaults.general.enableTips,
+								() -> config.general.enableTips,
+								newValue -> config.general.enableTips = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.acceptReparty"))
 						.binding(defaults.general.acceptReparty,
 								() -> config.general.acceptReparty,
