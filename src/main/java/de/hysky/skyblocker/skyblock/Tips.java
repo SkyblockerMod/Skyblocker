@@ -23,8 +23,33 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class Tips {
     private static final Random RANDOM = new Random();
     private static final List<Supplier<Text>> TIPS = List.of(
-            () -> Text.translatable("skyblocker.tips.customArmorTrims").styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker custom armorTrim")))
+            getTipFactory("skyblocker.tips.customItemNames", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom renameItem"),
+            getTipFactory("skyblocker.tips.customArmorDyeColors", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom dyeColor"),
+            getTipFactory("skyblocker.tips.customArmorTrims", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom armorTrim"),
+            getTipFactory("skyblocker.tips.fancyTabExtraInfo"),
+            getTipFactory("skyblocker.tips.helpCommand", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker help"),
+            getTipFactory("skyblocker.tips.discordRichPresence", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
+            getTipFactory("skyblocker.tips.customDungeonSecretWaypoints", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker dungeons secrets addWaypoint"),
+            getTipFactory("skyblocker.tips.shortcuts", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker shortcuts"),
+            getTipFactory("skyblocker.tips.gallery", ClickEvent.Action.OPEN_URL, "https://hysky.de/skyblocker/gallery"),
+            getTipFactory("skyblocker.tips.itemRarityBackground", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
+            getTipFactory("skyblocker.tips.modMenuUpdate"),
+            getTipFactory("skyblocker.tips.issues", ClickEvent.Action.OPEN_URL, "https://github.com/SkyblockerMod/Skyblocker"),
+            getTipFactory("skyblocker.tips.beta", ClickEvent.Action.OPEN_URL, "https://github.com/SkyblockerMod/Skyblocker/actions"),
+            getTipFactory("skyblocker.tips.discord", ClickEvent.Action.OPEN_URL, "https://discord.gg/aNNJHQykck"),
+            getTipFactory("skyblocker.tips.flameOverlay", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
+            getTipFactory("skyblocker.tips.wikiLookup", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
+            getTipFactory("skyblocker.tips.fairySoulsEnigmaSoulsRelics", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker fairySouls"),
+            getTipFactory("skyblocker.tips.quickNav", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config")
     );
+
+    private static Supplier<Text> getTipFactory(String key) {
+        return () -> Text.translatable(key);
+    }
+
+    private static Supplier<Text> getTipFactory(String key, ClickEvent.Action clickAction, String value) {
+        return () -> Text.translatable(key).styled(style -> style.withClickEvent(new ClickEvent(clickAction, value)));
+    }
 
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(Tips::registerTipsCommand);
@@ -48,12 +73,14 @@ public class Tips {
 
     private static int enableTips(CommandContext<FabricClientCommandSource> context) {
         SkyblockerConfigManager.get().general.enableTips = true;
+        SkyblockerConfigManager.save();
         context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.tips.enabled")).append(" ").append(Text.translatable("skyblocker.tips.clickDisable").styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker tips disable")))));
         return Command.SINGLE_SUCCESS;
     }
 
     private static int disableTips(CommandContext<FabricClientCommandSource> context) {
         SkyblockerConfigManager.get().general.enableTips = false;
+        SkyblockerConfigManager.save();
         context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.tips.disabled")).append(" ").append(Text.translatable("skyblocker.tips.clickEnable").styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker tips enable")))));
         return Command.SINGLE_SUCCESS;
     }
