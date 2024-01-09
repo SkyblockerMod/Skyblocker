@@ -14,6 +14,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -22,11 +23,16 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class ItemTooltip {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
+    private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
+    private static final SimpleDateFormat OLD_OBTAINED_DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
     private static final MinecraftClient client = MinecraftClient.getInstance();
     protected static final SkyblockerConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
@@ -222,8 +228,8 @@ public class ItemTooltip {
     }
 
     /**
-     * this method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
-     * Currently, there are two types of timestamps the legacy which is built like this
+     * This method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
+     * Currently, there are two types of string timestamps the legacy which is built like this
      * "dd/MM/yy hh:mm" ("25/04/20 16:38") and the current which is built like this
      * "MM/dd/yy hh:mm aa" ("12/24/20 11:08 PM"). Since Hypixel transforms the two formats into one format without
      * taking into account of their formats, we do the same. The final result looks like this
@@ -231,6 +237,8 @@ public class ItemTooltip {
      * Since the legacy format has a 25 as "month" SimpleDateFormat converts the 25 into 2 years and 1 month and makes
      * "25/04/20 16:38" -> "January 04, 2022" instead of "April 25, 2020".
      * This causes the museum rank to be much worse than it should be.
+     * 
+     * This also handles the long timestamp format introduced in January 2024 where the timestamp is in epoch milliseconds.
      *
      * @param stack the item under the pointer
      * @return if the item have a "Timestamp" it will be shown formated on the tooltip
@@ -238,13 +246,17 @@ public class ItemTooltip {
     public static String getTimestamp(ItemStack stack) {
         NbtCompound ea = ItemUtils.getExtraAttributes(stack);
 
-        if (ea != null && ea.contains("timestamp", 8)) {
-            SimpleDateFormat nbtFormat = new SimpleDateFormat("MM/dd/yy");
+        if (ea != null && ea.contains("timestamp", NbtElement.LONG_TYPE)) {
+            Instant date = Instant.ofEpochMilli(ea.getLong("timestamp"));
 
+            return OBTAINED_DATE_FORMATTER.format(date);
+        }
+
+        if (ea != null && ea.contains("timestamp", NbtElement.STRING_TYPE)) {
             try {
-                Date date = nbtFormat.parse(ea.getString("timestamp"));
-                SimpleDateFormat skyblockerFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
-                return skyblockerFormat.format(date);
+                Instant date = OLD_OBTAINED_DATE_FORMAT.parse(ea.getString("timestamp")).toInstant();
+
+                return OBTAINED_DATE_FORMATTER.format(date);
             } catch (ParseException e) {
                 LOGGER.warn("[Skyblocker-tooltip] getTimestamp", e);
             }
@@ -257,7 +269,7 @@ public class ItemTooltip {
     public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
         NbtCompound ea = ItemUtils.getExtraAttributes(stack);
 
-        if (ea == null || !ea.contains(ItemUtils.ID, 8)) {
+        if (ea == null || !ea.contains(ItemUtils.ID, NbtElement.STRING_TYPE)) {
             return null;
         }
         String internalName = ea.getString(ItemUtils.ID);
