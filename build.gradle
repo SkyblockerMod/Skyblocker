@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.modrinth.minotaur' version '2.+'
 }
@@ -77,6 +77,11 @@ dependencies {
 
 loom {
 	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+
+	mixin {
+		//BetterInject is incompatible with TR remapping so we'll disable it for futureproofing
+		useLegacyMixinAp = true
+	}
 }
 
 base {
