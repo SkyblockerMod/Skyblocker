@@ -21,18 +21,11 @@ import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class ItemTooltip {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
-    private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
-    private static final SimpleDateFormat OLD_OBTAINED_DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
     private static final MinecraftClient client = MinecraftClient.getInstance();
     protected static final SkyblockerConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
@@ -154,7 +147,7 @@ public class ItemTooltip {
         }
 
         if (TooltipInfoType.OBTAINED.isTooltipEnabled()) {
-            String timestamp = getTimestamp(stack);
+            String timestamp = ItemUtils.getTimestamp(stack);
 
             if (!timestamp.isEmpty()) {
                 lines.add(Text.literal(String.format("%-21s", "Obtained: "))
@@ -225,44 +218,6 @@ public class ItemTooltip {
             client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")), false);
             sentNullWarning = true;
         }
-    }
-
-    /**
-     * This method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
-     * Currently, there are two types of string timestamps the legacy which is built like this
-     * "dd/MM/yy hh:mm" ("25/04/20 16:38") and the current which is built like this
-     * "MM/dd/yy hh:mm aa" ("12/24/20 11:08 PM"). Since Hypixel transforms the two formats into one format without
-     * taking into account of their formats, we do the same. The final result looks like this
-     * "MMMM dd, yyyy" (December 24, 2020).
-     * Since the legacy format has a 25 as "month" SimpleDateFormat converts the 25 into 2 years and 1 month and makes
-     * "25/04/20 16:38" -> "January 04, 2022" instead of "April 25, 2020".
-     * This causes the museum rank to be much worse than it should be.
-     * 
-     * This also handles the long timestamp format introduced in January 2024 where the timestamp is in epoch milliseconds.
-     *
-     * @param stack the item under the pointer
-     * @return if the item have a "Timestamp" it will be shown formated on the tooltip
-     */
-    public static String getTimestamp(ItemStack stack) {
-        NbtCompound ea = ItemUtils.getExtraAttributes(stack);
-
-        if (ea != null && ea.contains("timestamp", NbtElement.LONG_TYPE)) {
-            Instant date = Instant.ofEpochMilli(ea.getLong("timestamp"));
-
-            return OBTAINED_DATE_FORMATTER.format(date);
-        }
-
-        if (ea != null && ea.contains("timestamp", NbtElement.STRING_TYPE)) {
-            try {
-                Instant date = OLD_OBTAINED_DATE_FORMAT.parse(ea.getString("timestamp")).toInstant();
-
-                return OBTAINED_DATE_FORMATTER.format(date);
-            } catch (ParseException e) {
-                LOGGER.warn("[Skyblocker-tooltip] getTimestamp", e);
-            }
-        }
-
-        return "";
     }
 
     // TODO What in the world is this?
