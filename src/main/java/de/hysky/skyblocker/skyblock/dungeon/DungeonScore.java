@@ -8,6 +8,8 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.sound.SoundEvents;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +26,8 @@ public class DungeonScore {
     }
 
     public static void tick() {
-        if (!Utils.isInDungeons()) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (!Utils.isInDungeons() || client.player == null) {
             reset();
             return;
         }
@@ -36,12 +39,30 @@ public class DungeonScore {
             }
             int score = Integer.parseInt(dungeonClearedMatcher.group("score"));
             if (!DungeonManager.isInBoss()) score += 28;
-            if (CONFIG.enableDungeonScore270 && !sent270 && score >= 270 && score < 300) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
+            if (!sent270 && score >= 270 && score < 300) {
+                if (CONFIG.enableDungeonScore270Message) {
+                    MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
+                }
+                if (CONFIG.enableDungeonScore270Title) {
+                    client.inGameHud.setDefaultTitleFade();
+                    client.inGameHud.setTitle(Constants.PREFIX.get().append(CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270")));
+                }
+                if (CONFIG.enableDungeonScore270Sound) {
+                    client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+                }
                 sent270 = true;
             }
-            if (CONFIG.enableDungeonScore300 && !sent300 && score >= 300) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
+            if (!sent300 && score >= 300) {
+                if (CONFIG.enableDungeonScore300Message) {
+                    MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
+                }
+                if (CONFIG.enableDungeonScore300Title) {
+                    client.inGameHud.setDefaultTitleFade();
+                    client.inGameHud.setTitle(Constants.PREFIX.get().append(CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300")));
+                }
+                if (CONFIG.enableDungeonScore300Sound) {
+                    client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+                }
                 sent300 = true;
             }
             break;
