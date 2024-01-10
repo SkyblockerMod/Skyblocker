@@ -150,6 +150,9 @@ public class SkyblockerConfig {
 
 	public static class General {
 		@SerialEntry
+		public boolean enableTips = true;
+
+		@SerialEntry
 		public boolean acceptReparty = true;
 
 		@SerialEntry
