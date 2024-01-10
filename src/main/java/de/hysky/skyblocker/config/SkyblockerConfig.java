@@ -787,6 +787,9 @@ public class SkyblockerConfig {
 		public boolean enableLividColorText = true;
 
 		@SerialEntry
+		public boolean enableLividColorTitle = true;
+
+		@SerialEntry
 		public String lividColorText = "The livid color is [color]";
 	}
 
