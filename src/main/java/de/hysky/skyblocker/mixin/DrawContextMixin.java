@@ -8,8 +8,6 @@ import de.hysky.skyblocker.skyblock.item.AttributeShards;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import dev.cbyrne.betterinject.annotations.Arg;
-import dev.cbyrne.betterinject.annotations.Inject;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -21,6 +19,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DrawContext.class)
 public abstract class DrawContextMixin {
@@ -32,7 +32,7 @@ public abstract class DrawContextMixin {
     public abstract int drawText(TextRenderer textRenderer, @Nullable String text, int x, int y, int color, boolean shadow);
 
     @Inject(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
-    private void skyblocker$renderAttributeShardDisplay(@Arg TextRenderer textRenderer, @Arg ItemStack stack, @Arg(ordinal = 0) int x, @Arg(ordinal = 1) int y, @Local(argsOnly = true) LocalRef<String> countOverride) {
+    private void skyblocker$renderAttributeShardDisplay(CallbackInfo ci, @Local(argsOnly = true) TextRenderer textRenderer, @Local(argsOnly = true) ItemStack stack, @Local(argsOnly = true, ordinal = 0) int x, @Local(argsOnly = true, ordinal = 1) int y, @Local(argsOnly = true) LocalRef<String> countOverride) {
         if (!SkyblockerConfigManager.get().general.itemInfoDisplay.attributeShardInfo) return;
 
         if (Utils.isOnSkyblock()) {

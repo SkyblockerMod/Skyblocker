@@ -5,13 +5,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
 import de.hysky.skyblocker.utils.Utils;
-import dev.cbyrne.betterinject.annotations.Inject;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.PlayerSkinTexture;
 
@@ -25,7 +26,7 @@ public class PlayerSkinTextureMixin {
 	private boolean isSkyblockSkinTexture;
 
 	@Inject(method = "remapTexture", at = @At("HEAD"))
-	private void skyblocker$determineSkinSource() {
+	private void skyblocker$determineSkinSource(CallbackInfoReturnable<NativeImage> cir) {
 		if (Utils.isOnSkyblock()) {
 			int skinHash = PlayerHeadHashCache.getSkinHash(this.url).hashCode();
 			this.isSkyblockSkinTexture = PlayerHeadHashCache.contains(skinHash);

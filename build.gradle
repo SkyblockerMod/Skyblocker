@@ -30,7 +30,6 @@ repositories {
 	}
 	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
 	maven { url "https://repo.nea.moe/releases" } // For neu repoparser
-	maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -59,9 +58,6 @@ dependencies {
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
-	// BetterInject (https://github.com/caoimhebyrne/BetterInject)
-	include implementation(annotationProcessor("com.github.cbyrneee:BetterInject:${project.betterinject_version}"))
-
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
 	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 
@@ -79,8 +75,7 @@ loom {
 	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
 
 	mixin {
-		//BetterInject is incompatible with TR remapping so we'll disable it for futureproofing
-		useLegacyMixinAp = true
+		useLegacyMixinAp = false
 	}
 }
 

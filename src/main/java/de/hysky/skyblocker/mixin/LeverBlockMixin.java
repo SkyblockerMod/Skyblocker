@@ -8,10 +8,10 @@ import net.minecraft.block.WallMountedBlock;
 import net.minecraft.util.shape.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import dev.cbyrne.betterinject.annotations.Arg;
-import dev.cbyrne.betterinject.annotations.Inject;
+import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(LeverBlock.class)
 public abstract class LeverBlockMixin extends WallMountedBlock {
@@ -20,7 +20,7 @@ public abstract class LeverBlockMixin extends WallMountedBlock {
     }
 
     @Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
-    public void skyblocker$onGetOutlineShape(@Arg BlockState state, CallbackInfoReturnable<VoxelShape> cir) {
+    public void skyblocker$onGetOutlineShape(CallbackInfoReturnable<VoxelShape> cir, @Local(argsOnly = true) BlockState state) {
         if (Utils.isOnSkyblock()) {
             VoxelShape shape = OldLever.getShape(state.get(FACE), state.get(FACING));
             if (shape != null) cir.setReturnValue(shape);
