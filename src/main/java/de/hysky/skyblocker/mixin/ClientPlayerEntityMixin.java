@@ -2,7 +2,6 @@ package de.hysky.skyblocker.mixin;
 
 import com.mojang.authlib.GameProfile;
 
-import dev.cbyrne.betterinject.annotations.Inject;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.rift.HealingMelonIndicator;
@@ -12,6 +11,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
@@ -29,7 +30,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     }
 
     @Inject(method = "updateHealth", at = @At("RETURN"))
-    public void skyblocker$updateHealth() {
+    public void skyblocker$updateHealth(CallbackInfo ci) {
         HealingMelonIndicator.updateHealth();
     }
 }

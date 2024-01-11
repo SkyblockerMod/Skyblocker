@@ -1,11 +1,9 @@
 package de.hysky.skyblocker.mixin;
 
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import dev.cbyrne.betterinject.annotations.Inject;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -13,6 +11,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
@@ -39,7 +39,7 @@ public abstract class ItemStackMixin {
 	 * Updates the durability of this item stack every tick when in the inventory.
 	 */
 	@Inject(method = "inventoryTick", at = @At("TAIL"))
-	private void skyblocker$updateDamage() {
+	private void skyblocker$updateDamage(CallbackInfo ci) {
 		if (!skyblocker$shouldProcess()) {
 			return;
 		}

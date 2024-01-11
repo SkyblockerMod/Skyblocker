@@ -2,10 +2,10 @@ package de.hysky.skyblocker.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.hysky.skyblocker.utils.Utils;
-import dev.cbyrne.betterinject.annotations.Inject;
 import net.minecraft.entity.data.DataTracker;
 
 @Mixin(DataTracker.class)
