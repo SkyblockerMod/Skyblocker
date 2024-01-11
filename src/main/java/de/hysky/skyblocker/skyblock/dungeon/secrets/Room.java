@@ -408,7 +408,7 @@ public class Room implements Tickable, Renderable {
         }
 
         int matchingRoomsSize = possibleRooms.stream().map(Triple::getRight).mapToInt(Collection::size).sum();
-        if (matchingRoomsSize == 0) {
+        if (matchingRoomsSize == 0) synchronized (this) {
             // If no rooms match, reset the fields and scan again after 50 ticks.
             matchState = MatchState.FAILED;
             DungeonManager.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
@@ -524,10 +524,12 @@ public class Room implements Tickable, Renderable {
             renderable.render(context);
         }
 
-        if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
-            for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
-                if (secretWaypoint.shouldRender()) {
-                    secretWaypoint.render(context);
+        synchronized (this) {
+            if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
+                for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
+                    if (secretWaypoint.shouldRender()) {
+                        secretWaypoint.render(context);
+                    }
                 }
             }
         }
