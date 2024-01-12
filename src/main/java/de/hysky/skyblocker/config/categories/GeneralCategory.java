@@ -35,6 +35,13 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.betterPartyFinder"))
+						.binding(defaults.general.betterPartyFinder,
+								() -> config.general.betterPartyFinder,
+								newValue -> config.general.betterPartyFinder = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift"))
 						.binding(defaults.general.backpackPreviewWithoutShift,
 								() -> config.general.backpackPreviewWithoutShift,
