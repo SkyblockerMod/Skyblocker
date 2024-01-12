@@ -337,7 +337,7 @@ public class PartyFinderScreen extends Screen {
             parties.add(new PartyEntry.NoParties());
         }else {
             for (Slot slot : handler.slots) {
-                if (slot.id > handler.getRows() * 9 || !slot.hasStack()) continue;
+                if (slot.id > handler.getRows() * 9 - 1 || !slot.hasStack()) continue;
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                     assert this.client != null;
                     parties.add(new PartyEntry(slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC), this, slot.id));
@@ -348,7 +348,7 @@ public class PartyFinderScreen extends Screen {
                 }
             }
         }
-        for (int i = (handler.getRows()-1) * 9; i < handler.getRows() * 9; i++) {
+        for (int i = (handler.getRows()-1) * 9; i < handler.getRows() * 9 - 1; i++) {
             Slot slot = handler.slots.get(i);
             int done = 0;
             if (slot.hasStack() && slot.getStack().isOf(Items.EMERALD_BLOCK)) {

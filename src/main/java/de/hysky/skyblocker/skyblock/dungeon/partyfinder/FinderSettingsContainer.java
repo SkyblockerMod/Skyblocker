@@ -59,7 +59,7 @@ public class FinderSettingsContainer extends ContainerWidget{
             isInitialized = true;
             //System.out.println("initializing");
             for (Slot slot : handler.slots) {
-                if (slot.id > handler.getRows() * 9) break;
+                if (slot.id > handler.getRows() * 9 - 1) break;
                 if (!slot.hasStack()) continue;
                 ItemStack stack = slot.getStack();
                 //System.out.println(stack.toString());
@@ -225,7 +225,7 @@ public class FinderSettingsContainer extends ContainerWidget{
     private void updateDropdownOptionWidget(GenericContainerScreenHandler handler, OptionDropdownWidget dropdownWidget) {
         List<OptionDropdownWidget.Option> entries = new ArrayList<>();
         for (Slot slot : handler.slots) {
-            if (slot.id > (handler.getRows() - 1) * 9) break;
+            if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
             if (slot.hasStack() && !slot.getStack().isOf(Items.BLACK_STAINED_GLASS_PANE)) {
                 entries.add(dropdownWidget.new Option(slot.getStack().getName().getString(), slot.getStack(), slot.id));
             }
@@ -239,7 +239,7 @@ public class FinderSettingsContainer extends ContainerWidget{
         int min = -1;
         int max = -1;
         for (Slot slot : handler.slots) {
-            if (slot.id > (handler.getRows() - 1) * 9) break;
+            if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
             if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase().contains("min")) {
                 min = slot.id;
             } else if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase().contains("max")) {
