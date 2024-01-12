@@ -43,6 +43,8 @@ public class Tips {
             getTipFactory("skyblocker.tips.quickNav", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config")
     );
 
+    private static boolean sentTip = false;
+
     private static Supplier<Text> getTipFactory(String key) {
         return () -> Text.translatable(key);
     }
@@ -66,8 +68,9 @@ public class Tips {
 
     private static void sendNextTip() {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player != null && SkyblockerConfigManager.get().general.enableTips) {
+        if (client.player != null && SkyblockerConfigManager.get().general.enableTips && !sentTip) {
             client.player.sendMessage(nextTip(), false);
+            sentTip = true;
         }
     }
 
