@@ -10,16 +10,17 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -85,7 +86,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 floor = tooltipText.split(":")[1].trim();
                 if (dungeon.equals("???")) continue;
                 if (PartyFinderScreen.floorIconsMaster == null || PartyFinderScreen.floorIconsNormal == null) continue;
-                if (dungeon.contains("master")) {
+                if (dungeon.contains("Master Mode")) {
                     try {
                         floorSkullNBT = StringNbtReader.parse(PartyEntryListWidget.BASE_SKULL_NBT.replace("%TEXTURE%", PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(), "")));
                     } catch (CommandSyntaxException e) {
@@ -181,13 +182,13 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             PlayerSkinDrawer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false);
         }
         if (minClassLevel > 0) {
-            context.drawText(textRenderer, "Class " + minClassLevel, 277, 25, 0xFFFFFF00, true);
+            context.drawText(textRenderer, "Class " + minClassLevel, 277, 25, 0xFFFFFFFF, true);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 22 && mouseYLocal <= 35) {
                 context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseXLocal, mouseYLocal);
             }
         }
         if (minCatacombsLevel > 0) {
-            context.drawText(textRenderer, "Cata " + minCatacombsLevel, 277, 43, 0xFFFFFF00, true);
+            context.drawText(textRenderer, "Cata " + minCatacombsLevel, 277, 43, 0xFFFFFFFF, true);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 40 && mouseYLocal <= 53) {
                 context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseXLocal, mouseYLocal);
             }
@@ -195,10 +196,11 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
         stack.setNbt(floorSkullNBT);
         context.drawItem(stack, 317, 3);
+
         int textWidth = textRenderer.getWidth(floor);
         context.drawText(textRenderer, floor, 316 - textWidth, 7, 0x70000000, false);
 
-        context.drawText(textRenderer, note, 5, 51, 0xFFFFFFFF, true);
+        context.drawText(textRenderer, note, 5, 52, 0xFFFFFFFF, true);
 
         if (isLocked) {
             matrices.push();
@@ -237,7 +239,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
         public Text toText() {
             char dClass = dungeonClass.isEmpty() ? '?' : dungeonClass.charAt(0);
-            return name.copy().append(Text.literal(" " + dClass + classLevel).setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
+            return name.copy().append(Text.literal(" " + dClass + " " + classLevel).formatted(Formatting.YELLOW));
         }
     }
 

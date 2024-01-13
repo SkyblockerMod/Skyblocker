@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class PartyFinderScreen extends Screen {
     protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
@@ -99,25 +101,29 @@ public class PartyFinderScreen extends Screen {
 
 
 
+    public static void initClass() {
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            //Checking when this is loaded probably isn't necessary as the maps are always null checked
+            CompletableFuture.runAsync(() -> {
+                floorIconsNormal = new HashMap<>();
+                floorIconsMaster = new HashMap<>();
+                try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/catacombs/floorskulls.json"))) {
+                    JsonObject json = SkyblockerMod.GSON.fromJson(skullTextureReader, JsonObject.class);
+                    json.getAsJsonObject("normal").asMap().forEach((s, jsonElement) -> floorIconsNormal.put(s, jsonElement.getAsString()));
+                    json.getAsJsonObject("master").asMap().forEach((s, jsonElement) -> floorIconsMaster.put(s, jsonElement.getAsString()));
+                    LOGGER.debug("[Skyblocker] Dungeons floor skull textures json loaded");
+                } catch (Exception e) {
+                    LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
+                }
+            });
+        });
+    }
 
     public PartyFinderScreen(GenericContainerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(title);
         this.handler = handler;
         this.inventory = inventory;
         name = title;
-        if (floorIconsNormal == null || floorIconsMaster == null) {
-            floorIconsNormal = new HashMap<>();
-            floorIconsMaster = new HashMap<>();
-            try (BufferedReader skullTextureReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/catacombs/floorskulls.json"))) {
-                JsonObject json = SkyblockerMod.GSON.fromJson(skullTextureReader, JsonObject.class);
-                json.getAsJsonObject("normal").asMap().forEach((s, jsonElement) -> floorIconsNormal.put(s, jsonElement.getAsString()));
-                json.getAsJsonObject("master").asMap().forEach((s, jsonElement) -> floorIconsMaster.put(s, jsonElement.getAsString()));
-                LOGGER.debug("[Skyblocker] Dungeons floor skull textures json loaded");
-            } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json");
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
