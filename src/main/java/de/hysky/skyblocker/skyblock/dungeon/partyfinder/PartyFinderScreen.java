@@ -343,30 +343,43 @@ public class PartyFinderScreen extends Screen {
             parties.add(new PartyEntry.NoParties());
         }else {
             for (Slot slot : handler.slots) {
-                if (slot.id > handler.getRows() * 9 - 1 || !slot.hasStack()) continue;
+                if (slot.id > (handler.getRows()-1) * 9 - 1 || !slot.hasStack()) continue;
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                     assert this.client != null;
                     parties.add(new PartyEntry(slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC), this, slot.id));
-                } else if (slot.getStack().isOf(Items.NETHER_STAR)) {
-                    settingsButtonSlotId = slot.id;
-                    if (DEBUG)
-                        settingsButton.setMessage(settingsButton.getMessage().copy().append(Text.of(" " + settingsButtonSlotId)));
                 }
             }
         }
-        for (int i = (handler.getRows()-1) * 9; i < handler.getRows() * 9 - 1; i++) {
+        int deListSlotId = -1;
+        List<Text> tooltips = null;
+        for (int i = (handler.getRows()-1) * 9; i < handler.getRows() * 9; i++) {
             Slot slot = handler.slots.get(i);
-            int done = 0;
-            if (slot.hasStack() && slot.getStack().isOf(Items.EMERALD_BLOCK)) {
+            if (!slot.hasStack()) continue;
+            if (slot.getStack().isOf(Items.EMERALD_BLOCK)) {
                 refreshSlotId = slot.id;
                 refreshButton.active = true;
-                done += 1;
-            } else if (slot.hasStack() && slot.getStack().isOf(Items.REDSTONE_BLOCK)) {
+            } else if (slot.getStack().isOf(Items.REDSTONE_BLOCK)) {
                 createPartyButtonSlotId = slot.id;
                 createPartyButton.active = true;
-                done += 1;
+            } else if (slot.getStack().isOf(Items.NETHER_STAR)) {
+                settingsButtonSlotId = slot.id;
+                if (DEBUG)
+                    settingsButton.setMessage(settingsButton.getMessage().copy().append(Text.of(" " + settingsButtonSlotId)));
+            } else if (slot.getStack().isOf(Items.BOOKSHELF)) {
+                deListSlotId = slot.id;
+            } else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
+                assert this.client != null;
+                tooltips = slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC);
             }
-            if (done == 2) break;
+        }
+        if (tooltips != null) {
+            LOGGER.info("Your Party tooltips");
+            tooltips.forEach(text -> LOGGER.info(text.toString()));
+            if (deListSlotId != -1) {
+                // Such a wacky thing lol
+                tooltips.set(0, Text.literal(MinecraftClient.getInstance().getSession().getUsername() + "'s party"));
+            }
+            parties.add(new PartyEntry.YourParty(tooltips, this, deListSlotId));
         }
         this.partyEntryListWidget.setEntries(parties);
         List<ItemStack> temp = handler.slots.stream().map(Slot::getStack).toList();

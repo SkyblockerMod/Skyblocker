@@ -36,8 +36,8 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
     private static final Identifier PARTY_CARD_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
     private static final Identifier PARTY_CARD_TEXTURE_HOVER = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
-    private final PartyFinderScreen screen;
-    private final int slotID;
+    protected final PartyFinderScreen screen;
+    protected final int slotID;
     Player partyLeader;
     String floor = "???";
     String dungeon = "???";
@@ -72,7 +72,8 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         int membersIndex = -1;
         for (int i = 1; i < tooltips.size(); i++) {
             Text text = tooltips.get(i);
-            String tooltipText = text.getString();
+            String tooltipText = Formatting.strip(text.getString());
+            assert tooltipText != null;
             String lowerCase = tooltipText.toLowerCase();
             //System.out.println("TOOLTIP"+i);
             //System.out.println(text.getSiblings());
@@ -143,11 +144,26 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (playerNameTrim.equals(partyHost)) {
                     partyLeader = player;
                     j--;
+                } else if (j > 3) {
+                    partyLeader = player;
                 } else partyMembers[j] = player;
             }
         }
 
-        SkullBlockEntityAccessor.invokeFetchProfile(partyHost).thenAccept(
+        if (partyLeader == null) {
+            for (int i = partyMembers.length - 1; i >= 0; i--) {
+                if (partyMembers[i] != null) {
+                    partyLeader = partyMembers[i];
+                    partyMembers[i] = null;
+                    break;
+                }
+            }
+        }
+        if (partyLeader == null) {
+            partyLeader = new Player(Text.literal("Error"), "Error", -1);
+        }
+
+        SkullBlockEntityAccessor.invokeFetchProfile(partyLeader.name.getString()).thenAccept(
                 gameProfile -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
     }
 
@@ -167,13 +183,14 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         matrices.push();
         matrices.translate(x, y, 0);
 
-        if (hovered && !isLocked) context.drawTexture(PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
-        else context.drawTexture(PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
-
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        if (hovered && !isLocked) {
+            context.drawTexture(PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
+            if (!(this instanceof YourParty)) context.drawText(textRenderer, Text.translatable("skyblocker.partyFinder.join"), 148, 6, 0xFFFFFFFF, false);
+        } else context.drawTexture(PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
         int mouseXLocal = mouseX - x;
         int mouseYLocal = mouseY - y;
 
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawText(textRenderer, this.partyLeader.toText(), 18, 6, 0xFFFFFFFF, true);
 
         if (PartyFinderScreen.DEBUG) {
@@ -229,9 +246,11 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        System.out.println("To be clicked" + slotID);
-
-        if (button == 0 && !screen.isWaitingForServer()) {
+        //System.out.println("To be clicked" + slotID);
+        if (slotID == -1) {
+            PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
+        }
+        if (button == 0 && !screen.isWaitingForServer() && slotID != -1) {
             screen.clickAndWaitForServer(slotID);
             return true;
         }
@@ -271,6 +290,32 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), x+entryWidth/2, y+entryHeight/2-textRenderer.fontHeight/2, 0xFFFFFFFF);
+        }
+    }
+
+    public static class YourParty extends PartyEntry {
+
+        public YourParty(List<Text> tooltips, PartyFinderScreen screen, int deListSlotId) {
+            super(tooltips, screen, deListSlotId);
+        }
+
+        @Override
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            MatrixStack matrices = context.getMatrices();
+            matrices.push();
+            matrices.translate(x, y, 0);
+
+            hovered = hovered && slotID != -1;
+
+            TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+            Text text;
+            if (hovered) {
+                text = Text.translatable("skyblocker.partyFinder.deList");
+            } else text = Text.translatable("skyblocker.partyFinder.yourParty");
+            context.drawText(textRenderer, text, 48, 6, 0x70000000, false);
+
+            matrices.pop();
+            super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
         }
     }
 }

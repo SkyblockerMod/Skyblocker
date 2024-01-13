@@ -53,8 +53,9 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
 
     public void updateDisplay() {
         List<PartyEntry> entries = new ArrayList<>(partyEntries);
-        entries.removeIf(partyEntry -> !partyEntry.note.contains(search));
+        entries.removeIf(partyEntry -> !partyEntry.note.contains(search) && !(partyEntry instanceof PartyEntry.YourParty));
         entries.sort(Comparator.comparing(PartyEntry::isLocked));
+        entries.sort(Comparator.comparing(partyEntry -> !(partyEntry instanceof PartyEntry.YourParty)));
         if (entries.isEmpty() && !partyEntries.isEmpty()) {
             entries.add(new PartyEntry.NoParties());
         }

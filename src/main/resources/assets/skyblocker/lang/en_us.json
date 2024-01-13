@@ -430,6 +430,9 @@
   "skyblocker.partyFinder.error.name" : "Party Finder error!",
   "skyblocker.partyFinder.error.message": "An error occurred so you've been sent to the vanilla party finder",
   "skyblocker.partyFinder.loadingError": "If you see this for more than 5 seconds, something probably went wrong...",
+  "skyblocker.partyFinder.yourParty": "Your party",
+  "skyblocker.partyFinder.deList": "Click to de-list",
+  "skyblocker.partyFinder.join": "Click to join",
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }
