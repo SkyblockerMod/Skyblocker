@@ -11,6 +11,7 @@ import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.joml.Matrix4f;
 
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
@@ -106,7 +108,11 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 isLocked = true;
                 lockReason = text;
             } else if (lowerCase.contains("note:")) {
-                note = tooltipText.split(":")[1].trim();
+                String[] split = tooltipText.split(":");
+                //Sometimes the note can not exist??? this is only for debug temporarily
+                if (split.length == 1) System.out.println(Arrays.toString(split));
+            	if (split.length == 1) System.out.println(tooltips.stream().map(Text::getString).map(s -> "\"" + s + "\"").toArray(String[]::new));
+                note = split[1].trim();
             }
         }
         if (membersIndex != -1) {
@@ -132,7 +138,8 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 Player player = new Player(playerName, className, classLevel);
 
                 SkullBlockEntityAccessor.invokeFetchProfile(playerNameTrim).thenAccept(
-                        (gameProfile) -> gameProfile.ifPresent(profile -> player.skinTexture = (client.getSkinProvider().getSkinTextures(profile).texture())));
+                        gameProfile -> gameProfile.ifPresent(profile -> player.skinTexture = (client.getSkinProvider().getSkinTextures(profile).texture())));
+
                 if (playerNameTrim.equals(partyHost)) {
                     partyLeader = player;
                     j--;
@@ -141,7 +148,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         }
 
         SkullBlockEntityAccessor.invokeFetchProfile(partyHost).thenAccept(
-                (gameProfile) -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
+                gameProfile -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
     }
 
     @Override
@@ -162,6 +169,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
         if (hovered && !isLocked) context.drawTexture(PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
         else context.drawTexture(PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
+
         int mouseXLocal = mouseX - x;
         int mouseYLocal = mouseY - y;
 
@@ -181,14 +189,19 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             context.drawText(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), 0xFFFFFFFF, true);
             PlayerSkinDrawer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false);
         }
+
+        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+        VertexConsumerProvider.Immediate vertexConsumers = context.getVertexConsumers();
+
         if (minClassLevel > 0) {
-            context.drawText(textRenderer, "Class " + minClassLevel, 277, 25, 0xFFFFFFFF, true);
+            textRenderer.drawWithOutline(Text.of("Class " + minClassLevel).asOrderedText(), 278, 25, 0xFF288BB5, 0xFF103848, positionMatrix, vertexConsumers, LightmapTextureManager.MAX_LIGHT_COORDINATE);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 22 && mouseYLocal <= 35) {
                 context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseXLocal, mouseYLocal);
             }
         }
+
         if (minCatacombsLevel > 0) {
-            context.drawText(textRenderer, "Cata " + minCatacombsLevel, 277, 43, 0xFFFFFFFF, true);
+            textRenderer.drawWithOutline(Text.of("Cata " + minCatacombsLevel).asOrderedText(), 278, 43, 0xFF288BB5, 0xFF103848, positionMatrix, vertexConsumers, LightmapTextureManager.MAX_LIGHT_COORDINATE);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 40 && mouseYLocal <= 53) {
                 context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseXLocal, mouseYLocal);
             }
