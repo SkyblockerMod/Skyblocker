@@ -43,6 +43,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
     @Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
     public void skyblocker$partyFinderRange(SignBlockEntity sign, boolean front, CallbackInfo callbackInfo) {
+        if (PartyFinderScreen.isInKuudraPartyFinder) return;
         if (client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted()) {
             if (sign.getText(front).getMessage(3, false).getString().toLowerCase().contains("level")) {
                 partyFinderScreen.updateSign(sign, front);

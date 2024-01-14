@@ -17,7 +17,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -41,6 +40,7 @@ public class PartyFinderScreen extends Screen {
     protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
     protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
     protected static final Text SEARCH_TEXT = Text.translatable("gui.socialInteractions.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
+    public static boolean isInKuudraPartyFinder = false;
 
     public static boolean DEBUG = false;
     public static final List<String> possibleInventoryNames = List.of(
@@ -418,8 +418,7 @@ public class PartyFinderScreen extends Screen {
             parties.add(new PartyEntry.YourParty(tooltips, this, deListSlotId));
         }
         this.partyEntryListWidget.setEntries(parties);
-        List<ItemStack> temp = handler.slots.stream().map(Slot::getStack).toList();
-        //for (int i = 0; i < temp.size(); i++) System.out.println(i + " " + temp.get(i).toString() + " " + temp.get(i).getName().getString());
+        //List<ItemStack> temp = handler.slots.stream().map(Slot::getStack).toList();//for (int i = 0; i < temp.size(); i++) System.out.println(i + " " + temp.get(i).toString() + " " + temp.get(i).getName().getString());
 
     }
 

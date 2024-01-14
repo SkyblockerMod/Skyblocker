@@ -26,7 +26,16 @@ public interface HandledScreensMixin<T extends ScreenHandler> {
         T screenHandler = type.create(id, player.getInventory());
         if ((screenHandler instanceof GenericContainerScreenHandler containerScreenHandler) && PartyFinderScreen.possibleInventoryNames.contains(name.getString().toLowerCase())) {
             //player.sendMessage(Text.of("LESSGOOOOO " + containerScreenHandler.getRows()));
-            if (client.currentScreen != null && client.currentScreen.getTitle().getString().toLowerCase().contains("group builder")) return;
+            if (client.currentScreen != null) {
+                String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
+                if (lowerCase.contains("group builder")) return;
+                if (lowerCase.contains("select tier")) {
+                    PartyFinderScreen.isInKuudraPartyFinder = true;
+                } else if (lowerCase.contains("catacombs")) {
+                    PartyFinderScreen.isInKuudraPartyFinder = false;
+                }
+            }
+            if (PartyFinderScreen.isInKuudraPartyFinder) return;
             client.player.currentScreenHandler = (containerScreenHandler);
             if (client.currentScreen instanceof PartyFinderScreen screen) {
                 screen.updateHandler(containerScreenHandler, name);
