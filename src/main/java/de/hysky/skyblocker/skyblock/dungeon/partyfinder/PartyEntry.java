@@ -234,7 +234,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
         if (isLocked) {
             matrices.push();
-            matrices.translate(0, 0, 100f);
+            matrices.translate(0, 0, 200f);
             context.fill(0, 0, entryWidth, entryHeight, 0x90000000);
             context.drawText(textRenderer, lockReason, entryWidth/2 - textRenderer.getWidth(lockReason)/2, entryHeight/2 - textRenderer.fontHeight/2, 0xFFFFFF, true);
             matrices.pop();

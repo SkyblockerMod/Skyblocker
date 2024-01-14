@@ -74,6 +74,8 @@ public class PartyFinderScreen extends Screen {
 
     private TextFieldWidget searchField;
     private ButtonWidget refreshButton;
+    private ButtonWidget previousPageButton; private int prevPageSlotId = -1;
+    private ButtonWidget nextPageButton; private int nextPageSlotId = -1;
 
     protected ButtonWidget partyFinderButton; protected int partyButtonSlotId = -1;
     private ButtonWidget settingsButton; private int settingsButtonSlotId = -1;
@@ -138,7 +140,7 @@ public class PartyFinderScreen extends Screen {
         partyEntryListWidget.setRenderBackground(false);
 
         // Search field
-        this.searchField = new TextFieldWidget(textRenderer, partyEntryListWidget.getRowLeft()+12, entryListTopY - 12, partyEntryListWidget.getRowWidth()-12-6, 12, Text.literal("Search..."));
+        this.searchField = new TextFieldWidget(textRenderer, partyEntryListWidget.getRowLeft()+12, entryListTopY - 12, partyEntryListWidget.getRowWidth()-12*3-6, 12, Text.literal("Search..."));
         searchField.setPlaceholder(SEARCH_TEXT);
         searchField.setChangedListener(s -> partyEntryListWidget.setSearch(s));
         // Refresh button
@@ -147,9 +149,27 @@ public class PartyFinderScreen extends Screen {
                         clickAndWaitForServer(refreshSlotId);
                     }
                 })
-                .position(searchField.getX() + searchField.getWidth(), searchField.getY())
+                .position(searchField.getX() + searchField.getWidth()+12*2, searchField.getY())
                 .size(12, 12).build();
         refreshButton.active = false;
+
+        // Prev and next page buttons
+        previousPageButton = ButtonWidget.builder(Text.literal("←"), (a) -> {
+                    if (prevPageSlotId != -1) {
+                        clickAndWaitForServer(prevPageSlotId);
+                    }
+                })
+                .position(searchField.getX() + searchField.getWidth(), searchField.getY())
+                .size(12, 12).build();
+        previousPageButton.active = false;
+        nextPageButton = ButtonWidget.builder(Text.literal("→"), (a) -> {
+                    if (nextPageSlotId != -1) {
+                        clickAndWaitForServer(nextPageSlotId);
+                    }
+                })
+                .position(searchField.getX() + searchField.getWidth()+12, searchField.getY())
+                .size(12, 12).build();
+        nextPageButton.active = false;
 
         // Settings container
         if (this.settingsContainer == null) this.settingsContainer = new FinderSettingsContainer(partyEntryListWidget.getRowLeft(), entryListTopY-12, widget_height+12);
@@ -193,6 +213,8 @@ public class PartyFinderScreen extends Screen {
         addDrawableChild(partyEntryListWidget);
         addDrawableChild(searchField);
         addDrawableChild(refreshButton);
+        addDrawableChild(previousPageButton);
+        addDrawableChild(nextPageButton);
         addDrawableChild(partyFinderButton);
         addDrawableChild(settingsButton);
         addDrawableChild(createPartyButton);
@@ -228,6 +250,8 @@ public class PartyFinderScreen extends Screen {
             context.drawText(textRenderer, "Truly a party finder", 20, 20, 0xFFFFFFFF, true);
             context.drawText(textRenderer, currentPage.toString(), 0, 0, 0xFFFFFFFF, true);
             context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, 0xFFFFFFFF, true);
             for (int i = 0; i < handler.slots.size(); i++) {
                 context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
             }
@@ -279,6 +303,8 @@ public class PartyFinderScreen extends Screen {
             searchField.visible = true;
             settingsContainer.setVisible(false);
             refreshButton.visible = true;
+            previousPageButton.visible = true;
+            nextPageButton.visible = true;
         } else if (page == Page.SETTINGS || page == Page.SIGN) {
             partyEntryListWidget.visible = false;
 
@@ -292,6 +318,8 @@ public class PartyFinderScreen extends Screen {
             searchField.visible = false;
             settingsContainer.setVisible(true);
             refreshButton.visible = false;
+            previousPageButton.visible = false;
+            nextPageButton.visible = false;
         }
     }
 
@@ -337,6 +365,8 @@ public class PartyFinderScreen extends Screen {
     }
 
     private void updatePartyFinderPage() {
+        previousPageButton.active = false;
+        nextPageButton.active = false;
         List<PartyEntry> parties = new ArrayList<>();
         if (currentPage != Page.FINDER) setCurrentPage(Page.FINDER);
         if (handler.slots.stream().anyMatch(slot -> slot.hasStack() && slot.getStack().isOf(Items.BEDROCK))) {
@@ -347,6 +377,12 @@ public class PartyFinderScreen extends Screen {
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                     assert this.client != null;
                     parties.add(new PartyEntry(slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC), this, slot.id));
+                } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase().contains("previous")) {
+                    prevPageSlotId = slot.id;
+                    previousPageButton.active = true;
+                } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase().contains("next")) {
+                    nextPageSlotId = slot.id;
+                    nextPageButton.active = true;
                 }
             }
         }
