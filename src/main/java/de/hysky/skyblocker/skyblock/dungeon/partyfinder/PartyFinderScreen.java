@@ -140,7 +140,7 @@ public class PartyFinderScreen extends Screen {
         partyEntryListWidget.setRenderBackground(false);
 
         // Search field
-        this.searchField = new TextFieldWidget(textRenderer, partyEntryListWidget.getRowLeft()+12, entryListTopY - 12, partyEntryListWidget.getRowWidth()-12*3-6, 12, Text.literal("Search..."));
+        this.searchField = new TextFieldWidget(textRenderer, partyEntryListWidget.getRowLeft() + 12, entryListTopY - 12, partyEntryListWidget.getRowWidth() - 12 * 3 - 6, 12, Text.literal("Search..."));
         searchField.setPlaceholder(SEARCH_TEXT);
         searchField.setChangedListener(s -> partyEntryListWidget.setSearch(s));
         // Refresh button
@@ -149,7 +149,7 @@ public class PartyFinderScreen extends Screen {
                         clickAndWaitForServer(refreshSlotId);
                     }
                 })
-                .position(searchField.getX() + searchField.getWidth()+12*2, searchField.getY())
+                .position(searchField.getX() + searchField.getWidth() + 12 * 2, searchField.getY())
                 .size(12, 12).build();
         refreshButton.active = false;
 
@@ -167,18 +167,18 @@ public class PartyFinderScreen extends Screen {
                         clickAndWaitForServer(nextPageSlotId);
                     }
                 })
-                .position(searchField.getX() + searchField.getWidth()+12, searchField.getY())
+                .position(searchField.getX() + searchField.getWidth() + 12, searchField.getY())
                 .size(12, 12).build();
         nextPageButton.active = false;
 
         // Settings container
-        if (this.settingsContainer == null) this.settingsContainer = new FinderSettingsContainer(partyEntryListWidget.getRowLeft(), entryListTopY-12, widget_height+12);
-        else settingsContainer.setDimensionsAndPosition(partyEntryListWidget.getRowWidth()-2, widget_height+12, partyEntryListWidget.getRowLeft(), entryListTopY-12);
+        if (this.settingsContainer == null) this.settingsContainer = new FinderSettingsContainer(partyEntryListWidget.getRowLeft(), entryListTopY - 12, widget_height + 12);
+        else settingsContainer.setDimensionsAndPosition(partyEntryListWidget.getRowWidth() - 2, widget_height + 12, partyEntryListWidget.getRowLeft(), entryListTopY - 12);
 
 
         // Buttons at the top
         int searchButtonMargin = 2;
-        int searchButtonWidth = (partyEntryListWidget.getRowWidth() + 6) / 3 - 2*searchButtonMargin;
+        int searchButtonWidth = (partyEntryListWidget.getRowWidth() + 6) / 3 - 2 * searchButtonMargin;
 
 
         partyFinderButton = ButtonWidget.builder(Text.translatable("skyblocker.partyFinder.tabs.partyFinder"), (a) -> {
@@ -196,7 +196,7 @@ public class PartyFinderScreen extends Screen {
                         clickAndWaitForServer(settingsButtonSlotId);
                     }
                 })
-                .position(partyEntryListWidget.getRowLeft() + searchButtonWidth + 3*searchButtonMargin, entryListTopY - 39)
+                .position(partyEntryListWidget.getRowLeft() + searchButtonWidth + 3 * searchButtonMargin, entryListTopY - 39)
                 .size(searchButtonWidth, topRowButtonsHeight).build();
 
         createPartyButton = ButtonWidget.builder(Text.translatable("skyblocker.partyFinder.tabs.createParty"), (a) -> {
@@ -204,7 +204,7 @@ public class PartyFinderScreen extends Screen {
                         clickAndWaitForServer(createPartyButtonSlotId);
                     }
                 })
-                .position(partyEntryListWidget.getRowLeft() + searchButtonWidth*2 + 5*searchButtonMargin, entryListTopY - 39)
+                .position(partyEntryListWidget.getRowLeft() + searchButtonWidth * 2 + 5 * searchButtonMargin, entryListTopY - 39)
                 .size(searchButtonWidth, topRowButtonsHeight).build();
         createPartyButton.active = false;
 
@@ -219,7 +219,7 @@ public class PartyFinderScreen extends Screen {
         addDrawableChild(settingsButton);
         addDrawableChild(createPartyButton);
         addDrawableChild(settingsContainer);
-        addDrawableChild(ButtonWidget.builder(Text.of("DEBUG"), (a) -> DEBUG = !DEBUG).dimensions(width-40, 0, 40, 20).build());
+        addDrawableChild(ButtonWidget.builder(Text.of("DEBUG"), (a) -> DEBUG = !DEBUG).dimensions(width - 40, 0, 40, 20).build());
 
         dirtiedTime = System.currentTimeMillis();
 
@@ -244,7 +244,7 @@ public class PartyFinderScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         if (searchField.visible) {
-            context.drawGuiTexture(SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft()+1, searchField.getY()+1, 10, 10);
+            context.drawGuiTexture(SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
         }
         if (DEBUG) {
             context.drawText(textRenderer, "Truly a party finder", 20, 20, 0xFFFFFFFF, true);
@@ -258,7 +258,7 @@ public class PartyFinderScreen extends Screen {
         }
         if (isWaitingForServer()) {
             String s = "Waiting for server...";
-            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height-textRenderer.fontHeight-2, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height-textRenderer.fontHeight - 2, 0xFFFFFFFF, true);
         }
         if (!settingsContainer.canInteract(null)) {
             context.fill(0, 0, width, height, 50, 0x40000000);
@@ -388,7 +388,7 @@ public class PartyFinderScreen extends Screen {
         }
         int deListSlotId = -1;
         List<Text> tooltips = null;
-        for (int i = (handler.getRows()-1) * 9; i < handler.getRows() * 9; i++) {
+        for (int i = (handler.getRows() - 1) * 9; i < handler.getRows() * 9; i++) {
             Slot slot = handler.slots.get(i);
             if (!slot.hasStack()) continue;
             if (slot.getStack().isOf(Items.EMERALD_BLOCK)) {

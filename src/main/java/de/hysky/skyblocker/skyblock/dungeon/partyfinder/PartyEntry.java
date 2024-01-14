@@ -236,7 +236,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             matrices.push();
             matrices.translate(0, 0, 200f);
             context.fill(0, 0, entryWidth, entryHeight, 0x90000000);
-            context.drawText(textRenderer, lockReason, entryWidth/2 - textRenderer.getWidth(lockReason)/2, entryHeight/2 - textRenderer.fontHeight/2, 0xFFFFFF, true);
+            context.drawText(textRenderer, lockReason, entryWidth / 2 - textRenderer.getWidth(lockReason) / 2, entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFF, true);
             matrices.pop();
         }
 
@@ -289,7 +289,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), x+entryWidth/2, y+entryHeight/2-textRenderer.fontHeight/2, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), x + entryWidth / 2, y + entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFFFF);
         }
     }
 

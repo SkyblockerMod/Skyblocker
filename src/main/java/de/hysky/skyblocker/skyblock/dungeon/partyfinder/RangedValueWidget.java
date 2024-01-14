@@ -41,12 +41,12 @@ public class RangedValueWidget extends ContainerWidget {
         this.screen = screen;
         this.name = name;
 
-        this.input = new ModifiedTextFieldWidget(MinecraftClient.getInstance().textRenderer, x, y+25, width-15, 15, Text.empty());
+        this.input = new ModifiedTextFieldWidget(MinecraftClient.getInstance().textRenderer, x, y + 25, width - 15, 15, Text.empty());
         this.input.setVisible(false);
         this.input.setMaxLength(3);
         input.setChangedListener(this::updateConfirmButton);
         this.okButton = ButtonWidget.builder(Text.literal("✔"), (a) -> sendPacket())
-                .dimensions(x+width-15, y+25, 15, 15)
+                .dimensions(x + width - 15, y + 25, 15, 15)
                 .build();
         this.okButton.visible = false;
     }
@@ -223,14 +223,14 @@ public class RangedValueWidget extends ContainerWidget {
     public void setX(int x) {
         super.setX(x);
         this.input.setX(getX());
-        this.okButton.setX(getX()+getWidth()-15);
+        this.okButton.setX(getX() + getWidth() - 15);
     }
 
     @Override
     public void setY(int y) {
         super.setY(y);
-        this.input.setY(getY()+25);
-        this.okButton.setY(getY()+ 25);
+        this.input.setY(getY() + 25);
+        this.okButton.setY(getY() + 25);
     }
 
     public enum State {
