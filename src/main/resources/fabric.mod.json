@@ -18,9 +18,6 @@
     "client": [
       "de.hysky.skyblocker.SkyblockerMod"
     ],
-    "preLaunch": [
-      "dev.cbyrne.betterinject.BetterInject::initialize"
-    ],
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],

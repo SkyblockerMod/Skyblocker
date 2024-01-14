@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
-import dev.cbyrne.betterinject.annotations.Inject;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.ItemEntity;
@@ -18,13 +17,15 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onPlaySound", at = @At("RETURN"))
-    private void skyblocker$onPlaySound(PlaySoundS2CPacket packet) {
+    private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
         FishingHelper.onSound(packet);
     }
 
@@ -60,7 +61,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     }
 
     @Inject(method = "onParticle", at = @At("RETURN"))
-    private void skyblocker$onParticle(ParticleS2CPacket packet) {
+    private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
         MythologicalRitual.onParticle(packet);
     }
 }

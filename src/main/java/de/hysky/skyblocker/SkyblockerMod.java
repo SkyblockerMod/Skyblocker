@@ -81,8 +81,10 @@ public class SkyblockerMod implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
         Utils.init();
         SkyblockerConfigManager.init();
+        Tips.init();
         NEURepoManager.init();
         ItemRepository.init();
+        PlayerHeadHashCache.init();
         HotbarSlotLock.init();
         ItemTooltip.init();
         WikiLookup.init();

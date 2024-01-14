@@ -14,14 +14,13 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -148,7 +147,7 @@ public class ItemTooltip {
         }
 
         if (TooltipInfoType.OBTAINED.isTooltipEnabled()) {
-            String timestamp = getTimestamp(stack);
+            String timestamp = ItemUtils.getTimestamp(stack);
 
             if (!timestamp.isEmpty()) {
                 lines.add(Text.literal(String.format("%-21s", "Obtained: "))
@@ -221,43 +220,11 @@ public class ItemTooltip {
         }
     }
 
-    /**
-     * this method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
-     * Currently, there are two types of timestamps the legacy which is built like this
-     * "dd/MM/yy hh:mm" ("25/04/20 16:38") and the current which is built like this
-     * "MM/dd/yy hh:mm aa" ("12/24/20 11:08 PM"). Since Hypixel transforms the two formats into one format without
-     * taking into account of their formats, we do the same. The final result looks like this
-     * "MMMM dd, yyyy" (December 24, 2020).
-     * Since the legacy format has a 25 as "month" SimpleDateFormat converts the 25 into 2 years and 1 month and makes
-     * "25/04/20 16:38" -> "January 04, 2022" instead of "April 25, 2020".
-     * This causes the museum rank to be much worse than it should be.
-     *
-     * @param stack the item under the pointer
-     * @return if the item have a "Timestamp" it will be shown formated on the tooltip
-     */
-    public static String getTimestamp(ItemStack stack) {
-        NbtCompound ea = ItemUtils.getExtraAttributes(stack);
-
-        if (ea != null && ea.contains("timestamp", 8)) {
-            SimpleDateFormat nbtFormat = new SimpleDateFormat("MM/dd/yy");
-
-            try {
-                Date date = nbtFormat.parse(ea.getString("timestamp"));
-                SimpleDateFormat skyblockerFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
-                return skyblockerFormat.format(date);
-            } catch (ParseException e) {
-                LOGGER.warn("[Skyblocker-tooltip] getTimestamp", e);
-            }
-        }
-
-        return "";
-    }
-
     // TODO What in the world is this?
     public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
         NbtCompound ea = ItemUtils.getExtraAttributes(stack);
 
-        if (ea == null || !ea.contains(ItemUtils.ID, 8)) {
+        if (ea == null || !ea.contains(ItemUtils.ID, NbtElement.STRING_TYPE)) {
             return null;
         }
         String internalName = ea.getString(ItemUtils.ID);

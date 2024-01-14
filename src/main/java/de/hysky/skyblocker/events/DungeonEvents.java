@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public class DungeonEvents {
-    // TODO Some rooms such as creeper beam and water board does not get matched
     public static final Event<RoomMatched> PUZZLE_MATCHED = EventFactory.createArrayBacked(RoomMatched.class, callbacks -> room -> {
         for (RoomMatched callback : callbacks) {
             callback.onRoomMatched(room);

@@ -167,11 +167,27 @@ public class DungeonsCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore", 270))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore.@Tooltip", 270)))
-								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore270,
-										() -> config.locations.dungeons.dungeonScore.enableDungeonScore270,
-										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore270 = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreMessage", 270))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreMessage.@Tooltip", 270)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore270Message,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore270Message,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore270Message = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreTitle", 270))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreTitle.@Tooltip", 270)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore270Title,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore270Title,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore270Title = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreSound", 270))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip", 270)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore270Sound,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore270Sound,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore270Sound = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
@@ -183,11 +199,27 @@ public class DungeonsCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore", 300))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScore.@Tooltip", 300)))
-								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore300,
-										() -> config.locations.dungeons.dungeonScore.enableDungeonScore300,
-										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore300 = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreMessage", 300))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreMessage.@Tooltip", 300)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore300Message,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore300Message,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore300Message = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreTitle", 300))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreTitle.@Tooltip", 300)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore300Title,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore300Title,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore300Title = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreSound", 300))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip", 300)))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonScore300Sound,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonScore300Sound,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonScore300Sound = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
@@ -413,6 +445,14 @@ public class DungeonsCategory {
 								.binding(defaults.locations.dungeons.lividColor.enableLividColorText,
 										() -> config.locations.dungeons.lividColor.enableLividColorText,
 										newValue -> config.locations.dungeons.lividColor.enableLividColorText = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip")))
+								.binding(defaults.locations.dungeons.lividColor.enableLividColorTitle,
+										() -> config.locations.dungeons.lividColor.enableLividColorTitle,
+										newValue -> config.locations.dungeons.lividColor.enableLividColorTitle = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()

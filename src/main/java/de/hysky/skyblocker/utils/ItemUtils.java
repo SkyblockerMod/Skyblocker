@@ -15,20 +15,27 @@ import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class ItemUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     public static final String EXTRA_ATTRIBUTES = "ExtraAttributes";
     public static final String ID = "id";
     public static final String UUID = "uuid";
+    private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
+    private static final SimpleDateFormat OLD_OBTAINED_DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
 
@@ -100,6 +107,44 @@ public class ItemUtils {
     public static String getItemUuid(@NotNull ItemStack stack) {
         NbtCompound extraAttributes = getExtraAttributes(stack);
         return extraAttributes != null ? extraAttributes.getString(UUID) : "";
+    }
+
+    /**
+     * This method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
+     * Currently, there are two types of string timestamps the legacy which is built like this
+     * "dd/MM/yy hh:mm" ("25/04/20 16:38") and the current which is built like this
+     * "MM/dd/yy hh:mm aa" ("12/24/20 11:08 PM"). Since Hypixel transforms the two formats into one format without
+     * taking into account of their formats, we do the same. The final result looks like this
+     * "MMMM dd, yyyy" (December 24, 2020).
+     * Since the legacy format has a 25 as "month" SimpleDateFormat converts the 25 into 2 years and 1 month and makes
+     * "25/04/20 16:38" -> "January 04, 2022" instead of "April 25, 2020".
+     * This causes the museum rank to be much worse than it should be.
+     * <p>
+     * This also handles the long timestamp format introduced in January 2024 where the timestamp is in epoch milliseconds.
+     *
+     * @param stack the item under the pointer
+     * @return if the item have a "Timestamp" it will be shown formated on the tooltip
+     */
+    public static String getTimestamp(ItemStack stack) {
+        NbtCompound ea = getExtraAttributes(stack);
+
+        if (ea != null && ea.contains("timestamp", NbtElement.LONG_TYPE)) {
+            Instant date = Instant.ofEpochMilli(ea.getLong("timestamp"));
+
+            return OBTAINED_DATE_FORMATTER.format(date);
+        }
+
+        if (ea != null && ea.contains("timestamp", NbtElement.STRING_TYPE)) {
+            try {
+                Instant date = OLD_OBTAINED_DATE_FORMAT.parse(ea.getString("timestamp")).toInstant();
+
+                return OBTAINED_DATE_FORMATTER.format(date);
+            } catch (ParseException e) {
+                LOGGER.warn("[Skyblocker Item Utils] Encountered an unknown exception while parsing time stamp of item {} with extra attributes {}", stack, ea, e);
+            }
+        }
+
+        return "";
     }
 
     public static boolean hasCustomDurability(@NotNull ItemStack stack) {

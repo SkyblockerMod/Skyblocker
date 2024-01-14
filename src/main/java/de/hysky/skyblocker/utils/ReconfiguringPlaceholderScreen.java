@@ -4,12 +4,10 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;
 
 public final class ReconfiguringPlaceholderScreen extends BasePlaceholderScreen {
-    private static final String SCREEN_TITLE = "Reconfig Screen";
-
     private final ClientConnection connection;
 
     public ReconfiguringPlaceholderScreen(final ClientConnection connection) {
-        super(Text.literal(SCREEN_TITLE));
+        super(Text.translatable("connect.reconfiguring"));
         this.connection = connection;
     }
 

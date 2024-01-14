@@ -150,6 +150,9 @@ public class SkyblockerConfig {
 
 	public static class General {
 		@SerialEntry
+		public boolean enableTips = true;
+
+		@SerialEntry
 		public boolean acceptReparty = true;
 
 		@SerialEntry
@@ -729,13 +732,25 @@ public class SkyblockerConfig {
 
 	public static class DungeonScore {
 		@SerialEntry
-		public boolean enableDungeonScore270 = true;
+		public boolean enableDungeonScore270Message = false;
+
+		@SerialEntry
+		public boolean enableDungeonScore270Title = false;
+
+		@SerialEntry
+		public boolean enableDungeonScore270Sound = false;
 
 		@SerialEntry
 		public String dungeonScore270Message = "270 Score Reached!";
 
 		@SerialEntry
-		public boolean enableDungeonScore300 = true;
+		public boolean enableDungeonScore300Message = true;
+
+		@SerialEntry
+		public boolean enableDungeonScore300Title = true;
+
+		@SerialEntry
+		public boolean enableDungeonScore300Sound = true;
 
 		@SerialEntry
 		public String dungeonScore300Message = "300 Score Reached!";
@@ -781,6 +796,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableLividColorText = true;
+
+		@SerialEntry
+		public boolean enableLividColorTitle = true;
 
 		@SerialEntry
 		public String lividColorText = "The livid color is [color]";
