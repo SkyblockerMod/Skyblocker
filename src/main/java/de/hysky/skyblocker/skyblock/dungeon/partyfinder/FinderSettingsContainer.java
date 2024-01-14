@@ -37,11 +37,11 @@ public class FinderSettingsContainer extends ContainerWidget{
     @Override
     public void setDimensionsAndPosition(int width, int height, int x, int y) {
         super.setDimensionsAndPosition(width, height, x, y);
-        if (this.floorSelector != null) floorSelector.setPosition(x + width/4-70, y + 20);
-        if (this.dungeonTypeSelector != null) dungeonTypeSelector.setPosition(x + 3*width/4-70, y + 20);
-        if (this.sortGroupsSelector != null) sortGroupsSelector.setPosition(x + width/2-70, y + 120);
-        if (this.classLevelRange != null) classLevelRange.setPosition(x + width/4-50, y + 70);
-        if (this.dungeonLevelRange != null) dungeonLevelRange.setPosition(x + 3*width/4-50, y + 70);
+        if (this.floorSelector != null) floorSelector.setPosition(x + width / 4 - 70, y + 20);
+        if (this.dungeonTypeSelector != null) dungeonTypeSelector.setPosition(x + 3 * width / 4 - 70, y + 20);
+        if (this.sortGroupsSelector != null) sortGroupsSelector.setPosition(x + width / 2 - 70, y + 120);
+        if (this.classLevelRange != null) classLevelRange.setPosition(x + width / 4 - 50, y + 70);
+        if (this.dungeonLevelRange != null) dungeonLevelRange.setPosition(x + 3 * width / 4 - 50, y + 70);
 
     }
 
@@ -67,35 +67,35 @@ public class FinderSettingsContainer extends ContainerWidget{
                 if (name.contains("floor")) {
                     
                     //System.out.println("Floor selector created");
-                    this.floorSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + getWidth()/4-70, getY() + 20, 140, 170, slot.id);
+                    this.floorSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + getWidth() / 4 - 70, getY() + 20, 140, 170, slot.id);
                     if (!setSelectedElementFromTooltip(slot, stack, floorSelector)) return false;
 
                     initializedWidgets.add(floorSelector);
                     
                 } else if (name.contains("dungeon type")) {
 
-                    this.dungeonTypeSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + (3*getWidth())/4-70, getY() + 20, 140, 100, slot.id);
+                    this.dungeonTypeSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + (3 * getWidth()) / 4 - 70, getY() + 20, 140, 100, slot.id);
                     if (!setSelectedElementFromTooltip(slot, stack, dungeonTypeSelector)) return false;
 
                     initializedWidgets.add(dungeonTypeSelector);
 
                 } else if (name.contains("groups")) {
 
-                    this.sortGroupsSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + getWidth()/2-70, getY() + 120, 140, 100, slot.id);
+                    this.sortGroupsSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + getWidth() / 2 - 70, getY() + 120, 140, 100, slot.id);
                     if (!setSelectedElementFromTooltip(slot, stack, sortGroupsSelector)) return false;
 
                     initializedWidgets.add(sortGroupsSelector);
 
                 } else if (name.contains("class level")) {
 
-                    this.classLevelRange = new RangedValueWidget(screen, stack.getName(), getX() + getWidth()/4-50, getY() + 70, 100, slot.id);
+                    this.classLevelRange = new RangedValueWidget(screen, stack.getName(), getX() + getWidth() / 4 - 50, getY() + 70, 100, slot.id);
                     if (!setRangeFromTooltip(stack, classLevelRange)) return false;
 
                     initializedWidgets.add(classLevelRange);
 
                 } else if (name.contains("dungeon level")) {
 
-                    this.dungeonLevelRange = new RangedValueWidget(screen, stack.getName(), getX() + 3*(getWidth())/4-50, getY() + 70, 100, slot.id);
+                    this.dungeonLevelRange = new RangedValueWidget(screen, stack.getName(), getX() + 3 * (getWidth()) / 4 - 50, getY() + 70, 100, slot.id);
                     if (!setRangeFromTooltip(stack, dungeonLevelRange)) return false;
 
                     initializedWidgets.add(dungeonLevelRange);

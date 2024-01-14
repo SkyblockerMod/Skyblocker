@@ -69,7 +69,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
 
     @Override
     protected int getScrollbarPositionX() {
-        return this.width/2 + getRowWidth()/2 + 2;
+        return this.width / 2 + getRowWidth() / 2 + 2;
     }
 
 
@@ -94,7 +94,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
         if (children().isEmpty()) {
             Text string = Text.translatable("skyblocker.partyFinder.loadingError");
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawTextWrapped(textRenderer, string, getRowLeft(), getY()+10, getRowWidth(), 0xFFFFFFFF);
+            context.drawTextWrapped(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF);
         } else super.renderWidget(context, mouseX, mouseY, delta);
     }
 }
