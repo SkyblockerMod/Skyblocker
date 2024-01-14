@@ -400,7 +400,6 @@ public class Utils {
             JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
             if (json.get("success").getAsBoolean()) {
                 mayor = json.get("mayor").getAsJsonObject().get("name").getAsString();
-                System.out.println(mayor);
             } else {
                 throw new IOException("API call for mayor failed: " + json.get("cause").getAsString());
             }
