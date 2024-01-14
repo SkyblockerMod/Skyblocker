@@ -60,7 +60,8 @@ public class HudCommsWidget extends Widget {
             } else {
                 comp = new PlainTextComponent(
                         Text.literal(comm.commission() + ": ")
-                                .append(Text.literal(comm.progression()).formatted(Formatting.GREEN)));
+                                .append(Text.literal(comm.progression())
+                                        .formatted(Colors.hypixelProgressColor(p))));
             }
             this.addComponent(comp);
         }
