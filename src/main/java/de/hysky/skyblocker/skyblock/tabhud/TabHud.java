@@ -14,7 +14,9 @@ public class TabHud {
     public static KeyBinding toggleA;
     // public static KeyBinding mapTgl;
     public static KeyBinding defaultTgl;
-
+    // public static KeyBinding mapTgl;
+    public static KeyBinding OneScrnTgl;
+    
     public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Tab HUD");
 
     public static void init() {
@@ -33,6 +35,11 @@ public class TabHud {
                 new KeyBinding("key.skyblocker.defaultTgl",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_M,
+                        "key.categories.skyblocker"));
+        defaultTgl = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding("key.skyblocker.OneScrnTgl",
+                        InputUtil.Type.KEYSYV,
+                        GLFW.GLFW_KEY_V,
                         "key.categories.skyblocker"));
 
     }
