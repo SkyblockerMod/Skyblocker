@@ -56,13 +56,14 @@ public class DungeonScore {
 	private static boolean sent270;
 	private static boolean sent300;
 	private static boolean isMimicKilled;
-	private static int puzzleCount;
-	private static boolean isDungeonStarted;
+	private static boolean dungeonStarted;
 	private static boolean isMayorPaul;
-	private static long startingTime;
-	private static int deathCount;
 	private static boolean firstDeathHasSpiritPet;
 	private static boolean bloodRoomCompleted;
+	private static long startingTime;
+	private static int puzzleCount;
+	private static int deathCount;
+	private static int score;
 	private static final Map<String, Boolean> SpiritPetCache = new HashMap<>();
 
 	public static void init() {
@@ -70,6 +71,7 @@ public class DungeonScore {
 		SkyblockEvents.LEAVE.register(SpiritPetCache::clear);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+			if (!Utils.isInDungeons() || !dungeonStarted) return;
 			String str = message.getString();
 			checkMessageForDeaths(str);
 			checkMessageForWatcher(str);
@@ -82,11 +84,11 @@ public class DungeonScore {
 			reset();
 			return;
 		}
-		if (!isDungeonStarted) {
+		if (!dungeonStarted) {
 			if (checkIfDungeonStarted()) onDungeonStart();
 			return;
 		}
-		int score = calculateScore();
+		score = calculateScore();
 		if (!sent270 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.enableDungeonScore270Message) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
@@ -116,19 +118,23 @@ public class DungeonScore {
 	}
 
 	private static void reset() {
+		currentFloor = "";
 		sent270 = false;
 		sent300 = false;
-		isDungeonStarted = false;
 		isMimicKilled = false;
+		dungeonStarted = false;
 		isMayorPaul = false;
 		firstDeathHasSpiritPet = false;
+		bloodRoomCompleted = false;
+		startingTime = 0L;
+		puzzleCount = 0;
 		deathCount = 0;
-		currentFloor = "";
+		score = 0;
 	}
 
 	private static void onDungeonStart() {
 		setCurrentFloor();
-		isDungeonStarted = true;
+		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
 		isMayorPaul = Utils.getMayor().equals("Paul");
 		startingTime = System.currentTimeMillis();
@@ -147,15 +153,11 @@ public class DungeonScore {
 	}
 
 	private static int calculateSkillScore() {
-		int extraCompletedRooms = 0; //This is needed for calculating the score before going in, so we have the result sooner
-		if (!DungeonManager.isInBoss()) extraCompletedRooms = bloodRoomCompleted ? 1 : 2;
-		return 20 + (int) Math.floor(80.0 * (getCompletedRooms() + extraCompletedRooms) / getTotalRooms()) - getPuzzlePenalty() - getDeathScorePenalty();
+		return 20 + (int) Math.floor(80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / getTotalRooms()) - getPuzzlePenalty() - getDeathScorePenalty();
 	}
 
 	private static int calculateExploreScore() {
-		int extraCompletedRooms = 0;
-		if (!DungeonManager.isInBoss()) extraCompletedRooms = bloodRoomCompleted ? 1 : 2;
-		int completedRoomScore = (int) Math.floor(60.0 * (getCompletedRooms() + extraCompletedRooms) / getTotalRooms());
+		int completedRoomScore = (int) Math.floor(60.0 * (getCompletedRooms() + getExtraCompletedRooms()) / getTotalRooms());
 		int percentageRequirement = FloorRequirement.valueOf(currentFloor).percentage;
 		int secretsScore = (int) Math.floor(40 * Math.min(percentageRequirement, getSecretsPercentage()) / percentageRequirement);
 		return completedRoomScore + secretsScore;
@@ -168,18 +170,11 @@ public class DungeonScore {
 		if (timeSpent < timeRequirement) return score;
 
 		double timePastRequirement = ((double) (timeSpent - timeRequirement) / timeRequirement) * 100;
-		if (timePastRequirement >= 0 && timePastRequirement < 20) {
-			score -= (int) timePastRequirement / 2;
-		} else if (timePastRequirement >= 20 && timePastRequirement < 40) {
-			score -= (int) (10 + (timePastRequirement - 20) / 4);
-		} else if (timePastRequirement >= 40 && timePastRequirement < 50) {
-			score -= (int) (15 + (timePastRequirement - 40) / 5);
-		} else if (timePastRequirement >= 50 && timePastRequirement < 60) {
-			score -= (int) (17 + (timePastRequirement - 50) / 6);
-		} else if (timePastRequirement >= 60) {
-			score -= (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7);
-		}
-		return score;
+		if (timePastRequirement < 20) return score - (int) timePastRequirement / 2;
+		if (timePastRequirement < 40) return score - (int) (10 + (timePastRequirement - 20) / 4);
+		if (timePastRequirement < 50) return score - (int) (15 + (timePastRequirement - 40) / 5);
+		if (timePastRequirement < 60) return score - (int) (17 + (timePastRequirement - 50) / 6);
+		return score - (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7);
 	}
 
 	private static int calculateBonusScore() {
@@ -191,7 +186,7 @@ public class DungeonScore {
 	}
 
 	private static boolean checkIfDungeonStarted() {
-		return Utils.STRING_SCOREBOARD.stream().anyMatch(s -> DUNGEON_START_PATTERN.matcher(s).matches());
+		return Utils.STRING_SCOREBOARD.stream().noneMatch(s -> DUNGEON_START_PATTERN.matcher(s).matches());
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
@@ -214,6 +209,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (isMimicKilled) return;
 		if (!isEntityMimic(entity)) return;
+		if (MIMIC_MESSAGES_CONFIG.sendMimicMessages) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGES_CONFIG.mimicMessage);
 		isMimicKilled = true;
 	}
 
@@ -221,6 +217,8 @@ public class DungeonScore {
 		isMimicKilled = state;
 	}
 
+	//This is not very accurate at the beginning of the dungeon since clear percentage is rounded to the closest integer, so at lower percentages its effect on the result is quite high.
+	//For example: If clear percentage is 7% with a single room completed, it can be rounded from 6.5 or 7.49. In that range, the actual total room count can be either 14 or 15 while our result is 14.
 	private static int getTotalRooms() {
 		int completedRooms = getCompletedRooms();
 		return (int) Math.round(completedRooms / getClearPercentage());
@@ -229,6 +227,12 @@ public class DungeonScore {
 	private static int getCompletedRooms() {
 		Matcher matcher = PlayerListMgr.regexAt(43, COMPLETED_ROOMS_PATTERN);
 		return matcher != null ? Integer.parseInt(matcher.group("rooms")) : 0;
+	}
+
+	private static int getExtraCompletedRooms() { //This is needed for calculating the score before going in the boss room & completing the blood room, so we have the result sooner
+		if (!bloodRoomCompleted) return 2;
+		if (!DungeonManager.isInBoss()) return 1;
+		return 0;
 	}
 
 	private static double getClearPercentage() {
@@ -306,7 +310,6 @@ public class DungeonScore {
 	}
 
 	private static void checkMessageForDeaths(String message) {
-		if (!Utils.isInDungeons()) return;
 		if (!message.startsWith("\u2620", 1)) return;
 		Matcher matcher = DEATHS_PATTERN.matcher(message);
 		if (!matcher.matches()) return;
@@ -317,9 +320,7 @@ public class DungeonScore {
 			else return s;
 		});
 		CompletableFuture.supplyAsync(() -> hasSpiritPet(whoDied))
-				.thenAccept(hasSpiritPet -> {
-					firstDeathHasSpiritPet = hasSpiritPet;
-				});
+				.thenAccept(hasSpiritPet -> firstDeathHasSpiritPet = hasSpiritPet);
 	}
 
 	private static void checkMessageForWatcher(String message) {
@@ -334,6 +335,14 @@ public class DungeonScore {
 			return;
 		}
 		LOGGER.error("Floor pattern doesn't match");
+	}
+
+	public static int getScore() {
+		return score;
+	}
+
+	public static boolean isDungeonStarted() {
+		return dungeonStarted;
 	}
 
 	enum FloorRequirement {
