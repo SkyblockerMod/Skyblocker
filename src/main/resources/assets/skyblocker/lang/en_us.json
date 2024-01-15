@@ -417,6 +417,7 @@
   "skyblocker.tips.discord": "Join our discord at https://discord.gg/aNNJHQykck to keep up with the latest news about Skyblocker!",
   "skyblocker.tips.flameOverlay": "Find that the flame overlay takes up too much screen space? Check out the config to make it smaller",
   "skyblocker.tips.wikiLookup": "Press F4 while hovering over an item to open its wiki page in your web browser.",
+  "skyblocker.tips.protectItem": "Prevent accidentally dropping your items with /skyblocker protectItem.",
   "skyblocker.tips.fairySoulsEnigmaSoulsRelics": "Don't know where to find Fairy Souls, Enigma Souls, or Relics? Enable the helpers to aid your exploration, they'll remember which souls you've already found.",
   "skyblocker.tips.quickNav": "You can customize the QuickNav buttons in the config.",
 
