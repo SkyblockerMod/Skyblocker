@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -91,12 +92,19 @@ public class DwarvenHud {
 
         int y = 0;
         for (Commission commission : commissions) {
+            float percentage;
+            if (!commission.progression().contains("DONE")) {
+                percentage = Float.parseFloat(commission.progression().substring(0, commission.progression().length() - 1));
+            } else {
+                percentage = 100f;
+            }
+
             context
                     .drawTextWithShadow(client.textRenderer,
                             Text.literal(commission.commission + ": ")
                                     .styled(style -> style.withColor(Formatting.AQUA))
                                     .append(Text.literal(commission.progression)
-                                            .styled(style -> style.withColor(Formatting.GREEN))),
+                                            .styled(style -> style.withColor(Colors.hypixelProgressColor(percentage)))),
                             hudX + 5, hudY + y + 5, 0xFFFFFFFF);
             y += 20;
         }

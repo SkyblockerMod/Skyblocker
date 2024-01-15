@@ -41,6 +41,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 
 import java.nio.file.Path;
@@ -51,8 +52,9 @@ import java.nio.file.Path;
  * this class.
  */
 public class SkyblockerMod implements ClientModInitializer {
-    public static final String VERSION = FabricLoader.getInstance().getModContainer("skyblocker").orElseThrow().getMetadata().getVersion().getFriendlyString();
     public static final String NAMESPACE = "skyblocker";
+    public static final ModContainer SKYBLOCKER_MOD = FabricLoader.getInstance().getModContainer(NAMESPACE).orElseThrow();
+    public static final String VERSION = SKYBLOCKER_MOD.getMetadata().getVersion().getFriendlyString();
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static SkyblockerMod INSTANCE;
@@ -112,6 +114,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TheRift.init();
         TitleContainer.init();
         ScreenMaster.init();
+        DungeonTextures.init();
         OcclusionCulling.init();
         TeleportOverlay.init();
         CustomItemNames.init();
