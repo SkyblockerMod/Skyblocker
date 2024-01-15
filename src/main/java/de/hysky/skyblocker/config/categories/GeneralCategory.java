@@ -83,6 +83,13 @@ public class GeneralCategory {
 										newValue -> config.general.tabHud.tabHudEnabled = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+				   		.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.tabHudOneScreen"))
+								.binding(defaults.general.tabHud.tabHudOneScreen,
+										() -> config.general.tabHud.tabHudOneScreen,
+										newValue -> config.general.tabHud.tabHudOneScreen = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.tabHudScale"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip")))
