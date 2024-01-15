@@ -1,27 +1,25 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import java.io.BufferedReader;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScreenMaster {
 
@@ -82,12 +80,11 @@ public class ScreenMaster {
 
         // WHY MUST IT ALWAYS BE SUCH NESTED GARBAGE MINECRAFT KEEP THAT IN DFU FFS
 
-        FabricLoader.getInstance()
-                .getModContainer("skyblocker")
-                .ifPresent(container -> ResourceManagerHelper.registerBuiltinResourcePack(
-                        new Identifier("skyblocker", "top_aligned"),
-                        container,
-                        ResourcePackActivationType.NORMAL));
+        ResourceManagerHelper.registerBuiltinResourcePack(
+                new Identifier(SkyblockerMod.NAMESPACE, "top_aligned"),
+                SkyblockerMod.SKYBLOCKER_MOD,
+                ResourcePackActivationType.NORMAL
+        );
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
                 // ...why are we instantiating an interface again?
@@ -113,9 +110,9 @@ public class ScreenMaster {
                             try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager()
                                     .openAsReader(entry.getKey())) {
                                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-                                 if (json.get("format_version").getAsInt() != VERSION) {
+                                if (json.get("format_version").getAsInt() != VERSION) {
                                     throw new IllegalStateException(String.format("Resource pack isn't compatible! Expected version %d, got %d", VERSION, json.get("format_version").getAsInt()));
-                                 }
+                                }
 
                             } catch (Exception ex) {
                                 throw new IllegalStateException(
