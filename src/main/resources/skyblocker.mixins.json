@@ -16,7 +16,7 @@
     "FarmlandBlockMixin",
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
-    "HandledScreensMixin",
+    "HandledScreenProviderMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
