@@ -40,7 +40,7 @@ public class TabHud {
                 new KeyBinding("key.skyblocker.OneScrnTgl",
                         InputUtil.Type.KEYSYV,
                         GLFW.GLFW_KEY_V,
-                        "key.categories.skyblocker"));
+                        "key.categories.skyblocker.OneScrnTgl"));
 
     }
 }
