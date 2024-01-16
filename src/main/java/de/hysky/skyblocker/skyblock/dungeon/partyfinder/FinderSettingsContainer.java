@@ -15,8 +15,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FinderSettingsContainer extends ContainerWidget{
-
+public class FinderSettingsContainer extends ContainerWidget {
     private boolean isInitialized = false;
     private OptionDropdownWidget floorSelector;
     private OptionDropdownWidget dungeonTypeSelector;

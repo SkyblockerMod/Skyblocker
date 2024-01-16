@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 import org.joml.Matrix4f;
 
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
-
     private static final Identifier PARTY_CARD_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
     private static final Identifier PARTY_CARD_TEXTURE_HOVER = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
     protected final PartyFinderScreen screen;

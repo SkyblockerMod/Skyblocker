@@ -38,6 +38,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PartyFinderScreen extends Screen {
     protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
+    protected static final Identifier BACKGROUND_TEXTURE = new Identifier("social_interactions/background");
     protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
     protected static final Text SEARCH_TEXT = Text.translatable("gui.socialInteractions.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
     public static boolean isInKuudraPartyFinder = false;
@@ -71,17 +72,23 @@ public class PartyFinderScreen extends Screen {
 
     private int refreshSlotId = -1;
 
-
     private TextFieldWidget searchField;
     private ButtonWidget refreshButton;
-    private ButtonWidget previousPageButton; private int prevPageSlotId = -1;
-    private ButtonWidget nextPageButton; private int nextPageSlotId = -1;
 
-    protected ButtonWidget partyFinderButton; protected int partyButtonSlotId = -1;
-    private ButtonWidget settingsButton; private int settingsButtonSlotId = -1;
-    private ButtonWidget createPartyButton; private int createPartyButtonSlotId = -1;
+    private ButtonWidget previousPageButton;
+    private int prevPageSlotId = -1;
 
+    private ButtonWidget nextPageButton;
+    private int nextPageSlotId = -1;
 
+    protected ButtonWidget partyFinderButton;
+    protected int partyButtonSlotId = -1;
+
+    private ButtonWidget settingsButton;
+    private int settingsButtonSlotId = -1;
+
+    private ButtonWidget createPartyButton;
+    private int createPartyButtonSlotId = -1;
 
     private boolean dirty = false;
     private long dirtiedTime;
@@ -97,11 +104,6 @@ public class PartyFinderScreen extends Screen {
 
     public static Map<String, String> floorIconsNormal = null;
     public static Map<String, String> floorIconsMaster = null;
-    protected static final Identifier BACKGROUND_TEXTURE = new Identifier("social_interactions/background");
-
-
-
-
 
     public static void initClass() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
@@ -371,7 +373,7 @@ public class PartyFinderScreen extends Screen {
         if (currentPage != Page.FINDER) setCurrentPage(Page.FINDER);
         if (handler.slots.stream().anyMatch(slot -> slot.hasStack() && slot.getStack().isOf(Items.BEDROCK))) {
             parties.add(new PartyEntry.NoParties());
-        }else {
+        } else {
             for (Slot slot : handler.slots) {
                 if (slot.id > (handler.getRows()-1) * 9 - 1 || !slot.hasStack()) continue;
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
@@ -409,8 +411,8 @@ public class PartyFinderScreen extends Screen {
             }
         }
         if (tooltips != null) {
-            LOGGER.info("Your Party tooltips");
-            tooltips.forEach(text -> LOGGER.info(text.toString()));
+            //LOGGER.info("Your Party tooltips");
+            //tooltips.forEach(text -> LOGGER.info(text.toString()));
             if (deListSlotId != -1) {
                 // Such a wacky thing lol
                 tooltips.set(0, Text.literal(MinecraftClient.getInstance().getSession().getUsername() + "'s party"));
@@ -422,7 +424,12 @@ public class PartyFinderScreen extends Screen {
 
     }
 
-    private boolean aborted = false; public boolean isAborted() {return aborted;}
+    private boolean aborted = false;
+
+    public boolean isAborted() {
+        return aborted;
+    }
+
     public void abort() {
         assert this.client != null;
         if (currentPage == Page.SIGN) {

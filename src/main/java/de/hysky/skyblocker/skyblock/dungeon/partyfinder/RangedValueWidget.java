@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class RangedValueWidget extends ContainerWidget {
-
     private final PartyFinderScreen screen;
 
     private final int slotId;
@@ -33,7 +32,6 @@ public class RangedValueWidget extends ContainerWidget {
 
     private final ModifiedTextFieldWidget input;
     private final ButtonWidget okButton;
-
 
     public RangedValueWidget(PartyFinderScreen screen, Text name, int x, int y, int width, int slotId) {
         super(x, y, width, 45, Text.empty());
@@ -132,8 +130,13 @@ public class RangedValueWidget extends ContainerWidget {
         }
     }
 
-    private boolean mouseOverMinButton(int mouseX, int mouseY) {return isMouseOver(mouseX, mouseY) && mouseX < getX() + (width >> 1) - 5 && mouseY < getY() + 25 && mouseY > getY() + 10;}
-    private boolean mouseOverMaxButton(int mouseX, int mouseY) {return isMouseOver(mouseX, mouseY) && mouseX > getX() + (width >> 1) + 5 && mouseY < getY() + 25 && mouseY > getY() + 10;}
+    private boolean mouseOverMinButton(int mouseX, int mouseY) {
+        return isMouseOver(mouseX, mouseY) && mouseX < getX() + (width >> 1) - 5 && mouseY < getY() + 25 && mouseY > getY() + 10;
+    }
+
+    private boolean mouseOverMaxButton(int mouseX, int mouseY) {
+        return isMouseOver(mouseX, mouseY) && mouseX > getX() + (width >> 1) + 5 && mouseY < getY() + 25 && mouseY > getY() + 10;
+    }
 
     public void setState(State state) {
         this.state = state;
@@ -240,8 +243,6 @@ public class RangedValueWidget extends ContainerWidget {
         MODIFYING_MAX;
     }
     protected class ModifiedTextFieldWidget extends TextFieldWidget {
-
-
         private boolean isGood = false;
 
         public ModifiedTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text) {
@@ -263,6 +264,7 @@ public class RangedValueWidget extends ContainerWidget {
         }
 
     }
+
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 }

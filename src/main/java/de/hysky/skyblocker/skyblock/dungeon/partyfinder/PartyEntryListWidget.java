@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
-
     protected List<PartyEntry> partyEntries;
 
     protected boolean isActive = true;
