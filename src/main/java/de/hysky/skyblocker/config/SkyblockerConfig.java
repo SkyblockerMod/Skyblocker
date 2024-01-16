@@ -624,6 +624,18 @@ public class SkyblockerConfig {
 		public int mapY = 2;
 
 		@SerialEntry
+		public boolean enableScore = true;
+
+		@SerialEntry
+		public int scoreX = 29;
+
+		@SerialEntry
+		public int scoreY = 134;
+
+		@SerialEntry
+		public float scoreScaling = 1f;
+
+		@SerialEntry
 		public boolean playerSecretsTracker = false;
 
 		@SerialEntry

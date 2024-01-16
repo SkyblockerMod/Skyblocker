@@ -5,9 +5,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.FancyStatusBars;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScoreHUD;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
@@ -64,8 +66,10 @@ public abstract class InGameHudMixin {
         if (statusBars.render(context, scaledWidth, scaledHeight))
             ci.cancel();
 
-        if (Utils.isInDungeons() && SkyblockerConfigManager.get().locations.dungeons.enableMap)
-            DungeonMap.render(context.getMatrices());
+        if (Utils.isInDungeons() && DungeonScore.isDungeonStarted()) {
+            if (SkyblockerConfigManager.get().locations.dungeons.enableMap) DungeonMap.render(context.getMatrices());
+            if (SkyblockerConfigManager.get().locations.dungeons.enableScore) DungeonScoreHUD.render(context);
+        }
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
