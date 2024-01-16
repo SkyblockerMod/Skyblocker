@@ -110,10 +110,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 lockReason = text;
             } else if (lowerCase.contains("note:")) {
                 String[] split = tooltipText.split(":");
-                //Sometimes the note can not exist??? this is only for debug temporarily
-                if (split.length == 1) System.out.println(Arrays.toString(split));
-            	if (split.length == 1) System.out.println(tooltips.stream().map(Text::getString).map(s -> "\"" + s + "\"").toArray(String[]::new));
-                note = split[1].trim();
+                note = split.length == 1 ? "" : split[1].trim();
             }
         }
         if (membersIndex != -1) {
