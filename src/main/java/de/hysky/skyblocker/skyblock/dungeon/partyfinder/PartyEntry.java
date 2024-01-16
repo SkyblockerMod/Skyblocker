@@ -110,7 +110,19 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 lockReason = text;
             } else if (lowerCase.contains("note:")) {
                 String[] split = tooltipText.split(":");
-                note = split.length == 1 ? "" : split[1].trim();
+
+                //Note goes onto next line
+                if (split.length == 1) {
+                    String next = tooltips.get(i + 1).getString();
+
+                    if (!next.isBlank() && (!next.contains("Class Level") || !next.contains("Dungeon Level"))) {
+                        note = next.trim();
+                    } else {
+                        note = "";
+                    }
+                } else {
+                    note = split[1].trim();
+                }
             }
         }
         if (membersIndex != -1) {
