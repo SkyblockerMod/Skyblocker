@@ -315,6 +315,13 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.enableMap = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.enableScore"))
+						.binding(defaults.locations.dungeons.enableScore,
+								() -> config.locations.dungeons.enableScore,
+								newValue -> config.locations.dungeons.enableScore = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mapScreen"))
 						.text(Text.translatable("text.skyblocker.open"))
@@ -325,6 +332,17 @@ public class DungeonsCategory {
 						.binding(defaults.locations.dungeons.mapScaling,
 								() -> config.locations.dungeons.mapScaling,
 								newValue -> config.locations.dungeons.mapScaling = newValue)
+						.controller(FloatFieldControllerBuilder::create)
+						.build())
+				.option(Option.<Float>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.scoreScaling"))
+						.binding(defaults.locations.dungeons.scoreScaling,
+								() -> config.locations.dungeons.scoreScaling,
+								newValue -> {
+									config.locations.dungeons.scoreX = config.locations.dungeons.scoreX + (int) ((config.locations.dungeons.scoreScaling - newValue) * 38.0);
+									config.locations.dungeons.scoreY = config.locations.dungeons.scoreY + (int) ((config.locations.dungeons.scoreScaling - newValue) * MinecraftClient.getInstance().textRenderer.fontHeight / 2.0);
+									config.locations.dungeons.scoreScaling = newValue;
+								})
 						.controller(FloatFieldControllerBuilder::create)
 						.build())
 				.option(Option.<Boolean>createBuilder()

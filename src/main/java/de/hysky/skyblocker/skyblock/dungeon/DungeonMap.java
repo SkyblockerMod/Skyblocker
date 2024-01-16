@@ -5,7 +5,6 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -13,12 +12,9 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
 public class DungeonMap {
-    private static final Identifier MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
-
     public static void render(MatrixStack matrices) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
@@ -46,13 +42,7 @@ public class DungeonMap {
         }
     }
 
-    public static void renderHUDMap(DrawContext context, int x, int y) {
-        float scaling = SkyblockerConfigManager.get().locations.dungeons.mapScaling;
-        int size = (int) (128 * scaling);
-        context.drawTexture(MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
-    }
-
-    public static void init() {
+	public static void init() { //Todo: consider renaming the command to a more general name since it'll also have dungeon score and maybe other stuff in the future
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("dungeonmap")
