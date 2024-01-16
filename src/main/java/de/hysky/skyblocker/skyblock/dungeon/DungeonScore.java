@@ -50,7 +50,7 @@ public class DungeonScore {
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(".*?\u2620 (?<whodied>\\S+) .*");
 	//Other patterns
-	private static final Pattern MIMIC_FLOOR_FILTER_PATTERN = Pattern.compile("[EFM][12345]?");
+	private static final Pattern MIMICLESS_FLOORS_PATTERN = Pattern.compile("[EFM][12345]?");
 
 	private static String currentFloor;
 	private static boolean sent270;
@@ -91,7 +91,7 @@ public class DungeonScore {
 		score = calculateScore();
 		if (!sent270 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown(SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
 			}
 			if (SCORE_CONFIG.enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -104,7 +104,7 @@ public class DungeonScore {
 		}
 		if (!sent300 && score >= 300) {
 			if (SCORE_CONFIG.enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown(SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
 			}
 			if (SCORE_CONFIG.enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -141,14 +141,8 @@ public class DungeonScore {
 	}
 
 	private static int calculateScore() {
-		int timeScore = calculateTimeScore();
-		int exploreScore = calculateExploreScore();
-		int skillScore = calculateSkillScore();
-		int bonusScore = calculateBonusScore();
-		int totalScore = timeScore + exploreScore + skillScore + bonusScore;
-		if (currentFloor.equals("E")) totalScore = (int) (totalScore * 0.7);
-		//Will be this way until ready for pr, so it's easy to debug.
-		LOGGER.info("Total Score: {} (Time: {}, Explore: {}, Skill: {}, Bonus: {})", totalScore, timeScore, exploreScore, skillScore, bonusScore);
+		int totalScore = calculateTimeScore() + calculateExploreScore() + calculateSkillScore() + calculateBonusScore();
+		if (currentFloor.equals("E")) return (int) (totalScore * 0.7);
 		return totalScore;
 	}
 
@@ -181,7 +175,7 @@ public class DungeonScore {
 		int paulScore = isMayorPaul ? 10 : 0;
 		int cryptsScore = Math.min(getCrypts(), 5);
 		int mimicScore = isMimicKilled ? 2 : 0;
-		if (getSecretsPercentage() >= 100 && !MIMIC_FLOOR_FILTER_PATTERN.matcher(currentFloor).matches()) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
+		if (getSecretsPercentage() >= 100 && !MIMICLESS_FLOORS_PATTERN.matcher(currentFloor).matches()) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
 		return paulScore + cryptsScore + mimicScore;
 	}
 
@@ -191,7 +185,7 @@ public class DungeonScore {
 
 	public static boolean isEntityMimic(Entity entity) {
 		if (!Utils.isInDungeons()) return false;
-		if (MIMIC_FLOOR_FILTER_PATTERN.matcher(currentFloor).matches()) return false;
+		if (MIMICLESS_FLOORS_PATTERN.matcher(currentFloor).matches()) return false;
 		if (entity == null) return false;
 		if (!(entity instanceof ZombieEntity zombie)) return false;
 		if (!zombie.isBaby()) return false;
@@ -219,9 +213,9 @@ public class DungeonScore {
 
 	//This is not very accurate at the beginning of the dungeon since clear percentage is rounded to the closest integer, so at lower percentages its effect on the result is quite high.
 	//For example: If clear percentage is 7% with a single room completed, it can be rounded from 6.5 or 7.49. In that range, the actual total room count can be either 14 or 15 while our result is 14.
+	//Score might fluctuate at first if the total room amount calculated changes as it gets more accurate with each room completed.
 	private static int getTotalRooms() {
-		int completedRooms = getCompletedRooms();
-		return (int) Math.round(completedRooms / getClearPercentage());
+		return (int) Math.round(getCompletedRooms() / getClearPercentage());
 	}
 
 	private static int getCompletedRooms() {
@@ -229,7 +223,9 @@ public class DungeonScore {
 		return matcher != null ? Integer.parseInt(matcher.group("rooms")) : 0;
 	}
 
-	private static int getExtraCompletedRooms() { //This is needed for calculating the score before going in the boss room & completing the blood room, so we have the result sooner
+	//This is needed for calculating the score before going in the boss room & completing the blood room, so we have the result sooner
+	//It might cause score to fluctuate when completing the blood room or entering the boss room as there's a slight delay between the room being completed (boolean set to true) and the scoreboard updating
+	private static int getExtraCompletedRooms() {
 		if (!bloodRoomCompleted) return 2;
 		if (!DungeonManager.isInBoss()) return 1;
 		return 0;
@@ -241,10 +237,11 @@ public class DungeonScore {
 			if (!clearMatcher.matches()) continue;
 			return Double.parseDouble(clearMatcher.group("cleared")) / 100.0;
 		}
-		LOGGER.error("Clear pattern doesn't match");
+		LOGGER.error("[Skyblocker] Clear pattern doesn't match!");
 		return 0;
 	}
 
+	//Score might fluctuate when the first death has spirit pet as the boolean will be set to true after getting a response from the api, which might take a while
 	private static int getDeathScorePenalty() {
 		return deathCount * 2 - (firstDeathHasSpiritPet ? 1 : 0);
 	}
@@ -254,7 +251,6 @@ public class DungeonScore {
 		return matcher != null ? Integer.parseInt(matcher.group("count")) : 0;
 	}
 
-	//Possible states: ✖, ✦, ✔
 	private static int getPuzzlePenalty() {
 		int incompletePuzzles = 0;
 		for (int index = 0; index < puzzleCount; index++) {
@@ -302,7 +298,6 @@ public class DungeonScore {
 					return true;
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 				LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! Name: {} - Cause: {}", name, e.getMessage());
 			}
 			return false;
@@ -334,7 +329,7 @@ public class DungeonScore {
 			currentFloor = floorMatcher.group("floor");
 			return;
 		}
-		LOGGER.error("Floor pattern doesn't match");
+		LOGGER.error("[Skyblocker] Floor pattern doesn't match!");
 	}
 
 	public static int getScore() {
