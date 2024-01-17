@@ -103,7 +103,7 @@ public class Tips {
 
     private static Text nextTipInternal() {
         int randomInt = RANDOM.nextInt(TIPS.size());
-        if (randomInt == previousTipIndex) return nextTipInternal();
+        while (randomInt == previousTipIndex) randomInt = RANDOM.nextInt(TIPS.size());
         previousTipIndex = randomInt;
         return TIPS.get(randomInt).get();
     }
