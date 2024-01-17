@@ -22,6 +22,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class Tips {
     private static final Random RANDOM = new Random();
+    private static int previousTipIndex = -1;
     private static final List<Supplier<Text>> TIPS = List.of(
             getTipFactory("skyblocker.tips.customItemNames", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom renameItem"),
             getTipFactory("skyblocker.tips.customArmorDyeColors", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom dyeColor"),
@@ -101,6 +102,9 @@ public class Tips {
     }
 
     private static Text nextTipInternal() {
-        return TIPS.get(RANDOM.nextInt(TIPS.size())).get();
+        int randomInt = RANDOM.nextInt(TIPS.size());
+        if (randomInt == previousTipIndex) return nextTipInternal();
+        previousTipIndex = randomInt;
+        return TIPS.get(randomInt).get();
     }
 }
