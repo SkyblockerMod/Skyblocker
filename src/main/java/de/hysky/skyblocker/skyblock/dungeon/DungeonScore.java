@@ -89,7 +89,7 @@ public class DungeonScore {
 			return;
 		}
 		score = calculateScore();
-		if (!sent270 && score >= 270 && score < 300) {
+		if (!sent270 && !sent300 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.enableDungeonScore270Message) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
 			}
