@@ -123,6 +123,39 @@ public class MobGlow {
 			};
 		}
 
+		// copypaste nukekubi head logic
+		if(entity instanceof ArmorStandEntity) {
+			for (net.minecraft.item.ItemStack it : entity.getArmorItems()) {
+				// hacky way to check if an item is a player head w/o
+				// some shenanigans
+				if(!it.toString().startsWith("1 player_head"))
+					continue;
+
+
+				if (it.hasNbt()) {
+					assert it.getNbt() != null;
+					// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id
+					// for the nukekubi head, compare against it to exclusively find
+					// armorstands that are nukekubi heads
+					if (it.getNbt().contains("SkullOwner")) {
+						// get the texture of the nukekubi head item itself and
+						// compare it
+						var texture = it
+								.getNbt()
+								.getCompound("SkullOwner")
+								.getCompound("Properties")
+								.getList("textures", NbtElement.COMPOUND_TYPE)
+								.getCompound(0)
+								.getString("Value");
+
+						if(texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=")) {
+							return 0x990099;
+						}
+					}
+				}
+			}
+		}
+
 		return 0xf57738;
 	}
 }
