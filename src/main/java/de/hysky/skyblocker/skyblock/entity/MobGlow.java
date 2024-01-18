@@ -67,10 +67,13 @@ public class MobGlow {
 		}
 
 		// Enderman Slayer
-		// Nukekubi Heads
-		Logger logger = LoggerFactory.getLogger(MobGlow.class);
-		if(entity instanceof ArmorStandEntity) {
+		// Highlights Nukekubi Heads
+		if(SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
+				&& entity instanceof ArmorStandEntity) {
+			// check for items in the armor sets
 			for (net.minecraft.item.ItemStack it : entity.getArmorItems()) {
+				// hacky way to check if an item is a player head w/o
+				// some shenanigans
 				if(!it.toString().startsWith("1 player_head"))
 					continue;
 
@@ -81,6 +84,8 @@ public class MobGlow {
 					// for the nukekubi head, compare against it to exclusively find
 					// armorstands that are nukekubi heads
 					if (it.getNbt().contains("SkullOwner")) {
+						// get the texture of the nukekubi head item itself and
+						// compare it
 						var texture = it
 								.getNbt()
 								.getCompound("SkullOwner")
@@ -88,8 +93,8 @@ public class MobGlow {
 								.getList("textures", NbtElement.COMPOUND_TYPE)
 								.getCompound(0)
 								.getString("Value");
-						return SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
-								&& texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
+
+						return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
 
 					}
 				}
