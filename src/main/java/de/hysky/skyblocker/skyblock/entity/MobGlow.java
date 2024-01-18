@@ -71,22 +71,22 @@ public class MobGlow {
 		if(SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
 				&& entity instanceof ArmorStandEntity) {
 			// check for items in the armor sets
-			for (net.minecraft.item.ItemStack it : entity.getArmorItems()) {
+			for (net.minecraft.item.ItemStack armorItem : entity.getArmorItems()) {
 				// hacky way to check if an item is a player head w/o
 				// some shenanigans
-				if(!it.toString().startsWith("1 player_head"))
+				if(!armorItem.toString().startsWith("1 player_head"))
 					continue;
 
 
-				if (it.hasNbt()) {
-					assert it.getNbt() != null;
+				if (armorItem.hasNbt()) {
+					assert armorItem.getNbt() != null;
 					// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id
 					// for the nukekubi head, compare against it to exclusively find
 					// armorstands that are nukekubi heads
-					if (it.getNbt().contains("SkullOwner")) {
+					if (armorItem.getNbt().contains("SkullOwner")) {
 						// get the texture of the nukekubi head item itself and
 						// compare it
-						var texture = it
+						var texture = armorItem
 								.getNbt()
 								.getCompound("SkullOwner")
 								.getCompound("Properties")
@@ -125,22 +125,22 @@ public class MobGlow {
 
 		// copypaste nukekebi head logic
 		if(entity instanceof ArmorStandEntity) {
-			for (net.minecraft.item.ItemStack it : entity.getArmorItems()) {
+			for (net.minecraft.item.ItemStack armorItem : entity.getArmorItems()) {
 				// hacky way to check if an item is a player head w/o
 				// some shenanigans
-				if(!it.toString().startsWith("1 player_head"))
+				if(!armorItem.toString().startsWith("1 player_head"))
 					continue;
 
 
-				if (it.hasNbt()) {
-					assert it.getNbt() != null;
+				if (armorItem.hasNbt()) {
+					assert armorItem.getNbt() != null;
 					// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id
 					// for the nukekubi head, compare against it to exclusively find
 					// armorstands that are nukekubi heads
-					if (it.getNbt().contains("SkullOwner")) {
+					if (armorItem.getNbt().contains("SkullOwner")) {
 						// get the texture of the nukekebi head item itself and
 						// compare it
-						var texture = it
+						var texture = armorItem
 								.getNbt()
 								.getCompound("SkullOwner")
 								.getCompound("Properties")

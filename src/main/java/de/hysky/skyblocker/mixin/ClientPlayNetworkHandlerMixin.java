@@ -79,9 +79,9 @@ public abstract class ClientPlayNetworkHandlerMixin {
     }
     @Inject(method = "onBlockUpdate", at = @At("RETURN"))
     private void skyblocker$onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
-        BeaconHighlighter.positions.remove(packet.getPos());
+        BeaconHighlighter.beaconPositions.remove(packet.getPos());
         if(packet.getState().toString().contains("minecraft:beacon")) {
-            BeaconHighlighter.positions.add(packet.getPos());
+            BeaconHighlighter.beaconPositions.add(packet.getPos());
         }
     }
 }

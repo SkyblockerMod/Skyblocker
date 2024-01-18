@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BeaconHighlighter {
-    public static List<BlockPos> positions = new ArrayList<>();
+    public static List<BlockPos> beaconPositions = new ArrayList<>();
 
     /**
      * Initializes the beacon highlighting system.
@@ -28,9 +28,9 @@ public class BeaconHighlighter {
      */
     public static void render(WorldRenderContext context) {
         if(Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons)
-            positions.forEach((it) -> RenderHelper.renderFilled(
+            beaconPositions.forEach((position) -> RenderHelper.renderFilled(
                 context,
-                it,
+                position,
                 new float[]{1.0f, 0.0f, 0.0f},
                 0.5f,
                 false
