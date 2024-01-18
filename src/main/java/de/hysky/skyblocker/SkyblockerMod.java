@@ -14,6 +14,7 @@ import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
+import de.hysky.skyblocker.skyblock.endermanslayer.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -135,6 +136,7 @@ public class SkyblockerMod implements ClientModInitializer {
         RenderHelper.init();
         containerSolverManager.init();
         statusBarTracker.init();
+        BeaconHighlighter.init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
         Scheduler.INSTANCE.scheduleCyclic(LividColor::update, 10);
