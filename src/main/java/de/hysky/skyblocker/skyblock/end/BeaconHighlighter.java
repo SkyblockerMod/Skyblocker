@@ -61,7 +61,7 @@ public class BeaconHighlighter {
                     it,
                     new float[]{1.0f, 0.0f, 0.0f},
                     0.5f,
-                    true
+                    false
             );
         });
     }
