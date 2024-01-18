@@ -16,6 +16,24 @@ public class SlayersCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.slayer"))
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightNukekubiHeads"))
+								.binding(defaults.slayer.endermanSlayer.highlightNukekubiHeads,
+										() -> config.slayer.endermanSlayer.highlightNukekubiHeads,
+										newValue -> config.slayer.endermanSlayer.highlightNukekubiHeads = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightBeacons"))
+								.binding(defaults.slayer.endermanSlayer.highlightBeacons,
+										() -> config.slayer.endermanSlayer.highlightBeacons,
+										newValue -> config.slayer.endermanSlayer.highlightBeacons = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 
 				//Vampire Slayer
 				.group(OptionGroup.createBuilder()

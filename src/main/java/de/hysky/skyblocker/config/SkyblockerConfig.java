@@ -918,6 +918,17 @@ public class SkyblockerConfig {
 	public static class Slayer {
 		@SerialEntry
 		public VampireSlayer vampireSlayer = new VampireSlayer();
+
+		@SerialEntry
+		public EndermanSlayer endermanSlayer = new EndermanSlayer();
+	}
+
+	public static class EndermanSlayer {
+		@SerialEntry
+		public boolean highlightNukekubiHeads = true;
+
+		@SerialEntry
+		public boolean highlightBeacons = true;
 	}
 
 	public static class VampireSlayer {

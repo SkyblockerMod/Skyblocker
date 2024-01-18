@@ -2,18 +2,25 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import java.util.List;
 
+import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MobGlow {
 	public static boolean shouldMobGlow(Entity entity) {
@@ -51,6 +58,39 @@ public class MobGlow {
 					switch (name) {
 						// They have a space in their name for some reason...
 						case "Blobbercyst ": return SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
+					}
+				}
+			}
+
+
+
+		}
+
+		// Enderman Slayer
+		// Nukekubi Heads
+		Logger logger = LoggerFactory.getLogger(MobGlow.class);
+		if(entity instanceof ArmorStandEntity) {
+			for (net.minecraft.item.ItemStack it : entity.getArmorItems()) {
+				if(!it.toString().startsWith("1 player_head"))
+					continue;
+
+
+				if (it.hasNbt()) {
+					assert it.getNbt() != null;
+					// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id
+					// for the nukekubi head, compare against it to exclusively find
+					// armorstands that are nukekubi heads
+					if (it.getNbt().contains("SkullOwner")) {
+						var texture = it
+								.getNbt()
+								.getCompound("SkullOwner")
+								.getCompound("Properties")
+								.getList("textures", NbtElement.COMPOUND_TYPE)
+								.getCompound(0)
+								.getString("Value");
+						return SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
+								&& texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
+
 					}
 				}
 			}
