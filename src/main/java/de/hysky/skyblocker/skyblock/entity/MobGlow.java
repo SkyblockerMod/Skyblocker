@@ -123,7 +123,7 @@ public class MobGlow {
 			};
 		}
 
-		// copypaste nukekubi head logic
+		// copypaste nukekebi head logic
 		if(entity instanceof ArmorStandEntity) {
 			for (net.minecraft.item.ItemStack it : entity.getArmorItems()) {
 				// hacky way to check if an item is a player head w/o
@@ -138,7 +138,7 @@ public class MobGlow {
 					// for the nukekubi head, compare against it to exclusively find
 					// armorstands that are nukekubi heads
 					if (it.getNbt().contains("SkullOwner")) {
-						// get the texture of the nukekubi head item itself and
+						// get the texture of the nukekebi head item itself and
 						// compare it
 						var texture = it
 								.getNbt()
