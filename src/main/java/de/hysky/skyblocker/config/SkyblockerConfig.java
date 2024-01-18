@@ -648,6 +648,9 @@ public class SkyblockerConfig {
 		public boolean floor3GuardianHealthDisplay = true;
 
 		@SerialEntry
+		public boolean allowDroppingProtectedItems = false;
+
+		@SerialEntry
 		public LividColor lividColor = new LividColor();
 
 		@SerialEntry

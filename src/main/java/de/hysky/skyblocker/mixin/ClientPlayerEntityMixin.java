@@ -2,6 +2,7 @@ package de.hysky.skyblocker.mixin;
 
 import com.mojang.authlib.GameProfile;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.rift.HealingMelonIndicator;
@@ -24,7 +25,12 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
     public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
         if (Utils.isOnSkyblock()) {
-            if (ItemProtection.isItemProtected(this.getInventory().getMainHandStack()) && !Utils.isInDungeons()) cir.setReturnValue(false);
+            if (ItemProtection.isItemProtected(this.getInventory().getMainHandStack())) {
+                if (!SkyblockerConfigManager.get().locations.dungeons.allowDroppingProtectedItems
+                        || (SkyblockerConfigManager.get().locations.dungeons.allowDroppingProtectedItems && !Utils.isInDungeons())) {
+                    cir.setReturnValue(false);
+                }
+            }
             HotbarSlotLock.handleDropSelectedItem(this.getInventory().selectedSlot, cir);
         }
     }
