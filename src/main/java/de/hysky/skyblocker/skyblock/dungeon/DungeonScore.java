@@ -50,12 +50,13 @@ public class DungeonScore {
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(".*?\u2620 (?<whodied>\\S+) .*");
 	//Other patterns
-	private static final Pattern MIMICLESS_FLOORS_PATTERN = Pattern.compile("[EFM][12345]?");
+	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]]");
 
 	private static String currentFloor;
+	private static boolean floorHasMimics;
 	private static boolean sent270;
 	private static boolean sent300;
-	private static boolean isMimicKilled;
+	private static boolean mimicKilled;
 	private static boolean dungeonStarted;
 	private static boolean isMayorPaul;
 	private static boolean firstDeathHasSpiritPet;
@@ -119,9 +120,10 @@ public class DungeonScore {
 
 	private static void reset() {
 		currentFloor = "";
+		floorHasMimics = false;
 		sent270 = false;
 		sent300 = false;
-		isMimicKilled = false;
+		mimicKilled = false;
 		dungeonStarted = false;
 		isMayorPaul = false;
 		firstDeathHasSpiritPet = false;
@@ -138,6 +140,7 @@ public class DungeonScore {
 		puzzleCount = getPuzzleCount();
 		isMayorPaul = Utils.getMayor().equals("Paul");
 		startingTime = System.currentTimeMillis();
+		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
 	}
 
 	private static int calculateScore() {
@@ -174,8 +177,8 @@ public class DungeonScore {
 	private static int calculateBonusScore() {
 		int paulScore = isMayorPaul ? 10 : 0;
 		int cryptsScore = Math.min(getCrypts(), 5);
-		int mimicScore = isMimicKilled ? 2 : 0;
-		if (getSecretsPercentage() >= 100 && !MIMICLESS_FLOORS_PATTERN.matcher(currentFloor).matches()) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
+		int mimicScore = mimicKilled ? 2 : 0;
+		if (getSecretsPercentage() >= 100 && floorHasMimics) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
 		return paulScore + cryptsScore + mimicScore;
 	}
 
@@ -185,7 +188,7 @@ public class DungeonScore {
 
 	public static boolean isEntityMimic(Entity entity) {
 		if (!Utils.isInDungeons()) return false;
-		if (MIMICLESS_FLOORS_PATTERN.matcher(currentFloor).matches()) return false;
+		if (!floorHasMimics) return false;
 		if (entity == null) return false;
 		if (!(entity instanceof ZombieEntity zombie)) return false;
 		if (!zombie.isBaby()) return false;
@@ -201,14 +204,14 @@ public class DungeonScore {
 	}
 
 	public static void handleEntityDeath(Entity entity) {
-		if (isMimicKilled) return;
+		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
 		if (MIMIC_MESSAGES_CONFIG.sendMimicMessages) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGES_CONFIG.mimicMessage);
-		isMimicKilled = true;
+		mimicKilled = true;
 	}
 
 	public static void setMimicKilled(boolean state) {
-		isMimicKilled = state;
+		mimicKilled = state;
 	}
 
 	//This is not very accurate at the beginning of the dungeon since clear percentage is rounded to the closest integer, so at lower percentages its effect on the result is quite high.
