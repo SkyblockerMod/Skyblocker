@@ -68,7 +68,7 @@ public abstract class InGameHudMixin {
 
         if (Utils.isInDungeons() && DungeonScore.isDungeonStarted()) {
             if (SkyblockerConfigManager.get().locations.dungeons.enableMap) DungeonMap.render(context.getMatrices());
-            if (SkyblockerConfigManager.get().locations.dungeons.enableScore) DungeonScoreHUD.render(context);
+            if (SkyblockerConfigManager.get().locations.dungeons.dungeonScore.enableScoreHUD) DungeonScoreHUD.render(context);
         }
     }
 

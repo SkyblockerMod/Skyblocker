@@ -12,13 +12,13 @@ public class DungeonScoreHUD {
 	}
 
 	public static void render(DrawContext context) {
-		int x = SkyblockerConfigManager.get().locations.dungeons.scoreX;
-		int y = SkyblockerConfigManager.get().locations.dungeons.scoreY;
+		int x = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreX;
+		int y = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreY;
 		render(context, x, y);
 	}
 
 	public static void render(DrawContext context, int x, int y) {
-		float scale = SkyblockerConfigManager.get().locations.dungeons.scoreScaling;
+		float scale = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreScaling;
 		MatrixStack matrixStack = context.getMatrices();
 		matrixStack.push();
 		matrixStack.scale(scale, scale, 0);
