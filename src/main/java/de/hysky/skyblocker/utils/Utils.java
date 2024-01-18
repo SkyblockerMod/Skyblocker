@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -396,15 +397,18 @@ public class Utils {
 
     private static void initializeMayorCache() {
         if (!mayor.isEmpty()) return;
-        try {
-            JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
-            if (json.get("success").getAsBoolean()) {
-                mayor = json.get("mayor").getAsJsonObject().get("name").getAsString();
-            } else {
-                throw new IOException("API call for mayor failed: " + json.get("cause").getAsString());
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
+                if (json.get("success").getAsBoolean()) return json.get("mayor").getAsJsonObject().get("name").getAsString();
+                throw new IOException("API call for mayor status failed: " + json.get("cause").getAsString());
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+            return "";
+        }).thenAccept(s -> {
+            if (!s.isEmpty()) mayor = s;
+        });
+
     }
 }
