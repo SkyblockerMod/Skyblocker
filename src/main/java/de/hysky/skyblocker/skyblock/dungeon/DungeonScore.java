@@ -39,7 +39,6 @@ public class DungeonScore {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
 	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");
-	private static final Pattern DUNGEON_START_PATTERN = Pattern.compile("(?:Auto-closing|Starting) in: \\d:\\d+");
 	private static final Pattern FLOOR_PATTERN = Pattern.compile(".*?(?=T)The Catacombs \\((?<floor>[EFM]\\D*\\d*)\\)");
 	//Playerlist patterns
 	private static final Pattern SECRETS_PATTERN = Pattern.compile("Secrets Found: (?<secper>\\d+\\.?\\d*)%");
@@ -72,10 +71,14 @@ public class DungeonScore {
 		SkyblockEvents.LEAVE.register(SpiritPetCache::clear);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (!Utils.isInDungeons() || !dungeonStarted) return;
+			if (overlay || !Utils.isInDungeons()) return;
 			String str = message.getString();
-			checkMessageForDeaths(str);
-			checkMessageForWatcher(str);
+			if (!dungeonStarted) {
+				checkMessageForMort(str);
+			} else {
+				checkMessageForDeaths(str);
+				checkMessageForWatcher(str);
+			}
 		});
 	}
 
@@ -85,10 +88,8 @@ public class DungeonScore {
 			reset();
 			return;
 		}
-		if (!dungeonStarted) {
-			if (checkIfDungeonStarted()) onDungeonStart();
-			return;
-		}
+		if (!dungeonStarted) return;
+
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.enableDungeonScore270Message) {
@@ -180,10 +181,6 @@ public class DungeonScore {
 		int mimicScore = mimicKilled ? 2 : 0;
 		if (getSecretsPercentage() >= 100 && floorHasMimics) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
 		return paulScore + cryptsScore + mimicScore;
-	}
-
-	private static boolean checkIfDungeonStarted() {
-		return Utils.STRING_SCOREBOARD.stream().noneMatch(s -> DUNGEON_START_PATTERN.matcher(s).matches());
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
@@ -323,6 +320,11 @@ public class DungeonScore {
 
 	private static void checkMessageForWatcher(String message) {
 		if (message.equals("[BOSS] The Watcher: You have proven yourself. You may pass.")) bloodRoomCompleted = true;
+	}
+
+	private static void checkMessageForMort(String message) {
+		if (!message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) return;
+		onDungeonStart();
 	}
 
 	public static void setCurrentFloor() {
