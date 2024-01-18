@@ -53,6 +53,7 @@ public class DungeonScore {
 
 	private static FloorRequirement floorRequirement;
 	private static String currentFloor;
+	private static boolean isCurrentFloorEntrance;
 	private static boolean floorHasMimics;
 	private static boolean sent270;
 	private static boolean sent300;
@@ -123,6 +124,7 @@ public class DungeonScore {
 	private static void reset() {
 		floorRequirement = null;
 		currentFloor = "";
+		isCurrentFloorEntrance = false;
 		floorHasMimics = false;
 		sent270 = false;
 		sent300 = false;
@@ -145,12 +147,12 @@ public class DungeonScore {
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
+		if (currentFloor.equals("E")) isCurrentFloorEntrance = true;
 	}
 
 	private static int calculateScore() {
-		int totalScore = calculateTimeScore() + calculateExploreScore() + calculateSkillScore() + calculateBonusScore();
-		if (currentFloor.equals("E")) return (int) (totalScore * 0.7);
-		return totalScore;
+		if (isCurrentFloorEntrance) return Math.round(calculateTimeScore() * 0.7f) + Math.round(calculateExploreScore() * 0.7f) + Math.round(calculateSkillScore() * 0.7f) + Math.round(calculateBonusScore() * 0.7f);
+		return calculateTimeScore() + calculateExploreScore() + calculateSkillScore() + calculateBonusScore();
 	}
 
 	private static int calculateSkillScore() {
@@ -229,8 +231,8 @@ public class DungeonScore {
 	//This is needed for calculating the score before going in the boss room & completing the blood room, so we have the result sooner
 	//It might cause score to fluctuate when completing the blood room or entering the boss room as there's a slight delay between the room being completed (boolean set to true) and the scoreboard updating
 	private static int getExtraCompletedRooms() {
-		if (!bloodRoomCompleted) return 2;
-		if (!DungeonManager.isInBoss()) return 1;
+		if (!bloodRoomCompleted) return isCurrentFloorEntrance ? 1 : 2;
+		if (!DungeonManager.isInBoss() && !isCurrentFloorEntrance) return 1;
 		return 0;
 	}
 
