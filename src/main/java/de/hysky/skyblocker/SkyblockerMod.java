@@ -14,7 +14,7 @@ import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
-import de.hysky.skyblocker.skyblock.endermanslayer.BeaconHighlighter;
+import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
