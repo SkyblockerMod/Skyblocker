@@ -51,6 +51,7 @@ public class DungeonScore {
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]]");
 
+	private static FloorRequirement floorRequirement;
 	private static String currentFloor;
 	private static boolean floorHasMimics;
 	private static boolean sent270;
@@ -120,6 +121,7 @@ public class DungeonScore {
 	}
 
 	private static void reset() {
+		floorRequirement = null;
 		currentFloor = "";
 		floorHasMimics = false;
 		sent270 = false;
@@ -141,6 +143,7 @@ public class DungeonScore {
 		puzzleCount = getPuzzleCount();
 		isMayorPaul = Utils.getMayor().equals("Paul");
 		startingTime = System.currentTimeMillis();
+		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
 	}
 
@@ -151,28 +154,28 @@ public class DungeonScore {
 	}
 
 	private static int calculateSkillScore() {
-		return 20 + (int) Math.floor(80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / getTotalRooms()) - getPuzzlePenalty() - getDeathScorePenalty();
+		int totalRooms = getTotalRooms(); //This is necessary to avoid division by 0 at the start of dungeons, which results in infinite score
+		return 20 + Math.max((totalRooms != 0 ? (int) (80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0) - getPuzzlePenalty() - getDeathScorePenalty(), 0); //Can't go below 20 skill score
 	}
 
 	private static int calculateExploreScore() {
-		int completedRoomScore = (int) Math.floor(60.0 * (getCompletedRooms() + getExtraCompletedRooms()) / getTotalRooms());
-		int percentageRequirement = FloorRequirement.valueOf(currentFloor).percentage;
-		int secretsScore = (int) Math.floor(40 * Math.min(percentageRequirement, getSecretsPercentage()) / percentageRequirement);
-		return completedRoomScore + secretsScore;
+		int totalRooms = getTotalRooms(); //This is necessary to avoid division by 0 at the start of dungeons, which results in infinite score
+		int completedRoomScore = totalRooms != 0 ? (int) (60.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0;
+		int secretsScore = (int) (40 * Math.min(floorRequirement.percentage, getSecretsPercentage()) / floorRequirement.percentage);
+		return Math.max(completedRoomScore + secretsScore, 0);
 	}
 
 	private static int calculateTimeScore() {
 		int score = 100;
 		int timeSpent = (int) (System.currentTimeMillis() - startingTime) / 1000;
-		int timeRequirement = FloorRequirement.valueOf(currentFloor).timeLimit;
-		if (timeSpent < timeRequirement) return score;
+		if (timeSpent < floorRequirement.timeLimit) return score;
 
-		double timePastRequirement = ((double) (timeSpent - timeRequirement) / timeRequirement) * 100;
+		double timePastRequirement = ((double) (timeSpent - floorRequirement.timeLimit) / floorRequirement.timeLimit) * 100;
 		if (timePastRequirement < 20) return score - (int) timePastRequirement / 2;
 		if (timePastRequirement < 40) return score - (int) (10 + (timePastRequirement - 20) / 4);
 		if (timePastRequirement < 50) return score - (int) (15 + (timePastRequirement - 40) / 5);
 		if (timePastRequirement < 60) return score - (int) (17 + (timePastRequirement - 50) / 6);
-		return score - (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7);
+		return Math.max(score - (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7), 0); //This can theoretically go down to -20 if the time limit is one of the lower ones like 480, but individual score categories can't go below 0
 	}
 
 	private static int calculateBonusScore() {
