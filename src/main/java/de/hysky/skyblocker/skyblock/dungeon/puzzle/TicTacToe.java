@@ -1,19 +1,17 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +22,8 @@ import java.util.List;
  */
 public class TicTacToe extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToe.class);
-	private static final float[] RED_COLOR_COMPONENTS = {1.0F, 0.0F, 0.0F};
+	private static final float[] RED_COLOR_COMPONENTS = { 1.0F, 0.0F, 0.0F };
+	@SuppressWarnings("unused")
 	private static final TicTacToe INSTANCE = new TicTacToe();
 	private static Box nextBestMoveToMake = null;
 
@@ -50,56 +49,39 @@ public class TicTacToe extends DungeonPuzzle {
 		List<ItemFrameEntity> itemFramesThatHoldMaps = client.world.getEntitiesByClass(ItemFrameEntity.class, searchBox, ItemFrameEntity::containsMap);
 
 		try {
-			//Only attempt to solve if its the player's turn
+			//Only attempt to solve if the puzzle wasn't just completed and if its the player's turn
 			if (itemFramesThatHoldMaps.size() != 9 && itemFramesThatHoldMaps.size() % 2 == 1) {
 				char[][] board = new char[3][3];
-				BlockPos leftmostRow = null;
-				int sign = 1;
-				char facing = 'X';
 
 				for (ItemFrameEntity itemFrame : itemFramesThatHoldMaps) {
 					MapState mapState = client.world.getMapState(FilledMapItem.getMapName(itemFrame.getMapId().getAsInt()));
 
 					if (mapState == null) continue;
 
-					int column = 0, row;
-					sign = 1;
+					//Surely if we pass shouldSolve then the room should be matched right
+					BlockPos relative = DungeonManager.getCurrentRoom().actualToRelative(itemFrame.getBlockPos());
 
-					//Find position of the item frame relative to where it is on the tic tac toe board
-					if (itemFrame.getHorizontalFacing() == Direction.SOUTH || itemFrame.getHorizontalFacing() == Direction.WEST) sign = -1;
-					BlockPos itemFramePos = BlockPos.ofFloored(itemFrame.getX(), itemFrame.getY(), itemFrame.getZ());
+					//Determine the row -- 72 = top, 71 = middle, 70 = bottom
+					int y = relative.getY();
+					int row = switch (y) {
+						case 72 -> 0;
+						case 71 -> 1;
+						case 70 -> 2;
 
-					for (int i = 2; i >= 0; i--) {
-						int realI = i * sign;
-						BlockPos blockPos = itemFramePos;
+						default -> -1;
+					};
 
-						if (itemFrame.getX() % 0.5 == 0) {
-							blockPos = itemFramePos.add(realI, 0, 0);
-						} else if (itemFrame.getZ() % 0.5 == 0) {
-							blockPos = itemFramePos.add(0, 0, realI);
-							facing = 'Z';
-						}
+					//Determine the column - 17 = first, 16 = second, 15 = third
+					int z = relative.getZ();
+					int column = switch (z) {
+						case 17 -> 0;
+						case 16 -> 1;
+						case 15 -> 2;
 
-						Block block = client.world.getBlockState(blockPos).getBlock();
-						if (block == Blocks.AIR || block == Blocks.STONE_BUTTON) {
-							leftmostRow = blockPos;
-							column = i;
+						default -> -1;
+					};
 
-							break;
-						}
-					}
-
-					//Determine the row of the item frame
-					if (itemFrame.getY() == 72.5) {
-						row = 0;
-					} else if (itemFrame.getY() == 71.5) {
-						row = 1;
-					} else if (itemFrame.getY() == 70.5) {
-						row = 2;
-					} else {
-						continue;
-					}
-
+					if (row == -1 || column == -1) continue;
 
 					//Get the color of the middle pixel of the map which determines whether its X or O
 					int middleColor = mapState.colors[8256] & 255;
@@ -109,17 +91,16 @@ public class TicTacToe extends DungeonPuzzle {
 					} else if (middleColor == 33) {
 						board[row][column] = 'O';
 					}
-
-					int bestMove = TicTacToeUtils.getBestMove(board) - 1;
-
-					if (leftmostRow != null) {
-						double drawX = facing == 'X' ? leftmostRow.getX() - sign * (bestMove % 3) : leftmostRow.getX();
-						double drawY = 72 - (double) (bestMove / 3);
-						double drawZ = facing == 'Z' ? leftmostRow.getZ() - sign * (bestMove % 3) : leftmostRow.getZ();
-
-						nextBestMoveToMake = new Box(drawX, drawY, drawZ, drawX + 1, drawY + 1, drawZ + 1);
-					}
 				}
+
+				int bestMove = TicTacToeUtils.getBestMove(board) - 1;
+
+				double nextX = 8;
+				double nextY = 72 - (double) (bestMove / 3);
+				double nextZ = 17 - (bestMove % 3);
+
+				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.ofFloored(nextX, nextY, nextZ));
+				nextBestMoveToMake = new Box(nextPos);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while determining a tic tac toe solution!", e);
