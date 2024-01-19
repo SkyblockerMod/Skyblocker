@@ -197,10 +197,8 @@ public class DungeonScore {
 		try {
 			DefaultedList<ItemStack> armor = (DefaultedList<ItemStack>) zombie.getArmorItems();
 			return armor.stream().allMatch(ItemStack::isEmpty);
-		} catch (NullPointerException e) {
-			return false;
-		} catch (ClassCastException f) {
-			f.printStackTrace();
+		} catch (Exception f) {
+			LOGGER.error("[Skyblocker] Failed to check if entity is a mimic! Cause: {}", f.getMessage());
 			return false;
 		}
 	}

@@ -401,9 +401,9 @@ public class Utils {
             try {
                 JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
                 if (json.get("success").getAsBoolean()) return json.get("mayor").getAsJsonObject().get("name").getAsString();
-                throw new IOException("API call for mayor status failed: " + json.get("cause").getAsString());
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                throw new IOException(json.get("cause").getAsString());
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker] Failed to get mayor status! Cause: {}", e.getMessage());
             }
             return "";
         }).thenAccept(s -> {
