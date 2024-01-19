@@ -316,7 +316,7 @@ public class DungeonsCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.enableScore"))
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD"))
 						.binding(defaults.locations.dungeons.dungeonScore.enableScoreHUD,
 								() -> config.locations.dungeons.dungeonScore.enableScoreHUD,
 								newValue -> config.locations.dungeons.dungeonScore.enableScoreHUD = newValue)
@@ -335,7 +335,7 @@ public class DungeonsCategory {
 						.controller(FloatFieldControllerBuilder::create)
 						.build())
 				.option(Option.<Float>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.scoreScaling"))
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.scoreScaling"))
 						.binding(defaults.locations.dungeons.dungeonScore.scoreScaling,
 								() -> config.locations.dungeons.dungeonScore.scoreScaling,
 								newValue -> {
