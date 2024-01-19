@@ -31,6 +31,10 @@ public class ApiUtils {
 	 * Multithreading is to be handled by the method caller
 	 */
 	public static String name2Uuid(String name) {
+		return name2Uuid(name, 0);
+	}
+
+	private static String name2Uuid(String name, int retries) {
 		Session session = MinecraftClient.getInstance().getSession();
 
 		if (session.getUsername().equals(name)) return UndashedUuid.toString(session.getUuidOrNull());
@@ -43,6 +47,10 @@ public class ApiUtils {
 				NAME_2_UUID_CACHE.put(name, uuid);
 
 				return uuid;
+			} else if (response.ratelimited() && retries < 3) {
+				Thread.sleep(800);
+
+				return name2Uuid(name, ++retries);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Name to uuid lookup failed! Name: {}", name, e);
