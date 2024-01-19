@@ -189,11 +189,7 @@ public class DungeonScore {
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
-		if (!Utils.isInDungeons()) return false;
-		if (!floorHasMimics) return false;
-		if (entity == null) return false;
-		if (!(entity instanceof ZombieEntity zombie)) return false;
-		if (!zombie.isBaby()) return false;
+		if (!Utils.isInDungeons() || !floorHasMimics || !(entity instanceof ZombieEntity zombie) || !zombie.isBaby()) return false;
 		try {
 			DefaultedList<ItemStack> armor = (DefaultedList<ItemStack>) zombie.getArmorItems();
 			return armor.stream().allMatch(ItemStack::isEmpty);
@@ -346,6 +342,11 @@ public class DungeonScore {
 
 	public static boolean isDungeonStarted() {
 		return dungeonStarted;
+	}
+
+	//Feel free to refactor this if you can think of a better name.
+	public static boolean isMimicOnCurrentFloor() {
+		return floorHasMimics;
 	}
 
 	enum FloorRequirement {

@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 
 public class MimicFilter extends ChatPatternListener {
     public MimicFilter() {
-        super("(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + SkyblockerConfigManager.get().locations.dungeons.mimicMessages.mimicMessage + "\\E)$");
+        super(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + SkyblockerConfigManager.get().locations.dungeons.mimicMessages.mimicMessage + "\\E)$");
     }
 
     @Override
@@ -21,7 +21,7 @@ public class MimicFilter extends ChatPatternListener {
 
     @Override
     protected boolean onMatch(Text message, Matcher matcher) {
-        if (!Utils.isInDungeons()) return false;
+        if (!Utils.isInDungeons() || !DungeonScore.isDungeonStarted() || !DungeonScore.isMimicOnCurrentFloor()) return false;
         DungeonScore.setMimicKilled(true);
         return true;
     }
