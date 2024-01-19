@@ -317,6 +317,7 @@ public class DungeonsCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.deathMessagesNote")))
 						.binding(defaults.locations.dungeons.dungeonScore.enableScoreHUD,
 								() -> config.locations.dungeons.dungeonScore.enableScoreHUD,
 								newValue -> config.locations.dungeons.dungeonScore.enableScoreHUD = newValue)
