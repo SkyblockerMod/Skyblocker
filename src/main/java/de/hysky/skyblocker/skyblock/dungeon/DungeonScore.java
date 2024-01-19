@@ -49,7 +49,7 @@ public class DungeonScore {
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(".*?\u2620 (?<whodied>\\S+) .*");
 	//Other patterns
-	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]]");
+	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 
 	private static FloorRequirement floorRequirement;
 	private static String currentFloor;
