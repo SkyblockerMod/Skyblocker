@@ -40,7 +40,7 @@ public class DungeonMapConfigScreen extends Screen {
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
 		int mapSize = (int) (128 * SkyblockerConfigManager.get().locations.dungeons.mapScaling);
 		float scoreScaling = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreScaling;
-		int scoreWidth = (int) (textRenderer.getWidth("Score: 300 (S+)") * scoreScaling);
+		int scoreWidth = (int) (textRenderer.getWidth(DungeonScoreHUD.getFormattedScoreText()) * scoreScaling);
 		int scoreHeight = (int) (textRenderer.fontHeight * scoreScaling);
 		if (RenderHelper.pointIsInArea(mouseX, mouseY, mapX, mapY, mapX + mapSize, mapY + mapSize) && button == 0) {
 			mapX = (int) Math.max(Math.min(mouseX - (mapSize >> 1), this.width - mapSize), 0);
@@ -57,7 +57,7 @@ public class DungeonMapConfigScreen extends Screen {
 		if (button == 1) {
 			mapX = 2;
 			mapY = 2;
-			scoreX = Math.max((int) ((mapX + (64 * SkyblockerConfigManager.get().locations.dungeons.mapScaling)) - textRenderer.getWidth("Score: 300 (S+)") * SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreScaling / 2), 0);
+			scoreX = Math.max((int) ((mapX + (64 * SkyblockerConfigManager.get().locations.dungeons.mapScaling)) - textRenderer.getWidth(DungeonScoreHUD.getFormattedScoreText()) * SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreScaling / 2), 0);
 			scoreY = (int) (mapY + (128 * SkyblockerConfigManager.get().locations.dungeons.mapScaling) + 4);
 		}
 

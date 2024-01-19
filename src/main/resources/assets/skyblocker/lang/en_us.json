@@ -340,6 +340,7 @@
   "skyblocker.dungeons.secrets.customWaypointAdded": "§rAdded a custom waypoint at X: %d, Y: %d, Z: %d for room %s secret #%d of category %s with name '%s'.",
   "skyblocker.dungeons.secrets.customWaypointRemoved": "§rRemoved custom waypoint at X: %d, Y: %d, Z: %d for room %s secret #%d of category %s with name '%s'.",
   "skyblocker.dungeons.secrets.customWaypointNotFound": "§cNo custom waypoint found at X: %d, Y: %d, Z: %d for room %s.",
+  "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
   
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the amount of secrets everybody did this run!",
