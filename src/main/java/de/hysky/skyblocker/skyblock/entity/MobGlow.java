@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Formatting;
@@ -23,139 +24,115 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MobGlow {
-	public static boolean shouldMobGlow(Entity entity) {
-		Box box = entity.getBoundingBox();
+    public static boolean shouldMobGlow(Entity entity) {
+        Box box = entity.getBoundingBox();
 
-		if (!entity.isInvisible() && OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
-			String name = entity.getName().getString();
+        if (!entity.isInvisible() && OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
+            String name = entity.getName().getString();
 
-			// Dungeons
-			if (Utils.isInDungeons()) {
+            // Dungeons
+            if (Utils.isInDungeons()) {
 
-				// Minibosses
-				if (entity instanceof PlayerEntity) {
-					switch (name) {
-						case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
-						case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
-						"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid": return LividColor.shouldGlow(name);
-					}
-				}
+                // Minibosses
+                if (entity instanceof PlayerEntity) {
+                    switch (name) {
+                        case "Lost Adventurer", "Shadow Assassin", "Diamond Guy":
+                            return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
+                        case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
+                                "Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid":
+                            return LividColor.shouldGlow(name);
+                    }
+                }
 
-				// Regular Mobs
-				if (!(entity instanceof ArmorStandEntity)) {
-					List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
+                // Regular Mobs
+                if (!(entity instanceof ArmorStandEntity)) {
+                    List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
 
-					if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯")) return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
-				}
+                    if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
+                        return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
+                }
 
-				// Bats
-				return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow && entity instanceof BatEntity;
-			}
+                // Bats
+                return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow && entity instanceof BatEntity;
+            }
 
-			// Rift
-			if (Utils.isInTheRift()) {
-				if (entity instanceof PlayerEntity) {
-					switch (name) {
-						// They have a space in their name for some reason...
-						case "Blobbercyst ": return SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
-					}
-				}
-			}
-
-
-
-		}
-
-		// Enderman Slayer
-		// Highlights Nukekubi Heads
-		if(SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
-				&& entity instanceof ArmorStandEntity) {
-			// check for items in the armor sets
-			for (net.minecraft.item.ItemStack armorItem : entity.getArmorItems()) {
-				// hacky way to check if an item is a player head w/o
-				// some shenanigans
-				if(!armorItem.toString().startsWith("1 player_head"))
-					continue;
+            // Rift
+            if (Utils.isInTheRift()) {
+                if (entity instanceof PlayerEntity) {
+                    switch (name) {
+                        // They have a space in their name for some reason...
+                        case "Blobbercyst ":
+                            return SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
+                    }
+                }
+            }
 
 
-				if (armorItem.hasNbt()) {
-					assert armorItem.getNbt() != null;
-					// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id
-					// for the nukekubi head, compare against it to exclusively find
-					// armorstands that are nukekubi heads
-					if (armorItem.getNbt().contains("SkullOwner")) {
-						// get the texture of the nukekubi head item itself and
-						// compare it
-						var texture = armorItem
-								.getNbt()
-								.getCompound("SkullOwner")
-								.getCompound("Properties")
-								.getList("textures", NbtElement.COMPOUND_TYPE)
-								.getCompound(0)
-								.getString("Value");
+        }
 
-						return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
+        // Enderman Slayer
+        // Highlights Nukekubi Heads
+        return SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
+                && entity instanceof ArmorStandEntity
+                && isNukekubiHead((ArmorStandEntity) entity);
+    }
 
-					}
-				}
-			}
-		}
+    private static boolean isNukekubiHead(ArmorStandEntity entity) {
+        for (ItemStack armorItem : entity.getArmorItems()) {
+            // hacky way to check if an item is a player head w/o
+            // some shenanigans
+            if (!armorItem.toString().startsWith("1 player_head"))
+                continue;
 
-		return false;
-	}
+            if (armorItem.hasNbt()) {
+                assert armorItem.getNbt() != null;
+                // eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id
+                // for the nukekubi head, compare against it to exclusively find
+                // armorstands that are nukekubi heads
+                if (armorItem.getNbt().contains("SkullOwner")) {
+                    // get the texture of the nukekubi head item itself and
+                    // compare it
+                    var texture = armorItem
+                            .getNbt()
+                            .getCompound("SkullOwner")
+                            .getCompound("Properties")
+                            .getList("textures", NbtElement.COMPOUND_TYPE)
+                            .getCompound(0)
+                            .getString("Value");
 
-	private static List<ArmorStandEntity> getArmorStands(World world, Box box) {
+                    return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
+
+                }
+            }
+        }
+        return false;
+    }
+
+    private static List<ArmorStandEntity> getArmorStands(World world, Box box) {
         return world.getEntitiesByClass(ArmorStandEntity.class, box.expand(0, 2, 0), EntityPredicates.NOT_MOUNTED);
-	}
+    }
 
-	public static int getGlowColor(Entity entity) {
-		String name = entity.getName().getString();
+    public static int getGlowColor(Entity entity) {
+        String name = entity.getName().getString();
 
-		if (entity instanceof PlayerEntity) {
-			return switch (name) {
-				case "Lost Adventurer" -> 0xfee15c;
-				case "Shadow Assassin" -> 0x5b2cb2;
-				case "Diamond Guy" -> 0x57c2f7;
-				case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
-				"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid" -> LividColor.getGlowColor(name);
-				case "Blobbercyst " -> Formatting.GREEN.getColorValue();
-				default -> 0xf57738;
-			};
-		}
+        if (entity instanceof PlayerEntity) {
+            return switch (name) {
+                case "Lost Adventurer" -> 0xfee15c;
+                case "Shadow Assassin" -> 0x5b2cb2;
+                case "Diamond Guy" -> 0x57c2f7;
+                case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
+                        "Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid" ->
+                        LividColor.getGlowColor(name);
+                case "Blobbercyst " -> Formatting.GREEN.getColorValue();
+                default -> 0xf57738;
+            };
+        }
 
-		// copypaste nukekebi head logic
-		if(entity instanceof ArmorStandEntity) {
-			for (net.minecraft.item.ItemStack armorItem : entity.getArmorItems()) {
-				// hacky way to check if an item is a player head w/o
-				// some shenanigans
-				if(!armorItem.toString().startsWith("1 player_head"))
-					continue;
+        // copypaste nukekebi head logic
+        if (entity instanceof ArmorStandEntity && isNukekubiHead((ArmorStandEntity) entity)) {
+            return 0x990099;
+        }
 
-
-				if (armorItem.hasNbt()) {
-					assert armorItem.getNbt() != null;
-					// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id
-					// for the nukekubi head, compare against it to exclusively find
-					// armorstands that are nukekubi heads
-					if (armorItem.getNbt().contains("SkullOwner")) {
-						// get the texture of the nukekebi head item itself and
-						// compare it
-						var texture = armorItem
-								.getNbt()
-								.getCompound("SkullOwner")
-								.getCompound("Properties")
-								.getList("textures", NbtElement.COMPOUND_TYPE)
-								.getCompound(0)
-								.getString("Value");
-
-						if(texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=")) {
-							return 0x990099;
-						}
-					}
-				}
-			}
-		}
-
-		return 0xf57738;
-	}
+        return 0xf57738;
+    }
 }

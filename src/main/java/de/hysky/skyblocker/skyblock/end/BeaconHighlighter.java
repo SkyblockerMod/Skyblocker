@@ -24,16 +24,17 @@ public class BeaconHighlighter {
     /**
      * Renders the beacon glow around it. It is rendered in a red color with 50% opacity, and
      * is visible through walls.
+     *
      * @param context An instance of WorldRenderContext for the RenderHelper to use
      */
     public static void render(WorldRenderContext context) {
-        if(Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons)
+        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons)
             beaconPositions.forEach((position) -> RenderHelper.renderFilled(
-                context,
-                position,
-                new float[]{1.0f, 0.0f, 0.0f},
-                0.5f,
-                false
+                    context,
+                    position,
+                    new float[]{1.0f, 0.0f, 0.0f},
+                    0.5f,
+                    false
             ));
     }
 }

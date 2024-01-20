@@ -3,11 +3,13 @@ package de.hysky.skyblocker.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
+import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -79,9 +81,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
     }
     @Inject(method = "onBlockUpdate", at = @At("RETURN"))
     private void skyblocker$onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
-        BeaconHighlighter.beaconPositions.remove(packet.getPos());
-        if(packet.getState().toString().contains("minecraft:beacon")) {
-            BeaconHighlighter.beaconPositions.add(packet.getPos());
+        if(Utils.isInTheEnd() && SlayerUtils.isInSlayer()) {
+            BeaconHighlighter.beaconPositions.remove(packet.getPos());
+            if(packet.getState().toString().contains("minecraft:beacon")) {
+                BeaconHighlighter.beaconPositions.add(packet.getPos());
+            }
         }
+
     }
 }
