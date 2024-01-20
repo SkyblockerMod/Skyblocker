@@ -156,6 +156,9 @@ public class SkyblockerConfig {
 		public boolean acceptReparty = true;
 
 		@SerialEntry
+		public boolean betterPartyFinder = true;
+
+		@SerialEntry
 		public boolean backpackPreviewWithoutShift = false;
 
 		@SerialEntry

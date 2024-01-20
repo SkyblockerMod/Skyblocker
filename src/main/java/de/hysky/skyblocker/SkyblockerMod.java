@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.dungeon.*;
+import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.CreeperBeams;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonBlaze;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TicTacToe;
@@ -108,6 +109,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DungeonBlaze.init();
         Waterboard.init();
         DungeonScore.init();
+        PartyFinderScreen.initClass();
         ChestValue.init();
         FireFreezeStaffTimer.init();
         GuardianHealth.init();

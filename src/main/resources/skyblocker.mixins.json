@@ -16,6 +16,7 @@
     "FarmlandBlockMixin",
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
+    "HandledScreenProviderMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
@@ -40,6 +41,7 @@
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
+    "accessor.SkullBlockEntityAccessor",
     "accessor.WorldRendererAccessor",
     "discordipc.ConnectionMixin"
   ],
