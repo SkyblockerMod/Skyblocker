@@ -48,6 +48,7 @@ public class DungeonScore {
 	private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
+	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.mimicMessage + "\\E)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 
@@ -80,6 +81,7 @@ public class DungeonScore {
 			} else {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
+				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
 			}
 		});
 		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
@@ -210,8 +212,8 @@ public class DungeonScore {
 		mimicKilled = true;
 	}
 
-	public static void setMimicKilled(boolean state) {
-		mimicKilled = state;
+	public static void onMimicKill() {
+		mimicKilled = true;
 	}
 
 	//This is not very accurate at the beginning of the dungeon since clear percentage is rounded to the closest integer, so at lower percentages its effect on the result is quite high.
@@ -328,6 +330,11 @@ public class DungeonScore {
 	private static void checkMessageForMort(String message) {
 		if (!message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) return;
 		onDungeonStart();
+	}
+
+	private static void checkMessageForMimic(String message) {
+		if (!MIMIC_PATTERN.matcher(message).matches()) return;
+		onMimicKill();
 	}
 
 	public static void setCurrentFloor() {
