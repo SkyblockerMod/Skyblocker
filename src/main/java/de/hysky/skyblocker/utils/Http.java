@@ -134,6 +134,10 @@ public class Http {
 			return statusCode == 200;
 		}
 
+		public boolean ratelimited() {
+			return statusCode == 429;
+		}
+
 		public boolean cached() {
 			return cacheStatus.equals("HIT");
 		}
