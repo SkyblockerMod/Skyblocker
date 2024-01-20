@@ -17,43 +17,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkyblockerConfig {
-    @SerialEntry
-    public int version = 1;
+	@SerialEntry
+	public int version = 1;
 
-    @SerialEntry
-    public General general = new General();
+	@SerialEntry
+	public General general = new General();
 
-    @SerialEntry
-    public Locations locations = new Locations();
+	@SerialEntry
+	public Locations locations = new Locations();
 
-    @SerialEntry
-    public Slayer slayer = new Slayer();
+	@SerialEntry
+	public Slayer slayer = new Slayer();
 
-    @SerialEntry
-    public QuickNav quickNav = new QuickNav();
+	@SerialEntry
+	public QuickNav quickNav = new QuickNav();
 
-    @SerialEntry
-    public Messages messages = new Messages();
+	@SerialEntry
+	public Messages messages = new Messages();
 
-    @SerialEntry
-    public RichPresence richPresence = new RichPresence();
+	@SerialEntry
+	public RichPresence richPresence = new RichPresence();
 
-    public static class QuickNav {
-        @SerialEntry
-        public boolean enableQuickNav = true;
+	public static class QuickNav {
+		@SerialEntry
+		public boolean enableQuickNav = true;
 
-        @SerialEntry
-        public QuickNavItem button1 = new QuickNavItem(true, new ItemData("diamond_sword"), "Your Skills", "/skills");
+		@SerialEntry
+		public QuickNavItem button1 = new QuickNavItem(true, new ItemData("diamond_sword"), "Your Skills", "/skills");
 
-        @SerialEntry
-        public QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collections", "/collection");
+		@SerialEntry
+		public QuickNavItem button2 = new QuickNavItem(true, new ItemData("painting"), "Collections", "/collection");
 
-        /* REGEX Explanation
-         * "Pets" : simple match on letters
-         * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
-         */
-        @SerialEntry
-        public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets(:? \\(\\d+\\/\\d+\\))?", "/pets");
+		/* REGEX Explanation
+		 * "Pets" : simple match on letters
+		 * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
+		 */
+		@SerialEntry
+		public QuickNavItem button3 = new QuickNavItem(true, new ItemData("bone"), "Pets(:? \\(\\d+\\/\\d+\\))?", "/pets");
 
         /* REGEX Explanation
          * "Wardrobe" : simple match on letters
@@ -97,667 +97,694 @@ public class SkyblockerConfig {
         public QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant Item",
                 "/etable");
 
-        @SerialEntry
-        public QuickNavItem button11 = new QuickNavItem(true, new ItemData("anvil"), "Anvil", "/anvil");
 
-        @SerialEntry
-        public QuickNavItem button12 = new QuickNavItem(true, new ItemData("crafting_table"), "Craft Item", "/craft");
-    }
+		@SerialEntry
+		public QuickNavItem button11 = new QuickNavItem(true, new ItemData("anvil"), "Anvil", "/anvil");
 
-    public static class QuickNavItem {
-        public QuickNavItem(Boolean render, ItemData itemData, String uiTitle, String clickEvent) {
-            this.render = render;
-            this.item = itemData;
-            this.clickEvent = clickEvent;
-            this.uiTitle = uiTitle;
-        }
+		@SerialEntry
+		public QuickNavItem button12 = new QuickNavItem(true, new ItemData("crafting_table"), "Craft Item", "/craft");
+	}
 
-        @SerialEntry
-        public Boolean render;
+	public static class QuickNavItem {
+		public QuickNavItem(Boolean render, ItemData itemData, String uiTitle, String clickEvent) {
+			this.render = render;
+			this.item = itemData;
+			this.clickEvent = clickEvent;
+			this.uiTitle = uiTitle;
+		}
 
-        @SerialEntry
-        public ItemData item;
+		@SerialEntry
+		public Boolean render;
 
-        @SerialEntry
-        public String uiTitle;
+		@SerialEntry
+		public ItemData item;
 
-        @SerialEntry
-        public String clickEvent;
-    }
+		@SerialEntry
+		public String uiTitle;
 
-    public static class ItemData {
-        public ItemData(String itemName, int count, String nbt) {
-            this.itemName = itemName;
-            this.count = count;
-            this.nbt = nbt;
-        }
+		@SerialEntry
+		public String clickEvent;
+	}
 
-        public ItemData(String itemName) {
-            this.itemName = itemName;
-            this.count = 1;
-            this.nbt = "";
-        }
+	public static class ItemData {
+		public ItemData(String itemName, int count, String nbt) {
+			this.itemName = itemName;
+			this.count = count;
+			this.nbt = nbt;
+		}
 
-        @SerialEntry
-        public String itemName;
+		public ItemData(String itemName) {
+			this.itemName = itemName;
+			this.count = 1;
+			this.nbt = "";
+		}
 
-        @SerialEntry
-        public int count;
+		@SerialEntry
+		public String itemName;
 
-        @SerialEntry
-        public String nbt;
-    }
+		@SerialEntry
+		public int count;
 
-    public static class General {
-        @SerialEntry
-        public boolean enableTips = true;
+		@SerialEntry
+		public String nbt;
+	}
 
-        @SerialEntry
-        public boolean acceptReparty = true;
+	public static class General {
+		@SerialEntry
+		public boolean enableTips = true;
 
+		@SerialEntry
+		public boolean acceptReparty = true;
+
+<<<<<<< HEAD
         @SerialEntry
         public boolean betterPartyFinder = true;
 
         @SerialEntry
         public boolean backpackPreviewWithoutShift = false;
+=======
+		@SerialEntry
+		public boolean backpackPreviewWithoutShift = false;
+>>>>>>> c9ef08ab (fix the indentation)
 
-        @SerialEntry
-        public boolean compactorDeletorPreview = true;
+		@SerialEntry
+		public boolean compactorDeletorPreview = true;
 
-        @SerialEntry
-        public boolean hideEmptyTooltips = true;
+		@SerialEntry
+		public boolean hideEmptyTooltips = true;
 
-        @SerialEntry
-        public boolean hideStatusEffectOverlay = false;
+		@SerialEntry
+		public boolean hideStatusEffectOverlay = false;
 
-        @SerialEntry
-        public boolean dontStripSkinAlphaValues = true;
+		@SerialEntry
+		public boolean dontStripSkinAlphaValues = true;
 
-        @SerialEntry
-        public TabHudConf tabHud = new TabHudConf();
+		@SerialEntry
+		public TabHudConf tabHud = new TabHudConf();
 
-        @SerialEntry
-        public Bars bars = new Bars();
+		@SerialEntry
+		public Bars bars = new Bars();
 
-        @SerialEntry
-        public Experiments experiments = new Experiments();
+		@SerialEntry
+		public Experiments experiments = new Experiments();
 
-        @SerialEntry
-        public Fishing fishing = new Fishing();
+		@SerialEntry
+		public Fishing fishing = new Fishing();
 
-        @SerialEntry
-        public FairySouls fairySouls = new FairySouls();
+		@SerialEntry
+		public FairySouls fairySouls = new FairySouls();
 
-        @SerialEntry
-        public MythologicalRitual mythologicalRitual = new MythologicalRitual();
+		@SerialEntry
+		public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
-        @SerialEntry
-        public ItemCooldown itemCooldown = new ItemCooldown();
+		@SerialEntry
+		public ItemCooldown itemCooldown = new ItemCooldown();
 
-        @SerialEntry
-        public Shortcuts shortcuts = new Shortcuts();
+		@SerialEntry
+		public Shortcuts shortcuts = new Shortcuts();
 
-        @SerialEntry
-        public Waypoints waypoints = new Waypoints();
+		@SerialEntry
+		public Waypoints waypoints = new Waypoints();
 
-        @SerialEntry
-        public QuiverWarning quiverWarning = new QuiverWarning();
+		@SerialEntry
+		public QuiverWarning quiverWarning = new QuiverWarning();
 
-        @SerialEntry
-        public ItemList itemList = new ItemList();
+		@SerialEntry
+		public ItemList itemList = new ItemList();
 
-        @SerialEntry
-        public ItemTooltip itemTooltip = new ItemTooltip();
+		@SerialEntry
+		public ItemTooltip itemTooltip = new ItemTooltip();
 
-        @SerialEntry
-        public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
+		@SerialEntry
+		public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
 
-        @SerialEntry
-        public WikiLookup wikiLookup = new WikiLookup();
+		@SerialEntry
+		public WikiLookup wikiLookup = new WikiLookup();
 
-        @SerialEntry
-        public ChestValue chestValue = new ChestValue();
+		@SerialEntry
+		public ChestValue chestValue = new ChestValue();
 
-        @SerialEntry
-        public SpecialEffects specialEffects = new SpecialEffects();
+		@SerialEntry
+		public SpecialEffects specialEffects = new SpecialEffects();
 
-        @SerialEntry
-        public Hitbox hitbox = new Hitbox();
+		@SerialEntry
+		public Hitbox hitbox = new Hitbox();
 
-        @SerialEntry
-        public TitleContainer titleContainer = new TitleContainer();
+		@SerialEntry
+		public TitleContainer titleContainer = new TitleContainer();
 
-        @SerialEntry
-        public TeleportOverlay teleportOverlay = new TeleportOverlay();
+		@SerialEntry
+		public TeleportOverlay teleportOverlay = new TeleportOverlay();
 
-        @SerialEntry
-        public FlameOverlay flameOverlay = new FlameOverlay();
+		@SerialEntry
+		public FlameOverlay flameOverlay = new FlameOverlay();
 
-        @SerialEntry
-        public List<Integer> lockedSlots = new ArrayList<>();
+		@SerialEntry
+		public List<Integer> lockedSlots = new ArrayList<>();
 
-        @SerialEntry
-        public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
+		@SerialEntry
+		public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
-        @SerialEntry
-        public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
+		@SerialEntry
+		public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
 
-        @SerialEntry
-        public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
+		@SerialEntry
+		public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
 
-        @SerialEntry
-        public Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customArmorTrims = new Object2ObjectOpenHashMap<>();
-    }
+		@SerialEntry
+		public Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customArmorTrims = new Object2ObjectOpenHashMap<>();
+	}
 
-    public static class TabHudConf {
-        @SerialEntry
-        public boolean tabHudEnabled = true;
+	public static class TabHudConf {
+		@SerialEntry
+		public boolean tabHudEnabled = true;
 
-        @SerialEntry
-        public int tabHudScale = 100;
+		@SerialEntry
+		public int tabHudScale = 100;
 
-        @SerialEntry
-        public boolean plainPlayerNames = false;
+		@SerialEntry
+		public boolean plainPlayerNames = false;
+
+		@SerialEntry
+		public NameSorting nameSorting = NameSorting.DEFAULT;
+	}
+
+	public enum NameSorting {
+		DEFAULT, ALPHABETICAL;
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case DEFAULT -> "Default";
+				case ALPHABETICAL -> "Alphabetical";
+			};
+		}
+	}
+
+	public static class Bars {
+		@SerialEntry
+		public boolean enableBars = true;
+
+		@SerialEntry
+		public BarPositions barPositions = new BarPositions();
+	}
+
+	public static class BarPositions {
+		@SerialEntry
+		public BarPosition healthBarPosition = BarPosition.LAYER1;
+
+		@SerialEntry
+		public BarPosition manaBarPosition = BarPosition.LAYER1;
+
+		@SerialEntry
+		public BarPosition defenceBarPosition = BarPosition.LAYER1;
+
+		@SerialEntry
+		public BarPosition experienceBarPosition = BarPosition.LAYER1;
+
+	}
+
+	public enum BarPosition {
+		LAYER1, LAYER2, RIGHT, NONE;
+
+		@Override
+		public String toString() {
+			return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
+		}
+
+		public int toInt() {
+			return switch (this) {
+				case LAYER1 -> 0;
+				case LAYER2 -> 1;
+				case RIGHT -> 2;
+				case NONE -> -1;
+			};
+		}
+	}
 
-        @SerialEntry
-        public NameSorting nameSorting = NameSorting.DEFAULT;
-    }
-
-    public enum NameSorting {
-        DEFAULT, ALPHABETICAL;
-
-        @Override
-        public String toString() {
-            return switch (this) {
-                case DEFAULT -> "Default";
-                case ALPHABETICAL -> "Alphabetical";
-            };
-        }
-    }
-
-    public static class Bars {
-        @SerialEntry
-        public boolean enableBars = true;
-
-        @SerialEntry
-        public BarPositions barPositions = new BarPositions();
-    }
-
-    public static class BarPositions {
-        @SerialEntry
-        public BarPosition healthBarPosition = BarPosition.LAYER1;
-
-        @SerialEntry
-        public BarPosition manaBarPosition = BarPosition.LAYER1;
-
-        @SerialEntry
-        public BarPosition defenceBarPosition = BarPosition.LAYER1;
-
-        @SerialEntry
-        public BarPosition experienceBarPosition = BarPosition.LAYER1;
-
-    }
-
-    public enum BarPosition {
-        LAYER1, LAYER2, RIGHT, NONE;
-
-        @Override
-        public String toString() {
-            return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
-        }
-
-        public int toInt() {
-            return switch (this) {
-                case LAYER1 -> 0;
-                case LAYER2 -> 1;
-                case RIGHT -> 2;
-                case NONE -> -1;
-            };
-        }
-    }
+	public static class Experiments {
+		@SerialEntry
+		public boolean enableChronomatronSolver = true;
 
-    public static class Experiments {
-        @SerialEntry
-        public boolean enableChronomatronSolver = true;
+		@SerialEntry
+		public boolean enableSuperpairsSolver = true;
 
-        @SerialEntry
-        public boolean enableSuperpairsSolver = true;
+		@SerialEntry
+		public boolean enableUltrasequencerSolver = true;
+	}
 
-        @SerialEntry
-        public boolean enableUltrasequencerSolver = true;
-    }
+	public static class Fishing {
+		@SerialEntry
+		public boolean enableFishingHelper = true;
+	}
 
-    public static class Fishing {
-        @SerialEntry
-        public boolean enableFishingHelper = true;
-    }
+	public static class FairySouls {
+		@SerialEntry
+		public boolean enableFairySoulsHelper = false;
 
-    public static class FairySouls {
-        @SerialEntry
-        public boolean enableFairySoulsHelper = false;
+		@SerialEntry
+		public boolean highlightFoundSouls = true;
 
-        @SerialEntry
-        public boolean highlightFoundSouls = true;
+		@SerialEntry
+		public boolean highlightOnlyNearbySouls = false;
+	}
 
-        @SerialEntry
-        public boolean highlightOnlyNearbySouls = false;
-    }
+	public static class MythologicalRitual {
+		@SerialEntry
+		public boolean enableMythologicalRitualHelper = true;
+	}
+
+	public static class ItemCooldown {
+		@SerialEntry
+		public boolean enableItemCooldowns = true;
+	}
 
-    public static class MythologicalRitual {
-        @SerialEntry
-        public boolean enableMythologicalRitualHelper = true;
-    }
-
-    public static class ItemCooldown {
-        @SerialEntry
-        public boolean enableItemCooldowns = true;
-    }
+	public static class Shortcuts {
+		@SerialEntry
+		public boolean enableShortcuts = true;
+
+		@SerialEntry
+		public boolean enableCommandShortcuts = true;
+
+		@SerialEntry
+		public boolean enableCommandArgShortcuts = true;
+	}
+
+	public static class Waypoints {
+		@SerialEntry
+		public boolean enableWaypoints = true;
+
+		@SerialEntry
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+	}
+
+	public static class QuiverWarning {
+		@SerialEntry
+		public boolean enableQuiverWarning = true;
+
+		@SerialEntry
+		public boolean enableQuiverWarningInDungeons = true;
+
+		@SerialEntry
+		public boolean enableQuiverWarningAfterDungeon = true;
+	}
+
+	public static class Hitbox {
+		@SerialEntry
+		public boolean oldFarmlandHitbox = false;
+
+		@SerialEntry
+		public boolean oldLeverHitbox = false;
+	}
+
+	public static class TitleContainer {
+		@SerialEntry
+		public float titleContainerScale = 100;
+
+		@SerialEntry
+		public int x = 540;
+
+		@SerialEntry
+		public int y = 10;
+
+		@SerialEntry
+		public Direction direction = Direction.HORIZONTAL;
+
+		@SerialEntry
+		public Alignment alignment = Alignment.MIDDLE;
+	}
+
+	public static class TeleportOverlay {
+		@SerialEntry
+		public boolean enableTeleportOverlays = true;
 
-    public static class Shortcuts {
-        @SerialEntry
-        public boolean enableShortcuts = true;
-
-        @SerialEntry
-        public boolean enableCommandShortcuts = true;
-
-        @SerialEntry
-        public boolean enableCommandArgShortcuts = true;
-    }
-
-    public static class Waypoints {
-        @SerialEntry
-        public boolean enableWaypoints = true;
-
-        @SerialEntry
-        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
-    }
-
-    public static class QuiverWarning {
-        @SerialEntry
-        public boolean enableQuiverWarning = true;
-
-        @SerialEntry
-        public boolean enableQuiverWarningInDungeons = true;
-
-        @SerialEntry
-        public boolean enableQuiverWarningAfterDungeon = true;
-    }
-
-    public static class Hitbox {
-        @SerialEntry
-        public boolean oldFarmlandHitbox = false;
-
-        @SerialEntry
-        public boolean oldLeverHitbox = false;
-    }
-
-    public static class TitleContainer {
-        @SerialEntry
-        public float titleContainerScale = 100;
-
-        @SerialEntry
-        public int x = 540;
-
-        @SerialEntry
-        public int y = 10;
-
-        @SerialEntry
-        public Direction direction = Direction.HORIZONTAL;
-
-        @SerialEntry
-        public Alignment alignment = Alignment.MIDDLE;
-    }
-
-    public static class TeleportOverlay {
-        @SerialEntry
-        public boolean enableTeleportOverlays = true;
+		@SerialEntry
+		public boolean enableWeirdTransmission = true;
 
-        @SerialEntry
-        public boolean enableWeirdTransmission = true;
+		@SerialEntry
+		public boolean enableInstantTransmission = true;
+
+		@SerialEntry
+		public boolean enableEtherTransmission = true;
 
-        @SerialEntry
-        public boolean enableInstantTransmission = true;
-
-        @SerialEntry
-        public boolean enableEtherTransmission = true;
+		@SerialEntry
+		public boolean enableSinrecallTransmission = true;
 
-        @SerialEntry
-        public boolean enableSinrecallTransmission = true;
+		@SerialEntry
+		public boolean enableWitherImpact = true;
+	}
 
-        @SerialEntry
-        public boolean enableWitherImpact = true;
-    }
+	public static class FlameOverlay {
+		@SerialEntry
+		public float flameHeight = 0f;
 
-    public static class FlameOverlay {
-        @SerialEntry
-        public float flameHeight = 0f;
+		@SerialEntry
+		public float flameOpacity = 0f;
+	}
 
-        @SerialEntry
-        public float flameOpacity = 0f;
-    }
+	public enum Direction {
+		HORIZONTAL, VERTICAL;
 
-    public enum Direction {
-        HORIZONTAL, VERTICAL;
+		@Override
+		public String toString() {
+			return switch (this) {
+				case HORIZONTAL -> "Horizontal";
+				case VERTICAL -> "Vertical";
+			};
+		}
+	}
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case HORIZONTAL -> "Horizontal";
-                case VERTICAL -> "Vertical";
-            };
-        }
-    }
+	public enum Alignment {
+		LEFT, RIGHT, MIDDLE;
 
-    public enum Alignment {
-        LEFT, RIGHT, MIDDLE;
+		@Override
+		public String toString() {
+			return switch (this) {
+				case LEFT -> "Left";
+				case RIGHT -> "Right";
+				case MIDDLE -> "Middle";
+			};
+		}
+	}
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case LEFT -> "Left";
-                case RIGHT -> "Right";
-                case MIDDLE -> "Middle";
-            };
-        }
-    }
+	public static class RichPresence {
+		@SerialEntry
+		public boolean enableRichPresence = false;
 
-    public static class RichPresence {
-        @SerialEntry
-        public boolean enableRichPresence = false;
+		@SerialEntry
+		public Info info = Info.LOCATION;
 
-        @SerialEntry
-        public Info info = Info.LOCATION;
+		@SerialEntry
+		public boolean cycleMode = false;
 
-        @SerialEntry
-        public boolean cycleMode = false;
+		@SerialEntry
+		public String customMessage = "Playing Skyblock";
+	}
 
-        @SerialEntry
-        public String customMessage = "Playing Skyblock";
-    }
+	public static class ItemList {
+		@SerialEntry
+		public boolean enableItemList = true;
+	}
 
-    public static class ItemList {
-        @SerialEntry
-        public boolean enableItemList = true;
-    }
+	public enum Average {
+		ONE_DAY, THREE_DAY, BOTH;
 
-    public enum Average {
-        ONE_DAY, THREE_DAY, BOTH;
+		@Override
+		public String toString() {
+			return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
+		}
+	}
 
-        @Override
-        public String toString() {
-            return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
-        }
-    }
+	public static class ItemTooltip {
+		@SerialEntry
+		public boolean enableNPCPrice = true;
 
-    public static class ItemTooltip {
-        @SerialEntry
-        public boolean enableNPCPrice = true;
+		@SerialEntry
+		public boolean enableMotesPrice = true;
 
-        @SerialEntry
-        public boolean enableMotesPrice = true;
+		@SerialEntry
+		public boolean enableAvgBIN = true;
 
-        @SerialEntry
-        public boolean enableAvgBIN = true;
+		@SerialEntry
+		public Average avg = Average.THREE_DAY;
 
-        @SerialEntry
-        public Average avg = Average.THREE_DAY;
+		@SerialEntry
+		public boolean enableLowestBIN = true;
 
-        @SerialEntry
-        public boolean enableLowestBIN = true;
+		@SerialEntry
+		public boolean enableBazaarPrice = true;
 
-        @SerialEntry
-        public boolean enableBazaarPrice = true;
+		@SerialEntry
+		public boolean enableObtainedDate = true;
 
-        @SerialEntry
-        public boolean enableObtainedDate = true;
+		@SerialEntry
+		public boolean enableMuseumInfo = true;
 
-        @SerialEntry
-        public boolean enableMuseumInfo = true;
+		@SerialEntry
+		public boolean enableExoticTooltip = true;
+	}
 
-        @SerialEntry
-        public boolean enableExoticTooltip = true;
-    }
+	public static class ItemInfoDisplay {
+		@SerialEntry
+		public boolean attributeShardInfo = true;
 
-    public static class ItemInfoDisplay {
-        @SerialEntry
-        public boolean attributeShardInfo = true;
+		@SerialEntry
+		public boolean itemRarityBackgrounds = false;
 
-        @SerialEntry
-        public boolean itemRarityBackgrounds = false;
+		@SerialEntry
+		public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
 
-        @SerialEntry
-        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
+		@SerialEntry
+		public float itemRarityBackgroundsOpacity = 1f;
+	}
 
-        @SerialEntry
-        public float itemRarityBackgroundsOpacity = 1f;
-    }
-
+<<<<<<< HEAD
     public enum RarityBackgroundStyle {
         CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
         SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+=======
+	public enum RarityBackgroundStyle {
+		CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")), SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+>>>>>>> c9ef08ab (fix the indentation)
 
-        public final Identifier tex;
+		public final Identifier tex;
 
-        RarityBackgroundStyle(Identifier tex) {
-            this.tex = tex;
-        }
+		RarityBackgroundStyle(Identifier tex) {
+			this.tex = tex;
+		}
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case CIRCULAR -> "Circular";
-                case SQUARE -> "Square";
-            };
-        }
-    }
+		@Override
+		public String toString() {
+			return switch (this) {
+				case CIRCULAR -> "Circular";
+				case SQUARE -> "Square";
+			};
+		}
+	}
 
-    public static class WikiLookup {
-        @SerialEntry
-        public boolean enableWikiLookup = true;
+	public static class WikiLookup {
+		@SerialEntry
+		public boolean enableWikiLookup = true;
 
-        @SerialEntry
-        public boolean officialWiki = false;
-    }
+		@SerialEntry
+		public boolean officialWiki = false;
+	}
 
-    public static class ChestValue {
-        @SerialEntry
-        public boolean enableChestValue = true;
+	public static class ChestValue {
+		@SerialEntry
+		public boolean enableChestValue = true;
 
-        @SerialEntry
-        public Formatting color = Formatting.DARK_GREEN;
+		@SerialEntry
+		public Formatting color = Formatting.DARK_GREEN;
 
-        @SerialEntry
-        public Formatting incompleteColor = Formatting.BLUE;
-    }
+		@SerialEntry
+		public Formatting incompleteColor = Formatting.BLUE;
+	}
 
-    public static class SpecialEffects {
-        @SerialEntry
-        public boolean rareDungeonDropEffects = true;
-    }
+	public static class SpecialEffects {
+		@SerialEntry
+		public boolean rareDungeonDropEffects = true;
+	}
 
-    public static class Locations {
-        @SerialEntry
-        public Barn barn = new Barn();
+	public static class Locations {
+		@SerialEntry
+		public Barn barn = new Barn();
 
-        @SerialEntry
-        public Dungeons dungeons = new Dungeons();
+		@SerialEntry
+		public Dungeons dungeons = new Dungeons();
 
-        @SerialEntry
-        public DwarvenMines dwarvenMines = new DwarvenMines();
+		@SerialEntry
+		public DwarvenMines dwarvenMines = new DwarvenMines();
 
-        @SerialEntry
-        public Rift rift = new Rift();
+		@SerialEntry
+		public Rift rift = new Rift();
 
-        @SerialEntry
-        public SpidersDen spidersDen = new SpidersDen();
-    }
+		@SerialEntry
+		public SpidersDen spidersDen = new SpidersDen();
+	}
 
-    public static class Dungeons {
-        @SerialEntry
-        public SecretWaypoints secretWaypoints = new SecretWaypoints();
+	public static class Dungeons {
+		@SerialEntry
+		public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
-        @SerialEntry
-        public DoorHighlight doorHighlight = new DoorHighlight();
+		@SerialEntry
+		public DoorHighlight doorHighlight = new DoorHighlight();
 
-        @SerialEntry
-        public DungeonScore dungeonScore = new DungeonScore();
+		@SerialEntry
+		public DungeonScore dungeonScore = new DungeonScore();
 
-        @SerialEntry
-        public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
+		@SerialEntry
+		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
+<<<<<<< HEAD
         @SerialEntry
         public MimicMessage mimicMessage = new MimicMessage();
 
         @SerialEntry
         public boolean croesusHelper = true;
+=======
+		@SerialEntry
+		public boolean croesusHelper = true;
+>>>>>>> c9ef08ab (fix the indentation)
 
-        @SerialEntry
-        public boolean enableMap = true;
+		@SerialEntry
+		public boolean enableMap = true;
 
-        @SerialEntry
-        public float mapScaling = 1f;
+		@SerialEntry
+		public float mapScaling = 1f;
 
-        @SerialEntry
-        public int mapX = 2;
+		@SerialEntry
+		public int mapX = 2;
 
-        @SerialEntry
-        public int mapY = 2;
+		@SerialEntry
+		public int mapY = 2;
 
-        @SerialEntry
-        public boolean playerSecretsTracker = false;
+		@SerialEntry
+		public boolean playerSecretsTracker = false;
 
-        @SerialEntry
-        public boolean starredMobGlow = true;
+		@SerialEntry
+		public boolean starredMobGlow = true;
 
-        @SerialEntry
-        public boolean solveThreeWeirdos = true;
+		@SerialEntry
+		public boolean solveThreeWeirdos = true;
 
-        @SerialEntry
-        public boolean blazeSolver = true;
+		@SerialEntry
+		public boolean blazeSolver = true;
 
-        @SerialEntry
-        public boolean creeperSolver = true;
+		@SerialEntry
+		public boolean creeperSolver = true;
 
-        @SerialEntry
-        public boolean solveTrivia = true;
+		@SerialEntry
+		public boolean solveTrivia = true;
 
-        @SerialEntry
-        public boolean solveTicTacToe = true;
+		@SerialEntry
+		public boolean solveTicTacToe = true;
 
-        @SerialEntry
-        public boolean solveWaterboard = true;
+		@SerialEntry
+		public boolean solveWaterboard = true;
 
-        @SerialEntry
-        public boolean fireFreezeStaffTimer = true;
+		@SerialEntry
+		public boolean fireFreezeStaffTimer = true;
 
-        @SerialEntry
-        public boolean floor3GuardianHealthDisplay = true;
+		@SerialEntry
+		public boolean floor3GuardianHealthDisplay = true;
 
+<<<<<<< HEAD
         @SerialEntry
         public boolean allowDroppingProtectedItems = false;
 
         @SerialEntry
         public LividColor lividColor = new LividColor();
+=======
+		@SerialEntry
+		public LividColor lividColor = new LividColor();
+>>>>>>> c9ef08ab (fix the indentation)
 
-        @SerialEntry
-        public Terminals terminals = new Terminals();
-    }
+		@SerialEntry
+		public Terminals terminals = new Terminals();
+	}
 
-    public static class SecretWaypoints {
-        @SerialEntry
-        public boolean enableRoomMatching = true;
+	public static class SecretWaypoints {
+		@SerialEntry
+		public boolean enableRoomMatching = true;
 
-        @SerialEntry
-        public boolean enableSecretWaypoints = true;
+		@SerialEntry
+		public boolean enableSecretWaypoints = true;
 
-        @SerialEntry
-        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+		@SerialEntry
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
-        @SerialEntry
-        public boolean showSecretText = true;
+		@SerialEntry
+		public boolean showSecretText = true;
 
-        @SerialEntry
-        public boolean enableEntranceWaypoints = true;
+		@SerialEntry
+		public boolean enableEntranceWaypoints = true;
 
-        @SerialEntry
-        public boolean enableSuperboomWaypoints = true;
+		@SerialEntry
+		public boolean enableSuperboomWaypoints = true;
 
-        @SerialEntry
-        public boolean enableChestWaypoints = true;
+		@SerialEntry
+		public boolean enableChestWaypoints = true;
 
-        @SerialEntry
-        public boolean enableItemWaypoints = true;
+		@SerialEntry
+		public boolean enableItemWaypoints = true;
 
-        @SerialEntry
-        public boolean enableBatWaypoints = true;
+		@SerialEntry
+		public boolean enableBatWaypoints = true;
 
-        @SerialEntry
-        public boolean enableWitherWaypoints = true;
+		@SerialEntry
+		public boolean enableWitherWaypoints = true;
 
-        @SerialEntry
-        public boolean enableLeverWaypoints = true;
+		@SerialEntry
+		public boolean enableLeverWaypoints = true;
 
-        @SerialEntry
-        public boolean enableFairySoulWaypoints = true;
+		@SerialEntry
+		public boolean enableFairySoulWaypoints = true;
 
-        @SerialEntry
-        public boolean enableStonkWaypoints = true;
+		@SerialEntry
+		public boolean enableStonkWaypoints = true;
 
-        @SerialEntry
-        public boolean enableAotvWaypoints = true;
+		@SerialEntry
+		public boolean enableAotvWaypoints = true;
 
-        @SerialEntry
-        public boolean enablePearlWaypoints = true;
+		@SerialEntry
+		public boolean enablePearlWaypoints = true;
 
-        @SerialEntry
-        public boolean enableDefaultWaypoints = true;
-    }
+		@SerialEntry
+		public boolean enableDefaultWaypoints = true;
+	}
 
-    public static class DoorHighlight {
-        @SerialEntry
-        public boolean enableDoorHighlight = true;
+	public static class DoorHighlight {
+		@SerialEntry
+		public boolean enableDoorHighlight = true;
 
-        @SerialEntry
-        public Type doorHighlightType = Type.OUTLINED_HIGHLIGHT;
+		@SerialEntry
+		public Type doorHighlightType = Type.OUTLINED_HIGHLIGHT;
 
+<<<<<<< HEAD
         public enum Type {
             HIGHLIGHT,
             OUTLINED_HIGHLIGHT,
             OUTLINE;
+=======
+		public enum Type {
+			HIGHLIGHT, OUTLINED_HIGHLIGHT, OUTLINE;
+>>>>>>> c9ef08ab (fix the indentation)
 
-            @Override
-            public String toString() {
-                return switch (this) {
-                    case HIGHLIGHT -> "Highlight";
-                    case OUTLINED_HIGHLIGHT -> "Outlined Highlight";
-                    case OUTLINE -> "Outline";
-                };
-            }
-        }
-    }
+			@Override
+			public String toString() {
+				return switch (this) {
+					case HIGHLIGHT -> "Highlight";
+					case OUTLINED_HIGHLIGHT -> "Outlined Highlight";
+					case OUTLINE -> "Outline";
+				};
+			}
+		}
+	}
 
-    public static class DungeonScore {
-        @SerialEntry
-        public boolean enableDungeonScore270Message = false;
+	public static class DungeonScore {
+		@SerialEntry
+		public boolean enableDungeonScore270Message = false;
 
-        @SerialEntry
-        public boolean enableDungeonScore270Title = false;
+		@SerialEntry
+		public boolean enableDungeonScore270Title = false;
 
-        @SerialEntry
-        public boolean enableDungeonScore270Sound = false;
+		@SerialEntry
+		public boolean enableDungeonScore270Sound = false;
 
-        @SerialEntry
-        public String dungeonScore270Message = "270 Score Reached!";
+		@SerialEntry
+		public String dungeonScore270Message = "270 Score Reached!";
 
-        @SerialEntry
-        public boolean enableDungeonScore300Message = true;
+		@SerialEntry
+		public boolean enableDungeonScore300Message = true;
 
-        @SerialEntry
-        public boolean enableDungeonScore300Title = true;
+		@SerialEntry
+		public boolean enableDungeonScore300Title = true;
 
-        @SerialEntry
-        public boolean enableDungeonScore300Sound = true;
+		@SerialEntry
+		public boolean enableDungeonScore300Sound = true;
 
+<<<<<<< HEAD
         @SerialEntry
         public String dungeonScore300Message = "300 Score Reached!";
 
@@ -773,33 +800,39 @@ public class SkyblockerConfig {
         @SerialEntry
         public float scoreScaling = 1f;
     }
+=======
+		@SerialEntry
+		public String dungeonScore300Message = "300 Score Reached!";
+	}
+>>>>>>> c9ef08ab (fix the indentation)
 
-    public static class DungeonChestProfit {
-        @SerialEntry
-        public boolean enableProfitCalculator = true;
+	public static class DungeonChestProfit {
+		@SerialEntry
+		public boolean enableProfitCalculator = true;
 
-        @SerialEntry
-        public boolean includeKismet = false;
+		@SerialEntry
+		public boolean includeKismet = false;
 
-        @SerialEntry
-        public boolean includeEssence = true;
+		@SerialEntry
+		public boolean includeEssence = true;
 
-        @SerialEntry
-        public int neutralThreshold = 1000;
+		@SerialEntry
+		public int neutralThreshold = 1000;
 
-        @SerialEntry
-        public Formatting neutralColor = Formatting.DARK_GRAY;
+		@SerialEntry
+		public Formatting neutralColor = Formatting.DARK_GRAY;
 
-        @SerialEntry
-        public Formatting profitColor = Formatting.DARK_GREEN;
+		@SerialEntry
+		public Formatting profitColor = Formatting.DARK_GREEN;
 
-        @SerialEntry
-        public Formatting lossColor = Formatting.RED;
+		@SerialEntry
+		public Formatting lossColor = Formatting.RED;
 
-        @SerialEntry
-        public Formatting incompleteColor = Formatting.BLUE;
-    }
+		@SerialEntry
+		public Formatting incompleteColor = Formatting.BLUE;
+	}
 
+<<<<<<< HEAD
     public static class MimicMessage {
         @SerialEntry
         public boolean sendMimicMessage = true;
@@ -811,110 +844,116 @@ public class SkyblockerConfig {
     public static class LividColor {
         @SerialEntry
         public boolean enableLividColorGlow = true;
+=======
+	public static class LividColor {
+		@SerialEntry
+		public boolean enableLividColorGlow = true;
+>>>>>>> c9ef08ab (fix the indentation)
 
-        @SerialEntry
-        public boolean enableLividColorText = true;
+		@SerialEntry
+		public boolean enableLividColorText = true;
 
-        @SerialEntry
-        public boolean enableLividColorTitle = true;
+		@SerialEntry
+		public boolean enableLividColorTitle = true;
 
-        @SerialEntry
-        public String lividColorText = "The livid color is [color]";
-    }
+		@SerialEntry
+		public String lividColorText = "The livid color is [color]";
+	}
 
-    public static class Terminals {
-        @SerialEntry
-        public boolean solveColor = true;
+	public static class Terminals {
+		@SerialEntry
+		public boolean solveColor = true;
 
-        @SerialEntry
-        public boolean solveOrder = true;
+		@SerialEntry
+		public boolean solveOrder = true;
 
-        @SerialEntry
-        public boolean solveStartsWith = true;
-    }
+		@SerialEntry
+		public boolean solveStartsWith = true;
+	}
 
-    public static class DwarvenMines {
-        @SerialEntry
-        public boolean enableDrillFuel = true;
+	public static class DwarvenMines {
+		@SerialEntry
+		public boolean enableDrillFuel = true;
 
-        @SerialEntry
-        public boolean solveFetchur = true;
+		@SerialEntry
+		public boolean solveFetchur = true;
 
-        @SerialEntry
-        public boolean solvePuzzler = true;
+		@SerialEntry
+		public boolean solvePuzzler = true;
 
-        @SerialEntry
-        public DwarvenHud dwarvenHud = new DwarvenHud();
-    }
+		@SerialEntry
+		public DwarvenHud dwarvenHud = new DwarvenHud();
+	}
 
-    public static class DwarvenHud {
-        @SerialEntry
-        public boolean enabled = true;
+	public static class DwarvenHud {
+		@SerialEntry
+		public boolean enabled = true;
 
-        @SerialEntry
-        public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
+		@SerialEntry
+		public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
 
-        @SerialEntry
-        public boolean enableBackground = true;
+		@SerialEntry
+		public boolean enableBackground = true;
 
-        @SerialEntry
-        public int x = 10;
+		@SerialEntry
+		public int x = 10;
 
-        @SerialEntry
-        public int y = 10;
-    }
+		@SerialEntry
+		public int y = 10;
+	}
 
-    public enum DwarvenHudStyle {
-        SIMPLE, FANCY, CLASSIC;
+	public enum DwarvenHudStyle {
+		SIMPLE, FANCY, CLASSIC;
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case SIMPLE -> "Simple";
-                case FANCY -> "Fancy";
-                case CLASSIC -> "Classic";
-            };
-        }
-    }
+		@Override
+		public String toString() {
+			return switch (this) {
+				case SIMPLE -> "Simple";
+				case FANCY -> "Fancy";
+				case CLASSIC -> "Classic";
+			};
+		}
+	}
 
-    public static class Barn {
-        @SerialEntry
-        public boolean solveHungryHiker = true;
+	public static class Barn {
+		@SerialEntry
+		public boolean solveHungryHiker = true;
 
-        @SerialEntry
-        public boolean solveTreasureHunter = true;
-    }
+		@SerialEntry
+		public boolean solveTreasureHunter = true;
+	}
 
-    public static class Rift {
-        @SerialEntry
-        public boolean mirrorverseWaypoints = true;
+	public static class Rift {
+		@SerialEntry
+		public boolean mirrorverseWaypoints = true;
 
-        @SerialEntry
-        public boolean blobbercystGlow = true;
+		@SerialEntry
+		public boolean blobbercystGlow = true;
 
-        @SerialEntry
-        public boolean enigmaSoulWaypoints = false;
+		@SerialEntry
+		public boolean enigmaSoulWaypoints = false;
 
-        @SerialEntry
-        public boolean highlightFoundEnigmaSouls = true;
+		@SerialEntry
+		public boolean highlightFoundEnigmaSouls = true;
 
-        @SerialEntry
-        public int mcGrubberStacks = 0;
-    }
+		@SerialEntry
+		public int mcGrubberStacks = 0;
+	}
 
-    public static class SpidersDen {
-        @SerialEntry
-        public Relics relics = new Relics();
-    }
+	public static class SpidersDen {
+		@SerialEntry
+		public Relics relics = new Relics();
+	}
 
-    public static class Relics {
-        @SerialEntry
-        public boolean enableRelicsHelper = false;
+	public static class Relics {
+		@SerialEntry
+		public boolean enableRelicsHelper = false;
 
-        @SerialEntry
-        public boolean highlightFoundRelics = true;
-    }
+		@SerialEntry
+		public boolean highlightFoundRelics = true;
+	}
 
+<<<<<<< HEAD
     public static class Slayer {
         @SerialEntry
         public VampireSlayer vampireSlayer = new VampireSlayer();
@@ -923,75 +962,97 @@ public class SkyblockerConfig {
     public static class VampireSlayer {
         @SerialEntry
         public boolean enableEffigyWaypoints = true;
+=======
+	public static class Slayer {
+		@SerialEntry
+		public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
-        @SerialEntry
-        public boolean compactEffigyWaypoints;
+		@SerialEntry
+		public VampireSlayer vampireSlayer = new VampireSlayer();
+	}
 
-        @SerialEntry
-        public int effigyUpdateFrequency = 5;
+	public static class EndermanSlayer {
+		@SerialEntry
+		public boolean highlightNukekubiHeads = true;
 
-        @SerialEntry
-        public boolean enableHolyIceIndicator = true;
+		@SerialEntry
+		public boolean highlightBeacons = true;
+	}
 
-        @SerialEntry
-        public int holyIceIndicatorTickDelay = 10;
+	public static class VampireSlayer {
+		@SerialEntry
+		public boolean enableEffigyWaypoints = true;
+>>>>>>> c9ef08ab (fix the indentation)
 
-        @SerialEntry
-        public int holyIceUpdateFrequency = 5;
+		@SerialEntry
+		public boolean compactEffigyWaypoints;
 
-        @SerialEntry
-        public boolean enableHealingMelonIndicator = true;
+		@SerialEntry
+		public int effigyUpdateFrequency = 5;
 
-        @SerialEntry
-        public float healingMelonHealthThreshold = 4f;
+		@SerialEntry
+		public boolean enableHolyIceIndicator = true;
 
-        @SerialEntry
-        public boolean enableSteakStakeIndicator = true;
+		@SerialEntry
+		public int holyIceIndicatorTickDelay = 10;
 
-        @SerialEntry
-        public int steakStakeUpdateFrequency = 5;
+		@SerialEntry
+		public int holyIceUpdateFrequency = 5;
 
-        @SerialEntry
-        public boolean enableManiaIndicator = true;
+		@SerialEntry
+		public boolean enableHealingMelonIndicator = true;
 
-        @SerialEntry
-        public int maniaUpdateFrequency = 5;
-    }
+		@SerialEntry
+		public float healingMelonHealthThreshold = 4f;
 
-    public static class Messages {
-        @SerialEntry
-        public ChatFilterResult hideAbility = ChatFilterResult.PASS;
+		@SerialEntry
+		public boolean enableSteakStakeIndicator = true;
 
-        @SerialEntry
-        public ChatFilterResult hideHeal = ChatFilterResult.PASS;
+		@SerialEntry
+		public int steakStakeUpdateFrequency = 5;
 
-        @SerialEntry
-        public ChatFilterResult hideAOTE = ChatFilterResult.PASS;
+		@SerialEntry
+		public boolean enableManiaIndicator = true;
 
-        @SerialEntry
-        public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
+		@SerialEntry
+		public int maniaUpdateFrequency = 5;
+	}
 
-        @SerialEntry
-        public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
+	public static class Messages {
+		@SerialEntry
+		public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 
-        @SerialEntry
-        public ChatFilterResult hideAds = ChatFilterResult.PASS;
+		@SerialEntry
+		public ChatFilterResult hideHeal = ChatFilterResult.PASS;
 
-        @SerialEntry
-        public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
+		@SerialEntry
+		public ChatFilterResult hideAOTE = ChatFilterResult.PASS;
 
-        @SerialEntry
-        public ChatFilterResult hideCombo = ChatFilterResult.PASS;
+		@SerialEntry
+		public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
 
-        @SerialEntry
-        public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
+		@SerialEntry
+		public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
 
-        @SerialEntry
-        public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
+		@SerialEntry
+		public ChatFilterResult hideAds = ChatFilterResult.PASS;
 
-        @SerialEntry
-        public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
+		@SerialEntry
+		public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
 
+		@SerialEntry
+		public ChatFilterResult hideCombo = ChatFilterResult.PASS;
+
+		@SerialEntry
+		public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
+
+		@SerialEntry
+		public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
+
+		@SerialEntry
+		public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
+
+<<<<<<< HEAD
         @SerialEntry
         public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
 
@@ -1001,13 +1062,18 @@ public class SkyblockerConfig {
         @SerialEntry
         public boolean hideMana = false;
     }
+=======
+		@SerialEntry
+		public boolean hideMana = false;
+	}
+>>>>>>> c9ef08ab (fix the indentation)
 
-    public enum Info {
-        PURSE, BITS, LOCATION;
+	public enum Info {
+		PURSE, BITS, LOCATION;
 
-        @Override
-        public String toString() {
-            return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
-        }
-    }
+		@Override
+		public String toString() {
+			return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
+		}
+	}
 }
