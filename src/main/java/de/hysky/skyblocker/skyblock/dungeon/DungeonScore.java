@@ -47,7 +47,7 @@ public class DungeonScore {
 	private static final Pattern CRYPTS_PATTERN = Pattern.compile("Crypts: (?<crypts>\\d+)");
 	private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
 	//Chat patterns
-	private static final Pattern DEATHS_PATTERN = Pattern.compile(".*?\u2620 (?<whodied>\\S+) .*");
+	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 
@@ -81,6 +81,10 @@ public class DungeonScore {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
 			}
+		});
+		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
+			if (overlay || !Utils.isInDungeons() || !dungeonStarted) return;
+			checkMessageForDeaths(message.getString());
 		});
 	}
 

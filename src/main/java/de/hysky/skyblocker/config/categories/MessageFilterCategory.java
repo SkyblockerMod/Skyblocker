@@ -110,6 +110,14 @@ public class MessageFilterCategory {
 								newValue -> config.messages.hideMimicKill = newValue)
 						.controller(ConfigUtils::createEnumCyclingListController)
 						.build())
+				.option(Option.<ChatFilterResult>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.hideDeath"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.messages.hideDeath.@Tooltip")))
+						.binding(defaults.messages.hideDeath,
+								() -> config.messages.hideDeath,
+								newValue -> config.messages.hideDeath = newValue)
+						.controller(ConfigUtils::createEnumCyclingListController)
+						.build())
 				.build();
 	}
 }

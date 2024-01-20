@@ -996,6 +996,9 @@ public class SkyblockerConfig {
 		public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
 
 		@SerialEntry
+		public ChatFilterResult hideDeath = ChatFilterResult.PASS;
+
+		@SerialEntry
 		public boolean hideMana = false;
 	}
 

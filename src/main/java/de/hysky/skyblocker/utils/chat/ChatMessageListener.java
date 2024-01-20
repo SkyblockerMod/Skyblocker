@@ -55,7 +55,8 @@ public interface ChatMessageListener {
                 new AutopetFilter(),
                 new ShowOffFilter(),
                 new ToggleSkyMallFilter(),
-                new MimicFilter()
+                new MimicFilter(),
+                new DeathFilter()
         };
         // Register all listeners to EVENT
         for (ChatMessageListener listener : listeners) {
