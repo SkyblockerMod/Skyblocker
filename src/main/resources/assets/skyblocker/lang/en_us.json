@@ -127,9 +127,10 @@
   "text.autoconfig.skyblocker.option.general.flameOverlay": "Flame Overlay",
   "text.autoconfig.skyblocker.option.general.flameOverlay.flameHeight": "Flame Height",
   "text.autoconfig.skyblocker.option.general.flameOverlay.flameOpacity": "Flame Opacity",
+  "text.autoconfig.skyblocker.option.general.betterPartyFinder": "Better Party Finder",
   "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
   "skyblocker.itemTooltip.noData": "§cNo Data",
-  
+
   "skyblocker.wikiLookup.noArticleFound": "§rUnable to locate a wiki article for this item...",
 
   "text.autoconfig.skyblocker.category.richPresence": "Discord Rich Presence",
@@ -420,6 +421,19 @@
   "skyblocker.tips.protectItem": "Prevent accidentally dropping your items with /skyblocker protectItem.",
   "skyblocker.tips.fairySoulsEnigmaSoulsRelics": "Don't know where to find Fairy Souls, Enigma Souls, or Relics? Enable the helpers to aid your exploration, they'll remember which souls you've already found.",
   "skyblocker.tips.quickNav": "You can customize the QuickNav buttons in the config.",
+
+  "skyblocker.partyFinder.tabs.partyFinder": "Party Finder",
+  "skyblocker.partyFinder.tabs.searchSettings": "Search Filters",
+  "skyblocker.partyFinder.tabs.createParty": "Create Party",
+  "skyblocker.partyFinder.partyCard.minClassLevel": "Min class level required: %d",
+  "skyblocker.partyFinder.partyCard.minDungeonLevel": "Min dungeon level required: %d",
+  "skyblocker.partyFinder.noParties": "No parties found. Big sad :(",
+  "skyblocker.partyFinder.error.name" : "Party Finder error!",
+  "skyblocker.partyFinder.error.message": "An error occurred so you've been sent to the vanilla party finder",
+  "skyblocker.partyFinder.loadingError": "If you see this for more than 5 seconds, something probably went wrong...",
+  "skyblocker.partyFinder.yourParty": "Your party",
+  "skyblocker.partyFinder.deList": "Click to de-list",
+  "skyblocker.partyFinder.join": "Click to join",
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }
