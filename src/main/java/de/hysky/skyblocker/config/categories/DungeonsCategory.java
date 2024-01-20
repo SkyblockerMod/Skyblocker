@@ -230,6 +230,25 @@ public class DungeonsCategory {
 										newValue -> config.locations.dungeons.dungeonScore.dungeonScore300Message = newValue)
 								.controller(StringControllerBuilder::create)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote")))
+								.binding(defaults.locations.dungeons.dungeonScore.enableScoreHUD,
+										() -> config.locations.dungeons.dungeonScore.enableScoreHUD,
+										newValue -> config.locations.dungeons.dungeonScore.enableScoreHUD = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.scoreScaling"))
+								.binding(defaults.locations.dungeons.dungeonScore.scoreScaling,
+										() -> config.locations.dungeons.dungeonScore.scoreScaling,
+										newValue -> {
+											config.locations.dungeons.dungeonScore.scoreX = config.locations.dungeons.dungeonScore.scoreX + (int) ((config.locations.dungeons.dungeonScore.scoreScaling - newValue) * 38.0);
+											config.locations.dungeons.dungeonScore.scoreY = config.locations.dungeons.dungeonScore.scoreY + (int) ((config.locations.dungeons.dungeonScore.scoreScaling - newValue) * MinecraftClient.getInstance().textRenderer.fontHeight / 2.0);
+											config.locations.dungeons.dungeonScore.scoreScaling = newValue;
+										})
+								.controller(FloatFieldControllerBuilder::create)
+								.build())
 						.build())
 
 				//Dungeon Chest Profit
@@ -315,14 +334,6 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.enableMap = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD"))
-						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote")))
-						.binding(defaults.locations.dungeons.dungeonScore.enableScoreHUD,
-								() -> config.locations.dungeons.dungeonScore.enableScoreHUD,
-								newValue -> config.locations.dungeons.dungeonScore.enableScoreHUD = newValue)
-						.controller(ConfigUtils::createBooleanController)
-						.build())
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mapScreen"))
 						.text(Text.translatable("text.skyblocker.open"))
@@ -333,17 +344,6 @@ public class DungeonsCategory {
 						.binding(defaults.locations.dungeons.mapScaling,
 								() -> config.locations.dungeons.mapScaling,
 								newValue -> config.locations.dungeons.mapScaling = newValue)
-						.controller(FloatFieldControllerBuilder::create)
-						.build())
-				.option(Option.<Float>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.scoreScaling"))
-						.binding(defaults.locations.dungeons.dungeonScore.scoreScaling,
-								() -> config.locations.dungeons.dungeonScore.scoreScaling,
-								newValue -> {
-									config.locations.dungeons.dungeonScore.scoreX = config.locations.dungeons.dungeonScore.scoreX + (int) ((config.locations.dungeons.dungeonScore.scoreScaling - newValue) * 38.0);
-									config.locations.dungeons.dungeonScore.scoreY = config.locations.dungeons.dungeonScore.scoreY + (int) ((config.locations.dungeons.dungeonScore.scoreScaling - newValue) * MinecraftClient.getInstance().textRenderer.fontHeight / 2.0);
-									config.locations.dungeons.dungeonScore.scoreScaling = newValue;
-								})
 						.controller(FloatFieldControllerBuilder::create)
 						.build())
 				.option(Option.<Boolean>createBuilder()
