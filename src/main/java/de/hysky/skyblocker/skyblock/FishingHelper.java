@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -23,6 +24,9 @@ public class FishingHelper {
     public static void init() {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
+            if (!Utils.isOnSkyblock()) {
+                return TypedActionResult.pass(stack);
+            }
             if (stack.getItem() instanceof FishingRodItem) {
                 if (player.fishHook == null) {
                     start(player);
