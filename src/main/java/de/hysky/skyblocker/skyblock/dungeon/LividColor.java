@@ -78,11 +78,9 @@ public class LividColor {
         LividColor.color = WOOL_TO_FORMATTING.get(color);
         String colorString = Registries.BLOCK.getId(color).getPath();
         colorString = colorString.substring(0, colorString.length() - 5).toUpperCase();
-        String[] messageParts = CONFIG.lividColorText.split("\\[color]");
-        MutableText message = Constants.PREFIX.get().append(messageParts[0]);
-        for (int i = 1; i < messageParts.length; i++) {
-            message = message.append(Text.literal(colorString).formatted(LividColor.color)).append(Text.of(messageParts[i]));
-        }
+        MutableText message = Constants.PREFIX.get()
+                .append(CONFIG.lividColorText.replaceAll("\\[color]", colorString))
+                .formatted(LividColor.color);
         if (CONFIG.enableLividColorText) {
             MessageScheduler.INSTANCE.sendMessageAfterCooldown(message.getString());
         }

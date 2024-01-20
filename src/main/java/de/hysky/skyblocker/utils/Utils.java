@@ -339,7 +339,7 @@ public class Utils {
     /**
      * Parses the /locraw reply from the server and updates the player's profile id
      *
-     * @return not display the message in chat is the command is sent by the mod
+     * @return not display the message in chat if the command is sent by the mod
      */
     public static boolean onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
