@@ -64,13 +64,13 @@ public class FinderSettingsContainer extends ContainerWidget {
                 //System.out.println(stack.toString());
                 String name = stack.getName().getString().toLowerCase();
                 if (name.contains("floor")) {
-                    
+
                     //System.out.println("Floor selector created");
                     this.floorSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + getWidth() / 4 - 70, getY() + 20, 140, 170, slot.id);
                     if (!setSelectedElementFromTooltip(slot, stack, floorSelector)) return false;
 
                     initializedWidgets.add(floorSelector);
-                    
+
                 } else if (name.contains("dungeon type")) {
 
                     this.dungeonTypeSelector = new OptionDropdownWidget(screen, stack.getName(), null, getX() + (3 * getWidth()) / 4 - 70, getY() + 20, 140, 100, slot.id);
@@ -121,7 +121,7 @@ public class FinderSettingsContainer extends ContainerWidget {
             return true;
         } else {
             screen.partyFinderButton.active = false;
-            
+
             if (nameLowerCase.contains("floor")) {
                 updateDropdownOptionWidget(handler, floorSelector);
                 currentlyOpenedOption = floorSelector;
@@ -181,6 +181,7 @@ public class FinderSettingsContainer extends ContainerWidget {
         }
         return false;
     }
+
     /**
      * @return true if all goes well
      */

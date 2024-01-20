@@ -103,7 +103,8 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
             matrices.push();
             matrices.translate(0, 0, 100);
         }
-        if (animationProgress < 1) animationProgress += delta * 0.5f;else if (animationProgress != 1) animationProgress = 1;
+        if (animationProgress < 1) animationProgress += delta * 0.5f;
+        else if (animationProgress != 1) animationProgress = 1;
         if (PartyFinderScreen.DEBUG) {
             context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(slotId), getX(), getY() - 10, 0xFFFF0000, true);
             context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(backButtonId), getX() + 50, getY() - 10, 0xFFFF0000, true);

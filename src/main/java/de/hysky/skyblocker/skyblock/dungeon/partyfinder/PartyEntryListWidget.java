@@ -18,24 +18,25 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
     private String search = "";
 
     public static String BASE_SKULL_NBT = """
-                      {
-                      "SkullOwner": {
-                        "Id": [
-                                1215241996,
-                                -1849412511,
-                                -1161255720,
-                                -889217537
-                              ],
-                        "Properties": {
-                          "textures": [
-                            {
-                              "Value": "%TEXTURE%"
-                            }
-                          ]
-                        }
-                      }
+              {
+              "SkullOwner": {
+                "Id": [
+                        1215241996,
+                        -1849412511,
+                        -1161255720,
+                        -889217537
+                      ],
+                "Properties": {
+                  "textures": [
+                    {
+                      "Value": "%TEXTURE%"
                     }
-                    """;
+                  ]
+                }
+              }
+            }
+            """;
+
     public PartyEntryListWidget(MinecraftClient minecraftClient, int width, int height, int y, int itemHeight) {
         super(minecraftClient, width, height, y, itemHeight);
     }

@@ -60,12 +60,10 @@ public class RangedValueWidget extends ContainerWidget {
             if (i < 0 || i > 999) { // Too beeg or too smol
                 this.okButton.active = false;
                 this.input.setGood(false);
-            }
-            else if (state == State.MODIFYING_MIN && i > max) { // If editing min and bigger than max
+            } else if (state == State.MODIFYING_MIN && i > max) { // If editing min and bigger than max
                 this.okButton.active = false;
                 this.input.setGood(false);
-            }
-            else { // If editing max and smaller than min
+            } else { // If editing max and smaller than min
                 boolean active1 = state != State.MODIFYING_MAX || i >= min;
                 this.okButton.active = active1;
                 this.input.setGood(active1);
@@ -112,7 +110,7 @@ public class RangedValueWidget extends ContainerWidget {
             // Minimum
             int minStartX = getX() + 1;
             int minEndX = getX() + (width >> 1) - 6;
-            context.fill(minStartX, getY() + 1 + textOffset, minEndX, getY() + 14 + textOffset, state == State.MODIFYING_MIN ? selectedColor: (mouseOverMin ? 0xFFFFFFFF: unselectedColor));
+            context.fill(minStartX, getY() + 1 + textOffset, minEndX, getY() + 14 + textOffset, state == State.MODIFYING_MIN ? selectedColor : (mouseOverMin ? 0xFFFFFFFF : unselectedColor));
             context.fill(minStartX + 1, getY() + 2 + textOffset, minEndX - 1, getY() + 13 + textOffset, 0xFF000000);
 
             context.drawCenteredTextWithShadow(textRenderer, String.valueOf(min), (minStartX + minEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
@@ -120,7 +118,7 @@ public class RangedValueWidget extends ContainerWidget {
             // Maximum
             int maxStartX = getX() + (width >> 1) + 5;
             int maxEndX = getX() + width - 1;
-            context.fill(maxStartX, getY() + 1 + textOffset, maxEndX, getY() + 14 + textOffset, state == State.MODIFYING_MAX ? selectedColor: (mouseOverMax ? 0xFFFFFFFF: unselectedColor));
+            context.fill(maxStartX, getY() + 1 + textOffset, maxEndX, getY() + 14 + textOffset, state == State.MODIFYING_MAX ? selectedColor : (mouseOverMax ? 0xFFFFFFFF : unselectedColor));
             context.fill(maxStartX + 1, getY() + 2 + textOffset, maxEndX - 1, getY() + 13 + textOffset, 0xFF000000);
 
             context.drawCenteredTextWithShadow(textRenderer, String.valueOf(max), (maxStartX + maxEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
@@ -184,7 +182,7 @@ public class RangedValueWidget extends ContainerWidget {
                     messages[1].getString(),
                     messages[2].getString(),
                     messages[3].getString()
-                    ));
+            ));
         }
         screen.justOpenedSign = false;
     }
@@ -242,6 +240,7 @@ public class RangedValueWidget extends ContainerWidget {
         MODIFYING_MIN,
         MODIFYING_MAX;
     }
+
     protected class ModifiedTextFieldWidget extends TextFieldWidget {
         private boolean isGood = false;
 

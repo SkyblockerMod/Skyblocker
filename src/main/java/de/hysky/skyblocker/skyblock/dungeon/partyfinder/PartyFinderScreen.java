@@ -6,9 +6,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -211,7 +208,6 @@ public class PartyFinderScreen extends Screen {
         createPartyButton.active = false;
 
 
-
         addDrawableChild(partyEntryListWidget);
         addDrawableChild(searchField);
         addDrawableChild(refreshButton);
@@ -238,11 +234,6 @@ public class PartyFinderScreen extends Screen {
     }
 
     @Override
-    protected <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement) {
-        return super.addDrawableChild(drawableElement);
-    }
-
-    @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         if (searchField.visible) {
@@ -260,7 +251,7 @@ public class PartyFinderScreen extends Screen {
         }
         if (isWaitingForServer()) {
             String s = "Waiting for server...";
-            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height-textRenderer.fontHeight - 2, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, 0xFFFFFFFF, true);
         }
         if (!settingsContainer.canInteract(null)) {
             context.fill(0, 0, width, height, 50, 0x40000000);
@@ -342,6 +333,7 @@ public class PartyFinderScreen extends Screen {
 
     private boolean signFront = true;
     private @Nullable SignBlockEntity sign = null;
+
     public void updateSign(SignBlockEntity sign, boolean front) {
         setCurrentPage(Page.SIGN);
         signFront = front;
@@ -375,7 +367,7 @@ public class PartyFinderScreen extends Screen {
             parties.add(new PartyEntry.NoParties());
         } else {
             for (Slot slot : handler.slots) {
-                if (slot.id > (handler.getRows()-1) * 9 - 1 || !slot.hasStack()) continue;
+                if (slot.id > (handler.getRows() - 1) * 9 - 1 || !slot.hasStack()) continue;
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                     assert this.client != null;
                     parties.add(new PartyEntry(slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC), this, slot.id));
@@ -435,7 +427,7 @@ public class PartyFinderScreen extends Screen {
         if (currentPage == Page.SIGN) {
             assert this.client.player != null;
             this.client.player.openEditSignScreen(sign, signFront);
-        }else this.client.setScreen(new GenericContainerScreen(handler, inventory, title));
+        } else this.client.setScreen(new GenericContainerScreen(handler, inventory, title));
         this.client.getToastManager().add(new SystemToast(SystemToast.Type.PERIODIC_NOTIFICATION, Text.translatable("skyblocker.partyFinder.error.name"), Text.translatable("skyblocker.partyFinder.error.message")));
         aborted = true;
     }

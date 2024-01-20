@@ -23,14 +23,13 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.joml.Matrix4f;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.joml.Matrix4f;
 
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     private static final Identifier PARTY_CARD_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
