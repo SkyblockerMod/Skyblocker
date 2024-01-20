@@ -193,8 +193,8 @@ public class DungeonScore {
 		try {
 			DefaultedList<ItemStack> armor = (DefaultedList<ItemStack>) zombie.getArmorItems();
 			return armor.stream().allMatch(ItemStack::isEmpty);
-		} catch (Exception f) {
-			LOGGER.error("[Skyblocker] Failed to check if entity is a mimic! Cause: {}", f.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker] Failed to check if entity is a mimic!", e);
 			return false;
 		}
 	}
@@ -297,7 +297,7 @@ public class DungeonScore {
 					return true;
 				}
 			} catch (Exception e) {
-				LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! Name: {} - Cause: {}", name, e.getMessage());
+				LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! Name: {}", name, e);
 			}
 			return false;
 		});

@@ -70,7 +70,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     }
 
     @ModifyExpressionValue(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;getEntity(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"))
-    private Entity skyblocker$onEntityDeath(Entity entity, @Local EntityStatusS2CPacket packet) {
+    private Entity skyblocker$onEntityDeath(Entity entity, @Local(argsOnly = true) EntityStatusS2CPacket packet) {
         if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) DungeonScore.handleEntityDeath(entity);
         return entity;
     }

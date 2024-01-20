@@ -403,7 +403,7 @@ public class Utils {
                 if (json.get("success").getAsBoolean()) return json.get("mayor").getAsJsonObject().get("name").getAsString();
                 throw new IOException(json.get("cause").getAsString());
             } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to get mayor status! Cause: {}", e.getMessage());
+                LOGGER.error("[Skyblocker] Failed to get mayor status!", e);
             }
             return "";
         }).thenAccept(s -> {
