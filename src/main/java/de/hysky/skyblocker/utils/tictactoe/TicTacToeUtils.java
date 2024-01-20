@@ -20,7 +20,7 @@ public class TicTacToeUtils {
         return Collections.max(moves.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
-    public static boolean hasMovesLeft(char[][] board) {
+    private static boolean hasMovesLeft(char[][] board) {
         for (char[] rows : board) {
             for (char col : rows) {
                 if (col == '\0') return true;
@@ -29,7 +29,7 @@ public class TicTacToeUtils {
         return false;
     }
 
-    public static int getBoardRanking(char[][] board) {
+    private static int getBoardScore(char[][] board) {
         for (int row = 0; row < 3; row++) {
             if (board[row][0] == board[row][1] && board[row][0] == board[row][2]) {
                 if (board[row][0] == 'X') {
@@ -66,8 +66,9 @@ public class TicTacToeUtils {
 
         return 0;
     }
-    public static int alphabeta(char[][] board, int alpha, int beta, boolean max, int depth) {
-        int score = getBoardRanking(board);
+
+    private static int alphabeta(char[][] board, int alpha, int beta, boolean max, int depth) {
+        int score = getBoardScore(board);
         if (score == 10 || score == -10) return score;
         if (!hasMovesLeft(board)) return 0;
 

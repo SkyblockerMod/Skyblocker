@@ -37,6 +37,7 @@ public class CreeperBeams extends DungeonPuzzle {
 
     private static final int FLOOR_Y = 68;
     private static final int BASE_Y = 74;
+    @SuppressWarnings("unused")
     private static final CreeperBeams INSTANCE = new CreeperBeams();
 
     private static ArrayList<Beam> beams = new ArrayList<>();

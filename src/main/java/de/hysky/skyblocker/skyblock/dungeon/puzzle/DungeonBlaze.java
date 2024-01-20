@@ -26,6 +26,7 @@ public class DungeonBlaze extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
     private static final float[] GREEN_COLOR_COMPONENTS = {0.0F, 1.0F, 0.0F};
     private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
+    @SuppressWarnings("unused")
     private static final DungeonBlaze INSTANCE = new DungeonBlaze();
 
     private static ArmorStandEntity highestBlaze = null;
