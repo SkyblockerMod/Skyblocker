@@ -10,8 +10,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -23,7 +21,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.joml.Matrix4f;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +31,7 @@ import java.util.regex.Pattern;
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     private static final Identifier PARTY_CARD_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
     private static final Identifier PARTY_CARD_TEXTURE_HOVER = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
+    public static final Text JOIN_TEXT = Text.translatable("skyblocker.partyFinder.join");
     protected final PartyFinderScreen screen;
     protected final int slotID;
     Player partyLeader;
@@ -193,7 +191,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         if (hovered && !isLocked) {
             context.drawTexture(PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
-            if (!(this instanceof YourParty)) context.drawText(textRenderer, Text.translatable("skyblocker.partyFinder.join"), 148, 6, 0xFFFFFFFF, false);
+            if (!(this instanceof YourParty)) context.drawText(textRenderer, JOIN_TEXT, 148, 6, 0xFFFFFFFF, false);
         } else context.drawTexture(PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
         int mouseXLocal = mouseX - x;
         int mouseYLocal = mouseY - y;
@@ -210,22 +208,19 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         for (int i = 0; i < partyMembers.length; i++) {
             Player partyMember = partyMembers[i];
             if (partyMember == null) continue;
-            context.drawText(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), 0xFFFFFFFF, true);
+            context.drawTextWithShadow(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), 0xFFFFFFFF);
             PlayerSkinDrawer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false);
         }
 
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-        VertexConsumerProvider.Immediate vertexConsumers = context.getVertexConsumers();
-
         if (minClassLevel > 0) {
-            textRenderer.drawWithOutline(Text.of("Class " + minClassLevel).asOrderedText(), 278, 25, 0xFF288BB5, 0xFF103848, positionMatrix, vertexConsumers, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            context.drawTextWithShadow(textRenderer, Text.of("Class " + minClassLevel), 278, 25, 0xFFFFFFFF);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 22 && mouseYLocal <= 35) {
                 context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseXLocal, mouseYLocal);
             }
         }
 
         if (minCatacombsLevel > 0) {
-            textRenderer.drawWithOutline(Text.of("Cata " + minCatacombsLevel).asOrderedText(), 278, 43, 0xFF288BB5, 0xFF103848, positionMatrix, vertexConsumers, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            context.drawTextWithShadow(textRenderer, Text.of("Cata " + minCatacombsLevel), 278, 43, 0xFFFFFFFF);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 40 && mouseYLocal <= 53) {
                 context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseXLocal, mouseYLocal);
             }
@@ -235,7 +230,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         context.drawItem(stack, 317, 3);
 
         int textWidth = textRenderer.getWidth(floor);
-        context.drawText(textRenderer, floor, 316 - textWidth, 7, 0x70000000, false);
+        context.drawText(textRenderer, floor, 314 - textWidth, 7, 0xA0000000, false);
 
         context.drawText(textRenderer, note, 5, 52, 0xFFFFFFFF, true);
 
@@ -301,6 +296,8 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     }
 
     public static class YourParty extends PartyEntry {
+        public static final Text DE_LIST_TEXT = Text.translatable("skyblocker.partyFinder.deList");
+        public static final Text YOUR_PARTY_TEXT = Text.translatable("skyblocker.partyFinder.yourParty");
 
         public YourParty(List<Text> tooltips, PartyFinderScreen screen, int deListSlotId) {
             super(tooltips, screen, deListSlotId);
@@ -308,21 +305,18 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
+
             MatrixStack matrices = context.getMatrices();
             matrices.push();
             matrices.translate(x, y, 0);
 
-            hovered = hovered && slotID != -1;
+            hovered = hovered & slotID != -1;
 
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            Text text;
-            if (hovered) {
-                text = Text.translatable("skyblocker.partyFinder.deList");
-            } else text = Text.translatable("skyblocker.partyFinder.yourParty");
-            context.drawText(textRenderer, text, 48, 6, 0x70000000, false);
+            context.drawText(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, 0xFFFFFFFF, false);
 
             matrices.pop();
-            super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
         }
     }
 }
