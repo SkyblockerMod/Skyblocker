@@ -35,7 +35,7 @@ import java.util.stream.StreamSupport;
 
 public class DungeonScore {
 	private static final SkyblockerConfig.DungeonScore SCORE_CONFIG = SkyblockerConfigManager.get().locations.dungeons.dungeonScore;
-	private static final SkyblockerConfig.MimicMessages MIMIC_MESSAGES_CONFIG = SkyblockerConfigManager.get().locations.dungeons.mimicMessages;
+	private static final SkyblockerConfig.MimicMessage MIMIC_MESSAGE_CONFIG = SkyblockerConfigManager.get().locations.dungeons.mimicMessage;
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
 	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");
@@ -206,7 +206,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGES_CONFIG.sendMimicMessages) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGES_CONFIG.mimicMessage);
+		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGE_CONFIG.mimicMessage);
 		mimicKilled = true;
 	}
 

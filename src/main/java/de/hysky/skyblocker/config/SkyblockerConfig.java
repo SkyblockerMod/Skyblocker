@@ -606,7 +606,7 @@ public class SkyblockerConfig {
 		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
 		@SerialEntry
-		public MimicMessages mimicMessages = new MimicMessages();
+		public MimicMessage mimicMessage = new MimicMessage();
 
 		@SerialEntry
 		public boolean croesusHelper = true;
@@ -800,9 +800,9 @@ public class SkyblockerConfig {
 		public Formatting incompleteColor = Formatting.BLUE;
 	}
 
-	public static class MimicMessages {
+	public static class MimicMessage {
 		@SerialEntry
-		public boolean sendMimicMessages = true;
+		public boolean sendMimicMessage = true;
 
 		@SerialEntry
 		public String mimicMessage = "Mimic dead!";

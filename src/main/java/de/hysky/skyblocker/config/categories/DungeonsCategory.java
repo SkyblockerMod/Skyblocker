@@ -434,22 +434,22 @@ public class DungeonsCategory {
 						.build())
 				//Mimic Messages
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages"))
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.sendMimicMessages"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.sendMimicMessages.@Tooltip")))
-								.binding(defaults.locations.dungeons.mimicMessages.sendMimicMessages,
-										() -> config.locations.dungeons.mimicMessages.sendMimicMessages,
-										newValue -> config.locations.dungeons.mimicMessages.sendMimicMessages = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage.@Tooltip")))
+								.binding(defaults.locations.dungeons.mimicMessage.sendMimicMessage,
+										() -> config.locations.dungeons.mimicMessage.sendMimicMessage,
+										newValue -> config.locations.dungeons.mimicMessage.sendMimicMessage = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<String>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.mimicMessage"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessages.mimicMessage.@Tooltip")))
-								.binding(defaults.locations.dungeons.mimicMessages.mimicMessage,
-										() -> config.locations.dungeons.mimicMessages.mimicMessage,
-										newValue -> config.locations.dungeons.mimicMessages.mimicMessage = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.mimicMessage"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.mimicMessage.@Tooltip")))
+								.binding(defaults.locations.dungeons.mimicMessage.mimicMessage,
+										() -> config.locations.dungeons.mimicMessage.mimicMessage,
+										newValue -> config.locations.dungeons.mimicMessage.mimicMessage = newValue)
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
