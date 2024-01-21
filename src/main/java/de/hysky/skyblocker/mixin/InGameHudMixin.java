@@ -3,7 +3,6 @@ package de.hysky.skyblocker.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
@@ -21,6 +20,9 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+
+import java.util.function.Supplier;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
     @Unique
-    private static final Identifier SLOT_LOCK = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png");
+    private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
     @Unique
     private final FancyStatusBars statusBars = new FancyStatusBars();
 
@@ -52,7 +54,7 @@ public abstract class InGameHudMixin {
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(player.getInventory().main.get(index), context, x, y);
             if (HotbarSlotLock.isLocked(index)) {
                 RenderSystem.enableBlend();
-                context.drawTexture(SLOT_LOCK, x, y, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
         }
