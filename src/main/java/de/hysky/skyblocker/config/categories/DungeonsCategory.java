@@ -432,7 +432,8 @@ public class DungeonsCategory {
 								newValue -> config.locations.dungeons.allowDroppingProtectedItems = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-				//Mimic Messages
+
+				//Mimic Message
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage"))
 						.collapsed(true)
@@ -454,7 +455,7 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
-				// Livid Color
+				//Livid Color
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor"))
 						.collapsed(true)
