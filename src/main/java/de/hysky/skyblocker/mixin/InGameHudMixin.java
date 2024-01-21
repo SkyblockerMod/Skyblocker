@@ -2,6 +2,7 @@ package de.hysky.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.FancyStatusBars;
