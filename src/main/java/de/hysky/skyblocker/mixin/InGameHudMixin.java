@@ -47,7 +47,7 @@ public abstract class InGameHudMixin {
     public void skyblocker$renderHotbarItemLockOrRarityBg(float tickDelta, DrawContext context, CallbackInfo ci, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
         if (Utils.isOnSkyblock()) {
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(player.getInventory().main.get(index), context, x, y);
-            if (HotbarSlotLock.isLocked(index)) context.drawTexture(SLOT_LOCK, x, y, 0, 0, 16, 16);
+            if (HotbarSlotLock.isLocked(index)) context.drawTexture(SLOT_LOCK, x, y, 0, 0, 16, 16, 16, 16);
         }
     }
 
