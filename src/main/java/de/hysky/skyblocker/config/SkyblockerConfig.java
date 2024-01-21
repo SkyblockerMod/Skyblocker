@@ -606,6 +606,9 @@ public class SkyblockerConfig {
 		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
 		@SerialEntry
+		public MimicMessage mimicMessage = new MimicMessage();
+
+		@SerialEntry
 		public boolean croesusHelper = true;
 
 		@SerialEntry
@@ -757,6 +760,18 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public String dungeonScore300Message = "300 Score Reached!";
+
+		@SerialEntry
+		public boolean enableScoreHUD = true;
+
+		@SerialEntry
+		public int scoreX = 29;
+
+		@SerialEntry
+		public int scoreY = 134;
+
+		@SerialEntry
+		public float scoreScaling = 1f;
 	}
 
 	public static class DungeonChestProfit {
@@ -783,6 +798,14 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Formatting incompleteColor = Formatting.BLUE;
+	}
+
+	public static class MimicMessage {
+		@SerialEntry
+		public boolean sendMimicMessage = true;
+
+		@SerialEntry
+		public String mimicMessage = "Mimic dead!";
 	}
 
 	public static class LividColor {
@@ -968,6 +991,12 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
+
+		@SerialEntry
+		public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
+
+		@SerialEntry
+		public ChatFilterResult hideDeath = ChatFilterResult.PASS;
 
 		@SerialEntry
 		public boolean hideMana = false;

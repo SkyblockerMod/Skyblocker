@@ -24,8 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -63,6 +65,8 @@ public class Utils {
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
     private static boolean canSendLocRaw = false;
+
+    private static String mayor = "";
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -135,7 +139,16 @@ public class Utils {
         return map;
     }
 
+    /**
+     * @return the current mayor as cached on skyblock join.
+     */
+    @NotNull
+    public static String getMayor() {
+        return mayor;
+    }
+
     public static void init() {
+        SkyblockEvents.JOIN.register(Utils::initializeMayorCache);
         ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
@@ -380,5 +393,22 @@ public class Utils {
         gameType = "";
         locationRaw = "";
         map = "";
+    }
+
+    private static void initializeMayorCache() {
+        if (!mayor.isEmpty()) return;
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
+                if (json.get("success").getAsBoolean()) return json.get("mayor").getAsJsonObject().get("name").getAsString();
+                throw new IOException(json.get("cause").getAsString());
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker] Failed to get mayor status!", e);
+            }
+            return "";
+        }).thenAccept(s -> {
+            if (!s.isEmpty()) mayor = s;
+        });
+
     }
 }

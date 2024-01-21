@@ -2,17 +2,12 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
-import dev.isxander.yacl3.api.ButtonOption;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionFlag;
-import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -235,6 +230,25 @@ public class DungeonsCategory {
 										newValue -> config.locations.dungeons.dungeonScore.dungeonScore300Message = newValue)
 								.controller(StringControllerBuilder::create)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote")))
+								.binding(defaults.locations.dungeons.dungeonScore.enableScoreHUD,
+										() -> config.locations.dungeons.dungeonScore.enableScoreHUD,
+										newValue -> config.locations.dungeons.dungeonScore.enableScoreHUD = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.scoreScaling"))
+								.binding(defaults.locations.dungeons.dungeonScore.scoreScaling,
+										() -> config.locations.dungeons.dungeonScore.scoreScaling,
+										newValue -> {
+											config.locations.dungeons.dungeonScore.scoreX = config.locations.dungeons.dungeonScore.scoreX + (int) ((config.locations.dungeons.dungeonScore.scoreScaling - newValue) * 38.0);
+											config.locations.dungeons.dungeonScore.scoreY = config.locations.dungeons.dungeonScore.scoreY + (int) ((config.locations.dungeons.dungeonScore.scoreScaling - newValue) * MinecraftClient.getInstance().textRenderer.fontHeight / 2.0);
+											config.locations.dungeons.dungeonScore.scoreScaling = newValue;
+										})
+								.controller(FloatFieldControllerBuilder::create)
+								.build())
 						.build())
 
 				//Dungeon Chest Profit
@@ -419,7 +433,29 @@ public class DungeonsCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 
-				// Livid Color
+				//Mimic Message
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage.@Tooltip")))
+								.binding(defaults.locations.dungeons.mimicMessage.sendMimicMessage,
+										() -> config.locations.dungeons.mimicMessage.sendMimicMessage,
+										newValue -> config.locations.dungeons.mimicMessage.sendMimicMessage = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.mimicMessage"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.mimicMessage.@Tooltip")))
+								.binding(defaults.locations.dungeons.mimicMessage.mimicMessage,
+										() -> config.locations.dungeons.mimicMessage.mimicMessage,
+										newValue -> config.locations.dungeons.mimicMessage.mimicMessage = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.build())
+
+				//Livid Color
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.lividColor"))
 						.collapsed(true)
