@@ -156,16 +156,11 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public boolean acceptReparty = true;
 
-<<<<<<< HEAD
         @SerialEntry
         public boolean betterPartyFinder = true;
 
         @SerialEntry
         public boolean backpackPreviewWithoutShift = false;
-=======
-		@SerialEntry
-		public boolean backpackPreviewWithoutShift = false;
->>>>>>> c9ef08ab (fix the indentation)
 
 		@SerialEntry
 		public boolean compactorDeletorPreview = true;
@@ -538,14 +533,9 @@ public class SkyblockerConfig {
 		public float itemRarityBackgroundsOpacity = 1f;
 	}
 
-<<<<<<< HEAD
     public enum RarityBackgroundStyle {
         CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
         SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
-=======
-	public enum RarityBackgroundStyle {
-		CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")), SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
->>>>>>> c9ef08ab (fix the indentation)
 
 		public final Identifier tex;
 
@@ -616,16 +606,11 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
-<<<<<<< HEAD
         @SerialEntry
         public MimicMessage mimicMessage = new MimicMessage();
 
         @SerialEntry
         public boolean croesusHelper = true;
-=======
-		@SerialEntry
-		public boolean croesusHelper = true;
->>>>>>> c9ef08ab (fix the indentation)
 
 		@SerialEntry
 		public boolean enableMap = true;
@@ -669,16 +654,11 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public boolean floor3GuardianHealthDisplay = true;
 
-<<<<<<< HEAD
         @SerialEntry
         public boolean allowDroppingProtectedItems = false;
 
         @SerialEntry
         public LividColor lividColor = new LividColor();
-=======
-		@SerialEntry
-		public LividColor lividColor = new LividColor();
->>>>>>> c9ef08ab (fix the indentation)
 
 		@SerialEntry
 		public Terminals terminals = new Terminals();
@@ -741,15 +721,10 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public Type doorHighlightType = Type.OUTLINED_HIGHLIGHT;
 
-<<<<<<< HEAD
         public enum Type {
             HIGHLIGHT,
             OUTLINED_HIGHLIGHT,
             OUTLINE;
-=======
-		public enum Type {
-			HIGHLIGHT, OUTLINED_HIGHLIGHT, OUTLINE;
->>>>>>> c9ef08ab (fix the indentation)
 
 			@Override
 			public String toString() {
@@ -784,7 +759,6 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public boolean enableDungeonScore300Sound = true;
 
-<<<<<<< HEAD
         @SerialEntry
         public String dungeonScore300Message = "300 Score Reached!";
 
@@ -800,11 +774,6 @@ public class SkyblockerConfig {
         @SerialEntry
         public float scoreScaling = 1f;
     }
-=======
-		@SerialEntry
-		public String dungeonScore300Message = "300 Score Reached!";
-	}
->>>>>>> c9ef08ab (fix the indentation)
 
 	public static class DungeonChestProfit {
 		@SerialEntry
@@ -832,7 +801,6 @@ public class SkyblockerConfig {
 		public Formatting incompleteColor = Formatting.BLUE;
 	}
 
-<<<<<<< HEAD
     public static class MimicMessage {
         @SerialEntry
         public boolean sendMimicMessage = true;
@@ -844,11 +812,6 @@ public class SkyblockerConfig {
     public static class LividColor {
         @SerialEntry
         public boolean enableLividColorGlow = true;
-=======
-	public static class LividColor {
-		@SerialEntry
-		public boolean enableLividColorGlow = true;
->>>>>>> c9ef08ab (fix the indentation)
 
 		@SerialEntry
 		public boolean enableLividColorText = true;
@@ -953,16 +916,6 @@ public class SkyblockerConfig {
 		public boolean highlightFoundRelics = true;
 	}
 
-<<<<<<< HEAD
-    public static class Slayer {
-        @SerialEntry
-        public VampireSlayer vampireSlayer = new VampireSlayer();
-    }
-
-    public static class VampireSlayer {
-        @SerialEntry
-        public boolean enableEffigyWaypoints = true;
-=======
 	public static class Slayer {
 		@SerialEntry
 		public EndermanSlayer endermanSlayer = new EndermanSlayer();
@@ -982,7 +935,6 @@ public class SkyblockerConfig {
 	public static class VampireSlayer {
 		@SerialEntry
 		public boolean enableEffigyWaypoints = true;
->>>>>>> c9ef08ab (fix the indentation)
 
 		@SerialEntry
 		public boolean compactEffigyWaypoints;
@@ -1052,7 +1004,6 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
 
-<<<<<<< HEAD
         @SerialEntry
         public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
 
@@ -1062,11 +1013,6 @@ public class SkyblockerConfig {
         @SerialEntry
         public boolean hideMana = false;
     }
-=======
-		@SerialEntry
-		public boolean hideMana = false;
-	}
->>>>>>> c9ef08ab (fix the indentation)
 
 	public enum Info {
 		PURSE, BITS, LOCATION;

@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BeaconHighlighter {
-    public static List<BlockPos> beaconPositions = new ArrayList<>();
+    public static final List<BlockPos> beaconPositions = new ArrayList<>();
 
     /**
      * Initializes the beacon highlighting system.
-     * `BeaconHighlighter::render` is called after translucent rendering.
+     * {@link BeaconHighlighter#render(WorldRenderContext)} is called after translucent rendering.
      */
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);

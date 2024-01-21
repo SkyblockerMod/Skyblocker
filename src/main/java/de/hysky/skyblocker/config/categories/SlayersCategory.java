@@ -16,6 +16,8 @@ public class SlayersCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("text.autoconfig.skyblocker.category.slayer"))
+
+				//Enderman Slayer
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer"))
 						.collapsed(true)
