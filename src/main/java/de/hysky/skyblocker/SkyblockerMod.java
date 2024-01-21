@@ -110,7 +110,6 @@ public class SkyblockerMod implements ClientModInitializer {
         Waterboard.init();
         DungeonScore.init();
         PartyFinderScreen.initClass();
-        DungeonScoreHUD.init();
         ChestValue.init();
         FireFreezeStaffTimer.init();
         GuardianHealth.init();
