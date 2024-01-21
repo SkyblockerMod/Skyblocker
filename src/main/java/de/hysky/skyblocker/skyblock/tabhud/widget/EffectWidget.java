@@ -59,7 +59,7 @@ public class EffectWidget extends Widget {
                     .append(Text.literal(number).formatted(Formatting.YELLOW));
 
             IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, active,
-                    Text.literal(lines[3]).formatted(Formatting.AQUA));
+                    Text.literal(lines[2]).formatted(Formatting.AQUA));
             this.addComponent(iftc);
         }
     }
