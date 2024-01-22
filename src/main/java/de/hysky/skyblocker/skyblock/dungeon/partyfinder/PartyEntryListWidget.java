@@ -53,7 +53,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
 
     public void updateDisplay() {
         List<PartyEntry> entries = new ArrayList<>(partyEntries);
-        entries.removeIf(partyEntry -> !partyEntry.note.contains(search) && !(partyEntry instanceof PartyEntry.YourParty));
+        entries.removeIf(partyEntry -> !partyEntry.note.toLowerCase().contains(search) && !(partyEntry instanceof PartyEntry.YourParty));
         entries.sort(Comparator.comparing(PartyEntry::isLocked));
         entries.sort(Comparator.comparing(partyEntry -> !(partyEntry instanceof PartyEntry.YourParty)));
         if (entries.isEmpty() && !partyEntries.isEmpty()) {
@@ -63,7 +63,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
     }
 
     public void setSearch(String s) {
-        search = s;
+        search = s.toLowerCase();
         updateDisplay();
     }
 
