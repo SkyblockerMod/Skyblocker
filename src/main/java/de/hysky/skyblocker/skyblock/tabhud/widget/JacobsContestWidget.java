@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -14,6 +10,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 // this widget shows info about the current jacob's contest (garden only)
 
 public class JacobsContestWidget extends Widget {
@@ -22,7 +20,7 @@ public class JacobsContestWidget extends Widget {
             Formatting.BOLD);
 
     //TODO Properly match the contest placement and display it
-    private static final Pattern CROP_PATTERN = Pattern.compile("(?:☘|○) (?<crop>[A-Za-z ]+)(?:.+)?");
+    private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>[A-Za-z ]+).*");
 
     private static final HashMap<String, ItemStack> FARM_DATA = new HashMap<>();
 
@@ -63,7 +61,11 @@ public class JacobsContestWidget extends Widget {
                 itc = new IcoTextComponent();
             } else {
                 String cropName = item.group("crop").trim(); //Trimming is needed because during a contest the space separator will be caught
-                itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.of(cropName));
+                if (item.group("fortune").equals("☘")) {
+                    itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.literal(cropName).append(Text.literal(" ☘").formatted(Formatting.GOLD)));
+                } else {
+                    itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.of(cropName));
+                }
             }
             tc.addToCell(0, i - 77, itc);
         }
