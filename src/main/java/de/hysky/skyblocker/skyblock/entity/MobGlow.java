@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
@@ -65,6 +66,7 @@ public class MobGlow {
 			// Enderman Slayer
 			// Highlights Nukekubi Heads
 			return SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
+					&& SlayerUtils.isInSlayer()
 					&& entity instanceof ArmorStandEntity armorStandEntity
 					&& isNukekubiHead(armorStandEntity);
 		}
