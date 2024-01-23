@@ -69,6 +69,7 @@ dependencies {
 
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
 	modCompileOnly "maven.modrinth:jei:${project.jei_version}"
+	modRuntimeOnly "maven.modrinth:jei:${project.jei_version}"
 
 	// Discord IPC
 	include modImplementation("meteordevelopment:discord-ipc:1.1")

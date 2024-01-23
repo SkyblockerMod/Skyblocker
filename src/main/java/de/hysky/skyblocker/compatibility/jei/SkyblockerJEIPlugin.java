@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
@@ -18,7 +19,6 @@ import java.util.Map;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {
-
     private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
 
     @Override
@@ -30,6 +30,11 @@ public class SkyblockerJEIPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         registration.useNbtForSubtypes(ItemRepository.getItemsStream().map(ItemStack::getItem).toArray(Item[]::new));
+    }
+
+    @Override
+    public void registerIngredients(IModIngredientRegistration registration) {
+
     }
 
     @Override
