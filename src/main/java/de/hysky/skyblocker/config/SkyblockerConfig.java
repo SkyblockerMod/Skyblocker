@@ -213,6 +213,9 @@ public class SkyblockerConfig {
 		public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
 
 		@SerialEntry
+		public ItemProtection itemProtection = new ItemProtection();
+
+		@SerialEntry
 		public WikiLookup wikiLookup = new WikiLookup();
 
 		@SerialEntry
@@ -547,6 +550,30 @@ public class SkyblockerConfig {
 			return switch (this) {
 				case CIRCULAR -> "Circular";
 				case SQUARE -> "Square";
+			};
+		}
+	}
+
+	public static class ItemProtection {
+		@SerialEntry
+		public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+	}
+
+	public enum SlotLockStyle {
+		CLASSIC(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png")),
+		FANCY(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/fancy_slot_lock.png"));
+
+		public final Identifier tex;
+
+		SlotLockStyle(Identifier tex) {
+			this.tex = tex;
+		}
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case CLASSIC -> "Classic";
+				case FANCY -> "FANCY";
 			};
 		}
 	}

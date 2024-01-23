@@ -457,6 +457,20 @@ public class GeneralCategory {
 								.build())
 						.build())
 
+				//Item Protection
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemProtection"))
+						.collapsed(true)
+						.option(Option.<SkyblockerConfig.SlotLockStyle>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemProtection.slotLockStyle"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemProtection.slotLockStyle.@Tooltip")))
+								.binding(defaults.general.itemProtection.slotLockStyle,
+										() -> config.general.itemProtection.slotLockStyle,
+										newValue -> config.general.itemProtection.slotLockStyle = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.build())
+
 				//Wiki Lookup
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup"))
