@@ -1,3 +1,97 @@
+# Release 1.17.0
+
+## Highlight
+* Enderman Slayer Helper by @akarahdev
+* fancy Party Finder GUI by @viciscat
+* dungeon puzzle Waterboard Solver by @kevinthegreat1
+* f3/m3 fire freeze staff timer by @KhafraDev
+* f3/m3 guardian health display by @KhafraDev
+* f5/m5 livid color title by @kevinthegreat1
+* remove screens when switching island by @LifeIsAParadox
+* Dungeon Score by @kevinthegreat1
+* Toggle Sky Mall Filter by @AzureAaron
+* tips by @kevinthegreat1
+* resource pack: recolored textures in dungeons (tripwire for now) by @btwonion
+* Hypixels colouring to Dwarven Mines HUD by @Kaluub
+* dungeon score below map by @Emirlol
+* fancy_slot_lock.png by @Thsgun
+* JEI integration by @kevinthegreat1
+* Correct Transparent Skin Pixels by @AzureAaron
+
+## What's Changed
+* Gift Giving Emblem by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/438
+* Add f3/m3 fire freeze staff timer by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/436
+* Fix Integer Overflow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/439
+* 1.20.3 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/443
+* add f3/m3 guardian health display by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/442
+* Update Exeriment Solvers for 1.20.3/1.20.4 by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/437
+* YACL 1.20.4 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/445
+* Update mod to 1.16.0+1.20.3 by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/444
+* Update Debug Mode by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/446
+* Migrate to upstreamed EnumDropdownController by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/447
+* Ignore invalid entity data exceptions & broken quiz question by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/449
+* Ultimate rarity by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/450
+* Increase shortcuts character limit & Reset griffin burrows on world change by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/451
+* Update fabric.mod.json access widener by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/455
+* Update Dungeon Puzzles by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/454
+* Item Utils & Random Tests by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/456
+* Suppress unknown scoreboard objective warnings by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/457
+* remove screens when switching island by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/458
+* Suppress badlion packet warnings by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/460
+* Fix Fire Sales Widget by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/461
+* More Compatible Colour Parsing by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/463
+* Improve occlusion culling accuracy by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/464
+* Durability Fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/465
+* Migrate to Fabric Api ClientPlayerBlockBreakEvents by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/466
+* Waterboard Solver by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/467
+* Correct Transparent Skin Pixels by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/468
+* Add Dungeon Score by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/469
+* Two fixes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/472
+* Audit Mixins by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/473
+* Fix broken quiz question by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/474
+* Toggle Sky Mall Filter by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/475
+* Add Waterboard toggle by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/476
+* Use vanilla translations by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/479
+* Add tips by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/481
+* Add dungeon score title and sound by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/480
+* Add livid color title by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/482
+* Fix Skin Transparency applying to player skins by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/477
+* Support new epoch milli obtained timestamps by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/483
+* Add sync when clearing matchState by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/471
+* Loom 1.5 & JGit 6.8.0 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/484
+* Fix tips triggering too much by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/485
+* add new built-in texture pack for recolored textures in dungeons by @btwonion in https://github.com/SkyblockerMod/Skyblocker/pull/452
+* Add Hypixels colouring to Dwarven Mines HUD. by @Kaluub in https://github.com/SkyblockerMod/Skyblocker/pull/488
+* 1.20.4 & 1.20.2 only issues by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/490
+* Update top aligned pack.mcmeta by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/492
+* More tips by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/496
+* Add a custom GUI for the Party Finder in dungeons by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/487
+* Dungeons improvements. by @Kaluub in https://github.com/SkyblockerMod/Skyblocker/pull/493
+* Changed tips from true random to non-repeating random by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/501
+* Tic Tac Toe Refactor by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/504
+* YACL 3.3.2 (Critical update) by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/506
+* Handle rate limits by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/507
+* Fix fishing timer appearing outside Skyblock. by @Kaluub in https://github.com/SkyblockerMod/Skyblocker/pull/508
+* Add dungeon score calculation on client-side by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/500
+* Texture size, draw and transparency by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/509
+* Fix Active Effects widget by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/510
+* Make fancy_slot_lock.png by @Thsgun in https://github.com/SkyblockerMod/Skyblocker/pull/505
+* Lowercase party and search strings to ignore case by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/513
+* Enderman Slayer Utilities by @akarahdev in https://github.com/SkyblockerMod/Skyblocker/pull/502
+* Add anitas talisman fortune boost indicator next to the relevant crop by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/512
+* Add JEI integration by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/448
+
+## New Contributors
+* @KhafraDev made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/436
+* @btwonion made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/452
+* @Kaluub made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/488
+* @Emirlol made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/501
+* @akarahdev made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/502
+* @Thsgun made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/505
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.16.0...v1.17.0
+___
+
 # Release 1.16.0 (1.20.3 & 1.20.4)
 
 ## Highlight

@@ -19,8 +19,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 <summary>Features</summary>
 
 ### Dungeon Features:
+- **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
-- **Minimap**
+- **Minimap & Score**
 - **Starred Mob Glow**
 - **Croesus Helper**
 - **Puzzle Solver:**
@@ -29,6 +30,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Creeper Beams*
   - *Quiz - Ouro the Omniscient*
   - *Tic Tac Toe*
+  - *Waterboard*
   - *Terminal:*
     - *Order*
     - *Coloured Items*
@@ -42,6 +44,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
+- **resourcepack recoloring textures in dungeons**
+- **score title and sound**
 
 ### Item and Armor Customization:
 - *Item Renaming*
@@ -72,10 +76,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### Slayer Helper:
 - **Vampire:**
-  - *Effigy Waypoints*
-  - *Healing Melon Indicator*
-  - *Twinclaws Ice Indicator*
-  - *Steak Stake Indicator*
+  - Effigy Waypoints
+  - Healing Melon Indicator
+  - Twinclaws Ice Indicator
+  - Steak Stake Indicator
+- **Enderman:**
+  - Beacon Highlighting
+  - Nukekubi Head Highlighting
 
 ### Visual Enhancements:
 - **Fancy Tab HUD:** Fully configurable with a resource pack.
@@ -117,6 +124,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Molten Wave*
   - *`/show command`*
   - *Teleport Pad Messages*
+  - *Sky Mall*
 
 ### Miscellaneous Solvers:
 - **Experiments Solvers**
@@ -124,7 +132,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Mythological Ritual Helper**
 
 ### Miscellaneous Features:
-- **Roughly Enough Items (REI) and EMI Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei) Support**
 - **Item Protection**
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
@@ -132,6 +140,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **ChestValue**
+- **add useful tips in chat**
+- **Suppress badlion packet warnings**
+- **remove screens when switching island**
 
 </details>
 
@@ -200,9 +211,13 @@ information.
 |:--------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:|
 |                                 [lantice3720](https://github.com/lantice3720)                                  |                                [koloiyolo](https://github.com/koloiyolo)                                 |                                    [Futuremappermydud](https://github.com/Futuremappermydud)                                     |                                [viciscat](https://github.com/viciscat)                                |
 
-| [<img alt="Grayray75" src="https://github.com/Grayray75.png" width="100">](https://github.com/Grayray75) | [<img alt="alexiayaa" src="https://github.com/alexiayaa.png" width="100">](https://github.com/alexiayaa) | [<img alt="KhafraDev" src="https://github.com/KhafraDev.png" width="100">](https://github.com/KhafraDev) |
-|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|----------------------------------------------------------------------------------------------------------|
-|                                [Grayray75](https://github.com/Grayray75)                                 |                                [alexiayaa](https://github.com/alexiayaa)                                 | [KhafraDev](https://github.com/KhafraDev)                                                                |        
+| [<img alt="Grayray75" src="https://github.com/Grayray75.png" width="100">](https://github.com/Grayray75) | [<img alt="alexiayaa" src="https://github.com/alexiayaa.png" width="100">](https://github.com/alexiayaa) | [<img alt="KhafraDev" src="https://github.com/KhafraDev.png" width="100">](https://github.com/KhafraDev) | [<img alt="KhafraDev" src="https://github.com/btwonion.png" width="100">](https://github.com/btwonion) |
+|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+|                                [Grayray75](https://github.com/Grayray75)                                 |                                [alexiayaa](https://github.com/alexiayaa)                                 | [KhafraDev](https://github.com/KhafraDev)                                                                | [btwonion](https://github.com/btwonion)                                                                |
+
+| [<img alt="KhafraDev" src="https://github.com/Kaluub.png" width="100">](https://github.com/Kaluub) | [<img alt="KhafraDev" src="https://github.com/Emirlol.png" width="100">](https://github.com/Emirlol) | [<img alt="KhafraDev" src="https://github.com/Thsgun.png" width="100">](https://github.com/Thsgun) |
+|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| [Kaluub](https://github.com/Kaluub)                                                                | [Emirlol](https://github.com/Emirlol)                                                                | [Thsgun](https://github.com/Thsgun)                                                                |      
 
 ### Translators
 
@@ -217,7 +232,7 @@ Korean ([lantice3720](https://github.com/lantice3720)) \
 Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
 Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
 Norwegian Nynorsk ([KdGaming0](https://github.com/KdGaming0)) \
-Turkish ([Fix3dll](https://github.com/Fix3dll)) \
+Turkish ([Fix3dll](https://github.com/Fix3dll) & [Emirlol](https://github.com/Emirlol)) \
 Canadian English ([AzureAaron](https://github.com/AzureAaron)) \
 Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro) & [AurinVPK](https://github.com/AurinVPK) & [yFelipeMC](https://github.com/yFelipeMC)) \
 Dutch ([mitch030504](https://github.com/mitch030504))
