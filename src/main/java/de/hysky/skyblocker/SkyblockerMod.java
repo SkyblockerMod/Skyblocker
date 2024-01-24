@@ -15,6 +15,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
+import de.hysky.skyblocker.skyblock.garden.Sprayonator;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -134,6 +135,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ApiUtils.init();
         Debug.init();
         RenderHelper.init();
+        Sprayonator.init();
         containerSolverManager.init();
         statusBarTracker.init();
         BeaconHighlighter.init();

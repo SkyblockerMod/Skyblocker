@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.garden.Sprayonator;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -618,6 +619,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public SpidersDen spidersDen = new SpidersDen();
+
+		@SerialEntry
+		public Garden garden = new Garden();
 	}
 
 	public static class Dungeons {
@@ -911,6 +915,11 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean solveTreasureHunter = true;
+	}
+
+	public static class Garden {
+		@SerialEntry
+		public Sprayonator.SprayData[] sprayedPlots = new Sprayonator.SprayData[24];
 	}
 
 	public static class Rift {
