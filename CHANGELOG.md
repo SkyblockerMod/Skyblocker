@@ -15,7 +15,6 @@
 * Hypixels colouring to Dwarven Mines HUD by @Kaluub
 * dungeon score below map by @Emirlol
 * fancy_slot_lock.png by @Thsgun
-* JEI integration by @kevinthegreat1
 * Correct Transparent Skin Pixels by @AzureAaron
 
 ## What's Changed
@@ -79,7 +78,6 @@
 * Lowercase party and search strings to ignore case by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/513
 * Enderman Slayer Utilities by @akarahdev in https://github.com/SkyblockerMod/Skyblocker/pull/502
 * Add anitas talisman fortune boost indicator next to the relevant crop by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/512
-* Add JEI integration by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/448
 
 ## New Contributors
 * @KhafraDev made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/436
