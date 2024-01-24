@@ -195,6 +195,7 @@ public class GeneralCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper.@Tooltip")))
 								.binding(defaults.general.fishing.enableFishingHelper,
 										() -> config.general.fishing.enableFishingHelper,
 										newValue -> config.general.fishing.enableFishingHelper = newValue)
@@ -205,6 +206,7 @@ public class GeneralCategory {
 				//Fairy Souls Helper
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.fairySouls"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fairySouls.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper"))
