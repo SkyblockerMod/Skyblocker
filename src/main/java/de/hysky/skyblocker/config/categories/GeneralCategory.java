@@ -119,6 +119,7 @@ public class GeneralCategory {
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.enableBars"))
@@ -129,6 +130,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.healthBarPosition,
 										() -> config.general.bars.barPositions.healthBarPosition,
 										newValue -> config.general.bars.barPositions.healthBarPosition = newValue)
@@ -136,6 +138,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.manaBarPosition,
 										() -> config.general.bars.barPositions.manaBarPosition,
 										newValue -> config.general.bars.barPositions.manaBarPosition = newValue)
@@ -143,6 +146,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.defenceBarPosition,
 										() -> config.general.bars.barPositions.defenceBarPosition,
 										newValue -> config.general.bars.barPositions.defenceBarPosition = newValue)
@@ -150,6 +154,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.experienceBarPosition,
 										() -> config.general.bars.barPositions.experienceBarPosition,
 										newValue -> config.general.bars.barPositions.experienceBarPosition = newValue)
