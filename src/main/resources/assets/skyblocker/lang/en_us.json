@@ -308,7 +308,7 @@
   "text.autoconfig.skyblocker.option.messages.hideDeath": "Hide Player Death Messages",
   "text.autoconfig.skyblocker.option.messages.hideDeath.@Tooltip": "Filters the player death messages from chat.",
   "text.autoconfig.skyblocker.category.slayer": "Slayers",
-  "text.autoconfig.skyblocker.option.slayer.endermanSlayer": "Enderman Slayer",
+  "text.autoconfig.skyblocker.option.slayer.endermanSlayer": "[Beta] Enderman Slayer",
   "text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi Head Highlighting",
   "text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer": "Vampire Slayer",
