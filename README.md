@@ -143,6 +143,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **add useful tips in chat**
 - **Suppress badlion packet warnings**
 - **remove screens when switching island**
+- **skin transparency correction**
 
 </details>
 
