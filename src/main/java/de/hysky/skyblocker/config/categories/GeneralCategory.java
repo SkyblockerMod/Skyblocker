@@ -170,6 +170,7 @@ public class GeneralCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver")))
 								.binding(defaults.general.experiments.enableChronomatronSolver,
 										() -> config.general.experiments.enableChronomatronSolver,
 										newValue -> config.general.experiments.enableChronomatronSolver = newValue)
@@ -177,6 +178,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver")))
 								.binding(defaults.general.experiments.enableSuperpairsSolver,
 										() -> config.general.experiments.enableSuperpairsSolver,
 										newValue -> config.general.experiments.enableSuperpairsSolver = newValue)
@@ -184,6 +186,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver")))
 								.binding(defaults.general.experiments.enableUltrasequencerSolver,
 										() -> config.general.experiments.enableUltrasequencerSolver,
 										newValue -> config.general.experiments.enableUltrasequencerSolver = newValue)
