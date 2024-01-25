@@ -1,6 +1,7 @@
 ### Dungeon Features:
+- **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
-- **Minimap**
+- **Minimap & Score**
 - **Starred Mob Glow**
 - **Croesus Helper**
 - **Puzzle Solver:**
@@ -9,6 +10,7 @@
     - *Creeper Beams*
     - *Quiz - Ouro the Omniscient*
     - *Tic Tac Toe*
+    - *Waterboard*
     - *Terminal:*
         - *Order*
         - *Coloured Items*
@@ -22,6 +24,8 @@
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
+- **resourcepack recoloring textures in dungeons**
+- **score title and sound**
 
 ### Item and Armor Customization:
 - *Item Renaming*
@@ -52,10 +56,13 @@
 
 ### Slayer Helper:
 - **Vampire:**
-    - *Effigy Waypoints*
-    - *Healing Melon Indicator*
-    - *Twinclaws Ice Indicator*
-    - *Steak Stake Indicator*
+  - Effigy Waypoints
+  - Healing Melon Indicator
+  - Twinclaws Ice Indicator
+  - Steak Stake Indicator
+- **Enderman:**
+  - Beacon Highlighting
+  - Nukekubi Head Highlighting
 
 ### Visual Enhancements:
 - **Fancy Tab HUD:** Fully configurable with a resource pack.
@@ -97,6 +104,7 @@
     - *Molten Wave*
     - *`/show command`*
     - *Teleport Pad Messages*
+    - *Sky Mall*
 
 ### Miscellaneous Solvers:
 - **Experiments Solvers**
@@ -104,7 +112,7 @@
 - **Mythological Ritual Helper**
 
 ### Miscellaneous Features:
-- **Roughly Enough Items (REI) and EMI Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) and [EMI](https://modrinth.com/mod/emi) Support**
 - **Item Protection**
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
@@ -112,3 +120,7 @@
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **ChestValue**
+- **add useful tips in chat**
+- **Suppress badlion packet warnings**
+- **remove screens when switching island**
+- **skin transparency correction**

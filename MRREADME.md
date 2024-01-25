@@ -9,8 +9,9 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 <details>
 <summary> Dungeon Features </summary>
 
+- **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
-- **Minimap**
+- **Minimap & Score**
 - **Starred Mob Glow**
 - **Croesus Helper**
 - **Puzzle Solver:**
@@ -19,6 +20,7 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
   - *Creeper Beams*
   - *Quiz - Ouro the Omniscient*
   - *Tic Tac Toe*
+  - *Waterboard*
   - *Terminal:*
     - *Order*
     - *Coloured Items*
@@ -32,6 +34,8 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
+- **resourcepack recoloring textures in dungeons**
+- **score title and sound**
 </details>
 
 <details>
@@ -66,6 +70,8 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 <summary> Rift Features </summary>
 
 - **Mirrorverse Waypoints**
+- **Enigma soul waypoint**
+- **Blobbercysts Glow**
 </details>
 
 <details>
@@ -78,10 +84,13 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 <summary> Slayer Helper </summary>
 
 - **Vampire:**
-  - *Effigy Waypoints*
-  - *Healing Melon Indicator*
-  - *Twinclaws Ice Indicator*
-  - *Steak Stake Indicator*
+  - Effigy Waypoints
+  - Healing Melon Indicator
+  - Twinclaws Ice Indicator
+  - Steak Stake Indicator
+- **Enderman:**
+  - Beacon Highlighting
+  - Nukekubi Head Highlighting
 </details>
 
 <details>
@@ -93,6 +102,7 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
 - **Item Rarity Backgrounds**
+  - Circle or Square
 - **Item Cooldown Display**
 - **Configure Fire-Overlay Height**
 </details>
@@ -103,12 +113,13 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 - **Attribute Shard Info Display**
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
-- **Price Tooltip:** (Provides information on)
+- **Item Tooltip:** (Provides information on)
   - *NPC Prices*
   - *Motes Prices*
   - *bazaar (average, lowest bin)*
   - *Auction House*
   - *Museum*
+  - *Exotic Armor Identifier*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
@@ -133,6 +144,7 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
   - *Molten Wave*
   - *`/show command`*
   - *Teleport Pad Messages*
+  - *Sky Mall*
 </details>
 
 <details>
@@ -140,16 +152,24 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 
 - **Experiments Solvers**
 - **Fishing Helper:** Includes sound notifications.
+- **Mythological Ritual Helper**
 </details>
 
 <details>
 <summary> Miscellaneous Features </summary>
 
-- **Roughly Enough Items (REI) and EMI Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) and [EMI](https://modrinth.com/mod/emi) Support**
 - **Item Protection**
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
 - **OptiFabric Compatibility**
+- **Waypoints API**
+- **Config Button in Skyblock Menu**
+- **ChestValue**
+- **add useful tips in chat**
+- **Suppress badlion packet warnings**
+- **remove screens when switching island**
+- **skin transparency correction**
 </details>
 
 
