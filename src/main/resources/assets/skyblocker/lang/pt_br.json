@@ -105,7 +105,7 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg": "Tipo Mediano",
     "text.autoconfig.skyblocker.option.general.itemTooltip.avg.ONE_DAY": "Preço de 1 dia",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableBazaarPrice": "Ativar Preço de compra/venda do Bazar",
-    "text.autoconfig.skyblocker.option.messages.hideAOTE": "Esconder Mensagens do AOTE",
+    "text.autoconfig.skyblocker.option.messages.hideAOTE": "Esconder Mensagens da Habilidade de Teleporte",
     "text.autoconfig.skyblocker.option.messages.hideTeleportPad": "Esconder Mensagens do Pad de Teleporte",
     "text.autoconfig.skyblocker.option.messages.hideShowOff": "Esconder Mensagens de Show Off",
     "text.autoconfig.skyblocker.option.slayer.vampireSlayer.effigyUpdateFrequency": "Frequência de Atualização (Ticks) de Waypoints de Effigy",
@@ -280,5 +280,8 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "Se ativado, o preço de uma Kismet usada será subtraído no cálculo da margem de lucro",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence": "Incluir essência",
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.showSecretText": "Exibir texto secreto",
-    "text.autoconfig.skyblocker.option.quickNav.button.clickEvent": "Evento ao clicar"
+    "text.autoconfig.skyblocker.option.quickNav.button.clickEvent": "Evento ao clicar",
+    "text.autoconfig.skyblocker.option.general.waypoints.enableWaypoints": "Ativar Waypoints",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType": "Tipo de Waypoint",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType.generalNote": "\n\n\nEssa opção não aplica para todos os waypoints. Alguns waypoints como waypoints secretos tem seu próprio opção de tipo de waypoint."
 }
