@@ -46,15 +46,15 @@ public class SprayonatorWidget extends Widget {
 				if (remainingTime <= 180000) timeFormatting = Formatting.RED; //3 minutes in milliseconds
 				else if (remainingTime <= 600000) timeFormatting = Formatting.GOLD; //10 minutes in milliseconds
 
-				MutableText afterText = Text.literal("")
-											.append(Text.literal(String.format("%d:%02d", remainingTime / 60000, (remainingTime / 1000) % 60)).formatted(timeFormatting));
+				MutableText afterText = Text.literal(String.format("%d:%02d", remainingTime / 60000, (remainingTime / 1000) % 60)).formatted(timeFormatting);
+
 				ItemStack ico = switch (sd.matter()) {
 					case "Tasty Cheese" -> Ico.TASTY_CHEESE;
 					case "Compost" -> Ico.COMPOST;
 					case "Dung" -> Ico.DUNG;
 					case "Honey Jar" -> Ico.HONEY_JAR;
 					case "Plant Matter" -> Ico.PLANT_MATTER;
-					default -> Ico.BARRIER;
+					default -> null;
 				};
 				tc.addToCell(column, row, new TextIcoTextComponent(beforeText, ico, afterText));
 			}
