@@ -22,6 +22,7 @@ public class GeneralCategory {
 				//Ungrouped Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.enableTips"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.enableTips.@Tooltip")))
 						.binding(defaults.general.enableTips,
 								() -> config.general.enableTips,
 								newValue -> config.general.enableTips = newValue)
@@ -82,6 +83,7 @@ public class GeneralCategory {
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled"))
@@ -481,6 +483,7 @@ public class GeneralCategory {
 				//Wiki Lookup
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup"))
