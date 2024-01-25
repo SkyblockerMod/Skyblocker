@@ -90,6 +90,14 @@ public class Utils {
         return getLocationRaw().equals(TheRift.LOCATION);
     }
 
+    /**
+     * @return if the player is in the end island
+     */
+    public static boolean isInTheEnd() {
+        // /locraw returns "combat_3" when in The End
+        return getLocationRaw().equals("combat_3");
+    }
+
     public static boolean isInjected() {
         return isInjected;
     }

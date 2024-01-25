@@ -97,6 +97,7 @@ public class SkyblockerConfig {
 		public QuickNavItem button10 = new QuickNavItem(true, new ItemData("enchanting_table"), "Enchant Item",
 				"/etable");
 
+
 		@SerialEntry
 		public QuickNavItem button11 = new QuickNavItem(true, new ItemData("anvil"), "Anvil", "/anvil");
 
@@ -169,7 +170,7 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean hideStatusEffectOverlay = false;
-		
+
 		@SerialEntry
 		public boolean dontStripSkinAlphaValues = true;
 
@@ -944,7 +945,18 @@ public class SkyblockerConfig {
 
 	public static class Slayer {
 		@SerialEntry
+		public EndermanSlayer endermanSlayer = new EndermanSlayer();
+
+		@SerialEntry
 		public VampireSlayer vampireSlayer = new VampireSlayer();
+	}
+
+	public static class EndermanSlayer {
+		@SerialEntry
+		public boolean highlightNukekubiHeads = true;
+
+		@SerialEntry
+		public boolean highlightBeacons = true;
 	}
 
 	public static class VampireSlayer {
