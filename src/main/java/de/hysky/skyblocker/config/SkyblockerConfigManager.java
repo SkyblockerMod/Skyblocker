@@ -73,6 +73,7 @@ public class SkyblockerConfigManager {
 				.category(GeneralCategory.create(defaults, config))
 				.category(DungeonsCategory.create(defaults, config))
 				.category(DwarvenMinesCategory.create(defaults, config))
+				.category(CrimsonIsleCategory.create(defaults, config))
 				.category(LocationsCategory.create(defaults, config))
 				.category(SlayersCategory.create(defaults, config))
 				.category(QuickNavigationCategory.create(defaults, config))

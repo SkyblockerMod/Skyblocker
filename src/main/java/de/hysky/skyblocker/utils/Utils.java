@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
@@ -96,6 +97,10 @@ public class Utils {
     public static boolean isInTheEnd() {
         // /locraw returns "combat_3" when in The End
         return getLocationRaw().equals("combat_3");
+    }
+
+    public static boolean isInKuudra() {
+        return getLocationRaw().equals(Kuudra.LOCATION);
     }
 
     public static boolean isInjected() {
