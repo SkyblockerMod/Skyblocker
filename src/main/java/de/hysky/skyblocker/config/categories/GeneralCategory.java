@@ -22,6 +22,7 @@ public class GeneralCategory {
 				//Ungrouped Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.enableTips"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.enableTips.@Tooltip")))
 						.binding(defaults.general.enableTips,
 								() -> config.general.enableTips,
 								newValue -> config.general.enableTips = newValue)
@@ -82,6 +83,7 @@ public class GeneralCategory {
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled"))
@@ -119,6 +121,7 @@ public class GeneralCategory {
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.enableBars"))
@@ -129,6 +132,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.healthBarPosition,
 										() -> config.general.bars.barPositions.healthBarPosition,
 										newValue -> config.general.bars.barPositions.healthBarPosition = newValue)
@@ -136,6 +140,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.manaBarPosition,
 										() -> config.general.bars.barPositions.manaBarPosition,
 										newValue -> config.general.bars.barPositions.manaBarPosition = newValue)
@@ -143,6 +148,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.defenceBarPosition,
 										() -> config.general.bars.barPositions.defenceBarPosition,
 										newValue -> config.general.bars.barPositions.defenceBarPosition = newValue)
@@ -150,6 +156,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition.@Tooltip")))
 								.binding(defaults.general.bars.barPositions.experienceBarPosition,
 										() -> config.general.bars.barPositions.experienceBarPosition,
 										newValue -> config.general.bars.barPositions.experienceBarPosition = newValue)
@@ -163,6 +170,7 @@ public class GeneralCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver")))
 								.binding(defaults.general.experiments.enableChronomatronSolver,
 										() -> config.general.experiments.enableChronomatronSolver,
 										newValue -> config.general.experiments.enableChronomatronSolver = newValue)
@@ -170,6 +178,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver")))
 								.binding(defaults.general.experiments.enableSuperpairsSolver,
 										() -> config.general.experiments.enableSuperpairsSolver,
 										newValue -> config.general.experiments.enableSuperpairsSolver = newValue)
@@ -177,6 +186,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.experiments.enableUltrasequencerSolver")))
 								.binding(defaults.general.experiments.enableUltrasequencerSolver,
 										() -> config.general.experiments.enableUltrasequencerSolver,
 										newValue -> config.general.experiments.enableUltrasequencerSolver = newValue)
@@ -190,6 +200,7 @@ public class GeneralCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper.@Tooltip")))
 								.binding(defaults.general.fishing.enableFishingHelper,
 										() -> config.general.fishing.enableFishingHelper,
 										newValue -> config.general.fishing.enableFishingHelper = newValue)
@@ -200,6 +211,7 @@ public class GeneralCategory {
 				//Fairy Souls Helper
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.fairySouls"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fairySouls.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper"))
@@ -474,6 +486,7 @@ public class GeneralCategory {
 				//Wiki Lookup
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.@Tooltip")))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup"))
