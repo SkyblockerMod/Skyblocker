@@ -171,6 +171,10 @@
   "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.fuelWaypoints": "Fuel Waypoints",
   "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.safeSpotWaypoints": "Safe Spot Waypoints",
   "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.pearlWaypoints": "Pearl Waypoints",
+  "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning": "No Arrow Poison Warning",
+  "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Warns you when you pull out a bow and have no Toxic Arrow Poison in your inventory. Only works during the DPS phase.",
+  "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poison Warning Threshold",
+  "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "If the amount of Toxic Arrow Poison you have in your inventory is below the set threshold then you will receive a warning.",
   "text.autoconfig.skyblocker.option.locations.spidersDen": "Spider's Den",
   "text.autoconfig.skyblocker.option.locations.spidersDen.relics": "Hidden Relics Helper",
   "text.autoconfig.skyblocker.option.locations.spidersDen.relics.enableRelicsHelper": "Enable Hidden Relics Helper",
@@ -256,7 +260,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText": "Enable Livid Color Text",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorText.@Tooltip": "Send the livid color in the chat during the Livid boss fight.",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle": "Enable Livid Color Title",
-    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip": "Display the livid color in the title during the Livid boss fight.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip": "Display the livid color in the title during the Livid boss fight.",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Livid Color Text",
   "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid color.",
   "text.autoconfig.skyblocker.option.locations.dungeons.terminals": "Terminal Solvers",
@@ -464,6 +468,9 @@
   "skyblocker.partyFinder.yourParty": "Your party",
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
+  
+  "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
+  "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }

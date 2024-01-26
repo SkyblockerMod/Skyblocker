@@ -7,6 +7,7 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import net.minecraft.text.Text;
 
 public class CrimsonIsleCategory {
@@ -61,6 +62,22 @@ public class CrimsonIsleCategory {
 										() -> config.locations.crimsonIsle.kuudra.waypointType,
 										newValue -> config.locations.crimsonIsle.kuudra.waypointType = newValue)
 								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip")))
+								.binding(defaults.locations.crimsonIsle.kuudra.noArrowPoisonWarning,
+										() -> config.locations.crimsonIsle.kuudra.noArrowPoisonWarning,
+										newValue -> config.locations.crimsonIsle.kuudra.noArrowPoisonWarning = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip")))
+								.binding(defaults.locations.crimsonIsle.kuudra.arrowPoisonThreshold,
+										() -> config.locations.crimsonIsle.kuudra.arrowPoisonThreshold,
+										newValue -> config.locations.crimsonIsle.kuudra.arrowPoisonThreshold = newValue)
+								.controller(IntegerFieldControllerBuilder::create)
 								.build())
 						.build())
 				.build();

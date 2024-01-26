@@ -939,6 +939,12 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		@SerialEntry
+		public boolean noArrowPoisonWarning = true;
+
+		@SerialEntry
+		public int arrowPoisonThreshold = 16;
 	}
 
 	public static class Rift {
