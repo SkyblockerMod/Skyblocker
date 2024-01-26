@@ -37,7 +37,7 @@ public class KuudraWaypoints {
 	private static final ObjectArrayList<Waypoint> SAFE_SPOT_WAYPOINTS = new ObjectArrayList<>();
 	private static final ObjectArrayList<Waypoint> PEARL_WAYPOINTS = new ObjectArrayList<>();
 	private static final Function<float[], Codec<List<Waypoint>>> CODEC = cc -> PosUtils.ALT_BLOCK_POS_CODEC.xmap(
-			pos -> new Waypoint(pos, Waypoint.Type.HIGHLIGHT, cc),
+			pos -> new Waypoint(pos, () -> Waypoint.Type.HIGHLIGHT, cc, false),
 			waypoint -> waypoint.pos)
 			.listOf();
 
