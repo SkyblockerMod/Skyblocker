@@ -28,17 +28,25 @@ public class CrimsonIsleCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.supplyPileWaypoints"))
-								.binding(defaults.locations.crimsonIsle.kuudra.supplyPileWaypoints,
-										() -> config.locations.crimsonIsle.kuudra.supplyPileWaypoints,
-										newValue -> config.locations.crimsonIsle.kuudra.supplyPileWaypoints = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.fuelWaypoints"))
 								.binding(defaults.locations.crimsonIsle.kuudra.fuelWaypoints,
 										() -> config.locations.crimsonIsle.kuudra.fuelWaypoints,
 										newValue -> config.locations.crimsonIsle.kuudra.fuelWaypoints = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Waypoint.Type>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.suppliesAndFuelWaypointType"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip")))
+								.binding(defaults.locations.crimsonIsle.kuudra.suppliesAndFuelWaypointType,
+										() -> config.locations.crimsonIsle.kuudra.suppliesAndFuelWaypointType,
+										newValue -> config.locations.crimsonIsle.kuudra.suppliesAndFuelWaypointType = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.ballistaBuildWaypoints"))
+								.binding(defaults.locations.crimsonIsle.kuudra.ballistaBuildWaypoints,
+										() -> config.locations.crimsonIsle.kuudra.ballistaBuildWaypoints,
+										newValue -> config.locations.crimsonIsle.kuudra.ballistaBuildWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -54,14 +62,6 @@ public class CrimsonIsleCategory {
 										() -> config.locations.crimsonIsle.kuudra.pearlWaypoints,
 										newValue -> config.locations.crimsonIsle.kuudra.pearlWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Waypoint.Type>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip")))
-								.binding(defaults.locations.crimsonIsle.kuudra.waypointType,
-										() -> config.locations.crimsonIsle.kuudra.waypointType,
-										newValue -> config.locations.crimsonIsle.kuudra.waypointType = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning"))

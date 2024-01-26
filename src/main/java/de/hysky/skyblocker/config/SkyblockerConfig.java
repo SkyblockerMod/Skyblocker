@@ -926,19 +926,19 @@ public class SkyblockerConfig {
 		public boolean supplyWaypoints = true;
 
 		@SerialEntry
-		public boolean supplyPileWaypoints = true;
+		public boolean fuelWaypoints = true;
 
 		@SerialEntry
-		public boolean fuelWaypoints = true;
+		public Waypoint.Type suppliesAndFuelWaypointType = Waypoint.Type.WAYPOINT;
+
+		@SerialEntry
+		public boolean ballistaBuildWaypoints = true;
 
 		@SerialEntry
 		public boolean safeSpotWaypoints = true;
 
 		@SerialEntry
 		public boolean pearlWaypoints = true;
-
-		@SerialEntry
-		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
 		@SerialEntry
 		public boolean noArrowPoisonWarning = true;
