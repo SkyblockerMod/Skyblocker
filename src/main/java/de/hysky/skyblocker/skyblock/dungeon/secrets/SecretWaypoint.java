@@ -9,6 +9,7 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -29,7 +30,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
-public class SecretWaypoint extends Waypoint {
+public class SecretWaypoint extends NamedWaypoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
     public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
@@ -43,8 +44,6 @@ public class SecretWaypoint extends Waypoint {
     static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final int secretIndex;
     final Category category;
-    final Text name;
-    private final Vec3d centerPos;
 
     SecretWaypoint(int secretIndex, JsonObject waypoint, String name, BlockPos pos) {
         this(secretIndex, Category.get(waypoint), name, pos);
@@ -55,11 +54,9 @@ public class SecretWaypoint extends Waypoint {
     }
 
     SecretWaypoint(int secretIndex, Category category, Text name, BlockPos pos) {
-        super(pos, TYPE_SUPPLIER, category.colorComponents);
+        super(pos, name, TYPE_SUPPLIER, category.colorComponents);
         this.secretIndex = secretIndex;
         this.category = category;
-        this.name = name;
-        this.centerPos = pos.toCenterPos();
     }
 
     static ToDoubleFunction<SecretWaypoint> getSquaredDistanceToFunction(Entity entity) {
@@ -96,6 +93,11 @@ public class SecretWaypoint extends Waypoint {
         return super.equals(obj) || obj instanceof SecretWaypoint other && secretIndex == other.secretIndex && category == other.category && name.equals(other.name) && pos.equals(other.pos);
     }
 
+    @Override
+    protected boolean shouldRenderName() {
+        return CONFIG.get().showSecretText;
+    }
+
     /**
      * Renders the secret waypoint, including a waypoint through {@link Waypoint#render(WorldRenderContext)}, the name, and the distance from the player.
      */
@@ -106,7 +108,6 @@ public class SecretWaypoint extends Waypoint {
 
         if (CONFIG.get().showSecretText) {
             Vec3d posUp = centerPos.add(0, 1, 0);
-            RenderHelper.renderText(context, name, posUp, true);
             double distance = context.camera().getPos().distanceTo(centerPos);
             RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
         }

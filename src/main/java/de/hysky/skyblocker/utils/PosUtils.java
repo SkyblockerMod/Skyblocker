@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils;
 
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -15,6 +16,10 @@ public final class PosUtils {
     public static BlockPos parsePosString(String posData) {
         String[] posArray = posData.split(",");
         return new BlockPos(Integer.parseInt(posArray[0]), Integer.parseInt(posArray[1]), Integer.parseInt(posArray[2]));
+    }
+
+    public static BlockPos parsePosJson(JsonObject posJson) {
+        return new BlockPos(posJson.get("x").getAsInt(), posJson.get("y").getAsInt(), posJson.get("z").getAsInt());
     }
 
     public static String getPosString(BlockPos blockPos) {

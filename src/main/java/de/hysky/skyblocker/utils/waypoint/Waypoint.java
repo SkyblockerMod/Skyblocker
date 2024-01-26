@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Waypoint implements Renderable {
@@ -92,6 +93,11 @@ public class Waypoint implements Renderable {
             }
             case OUTLINE -> RenderHelper.renderOutline(context, box, getColorComponents(), lineWidth, throughWalls);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj) || obj instanceof Waypoint other && pos.equals(other.pos) && typeSupplier.get() == other.typeSupplier.get() && Arrays.equals(colorComponents, other.colorComponents) && alpha == other.alpha && lineWidth == other.lineWidth && throughWalls == other.throughWalls && shouldRender == other.shouldRender;
     }
 
     public enum Type {

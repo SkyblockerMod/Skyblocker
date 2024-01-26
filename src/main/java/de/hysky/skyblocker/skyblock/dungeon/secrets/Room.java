@@ -208,7 +208,7 @@ public class Room implements Tickable, Renderable {
         SecretWaypoint.Category category = SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category");
         Text waypointName = context.getArgument("name", Text.class);
         addCustomWaypoint(secretIndex, category, waypointName, pos);
-        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.stringifiedTranslatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName)));
+        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category.asString(), waypointName)));
     }
 
     /**
@@ -242,7 +242,7 @@ public class Room implements Tickable, Renderable {
     protected void removeCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         SecretWaypoint waypoint = removeCustomWaypoint(pos);
         if (waypoint != null) {
-            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.stringifiedTranslatable("skyblocker.dungeons.secrets.customWaypointRemoved", pos.getX(), pos.getY(), pos.getZ(), name, waypoint.secretIndex, waypoint.category, waypoint.name)));
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointRemoved", pos.getX(), pos.getY(), pos.getZ(), name, waypoint.secretIndex, waypoint.category.asString(), waypoint.getName())));
         } else {
             context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointNotFound", pos.getX(), pos.getY(), pos.getZ(), name)));
         }
