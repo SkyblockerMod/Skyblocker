@@ -25,6 +25,10 @@ public class Kuudra {
 		if (Utils.isInKuudra() && !overlay) {
 			String message = Formatting.strip(text.getString());
 
+			if (message.equals("[NPC] Elle: ARGH! All of the supplies fell into the lava! You need to retrieve them quickly!")) {
+				phase = KuudraPhase.RETRIEVE_SUPPLIES;
+			}
+
 			if (message.equals("[NPC] Elle: Phew! The Ballista is finally ready! It should be strong enough to tank Kuudra's blows now!")) {
 				phase = KuudraPhase.DPS;
 			}
@@ -41,6 +45,7 @@ public class Kuudra {
 
 	enum KuudraPhase {
 		OTHER,
+		RETRIEVE_SUPPLIES,
 		DPS;
 	}
 }

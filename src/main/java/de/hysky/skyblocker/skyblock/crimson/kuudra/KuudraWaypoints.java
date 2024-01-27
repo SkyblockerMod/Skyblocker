@@ -25,12 +25,15 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.mob.GiantEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 
 public class KuudraWaypoints {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final float[] SUPPLIES_COLOR = { 255f / 255f, 0f, 0f };
-	private static final float[] FUEL_COLOR = { 250f / 255f, 217 / 255f, 2f / 255f };
 	private static final float[] PEARL_COLOR = { 57f / 255f, 117f / 255f, 125f / 255f };
 	private static final float[] SAFE_SPOT_COLOR = { 255f / 255f, 85f / 255f, 255f / 255f };
 	private static final Supplier<Type> SUPPLIES_AND_FUEL_TYPE = () -> SkyblockerConfigManager.get().locations.crimsonIsle.kuudra.suppliesAndFuelWaypointType;
@@ -75,28 +78,41 @@ public class KuudraWaypoints {
 		SkyblockerConfig.Kuudra config = SkyblockerConfigManager.get().locations.crimsonIsle.kuudra;
 
 		if (Utils.isInKuudra() && (config.supplyWaypoints || config.fuelWaypoints || config.ballistaBuildWaypoints)) {
-			List<ArmorStandEntity> armorStands = client.world.getEntitiesByClass(ArmorStandEntity.class, client.player.getBoundingBox().expand(500d), ArmorStandEntity::hasCustomName);
+			Box searchBox = client.player.getBoundingBox().expand(500d);
 			ObjectArrayList<Waypoint> supplies = new ObjectArrayList<>();
-			ObjectArrayList<Waypoint> ballistaBuildSpots = new ObjectArrayList<>();
 			ObjectArrayList<Waypoint> fuelCells = new ObjectArrayList<>();
 
-			for (ArmorStandEntity armorStand : armorStands) {
-				String name = armorStand.getName().getString();
+			if (config.supplyWaypoints || config.fuelWaypoints) {
+				List<GiantEntity> giants = client.world.getEntitiesByClass(GiantEntity.class, searchBox, giant -> giant.getY() < 67);
 
-				if (config.supplyWaypoints && name.contains("SUPPLIES")) {
-					supplies.add(new Waypoint(armorStand.getBlockPos(), SUPPLIES_AND_FUEL_TYPE, SUPPLIES_COLOR));
-					
-					continue;
+				for (GiantEntity giant : giants) {
+					double yawOffset = giant.getYaw() + 115;
+
+					double x = giant.getX() + 4.5 * Math.cos((yawOffset) * MathHelper.RADIANS_PER_DEGREE);
+					double y = 75;
+					double z = giant.getZ() + 4.5 * Math.sin((yawOffset) * MathHelper.RADIANS_PER_DEGREE);
+
+					Waypoint waypoint = new Waypoint(BlockPos.ofFloored(x, y, z), SUPPLIES_AND_FUEL_TYPE, SUPPLIES_COLOR, false);
+
+					switch (Kuudra.phase) {
+						case RETRIEVE_SUPPLIES -> supplies.add(waypoint);
+						case DPS -> fuelCells.add(waypoint);
+						default -> supplies.add(waypoint);
+					}
 				}
+			}
 
-				if (config.ballistaBuildWaypoints && name.contains("SNEAK + PUNCH")) {
-					ballistaBuildSpots.add(new Waypoint(armorStand.getBlockPos(), Waypoint.Type.WAYPOINT, SUPPLIES_COLOR));
+			ObjectArrayList<Waypoint> ballistaBuildSpots = new ObjectArrayList<>();
 
-					continue;
-				}
+			if (config.ballistaBuildWaypoints) {
+				List<ArmorStandEntity> armorStands = client.world.getEntitiesByClass(ArmorStandEntity.class, searchBox, ArmorStandEntity::hasCustomName);
 
-				if (config.fuelWaypoints && name.contains("FUEL CELL")) {
-					fuelCells.add(new Waypoint(armorStand.getBlockPos(), SUPPLIES_AND_FUEL_TYPE, FUEL_COLOR));
+				for (ArmorStandEntity armorStand : armorStands) {
+					String name = armorStand.getName().getString();
+
+					if (config.ballistaBuildWaypoints && name.contains("SNEAK + PUNCH")) {
+						ballistaBuildSpots.add(new Waypoint(armorStand.getBlockPos(), () -> Waypoint.Type.WAYPOINT, SUPPLIES_COLOR, false));
+					}
 				}
 			}
 
@@ -121,7 +137,7 @@ public class KuudraWaypoints {
 					waypoint.render(context);
 				}
 			}
-
+			
 			if (config.fuelWaypoints) {
 				for (Waypoint waypoint : fuelWaypoints) {
 					waypoint.render(context);
