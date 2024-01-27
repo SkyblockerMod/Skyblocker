@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.waypoint;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 import java.util.List;
 
@@ -22,5 +23,11 @@ public record WaypointCategory(String name, String island, List<NamedWaypoint> w
                         .map(NamedWaypoint::fromSkytilsJson)
                         .toList()
         );
+    }
+
+    public void render(WorldRenderContext context) {
+        for (NamedWaypoint waypoint : waypoints) {
+            waypoint.render(context);
+        }
     }
 }
