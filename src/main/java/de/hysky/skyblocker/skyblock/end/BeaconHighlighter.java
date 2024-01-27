@@ -12,6 +12,7 @@ import java.util.List;
 
 public class BeaconHighlighter {
     public static final List<BlockPos> beaconPositions = new ArrayList<>();
+    private static final float[] RED_COLOR_COMPONENTS = { 1.0f, 0.0f, 0.0f };
 
     /**
      * Initializes the beacon highlighting system.
@@ -28,13 +29,10 @@ public class BeaconHighlighter {
      * @param context An instance of WorldRenderContext for the RenderHelper to use
      */
     public static void render(WorldRenderContext context) {
-        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons)
-            beaconPositions.forEach((position) -> RenderHelper.renderFilled(
-                    context,
-                    position,
-                    new float[]{1.0f, 0.0f, 0.0f},
-                    0.5f,
-                    false
-            ));
+        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons) {
+            for (BlockPos pos : beaconPositions) {
+                RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, false);
+            }
+        }
     }
 }
