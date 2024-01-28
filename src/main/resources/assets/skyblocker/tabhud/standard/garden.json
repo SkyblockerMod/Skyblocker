@@ -15,30 +15,41 @@
         {
             "name": "CameraPositionWidget",
             "alias": "cpw"
+        },
+        {
+            "name": "SprayonatorWidget",
+            "alias": "sw"
         }
     ],
     "layout": [
         {
             "op": "stack",
-            "direction": "vertical",
-            "align": "center",
-            "apply_to": ["gsw", "vw"]
+            "direction": "horizontal",
+            "align": "top",
+            "apply_to": ["gsw", "cw"]
         },
         {
             "op": "stack",
-            "direction": "vertical",
-            "align": "center",
-            "apply_to": ["cw", "cpw"]
+            "direction": "horizontal",
+            "align": "bot",
+            "apply_to": ["vw", "cpw"]
         },
         {
-            "op": "align",
-            "reference": "leftOfCenter",
-            "apply_to": ["gsw", "vw"]
+            "op": "place",
+            "where": "center",
+            "apply_to": ["sw"]
         },
         {
-            "op": "align",
-            "reference": "rightOfCenter",
-            "apply_to": ["cw", "cpw"]
+            "op": "collideAgainst",
+            "direction": "top",
+            "widgets": ["gsw", "cw"],
+            "colliders": ["sw"]
+        },
+        {
+            "op": "collideAgainst",
+            "direction": "bot",
+            "widgets": ["vw", "cpw"],
+            "colliders": ["sw"]
         }
     ]
 }

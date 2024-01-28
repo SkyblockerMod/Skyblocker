@@ -36,6 +36,7 @@ public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
     private static final String DUNGEONS_LOCATION = "dungeon";
+    private static final String GARDEN_LOCATION = "garden";
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
@@ -96,6 +97,10 @@ public class Utils {
     public static boolean isInTheEnd() {
         // /locraw returns "combat_3" when in The End
         return getLocationRaw().equals("combat_3");
+    }
+
+    public static boolean isInGarden() {
+        return getLocationRaw().equals(GARDEN_LOCATION);
     }
 
     public static boolean isInjected() {

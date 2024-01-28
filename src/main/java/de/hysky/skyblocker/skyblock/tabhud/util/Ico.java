@@ -1,12 +1,15 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.StringNbtReader;
 
 /**
  * Stores convenient shorthands for common ItemStack definitions
  */
 public class Ico {
+    private Ico(){}
     public static final ItemStack MAP = new ItemStack(Items.FILLED_MAP);
     public static final ItemStack NTAG = new ItemStack(Items.NAME_TAG);
     public static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
@@ -60,4 +63,19 @@ public class Ico {
     public static final ItemStack EXPERIENCE_BOTTLE = new ItemStack(Items.EXPERIENCE_BOTTLE);
     public static final ItemStack PINK_DYE = new ItemStack(Items.PINK_DYE);
     public static final ItemStack ENCHANTED_BOOK = new ItemStack(Items.ENCHANTED_BOOK);
+    public static final ItemStack DUNG = new ItemStack(Items.BROWN_WOOL);
+    public static final ItemStack PLANT_MATTER = new ItemStack(Items.JUNGLE_LEAVES);
+    public static final ItemStack HONEY_JAR;
+    public static final ItemStack TASTY_CHEESE;
+    public static final ItemStack COMPOST;
+
+	static {
+		try {
+			HONEY_JAR = ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-652963588,-1250610904,-1528623936,-101592516],Properties:{textures:[{Value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE1MzlkYmNkMzZmODc3MjYzMmU1NzM5ZTJlNTE0ODRlZGYzNzNjNTU4ZDZmYjJjNmI2MWI3MmI3Y2FhIn19fQ\"}]}}}}"));
+            TASTY_CHEESE = ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-652963588,-1250610904,-1528623936,-101592516],Properties:{textures:[{Value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE1MzlkYmNkMzZmODc3MjYzMmU1NzM5ZTJlNTE0ODRlZGYzNzNjNTU4ZDZmYjJjNmI2MWI3MmI3Y2FhIn19fQ\"}]}}}}"));
+            COMPOST = ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-1629895565,1464677902,-1385612327,-737550603],Properties:{textures:[{Value:\"ewogICJ0aW1lc3RhbXAiIDogMTY2MjUwMjg5OTMyNiwKICAicHJvZmlsZUlkIiA6ICI5MWYwNGZlOTBmMzY0M2I1OGYyMGUzMzc1Zjg2ZDM5ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTdG9ybVN0b3JteSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iYTM5ZGYzNmE2NjY1ZTlkYzMzZjM0MTM3MTdkYWVmYWZkMWY3OGI5N2VlZjI0ZjNjYWU5ZTNiYmUzYzc3YjliIgogICAgfQogIH0KfQ\"}]}}}}"));
+		} catch (CommandSyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

@@ -75,6 +75,7 @@ Grouped by themes (roughly)
 - GardenServerWidget: Server widget specialized for the garden.
 - GardenSkillsWidget: Skills widget specialized for the garden.
 - JacobsContestWidget: The current Jacob's contest when in the garden.
+- SprayonatorWidget: Spray status of every plot in the garden.
 
 #### Mining
 - CommsWidget: Shows the king's commissions in the dwarven mines and the crystal hollows.

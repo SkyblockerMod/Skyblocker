@@ -15,9 +15,18 @@
         {
             "name": "CameraPositionWidget",
             "alias": "cpw"
+        },
+        {
+            "name": "SprayonatorWidget",
+            "alias": "sw"
         }
     ],
     "layout": [
+        {
+            "op": "place",
+            "where": "centerTop",
+            "apply_to": ["sw"]
+        },
         {
             "op": "stack",
             "direction": "vertical",
@@ -39,6 +48,18 @@
             "op": "align",
             "reference": "rightOfCenter",
             "apply_to": ["cw", "cpw"]
+        },
+        {
+            "op": "collideAgainst",
+            "direction": "bot",
+            "widgets": ["gsw", "cw"],
+            "colliders": ["sw"]
+        },
+        {
+            "op": "collideAgainst",
+            "direction": "bot",
+            "widgets": ["vw", "cpw"],
+            "colliders": ["gsw", "cw"]
         }
     ]
 }
