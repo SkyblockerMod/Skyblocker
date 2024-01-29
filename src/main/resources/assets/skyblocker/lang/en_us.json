@@ -720,6 +720,8 @@
   "skyblocker.shortcuts.new": "New Shortcut",
   "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after joining a new world.",
 
+  "skyblocker.waypoints.config": "Waypoints Config",
+
   "skyblocker.customItemNames.removed": "§fRemoved this item's custom name.",
   "skyblocker.customItemNames.neverHad": "§fThis item doesn't have a custom name set, but why not add one? ;)",
   "skyblocker.customItemNames.added": "§fSet a custom name for your currently held item!",

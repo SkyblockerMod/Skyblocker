@@ -72,7 +72,7 @@ public class Waypoint implements Renderable {
         this.shouldRender = !this.shouldRender;
     }
 
-    protected float[] getColorComponents() {
+    public float[] getColorComponents() {
         return colorComponents;
     }
 

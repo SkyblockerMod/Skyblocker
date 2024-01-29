@@ -29,6 +29,10 @@ public class NamedWaypoint extends Waypoint {
     protected final Text name;
     protected final Vec3d centerPos;
 
+    public NamedWaypoint(BlockPos pos, String name, float[] colorComponents) {
+        this(pos, name, colorComponents, true);
+    }
+
     public NamedWaypoint(BlockPos pos, String name, float[] colorComponents, boolean shouldRender) {
         this(pos, Text.of(name), colorComponents, shouldRender);
     }
