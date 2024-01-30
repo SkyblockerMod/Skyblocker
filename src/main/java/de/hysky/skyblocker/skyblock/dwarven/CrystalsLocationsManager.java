@@ -62,7 +62,7 @@ public class CrystalsLocationsManager {
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
     }
     private static void extractLocationFromMessage(Text message, SignedMessage signedMessage, GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp){
-        if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.findInChat ) {  //todo || !Utils.isInCrystals()
+        if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.findInChat || !Utils.isInCrystals()) {  
             return;
         }
         //get the message text
@@ -73,7 +73,10 @@ public class CrystalsLocationsManager {
             String location = matcher.group();
             Integer[] cowordinates = Arrays.stream(location.split(" ",3)).map(Integer::parseInt).toArray(Integer[]::new);
             BlockPos blockPos = new BlockPos(cowordinates[0],cowordinates[1],cowordinates[2]);
-            //todo make sure this is in bounds of crystals
+            //if position is not in the hollows do not add it
+            if (!checkInCrystals(blockPos)){
+                return;
+            }
             //see if there is a name of a location to add to this
             for (String waypointLocation : WAYPOINTLOCATIONS.keySet()){
                 if (value.toLowerCase().contains(waypointLocation.toLowerCase())){ //todo be more lenient
@@ -90,6 +93,12 @@ public class CrystalsLocationsManager {
         }
 
 
+    }
+    private static Boolean checkInCrystals(BlockPos pos){
+        //checks if a location is inside crystal hollows bounds
+        return     pos.getX() >= 202 && pos.getX() <= 823
+                && pos.getZ() >= 202 && pos.getZ() <= 823
+                && pos.getY() >= 31  && pos.getY() <= 188;
     }
     private static void registerWaypointLocationCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
