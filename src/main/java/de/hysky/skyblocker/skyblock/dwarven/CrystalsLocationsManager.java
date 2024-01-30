@@ -59,21 +59,21 @@ public class CrystalsLocationsManager {
 
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
-        ClientReceiveMessageEvents.CHAT.register(CrystalsLocationsManager::extractLocationFromMessage);
+        ClientReceiveMessageEvents.GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
     }
-    private static void extractLocationFromMessage(Text message, SignedMessage signedMessage, GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp){
+    private static void extractLocationFromMessage(Text message, Boolean overlay){
         if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.findInChat || !Utils.isInCrystals()) {
             return;
         }
         //get the message text
-        String value = signedMessage.getContent().getString();
+        String value = message.getString();
         Matcher matcher = TEXT_CWORDS_PATTERN.matcher(value);
-        //if there are cwords in the message try to get them and what they are talking about
+        //if there are coordinates in the message try to get them and what they are talking about
         if (matcher.find()){
             String location = matcher.group();
-            Integer[] cowordinates = Arrays.stream(location.split(" ",3)).map(Integer::parseInt).toArray(Integer[]::new);
-            BlockPos blockPos = new BlockPos(cowordinates[0],cowordinates[1],cowordinates[2]);
+            Integer[] coordinates = Arrays.stream(location.split(" ",3)).map(Integer::parseInt).toArray(Integer[]::new);
+            BlockPos blockPos = new BlockPos(coordinates[0],coordinates[1],coordinates[2]);
             //if position is not in the hollows do not add it
             if (!checkInCrystals(blockPos)){
                 return;
@@ -164,7 +164,7 @@ public class CrystalsLocationsManager {
 
     public static void update() {
         if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled) {
-            SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints= new HashMap<>();
+            SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints= new HashMap<>(); //todo dose not seem to be working
             return;
         }
         //get if the player is in the crystals

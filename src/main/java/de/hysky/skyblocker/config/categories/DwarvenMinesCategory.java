@@ -46,10 +46,10 @@ public class DwarvenMinesCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled"))
-								.binding(defaults.locations.dwarvenMines.dwarvenHud.enabled,
-										() -> config.locations.dwarvenMines.dwarvenHud.enabled,
-										newValue -> config.locations.dwarvenMines.dwarvenHud.enabled = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled"))//todo seperate coms and powder
+								.binding(defaults.locations.dwarvenMines.dwarvenHud.enabledCommissions,
+										() -> config.locations.dwarvenMines.dwarvenHud.enabledCommissions,
+										newValue -> config.locations.dwarvenMines.dwarvenHud.enabledCommissions = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<SkyblockerConfig.DwarvenHudStyle>createBuilder()
@@ -90,13 +90,6 @@ public class DwarvenMinesCategory {
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.screen"))
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new CrystalsHudConfigScreen(screen)))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground"))
-								.binding(defaults.locations.dwarvenMines.crystalsHud.enableBackground,
-										() -> config.locations.dwarvenMines.crystalsHud.enableBackground,
-										newValue -> config.locations.dwarvenMines.crystalsHud.enableBackground = newValue)
-								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations"))
