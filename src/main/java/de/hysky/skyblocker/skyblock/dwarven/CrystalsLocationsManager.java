@@ -50,7 +50,8 @@ public class CrystalsLocationsManager {
             "Lost Precursor City", CrystalsWaypoint.Category.LOSTPRECURSORCITY,
             "Khazad-dûm", CrystalsWaypoint.Category.KHAZADUM,
             "Fairy Grotto", CrystalsWaypoint.Category.FAIRYGROTTO,
-            "Dragon's Lair", CrystalsWaypoint.Category.DRAGONSLAIR
+            "Dragon's Lair", CrystalsWaypoint.Category.DRAGONSLAIR,
+            "Corleone", CrystalsWaypoint.Category.DRAGONSLAIR
     );
 
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
@@ -62,7 +63,7 @@ public class CrystalsLocationsManager {
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
     }
     private static void extractLocationFromMessage(Text message, SignedMessage signedMessage, GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp){
-        if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.findInChat || !Utils.isInCrystals()) {  
+        if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.findInChat || !Utils.isInCrystals()) {
             return;
         }
         //get the message text

@@ -85,9 +85,9 @@ public class CrystalsHud {
         Pair<Integer, Integer> renderPos  = transformLocation(playerX,playerZ);
         //draw marker on map
         context.
-                drawTexture(MAP_ICON,hudX+renderPos.first(),hudY+renderPos.second(),2,0,5,7,128,128);
+                drawTexture(MAP_ICON,hudX+renderPos.first()-2,hudY+renderPos.second()-2,58,2,4,4,128,128);
 
-        //todo add direction and scale (could be wrong drawing methods) and offset to center on player
+        //todo add direction and scale (can not work out how to rotate)
 
     }
     private static Pair<Integer, Integer> transformLocation(double x, double z){
