@@ -27,6 +27,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
+import java.awt.*;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class CrystalsLocationsManager {
     public static final MinecraftClient client = MinecraftClient.getInstance();
-    public static Map<String,CrystalsWaypoint> ActiveWaypoints= new HashMap<>() {};
+
 
     public static final Map<String, CrystalsWaypoint.Category> WAYPOINTLOCATIONS = Map.of(
             "Jungle Temple", CrystalsWaypoint.Category.JUNGLETEMPLE,
@@ -51,15 +52,11 @@ public class CrystalsLocationsManager {
             "Fairy Grotto", CrystalsWaypoint.Category.FAIRYGROTTO,
             "Dragon's Lair", CrystalsWaypoint.Category.DRAGONSLAIR
     );
+
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 
 
     public static void init() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
-                .then(ClientCommandManager.literal("hud")
-                        .then(ClientCommandManager.literal("crystals")
-                                .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
-
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
         ClientReceiveMessageEvents.CHAT.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
@@ -107,15 +104,17 @@ public class CrystalsLocationsManager {
     }
     private static Text getSetLocationMessage(String location,BlockPos blockPos) {
         MutableText text = Text.empty();
-        text.append(Text.literal("Added waypoint for "+location+" at :"+blockPos.getX()+" "+blockPos.getY()+" "+blockPos.getZ()+".")); //todo add colours
-
+        text.append(Text.literal("Added waypoint for "));
+        Color locationColor = WAYPOINTLOCATIONS.get(location).color;
+        text.append(Text.literal(location).withColor(locationColor.getRGB()));
+        text.append(Text.literal(" at : "+blockPos.getX()+" "+blockPos.getY()+" "+blockPos.getZ()+"."));
         return text;
     }
     private static Text getLocationInputText(String location) {
         MutableText text = Text.empty();
         for (String waypointLocation : WAYPOINTLOCATIONS.keySet()){
-            //todo add colour codes
-            text.append(Text.literal("["+waypointLocation+"]").styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints "+location+" "+waypointLocation))));
+            Color locationColor = WAYPOINTLOCATIONS.get(waypointLocation).color;
+            text.append(Text.literal("["+waypointLocation+"]").withColor(locationColor.getRGB()).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints "+location+" "+waypointLocation))));
         }
 
         return text;
@@ -125,10 +124,9 @@ public class CrystalsLocationsManager {
         BlockPos blockPos = location.toAbsoluteBlockPos(new ServerCommandSource(null, source.getPosition(), source.getRotation(), null, 0, null, null, null, null));
         if (WAYPOINTLOCATIONS.containsKey(place)){
             addCustomWaypoint(Text.of(place), blockPos);
-            //todo send to map
             //tell the client it has done this
             if (client.player == null || client.getNetworkHandler() == null ) {
-                return Command.SINGLE_SUCCESS;
+                return 0;
             }
             client.player.sendMessage(getSetLocationMessage(place, blockPos), false);
         }
@@ -139,10 +137,13 @@ public class CrystalsLocationsManager {
     private static void addCustomWaypoint( Text waypointName, BlockPos pos) {
         CrystalsWaypoint.Category category = WAYPOINTLOCATIONS.get(waypointName.getString());
         CrystalsWaypoint waypoint = new CrystalsWaypoint(category, waypointName, pos);
+        Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
         ActiveWaypoints.put(waypointName.getString(),waypoint);
     }
+
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled ) {
+            Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
             for (CrystalsWaypoint crystalsWaypoint : ActiveWaypoints.values()) {
                 if (crystalsWaypoint.shouldRender()) {
                     crystalsWaypoint.render(context);
@@ -153,17 +154,17 @@ public class CrystalsLocationsManager {
 
     public static void update() {
         if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled) {
-            ActiveWaypoints= new HashMap<>();
+            SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints= new HashMap<>();
             return;
         }
         //get if the player is in the crystals
         String location = Utils.getIslandArea().replace("⏣ ","");
         //if new location and needs waypoint add waypoint
+        Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
         if (!location.equals("Unknown") && WAYPOINTLOCATIONS.containsKey(location) && !ActiveWaypoints.containsKey(location)){
             //add waypoint at player location
             BlockPos playerLocation = client.player.getBlockPos();
             addCustomWaypoint(Text.of(location),playerLocation);
-            //todo send to map gui
         }
 
 

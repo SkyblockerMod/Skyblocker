@@ -22,7 +22,9 @@ import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -34,8 +36,9 @@ public class CrystalsWaypoint extends Waypoint {
             TextCodecs.CODEC.fieldOf("name").forGetter(crystalsWaypoint -> crystalsWaypoint.name),
             BlockPos.CODEC.fieldOf("pos").forGetter(crystalsWaypoint -> crystalsWaypoint.pos)
     ).apply(instance, CrystalsWaypoint::new));
-    public static final Codec<List<CrystalsWaypoint>> LIST_CODEC = CODEC.listOf();
-    static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
+
+
+
     private static final Supplier<SkyblockerConfig.CrystalsWaypoints> CONFIG = () -> SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints;
     static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final Category category;
@@ -81,7 +84,6 @@ public class CrystalsWaypoint extends Waypoint {
      */
     @Override
     public void render(WorldRenderContext context) {
-        //TODO In the future, shrink the box for wither essence and items so its more realistic
         super.render(context);
 
 
@@ -94,28 +96,29 @@ public class CrystalsWaypoint extends Waypoint {
 
 
 
-    enum Category implements StringIdentifiable { //todo set better colours and remove extra data
-        JUNGLETEMPLE("Jungle Temple", 0, 255, 0),
-        MINESOFDIVAN("Mines Of Divan", 255, 0, 0),
-        GOBLINQUEENSDEN("Goblin Queen's Den", 2, 213, 250),
-        LOSTPRECURSORCITY("Lost Precursor City", 2, 64, 250),
-        KHAZADUM("Khazad-dûm", 142, 66, 0),
-        FAIRYGROTTO("Fairy Grotto", 30, 30, 30),
-        DRAGONSLAIR("Dragon's Lair", 250, 217, 2),
-        DEFAULT("default", 190, 255, 252);
+    enum Category implements StringIdentifiable {
+        JUNGLETEMPLE("Jungle Temple",Color.GREEN),
+        MINESOFDIVAN("Mines Of Divan",Color.CYAN),
+        GOBLINQUEENSDEN("Goblin Queen's Den",Color.ORANGE),
+        LOSTPRECURSORCITY("Lost Precursor City",Color.BLUE),
+        KHAZADUM("Khazad-dûm",Color.RED),
+        FAIRYGROTTO("Fairy Grotto",Color.PINK),
+        DRAGONSLAIR("Dragon's Lair",Color.BLACK),
+        DEFAULT("Default",Color.BLACK);
 
+
+        public final Color color;
         private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         private final String name;
 
         private final float[] colorComponents;
 
-        Category(String name, int... intColorComponents) {
+        Category(String name,Color color) {
             this.name = name;
+            this.color = color;
+            colorComponents = color.getColorComponents(null);
 
-            colorComponents = new float[intColorComponents.length];
-            for (int i = 0; i < intColorComponents.length; i++) {
-                colorComponents[i] = intColorComponents[i] / 255F;
-            }
+
         }
 
         static Category get(JsonObject waypointJson) {

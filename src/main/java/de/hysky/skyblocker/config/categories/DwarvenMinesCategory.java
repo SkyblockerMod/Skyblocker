@@ -98,6 +98,13 @@ public class DwarvenMinesCategory {
 										newValue -> config.locations.dwarvenMines.crystalsHud.enableBackground = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations"))
+								.binding(defaults.locations.dwarvenMines.crystalsHud.showLocations,
+										() -> config.locations.dwarvenMines.crystalsHud.showLocations,
+										newValue -> config.locations.dwarvenMines.crystalsHud.showLocations = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 				//crystals waypoints
 				.group(OptionGroup.createBuilder()

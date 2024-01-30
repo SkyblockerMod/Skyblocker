@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsWaypoint;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -14,7 +15,9 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SkyblockerConfig {
 	@SerialEntry
@@ -901,9 +904,11 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public boolean enabled = true;
 
-
 		@SerialEntry
 		public boolean enableBackground = true;
+
+		@SerialEntry
+		public boolean showLocations = true;
 
 		@SerialEntry
 		public int x = 10;
@@ -917,9 +922,11 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean findInChat = true;
+		@SerialEntry
+		public Map<String, CrystalsWaypoint> ActiveWaypoints = new HashMap<>() {};
 
 		@SerialEntry
-		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT; //todo see if best option / give player a choice
 	}
 
 	public enum DwarvenHudStyle {

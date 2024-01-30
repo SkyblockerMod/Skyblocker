@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -16,6 +17,7 @@ import org.apache.commons.math3.analysis.UnivariateMatrixFunction;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Map;
 
 public class CrystalsHud {
     public static final MinecraftClient client = MinecraftClient.getInstance();
@@ -26,6 +28,7 @@ public class CrystalsHud {
 
     public static boolean visable  = false;
 
+    public static final int LOCATION_SIZE  = 10; //todo possible config option
 
 
 
@@ -61,6 +64,16 @@ public class CrystalsHud {
         //draw map texture
         context.
                 drawTexture(MAP_TEXTURE,hudX,hudY,0,0,62,62,62,62);
+        //if enabled add waypoint locations to map
+        if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.showLocations){
+            Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
+            for (CrystalsWaypoint waypoint : ActiveWaypoints.values()){
+                Color waypointColor = waypoint.category.color;
+                Pair<Integer, Integer> renderPos  = transformLocation(waypoint.pos.getX(),waypoint.pos.getZ());
+                //fill square of size LOCATION_SIZE around the coordinates of the location
+                context.fill(hudX+renderPos.first()-LOCATION_SIZE/2,hudY+renderPos.second()-LOCATION_SIZE/2,hudX+renderPos.first()+LOCATION_SIZE/2,hudY+renderPos.second()+LOCATION_SIZE/2,waypointColor.getRGB());
+            }
+        }
         //draw player on map
         if (client.player == null || client.getNetworkHandler() == null) {
             return;
@@ -69,22 +82,22 @@ public class CrystalsHud {
         double playerX = client.player.getX();
         double playerZ = client.player.getZ();
         double facing = client.player.getYaw();
-        //map location to map
-        int renderX = (int)((playerX-202)/621 * 62);
-        int renderY = (int)((playerZ -202)/621 * 62);
-        int renderAngle = (int)(facing %360);
-        if (renderAngle < 0){//make sure the angle is always correct between 0 and 360
-            renderAngle = 360 + renderAngle;
-        }
-        //clamp location to map
-        renderX = Math.max(0, Math.min(62, renderX));
-        renderY = Math.max(0, Math.min(62, renderY));
+        Pair<Integer, Integer> renderPos  = transformLocation(playerX,playerZ);
         //draw marker on map
         context.
-                drawTexture(MAP_ICON,hudX+renderX,hudY+renderY,2,0,5,7,128,128);
+                drawTexture(MAP_ICON,hudX+renderPos.first(),hudY+renderPos.second(),2,0,5,7,128,128);
 
         //todo add direction and scale (could be wrong drawing methods) and offset to center on player
 
+    }
+    private static Pair<Integer, Integer> transformLocation(double x, double z){
+        //converts an x and z to a location on the map
+        int transformedX = (int)((x-202)/621 * 62);
+        int transformedY = (int)((z -202)/621 * 62);
+        transformedX = Math.max(0, Math.min(62, transformedX));
+        transformedY = Math.max(0, Math.min(62, transformedY));
+
+        return  Pair.of(transformedX,transformedY);
     }
 
     public static void update() {
