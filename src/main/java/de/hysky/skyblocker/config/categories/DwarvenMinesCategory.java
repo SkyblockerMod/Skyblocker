@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudConfigScreen;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -53,7 +54,7 @@ public class DwarvenMinesCategory {
 								.build())
 						.option(Option.<SkyblockerConfig.DwarvenHudStyle>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]"), 
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]"),
 										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[1]"),
 										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]")))
 								.binding(defaults.locations.dwarvenMines.dwarvenHud.style,
@@ -73,6 +74,50 @@ public class DwarvenMinesCategory {
 										newValue -> config.locations.dwarvenMines.dwarvenHud.enableBackground = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.build())
+				//crystal HUD
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud")) //todo i do not know if i need to duplicate text
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled"))
+								.binding(defaults.locations.dwarvenMines.crystalsHud.enabled,
+										() -> config.locations.dwarvenMines.crystalsHud.enabled,
+										newValue -> config.locations.dwarvenMines.crystalsHud.enabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.screen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new CrystalsHudConfigScreen(screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground"))
+								.binding(defaults.locations.dwarvenMines.crystalsHud.enableBackground,
+										() -> config.locations.dwarvenMines.crystalsHud.enableBackground,
+										newValue -> config.locations.dwarvenMines.crystalsHud.enableBackground = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
+				//crystals waypoints
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints")) //todo i do not know if i need to duplicate text
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled"))
+								.binding(defaults.locations.dwarvenMines.crystalsWaypoints.enabled,
+										() -> config.locations.dwarvenMines.crystalsWaypoints.enabled,
+										newValue -> config.locations.dwarvenMines.crystalsWaypoints.enabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.findInChat"))
+								.binding(defaults.locations.dwarvenMines.crystalsWaypoints.findInChat,
+										() -> config.locations.dwarvenMines.crystalsWaypoints.findInChat,
+										newValue -> config.locations.dwarvenMines.crystalsWaypoints.findInChat = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+
 						.build())
 				.build();
 	}

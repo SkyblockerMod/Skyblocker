@@ -873,6 +873,12 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public DwarvenHud dwarvenHud = new DwarvenHud();
+
+		@SerialEntry
+		public CrystalsHud crystalsHud = new CrystalsHud();
+
+		@SerialEntry
+		public CrystalsWaypoints crystalsWaypoints = new CrystalsWaypoints();
 	}
 
 	public static class DwarvenHud {
@@ -890,6 +896,30 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int y = 10;
+	}
+	public static class CrystalsHud {
+		@SerialEntry
+		public boolean enabled = true;
+
+
+		@SerialEntry
+		public boolean enableBackground = true;
+
+		@SerialEntry
+		public int x = 10;
+
+		@SerialEntry
+		public int y = 50;
+	}
+	public static class CrystalsWaypoints {
+		@SerialEntry
+		public boolean enabled = true;
+
+		@SerialEntry
+		public boolean findInChat = true;
+
+		@SerialEntry
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 	}
 
 	public enum DwarvenHudStyle {

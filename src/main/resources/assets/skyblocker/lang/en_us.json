@@ -275,6 +275,9 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]": "\nClassic: Shows name and percentage in a very simple box.",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.screen": "Dwarven HUD Config...",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Enable Background",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud": "Crystal Hollows Map",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints": "Crystal Hollows Waypoints",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.findInChat": "Find Waypoints In Chat",
 
   "text.autoconfig.skyblocker.option.locations.rift": "The Rift",
   "text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints": "Enable Mirrorverse Waypoints",
