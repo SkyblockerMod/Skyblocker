@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
@@ -29,10 +31,6 @@ public class CrystalsHud {
     public static boolean visible = false;
 
 
-
-
-
-
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
@@ -55,6 +53,14 @@ public class CrystalsHud {
         return IntIntPair.of(62, 62);
     }
 
+
+    /**
+     * Renders the map to the players UI. renders the background image ({@link CrystalsHud#MAP_TEXTURE}) of the map then if enabled special locations on the map. then finally the player to the map.
+     *
+     * @param context DrawContext to draw map to
+     * @param hudX Top left X coordinate of the map
+     * @param hudY Top left Y coordinate of the map
+     */
     public static void render( DrawContext context, int hudX, int hudY) {
         //draw map texture
         context.
@@ -89,6 +95,13 @@ public class CrystalsHud {
         //todo add direction and scale (can not work out how to rotate)
 
     }
+    /**
+     * Converts an X and Z coordinate in the crystal hollow to a X and Y coordinate on the map.
+     *
+     * @param x the world X coordinate
+     * @param z the world Z coordinate
+     * @return the pair of values for x and y
+     */
     private static Pair<Integer, Integer> transformLocation(double x, double z){
         //converts an x and z to a location on the map
         int transformedX = (int)((x-202)/621 * 62);
@@ -98,7 +111,10 @@ public class CrystalsHud {
 
         return  Pair.of(transformedX,transformedY);
     }
-
+    /**
+     * Works out if the crystals map should be rendered and sets {@link CrystalsHud#visible} accordingly.
+     *
+     */
     public static void update() {
         if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled) {
             visible = false;

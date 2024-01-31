@@ -80,7 +80,9 @@ public class CrystalsWaypoint extends Waypoint {
     }
 
 
-
+    /**
+     * enum for the different waypoints used int the crystals hud each with a {@link Category#name} and associated {@link Category#color}
+     */
     enum Category implements StringIdentifiable {
         JUNGLETEMPLE("Jungle Temple",Color.GREEN),
         MINESOFDIVAN("Mines Of Divan",Color.CYAN),

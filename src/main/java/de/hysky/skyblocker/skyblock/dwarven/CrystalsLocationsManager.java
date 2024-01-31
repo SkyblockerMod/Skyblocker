@@ -43,7 +43,9 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class CrystalsLocationsManager {
     public static final MinecraftClient client = MinecraftClient.getInstance();
 
-
+    /**
+     * A look-up table to convert between location names and waypoint in the {@link CrystalsWaypoint.Category} values.
+     */
     public static final Map<String, CrystalsWaypoint.Category> WAYPOINTLOCATIONS = Map.of(
             "Jungle Temple", CrystalsWaypoint.Category.JUNGLETEMPLE,
             "Mines Of Divan", CrystalsWaypoint.Category.MINESOFDIVAN,
@@ -94,8 +96,6 @@ public class CrystalsLocationsManager {
             }
             client.player.sendMessage(getLocationInputText(location), false);
         }
-
-
     }
     private static Boolean checkInCrystals(BlockPos pos){
         //checks if a location is inside crystal hollows bounds

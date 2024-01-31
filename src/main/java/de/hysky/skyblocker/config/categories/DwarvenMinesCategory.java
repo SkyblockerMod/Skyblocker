@@ -83,7 +83,7 @@ public class DwarvenMinesCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				//crystal HUD //todo add descriptions to features
+				//crystal HUD
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud"))
 						.collapsed(false)
@@ -101,13 +101,15 @@ public class DwarvenMinesCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations.@Tooltip")))
 								.binding(defaults.locations.dwarvenMines.crystalsHud.showLocations,
 										() -> config.locations.dwarvenMines.crystalsHud.showLocations,
 										newValue -> config.locations.dwarvenMines.crystalsHud.showLocations = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.locationSize"))
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations.locationSize"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations.locationSize.@Tooltip")))
 								.binding(defaults.locations.dwarvenMines.crystalsHud.locationSize,
 										() -> config.locations.dwarvenMines.crystalsHud.locationSize,
 										newValue -> config.locations.dwarvenMines.crystalsHud.locationSize = newValue)
@@ -120,6 +122,7 @@ public class DwarvenMinesCategory {
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.enabled"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.enabled.@Tooltip")))
 								.binding(defaults.locations.dwarvenMines.crystalsWaypoints.enabled,
 										() -> config.locations.dwarvenMines.crystalsWaypoints.enabled,
 										newValue -> config.locations.dwarvenMines.crystalsWaypoints.enabled = newValue)
@@ -127,6 +130,7 @@ public class DwarvenMinesCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.findInChat"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.findInChat.@Tooltip")))
 								.binding(defaults.locations.dwarvenMines.crystalsWaypoints.findInChat,
 										() -> config.locations.dwarvenMines.crystalsWaypoints.findInChat,
 										newValue -> config.locations.dwarvenMines.crystalsWaypoints.findInChat = newValue)

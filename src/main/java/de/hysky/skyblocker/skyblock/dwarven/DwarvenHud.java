@@ -67,7 +67,12 @@ public class DwarvenHud {
         });
     }
 
-    public static Pair<IntIntPair,IntIntPair> getDimForConfig(List<Commission> commissions) { //todo add powder
+    /**
+     * Gets the dimensions (width, height) for the commissions hud and the powder hud
+     * @param commissions what commissions to get the dimensions for
+     * @return a {@link Pair} of {@link IntIntPair} with the first pair being for the commissions hud and the second pair being for the powder hud
+     */
+    public static Pair<IntIntPair,IntIntPair> getDimForConfig(List<Commission> commissions) {
         return switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
             case SIMPLE -> {
                 HudCommsWidget.INSTANCE_CFG.updateData(commissions, false);
@@ -111,6 +116,15 @@ public class DwarvenHud {
         }
     }
 
+    /**
+     * Renders hud to window without using the widget rendering
+     * @param context DrawContext to draw the hud to
+     * @param comHudX X coordinate of the commissions hud
+     * @param comHudY Y coordinate of the commissions hud
+     * @param powderHudX X coordinate of the powder hud
+     * @param powderHudY Y coordinate of the powder hud
+     * @param commissions the commissions to render to the commissions hud
+     */
     public static void renderClassic(DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground) {
             context.fill(comHudX, comHudY, comHudX + 200, comHudY + (20 * commissions.size()), 0x64000000);
