@@ -84,17 +84,17 @@ public class DwarvenMinesCategory {
 						.build())
 				//crystal HUD
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud")) //todo i do not know if i need to duplicate text
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled"))
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.enabled"))
 								.binding(defaults.locations.dwarvenMines.crystalsHud.enabled,
 										() -> config.locations.dwarvenMines.crystalsHud.enabled,
 										newValue -> config.locations.dwarvenMines.crystalsHud.enabled = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(ButtonOption.createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.screen"))
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.screen"))
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new CrystalsHudConfigScreen(screen)))
 								.build())
@@ -108,10 +108,10 @@ public class DwarvenMinesCategory {
 						.build())
 				//crystals waypoints
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints")) //todo i do not know if i need to duplicate text
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled"))
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.enabled"))
 								.binding(defaults.locations.dwarvenMines.crystalsWaypoints.enabled,
 										() -> config.locations.dwarvenMines.crystalsWaypoints.enabled,
 										newValue -> config.locations.dwarvenMines.crystalsWaypoints.enabled = newValue)
