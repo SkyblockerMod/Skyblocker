@@ -2,7 +2,6 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
 import de.hysky.skyblocker.skyblock.end.EndHudConfigScreen;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import dev.isxander.yacl3.api.*;
