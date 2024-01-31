@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -156,10 +157,11 @@ public class Utils {
     }
 
     public static void init() {
-        SkyblockEvents.JOIN.register(Utils::initializeMayorCache);
+        SkyblockEvents.JOIN.register(() -> tickMayorCache(false));
         ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
+        Scheduler.INSTANCE.scheduleCyclic(() -> tickMayorCache(true), 24_000, true); // Update every 20 minutes
     }
 
     /**
@@ -403,8 +405,9 @@ public class Utils {
         map = "";
     }
 
-    private static void initializeMayorCache() {
-        if (!mayor.isEmpty()) return;
+    private static void tickMayorCache(boolean refresh) {
+        if (!mayor.isEmpty() && !refresh) return;
+
         CompletableFuture.supplyAsync(() -> {
             try {
                 JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
