@@ -32,19 +32,11 @@ import java.util.function.ToDoubleFunction;
 public class CrystalsWaypoint extends Waypoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(CrystalsWaypoint.class);
 
-    private static final Supplier<SkyblockerConfig.CrystalsWaypoints> CONFIG = () -> SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints;
+    private static final Supplier<SkyblockerConfig.Waypoints> CONFIG = () -> SkyblockerConfigManager.get().general.waypoints;
     static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final Category category;
     final Text name;
     private final Vec3d centerPos;
-
-    CrystalsWaypoint( JsonObject waypoint, String name, BlockPos pos) {
-        this(Category.get(waypoint), name, pos);
-    }
-
-    CrystalsWaypoint(Category category, String name, BlockPos pos) {
-        this( category, Text.of(name), pos);
-    }
 
     CrystalsWaypoint( Category category, Text name, BlockPos pos) {
         super(pos, TYPE_SUPPLIER, category.colorComponents);

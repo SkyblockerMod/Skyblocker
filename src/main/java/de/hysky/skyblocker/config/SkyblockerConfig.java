@@ -934,8 +934,7 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public Map<String, CrystalsWaypoint> ActiveWaypoints = new HashMap<>() {};
 
-		@SerialEntry
-		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT; //todo see if best option / give player a choice
+
 	}
 
 	public enum DwarvenHudStyle {
