@@ -97,7 +97,7 @@ public class CrystalsLocationsManager {
             client.player.sendMessage(getLocationInputText(location), false);
         }
     }
-    private static Boolean checkInCrystals(BlockPos pos){
+    protected static Boolean checkInCrystals(BlockPos pos){
         //checks if a location is inside crystal hollows bounds
         return     pos.getX() >= 202 && pos.getX() <= 823
                 && pos.getZ() >= 202 && pos.getZ() <= 823
@@ -114,7 +114,7 @@ public class CrystalsLocationsManager {
             )
         );
     }
-    private static Text getSetLocationMessage(String location,BlockPos blockPos) {
+    protected static Text getSetLocationMessage(String location,BlockPos blockPos) {
         MutableText text = Text.empty();
         text.append(Text.literal("Added waypoint for "));
         Color locationColor = WAYPOINTLOCATIONS.get(location).color;

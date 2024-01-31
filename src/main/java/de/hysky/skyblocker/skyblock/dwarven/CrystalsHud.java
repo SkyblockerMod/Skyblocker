@@ -102,7 +102,7 @@ public class CrystalsHud {
      * @param z the world Z coordinate
      * @return the pair of values for x and y
      */
-    private static Pair<Integer, Integer> transformLocation(double x, double z){
+    protected static Pair<Integer, Integer> transformLocation(double x, double z){
         //converts an x and z to a location on the map
         int transformedX = (int)((x-202)/621 * 62);
         int transformedY = (int)((z -202)/621 * 62);
