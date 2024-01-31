@@ -886,7 +886,10 @@ public class SkyblockerConfig {
 
 	public static class DwarvenHud {
 		@SerialEntry
-		public boolean enabled = true;
+		public boolean enabledCommissions = true;
+
+		@SerialEntry
+		public boolean enabledPowder = true;
 
 		@SerialEntry
 		public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
@@ -895,17 +898,20 @@ public class SkyblockerConfig {
 		public boolean enableBackground = true;
 
 		@SerialEntry
-		public int x = 10;
+		public int commissionsX = 10;
 
 		@SerialEntry
-		public int y = 10;
+		public int commissionsY = 10;
+
+		@SerialEntry
+		public int powderX = 10;
+
+		@SerialEntry
+		public int powderY = 70;
 	}
 	public static class CrystalsHud {
 		@SerialEntry
 		public boolean enabled = true;
-
-		@SerialEntry
-		public boolean enableBackground = true;
 
 		@SerialEntry
 		public boolean showLocations = true;
@@ -914,7 +920,7 @@ public class SkyblockerConfig {
 		public int x = 10;
 
 		@SerialEntry
-		public int y = 50;
+		public int y = 130;
 	}
 	public static class CrystalsWaypoints {
 		@SerialEntry

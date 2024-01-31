@@ -46,10 +46,17 @@ public class DwarvenMinesCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled"))//todo seperate coms and powder
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabledCommissions"))
 								.binding(defaults.locations.dwarvenMines.dwarvenHud.enabledCommissions,
 										() -> config.locations.dwarvenMines.dwarvenHud.enabledCommissions,
 										newValue -> config.locations.dwarvenMines.dwarvenHud.enabledCommissions = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabledPowder"))
+								.binding(defaults.locations.dwarvenMines.dwarvenHud.enabledPowder,
+										() -> config.locations.dwarvenMines.dwarvenHud.enabledPowder,
+										newValue -> config.locations.dwarvenMines.dwarvenHud.enabledPowder = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<SkyblockerConfig.DwarvenHudStyle>createBuilder()
