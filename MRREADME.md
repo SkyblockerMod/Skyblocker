@@ -62,16 +62,8 @@ Hypixel Skyblock Mod for Minecraft 1.20.x
 - **Dwarven Mines Solver:**
   - *Fetchur*
   - *Puzzler*
-- **Commission/Powder HUD**
+- **Commission HUD**
   - *Provides information on Dwarven Mines quests*
-  - *Provides information on powder amounts*
-- **Crystal Hollows Waypoints**
-  - *show waypoints for special location*
-  - *find locations in chat messages*
-- **Crystal Hollows Map HUD**
-  - *Shows players location in crystal hollows*
-  - *Shows important waypoints in crystal hollows*
-### Rift Features:
 </details>
 
 <details>
