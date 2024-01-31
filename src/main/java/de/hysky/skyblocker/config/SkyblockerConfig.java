@@ -617,6 +617,9 @@ public class SkyblockerConfig {
 		public Rift rift = new Rift();
 
 		@SerialEntry
+		public TheEnd end = new TheEnd();
+
+		@SerialEntry
 		public SpidersDen spidersDen = new SpidersDen();
 	}
 
@@ -1082,6 +1085,24 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean hideMana = false;
+	}
+
+	public static class TheEnd {
+
+		@SerialEntry
+		public boolean hudEnabled = true;
+
+		@SerialEntry
+		public boolean enableBackground = true;
+
+		@SerialEntry
+		public boolean waypoint = true;
+
+		@SerialEntry
+		public int x = 10;
+
+		@SerialEntry
+		public int y = 10;
 	}
 
 	public enum Info {

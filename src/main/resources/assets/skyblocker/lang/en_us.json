@@ -300,6 +300,13 @@
   "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks": "McGrubber Stacks",
   "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip": "Used for calculating Motes sell prices.",
 
+  "text.autoconfig.skyblocker.option.locations.end": "The End",
+  "text.autoconfig.skyblocker.option.locations.end.hudEnabled": "HUD Enabled",
+  "text.autoconfig.skyblocker.option.locations.end.screen": "End HUD Config...",
+  "text.autoconfig.skyblocker.option.locations.end.waypoint": "End Protector Waypoint",
+  "text.autoconfig.skyblocker.option.locations.end.resetName": "Reset stored End stats",
+  "text.autoconfig.skyblocker.option.locations.end.resetText": "Reset",
+
   "text.autoconfig.skyblocker.category.messages": "Messages",
   "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "Disabled",
   "text.autoconfig.skyblocker.option.messages.chatFilterResult.FILTER": "Filter",
@@ -378,6 +385,18 @@
   "skyblocker.exotic.spook": "SPOOK",
   "skyblocker.exotic.glitched": "GLITCHED",
   "skyblocker.exotic.exotic": "EXOTIC",
+
+  "skyblocker.end.hud.zealotsSinceLastEye": "Since last eye: %d",
+  "skyblocker.end.hud.zealotsTotalKills": "Total kills: %d",
+  "skyblocker.end.hud.avgKillsPerEye": "Avg kills per eye: %d",
+  "skyblocker.end.hud.stage": "Stage: %s",
+  "skyblocker.end.hud.location": "Location: %s",
+  "skyblocker.end.hud.protectorLocations.left": "Left",
+  "skyblocker.end.hud.protectorLocations.front": "Front",
+  "skyblocker.end.hud.protectorLocations.center": "Center",
+  "skyblocker.end.hud.protectorLocations.back": "Back",
+  "skyblocker.end.hud.protectorLocations.rightFront": "Right Front",
+  "skyblocker.end.hud.protectorLocations.rightBack": "Right Back",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",

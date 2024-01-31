@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -71,6 +73,9 @@ public class MobGlow {
 					&& isNukekubiHead(armorStandEntity);
 		}
 
+		// Special Zelot
+		if (entity instanceof EndermanEntity enderman && TheEnd.isSpecialZealot(enderman)) return true;
+
 		return false;
 	}
 
@@ -92,6 +97,7 @@ public class MobGlow {
 				default -> 0xf57738;
 			};
 		}
+		if (entity instanceof EndermanEntity enderman && TheEnd.isSpecialZealot(enderman)) return Formatting.RED.getColorValue();
 
 		// copypaste nukekebi head logic
 		if (entity instanceof ArmorStandEntity armorStandEntity && isNukekubiHead(armorStandEntity)) return 0x990099;
