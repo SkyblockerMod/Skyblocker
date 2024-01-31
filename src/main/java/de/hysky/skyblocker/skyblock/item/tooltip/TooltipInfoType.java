@@ -15,8 +15,8 @@ import java.util.function.Predicate;
 
 public enum TooltipInfoType implements Runnable {
     NPC("https://hysky.de/api/npcprice", itemTooltip -> itemTooltip.enableNPCPrice, true),
-    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator, itemTooltip -> itemTooltip.enableBazaarPrice, false),
-    LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator, itemTooltip -> itemTooltip.enableLowestBIN, false),
+    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().general.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false),
+    LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().general.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableLowestBIN, false),
     ONE_DAY_AVERAGE("https://moulberry.codes/auction_averages_lbin/1day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     THREE_DAY_AVERAGE("https://moulberry.codes/auction_averages_lbin/3day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     MOTES("https://hysky.de/api/motesprice", itemTooltip -> itemTooltip.enableMotesPrice, itemTooltip -> itemTooltip.enableMotesPrice && Utils.isInTheRift(), true),
