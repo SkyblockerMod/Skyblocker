@@ -73,7 +73,7 @@ public class TheEnd {
 
 
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-            if (!Utils.getMap().toLowerCase().contains("the end")) return;
+            if (!Utils.isInTheEnd()) return;
             if (!SkyblockerConfigManager.get().locations.end.hudEnabled) return;
 
             EndHudWidget.INSTANCE.render(drawContext, SkyblockerConfigManager.get().locations.end.enableBackground);
@@ -81,7 +81,7 @@ public class TheEnd {
 
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
             String lowerCase = Utils.getIslandArea().toLowerCase();
-            if (lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
+            if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
                 ChunkPos pos = chunk.getPos();
                 //
                 Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX(), 1, pos.getEndZ());
