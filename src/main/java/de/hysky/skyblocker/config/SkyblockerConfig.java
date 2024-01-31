@@ -917,6 +917,9 @@ public class SkyblockerConfig {
 		public boolean showLocations = true;
 
 		@SerialEntry
+		public int locationSize = 8;
+
+		@SerialEntry
 		public int x = 10;
 
 		@SerialEntry

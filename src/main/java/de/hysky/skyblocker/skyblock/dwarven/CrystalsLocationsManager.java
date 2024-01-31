@@ -25,6 +25,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
 import java.awt.*;
@@ -164,8 +165,8 @@ public class CrystalsLocationsManager {
     }
 
     public static void update() {
-        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled) {
-            SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints= new HashMap<>(); //todo dose not seem to be working
+        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled || !Utils.isInCrystals()) {
+            SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints= new HashMap<>();
             return;
         }
         //get if the player is in the crystals

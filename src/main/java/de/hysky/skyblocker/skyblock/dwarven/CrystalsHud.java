@@ -11,9 +11,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.texture.atlas.Sprite;
 import net.minecraft.util.Identifier;
-import org.apache.commons.math3.analysis.UnivariateMatrixFunction;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -22,13 +20,16 @@ import java.util.Map;
 public class CrystalsHud {
     public static final MinecraftClient client = MinecraftClient.getInstance();
 
-    protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); //todo is this the right place to store file
+    protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
 
     private static final Identifier MAP_ICON = new Identifier("textures/map/map_icons.png");
 
-    public static boolean visable  = false;
+    private static final String[] SMALL_LOCATIONS = new String[] {"Fairy Grotto","King","Corleone"};
 
-    public static final int LOCATION_SIZE  = 10; //todo possible config option
+    public static boolean visible = false;
+
+
+
 
 
 
@@ -42,7 +43,7 @@ public class CrystalsHud {
             if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled
                     || client.options.playerListKey.isPressed()
                     || client.player == null
-                    || !visable) {
+                    || !visible) {
                 return;
             }
             render(context, SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.x,
@@ -64,8 +65,12 @@ public class CrystalsHud {
             for (CrystalsWaypoint waypoint : ActiveWaypoints.values()){
                 Color waypointColor = waypoint.category.color;
                 Pair<Integer, Integer> renderPos  = transformLocation(waypoint.pos.getX(),waypoint.pos.getZ());
-                //fill square of size LOCATION_SIZE around the coordinates of the location
-                context.fill(hudX+renderPos.first()-LOCATION_SIZE/2,hudY+renderPos.second()-LOCATION_SIZE/2,hudX+renderPos.first()+LOCATION_SIZE/2,hudY+renderPos.second()+LOCATION_SIZE/2,waypointColor.getRGB());
+                int locationSize  = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.locationSize;
+                if (Arrays.asList(SMALL_LOCATIONS).contains(waypoint.name.getString())){//if small location half the location size
+                    locationSize = locationSize/2;
+                }
+                //fill square of size locationSize around the coordinates of the location
+                context.fill(hudX+renderPos.first()-locationSize/2,hudY+renderPos.second()-locationSize/2,hudX+renderPos.first()+locationSize/2,hudY+renderPos.second()+locationSize/2,waypointColor.getRGB());
             }
         }
         //draw player on map
@@ -96,11 +101,11 @@ public class CrystalsHud {
 
     public static void update() {
         if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled) {
-            visable = false;
+            visible = false;
             return;
         }
         //get if the player is in the crystals
-        visable = Utils.isInCrystals();
+        visible = Utils.isInCrystals();
 
 
     }

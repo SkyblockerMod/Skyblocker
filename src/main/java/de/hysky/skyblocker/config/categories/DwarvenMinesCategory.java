@@ -9,6 +9,7 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -82,7 +83,7 @@ public class DwarvenMinesCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-				//crystal HUD
+				//crystal HUD //todo add descriptions to features
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud"))
 						.collapsed(false)
@@ -104,6 +105,13 @@ public class DwarvenMinesCategory {
 										() -> config.locations.dwarvenMines.crystalsHud.showLocations,
 										newValue -> config.locations.dwarvenMines.crystalsHud.showLocations = newValue)
 								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.locationSize"))
+								.binding(defaults.locations.dwarvenMines.crystalsHud.locationSize,
+										() -> config.locations.dwarvenMines.crystalsHud.locationSize,
+										newValue -> config.locations.dwarvenMines.crystalsHud.locationSize = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(4, 12).step(2))
 								.build())
 						.build())
 				//crystals waypoints

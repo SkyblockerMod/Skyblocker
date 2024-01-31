@@ -31,13 +31,6 @@ import java.util.function.ToDoubleFunction;
 
 public class CrystalsWaypoint extends Waypoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(CrystalsWaypoint.class);
-    public static final Codec<CrystalsWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Category.CODEC.fieldOf("category").forGetter(crystalsWaypoint -> crystalsWaypoint.category),
-            TextCodecs.CODEC.fieldOf("name").forGetter(crystalsWaypoint -> crystalsWaypoint.name),
-            BlockPos.CODEC.fieldOf("pos").forGetter(crystalsWaypoint -> crystalsWaypoint.pos)
-    ).apply(instance, CrystalsWaypoint::new));
-
-
 
     private static final Supplier<SkyblockerConfig.CrystalsWaypoints> CONFIG = () -> SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints;
     static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
@@ -137,18 +130,5 @@ public class CrystalsWaypoint extends Waypoint {
             return name;
         }
 
-        static class CategoryArgumentType extends EnumArgumentType<Category> {
-            CategoryArgumentType() {
-                super(Category.CODEC, Category::values);
-            }
-
-            static CategoryArgumentType category() {
-                return new CategoryArgumentType();
-            }
-
-            static <S> Category getCategory(CommandContext<S> context, String name) {
-                return context.getArgument(name, Category.class);
-            }
-        }
     }
 }

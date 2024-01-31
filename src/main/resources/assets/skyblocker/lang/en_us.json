@@ -280,6 +280,7 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.enabled": "Enabled",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.screen": "Crystals HUD Config...",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations": "Show Waypoints",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations.locationSize": "Location Size",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints": "Crystal Hollows Waypoints",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.enabled": "Enabled Waypoints",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.findInChat": "Find Waypoints In Chat",
