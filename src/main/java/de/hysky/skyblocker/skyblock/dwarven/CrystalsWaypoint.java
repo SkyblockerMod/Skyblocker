@@ -104,7 +104,8 @@ public class CrystalsWaypoint extends Waypoint {
         KHAZADUM("Khazad-dûm",Color.RED),
         FAIRYGROTTO("Fairy Grotto",Color.PINK),
         DRAGONSLAIR("Dragon's Lair",Color.BLACK),
-        CORLEONE("Corleone",Color.ORANGE),
+        CORLEONE("Corleone",Color.gray),
+        KING("King",Color.yellow),
         DEFAULT("Default",Color.BLACK);
 
 

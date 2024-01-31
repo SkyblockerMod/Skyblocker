@@ -51,8 +51,9 @@ public class CrystalsLocationsManager {
             "Khazad-dûm", CrystalsWaypoint.Category.KHAZADUM,
             "Fairy Grotto", CrystalsWaypoint.Category.FAIRYGROTTO,
             "Dragon's Lair", CrystalsWaypoint.Category.DRAGONSLAIR,
-            "Corleone", CrystalsWaypoint.Category.DRAGONSLAIR
-    );
+            "Corleone", CrystalsWaypoint.Category.CORLEONE,
+            "King", CrystalsWaypoint.Category.KING
+            );
 
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 

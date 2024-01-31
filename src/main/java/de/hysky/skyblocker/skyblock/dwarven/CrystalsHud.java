@@ -55,12 +55,6 @@ public class CrystalsHud {
     }
 
     public static void render( DrawContext context, int hudX, int hudY) {
-
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enableBackground) {
-            context.fill(hudX, hudY, hudX + 62, hudY + 62, 0x64000000);
-        }
-
-
         //draw map texture
         context.
                 drawTexture(MAP_TEXTURE,hudX,hudY,0,0,62,62,62,62);
