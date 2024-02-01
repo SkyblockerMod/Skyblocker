@@ -17,10 +17,8 @@ import java.util.List;
 public class DwarvenHudConfigScreen extends Screen {
 
     private static final List<DwarvenHud.Commission> CFG_COMMS = List.of(new Commission("Test Commission 1", "1%"), new DwarvenHud.Commission("Test Commission 2", "2%"));
-    private static final int CFG_MITHRIL = 100;
-    private static final int CFG_GEMSTONE = 1010;
-    private int commissionsHudX = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.commissionsX;
-    private int commissionsHudY = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.commissionsY;
+    private int commissionsHudX = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x;
+    private int commissionsHudY = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y;
 
     private int powderHudX = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderX;
     private int powderHudY = SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderY;
@@ -39,7 +37,7 @@ public class DwarvenHudConfigScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         renderBackground(context, mouseX, mouseY, delta);
-        DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG, context, commissionsHudX, commissionsHudY,powderHudX,powderHudY,CFG_COMMS,CFG_MITHRIL,CFG_GEMSTONE);
+        DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG, context, commissionsHudX, commissionsHudY,powderHudX,powderHudY,CFG_COMMS);
         context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
     }
 
@@ -71,8 +69,8 @@ public class DwarvenHudConfigScreen extends Screen {
 
     @Override
     public void close() {
-        SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.commissionsX = commissionsHudX;
-        SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.commissionsY = commissionsHudY;
+        SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x = commissionsHudX;
+        SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y = commissionsHudY;
         SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderX = powderHudX;
         SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderY = powderHudY;
         SkyblockerConfigManager.save();

@@ -898,10 +898,10 @@ public class SkyblockerConfig {
 		public boolean enableBackground = true;
 
 		@SerialEntry
-		public int commissionsX = 10;
+		public int x = 10;
 
 		@SerialEntry
-		public int commissionsY = 10;
+		public int y = 10;
 
 		@SerialEntry
 		public int powderX = 10;
@@ -931,10 +931,6 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean findInChat = true;
-		@SerialEntry
-		public Map<String, CrystalsWaypoint> ActiveWaypoints = new HashMap<>() {};
-
-
 	}
 
 	public enum DwarvenHudStyle {

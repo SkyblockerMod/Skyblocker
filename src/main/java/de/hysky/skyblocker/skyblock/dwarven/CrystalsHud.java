@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -67,7 +68,7 @@ public class CrystalsHud {
                 drawTexture(MAP_TEXTURE,hudX,hudY,0,0,62,62,62,62);
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.showLocations){
-            Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
+            Map<String,CrystalsWaypoint> ActiveWaypoints=  CrystalsLocationsManager.ActiveWaypoints;
             for (CrystalsWaypoint waypoint : ActiveWaypoints.values()){
                 Color waypointColor = waypoint.category.color;
                 Pair<Integer, Integer> renderPos  = transformLocation(waypoint.pos.getX(),waypoint.pos.getZ());
@@ -106,9 +107,8 @@ public class CrystalsHud {
         //converts an x and z to a location on the map
         int transformedX = (int)((x-202)/621 * 62);
         int transformedY = (int)((z -202)/621 * 62);
-        transformedX = Math.max(0, Math.min(62, transformedX));
-        transformedY = Math.max(0, Math.min(62, transformedY));
-
+        transformedX = MathHelper.clamp(transformedX,0, 62);
+        transformedY = MathHelper.clamp(transformedY,0, 62);
         return  Pair.of(transformedX,transformedY);
     }
     /**

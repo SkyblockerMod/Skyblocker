@@ -15,6 +15,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -27,8 +28,8 @@ public class DwarvenHud {
     public static final MinecraftClient client = MinecraftClient.getInstance();
     public static List<Commission> commissionList = new ArrayList<>();
 
-    public static int mithrilPowder = 0;
-    public static int gemStonePowder = 0;
+    public static String mithrilPowder = "0";
+    public static String gemStonePowder = "0";
 
     public static final List<Pattern> COMMISSIONS = Stream.of(
                     "(?:Titanium|Mithril|Hard Stone) Miner",
@@ -44,6 +45,8 @@ public class DwarvenHud {
                     "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
                     "Chest Looter").map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
             .collect(Collectors.toList());
+    public static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril Powder: [0-9,]+");
+    public static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone Powder: [0-9,]+");
 
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
@@ -59,11 +62,11 @@ public class DwarvenHud {
                 return;
             }
             render(HudCommsWidget.INSTANCE,HudPowderWidget.INSTANCE,  context,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.commissionsX,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.commissionsY,
+                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x,
+                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y,
                     SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderX,
                     SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderY,
-                    commissionList,mithrilPowder,gemStonePowder);
+                    commissionList);
         });
     }
 
@@ -107,11 +110,11 @@ public class DwarvenHud {
         };
     }
 
-    public static void render(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions,int mithril, int gemStone) {
+    public static void render(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
 
         switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
-            case SIMPLE -> renderSimple(hcw,hpw, context, comHudX, comHudY,powderHudX,powderHudY, commissions,mithril,gemStone);
-            case FANCY -> renderFancy(hcw,hpw, context, comHudX, comHudY,powderHudX,powderHudY, commissions,mithril,gemStone);
+            case SIMPLE -> renderSimple(hcw,hpw, context, comHudX, comHudY,powderHudX,powderHudY, commissions);
+            case FANCY -> renderFancy(hcw,hpw, context, comHudX, comHudY,powderHudX,powderHudY, commissions);
             case CLASSIC -> renderClassic(context, comHudX, comHudY,powderHudX,powderHudY, commissions);
         }
     }
@@ -142,10 +145,8 @@ public class DwarvenHud {
 
                 context
                         .drawTextWithShadow(client.textRenderer,
-                                Text.literal(commission.commission + ": ")
-                                        .styled(style -> style.withColor(Formatting.AQUA))
-                                        .append(Text.literal(commission.progression)
-                                                .styled(style -> style.withColor(Colors.hypixelProgressColor(percentage)))),
+                                Text.literal(commission.commission + ": ").formatted(Formatting.AQUA)
+                                        .append(Text.literal(commission.progression).formatted(Colors.hypixelProgressColor(percentage))),
                                 comHudX + 5, comHudY + y + 5, 0xFFFFFFFF);
                 y += 20;
             }
@@ -154,18 +155,16 @@ public class DwarvenHud {
             //render mithril powder then gemstone
             context
                     .drawTextWithShadow(client.textRenderer,
-                            Text.literal("Mithril: " + mithrilPowder)
-                                    .styled(style -> style.withColor(Formatting.AQUA)),
+                            Text.literal("Mithril: " + mithrilPowder).formatted(Formatting.AQUA),
                             powderHudX + 5, powderHudY + 5, 0xFFFFFFFF);
             context
                     .drawTextWithShadow(client.textRenderer,
-                            Text.literal("Gemstone: " + gemStonePowder)
-                                    .styled(style -> style.withColor(Formatting.DARK_PURPLE)),
+                            Text.literal("Gemstone: " + gemStonePowder).formatted(Formatting.DARK_PURPLE),
                             powderHudX + 5, powderHudY + 25, 0xFFFFFFFF);
         }
     }
 
-    public static void renderSimple(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions,int mithril, int gemStone) {
+    public static void renderSimple(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
             hcw.updateData(commissions, false);
             hcw.update();
@@ -183,7 +182,7 @@ public class DwarvenHud {
         }
     }
 
-    public static void renderFancy(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions,int mithril, int gemStone) {
+    public static void renderFancy(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
             hcw.updateData(commissions, true);
             hcw.update();
@@ -208,12 +207,22 @@ public class DwarvenHud {
 
         client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
             if (playerListEntry.getDisplayName() != null) {
+                //find commissions
                 for (Pattern pattern : COMMISSIONS) {
                     Matcher matcher = pattern.matcher(playerListEntry.getDisplayName().getString());
                     if (matcher.find()) {
                         commissionList.add(new Commission(matcher.group(1), matcher.group(2)));
                     }
 
+                }
+                //find powder
+                Matcher mithrilMatcher = MITHRIL_PATTERN.matcher(playerListEntry.getDisplayName().getString());
+                if (mithrilMatcher.find()){
+                    mithrilPowder = mithrilMatcher.group(0).split(": ")[1];
+                }
+                Matcher gemstoneMatcher = GEMSTONE_PATTERN.matcher(playerListEntry.getDisplayName().getString());
+                if (gemstoneMatcher.find()){
+                    gemStonePowder = gemstoneMatcher.group(0).split(": ")[1];
                 }
             }
         });

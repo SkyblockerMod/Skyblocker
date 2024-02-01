@@ -1,14 +1,11 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -17,19 +14,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.DefaultPosArgument;
 import net.minecraft.command.argument.PosArgument;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
 import java.awt.*;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,16 +39,17 @@ public class CrystalsLocationsManager {
      * A look-up table to convert between location names and waypoint in the {@link CrystalsWaypoint.Category} values.
      */
     public static final Map<String, CrystalsWaypoint.Category> WAYPOINTLOCATIONS = Map.of(
-            "Jungle Temple", CrystalsWaypoint.Category.JUNGLETEMPLE,
-            "Mines Of Divan", CrystalsWaypoint.Category.MINESOFDIVAN,
-            "Goblin Queen's Den", CrystalsWaypoint.Category.GOBLINQUEENSDEN,
-            "Lost Precursor City", CrystalsWaypoint.Category.LOSTPRECURSORCITY,
+            "Jungle Temple", CrystalsWaypoint.Category.JUNGLE_TEMPLE,
+            "Mines Of Divan", CrystalsWaypoint.Category.MINES_OF_DIVAN,
+            "Goblin Queen's Den", CrystalsWaypoint.Category.GOBLIN_QUEENS_DEN,
+            "Lost Precursor City", CrystalsWaypoint.Category.LOST_PRECURSOR_CITY,
             "Khazad-dûm", CrystalsWaypoint.Category.KHAZADUM,
-            "Fairy Grotto", CrystalsWaypoint.Category.FAIRYGROTTO,
-            "Dragon's Lair", CrystalsWaypoint.Category.DRAGONSLAIR,
+            "Fairy Grotto", CrystalsWaypoint.Category.FAIRY_GROTTO,
+            "Dragon's Lair", CrystalsWaypoint.Category.DRAGONS_LAIR,
             "Corleone", CrystalsWaypoint.Category.CORLEONE,
             "King", CrystalsWaypoint.Category.KING
             );
+    protected static Map<String, CrystalsWaypoint> ActiveWaypoints = new HashMap<>() {};
 
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 
@@ -149,13 +142,11 @@ public class CrystalsLocationsManager {
     private static void addCustomWaypoint( Text waypointName, BlockPos pos) {
         CrystalsWaypoint.Category category = WAYPOINTLOCATIONS.get(waypointName.getString());
         CrystalsWaypoint waypoint = new CrystalsWaypoint(category, waypointName, pos);
-        Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
         ActiveWaypoints.put(waypointName.getString(),waypoint);
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled ) {
-            Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
             for (CrystalsWaypoint crystalsWaypoint : ActiveWaypoints.values()) {
                 if (crystalsWaypoint.shouldRender()) {
                     crystalsWaypoint.render(context);
@@ -166,13 +157,11 @@ public class CrystalsLocationsManager {
 
     public static void update() {
         if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled || !Utils.isInCrystals()) {
-            SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints= new HashMap<>();
             return;
         }
         //get if the player is in the crystals
         String location = Utils.getIslandArea().replace("⏣ ","");
         //if new location and needs waypoint add waypoint
-        Map<String,CrystalsWaypoint> ActiveWaypoints=  SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.ActiveWaypoints;
         if (!location.equals("Unknown") && WAYPOINTLOCATIONS.containsKey(location) && !ActiveWaypoints.containsKey(location)){
             //add waypoint at player location
             BlockPos playerLocation = client.player.getBlockPos();

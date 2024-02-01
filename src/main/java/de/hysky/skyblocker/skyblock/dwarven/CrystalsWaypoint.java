@@ -1,20 +1,16 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import com.google.gson.JsonObject;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
@@ -23,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -84,13 +78,13 @@ public class CrystalsWaypoint extends Waypoint {
      * enum for the different waypoints used int the crystals hud each with a {@link Category#name} and associated {@link Category#color}
      */
     enum Category implements StringIdentifiable {
-        JUNGLETEMPLE("Jungle Temple",Color.GREEN),
-        MINESOFDIVAN("Mines Of Divan",Color.CYAN),
-        GOBLINQUEENSDEN("Goblin Queen's Den",Color.ORANGE),
-        LOSTPRECURSORCITY("Lost Precursor City",Color.BLUE),
+        JUNGLE_TEMPLE("Jungle Temple",Color.GREEN),
+        MINES_OF_DIVAN("Mines Of Divan",Color.CYAN),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den",Color.ORANGE),
+        LOST_PRECURSOR_CITY("Lost Precursor City",Color.BLUE),
         KHAZADUM("Khazad-dûm",Color.RED),
-        FAIRYGROTTO("Fairy Grotto",Color.PINK),
-        DRAGONSLAIR("Dragon's Lair",Color.BLACK),
+        FAIRY_GROTTO("Fairy Grotto",Color.PINK),
+        DRAGONS_LAIR("Dragon's Lair",Color.BLACK),
         CORLEONE("Corleone",Color.gray),
         KING("King",Color.yellow),
         DEFAULT("Default",Color.BLACK);
