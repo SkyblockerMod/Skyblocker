@@ -77,7 +77,8 @@ public class SkyblockerConfigManager {
 				.category(SlayersCategory.create(defaults, config))
 				.category(QuickNavigationCategory.create(defaults, config))
 				.category(MessageFilterCategory.create(defaults, config))
-				.category(DiscordRPCCategory.create(defaults, config))).generateScreen(parent);
+				.category(DiscordRichPresence.create(defaults, config))
+		).generateScreen(parent);
 	}
 
 	/**
