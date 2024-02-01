@@ -49,7 +49,7 @@ public class CrystalsLocationsManager {
             "Corleone", CrystalsWaypoint.Category.CORLEONE,
             "King", CrystalsWaypoint.Category.KING
             );
-    protected static Map<String, CrystalsWaypoint> ActiveWaypoints = new HashMap<>() {};
+    protected static Map<String, CrystalsWaypoint> activeWaypoints = new HashMap<>() {};
 
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 
@@ -142,12 +142,12 @@ public class CrystalsLocationsManager {
     private static void addCustomWaypoint( Text waypointName, BlockPos pos) {
         CrystalsWaypoint.Category category = WAYPOINTLOCATIONS.get(waypointName.getString());
         CrystalsWaypoint waypoint = new CrystalsWaypoint(category, waypointName, pos);
-        ActiveWaypoints.put(waypointName.getString(),waypoint);
+        activeWaypoints.put(waypointName.getString(),waypoint);
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled ) {
-            for (CrystalsWaypoint crystalsWaypoint : ActiveWaypoints.values()) {
+            for (CrystalsWaypoint crystalsWaypoint : activeWaypoints.values()) {
                 if (crystalsWaypoint.shouldRender()) {
                     crystalsWaypoint.render(context);
                 }
@@ -157,12 +157,13 @@ public class CrystalsLocationsManager {
 
     public static void update() {
         if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled || !Utils.isInCrystals()) {
+            activeWaypoints = new HashMap<>();
             return;
         }
         //get if the player is in the crystals
         String location = Utils.getIslandArea().replace("⏣ ","");
         //if new location and needs waypoint add waypoint
-        if (!location.equals("Unknown") && WAYPOINTLOCATIONS.containsKey(location) && !ActiveWaypoints.containsKey(location)){
+        if (!location.equals("Unknown") && WAYPOINTLOCATIONS.containsKey(location) && !activeWaypoints.containsKey(location)){
             //add waypoint at player location
             BlockPos playerLocation = client.player.getBlockPos();
             addCustomWaypoint(Text.of(location),playerLocation);

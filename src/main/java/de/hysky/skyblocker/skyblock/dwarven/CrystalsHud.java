@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
@@ -68,7 +66,7 @@ public class CrystalsHud {
                 drawTexture(MAP_TEXTURE,hudX,hudY,0,0,62,62,62,62);
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.showLocations){
-            Map<String,CrystalsWaypoint> ActiveWaypoints=  CrystalsLocationsManager.ActiveWaypoints;
+            Map<String,CrystalsWaypoint> ActiveWaypoints=  CrystalsLocationsManager.activeWaypoints;
             for (CrystalsWaypoint waypoint : ActiveWaypoints.values()){
                 Color waypointColor = waypoint.category.color;
                 Pair<Integer, Integer> renderPos  = transformLocation(waypoint.pos.getX(),waypoint.pos.getZ());
