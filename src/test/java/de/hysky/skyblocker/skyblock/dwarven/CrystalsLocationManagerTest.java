@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import de.hysky.skyblocker.utils.Constants;
 
 public class CrystalsLocationManagerTest {
 
@@ -25,7 +26,7 @@ public class CrystalsLocationManagerTest {
 
     @Test
     void testSetLocationMessage(){
-        Assertions.assertEquals(CrystalsLocationsManager.getSetLocationMessage("Jungle Temple",new BlockPos(10,11,12)).getString(), "Added waypoint for Jungle Temple at : 10 11 12.");
-        Assertions.assertEquals(CrystalsLocationsManager.getSetLocationMessage("Fairy Grotto",new BlockPos(0,0,0)).getString(), "Added waypoint for Fairy Grotto at : 0 0 0.");
+        Assertions.assertEquals(CrystalsLocationsManager.getSetLocationMessage("Jungle Temple",new BlockPos(10,11,12)).getString(), Constants.PREFIX.get().getString() + "Added waypoint for Jungle Temple at : 10 11 12.");
+        Assertions.assertEquals(CrystalsLocationsManager.getSetLocationMessage("Fairy Grotto",new BlockPos(0,0,0)).getString(), Constants.PREFIX.get().getString() + "Added waypoint for Fairy Grotto at : 0 0 0.");
     }
 }

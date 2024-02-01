@@ -278,7 +278,7 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Enable Background",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud": "Crystal Hollows Map",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.enabled": "Enabled",
-  "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.screen": "Crystals HUD Config...",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.screen": "Crystal Hollows Map Placement Config...",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations": "Show Waypoints",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations.@Tooltip": "Show boxes on important areas in the crystal hollows e.g. Jungle Temple and Fairy Grotto.",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations.locationSize": "Location Size",

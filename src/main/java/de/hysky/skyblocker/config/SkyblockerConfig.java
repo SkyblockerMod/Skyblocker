@@ -909,6 +909,7 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public int powderY = 70;
 	}
+
 	public static class CrystalsHud {
 		@SerialEntry
 		public boolean enabled = true;
@@ -925,6 +926,7 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public int y = 130;
 	}
+
 	public static class CrystalsWaypoints {
 		@SerialEntry
 		public boolean enabled = true;

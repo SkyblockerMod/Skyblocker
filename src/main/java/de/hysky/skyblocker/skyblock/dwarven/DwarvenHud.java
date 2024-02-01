@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudPowderWidget;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -15,7 +16,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -61,7 +61,8 @@ public class DwarvenHud {
                     || commissionList.isEmpty()) {
                 return;
             }
-            render(HudCommsWidget.INSTANCE,HudPowderWidget.INSTANCE,  context,
+
+            render(HudCommsWidget.INSTANCE, HudPowderWidget.INSTANCE, context,
                     SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x,
                     SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y,
                     SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderX,
@@ -201,9 +202,11 @@ public class DwarvenHud {
     }
 
     public static void update() {
-        commissionList = new ArrayList<>();
-        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions)
+        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions || (!Utils.isInCrystalHollows()
+                && !Utils.getLocationRaw().equals("mining_3")))
             return;
+
+        commissionList = new ArrayList<>();
 
         client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
             if (playerListEntry.getDisplayName() != null) {

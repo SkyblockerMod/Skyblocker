@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -37,7 +36,7 @@ public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
     private static final String DUNGEONS_LOCATION = "dungeon";
-    public static final String CRYSTALS_LOCATION = "crystal_hollows";
+    private static final String CRYSTAL_HOLLOWS_LOCATION = "crystal_hollows";
 
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
@@ -88,8 +87,9 @@ public class Utils {
     public static boolean isInDungeons() {
         return getLocationRaw().equals(DUNGEONS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
-    public static boolean isInCrystals(){
-        return getLocationRaw().equals(CRYSTALS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
+
+    public static boolean isInCrystalHollows() {
+        return getLocationRaw().equals(CRYSTAL_HOLLOWS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInTheRift() {

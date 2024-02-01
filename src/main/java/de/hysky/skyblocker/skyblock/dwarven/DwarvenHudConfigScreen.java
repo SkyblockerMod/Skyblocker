@@ -37,7 +37,7 @@ public class DwarvenHudConfigScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         renderBackground(context, mouseX, mouseY, delta);
-        DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG, context, commissionsHudX, commissionsHudY,powderHudX,powderHudY,CFG_COMMS);
+        DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG, context, commissionsHudX, commissionsHudY, powderHudX, powderHudY, CFG_COMMS);
         context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
     }
 

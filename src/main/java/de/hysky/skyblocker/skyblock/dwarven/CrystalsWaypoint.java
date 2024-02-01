@@ -27,7 +27,7 @@ public class CrystalsWaypoint extends Waypoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(CrystalsWaypoint.class);
 
     private static final Supplier<SkyblockerConfig.Waypoints> CONFIG = () -> SkyblockerConfigManager.get().general.waypoints;
-    static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
+    private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final Category category;
     final Text name;
     private final Vec3d centerPos;
@@ -51,7 +51,6 @@ public class CrystalsWaypoint extends Waypoint {
     public boolean shouldRender() {
         return super.shouldRender() ;
     }
-
 
     @Override
     public boolean equals(Object obj) {
@@ -78,16 +77,16 @@ public class CrystalsWaypoint extends Waypoint {
      * enum for the different waypoints used int the crystals hud each with a {@link Category#name} and associated {@link Category#color}
      */
     enum Category implements StringIdentifiable {
-        JUNGLE_TEMPLE("Jungle Temple",Color.GREEN),
-        MINES_OF_DIVAN("Mines Of Divan",Color.CYAN),
-        GOBLIN_QUEENS_DEN("Goblin Queen's Den",Color.ORANGE),
-        LOST_PRECURSOR_CITY("Lost Precursor City",Color.BLUE),
-        KHAZADUM("Khazad-dûm",Color.RED),
-        FAIRY_GROTTO("Fairy Grotto",Color.PINK),
-        DRAGONS_LAIR("Dragon's Lair",Color.BLACK),
-        CORLEONE("Corleone",Color.gray),
-        KING("King",Color.yellow),
-        DEFAULT("Default",Color.BLACK);
+        JUNGLE_TEMPLE("Jungle Temple", Color.GREEN),
+        MINES_OF_DIVAN("Mines of Divan", Color.CYAN),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", Color.ORANGE),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.BLUE),
+        KHAZADUM("Khazad-dûm", Color.RED),
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK),
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK),
+        CORLEONE("Corleone", Color.gray),
+        KING("King", Color.yellow),
+        DEFAULT("Default", Color.BLACK);
 
 
         public final Color color;
