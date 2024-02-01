@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class CrystalsHudTest {
 
     @Test
-    void testLocationTransformation(){
+    void testLocationTransformation() {
         Assertions.assertEquals(CrystalsHud.transformLocation(202, 202), Pair.of(0, 0));
         Assertions.assertEquals(CrystalsHud.transformLocation(823, 823), Pair.of(62, 62));
 
