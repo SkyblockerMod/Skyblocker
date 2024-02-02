@@ -38,7 +38,7 @@ public class DungeonScore {
 	private static final SkyblockerConfig.MimicMessage MIMIC_MESSAGE_CONFIG = SkyblockerConfigManager.get().locations.dungeons.mimicMessage;
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
-	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");
+	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)% \\((?<score>\\d+)\\)");
 	private static final Pattern FLOOR_PATTERN = Pattern.compile(".*?(?=T)The Catacombs \\((?<floor>[EFM]\\D*\\d*)\\)");
 	//Playerlist patterns
 	private static final Pattern SECRETS_PATTERN = Pattern.compile("Secrets Found: (?<secper>\\d+\\.?\\d*)%");
@@ -149,7 +149,7 @@ public class DungeonScore {
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = Utils.getMayor().equals("Paul");
+		isMayorPaul = getScoreboardScore() >= 10; //Dungeon starts with the mayor bonus added to the score in the scoreboard
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
@@ -345,6 +345,16 @@ public class DungeonScore {
 			return;
 		}
 		LOGGER.error("[Skyblocker] Floor pattern doesn't match!");
+	}
+
+	public static int getScoreboardScore() {
+		for (String sidebarLine : Utils.STRING_SCOREBOARD) {
+			Matcher clearMatcher = CLEARED_PATTERN.matcher(sidebarLine);
+			if (!clearMatcher.matches()) continue;
+			return Integer.parseInt(clearMatcher.group("score"));
+		}
+		LOGGER.error("[Skyblocker] Clear pattern doesn't match!");
+		return 0;
 	}
 
 	public static int getScore() {
