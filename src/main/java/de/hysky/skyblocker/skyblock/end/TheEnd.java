@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -49,8 +49,10 @@ public class TheEnd {
      * needs to be saved?
      */
     private static boolean dirty = false;
-    private static String loaded = "";
-    private static Path saveDir;
+    private static String currentProfile = "";
+    private static JsonObject PROFILES_STATS;
+
+    private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("end.json");
     public static List<ProtectorLocation> protectorLocations = List.of(
             new ProtectorLocation(-649, -219, Text.translatable("skyblocker.end.hud.protectorLocations.left")),
             new ProtectorLocation(-644, -269, Text.translatable("skyblocker.end.hud.protectorLocations.front")),
@@ -98,7 +100,7 @@ public class TheEnd {
                         }
                     }
                 }
-                if (loaded.isEmpty()) load(); // Wacky fix for when you join skyblock, and you are directly in the end (profile id isn't parsed yet most of the time)
+                if (currentProfile.isEmpty()) load(); // Wacky fix for when you join skyblock, and you are directly in the end (profile id isn't parsed yet most of the time)
             }
 
 
@@ -114,6 +116,7 @@ public class TheEnd {
         ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> save());
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+            if (Utils.isInTheEnd()) return;
             String lowerCase = message.getString().toLowerCase();
             if (lowerCase.contains("tremor") && stage != 0) stage+=1; // TODO: If stage is 0 re-scan.
             else if (lowerCase.contains("rises from below")) stage = 5;
@@ -123,6 +126,7 @@ public class TheEnd {
         });
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
+        ClientLifecycleEvents.CLIENT_STARTED.register((client -> loadFile()));
     }
 
     private static void resetLocation() {
@@ -170,32 +174,54 @@ public class TheEnd {
      */
     public static void load() {
         if (!Utils.isOnSkyblock() || Utils.getProfileId().isEmpty()) return;
-        String id = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "") + "/" + Utils.getProfileId();
-        if (!id.equals(loaded)) {
-            saveDir = SkyblockerMod.CONFIG_DIR.resolve("profile_storage/" + id);
-            //noinspection ResultOfMethodCallIgnored
-            saveDir.toFile().mkdirs();
-            CompletableFuture.runAsync(() -> {
-                try (BufferedReader reader = Files.newBufferedReader(saveDir.resolve("end.json"))) {
-                    Map<String, JsonElement> map = SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap();
-                    zealotsKilled = map.get("totalZealotKills").getAsInt();
-                    zealotsSinceLastEye = map.get("zealotsSinceLastEye").getAsInt();
-                    eyes = map.get("eyes").getAsInt();
-                    LOGGER.debug("[Skyblocker] Loaded end stats");
-                } catch (Exception e) {
-                    LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load end stats", e);
-                }
-            });
-            loaded = id;
+        String id = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "");
+        String profile = Utils.getProfileId();
+        if (!profile.equals(currentProfile) && PROFILES_STATS != null) {
+            currentProfile = profile;
+            JsonElement jsonElement = PROFILES_STATS.get(id);
+            if (jsonElement == null) return;
+            JsonElement jsonElement1 = jsonElement.getAsJsonObject().get(profile);
+            if (jsonElement1 == null) return;
+            zealotsKilled = jsonElement1.getAsJsonObject().get("totalZealotKills").getAsInt();
+            zealotsSinceLastEye = jsonElement1.getAsJsonObject().get("zealotsSinceLastEye").getAsInt();
+            eyes = jsonElement1.getAsJsonObject().get("eyes").getAsInt();
+            System.out.println("hiii");
             EndHudWidget.INSTANCE.update();
         }
+    }
+
+    private static void loadFile() {
+        CompletableFuture.runAsync(() -> {
+            try (BufferedReader reader = Files.newBufferedReader(FILE)) {
+                PROFILES_STATS = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
+                LOGGER.debug("[Skyblocker] Loaded end stats");
+            } catch (NoSuchFileException ignored) {
+                PROFILES_STATS = new JsonObject();
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load end stats", e);
+            }
+        });
     }
 
     /**
      * Saves if dirty
      */
     public static void save() {
-        if (dirty && saveDir != null) {
+        if (dirty && PROFILES_STATS != null) {
+            String uuid = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "");
+            JsonObject jsonObject = PROFILES_STATS.getAsJsonObject(uuid);
+            if (jsonObject == null) {
+                PROFILES_STATS.add(uuid, new JsonObject());
+                jsonObject = PROFILES_STATS.getAsJsonObject(uuid);
+            }
+
+            jsonObject.add(currentProfile, new JsonObject());
+            JsonElement jsonElement1 = jsonObject.get(currentProfile);
+
+            jsonElement1.getAsJsonObject().addProperty("totalZealotKills", zealotsKilled);
+            jsonElement1.getAsJsonObject().addProperty("zealotsSinceLastEye", zealotsSinceLastEye);
+            jsonElement1.getAsJsonObject().addProperty("eyes", eyes);
+
             if (Utils.isOnSkyblock()) {
                 CompletableFuture.runAsync(TheEnd::performSave);
             } else {
@@ -205,12 +231,8 @@ public class TheEnd {
     }
 
     private static void performSave() {
-        try (BufferedWriter writer = Files.newBufferedWriter(saveDir.resolve("end.json"))) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("totalZealotKills", zealotsKilled);
-            jsonObject.addProperty("zealotsSinceLastEye", zealotsSinceLastEye);
-            jsonObject.addProperty("eyes", eyes);
-            SkyblockerMod.GSON.toJson(jsonObject, writer);
+        try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
+            SkyblockerMod.GSON.toJson(PROFILES_STATS, writer);
             LOGGER.info("[Skyblocker] Saved end stats");
             dirty = false;
         } catch (Exception e) {
