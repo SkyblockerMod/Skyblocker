@@ -149,6 +149,7 @@ public class Utils {
 
     /**
      * @return the current mayor as cached on skyblock join.
+     * @implNote The mayor api call is disabled as the mod currently doesn't use this information. Uncomment the api call in {@link #init()} if needed.
      */
     @NotNull
     public static String getMayor() {
@@ -156,7 +157,7 @@ public class Utils {
     }
 
     public static void init() {
-        SkyblockEvents.JOIN.register(Utils::initializeMayorCache);
+//        SkyblockEvents.JOIN.register(Utils::initializeMayorCache); //Not necessary for the moment as the mayor info is currently unused. Uncomment if needed.
         ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
