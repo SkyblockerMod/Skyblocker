@@ -9,6 +9,7 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
+import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -98,6 +99,13 @@ public class DwarvenMinesCategory {
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.screen"))
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new CrystalsHudConfigScreen(screen)))
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.mapScaling"))
+								.binding(defaults.locations.dwarvenMines.crystalsHud.mapScaling,
+										() -> config.locations.dwarvenMines.crystalsHud.mapScaling,
+										newValue -> config.locations.dwarvenMines.crystalsHud.mapScaling = newValue)
+								.controller(FloatFieldControllerBuilder::create)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations"))

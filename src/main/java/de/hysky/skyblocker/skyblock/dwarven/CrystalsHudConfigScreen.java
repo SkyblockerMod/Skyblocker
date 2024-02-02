@@ -28,14 +28,14 @@ public class CrystalsHudConfigScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         renderBackground(context, mouseX, mouseY, delta);
-        CrystalsHud.render( context, hudX, hudY);
+        renderHUDMap(context, hudX, hudY);
         context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        IntIntPair dims = CrystalsHud.getDimForConfig();
-        if (RenderHelper.pointIsInArea(mouseX, mouseY, hudX, hudY, hudX + 200, hudY + 40) && button == 0) {
+        IntIntPair dims = CrystalsHud.getDimensionsForConfig();
+        if (RenderHelper.pointIsInArea(mouseX, mouseY, hudX, hudY, hudX + dims.leftInt(), hudY + dims.rightInt()) && button == 0) {
             hudX = (int) Math.max(Math.min(mouseX - (double) dims.leftInt() / 2, this.width - dims.leftInt()), 0);
             hudY = (int) Math.max(Math.min(mouseY - (double) dims.rightInt() / 2, this.height - dims.rightInt()), 0);
         }
@@ -45,12 +45,18 @@ public class CrystalsHudConfigScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 1) {
-            IntIntPair dims = CrystalsHud.getDimForConfig();
+            IntIntPair dims = CrystalsHud.getDimensionsForConfig();
             hudX = this.width / 2 - dims.leftInt();
             hudY = this.height / 2 - dims.rightInt();
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
+
+    private void renderHUDMap(DrawContext context, int x, int y) {
+        float scaling = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling;
+        int size = (int) (62 * scaling);
+        context.drawTexture(CrystalsHud.MAP_TEXTURE, x, y, 0, 0, size, size, size, size);
+	}
 
     @Override
     public void close() {

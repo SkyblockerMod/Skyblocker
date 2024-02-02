@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
@@ -20,7 +21,7 @@ import java.util.Map;
 
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
+    protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
     private static final Identifier MAP_ICON = new Identifier("textures/map/map_icons.png");
     private static final String[] SMALL_LOCATIONS = { "Fairy Grotto", "King", "Corleone" };
 
@@ -43,8 +44,9 @@ public class CrystalsHud {
         });
     }
 
-    protected static IntIntPair getDimForConfig() {
-        return IntIntPair.of(62, 62);
+    protected static IntIntPair getDimensionsForConfig() {
+        int size = (int) (62 * SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling);
+        return IntIntPair.of(size, size);
     }
 
 
@@ -55,9 +57,20 @@ public class CrystalsHud {
      * @param hudX Top left X coordinate of the map
      * @param hudY Top left Y coordinate of the map
      */
-    protected static void render(DrawContext context, int hudX, int hudY) {
+    private static void render(DrawContext context, int hudX, int hudY) {
+        float scale = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling;
+        int size = (int) (62 * scale);
+
+        //make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.translate(0f, 0f, 200f);
+
         //draw map texture
-        context.drawTexture(MAP_TEXTURE, hudX, hudY, 0, 0, 62, 62, 62, 62);
+        context.drawTexture(MAP_TEXTURE, hudX, hudY, 0, 0, size, size, size, size);
+
+        //scale the rest of the stuff - this isn't applied to the map texture because doing so causes it to render with an "offset"
+        matrices.scale(scale, scale, 0f);
 
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.showLocations) {
@@ -89,7 +102,8 @@ public class CrystalsHud {
         //draw marker on map
         context.drawTexture(MAP_ICON, hudX + renderPos.first() - 2, hudY + renderPos.second() - 2, 58, 2, 4, 4, 128, 128);
 
-        //todo add direction and scale (can not work out how to rotate)
+        //todo add direction (can not work out how to rotate)
+        matrices.pop();
     }
 
     /**

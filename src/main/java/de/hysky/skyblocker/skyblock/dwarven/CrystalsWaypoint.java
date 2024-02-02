@@ -25,7 +25,6 @@ import java.util.function.ToDoubleFunction;
 
 public class CrystalsWaypoint extends Waypoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(CrystalsWaypoint.class);
-
     private static final Supplier<SkyblockerConfig.Waypoints> CONFIG = () -> SkyblockerConfigManager.get().general.waypoints;
     private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final Category category;

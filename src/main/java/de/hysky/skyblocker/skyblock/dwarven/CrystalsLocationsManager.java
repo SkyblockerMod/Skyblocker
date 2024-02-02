@@ -169,7 +169,7 @@ public class CrystalsLocationsManager {
     private static void addCustomWaypoint( Text waypointName, BlockPos pos) {
         CrystalsWaypoint.Category category = WAYPOINT_LOCATIONS.get(waypointName.getString());
         CrystalsWaypoint waypoint = new CrystalsWaypoint(category, waypointName, pos);
-        activeWaypoints.put(waypointName.getString(),waypoint);
+        activeWaypoints.put(waypointName.getString(), waypoint);
     }
 
     public static void render(WorldRenderContext context) {
@@ -183,7 +183,7 @@ public class CrystalsLocationsManager {
     }
 
     private static void reset() {
-    	activeWaypoints.clear();
+        activeWaypoints.clear();
     }
 
     public static void update() {

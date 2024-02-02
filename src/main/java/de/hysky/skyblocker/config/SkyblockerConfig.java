@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsWaypoint;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -15,9 +14,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SkyblockerConfig {
 	@SerialEntry
@@ -925,6 +922,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int y = 130;
+
+		@SerialEntry
+		public float mapScaling = 1f;
 	}
 
 	public static class CrystalsWaypoints {
