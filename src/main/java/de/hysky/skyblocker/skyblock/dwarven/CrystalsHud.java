@@ -59,18 +59,16 @@ public class CrystalsHud {
      */
     private static void render(DrawContext context, int hudX, int hudY) {
         float scale = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling;
-        int size = (int) (62 * scale);
 
         //make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
+        //and set position and scale
         MatrixStack matrices = context.getMatrices();
         matrices.push();
-        matrices.translate(0f, 0f, 200f);
+        matrices.translate(hudX, hudY, 200f);
+        matrices.scale(scale, scale, 0f);
 
         //draw map texture
-        context.drawTexture(MAP_TEXTURE, hudX, hudY, 0, 0, size, size, size, size);
-
-        //scale the rest of the stuff - this isn't applied to the map texture because doing so causes it to render with an "offset"
-        matrices.scale(scale, scale, 0f);
+        context.drawTexture(MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
 
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.showLocations) {
@@ -86,7 +84,7 @@ public class CrystalsHud {
                 }
 
                 //fill square of size locationSize around the coordinates of the location
-                context.fill(hudX + renderPos.first() - locationSize / 2, hudY + renderPos.second() - locationSize / 2, hudX + renderPos.first() + locationSize / 2, hudY + renderPos.second() + locationSize / 2, waypointColor.getRGB());
+                context.fill(renderPos.first() - locationSize / 2, renderPos.second() - locationSize / 2, renderPos.first() + locationSize / 2, renderPos.second() + locationSize / 2, waypointColor.getRGB());
             }
         }
 
@@ -100,7 +98,7 @@ public class CrystalsHud {
         double playerZ = CLIENT.player.getZ();
         Pair<Integer, Integer> renderPos  = transformLocation(playerX,playerZ);
         //draw marker on map
-        context.drawTexture(MAP_ICON, hudX + renderPos.first() - 2, hudY + renderPos.second() - 2, 58, 2, 4, 4, 128, 128);
+        context.drawTexture(MAP_ICON, renderPos.first() - 2, renderPos.second() - 2, 58, 2, 4, 4, 128, 128);
 
         //todo add direction (can not work out how to rotate)
         matrices.pop();
