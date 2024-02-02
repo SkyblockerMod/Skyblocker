@@ -58,7 +58,7 @@ public class DwarvenHud {
             if ((!SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder)
                     || client.options.playerListKey.isPressed()
                     || client.player == null
-                    || commissionList.isEmpty()) {
+                    || (!Utils.isInDwarvenMines() && !Utils.isInCrystalHollows())) {
                 return;
             }
 
@@ -203,7 +203,7 @@ public class DwarvenHud {
 
     public static void update() {
         if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions || (!Utils.isInCrystalHollows()
-                && !Utils.getLocationRaw().equals("mining_3")))
+                && !Utils.isInDwarvenMines()))
             return;
 
         commissionList = new ArrayList<>();
