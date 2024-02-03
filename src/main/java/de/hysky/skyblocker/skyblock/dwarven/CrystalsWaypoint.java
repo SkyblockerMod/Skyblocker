@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
@@ -76,15 +77,15 @@ public class CrystalsWaypoint extends Waypoint {
      * enum for the different waypoints used int the crystals hud each with a {@link Category#name} and associated {@link Category#color}
      */
     enum Category implements StringIdentifiable {
-        JUNGLE_TEMPLE("Jungle Temple", Color.GREEN),
-        MINES_OF_DIVAN("Mines of Divan", Color.CYAN),
-        GOBLIN_QUEENS_DEN("Goblin Queen's Den", Color.ORANGE),
-        LOST_PRECURSOR_CITY("Lost Precursor City", Color.BLUE),
-        KHAZADUM("Khazad-dûm", Color.RED),
+        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor())),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor())),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN),
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW),
         FAIRY_GROTTO("Fairy Grotto", Color.PINK),
         DRAGONS_LAIR("Dragon's Lair", Color.BLACK),
-        CORLEONE("Corleone", Color.gray),
-        KING("King", Color.yellow),
+        CORLEONE("Corleone", Color.WHITE),
+        KING("King", Color.RED),
         DEFAULT("Default", Color.BLACK);
 
 

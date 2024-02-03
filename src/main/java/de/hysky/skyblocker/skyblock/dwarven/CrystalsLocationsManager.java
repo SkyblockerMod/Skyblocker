@@ -50,7 +50,7 @@ public class CrystalsLocationsManager {
             "Mines of Divan", CrystalsWaypoint.Category.MINES_OF_DIVAN,
             "Goblin Queen's Den", CrystalsWaypoint.Category.GOBLIN_QUEENS_DEN,
             "Lost Precursor City", CrystalsWaypoint.Category.LOST_PRECURSOR_CITY,
-            "Khazad-dûm", CrystalsWaypoint.Category.KHAZADUM,
+            "Khazad-dûm", CrystalsWaypoint.Category.KHAZAD_DUM,
             "Fairy Grotto", CrystalsWaypoint.Category.FAIRY_GROTTO,
             "Dragon's Lair", CrystalsWaypoint.Category.DRAGONS_LAIR,
             "Corleone", CrystalsWaypoint.Category.CORLEONE,
