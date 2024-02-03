@@ -271,6 +271,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.solveWaterboard.@Tooltip": "Click the levers with green boxes to solve the puzzle.",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveBoulder": "Solve Boulder Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveBoulder.@Tooltip": "Draws a line to the chest and highlight button",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveIceFill": "Solve Waterboard Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dungeons.solveSilverfish": "Solve Waterboard Puzzle",
   "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage": "Mimic Message",
   "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
   "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in chat upon killing a mimic for other players' score calculation mods.",
@@ -408,7 +410,7 @@
   "skyblocker.dungeons.secrets.customWaypointNotFound": "§cNo custom waypoint found at X: %d, Y: %d, Z: %d for room %s.",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
-  
+
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the amount of secrets everybody did this run!",
   
@@ -526,7 +528,7 @@
   "skyblocker.partyFinder.yourParty": "Your party",
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
-  
+
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
 
