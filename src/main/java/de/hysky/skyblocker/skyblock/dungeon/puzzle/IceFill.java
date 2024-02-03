@@ -124,127 +124,73 @@ public class IceFill extends DungeonPuzzle {
         Vector2ic start = new Vector2i(iceFillBoard.length - 1, iceFillBoard[0].length / 2);
         int count = iceFillBoard.length * iceFillBoard[0].length - Arrays.stream(iceFillBoard).mapToInt(Booleans::countTrue).sum();
 
-        List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, new ArrayList<>(List.of(start)));
+        List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, new ArrayList<>(List.of(start)), new HashSet<>(List.of(start)));
         if (newPath != null) {
             iceFillPath.clear();
             iceFillPath.addAll(newPath);
         }
     }
 
-    private List<Vector2ic> solveDfs(boolean[][] iceFillBoard, int count, List<Vector2ic> path) {
+    private List<Vector2ic> solveDfs(boolean[][] iceFillBoard, int count, List<Vector2ic> path, Set<Vector2ic> visited) {
         Vector2ic pos = path.get(path.size() - 1);
-        if (pos.x() == 0 && pos.y() == iceFillBoard[0].length / 2 && count == 0) {
-            return path;
+        if (count == 0) {
+            if (pos.x() == 0 && pos.y() == iceFillBoard[0].length / 2) {
+                return path;
+            } else {
+                return null;
+            }
         }
 
         Vector2ic newPos = pos.add(1, 0, new Vector2i());
-        if (newPos.x() < iceFillBoard.length && !iceFillBoard[newPos.x()][newPos.y()] && !path.contains(newPos)) {
+        if (newPos.x() < iceFillBoard.length && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
             path.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path);
+            visited.add(newPos);
+            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
             if (newPath != null) {
                 return newPath;
-            } else {
-                path.remove(path.size() - 1);
             }
+            path.remove(path.size() - 1);
+            visited.remove(newPos);
         }
 
         newPos = pos.add(-1, 0, new Vector2i());
-        if (newPos.x() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !path.contains(newPos)) {
+        if (newPos.x() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
             path.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path);
+            visited.add(newPos);
+            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
             if (newPath != null) {
                 return newPath;
-            } else {
-                path.remove(path.size() - 1);
             }
+            path.remove(path.size() - 1);
+            visited.remove(newPos);
         }
 
         newPos = pos.add(0, 1, new Vector2i());
-        if (newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !path.contains(newPos)) {
+        if (newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
             path.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path);
+            visited.add(newPos);
+            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
             if (newPath != null) {
                 return newPath;
-            } else {
-                path.remove(path.size() - 1);
             }
+            path.remove(path.size() - 1);
+            visited.remove(newPos);
         }
 
         newPos = pos.add(0, -1, new Vector2i());
-        if (newPos.y() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !path.contains(newPos)) {
+        if (newPos.y() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
             path.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path);
+            visited.add(newPos);
+            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
             if (newPath != null) {
                 return newPath;
-            } else {
-                path.remove(path.size() - 1);
             }
+            path.remove(path.size() - 1);
+            visited.remove(newPos);
         }
 
         return null;
     }
-
-    /*
-    void solve(boolean[][] iceFillBoard, List<Vector2ic> iceFillPath) {
-        Vector2ic start = new Vector2i(iceFillBoard.length - 1, iceFillBoard[0].length / 2);
-        int count = iceFillBoard.length * iceFillBoard[0].length - Arrays.stream(iceFillBoard).mapToInt(Booleans::countTrue).sum();
-
-        Vector2ic[] newPath = solveDfs(iceFillBoard, count - 1, new Vector2ic[]{start});
-        if (newPath != null) {
-            iceFillPath.clear();
-            iceFillPath.addAll(Arrays.asList(newPath));
-        }
-    }
-
-    private Vector2ic[] solveDfs(boolean[][] iceFillBoard, int count, Vector2ic[] path) {
-        Vector2ic pos = path[path.length - 1];
-        if (pos.x() == 0 && pos.y() == iceFillBoard[0].length / 2 && count == 0) {
-            return path;
-        }
-
-        Vector2ic newPos = pos.add(1, 0, new Vector2i());
-        if (newPos.x() < iceFillBoard.length && !iceFillBoard[newPos.x()][newPos.y()] && !ArrayUtils.contains(path, newPos)) {
-            Vector2ic[] newPath = Arrays.copyOf(path, path.length + 1);
-            newPath[path.length] = newPos;
-            newPath = solveDfs(iceFillBoard, count - 1, newPath);
-            if (newPath != null) {
-                return newPath;
-            }
-        }
-
-        newPos = pos.add(-1, 0, new Vector2i());
-        if (newPos.x() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !ArrayUtils.contains(path, newPos)) {
-            Vector2ic[] newPath = Arrays.copyOf(path, path.length + 1);
-            newPath[path.length] = newPos;
-            newPath = solveDfs(iceFillBoard, count - 1, newPath);
-            if (newPath != null) {
-                return newPath;
-            }
-        }
-
-        newPos = pos.add(0, 1, new Vector2i());
-        if (newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !ArrayUtils.contains(path, newPos)) {
-            Vector2ic[] newPath = Arrays.copyOf(path, path.length + 1);
-            newPath[path.length] = newPos;
-            newPath = solveDfs(iceFillBoard, count - 1, newPath);
-            if (newPath != null) {
-                return newPath;
-            }
-        }
-
-        newPos = pos.add(0, -1, new Vector2i());
-        if (newPos.y() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !ArrayUtils.contains(path, newPos)) {
-            Vector2ic[] newPath = Arrays.copyOf(path, path.length + 1);
-            newPath[path.length] = newPos;
-            newPath = solveDfs(iceFillBoard, count - 1, newPath);
-            if (newPath != null) {
-                return newPath;
-            }
-        }
-
-        return null;
-    }
-     */
 
     @Override
     public void render(WorldRenderContext context) {
