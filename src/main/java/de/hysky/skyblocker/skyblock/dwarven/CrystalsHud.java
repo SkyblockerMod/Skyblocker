@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -14,6 +13,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class CrystalsHud {
                     || !visible) {
                 return;
             }
-            render(context, SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.x,
+            render(context, tickDelta, SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.x,
                     SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.y);
         });
     }
@@ -54,10 +54,11 @@ public class CrystalsHud {
      * Renders the map to the players UI. renders the background image ({@link CrystalsHud#MAP_TEXTURE}) of the map then if enabled special locations on the map. then finally the player to the map.
      *
      * @param context DrawContext to draw map to
+     * @param tickDelta For interpolating the player's yaw for map marker
      * @param hudX Top left X coordinate of the map
      * @param hudY Top left Y coordinate of the map
      */
-    private static void render(DrawContext context, int hudX, int hudY) {
+    private static void render(DrawContext context, float tickDelta, int hudX, int hudY) {
         float scale = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling;
 
         //make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
@@ -76,15 +77,15 @@ public class CrystalsHud {
 
             for (CrystalsWaypoint waypoint : ActiveWaypoints.values()) {
                 Color waypointColor = waypoint.category.color;
-                Pair<Integer, Integer> renderPos  = transformLocation(waypoint.pos.getX(),waypoint.pos.getZ());
-                int locationSize  = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.locationSize;
+                IntIntPair renderPos = transformLocation(waypoint.pos.getX(),waypoint.pos.getZ());
+                int locationSize = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.locationSize;
 
                 if (Arrays.asList(SMALL_LOCATIONS).contains(waypoint.name.getString())) {//if small location half the location size
                     locationSize = locationSize / 2;
                 }
 
                 //fill square of size locationSize around the coordinates of the location
-                context.fill(renderPos.first() - locationSize / 2, renderPos.second() - locationSize / 2, renderPos.first() + locationSize / 2, renderPos.second() + locationSize / 2, waypointColor.getRGB());
+                context.fill(renderPos.firstInt() - locationSize / 2, renderPos.secondInt() - locationSize / 2, renderPos.firstInt() + locationSize / 2, renderPos.secondInt() + locationSize / 2, waypointColor.getRGB());
             }
         }
 
@@ -96,9 +97,19 @@ public class CrystalsHud {
         //get player location
         double playerX = CLIENT.player.getX();
         double playerZ = CLIENT.player.getZ();
-        Pair<Integer, Integer> renderPos  = transformLocation(playerX,playerZ);
+        float playerRotation = CLIENT.player.getYaw(); //TODO make the transitions more rough?
+        IntIntPair renderPos = transformLocation(playerX,playerZ);
+
+        int renderX = renderPos.firstInt() - 2;
+        int renderY = renderPos.secondInt() - 3;
+
+        //position, scale and rotate the player marker
+        matrices.translate(renderX, renderY, 0f);
+        matrices.scale(0.75f, 0.75f, 0f);
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(playerRotation + 180f), 2, 3, 0);
+
         //draw marker on map
-        context.drawTexture(MAP_ICON, renderPos.first() - 2, renderPos.second() - 2, 58, 2, 4, 4, 128, 128);
+        context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 128, 128);
 
         //todo add direction (can not work out how to rotate)
         matrices.pop();
@@ -111,14 +122,14 @@ public class CrystalsHud {
      * @param z the world Z coordinate
      * @return the pair of values for x and y
      */
-    protected static Pair<Integer, Integer> transformLocation(double x, double z) {
+    protected static IntIntPair transformLocation(double x, double z) {
         //converts an x and z to a location on the map
         int transformedX = (int)((x - 202) / 621 * 62);
         int transformedY = (int)((z - 202) / 621 * 62);
         transformedX = MathHelper.clamp(transformedX, 0, 62);
         transformedY = MathHelper.clamp(transformedY, 0, 62);
 
-        return Pair.of(transformedX,transformedY);
+        return IntIntPair.of(transformedX,transformedY);
     }
 
     /**
