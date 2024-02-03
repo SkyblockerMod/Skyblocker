@@ -106,7 +106,7 @@ public class CrystalsHud {
         //position, scale and rotate the player marker
         matrices.translate(renderX, renderY, 0f);
         matrices.scale(0.75f, 0.75f, 0f);
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(playerRotation + 180f), 2, 3, 0);
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw2Cardinal(playerRotation)), 2, 3, 0);
 
         //draw marker on map
         context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 128, 128);
@@ -130,6 +130,18 @@ public class CrystalsHud {
         transformedY = MathHelper.clamp(transformedY, 0, 62);
 
         return IntIntPair.of(transformedX,transformedY);
+    }
+
+    /**
+     * Converts yaw to the cardinal directions that a player marker can be rotated towards on a map.
+     * The rotations of a marker follow this order: N, NNE, NE, ENE, E, ESE, SE, SSE, S, SSW, SW, WSW, W, WNW, NW, NNW.
+     * <br><br>
+     * Based off code from {@link net.minecraft.client.render.MapRenderer}
+     */
+    private static float yaw2Cardinal(float yaw) {
+        byte clipped = (byte)((yaw += yaw < 0.0 ? -8.0 : 8.0) * 16.0 / 360.0);
+
+        return (clipped * 360f) / 16f;
     }
 
     /**
