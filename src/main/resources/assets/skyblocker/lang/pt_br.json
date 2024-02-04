@@ -201,7 +201,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Texto da cor do Livid",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Guia para puzzle do Puzzler",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Interface da mina dos anões",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Ativado",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style": "Estilo para a interface",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]": "\nClássico: Exibe nome e porcentagem em uma caixa super simples.",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Ativar fundo",

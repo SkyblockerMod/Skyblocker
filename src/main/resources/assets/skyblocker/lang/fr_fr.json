@@ -49,7 +49,6 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Décoder les requêtes de Fetchur",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Résoudre le puzzle de Puzzler",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "ATH mine des nains",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Activé",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Activer l'arrière-plan",
     "text.autoconfig.skyblocker.category.messages": "Messages",
     "text.autoconfig.skyblocker.option.messages.hideAbility": "Cacher le rechargement des capacités",

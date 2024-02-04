@@ -64,7 +64,6 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "解决Fetchur的迷题",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "解决Puzzler的迷题",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "矮人矿井 HUD",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "启用",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "启用背景",
     "text.autoconfig.skyblocker.category.messages": "消息",
     "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "禁用",

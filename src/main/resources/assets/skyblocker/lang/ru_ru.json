@@ -89,7 +89,6 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]": "Упрощенный: Показывает название и процент выполнения.",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]": "\nКлассический: Показывает название и процент выполнения в простом тёмном квадрате.",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Включить Фон",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Включить",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Dwarven HUD (Интерфейс Гномьих Шахт)",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Выглядит лучше, когда включены полоски Skyblocker (здоровья, маны и т.д.)",
     "text.autoconfig.skyblocker.option.locations.barn": "Barn (Ферма)",

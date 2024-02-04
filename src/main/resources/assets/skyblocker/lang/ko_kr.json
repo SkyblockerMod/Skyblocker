@@ -62,7 +62,6 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Fetchur 해결",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Puzzler 퍼즐 해결",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Dwarven HUD",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "활성화됨",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "배경 활성화",
     "text.autoconfig.skyblocker.category.messages": "메시지",
     "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "비활성화됨",
