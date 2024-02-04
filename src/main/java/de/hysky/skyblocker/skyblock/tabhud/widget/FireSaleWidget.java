@@ -40,7 +40,10 @@ public class FireSaleWidget extends Widget {
             return;
         }
 
-        if (event.getString().contains("starting in")) {
+        String text = event.getString();
+
+        //We're keeping both cases as it might have something to do with having multiple fire sales at once vs having only one
+        if (text.contains("starting in") || text.contains("Starts in")) {
             this.addComponent(new IcoTextComponent(Ico.CLOCK, event));
             return;
         }
