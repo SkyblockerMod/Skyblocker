@@ -721,6 +721,11 @@
   "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after joining a new world.",
 
   "skyblocker.waypoints.config": "Waypoints Config",
+  "skyblocker.waypoints.newCategory": "New Waypoint Category",
+  "skyblocker.waypoints.new": "New Waypoint",
+  "skyblocker.waypoints.share": "Share",
+  "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
+  "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
 
   "skyblocker.customItemNames.removed": "§fRemoved this item's custom name.",
   "skyblocker.customItemNames.neverHad": "§fThis item doesn't have a custom name set, but why not add one? ;)",

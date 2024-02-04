@@ -46,6 +46,7 @@ import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
 import de.hysky.skyblocker.skyblock.waypoint.Relics;
+import de.hysky.skyblocker.skyblock.waypoint.Waypoints;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
@@ -112,6 +113,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemTooltip.init();
         AccessoriesHelper.init();
         WikiLookup.init();
+        Waypoints.init();
         FairySouls.init();
         Relics.init();
         MythologicalRitual.init();
