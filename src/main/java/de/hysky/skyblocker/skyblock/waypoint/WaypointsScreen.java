@@ -13,7 +13,7 @@ import net.minecraft.text.Text;
 
 public class WaypointsScreen extends Screen {
     private final Screen parent;
-    final Multimap<String, WaypointCategory> waypoints = MultimapBuilder.hashKeys().arrayListValues().build(Waypoints.waypoints); // TODO deep copy
+    final Multimap<String, WaypointCategory> waypoints = MultimapBuilder.hashKeys().arrayListValues().build();
     private WaypointsListWidget waypointsListWidget;
     private ButtonWidget buttonNew;
     private ButtonWidget buttonDone;
@@ -25,12 +25,13 @@ public class WaypointsScreen extends Screen {
     public WaypointsScreen(Screen parent) {
         super(Text.translatable("skyblocker.waypoints.config"));
         this.parent = parent;
+        Waypoints.waypoints.forEach((island, category) -> waypoints.put(island, new WaypointCategory(category)));
     }
 
     @Override
     protected void init() {
         super.init();
-        waypointsListWidget = addDrawableChild(new WaypointsListWidget(client, this, width, height - 96, 32, 25));
+        waypointsListWidget = addDrawableChild(new WaypointsListWidget(client, this, width, height - 96, 32, 24));
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().marginX(5).marginY(2);
         GridWidget.Adder adder = gridWidget.createAdder(2);

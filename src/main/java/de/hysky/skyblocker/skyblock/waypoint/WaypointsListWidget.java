@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointCategory;
@@ -37,6 +38,16 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         }
     }
 
+    @Override
+    public int getRowWidth() {
+        return super.getRowWidth() + 100;
+    }
+
+    @Override
+    protected int getScrollbarPositionX() {
+        return super.getScrollbarPositionX() + 50;
+    }
+
     Optional<WaypointCategoryEntry> getCategory() {
         if (getSelectedOrNull() instanceof WaypointCategoryEntry category) {
             return Optional.of(category);
@@ -65,21 +76,17 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
     @Override
     protected boolean isSelectedEntry(int index) {
-        return Objects.equals(getSelectedOrNull(), children().get(index));
+        return Debug.debugEnabled() ? Objects.equals(getSelectedOrNull(), children().get(index)) : super.isSelectedEntry(index);
     }
 
     protected static abstract class AbstractWaypointEntry extends ElementListWidget.Entry<AbstractWaypointEntry> {
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            super.mouseClicked(mouseX, mouseY, button);
-            return true;
-        }
     }
 
     protected class WaypointCategoryEntry extends AbstractWaypointEntry {
         private final WaypointCategory category;
         private final List<ClickableWidget> children;
         private final ButtonWidget buttonNewWaypoint;
+        private final ButtonWidget buttonDelete;
 
         public WaypointCategoryEntry() {
             this(new WaypointCategory("New Category", island, new ArrayList<>()));
@@ -94,14 +101,22 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                     entryIndex = WaypointsListWidget.this.children().indexOf(selectedWaypointEntry) + 1;
                 } else {
                     entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
-                    while (entryIndex < children().size() && !(children().get(entryIndex) instanceof WaypointCategoryEntry)) {
+                    while (entryIndex < WaypointsListWidget.this.children().size() && !(WaypointsListWidget.this.children().get(entryIndex) instanceof WaypointCategoryEntry)) {
                         entryIndex++;
                     }
                 }
                 category.waypoints().add(waypointEntry.waypoint);
                 WaypointsListWidget.this.children().add(entryIndex, waypointEntry);
-            }).width(100).build();
-            children = List.of(buttonNewWaypoint);
+            }).width(75).build();
+            buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), buttonDelete -> {
+                int entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
+                while (entryIndex < WaypointsListWidget.this.children().size() && !(WaypointsListWidget.this.children().get(entryIndex) instanceof WaypointCategoryEntry)) {
+                    WaypointsListWidget.this.children().remove(entryIndex);
+                }
+                WaypointsListWidget.this.children().remove(this);
+                waypoints.remove(category);
+            }).width(50).build();
+            children = List.of(buttonNewWaypoint, buttonDelete);
         }
 
         @Override
@@ -116,15 +131,19 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            buttonNewWaypoint.setPosition(x + entryWidth - 30, y + 6);
-            buttonNewWaypoint.render(context, mouseX, mouseY, tickDelta);
             context.drawTextWithShadow(client.textRenderer, category.name(), width / 2 - 150, y + 5, 0xFFFFFF);
+            buttonNewWaypoint.setPosition(x + entryWidth - 133, y);
+            buttonDelete.setPosition(x + entryWidth - 54, y);
+            buttonNewWaypoint.render(context, mouseX, mouseY, tickDelta);
+            buttonDelete.render(context, mouseX, mouseY, tickDelta);
         }
     }
 
     protected class WaypointEntry extends AbstractWaypointEntry {
         private final WaypointCategoryEntry category;
         private final NamedWaypoint waypoint;
+        private final List<ClickableWidget> children;
+        private final ButtonWidget buttonDelete;
 
         public WaypointEntry(WaypointCategoryEntry category) {
             this(category, new NamedWaypoint(BlockPos.ORIGIN, "New Waypoint", new float[]{0f, 1f, 0f}));
@@ -133,24 +152,31 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         public WaypointEntry(WaypointCategoryEntry category, NamedWaypoint waypoint) {
             this.category = category;
             this.waypoint = waypoint;
+            buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
+                category.category.waypoints().remove(waypoint);
+                WaypointsListWidget.this.children().remove(this);
+            }).width(50).build();
+            children = List.of(buttonDelete);
         }
 
         @Override
         public List<? extends Selectable> selectableChildren() {
-            return List.of();
+            return children;
         }
 
         @Override
         public List<? extends Element> children() {
-            return List.of();
+            return children;
         }
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             context.drawTextWithShadow(client.textRenderer, waypoint.getName(), width / 2 - 125, y + 5, 0xFFFFFF);
-            context.drawTextWithShadow(client.textRenderer, waypoint.pos.toString(), width / 2 - 50, y + 5, 0xFFFFFF);
+            context.drawTextWithShadow(client.textRenderer, waypoint.pos.toShortString(), width / 2 - 25, y + 5, 0xFFFFFF);
             float[] colorComponents = waypoint.getColorComponents();
-            context.drawTextWithShadow(client.textRenderer, String.format("#%02X%02X%02X", (int) (colorComponents[0] * 255), (int) (colorComponents[1] * 255), (int) (colorComponents[2] * 255)), width / 2 + 10, y + 5, 0xFFFFFF);
+            context.drawTextWithShadow(client.textRenderer, String.format("#%02X%02X%02X", (int) (colorComponents[0] * 255), (int) (colorComponents[1] * 255), (int) (colorComponents[2] * 255)), width / 2 + 25, y + 5, 0xFFFFFF);
+            buttonDelete.setPosition(x + entryWidth - 54, y);
+            buttonDelete.render(context, mouseX, mouseY, tickDelta);
         }
     }
 }

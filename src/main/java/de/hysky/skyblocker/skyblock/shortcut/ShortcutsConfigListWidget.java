@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -74,6 +75,11 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         for (AbstractShortcutEntry child : children()) {
             child.updatePositions();
         }
+    }
+
+    @Override
+    protected boolean isSelectedEntry(int index) {
+        return Debug.debugEnabled() ? Objects.equals(getSelectedOrNull(), children().get(index)) : super.isSelectedEntry(index);
     }
 
     @Override
