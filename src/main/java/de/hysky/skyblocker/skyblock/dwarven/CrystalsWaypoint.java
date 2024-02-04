@@ -76,7 +76,7 @@ public class CrystalsWaypoint extends Waypoint {
         FAIRY_GROTTO("Fairy Grotto", Color.PINK),
         DRAGONS_LAIR("Dragon's Lair", Color.BLACK),
         CORLEONE("Corleone", Color.WHITE),
-        KING("King", Color.RED),
+        KING_YOLKAR("King Yolkar", Color.RED),
         ODAWA("Odawa", Color.MAGENTA),
         KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY);
 
