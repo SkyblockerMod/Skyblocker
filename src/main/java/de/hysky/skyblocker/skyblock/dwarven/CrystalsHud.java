@@ -19,6 +19,9 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
@@ -77,7 +80,7 @@ public class CrystalsHud {
 
             for (CrystalsWaypoint waypoint : ActiveWaypoints.values()) {
                 Color waypointColor = waypoint.category.color;
-                IntIntPair renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
+                Vector2ic renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
                 int locationSize = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.locationSize;
 
                 if (Arrays.asList(SMALL_LOCATIONS).contains(waypoint.name.getString())) {//if small location half the location size
@@ -85,7 +88,7 @@ public class CrystalsHud {
                 }
 
                 //fill square of size locationSize around the coordinates of the location
-                context.fill(renderPos.firstInt() - locationSize / 2, renderPos.secondInt() - locationSize / 2, renderPos.firstInt() + locationSize / 2, renderPos.secondInt() + locationSize / 2, waypointColor.getRGB());
+                context.fill(renderPos.x() - locationSize / 2, renderPos.y() - locationSize / 2, renderPos.x() + locationSize / 2, renderPos.y() + locationSize / 2, waypointColor.getRGB());
             }
         }
 
@@ -98,10 +101,10 @@ public class CrystalsHud {
         double playerX = CLIENT.player.getX();
         double playerZ = CLIENT.player.getZ();
         float playerRotation = CLIENT.player.getYaw(); //TODO make the transitions more rough?
-        IntIntPair renderPos = transformLocation(playerX,playerZ);
+        Vector2ic renderPos = transformLocation(playerX, playerZ);
 
-        int renderX = renderPos.firstInt() - 2;
-        int renderY = renderPos.secondInt() - 3;
+        int renderX = renderPos.x() - 2;
+        int renderY = renderPos.y() - 3;
 
         //position, scale and rotate the player marker
         matrices.translate(renderX, renderY, 0f);
@@ -120,16 +123,16 @@ public class CrystalsHud {
      *
      * @param x the world X coordinate
      * @param z the world Z coordinate
-     * @return the pair of values for x and y
+     * @return a vector representing the x and y values
      */
-    protected static IntIntPair transformLocation(double x, double z) {
+    protected static Vector2ic transformLocation(double x, double z) {
         //converts an x and z to a location on the map
         int transformedX = (int) ((x - 202) / 621 * 62);
         int transformedY = (int) ((z - 202) / 621 * 62);
         transformedX = MathHelper.clamp(transformedX, 0, 62);
         transformedY = MathHelper.clamp(transformedY, 0, 62);
 
-        return IntIntPair.of(transformedX, transformedY);
+        return new Vector2i(transformedX, transformedY);
     }
 
     /**
