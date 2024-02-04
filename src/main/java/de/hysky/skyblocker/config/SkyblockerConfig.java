@@ -618,6 +618,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public SpidersDen spidersDen = new SpidersDen();
+
+		@SerialEntry
+		public Garden garden = new Garden();
 	}
 
 	public static class Dungeons {
@@ -1082,6 +1085,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean hideMana = false;
+
+		@SerialEntry
+		public ChatFilterResult hideDicer = ChatFilterResult.PASS;
 	}
 
 	public enum Info {
@@ -1091,5 +1097,10 @@ public class SkyblockerConfig {
 		public String toString() {
 			return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
 		}
+	}
+
+	public static class Garden {
+		@SerialEntry
+		public boolean dicerTitlePrevent = true;
 	}
 }

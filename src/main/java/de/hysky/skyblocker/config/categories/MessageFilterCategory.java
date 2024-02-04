@@ -118,6 +118,14 @@ public class MessageFilterCategory {
 								newValue -> config.messages.hideDeath = newValue)
 						.controller(ConfigUtils::createEnumCyclingListController)
 						.build())
+				.option(Option.<ChatFilterResult>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.hideDicer"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.messages.hideDicer.@Tooltip")))
+						.binding(defaults.messages.hideDicer,
+								() -> config.messages.hideDicer,
+								newValue -> config.messages.hideDicer = newValue)
+						.controller(ConfigUtils::createEnumCyclingListController)
+						.build())
 				.build();
 	}
 }
