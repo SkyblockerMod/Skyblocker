@@ -32,7 +32,7 @@ public class CrystalsWaypoint extends Waypoint {
     final Text name;
     private final Vec3d centerPos;
 
-    CrystalsWaypoint( Category category, Text name, BlockPos pos) {
+    CrystalsWaypoint(Category category, Text name, BlockPos pos) {
         super(pos, TYPE_SUPPLIER, category.colorComponents);
         this.category = category;
         this.name = name;
@@ -64,14 +64,12 @@ public class CrystalsWaypoint extends Waypoint {
     public void render(WorldRenderContext context) {
         super.render(context);
 
-
         Vec3d posUp = centerPos.add(0, 1, 0);
         RenderHelper.renderText(context, name, posUp, true);
         double distance = context.camera().getPos().distanceTo(centerPos);
         RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
 
     }
-
 
     /**
      * enum for the different waypoints used int the crystals hud each with a {@link Category#name} and associated {@link Category#color}
@@ -89,18 +87,15 @@ public class CrystalsWaypoint extends Waypoint {
         DEFAULT("Default", Color.BLACK);
 
 
-        public final Color color;
         private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
+        public final Color color;
         private final String name;
-
         private final float[] colorComponents;
 
         Category(String name,Color color) {
             this.name = name;
             this.color = color;
-            colorComponents = color.getColorComponents(null);
-
-
+            this.colorComponents = color.getColorComponents(null);
         }
 
         static Category get(JsonObject waypointJson) {
@@ -116,6 +111,5 @@ public class CrystalsWaypoint extends Waypoint {
         public String asString() {
             return name;
         }
-
     }
 }

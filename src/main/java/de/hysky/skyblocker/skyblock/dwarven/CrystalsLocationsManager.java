@@ -119,7 +119,7 @@ public class CrystalsLocationsManager {
             .then(literal("crystalWaypoints")
                 .then(argument("pos", BlockPosArgumentType.blockPos())
                         .then(argument("place", StringArgumentType.greedyString())
-                                .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"),context.getArgument("pos", PosArgument.class)))
+                                .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
                         )
                 )
             )

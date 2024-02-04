@@ -73,11 +73,11 @@ public class CrystalsHud {
 
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.showLocations) {
-            Map<String,CrystalsWaypoint> ActiveWaypoints=  CrystalsLocationsManager.activeWaypoints;
+            Map<String,CrystalsWaypoint> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
 
             for (CrystalsWaypoint waypoint : ActiveWaypoints.values()) {
                 Color waypointColor = waypoint.category.color;
-                IntIntPair renderPos = transformLocation(waypoint.pos.getX(),waypoint.pos.getZ());
+                IntIntPair renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
                 int locationSize = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.locationSize;
 
                 if (Arrays.asList(SMALL_LOCATIONS).contains(waypoint.name.getString())) {//if small location half the location size
@@ -124,12 +124,12 @@ public class CrystalsHud {
      */
     protected static IntIntPair transformLocation(double x, double z) {
         //converts an x and z to a location on the map
-        int transformedX = (int)((x - 202) / 621 * 62);
-        int transformedY = (int)((z - 202) / 621 * 62);
+        int transformedX = (int) ((x - 202) / 621 * 62);
+        int transformedY = (int) ((z - 202) / 621 * 62);
         transformedX = MathHelper.clamp(transformedX, 0, 62);
         transformedY = MathHelper.clamp(transformedY, 0, 62);
 
-        return IntIntPair.of(transformedX,transformedY);
+        return IntIntPair.of(transformedX, transformedY);
     }
 
     /**
@@ -140,7 +140,7 @@ public class CrystalsHud {
      */
     private static float yaw2Cardinal(float yaw) {
         yaw += + 180; //flip direction
-        byte clipped = (byte)((yaw += yaw < 0.0 ? -8.0 : 8.0) * 16.0 / 360.0);
+        byte clipped = (byte) ((yaw += yaw < 0.0 ? -8.0 : 8.0) * 16.0 / 360.0);
 
         return (clipped * 360f) / 16f;
     }
