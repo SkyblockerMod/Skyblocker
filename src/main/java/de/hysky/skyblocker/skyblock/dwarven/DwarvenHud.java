@@ -41,6 +41,7 @@ public class DwarvenHud {
                     "(?<!Lucky )Raffle",
                     "Lucky Raffle",
                     "2x Mithril Powder Collector",
+                    "First Event",
                     "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector",
                     "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
                     "Chest Looter").map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
