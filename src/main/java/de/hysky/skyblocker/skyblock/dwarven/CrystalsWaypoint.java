@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -13,11 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.function.Predicate;
@@ -25,7 +19,6 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 public class CrystalsWaypoint extends Waypoint {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CrystalsWaypoint.class);
     private static final Supplier<SkyblockerConfig.Waypoints> CONFIG = () -> SkyblockerConfigManager.get().general.waypoints;
     private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final Category category;
@@ -74,7 +67,7 @@ public class CrystalsWaypoint extends Waypoint {
     /**
      * enum for the different waypoints used int the crystals hud each with a {@link Category#name} and associated {@link Category#color}
      */
-    enum Category implements StringIdentifiable {
+    enum Category {
         JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor())),
         MINES_OF_DIVAN("Mines of Divan", Color.GREEN),
         GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor())),
@@ -84,10 +77,9 @@ public class CrystalsWaypoint extends Waypoint {
         DRAGONS_LAIR("Dragon's Lair", Color.BLACK),
         CORLEONE("Corleone", Color.WHITE),
         KING("King", Color.RED),
-        DEFAULT("Default", Color.BLACK);
+        ODAWA("Odawa", Color.MAGENTA),
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY);
 
-
-        private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         public final Color color;
         private final String name;
         private final float[] colorComponents;
@@ -98,17 +90,8 @@ public class CrystalsWaypoint extends Waypoint {
             this.colorComponents = color.getColorComponents(null);
         }
 
-        static Category get(JsonObject waypointJson) {
-            return CODEC.parse(JsonOps.INSTANCE, waypointJson.get("category")).resultOrPartial(LOGGER::error).orElse(Category.DEFAULT);
-        }
-
         @Override
         public String toString() {
-            return name;
-        }
-
-        @Override
-        public String asString() {
             return name;
         }
     }

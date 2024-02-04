@@ -26,7 +26,7 @@ public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
     private static final Identifier MAP_ICON = new Identifier("textures/map/map_icons.png");
-    private static final String[] SMALL_LOCATIONS = { "Fairy Grotto", "King", "Corleone" };
+    private static final String[] SMALL_LOCATIONS = { "Fairy Grotto", "King", "Corleone", "Odawa", "Key Guardian" };
 
     public static boolean visible = false;
 

@@ -29,8 +29,10 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
@@ -45,17 +47,7 @@ public class CrystalsLocationsManager {
     /**
      * A look-up table to convert between location names and waypoint in the {@link CrystalsWaypoint.Category} values.
      */
-    protected static final Map<String, CrystalsWaypoint.Category> WAYPOINT_LOCATIONS = Map.of(
-            "Jungle Temple", CrystalsWaypoint.Category.JUNGLE_TEMPLE,
-            "Mines of Divan", CrystalsWaypoint.Category.MINES_OF_DIVAN,
-            "Goblin Queen's Den", CrystalsWaypoint.Category.GOBLIN_QUEENS_DEN,
-            "Lost Precursor City", CrystalsWaypoint.Category.LOST_PRECURSOR_CITY,
-            "Khazad-dûm", CrystalsWaypoint.Category.KHAZAD_DUM,
-            "Fairy Grotto", CrystalsWaypoint.Category.FAIRY_GROTTO,
-            "Dragon's Lair", CrystalsWaypoint.Category.DRAGONS_LAIR,
-            "Corleone", CrystalsWaypoint.Category.CORLEONE,
-            "King", CrystalsWaypoint.Category.KING
-            );
+    protected static final Map<String, CrystalsWaypoint.Category> WAYPOINT_LOCATIONS = Arrays.stream(CrystalsWaypoint.Category.values()).collect(Collectors.toMap(CrystalsWaypoint.Category::toString, Function.identity()));
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 
     protected static Map<String, CrystalsWaypoint> activeWaypoints = new HashMap<>();
