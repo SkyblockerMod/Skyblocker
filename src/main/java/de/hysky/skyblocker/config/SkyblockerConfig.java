@@ -873,11 +873,20 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public DwarvenHud dwarvenHud = new DwarvenHud();
+
+		@SerialEntry
+		public CrystalsHud crystalsHud = new CrystalsHud();
+
+		@SerialEntry
+		public CrystalsWaypoints crystalsWaypoints = new CrystalsWaypoints();
 	}
 
 	public static class DwarvenHud {
 		@SerialEntry
-		public boolean enabled = true;
+		public boolean enabledCommissions = true;
+
+		@SerialEntry
+		public boolean enabledPowder = true;
 
 		@SerialEntry
 		public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
@@ -890,6 +899,40 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int y = 10;
+
+		@SerialEntry
+		public int powderX = 10;
+
+		@SerialEntry
+		public int powderY = 70;
+	}
+
+	public static class CrystalsHud {
+		@SerialEntry
+		public boolean enabled = true;
+
+		@SerialEntry
+		public boolean showLocations = true;
+
+		@SerialEntry
+		public int locationSize = 8;
+
+		@SerialEntry
+		public int x = 10;
+
+		@SerialEntry
+		public int y = 130;
+
+		@SerialEntry
+		public float mapScaling = 1f;
+	}
+
+	public static class CrystalsWaypoints {
+		@SerialEntry
+		public boolean enabled = true;
+
+		@SerialEntry
+		public boolean findInChat = true;
 	}
 
 	public enum DwarvenHudStyle {

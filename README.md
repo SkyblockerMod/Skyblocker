@@ -63,8 +63,15 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Dwarven Mines Solver:**
   - *Fetchur*
   - *Puzzler*
-- **Commission HUD**
+- **Commission/Powder HUD**
   - *Provides information on Dwarven Mines quests*
+  - *Provides information on powder amounts*
+- **Crystal Hollows Waypoints**
+  - *show waypoints for special location*
+  - *find locations in chat messages*
+- **Crystal Hollows Map HUD**
+  - *Shows players location in crystal hollows*
+  - *Shows important waypoints in crystal hollows*
 
 ### Rift Features:
 - **Mirrorverse Waypoints**

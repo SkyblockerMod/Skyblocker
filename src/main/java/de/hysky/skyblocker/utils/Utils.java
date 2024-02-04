@@ -36,6 +36,9 @@ public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
     private static final String DUNGEONS_LOCATION = "dungeon";
+    private static final String CRYSTAL_HOLLOWS_LOCATION = "crystal_hollows";
+    private static final String DWARVEN_MINES_LOCATION = "mining_3";
+
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
@@ -84,6 +87,14 @@ public class Utils {
 
     public static boolean isInDungeons() {
         return getLocationRaw().equals(DUNGEONS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    public static boolean isInCrystalHollows() {
+        return getLocationRaw().equals(CRYSTAL_HOLLOWS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    public static boolean isInDwarvenMines() {
+        return getLocationRaw().equals(DWARVEN_MINES_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInTheRift() {
