@@ -39,7 +39,7 @@
     "minecraft": "~1.20.3"
   },
   "conflicts": {
-    "immediatelyfast": "<=1.1.26+1.20.1"
+    "immediatelyfast": "<=1.2.10+1.20.4"
   },
   "custom": {
     "modmenu": {
