@@ -78,6 +78,13 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.flag(OptionFlag.ASSET_RELOAD)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.visitorHelper"))
+						.binding(defaults.general.visitorHelper,
+								() -> config.general.visitorHelper,
+								newValue -> config.general.visitorHelper = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
