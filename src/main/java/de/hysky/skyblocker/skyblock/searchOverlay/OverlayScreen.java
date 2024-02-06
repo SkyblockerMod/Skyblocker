@@ -93,7 +93,6 @@ public class OverlayScreen extends Screen {
         addDrawableChild(finishedButton);
 
         this.setInitialFocus(searchField);
-
     }
 
     @Override
@@ -103,8 +102,6 @@ public class OverlayScreen extends Screen {
         if(historyButtons.length > 0  && historyButtons[0] != null){
             context.drawText(textRenderer, "History:", historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true); //todo load form en_us and rowHeight
         }
-
-
     }
 
     @Override

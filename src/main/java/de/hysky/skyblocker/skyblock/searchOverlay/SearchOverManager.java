@@ -58,6 +58,7 @@ public class SearchOverManager {
                     JsonObject product = entry.getValue().getAsJsonObject();
                     String name = itemNameLookup.get(product.get("product_id").getAsString()); //todo work with enchants
                     if (name != null){
+                        name = trimItemColor(name);
                         bazaarItems.add(name);
                     }
 
@@ -72,12 +73,22 @@ public class SearchOverManager {
         //get auction items
         //items not in bazaar? todo work out how to get this  (e.g. there are no pets) (there is a can auction flag)
         for (String itemName : itemNameLookup.values()){
-            if (!bazaarItems.contains(itemName)){
-                auctionItems.add(itemName);
+            String cleanName = trimItemColor(itemName);
+            if (!bazaarItems.contains(cleanName)){
+                auctionItems.add(cleanName);
             }
         }
 
     }
+    private static String trimItemColor(String string){
+        if (string.isEmpty()) return string;
+        if (string.startsWith("§") ){
+            return string.substring(2);
+        }else {
+            return string;
+        }
+    }
+
 
     public static void updateSign(SignBlockEntity sign, boolean front, boolean isAuction) {
         visible= true;
@@ -119,7 +130,6 @@ public class SearchOverManager {
             }
         }
         return  null;
-
     }
     private static void saveHistory(){
         //save to history
