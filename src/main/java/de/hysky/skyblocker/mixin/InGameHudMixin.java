@@ -51,16 +51,11 @@ public abstract class InGameHudMixin {
     private final FancyStatusBars statusBars = new FancyStatusBars();
 
     @Shadow
-    private int scaledHeight;
-    @Shadow
-    private int scaledWidth;
-
-    @Shadow
     @Final
     private MinecraftClient client;
 
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V", ordinal = 0))
-    public void skyblocker$renderHotbarItemLockOrRarityBg(float tickDelta, DrawContext context, CallbackInfo ci, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
+    public void skyblocker$renderHotbarItemLockOrRarityBg(CallbackInfo ci, @Local(argsOnly = true) DrawContext context, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
         if (Utils.isOnSkyblock()) {
             // slot lock
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(player.getInventory().main.get(index), context, x, y);
@@ -88,7 +83,7 @@ public abstract class InGameHudMixin {
     private void skyblocker$renderStatusBars(DrawContext context, CallbackInfo ci) {
         if (!Utils.isOnSkyblock())
             return;
-        if (statusBars.render(context, scaledWidth, scaledHeight))
+        if (statusBars.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight()))
             ci.cancel();
 
         if (Utils.isInDungeons() && DungeonScore.isDungeonStarted()) {

@@ -26,7 +26,7 @@ public class CustomItemNames {
 				.then(ClientCommandManager.literal("custom")
 						.then(ClientCommandManager.literal("renameItem")
 								.executes(context -> renameItem(context.getSource(), null))
-								.then(ClientCommandManager.argument("textComponent", TextArgumentType.text())
+								.then(ClientCommandManager.argument("textComponent", TextArgumentType.text(registryAccess))
 										.executes(context -> renameItem(context.getSource(), context.getArgument("textComponent", Text.class)))))));
 	}
 

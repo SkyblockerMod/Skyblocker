@@ -202,8 +202,8 @@ public class ItemTooltip {
             String uuid = ItemUtils.getItemUuid(stack);
             boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
 
-            if (!hasCustomDye && stack.getItem() instanceof DyeableItem item && item.hasColor(stack)) {
-                String colorHex = String.format("%06X", item.getColor(stack));
+            if (!hasCustomDye && DyeableItem.hasColor(stack)) {
+                String colorHex = String.format("%06X", DyeableItem.getColor(stack));
                 String expectedHex = ExoticTooltip.getExpectedHex(internalID);
 
                 boolean correctLine = false;
