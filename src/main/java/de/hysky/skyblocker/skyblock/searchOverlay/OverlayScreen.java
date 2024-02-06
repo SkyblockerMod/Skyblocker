@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.searchOverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -10,6 +9,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
 
@@ -92,6 +92,8 @@ public class OverlayScreen extends Screen {
         }
         addDrawableChild(finishedButton);
 
+        this.setInitialFocus(searchField);
+
     }
 
     @Override
@@ -101,6 +103,7 @@ public class OverlayScreen extends Screen {
         if(historyButtons.length > 0  && historyButtons[0] != null){
             context.drawText(textRenderer, "History:", historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true); //todo load form en_us and rowHeight
         }
+
 
     }
 
@@ -132,5 +135,17 @@ public class OverlayScreen extends Screen {
             }
 
         }
+
     }
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        super.keyPressed(keyCode,scanCode,modifiers);
+        //if enter key pressed and search box selected close
+        if (keyCode == GLFW.GLFW_KEY_ENTER && searchField.isActive()){
+            close();
+            return true;
+        }
+        return false;
+    }
+
 }
