@@ -4,19 +4,33 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Http;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.http.HttpHeaders;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SearchOverManager {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+
+    private static final String THREE_DAY_AVERAGE = "https://moulberry.codes/auction_averages_lbin/3day.json";
+    private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("ENCHANTMENT_(\\D*)_(\\d+)");
+    private static final String[] ROMAN_NUMERALS = new String[]{
+            "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
+            "XII", "XIII", "XIV", "XV", "XVI", "XVII","XVIII", "XIX", "XX"
+    };
 
     public static boolean visible = false;
     public static String search = "";
@@ -27,8 +41,8 @@ public class SearchOverManager {
 
 
     public static Map<String,String> itemNameLookup = new HashMap<>();
-    public static List<String> bazaarItems =new ArrayList<>();
-    public static List<String> auctionItems =new ArrayList<>();
+    public static HashSet<String> bazaarItems =new HashSet<>();
+    public static HashSet<String> auctionItems =new HashSet<>();
 
     public static String[] suggestionsArray = {};
     public static void init() {
@@ -56,29 +70,57 @@ public class SearchOverManager {
             for (Map.Entry<String, JsonElement> entry : products.entrySet()) {
                 if (entry.getValue().isJsonObject()) {
                     JsonObject product = entry.getValue().getAsJsonObject();
-                    String name = itemNameLookup.get(product.get("product_id").getAsString()); //todo work with enchants
-                    if (name != null){
-                        name = trimItemColor(name);
-                        bazaarItems.add(name);
+                    String id = product.get("product_id").getAsString();
+                    Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
+                    if (matcher.matches()) {//format enchantments
+                        String name = matcher.group(1).replace("_", " ");
+                        name = capitalizeFully(name);
+                        int enchantLevel = Integer.parseInt(matcher.group(2));
+                        String level = "";
+                        if (enchantLevel > 0){
+                            level = ROMAN_NUMERALS[enchantLevel-1];
+                        }
+                        bazaarItems.add(name +  " " + level);
+                    }else{//look up id for name
+                        String name = itemNameLookup.get(product.get("product_id").getAsString());
+                        if (name != null){
+                            name = trimItemColor(name);
+                            bazaarItems.add(name);
+                        }
                     }
-
                 }
 
             }
 
 
         } catch (Exception e) {
-           //can not get items for bazaar search
+           //can not get items for bazaar search //todo log
         }
         //get auction items
-        //items not in bazaar? todo work out how to get this  (e.g. there are no pets) (there is a can auction flag)
-        for (String itemName : itemNameLookup.values()){
-            String cleanName = trimItemColor(itemName);
-            if (!bazaarItems.contains(cleanName)){
-                auctionItems.add(cleanName);
+        try {
+            JsonObject AuctionData = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(THREE_DAY_AVERAGE), JsonObject.class);
+            for (Map.Entry<String, JsonElement> entry : AuctionData.entrySet()) {
+                String name = itemNameLookup.get(entry.getKey());
+                if (name != null){
+                    name = trimItemColor(name);
+                    auctionItems.add(name);
+                }
             }
+
+
+        } catch (Exception e) {
+           //can not find ah todo logger
         }
 
+    }
+    private static String capitalizeFully(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+
+        return Arrays.stream(str.split("\\s+"))
+                .map(t -> t.substring(0, 1).toUpperCase() + t.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
     }
     private static String trimItemColor(String string){
         if (string.isEmpty()) return string;
