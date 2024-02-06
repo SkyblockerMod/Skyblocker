@@ -38,6 +38,7 @@ public class OverlayScreen extends Screen {
 
         // Search field
         this.searchField = new TextFieldWidget(textRenderer,   startX,  startY, rowWidth - rowHeight, rowHeight, Text.literal("Search..."));
+        searchField.setText(SearchOverManager.search);
         searchField.setChangedListener(SearchOverManager::updateSearch);
         searchField.setMaxLength(30);
 

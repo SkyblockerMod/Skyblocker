@@ -132,6 +132,7 @@
   "text.autoconfig.skyblocker.option.general.flameOverlay.flameOpacity": "Flame Opacity",
   "text.autoconfig.skyblocker.option.general.searchOverlay": "Search Overlay",
   "text.autoconfig.skyblocker.option.general.searchOverlay.enableBazaar": "Enable For Bazaar",
+  "text.autoconfig.skyblocker.option.general.searchOverlay.keepPreviousSearches": "Keep Previous Searches",
   "text.autoconfig.skyblocker.option.general.searchOverlay.enableAuctionHouse": "Enable For Auction House",
   "text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions": "Maximum Suggestions",
   "text.autoconfig.skyblocker.option.general.searchOverlay.historyLength": "Saved Search History Length",

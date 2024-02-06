@@ -95,7 +95,16 @@ public class SearchOverManager {
         SignFront = front;
         Sign = sign;
         IsAuction = isAuction;
-        search = ""; //todo load form sign data if needed
+        if (SkyblockerConfigManager.get().general.searchOverlay.keepPreviousSearches){
+            Text[] messages = Sign.getText(SignFront).getMessages(CLIENT.shouldFilterText());
+            search = messages[0].getString();
+            if(!messages[1].getString().isEmpty()){
+                search += " " + messages[1].getString();
+            }
+        }else{
+            search = "";
+        }
+
         suggestionsArray = new String[]{};
 
     }

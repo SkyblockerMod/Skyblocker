@@ -422,6 +422,9 @@ public class SkyblockerConfig {
 		public boolean enableAuctionHouse = true;
 
 		@SerialEntry
+		public boolean keepPreviousSearches = false;
+
+		@SerialEntry
 		public int maxSuggestions = 3;
 
 		@SerialEntry

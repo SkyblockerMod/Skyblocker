@@ -660,6 +660,13 @@ public class GeneralCategory {
 										newValue -> config.general.searchOverlay.enableAuctionHouse = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.keepPreviousSearches"))
+								.binding(defaults.general.searchOverlay.keepPreviousSearches,
+										() -> config.general.searchOverlay.keepPreviousSearches,
+										newValue -> config.general.searchOverlay.keepPreviousSearches = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions"))
 								.binding(defaults.general.searchOverlay.maxSuggestions,
