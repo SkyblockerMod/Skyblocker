@@ -73,6 +73,8 @@ public class SearchOverManager {
                 if (entry.getValue().isJsonObject()) {
                     JsonObject product = entry.getValue().getAsJsonObject();
                     String id = product.get("product_id").getAsString();
+                    int sellVolume = product.get("quick_status").getAsJsonObject().get("sellVolume").getAsInt();
+                    if (sellVolume == 0) continue; //do not add items that do not sell e.g. they are not actual in the bazaar
                     Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
                     if (matcher.matches()) {//format enchantments
                         String name = matcher.group(1).replace("_", " ");
