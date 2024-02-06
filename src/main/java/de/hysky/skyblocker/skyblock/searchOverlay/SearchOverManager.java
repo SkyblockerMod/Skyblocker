@@ -144,7 +144,10 @@ public class SearchOverManager {
             Text[] messages = Sign.getText(SignFront).getMessages(CLIENT.shouldFilterText());
             search = messages[0].getString();
             if(!messages[1].getString().isEmpty()){
-                search += " " + messages[1].getString();
+                if (!search.endsWith(" ")){
+                    search += " ";
+                }
+                 search += messages[1].getString();
             }
         }else{
             search = "";
