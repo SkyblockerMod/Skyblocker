@@ -20,6 +20,7 @@ public class Debug {
 
 	public static void init() {
 		if (debugEnabled()) {
+			SnapshotDebug.init();
 			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 					.then(dumpPlayersCommand())
 					.then(ItemUtils.dumpHeldItemNbtCommand())

@@ -86,7 +86,7 @@ public class MuseumItemCache {
 						for (Map.Entry<String, JsonElement> donatedSet : donatedSets.entrySet()) {
 							//Item is plural here because the nbt is a list
 							String itemsData = donatedSet.getValue().getAsJsonObject().get("items").getAsJsonObject().get("data").getAsString();
-							NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData)), NbtTagSizeTracker.ofUnlimitedBytes()).getList("i", NbtElement.COMPOUND_TYPE);
+							NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData)), NbtSizeTracker.ofUnlimitedBytes()).getList("i", NbtElement.COMPOUND_TYPE);
 
 							for (int i = 0; i < items.size(); i++) {
 								NbtCompound tag = items.getCompound(i).getCompound("tag");

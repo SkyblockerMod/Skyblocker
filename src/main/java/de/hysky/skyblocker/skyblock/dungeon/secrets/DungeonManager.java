@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.PosArgument;
@@ -233,8 +234,8 @@ public class DungeonManager {
                 .then(literal("markAsMissing").then(markSecretsCommand(false)))
                 .then(literal("getRelativePos").executes(DungeonManager::getRelativePos))
                 .then(literal("getRelativeTargetPos").executes(DungeonManager::getRelativeTargetPos))
-                .then(literal("addWaypoint").then(addCustomWaypointCommand(false)))
-                .then(literal("addWaypointRelatively").then(addCustomWaypointCommand(true)))
+                .then(literal("addWaypoint").then(addCustomWaypointCommand(false, registryAccess)))
+                .then(literal("addWaypointRelatively").then(addCustomWaypointCommand(true, registryAccess)))
                 .then(literal("removeWaypoint").then(removeCustomWaypointCommand(false)))
                 .then(literal("removeWaypointRelatively").then(removeCustomWaypointCommand(true)))
         ))));
@@ -374,11 +375,11 @@ public class DungeonManager {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static RequiredArgumentBuilder<FabricClientCommandSource, PosArgument> addCustomWaypointCommand(boolean relative) {
+    private static RequiredArgumentBuilder<FabricClientCommandSource, PosArgument> addCustomWaypointCommand(boolean relative, CommandRegistryAccess registryAccess) {
         return argument("pos", BlockPosArgumentType.blockPos())
                 .then(argument("secretIndex", IntegerArgumentType.integer())
                         .then(argument("category", SecretWaypoint.Category.CategoryArgumentType.category())
-                                .then(argument("name", TextArgumentType.text()).executes(context -> {
+                                .then(argument("name", TextArgumentType.text(registryAccess)).executes(context -> {
                                     // TODO Less hacky way with custom ClientBlockPosArgumentType
                                     BlockPos pos = context.getArgument("pos", PosArgument.class).toAbsoluteBlockPos(new ServerCommandSource(null, context.getSource().getPosition(), context.getSource().getRotation(), null, 0, null, null, null, null));
                                     return relative ? addCustomWaypointRelative(context, pos) : addCustomWaypoint(context, pos);

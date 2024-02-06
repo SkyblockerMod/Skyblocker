@@ -8,7 +8,6 @@ import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -54,7 +53,7 @@ public class TicTacToe extends DungeonPuzzle {
 				char[][] board = new char[3][3];
 
 				for (ItemFrameEntity itemFrame : itemFramesThatHoldMaps) {
-					MapState mapState = client.world.getMapState(FilledMapItem.getMapName(itemFrame.getMapId().getAsInt()));
+					MapState mapState = client.world.getMapState(itemFrame.getMapId());
 
 					if (mapState == null) continue;
 

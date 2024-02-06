@@ -18,7 +18,7 @@ import java.util.Optional;
 public class ArmorTrimMixin {
 
 	@ModifyReturnValue(method = "getTrim", at = @At("RETURN"))
-	private static Optional<ArmorTrim> skyblocker$customArmorTrims(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArmorTrim> original, @Local ItemStack stack) {
+	private static Optional<ArmorTrim> skyblocker$customArmorTrims(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArmorTrim> original, @Local(argsOnly = true) ItemStack stack) {
 		if (Utils.isOnSkyblock()) {
 			Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;
 			String itemUuid = ItemUtils.getItemUuid(stack);
