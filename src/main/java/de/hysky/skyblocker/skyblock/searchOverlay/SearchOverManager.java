@@ -1,0 +1,147 @@
+package de.hysky.skyblocker.skyblock.searchOverlay;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Http;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
+import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+
+public class SearchOverManager {
+
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+
+    public static boolean visible = false;
+    public static String search = "";
+    private static @Nullable SignBlockEntity Sign = null;
+    private static boolean SignFront = true;
+
+    private static boolean IsAuction;
+
+
+    public static Map<String,String> itemNameLookup = new HashMap<>();
+    public static List<String> bazaarItems =new ArrayList<>();
+    public static List<String> auctionItems =new ArrayList<>();
+
+    public static String[] suggestionsArray = {};
+    public static void init() {
+        //get bazaar items
+        System.out.println("is there somethin");
+        try {
+            String response = Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/items");
+            System.out.println("response:");
+            JsonArray items = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("items");
+            System.out.println("jsonItem:");
+            for (JsonElement entry : items) {
+                if (entry.isJsonObject()) {
+                    JsonObject item = entry.getAsJsonObject();
+                    String itemId = item.get("id").getAsString();
+                    String itemName = item.get("name").getAsString();
+                    itemNameLookup.put(itemId,itemName);
+                }
+
+            }
+        } catch (Exception e) {
+            //can not get items skyblock items
+        }
+        try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/bazaar", "")) {
+            JsonObject products = JsonParser.parseString(response.content()).getAsJsonObject().get("products").getAsJsonObject();
+            for (Map.Entry<String, JsonElement> entry : products.entrySet()) {
+                if (entry.getValue().isJsonObject()) {
+                    JsonObject product = entry.getValue().getAsJsonObject();
+                    String name = itemNameLookup.get(product.get("product_id").getAsString()); //todo work with enchants
+                    if (name != null){
+                        bazaarItems.add(name);
+                    }
+
+                }
+
+            }
+
+
+        } catch (Exception e) {
+           //can not get items for bazaar search
+        }
+        //get auction items
+        //items not in bazaar? todo work out how to get this  (e.g. there are no pets) (there is a can auction flag)
+        for (String itemName : itemNameLookup.values()){
+            if (!bazaarItems.contains(itemName)){
+                auctionItems.add(itemName);
+            }
+        }
+
+    }
+
+    public static void updateSign(SignBlockEntity sign, boolean front, boolean isAuction) {
+        visible= true;
+        SignFront = front;
+        Sign = sign;
+        IsAuction = isAuction;
+        search = ""; //todo load form sign data if needed
+        suggestionsArray = new String[]{};
+
+    }
+    protected static void updateSearch(String newValue) {
+        search = newValue;
+        //update the suggestion values
+        int totalSuggestions = SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions;
+        suggestionsArray = new String[totalSuggestions];
+        if (newValue.isBlank() || totalSuggestions == 0) return; //do not search for empty value
+        if (IsAuction){
+            suggestionsArray = auctionItems.stream().filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toList().toArray(suggestionsArray);
+        }else {
+            suggestionsArray = bazaarItems.stream().filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toList().toArray(suggestionsArray);
+        }
+    }
+    protected  static String getSuggestion(int index){
+         if (suggestionsArray.length> index && suggestionsArray[index] != null ){
+            return suggestionsArray[index];
+        }else{//there are no suggestions yet
+            return "";
+        }
+    }
+
+    protected static void pushSearch() {
+        //splits text into 2 lines max = 30 chars
+        StringBuilder line0 = new StringBuilder();
+        String line1;
+        if (search.length() <= 15){
+            line0 = new StringBuilder(search);
+            line1 = "";
+        }else {
+            String[] words = search.split(" ");
+            for (String word : words){
+                if (line0.isEmpty()) {
+                    line0 = new StringBuilder(word);
+                    continue;
+                }
+                if (line0.length() + word.length() < 14 ){ //max 15 but including space is 14
+                    line0.append(" ").append(word);
+                }
+                else {
+                    break;
+                }
+            }
+            line1 = search.substring(line0.length(),Math.min(search.length(),30));
+        }
+
+        // send packet to update sign
+        if (CLIENT.player != null || Sign != null) {
+            Text[] messages = Sign.getText(SignFront).getMessages(CLIENT.shouldFilterText());
+            CLIENT.player.networkHandler.sendPacket(new UpdateSignC2SPacket(Sign.getPos(), SignFront,
+                    line0.toString(),
+                    line1,
+                    messages[2].getString(),
+                    messages[3].getString()
+            ));
+        }
+    }
+
+}

@@ -238,6 +238,9 @@ public class SkyblockerConfig {
 		public FlameOverlay flameOverlay = new FlameOverlay();
 
 		@SerialEntry
+		public SearchOverlay searchOverlay = new SearchOverlay();
+
+		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
 
 		@SerialEntry
@@ -410,6 +413,16 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Alignment alignment = Alignment.MIDDLE;
+	}
+	public static class SearchOverlay {
+		@SerialEntry
+		public boolean enableBazaar = true;
+
+		@SerialEntry
+		public boolean enableAuctionHouse = true;
+
+		@SerialEntry
+		public int maxSuggestions = 3;
 	}
 
 	public static class TeleportOverlay {

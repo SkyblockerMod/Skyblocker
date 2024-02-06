@@ -642,6 +642,32 @@ public class GeneralCategory {
 								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.8f).step(0.1f))
 								.build())
 						.build())
+				//Search overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay")) //todo description
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableBazaar"))
+								.binding(defaults.general.searchOverlay.enableBazaar,
+										() -> config.general.searchOverlay.enableBazaar,
+										newValue -> config.general.searchOverlay.enableBazaar = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableAuctionHouse"))
+								.binding(defaults.general.searchOverlay.enableAuctionHouse,
+										() -> config.general.searchOverlay.enableAuctionHouse,
+										newValue -> config.general.searchOverlay.enableAuctionHouse = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions"))
+								.binding(defaults.general.searchOverlay.maxSuggestions,
+										() -> config.general.searchOverlay.maxSuggestions,
+										newValue -> config.general.searchOverlay.maxSuggestions = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5	).step(1))
+								.build())
+						.build())
 				.build();
 	}
 }
