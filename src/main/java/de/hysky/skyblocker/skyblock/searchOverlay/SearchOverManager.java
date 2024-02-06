@@ -27,6 +27,8 @@ public class SearchOverManager {
 
     private static final String THREE_DAY_AVERAGE = "https://moulberry.codes/auction_averages_lbin/3day.json";
     private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("ENCHANTMENT_(\\D*)_(\\d+)");
+    private static final Pattern AUCTION_PET_AND_RUNE_PATTERN = Pattern.compile("([A-Z0-9_]+);(\\d+)");
+    private static final Pattern AUCTION_PET_SKIN_PATTERN = Pattern.compile("PET_SKIN_(\\D*)");
     private static final String[] ROMAN_NUMERALS = new String[]{
             "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
             "XII", "XIII", "XIV", "XV", "XVI", "XVII","XVIII", "XIX", "XX"
@@ -89,7 +91,6 @@ public class SearchOverManager {
                         }
                     }
                 }
-
             }
 
 
@@ -101,6 +102,22 @@ public class SearchOverManager {
             JsonObject AuctionData = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(THREE_DAY_AVERAGE), JsonObject.class);
             for (Map.Entry<String, JsonElement> entry : AuctionData.entrySet()) {
                 String id = entry.getKey();
+                Matcher matcher = AUCTION_PET_AND_RUNE_PATTERN.matcher(id);
+                if (matcher.find()){//is a pet or rune convert id to name
+                    String name = matcher.group(1).replace("_", " ");
+                    name = capitalizeFully(name);
+                    auctionItems.add(name);
+                    continue;
+                }
+                 matcher = AUCTION_PET_SKIN_PATTERN.matcher(id);
+                if (matcher.find()){//is a pet skin
+                    String name = matcher.group(1).replace("_", " ");
+                    name = capitalizeFully(name);
+                    name += " Skin";
+                    auctionItems.add(name);
+                    continue;
+                }
+                //something else just loop up id.
                 id = id.split("[+;-]")[0];
                 String name = itemNameLookup.get(id);
                 if (name != null){
@@ -112,6 +129,7 @@ public class SearchOverManager {
 
         } catch (Exception e) {
            //can not find ah todo logger
+            System.out.println(e);
         }
 
     }
