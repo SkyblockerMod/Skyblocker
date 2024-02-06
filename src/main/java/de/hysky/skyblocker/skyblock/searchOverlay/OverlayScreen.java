@@ -35,17 +35,17 @@ public class OverlayScreen extends Screen {
         int startY = (int)(this.height * 0.5)- (rowHeight * (1+ SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions)) /2;
 
         // Search field
-        this.searchField = new TextFieldWidget(textRenderer,   startX,  startY, rowWidth - 30, rowHeight, Text.literal("Search..."));
+        this.searchField = new TextFieldWidget(textRenderer,   startX,  startY, rowWidth - rowHeight, rowHeight, Text.literal("Search..."));
         searchField.setChangedListener(SearchOverManager::updateSearch);
-        searchField.setFocused(true);
-        searchField.active = true;
+        searchField.setMaxLength(30);
+
 
         // finish buttons
-        finishedButton = ButtonWidget.builder(Text.literal("SEARCH").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> { //todo search icon
+        finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> { 
                     close();
                 })
-                .position(startX + rowWidth - 30, startY)
-                .size(30, rowHeight).build();
+                .position(startX + rowWidth - rowHeight, startY)
+                .size(rowHeight, rowHeight).build();
         // suggested item buttons
         int totalSuggestions = SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions;
         this.suggestionButtons = new ButtonWidget[totalSuggestions];
@@ -65,14 +65,12 @@ public class OverlayScreen extends Screen {
         }
         addDrawableChild(finishedButton);
 
-
-
     }
-
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
+        context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + 2, finishedButton.getY() + 2, 16, 16); //todo rowHeight -4
     }
 
     @Override

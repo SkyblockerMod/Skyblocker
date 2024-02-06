@@ -74,7 +74,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
         }
         else if (SkyblockerConfigManager.get().general.searchOverlay.enableBazaar && (FabricLoader.getInstance().isDevelopmentEnvironment() || client.currentScreen.getTitle().getString().toLowerCase().contains("bazaar")) ) {
             if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
-                SearchOverManager.updateSign(sign, front,true);
+                SearchOverManager.updateSign(sign, front,false);
                 client.setScreen(new OverlayScreen(Text.of("")));
                 callbackInfo.cancel();
             }
