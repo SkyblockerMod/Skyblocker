@@ -100,7 +100,9 @@ public class SearchOverManager {
         try {
             JsonObject AuctionData = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(THREE_DAY_AVERAGE), JsonObject.class);
             for (Map.Entry<String, JsonElement> entry : AuctionData.entrySet()) {
-                String name = itemNameLookup.get(entry.getKey());
+                String id = entry.getKey();
+                id = id.split("[+;-]")[0];
+                String name = itemNameLookup.get(id);
                 if (name != null){
                     name = trimItemColor(name);
                     auctionItems.add(name);
@@ -113,6 +115,7 @@ public class SearchOverManager {
         }
 
     }
+
     private static String capitalizeFully(String str) {
         if (str == null || str.isEmpty()) {
             return str;
@@ -122,6 +125,7 @@ public class SearchOverManager {
                 .map(t -> t.substring(0, 1).toUpperCase() + t.substring(1).toLowerCase())
                 .collect(Collectors.joining(" "));
     }
+
     private static String trimItemColor(String string){
         if (string.isEmpty()) return string;
         if (string.startsWith("§") ){
@@ -130,7 +134,6 @@ public class SearchOverManager {
             return string;
         }
     }
-
 
     public static void updateSign(SignBlockEntity sign, boolean front, boolean isAuction) {
         visible= true;
