@@ -98,7 +98,7 @@ public class OverlayScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + 2, finishedButton.getY() + 2, 16, 16); //todo rowHeight -4
-        if(historyButtons.length > 0 ){
+        if(historyButtons.length > 0  && historyButtons[0] != null){
             context.drawText(textRenderer, "History:", historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true); //todo load form en_us and rowHeight
         }
 
