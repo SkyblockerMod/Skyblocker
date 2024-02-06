@@ -665,7 +665,14 @@ public class GeneralCategory {
 								.binding(defaults.general.searchOverlay.maxSuggestions,
 										() -> config.general.searchOverlay.maxSuggestions,
 										newValue -> config.general.searchOverlay.maxSuggestions = newValue)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5	).step(1))
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLength"))
+								.binding(defaults.general.searchOverlay.historyLength,
+										() -> config.general.searchOverlay.historyLength,
+										newValue -> config.general.searchOverlay.historyLength = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
 								.build())
 						.build())
 				.build();

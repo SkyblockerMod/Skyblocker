@@ -107,8 +107,42 @@ public class SearchOverManager {
             return "";
         }
     }
+    protected  static String getHistory(int index){
+        if (IsAuction){
+            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() >index){
+                return  SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.get(index);
+            }
+
+        }else{
+            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() >index){
+                return  SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.get(index);
+            }
+        }
+        return  null;
+
+    }
+    private static void saveHistory(){
+        //save to history
+        int historyLength = SkyblockerConfigManager.get().general.searchOverlay.historyLength;
+        if (IsAuction){
+            SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.add(0,search);
+            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() >historyLength) {
+                SkyblockerConfigManager.get().general.searchOverlay.auctionHistory = SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.subList(0, historyLength);
+            }
+        }else{
+            SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.add(0,search);
+            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() >historyLength) {
+                SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory = SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.subList(0, historyLength);
+            }
+        }
+        SkyblockerConfigManager.save();
+    }
 
     protected static void pushSearch() {
+        //save to history
+        if (!search.isEmpty()){
+            saveHistory();
+        }
         //splits text into 2 lines max = 30 chars
         StringBuilder line0 = new StringBuilder();
         String line1;

@@ -20,7 +20,9 @@ public class OverlayScreen extends Screen {
     private TextFieldWidget searchField;
     private ButtonWidget finishedButton;
     private ButtonWidget[] suggestionButtons;
-    //todo history buttons
+    private ButtonWidget[] historyButtons;
+
+
 
     public OverlayScreen(Text title) {
         super(title);
@@ -32,7 +34,7 @@ public class OverlayScreen extends Screen {
         int rowWidth = (int)(this.width * 0.33);
 
         int startX = (int)(this.width * 0.5) - rowWidth/2;
-        int startY = (int)(this.height * 0.5)- (rowHeight * (1+ SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions)) /2;
+        int startY = (int) ((int)(this.height * 0.5)- (rowHeight * (1+ SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) /2);
 
         // Search field
         this.searchField = new TextFieldWidget(textRenderer,   startX,  startY, rowWidth - rowHeight, rowHeight, Text.literal("Search..."));
@@ -41,12 +43,13 @@ public class OverlayScreen extends Screen {
 
 
         // finish buttons
-        finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> { 
+        finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> {
                     close();
                 })
                 .position(startX + rowWidth - rowHeight, startY)
                 .size(rowHeight, rowHeight).build();
         // suggested item buttons
+        int rowOffset = rowHeight;
         int totalSuggestions = SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions;
         this.suggestionButtons = new ButtonWidget[totalSuggestions];
         for (int i = 0; i < totalSuggestions; i++) {
@@ -54,14 +57,38 @@ public class OverlayScreen extends Screen {
                         SearchOverManager.updateSearch(a.getMessage().getString());
                         close();
                     })
-                    .position(startX , startY + rowHeight * (i+1))
+                    .position(startX , startY + rowOffset)
                     .size(rowWidth, rowHeight).build();
             suggestionButtons[i].visible = false;
+            rowOffset += rowHeight;
+        }
+        // history item buttons
+        rowOffset += (int) (rowHeight * 0.75);
+        int historyLength = SkyblockerConfigManager.get().general.searchOverlay.historyLength; //todo look different
+        this.historyButtons = new ButtonWidget[historyLength];
+        for (int i = 0; i < historyLength; i++) {
+            String text = SearchOverManager.getHistory(i);
+            if (text != null){
+                historyButtons[i] = ButtonWidget.builder(Text.literal(text).setStyle(Style.EMPTY), (a) -> {
+                            SearchOverManager.updateSearch(a.getMessage().getString());
+                            close();
+                        })
+                        .position(startX , startY + rowOffset)
+                        .size(rowWidth, rowHeight).build();
+                rowOffset += rowHeight;
+            }else{
+                break;
+            }
         }
 
         addDrawableChild(searchField);
         for (ButtonWidget suggestion : suggestionButtons){
             addDrawableChild(suggestion);
+        }
+        for (ButtonWidget historyOption : historyButtons){
+            if (historyOption != null){
+                addDrawableChild(historyOption);
+            }
         }
         addDrawableChild(finishedButton);
 
@@ -71,6 +98,10 @@ public class OverlayScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + 2, finishedButton.getY() + 2, 16, 16); //todo rowHeight -4
+        if(historyButtons.length > 0 ){
+            context.drawText(textRenderer, "History:", historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true); //todo load form en_us and rowHeight
+        }
+
     }
 
     @Override

@@ -423,6 +423,15 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int maxSuggestions = 3;
+
+		@SerialEntry
+		public int historyLength = 3;
+
+		@SerialEntry
+		public List<String> bazaarHistory = new ArrayList<>();
+
+		@SerialEntry
+		public List<String> auctionHistory = new ArrayList<>();
 	}
 
 	public static class TeleportOverlay {
