@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.searchOverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -109,7 +107,8 @@ public class OverlayScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + 2, finishedButton.getY() + 2, 16, 16); //todo rowHeight -4
         if(historyButtons.length > 0  && historyButtons[0] != null){
-            context.drawText(textRenderer, "History:", historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true); //todo load form en_us and rowHeight
+            context.drawText(textRenderer, Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel")
+                    , historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true);
         }
     }
 
