@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.searchOverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -27,6 +29,10 @@ public class OverlayScreen extends Screen {
     public OverlayScreen(Text title) {
         super(title);
     }
+
+    /**
+     * Creates the layout for the overlay screen.
+     */
     @Override
     protected void init() {
         super.init();
@@ -95,7 +101,9 @@ public class OverlayScreen extends Screen {
 
         this.setInitialFocus(searchField);
     }
-
+    /**
+     * Renders the search icon and the label for the history
+     */
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
@@ -105,13 +113,9 @@ public class OverlayScreen extends Screen {
         }
     }
 
-    @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
-        //todo draw custom background
-       
-    }
-
+    /**
+     * Closes the overlay screen and gets the manager to send a packet update about the sign
+     */
     @Override
     public void close() {
         assert this.client != null;
@@ -119,6 +123,10 @@ public class OverlayScreen extends Screen {
         SearchOverManager.pushSearch();
         super.close();
     }
+
+    /**
+     * updates if the suggestions buttons should be visible based on if they have a value
+     */
     @Override
     public final void tick() {
         super.tick();
@@ -135,10 +143,14 @@ public class OverlayScreen extends Screen {
         }
 
     }
+
+    /**
+     * When a key is pressed. If enter key pressed and search box selected close
+     */
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         super.keyPressed(keyCode,scanCode,modifiers);
-        //if enter key pressed and search box selected close
+        //
         if (keyCode == GLFW.GLFW_KEY_ENTER && searchField.isActive()){
             close();
             return true;

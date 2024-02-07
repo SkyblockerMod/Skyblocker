@@ -25,10 +25,18 @@ public class SearchOverManager {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
+    /**
+     * website where actionable items are stored
+     */
     private static final String THREE_DAY_AVERAGE = "https://moulberry.codes/auction_averages_lbin/3day.json";
+
     private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("ENCHANTMENT_(\\D*)_(\\d+)");
     private static final Pattern AUCTION_PET_AND_RUNE_PATTERN = Pattern.compile("([A-Z0-9_]+);(\\d+)");
     private static final Pattern AUCTION_PET_SKIN_PATTERN = Pattern.compile("PET_SKIN_(\\D*)");
+
+    /**
+     * converts index (in array) +1 to a roman numeral
+     */
     private static final String[] ROMAN_NUMERALS = new String[]{
             "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
             "XII", "XIII", "XIV", "XV", "XVI", "XVII","XVIII", "XIX", "XX"
@@ -47,6 +55,10 @@ public class SearchOverManager {
     public static HashSet<String> auctionItems =new HashSet<>();
 
     public static String[] suggestionsArray = {};
+
+    /**
+     * uses the skyblock api and Moulberry auction to load a list of items in bazaar and auction house
+     */
     public static void init() {
         //get bazaar items
         try {
@@ -139,7 +151,10 @@ public class SearchOverManager {
         }
 
     }
-
+    /**
+     * Capitalizes the first letter off every word in a string
+     * @param str string to capitalize
+     */
     private static String capitalizeFully(String str) {
         if (str == null || str.isEmpty()) {
             return str;
@@ -149,16 +164,24 @@ public class SearchOverManager {
                 .map(t -> t.substring(0, 1).toUpperCase() + t.substring(1).toLowerCase())
                 .collect(Collectors.joining(" "));
     }
-
-    private static String trimItemColor(String string){
-        if (string.isEmpty()) return string;
-        if (string.startsWith("§") ){
-            return string.substring(2);
+    /**
+     * Removes the item color text tags from the start of a string if it has one
+     * @param str string to remove color
+     */
+    private static String trimItemColor(String str){
+        if (str.isEmpty()) return str;
+        if (str.startsWith("§") ){
+            return str.substring(2);
         }else {
-            return string;
+            return str;
         }
     }
-
+    /**
+     * Receives data when a search is started and resets values
+     * @param sign the sign that is being edited
+     * @param front if it's the front of the sign
+     * @param isAuction if the sign is loaded from the auction house menu or bazaar
+     */
     public static void updateSign(SignBlockEntity sign, boolean front, boolean isAuction) {
         visible= true;
         SignFront = front;
@@ -180,6 +203,10 @@ public class SearchOverManager {
         suggestionsArray = new String[]{};
 
     }
+    /**
+     * Updates the search value and the suggestions based on that value.
+     * @param newValue new search value
+     */
     protected static void updateSearch(String newValue) {
         search = newValue;
         //update the suggestion values
@@ -192,6 +219,11 @@ public class SearchOverManager {
             suggestionsArray = bazaarItems.stream().filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toList().toArray(suggestionsArray);
         }
     }
+
+    /**
+     * Gets the suggestion in the suggestion array at the index
+     * @param index index of suggestion
+     */
     protected  static String getSuggestion(int index){
          if (suggestionsArray.length> index && suggestionsArray[index] != null ){
             return suggestionsArray[index];
@@ -199,6 +231,10 @@ public class SearchOverManager {
             return "";
         }
     }
+    /**
+     * Gets the item name in the history array at the index
+     * @param index index of suggestion
+     */
     protected  static String getHistory(int index){
         if (IsAuction){
             if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() >index){
@@ -212,6 +248,10 @@ public class SearchOverManager {
         }
         return  null;
     }
+
+    /**
+     * Add the current search value to the start of the history list and truncate to the max history value and save this to the config
+     */
     private static void saveHistory(){
         //save to history
         int historyLength = SkyblockerConfigManager.get().general.searchOverlay.historyLength;
@@ -229,6 +269,9 @@ public class SearchOverManager {
         SkyblockerConfigManager.save();
     }
 
+    /**
+     *Saves the current search value and then splits it onto the first to lines of the sign making sure not to split a word in 2
+     */
     protected static void pushSearch() {
         //save to history
         if (!search.isEmpty()){
