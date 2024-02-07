@@ -74,7 +74,9 @@ public class SearchOverManager {
                     if (sellVolume == 0) continue; //do not add items that do not sell e.g. they are not actual in the bazaar
                     Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
                     if (matcher.matches()) {//format enchantments
-                        String name = matcher.group(1).replace("_", " ");
+                        //remove ultimate if in name
+                        String name = matcher.group(1).replace("ULTIMATE_","");
+                        name = name.replace("_", " ");
                         name = capitalizeFully(name);
                         int enchantLevel = Integer.parseInt(matcher.group(2));
                         String level = "";
