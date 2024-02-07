@@ -49,12 +49,9 @@ public class SearchOverManager {
     public static String[] suggestionsArray = {};
     public static void init() {
         //get bazaar items
-        System.out.println("is there somethin");
         try {
             String response = Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/items");
-            System.out.println("response:");
             JsonArray items = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("items");
-            System.out.println("jsonItem:");
             for (JsonElement entry : items) {
                 if (entry.isJsonObject()) {
                     JsonObject item = entry.getAsJsonObject();
@@ -115,6 +112,11 @@ public class SearchOverManager {
                 if (matcher.find()){//is a pet skin
                     String name = matcher.group(1).replace("_", " ");
                     name = capitalizeFully(name);
+                    //put name of pet first however does not work with multi-word pets e.g. black cat.
+                    if (name.contains(" ")){
+                        String[] splitName = name.split(" ",2);
+                        name = splitName[1] + " " + splitName[0];
+                    }
                     name += " Skin";
                     auctionItems.add(name);
                     continue;
