@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
@@ -32,7 +34,6 @@ public class SearchOverManager {
 
     private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("ENCHANTMENT_(\\D*)_(\\d+)");
     private static final Pattern AUCTION_PET_AND_RUNE_PATTERN = Pattern.compile("([A-Z0-9_]+);(\\d+)");
-    private static final Pattern AUCTION_PET_SKIN_PATTERN = Pattern.compile("PET_SKIN_(\\D*)");
 
     /**
      * converts index (in array) +1 to a roman numeral
@@ -115,6 +116,7 @@ public class SearchOverManager {
             JsonObject AuctionData = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(THREE_DAY_AVERAGE), JsonObject.class);
             for (Map.Entry<String, JsonElement> entry : AuctionData.entrySet()) {
                 String id = entry.getKey();
+
                 Matcher matcher = AUCTION_PET_AND_RUNE_PATTERN.matcher(id);
                 if (matcher.find()){//is a pet or rune convert id to name
                     String name = matcher.group(1).replace("_", " ");
@@ -122,26 +124,14 @@ public class SearchOverManager {
                     auctionItems.add(name);
                     continue;
                 }
-                 matcher = AUCTION_PET_SKIN_PATTERN.matcher(id);
-                if (matcher.find()){//is a pet skin
-                    String name = matcher.group(1).replace("_", " ");
-                    name = capitalizeFully(name);
-                    //put name of pet first however does not work with multi-word pets e.g. black cat.
-                    if (name.contains(" ")){
-                        String[] splitName = name.split(" ",2);
-                        name = splitName[1] + " " + splitName[0];
-                    }
-                    name += " Skin";
-                    auctionItems.add(name);
-                    continue;
-                }
-                //something else just loop up id.
-                id = id.split("[+;-]")[0];
-                String name = itemNameLookup.get(id);
-                if (name != null){
-                    name = trimItemColor(name);
+                //something else look up in NEU repo.
+                id = id.split("[+-]")[0];
+                NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                if (item != null){
+                    String name = trimItemColor(item.getDisplayName());
                     auctionItems.add(name);
                 }
+
             }
 
 
@@ -165,16 +155,12 @@ public class SearchOverManager {
                 .collect(Collectors.joining(" "));
     }
     /**
-     * Removes the item color text tags from the start of a string if it has one
+     * Removes the item color text tags from the whole of the text
      * @param str string to remove color
      */
     private static String trimItemColor(String str){
         if (str.isEmpty()) return str;
-        if (str.startsWith("§") ){
-            return str.substring(2);
-        }else {
-            return str;
-        }
+        return  str.replaceAll("§[0-9a-g]","");
     }
     /**
      * Receives data when a search is started and resets values
