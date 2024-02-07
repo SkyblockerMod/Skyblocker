@@ -644,10 +644,11 @@ public class GeneralCategory {
 						.build())
 				//Search overlay
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay")) //todo description
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableBazaar"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableBazaar.@Tooltip")))
 								.binding(defaults.general.searchOverlay.enableBazaar,
 										() -> config.general.searchOverlay.enableBazaar,
 										newValue -> config.general.searchOverlay.enableBazaar = newValue)
@@ -655,6 +656,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableAuctionHouse"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableAuctionHouse.@Tooltip")))
 								.binding(defaults.general.searchOverlay.enableAuctionHouse,
 										() -> config.general.searchOverlay.enableAuctionHouse,
 										newValue -> config.general.searchOverlay.enableAuctionHouse = newValue)
@@ -662,6 +664,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.keepPreviousSearches"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.keepPreviousSearches.@Tooltip")))
 								.binding(defaults.general.searchOverlay.keepPreviousSearches,
 										() -> config.general.searchOverlay.keepPreviousSearches,
 										newValue -> config.general.searchOverlay.keepPreviousSearches = newValue)
@@ -669,6 +672,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions.@Tooltip")))
 								.binding(defaults.general.searchOverlay.maxSuggestions,
 										() -> config.general.searchOverlay.maxSuggestions,
 										newValue -> config.general.searchOverlay.maxSuggestions = newValue)
@@ -676,6 +680,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLength"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLength.@Tooltip")))
 								.binding(defaults.general.searchOverlay.historyLength,
 										() -> config.general.searchOverlay.historyLength,
 										newValue -> config.general.searchOverlay.historyLength = newValue)
