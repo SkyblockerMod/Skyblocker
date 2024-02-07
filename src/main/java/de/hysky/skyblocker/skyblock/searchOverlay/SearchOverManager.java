@@ -54,6 +54,8 @@ public class SearchOverManager {
     public static Map<String,String> itemNameLookup = new HashMap<>();
     public static HashSet<String> bazaarItems =new HashSet<>();
     public static HashSet<String> auctionItems =new HashSet<>();
+    public static HashMap<String,String> namesToId =new HashMap<>();
+
 
     public static String[] suggestionsArray = {};
 
@@ -88,22 +90,27 @@ public class SearchOverManager {
                     Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
                     if (matcher.matches()) {//format enchantments
                         //remove ultimate if in name
-                        String name = matcher.group(1).replace("ULTIMATE_","");
+                        String name = matcher.group(1).replace("ULTIMATE_", "");
                         name = name.replace("_", " ");
                         name = capitalizeFully(name);
                         int enchantLevel = Integer.parseInt(matcher.group(2));
                         String level = "";
-                        if (enchantLevel > 0){
-                            level = ROMAN_NUMERALS[enchantLevel-1];
+                        if (enchantLevel > 0) {
+                            level = ROMAN_NUMERALS[enchantLevel - 1];
                         }
-                        bazaarItems.add(name +  " " + level);
-                    }else{//look up id for name
-                        String name = itemNameLookup.get(product.get("product_id").getAsString());
-                        if (name != null){
-                            name = trimItemColor(name);
-                            bazaarItems.add(name);
-                        }
+                        bazaarItems.add(name + " " + level);
+                        namesToId.put(name + " " + level, "ENCHANTED_BOOK");
+                        continue;
                     }
+                    //look up id for name
+                    String name = itemNameLookup.get(product.get("product_id").getAsString());
+                    if (name != null){
+                        name = trimItemColor(name);
+                        bazaarItems.add(name);
+                        namesToId.put(name, id);
+                        continue;
+                    }
+
                 }
             }
 
@@ -122,6 +129,7 @@ public class SearchOverManager {
                     String name = matcher.group(1).replace("_", " ");
                     name = capitalizeFully(name);
                     auctionItems.add(name);
+                    namesToId.put(name, id);
                     continue;
                 }
                 //something else look up in NEU repo.
@@ -130,6 +138,8 @@ public class SearchOverManager {
                 if (item != null){
                     String name = trimItemColor(item.getDisplayName());
                     auctionItems.add(name);
+                    namesToId.put(name, id);
+                    continue;
                 }
 
             }
@@ -217,6 +227,13 @@ public class SearchOverManager {
             return "";
         }
     }
+    protected  static String getSuggestionId(int index){
+        if (suggestionsArray.length> index && suggestionsArray[index] != null ){
+            return namesToId.get(suggestionsArray[index]);
+        }else{//there are no suggestions yet
+            return "";
+        }
+    }
     /**
      * Gets the item name in the history array at the index
      * @param index index of suggestion
@@ -234,6 +251,21 @@ public class SearchOverManager {
         }
         return  null;
     }
+
+    protected  static String getHistoryId(int index){
+        if (IsAuction){
+            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() >index){
+                return  namesToId.get(capitalizeFully(SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.get(index)));
+            }
+
+        }else{
+            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() >index){
+                return  namesToId.get(capitalizeFully(SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.get(index)));
+            }
+        }
+        return  null;
+    }
+
 
     /**
      * Add the current search value to the start of the history list and truncate to the max history value and save this to the config

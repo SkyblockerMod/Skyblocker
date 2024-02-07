@@ -3,15 +3,22 @@ package de.hysky.skyblocker.skyblock.searchOverlay;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 
 public class OverlayScreen extends Screen {
 
@@ -35,7 +42,7 @@ public class OverlayScreen extends Screen {
     protected void init() {
         super.init();
         int rowHeight = 20;
-        int rowWidth = (int)(this.width * 0.33);
+        int rowWidth = (int)(this.width * 0.4);
 
         int startX = (int)(this.width * 0.5) - rowWidth/2;
         int startY = (int) ((int)(this.height * 0.5)- (rowHeight * (1+ SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) /2);
@@ -64,6 +71,7 @@ public class OverlayScreen extends Screen {
                     })
                     .position(startX , startY + rowOffset)
                     .size(rowWidth, rowHeight).build();
+
             suggestionButtons[i].visible = false;
             rowOffset += rowHeight;
         }
@@ -110,6 +118,22 @@ public class OverlayScreen extends Screen {
             context.drawText(textRenderer, Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel")
                     , historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true);
         }
+        //draw item stacks to buttons
+        for (int i = 0; i < suggestionButtons.length; i++) {
+            String id = SearchOverManager.getSuggestionId(i);
+            if (id.isEmpty()) continue;
+            ItemStack item = getItemStack(id);
+            if (item == null) continue;
+            context.drawItem(item,suggestionButtons[i].getX() + 2,suggestionButtons[i].getY() + 2);
+        }
+        for (int i = 0; i < historyButtons.length; i++) {
+            String id = SearchOverManager.getHistoryId(i);
+            if (id != null && id.isEmpty()) continue;
+            ItemStack item = getItemStack(id);
+            if (item == null) continue;
+            context.drawItem(item,historyButtons[i].getX() + 2,historyButtons[i].getY() + 2);
+        }
+
     }
 
     /**
