@@ -22,6 +22,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -33,6 +35,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class SearchOverManager {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Search Overlay");
 
     /**
      * website where actionable items are stored
@@ -108,6 +111,7 @@ public class SearchOverManager {
             }
         } catch (Exception e) {
             //can not get items skyblock items
+            LOGGER.error("[Skyblocker] skyblock items list download failed! ", e);
         }
         try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/bazaar", "")) {
             JsonObject products = JsonParser.parseString(response.content()).getAsJsonObject().get("products").getAsJsonObject();
@@ -143,7 +147,8 @@ public class SearchOverManager {
                 }
             }
         } catch (Exception e) {
-            //can not get items for bazaar search //todo log
+            //can not get items for bazaar search
+            LOGGER.error("[Skyblocker] bazaar item list download failed! ", e);
         }
 
         //get auction items
@@ -171,7 +176,8 @@ public class SearchOverManager {
                 }
             }
         } catch (Exception e) {
-            //can not find ah todo logger
+            //can not find ah
+            LOGGER.error("[Skyblocker] ah item list download failed! ", e);
         }
     }
     /**
