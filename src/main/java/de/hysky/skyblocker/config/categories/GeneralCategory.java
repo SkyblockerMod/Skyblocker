@@ -686,6 +686,14 @@ public class GeneralCategory {
 										newValue -> config.general.searchOverlay.historyLength = newValue)
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableCommands"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableCommands.@Tooltip")))
+								.binding(defaults.general.searchOverlay.enableCommands,
+										() -> config.general.searchOverlay.enableCommands,
+										newValue -> config.general.searchOverlay.enableCommands = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 				.build();
 	}

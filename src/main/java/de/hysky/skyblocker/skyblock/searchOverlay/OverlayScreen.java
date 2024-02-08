@@ -3,10 +3,8 @@ package de.hysky.skyblocker.skyblock.searchOverlay;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -24,7 +22,6 @@ public class OverlayScreen extends Screen {
 
     protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
     private static final int rowHeight = 20;
-
     private TextFieldWidget searchField;
     private ButtonWidget finishedButton;
     private ButtonWidget[] suggestionButtons;
@@ -42,7 +39,7 @@ public class OverlayScreen extends Screen {
         super.init();
         int rowWidth = (int)(this.width * 0.4);
         int startX = (int)(this.width * 0.5) - rowWidth/2;
-        int startY = (int) ((int)(this.height * 0.5)- (rowHeight * (1+ SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) / 2);
+        int startY = (int) ((int)(this.height * 0.5)- (rowHeight * (1 + SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) / 2);
 
         // Search field
         this.searchField = new TextFieldWidget(textRenderer,startX, startY, rowWidth - rowHeight, rowHeight, Text.literal("Search..."));

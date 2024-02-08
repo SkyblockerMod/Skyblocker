@@ -4,24 +4,30 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.http.HttpHeaders;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class SearchOverManager {
 
@@ -46,6 +52,7 @@ public class SearchOverManager {
     private static @Nullable SignBlockEntity Sign = null;
     private static boolean SignFront = true;
     private static boolean IsAuction;
+    private static boolean IsCommand;
 
     protected static String search = "";
 
@@ -60,6 +67,32 @@ public class SearchOverManager {
      * uses the skyblock api and Moulberry auction to load a list of items in bazaar and auction house
      */
     public static void init() {
+        ClientCommandRegistrationCallback.EVENT.register(SearchOverManager::registerSearchCommands);
+
+        LoadItems();
+    }
+
+    private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+        if (SkyblockerConfigManager.get().general.searchOverlay.enableCommands) {
+            dispatcher.register(literal("ahs")
+                    .executes(context -> startCommand(true))
+            );
+            dispatcher.register(literal("bzs")
+                    .executes(context -> startCommand(false))
+            );
+        }
+    }
+
+    private static int startCommand(boolean isAuction) {
+        IsCommand = true;
+        IsAuction = isAuction;
+        search = "";
+        suggestionsArray = new String[]{};
+        CLIENT.send(() -> CLIENT.setScreen( new OverlayScreen(Text.of(""))));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static void LoadItems(){
         //get bazaar items
         try {
             String response = Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/items");
@@ -108,11 +141,10 @@ public class SearchOverManager {
                     }
                 }
             }
-
-
         } catch (Exception e) {
-           //can not get items for bazaar search //todo log
+            //can not get items for bazaar search //todo log
         }
+
         //get auction items
         try {
             JsonObject AuctionData = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(THREE_DAY_AVERAGE), JsonObject.class);
@@ -137,11 +169,9 @@ public class SearchOverManager {
                     continue;
                 }
             }
-
         } catch (Exception e) {
-           //can not find ah todo logger
+            //can not find ah todo logger
         }
-
     }
     /**
      * Capitalizes the first letter off every word in a string
@@ -173,6 +203,7 @@ public class SearchOverManager {
     public static void updateSign(SignBlockEntity sign, boolean front, boolean isAuction) {
         SignFront = front;
         Sign = sign;
+        IsCommand = false;
         IsAuction = isAuction;
         if (SkyblockerConfigManager.get().general.searchOverlay.keepPreviousSearches){
             Text[] messages = Sign.getText(SignFront).getMessages(CLIENT.shouldFilterText());
@@ -186,9 +217,7 @@ public class SearchOverManager {
         }else{
             search = "";
         }
-
         suggestionsArray = new String[]{};
-
     }
 
     /**
@@ -259,7 +288,6 @@ public class SearchOverManager {
         return  null;
     }
 
-
     /**
      * Add the current search value to the start of the history list and truncate to the max history value and save this to the config
      */
@@ -288,6 +316,26 @@ public class SearchOverManager {
         if (!search.isEmpty()){
             saveHistory();
         }
+        if (IsCommand){
+            pushCommand();
+        }
+        else {
+            pushSign();
+        }
+
+
+    }
+    private static void pushCommand() {
+        String command;
+        if (IsAuction){
+            command = "/ahSearch " + search;
+        }else{
+            command  = "/bz " + search;
+        }
+        MessageScheduler.INSTANCE.queueMessage(command,  0);
+    }
+
+    private static void pushSign() {
         //splits text into 2 lines max = 30 chars
         StringBuilder line0 = new StringBuilder();
         String line1;

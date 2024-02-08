@@ -431,6 +431,9 @@ public class SkyblockerConfig {
 		public int historyLength = 3;
 
 		@SerialEntry
+		public boolean enableCommands = false;
+
+		@SerialEntry
 		public List<String> bazaarHistory = new ArrayList<>();
 
 		@SerialEntry

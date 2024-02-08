@@ -141,6 +141,8 @@
   "text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions.@Tooltip": "The maximum number off suggested items to show.",
   "text.autoconfig.skyblocker.option.general.searchOverlay.historyLength": "Saved Search History Length",
   "text.autoconfig.skyblocker.option.general.searchOverlay.historyLength.@Tooltip": "The long of a search history to save  and display for the overlay.",
+  "text.autoconfig.skyblocker.option.general.searchOverlay.enableCommands": "Open from commands",
+  "text.autoconfig.skyblocker.option.general.searchOverlay.enableCommands.@Tooltip": "Opens the bazaar search with \"/bzs\" and auction house with \"/ahs\". A re-log is required for this setting to be updated.",
   "text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel": "History:",
   "text.autoconfig.skyblocker.option.general.betterPartyFinder": "Better Party Finder",
   "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",

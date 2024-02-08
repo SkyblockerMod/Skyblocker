@@ -63,8 +63,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     }
     @Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
     public void skyblocker$searchOverlay(SignBlockEntity sign, boolean front, CallbackInfo callbackInfo) {
-
-        assert client.currentScreen != null;
+        if (client == null) return;
         if (SkyblockerConfigManager.get().general.searchOverlay.enableAuctionHouse && (FabricLoader.getInstance().isDevelopmentEnvironment() || client.currentScreen.getTitle().getString().toLowerCase().contains("auction")) ) {
             if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
                 SearchOverManager.updateSign(sign, front,true);
