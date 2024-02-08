@@ -23,13 +23,12 @@ import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 public class OverlayScreen extends Screen {
 
     protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
+    private static final int rowHeight = 20;
 
     private TextFieldWidget searchField;
     private ButtonWidget finishedButton;
     private ButtonWidget[] suggestionButtons;
     private ButtonWidget[] historyButtons;
-
-
 
     public OverlayScreen(Text title) {
         super(title);
@@ -41,18 +40,15 @@ public class OverlayScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        int rowHeight = 20;
         int rowWidth = (int)(this.width * 0.4);
-
         int startX = (int)(this.width * 0.5) - rowWidth/2;
-        int startY = (int) ((int)(this.height * 0.5)- (rowHeight * (1+ SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) /2);
+        int startY = (int) ((int)(this.height * 0.5)- (rowHeight * (1+ SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) / 2);
 
         // Search field
-        this.searchField = new TextFieldWidget(textRenderer,   startX,  startY, rowWidth - rowHeight, rowHeight, Text.literal("Search..."));
+        this.searchField = new TextFieldWidget(textRenderer,startX, startY, rowWidth - rowHeight, rowHeight, Text.literal("Search..."));
         searchField.setText(SearchOverManager.search);
         searchField.setChangedListener(SearchOverManager::updateSearch);
         searchField.setMaxLength(30);
-
 
         // finish buttons
         finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> {
@@ -60,6 +56,7 @@ public class OverlayScreen extends Screen {
                 })
                 .position(startX + rowWidth - rowHeight, startY)
                 .size(rowHeight, rowHeight).build();
+
         // suggested item buttons
         int rowOffset = rowHeight;
         int totalSuggestions = SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions;
@@ -69,9 +66,8 @@ public class OverlayScreen extends Screen {
                         SearchOverManager.updateSearch(a.getMessage().getString());
                         close();
                     })
-                    .position(startX , startY + rowOffset)
+                    .position(startX, startY + rowOffset)
                     .size(rowWidth, rowHeight).build();
-
             suggestionButtons[i].visible = false;
             rowOffset += rowHeight;
         }
@@ -81,12 +77,12 @@ public class OverlayScreen extends Screen {
         this.historyButtons = new ButtonWidget[historyLength];
         for (int i = 0; i < historyLength; i++) {
             String text = SearchOverManager.getHistory(i);
-            if (text != null){
+            if (text != null) {
                 historyButtons[i] = ButtonWidget.builder(Text.literal(text).setStyle(Style.EMPTY), (a) -> {
                             SearchOverManager.updateSearch(a.getMessage().getString());
                             close();
                         })
-                        .position(startX , startY + rowOffset)
+                        .position(startX, startY + rowOffset)
                         .size(rowWidth, rowHeight).build();
                 rowOffset += rowHeight;
             }else{
@@ -94,6 +90,7 @@ public class OverlayScreen extends Screen {
             }
         }
 
+        //add drawables in order to make tab navigation sensible
         addDrawableChild(searchField);
         for (ButtonWidget suggestion : suggestionButtons){
             addDrawableChild(suggestion);
@@ -105,35 +102,38 @@ public class OverlayScreen extends Screen {
         }
         addDrawableChild(finishedButton);
 
+        //focus the search box
         this.setInitialFocus(searchField);
     }
+
     /**
-     * Renders the search icon and the label for the history
+     * Renders the search icon, label for the history and item Stacks for item names
      */
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + 2, finishedButton.getY() + 2, 16, 16); //todo rowHeight -4
+        int renderOffset = (rowHeight - 16) / 2;
+        context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
         if(historyButtons.length > 0  && historyButtons[0] != null){
             context.drawText(textRenderer, Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel")
-                    , historyButtons[0].getX()+2, historyButtons[0].getY() - 10, 0xFFFFFFFF, true);
+                    , historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - (rowHeight / 2), 0xFFFFFFFF, true);
         }
+
         //draw item stacks to buttons
         for (int i = 0; i < suggestionButtons.length; i++) {
             String id = SearchOverManager.getSuggestionId(i);
             if (id.isEmpty()) continue;
             ItemStack item = getItemStack(id);
             if (item == null) continue;
-            context.drawItem(item,suggestionButtons[i].getX() + 2,suggestionButtons[i].getY() + 2);
+            context.drawItem(item,suggestionButtons[i].getX() + renderOffset,suggestionButtons[i].getY() + renderOffset);
         }
         for (int i = 0; i < historyButtons.length; i++) {
             String id = SearchOverManager.getHistoryId(i);
-            if (id != null && id.isEmpty()) continue;
+            if (id == null || id.isEmpty()) continue;
             ItemStack item = getItemStack(id);
             if (item == null) continue;
-            context.drawItem(item,historyButtons[i].getX() + 2,historyButtons[i].getY() + 2);
+            context.drawItem(item,historyButtons[i].getX() + renderOffset,historyButtons[i].getY() + renderOffset);
         }
-
     }
 
     /**
@@ -162,7 +162,6 @@ public class OverlayScreen extends Screen {
             }else{
                 suggestionButtons[i].visible = false;
             }
-
         }
 
     }
@@ -173,12 +172,10 @@ public class OverlayScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         super.keyPressed(keyCode,scanCode,modifiers);
-        //
         if (keyCode == GLFW.GLFW_KEY_ENTER && searchField.isActive()){
             close();
             return true;
         }
         return false;
     }
-
 }

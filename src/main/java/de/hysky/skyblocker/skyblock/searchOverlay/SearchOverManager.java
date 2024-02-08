@@ -43,19 +43,16 @@ public class SearchOverManager {
             "XII", "XIII", "XIV", "XV", "XVI", "XVII","XVIII", "XIX", "XX"
     };
 
-    public static boolean visible = false;
-    public static String search = "";
     private static @Nullable SignBlockEntity Sign = null;
     private static boolean SignFront = true;
-
     private static boolean IsAuction;
 
+    protected static String search = "";
 
-    public static Map<String,String> itemNameLookup = new HashMap<>();
-    public static HashSet<String> bazaarItems =new HashSet<>();
-    public static HashSet<String> auctionItems =new HashSet<>();
-    public static HashMap<String,String> namesToId =new HashMap<>();
-
+    private static final Map<String,String> itemNameLookup = new HashMap<>();
+    private static final HashSet<String> bazaarItems =new HashSet<>();
+    private static final HashSet<String> auctionItems =new HashSet<>();
+    private static final HashMap<String,String> namesToId =new HashMap<>();
 
     public static String[] suggestionsArray = {};
 
@@ -74,7 +71,6 @@ public class SearchOverManager {
                     String itemName = item.get("name").getAsString();
                     itemNameLookup.put(itemId,itemName);
                 }
-
             }
         } catch (Exception e) {
             //can not get items skyblock items
@@ -110,7 +106,6 @@ public class SearchOverManager {
                         namesToId.put(name, id);
                         continue;
                     }
-
                 }
             }
 
@@ -141,13 +136,10 @@ public class SearchOverManager {
                     namesToId.put(name, id);
                     continue;
                 }
-
             }
-
 
         } catch (Exception e) {
            //can not find ah todo logger
-            System.out.println(e);
         }
 
     }
@@ -179,7 +171,6 @@ public class SearchOverManager {
      * @param isAuction if the sign is loaded from the auction house menu or bazaar
      */
     public static void updateSign(SignBlockEntity sign, boolean front, boolean isAuction) {
-        visible= true;
         SignFront = front;
         Sign = sign;
         IsAuction = isAuction;
@@ -199,6 +190,7 @@ public class SearchOverManager {
         suggestionsArray = new String[]{};
 
     }
+
     /**
      * Updates the search value and the suggestions based on that value.
      * @param newValue new search value
@@ -221,19 +213,20 @@ public class SearchOverManager {
      * @param index index of suggestion
      */
     protected  static String getSuggestion(int index){
-         if (suggestionsArray.length> index && suggestionsArray[index] != null ){
+         if (suggestionsArray.length> index && suggestionsArray[index] != null){
             return suggestionsArray[index];
         }else{//there are no suggestions yet
             return "";
         }
     }
     protected  static String getSuggestionId(int index){
-        if (suggestionsArray.length> index && suggestionsArray[index] != null ){
+        if (suggestionsArray.length> index && suggestionsArray[index] != null){
             return namesToId.get(suggestionsArray[index]);
         }else{//there are no suggestions yet
             return "";
         }
     }
+
     /**
      * Gets the item name in the history array at the index
      * @param index index of suggestion
@@ -254,12 +247,12 @@ public class SearchOverManager {
 
     protected  static String getHistoryId(int index){
         if (IsAuction){
-            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() >index){
+            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() > index){
                 return  namesToId.get(capitalizeFully(SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.get(index)));
             }
 
         }else{
-            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() >index){
+            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() > index){
                 return  namesToId.get(capitalizeFully(SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.get(index)));
             }
         }
@@ -274,13 +267,13 @@ public class SearchOverManager {
         //save to history
         int historyLength = SkyblockerConfigManager.get().general.searchOverlay.historyLength;
         if (IsAuction){
-            SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.add(0,search);
-            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() >historyLength) {
+            SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.add(0, search);
+            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() > historyLength) {
                 SkyblockerConfigManager.get().general.searchOverlay.auctionHistory = SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.subList(0, historyLength);
             }
         }else{
-            SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.add(0,search);
-            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() >historyLength) {
+            SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.add(0, search);
+            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() > historyLength) {
                 SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory = SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.subList(0, historyLength);
             }
         }
@@ -298,24 +291,24 @@ public class SearchOverManager {
         //splits text into 2 lines max = 30 chars
         StringBuilder line0 = new StringBuilder();
         String line1;
-        if (search.length() <= 15){
+        if (search.length() <= 15) {
             line0 = new StringBuilder(search);
             line1 = "";
         }else {
             String[] words = search.split(" ");
-            for (String word : words){
+            for (String word : words) {
                 if (line0.isEmpty()) {
                     line0 = new StringBuilder(word);
                     continue;
                 }
-                if (line0.length() + word.length() < 14 ){ //max 15 but including space is 14
+                if (line0.length() + word.length() < 14) { //max 15 but including space is 14
                     line0.append(" ").append(word);
                 }
                 else {
                     break;
                 }
             }
-            line1 = search.substring(line0.length(),Math.min(search.length(),30));
+            line1 = search.substring(line0.length(), Math.min(search.length(), 30));
         }
 
         // send packet to update sign
