@@ -981,6 +981,11 @@ public class SkyblockerConfig {
 		public Relics relics = new Relics();
 	}
 
+	public static class Garden {
+		@SerialEntry
+		public boolean dicerTitlePrevent = true;
+	}
+
 	public static class Relics {
 		@SerialEntry
 		public boolean enableRelicsHelper = false;
@@ -1097,10 +1102,5 @@ public class SkyblockerConfig {
 		public String toString() {
 			return I18n.translate("text.autoconfig.skyblocker.option.richPresence.info." + name());
 		}
-	}
-
-	public static class Garden {
-		@SerialEntry
-		public boolean dicerTitlePrevent = true;
 	}
 }
