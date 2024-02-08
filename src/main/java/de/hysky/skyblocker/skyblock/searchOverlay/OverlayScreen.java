@@ -73,7 +73,7 @@ public class OverlayScreen extends Screen {
         }
         // history item buttons
         rowOffset += (int) (rowHeight * 0.75);
-        int historyLength = SkyblockerConfigManager.get().general.searchOverlay.historyLength; //todo look different
+        int historyLength = SkyblockerConfigManager.get().general.searchOverlay.historyLength;
         this.historyButtons = new ButtonWidget[historyLength];
         for (int i = 0; i < historyLength; i++) {
             String text = SearchOverManager.getHistory(i);
@@ -170,10 +170,11 @@ public class OverlayScreen extends Screen {
         for (int i = 0; i < SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions; i++) {
             String text = SearchOverManager.getSuggestion(i);
             if (!text.isEmpty()){
-                String text2 =  suggestionButtons[i].getMessage().getString();
+                suggestionButtons[i].visible = true;
+
                 boolean isNewText = !text.equals(suggestionButtons[i].getMessage().getString());
                 if (!isNewText) continue;
-                suggestionButtons[i].visible = true;
+
                 suggestionButtons[i].setMessage(Text.literal(text).setStyle(Style.EMPTY));
 
                 //update the tool tip

@@ -124,7 +124,10 @@ public class SearchOverManager {
                     Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
                     if (matcher.matches()) {//format enchantments
                         //remove ultimate if in name
-                        String name = matcher.group(1).replace("ULTIMATE_", "");
+                        String name = matcher.group(1);
+                        if (!name.contains("WISE")) { //only way found to remove ultimate from everything but ultimate wise
+                            name = name.replace("ULTIMATE_", "");
+                        }
                         name = name.replace("_", " ");
                         name = capitalizeFully(name);
                         int enchantLevel = Integer.parseInt(matcher.group(2));
@@ -133,7 +136,7 @@ public class SearchOverManager {
                             level = ROMAN_NUMERALS[enchantLevel - 1];
                         }
                         bazaarItems.add(name + " " + level);
-                        namesToId.put(name + " " + level, "ENCHANTED_BOOK");
+                        namesToId.put(name + " " + level, matcher.group(1) + ";" + matcher.group(2));
                         continue;
                     }
                     //look up id for name
