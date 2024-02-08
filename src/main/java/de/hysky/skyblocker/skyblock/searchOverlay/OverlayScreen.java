@@ -3,9 +3,12 @@ package de.hysky.skyblocker.skyblock.searchOverlay;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -82,7 +85,20 @@ public class OverlayScreen extends Screen {
                         .position(startX, startY + rowOffset)
                         .size(rowWidth, rowHeight).build();
                 rowOffset += rowHeight;
-            }else{
+
+                //set the tool tip
+                String id = SearchOverManager.getHistoryId(i);
+                if (id == null || id.isEmpty() || client == null) continue;
+                ItemStack item = getItemStack(id);
+                if (item == null) continue;
+                MutableText tooltip = Text.literal("");
+                item.getTooltip(client.player, TooltipContext.BASIC).forEach(line -> {
+                    tooltip.append(line);
+                    tooltip.append(Text.literal("\n"));
+                });
+                historyButtons[i].setTooltip(Tooltip.of(Text.of(tooltip)));
+            }
+            else {
                 break;
             }
         }
@@ -153,14 +169,28 @@ public class OverlayScreen extends Screen {
         //update suggestion buttons text
         for (int i = 0; i < SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions; i++) {
             String text = SearchOverManager.getSuggestion(i);
-            if (!Objects.equals(text, "")){
+            if (!text.isEmpty()){
+                String text2 =  suggestionButtons[i].getMessage().getString();
+                boolean isNewText = !text.equals(suggestionButtons[i].getMessage().getString());
+                if (!isNewText) continue;
                 suggestionButtons[i].visible = true;
                 suggestionButtons[i].setMessage(Text.literal(text).setStyle(Style.EMPTY));
+
+                //update the tool tip
+                String id = SearchOverManager.getSuggestionId(i);
+                if (id.isEmpty() || client == null) continue;
+                ItemStack item = getItemStack(id);
+                if (item == null) continue;
+                MutableText tooltip = Text.literal("");
+                item.getTooltip(client.player, TooltipContext.BASIC).forEach(line -> {
+                    tooltip.append(line);
+                    tooltip.append(Text.literal("\n"));
+                });
+                suggestionButtons[i].setTooltip(Tooltip.of(Text.of(tooltip)));
             }else{
                 suggestionButtons[i].visible = false;
             }
         }
-
     }
 
     /**
