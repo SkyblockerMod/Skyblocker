@@ -9,6 +9,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsHud;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -309,7 +310,7 @@ public class SearchOverManager {
     }
 
     /**
-     *Saves the current search value and then splits it onto the first to lines of the sign making sure not to split a word in 2
+     *Saves the current value of ({@link SearchOverManager#search}) then pushes it to a command or sign depending on how the gui was opened
      */
     protected static void pushSearch() {
         //save to history
@@ -325,7 +326,12 @@ public class SearchOverManager {
 
 
     }
+    /**
+     * runs the command to search for the value in ({@link SearchOverManager#search})
+     */
     private static void pushCommand() {
+        if (search.isEmpty()) return;
+
         String command;
         if (IsAuction){
             command = "/ahSearch " + search;
@@ -335,6 +341,9 @@ public class SearchOverManager {
         MessageScheduler.INSTANCE.queueMessage(command,  0);
     }
 
+    /**
+     * pushes the ({@link SearchOverManager#search}) to the sign. It needs to split it over two lines without splitting a word
+     */
     private static void pushSign() {
         //splits text into 2 lines max = 30 chars
         StringBuilder line0 = new StringBuilder();

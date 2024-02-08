@@ -178,9 +178,15 @@ public class OverlayScreen extends Screen {
 
                 //update the tool tip
                 String id = SearchOverManager.getSuggestionId(i);
-                if (id.isEmpty() || client == null) continue;
+                if (id.isEmpty() || client == null) {
+                    suggestionButtons[i].setTooltip(null);
+                    continue;
+                }
                 ItemStack item = getItemStack(id);
-                if (item == null) continue;
+                if (item == null) {
+                    suggestionButtons[i].setTooltip(null);
+                    continue;
+                }
                 MutableText tooltip = Text.literal("");
                 item.getTooltip(client.player, TooltipContext.BASIC).forEach(line -> {
                     tooltip.append(line);
