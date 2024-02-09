@@ -3,6 +3,11 @@ package de.hysky.skyblocker.skyblock.garden;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.NumberFormat;
+
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUItem;
@@ -18,6 +23,8 @@ import net.minecraft.util.Formatting;
 
 //TODO: check inventory items, sum all repeated items into one
 public class VisitorHelper {
+    private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Visitor Helper");
+
     private static final Map<String, Map<String, Integer>> itemMap = new HashMap<>();
     private static final Map<String, NEUItem> itemCache = new HashMap<>();
     private static final int TEXT_START_X = 3;
@@ -92,7 +99,13 @@ public class VisitorHelper {
         var split = mutableText.getString().split(" x");
         var itemName = split[0].trim();
         if (!itemName.isEmpty()) {
-            var amount = split.length == 2 ? Integer.parseInt(split[1].trim()) : 1;
+            int amount = 1;
+            try {
+                amount = split.length == 2 ? NumberFormat.getInstance().parse(split[1].trim()).intValue() : 1;
+            } catch (Exception e) {
+                LOGGER.debug("Failed to parse amount for item: " + mutableText.getString());
+                return;
+            }
             Map<String, Integer> nestedMap = itemMap.getOrDefault(title, new HashMap<>());
             if (!nestedMap.containsKey(itemName)) {
                 nestedMap.put(itemName, amount);
