@@ -185,7 +185,6 @@ public class TheEnd {
             zealotsKilled = jsonElement1.getAsJsonObject().get("totalZealotKills").getAsInt();
             zealotsSinceLastEye = jsonElement1.getAsJsonObject().get("zealotsSinceLastEye").getAsInt();
             eyes = jsonElement1.getAsJsonObject().get("eyes").getAsInt();
-            System.out.println("hiii");
             EndHudWidget.INSTANCE.update();
         }
     }
