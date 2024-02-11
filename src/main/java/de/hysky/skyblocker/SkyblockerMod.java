@@ -7,6 +7,7 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder.Boulder;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.CreeperBeams;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonBlaze;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TicTacToe;
@@ -127,6 +128,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SpecialEffects.init();
         ItemProtection.init();
         CreeperBeams.init();
+        Boulder.init();
         ItemRarityBackgrounds.init();
         MuseumItemCache.init();
         SecretsTracker.init();
