@@ -39,6 +39,9 @@ public abstract class InGameHudMixin {
     @Unique
     private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
     @Unique
+    private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
+
+    @Unique
     private final FancyStatusBars statusBars = new FancyStatusBars();
 
     @Shadow
@@ -49,12 +52,6 @@ public abstract class InGameHudMixin {
     @Shadow
     @Final
     private MinecraftClient client;
-
-    @Shadow
-    private Text title;
-
-    @Unique
-    private static final Pattern dicerTitleBlacklist = Pattern.compile(".+? DROP!");
 
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V", ordinal = 0))
     public void skyblocker$renderHotbarItemLockOrRarityBg(float tickDelta, DrawContext context, CallbackInfo ci, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
@@ -110,10 +107,10 @@ public abstract class InGameHudMixin {
         return cooldownProgress;
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At("HEAD"))
-    private void skyblocker$dicerTitlePrevent(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().locations.garden.dicerTitlePrevent)
-            if (title != null && dicerTitleBlacklist.matcher(title.getString()).matches())
-                title = null;
+    @Inject(method = "setTitle", at = @At("HEAD"), cancellable = true)
+    private void skyblocker$dicerTitlePrevent(Text title, CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().locations.garden.dicerTitlePrevent && title != null && DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
+            ci.cancel();
+        }
     }
 }

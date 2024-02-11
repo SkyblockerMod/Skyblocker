@@ -981,17 +981,17 @@ public class SkyblockerConfig {
 		public Relics relics = new Relics();
 	}
 
-	public static class Garden {
-		@SerialEntry
-		public boolean dicerTitlePrevent = true;
-	}
-
 	public static class Relics {
 		@SerialEntry
 		public boolean enableRelicsHelper = false;
 
 		@SerialEntry
 		public boolean highlightFoundRelics = true;
+	}
+
+	public static class Garden {
+		@SerialEntry
+		public boolean dicerTitlePrevent = true;
 	}
 
 	public static class Slayer {
