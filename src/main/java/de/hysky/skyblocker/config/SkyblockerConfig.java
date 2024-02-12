@@ -160,6 +160,9 @@ public class SkyblockerConfig {
 		public boolean betterPartyFinder = true;
 
 		@SerialEntry
+		public boolean betterAuctionsBrowser = true;
+
+		@SerialEntry
 		public boolean backpackPreviewWithoutShift = false;
 
 		@SerialEntry

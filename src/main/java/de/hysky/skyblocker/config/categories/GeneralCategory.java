@@ -42,6 +42,13 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.betterAuctionsBrowser"))
+						.binding(defaults.general.betterAuctionsBrowser,
+								() -> config.general.betterAuctionsBrowser,
+								newValue -> config.general.betterAuctionsBrowser = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift"))
 						.binding(defaults.general.backpackPreviewWithoutShift,
 								() -> config.general.backpackPreviewWithoutShift,
