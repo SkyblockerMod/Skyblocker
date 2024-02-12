@@ -642,6 +642,7 @@ public class GeneralCategory {
 								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.8f).step(0.1f))
 								.build())
 						.build())
+
 				//Search overlay
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay"))

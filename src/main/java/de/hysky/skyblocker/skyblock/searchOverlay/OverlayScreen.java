@@ -3,21 +3,14 @@ package de.hysky.skyblocker.skyblock.searchOverlay;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 
@@ -40,20 +33,18 @@ public class OverlayScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        int rowWidth = (int)(this.width * 0.4);
-        int startX = (int)(this.width * 0.5) - rowWidth/2;
-        int startY = (int) ((int)(this.height * 0.5)- (rowHeight * (1 + SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) / 2);
+        int rowWidth = (int) (this.width * 0.4);
+        int startX = (int) (this.width * 0.5) - rowWidth / 2;
+        int startY = (int) ((int) (this.height * 0.5) - (rowHeight * (1 + SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) / 2);
 
         // Search field
-        this.searchField = new TextFieldWidget(textRenderer,startX, startY, rowWidth - rowHeight, rowHeight, Text.literal("Search..."));
+        this.searchField = new TextFieldWidget(textRenderer, startX, startY, rowWidth - rowHeight, rowHeight, Text.translatable("gui.recipebook.search_hint"));
         searchField.setText(SearchOverManager.search);
         searchField.setChangedListener(SearchOverManager::updateSearch);
         searchField.setMaxLength(30);
 
         // finish buttons
-        finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> {
-                    close();
-                })
+        finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), a -> close())
                 .position(startX + rowWidth - rowHeight, startY)
                 .size(rowHeight, rowHeight).build();
 
@@ -62,7 +53,7 @@ public class OverlayScreen extends Screen {
         int totalSuggestions = SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions;
         this.suggestionButtons = new ButtonWidget[totalSuggestions];
         for (int i = 0; i < totalSuggestions; i++) {
-            suggestionButtons[i] = ButtonWidget.builder(Text.literal(SearchOverManager.getSuggestion(i)).setStyle(Style.EMPTY), (a) -> {
+            suggestionButtons[i] = ButtonWidget.builder(Text.literal(SearchOverManager.getSuggestion(i)).setStyle(Style.EMPTY), a -> {
                         SearchOverManager.updateSearch(a.getMessage().getString());
                         close();
                     })
@@ -85,31 +76,18 @@ public class OverlayScreen extends Screen {
                         .position(startX, startY + rowOffset)
                         .size(rowWidth, rowHeight).build();
                 rowOffset += rowHeight;
-
-                //set the tool tip
-                String id = SearchOverManager.getHistoryId(i);
-                if (id == null || id.isEmpty() || client == null) continue;
-                ItemStack item = getItemStack(id);
-                if (item == null) continue;
-                MutableText tooltip = Text.literal("");
-                item.getTooltip(client.player, TooltipContext.BASIC).forEach(line -> {
-                    tooltip.append(line);
-                    tooltip.append(Text.literal("\n"));
-                });
-                historyButtons[i].setTooltip(Tooltip.of(Text.of(tooltip)));
-            }
-            else {
+            } else {
                 break;
             }
         }
 
         //add drawables in order to make tab navigation sensible
         addDrawableChild(searchField);
-        for (ButtonWidget suggestion : suggestionButtons){
+        for (ButtonWidget suggestion : suggestionButtons) {
             addDrawableChild(suggestion);
         }
-        for (ButtonWidget historyOption : historyButtons){
-            if (historyOption != null){
+        for (ButtonWidget historyOption : historyButtons) {
+            if (historyOption != null) {
                 addDrawableChild(historyOption);
             }
         }
@@ -127,37 +105,32 @@ public class OverlayScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         int renderOffset = (rowHeight - 16) / 2;
         context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
-        if(historyButtons.length > 0  && historyButtons[0] != null){
-            context.drawText(textRenderer, Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel")
-                    , historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - (rowHeight / 2), 0xFFFFFFFF, true);
+        if (historyButtons.length > 0 && historyButtons[0] != null) {
+            context.drawText(textRenderer, Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
         }
 
-        //draw item stacks to buttons
+        //draw item stacks and tooltip to buttons
         for (int i = 0; i < suggestionButtons.length; i++) {
-            String id = SearchOverManager.getSuggestionId(i);
-            if (id.isEmpty()) continue;
-            ItemStack item = getItemStack(id);
-            if (item == null) continue;
-            context.drawItem(item,suggestionButtons[i].getX() + renderOffset,suggestionButtons[i].getY() + renderOffset);
+            drawItemAndTooltip(context, mouseX, mouseY, SearchOverManager.getSuggestionId(i), suggestionButtons[i], renderOffset);
         }
         for (int i = 0; i < historyButtons.length; i++) {
-            String id = SearchOverManager.getHistoryId(i);
-            if (id == null || id.isEmpty()) continue;
-            ItemStack item = getItemStack(id);
-            if (item == null) continue;
-            context.drawItem(item,historyButtons[i].getX() + renderOffset,historyButtons[i].getY() + renderOffset);
+            drawItemAndTooltip(context, mouseX, mouseY, SearchOverManager.getHistoryId(i), historyButtons[i], renderOffset);
         }
     }
 
     /**
-     * Closes the overlay screen and gets the manager to send a packet update about the sign
+     * Draws the item and tooltip for the given button
      */
-    @Override
-    public void close() {
-        assert this.client != null;
-        assert this.client.player != null;
-        SearchOverManager.pushSearch();
-        super.close();
+    private void drawItemAndTooltip(DrawContext context, int mouseX, int mouseY, String id, ButtonWidget button, int renderOffset) {
+        if (id == null || id.isEmpty()) return;
+        ItemStack item = getItemStack(id);
+        if (item == null) return;
+        context.drawItem(item, button.getX() + renderOffset, button.getY() + renderOffset);
+
+        // Draw tooltip
+        if (button.isMouseOver(mouseX, mouseY)) {
+            context.drawItemTooltip(textRenderer, item, mouseX, mouseY);
+        }
     }
 
     /**
@@ -169,32 +142,14 @@ public class OverlayScreen extends Screen {
         //update suggestion buttons text
         for (int i = 0; i < SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions; i++) {
             String text = SearchOverManager.getSuggestion(i);
-            if (!text.isEmpty()){
+            if (!text.isEmpty()) {
                 suggestionButtons[i].visible = true;
 
                 boolean isNewText = !text.equals(suggestionButtons[i].getMessage().getString());
                 if (!isNewText) continue;
 
                 suggestionButtons[i].setMessage(Text.literal(text).setStyle(Style.EMPTY));
-
-                //update the tool tip
-                String id = SearchOverManager.getSuggestionId(i);
-                if (id.isEmpty() || client == null) {
-                    suggestionButtons[i].setTooltip(null);
-                    continue;
-                }
-                ItemStack item = getItemStack(id);
-                if (item == null) {
-                    suggestionButtons[i].setTooltip(null);
-                    continue;
-                }
-                MutableText tooltip = Text.literal("");
-                item.getTooltip(client.player, TooltipContext.BASIC).forEach(line -> {
-                    tooltip.append(line);
-                    tooltip.append(Text.literal("\n"));
-                });
-                suggestionButtons[i].setTooltip(Tooltip.of(Text.of(tooltip)));
-            }else{
+            } else {
                 suggestionButtons[i].visible = false;
             }
         }
@@ -205,11 +160,26 @@ public class OverlayScreen extends Screen {
      */
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        super.keyPressed(keyCode,scanCode,modifiers);
-        if (keyCode == GLFW.GLFW_KEY_ENTER && searchField.isActive()){
+        if (keyCode == GLFW.GLFW_KEY_ENTER && searchField.isActive()) {
             close();
             return true;
         }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean shouldPause() {
         return false;
+    }
+
+    /**
+     * Closes the overlay screen and gets the manager to send a packet update about the sign
+     */
+    @Override
+    public void close() {
+        assert this.client != null;
+        assert this.client.player != null;
+        SearchOverManager.pushSearch();
+        super.close();
     }
 }
