@@ -113,15 +113,17 @@ public class BoulderBoard {
      * Prints the current state of the game board to the console.
      * Each character represents a type of BoulderObject or an empty space.
      */
-    public void printBoard() {
+    public String boardToString() {
+        StringBuilder sb = new StringBuilder();
         for (int x = 0; x < height; x++) {
             for (int y = 0; y < width; y++) {
                 BoulderObject boulderObject = grid[x][y];
                 String displayChar = (boulderObject != null) ? boulderObject.type() : ".";
-                System.out.print(displayChar);
+                sb.append(displayChar);
             }
-            System.out.println();
+            sb.append("\n");
         }
+        return sb.toString();
     }
 
 }

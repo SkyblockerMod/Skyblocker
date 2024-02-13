@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import it.unimi.dsi.fastutil.Pair;
 
 /**
  * A utility class that provides methods to solve the Boulder puzzle using the A* search algorithm.
@@ -27,7 +28,7 @@ public class BoulderSolver {
         PriorityQueue<Pair<GameState, List<int[]>>> queue = new PriorityQueue<>(new AStarComparator());
 
         for (GameState initialState : initialStates) {
-            queue.add(new Pair<>(initialState, new ArrayList<>()));
+            queue.add(Pair.of(initialState, new ArrayList<>()));
         }
 
         int maxIterations = 10000;
@@ -35,8 +36,8 @@ public class BoulderSolver {
 
         while (!queue.isEmpty() && iterations < maxIterations) {
             Pair<GameState, List<int[]>> pair = queue.poll();
-            GameState state = pair.first;
-            List<int[]> path = pair.second;
+            GameState state = pair.left();
+            List<int[]> path = pair.right();
 
             if (state.isSolved()) {
                 return path;
@@ -53,7 +54,7 @@ public class BoulderSolver {
             for (int[] direction : new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}}) {
                 GameState newState = new GameState(state.grid, state.playerX, state.playerY);
                 if (newState.movePlayer(direction[0], direction[1])) {
-                    queue.add(new Pair<>(newState, new ArrayList<>(path)));
+                    queue.add(Pair.of(newState, new ArrayList<>(path)));
                 }
             }
             iterations++;
@@ -78,19 +79,11 @@ public class BoulderSolver {
          */
         @Override
         public int compare(Pair<GameState, List<int[]>> a, Pair<GameState, List<int[]>> b) {
-            int costA = a.second.size() + a.first.heuristic();
-            int costB = b.second.size() + b.first.heuristic();
+            int costA = a.right().size() + a.left().heuristic();
+            int costB = b.right().size() + b.left().heuristic();
             return Integer.compare(costA, costB);
         }
     }
-
-    /**
-     * Represents a pair of objects, such as a game state and its associated path.
-     *
-     * @param <T> The type of the first object.
-     * @param <U> The type of the second object.
-     */
-    private record Pair<T, U>(T first, U second) {}
 
     /**
      * Represents the game state for the Boulder puzzle, including the current grid configuration

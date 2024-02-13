@@ -201,7 +201,11 @@ public class Boulder extends DungeonPuzzle {
         float lineWidth = 5.0f;
 
         if (linePoints != null && linePoints.length > 0) {
-            RenderHelper.renderLinesFromPoints(context, linePoints, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
+            for (int i = 0; i < linePoints.length - 1; i++) {
+                Vec3d startPoint = linePoints[i];
+                Vec3d endPoint = linePoints[i + 1];
+                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
+            }
             if (boundingBox != null) {
                 RenderHelper.renderOutline(context, boundingBox, RED_COLOR_COMPONENTS, 5, false);
             }
