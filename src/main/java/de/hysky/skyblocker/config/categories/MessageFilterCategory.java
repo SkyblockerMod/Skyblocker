@@ -2,10 +2,11 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudConfigScreen;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.*;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class MessageFilterCategory {
@@ -125,6 +126,16 @@ public class MessageFilterCategory {
 								() -> config.messages.hideDicer,
 								newValue -> config.messages.hideDicer = newValue)
 						.controller(ConfigUtils::createEnumCyclingListController)
+				//chat rules options
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules"))
+						.collapsed(false)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new ChatRulesConfigScreen(screen)))
+								.build())
+
 						.build())
 				.build();
 	}
