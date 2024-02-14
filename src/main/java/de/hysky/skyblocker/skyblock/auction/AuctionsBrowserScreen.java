@@ -55,6 +55,7 @@ public class AuctionsBrowserScreen extends Screen {
 
     // WIDGETS
     private SortWidget sortWidget;
+    private AuctionTypeWidget auctionTypeWidget;
 
     public int x = 0;
     public int y = 0;
@@ -94,17 +95,27 @@ public class AuctionsBrowserScreen extends Screen {
             if (slot.hasStack() && stack.isOf(Items.HOPPER) && stack.getName().getString().toLowerCase().contains("sort")) {
                 sortWidget.setSlotId(i);
                 List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
-                int ordinal = 0;
-                for (int j = 0; j < 4; j++) {
-                    if (j+2 >= tooltip.size()) break;
-                    if (tooltip.get(j+2).getString().contains("▶")) {
-                        ordinal = j;
-                        break;
-                    }
-                }
+                int ordinal = getOrdinal(tooltip);
                 sortWidget.setCurrent(SortWidget.Option.get(ordinal));
+            } else if (slot.hasStack() && stack.getName().getString().toLowerCase().contains("bin filter")) {
+                auctionTypeWidget.setSlotId(i);
+                List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                int ordinal = getOrdinal(tooltip);
+                auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(ordinal));
             }
         }
+    }
+
+    private static int getOrdinal(List<Text> tooltip) {
+        int ordinal = 0;
+        for (int j = 0; j < 4; j++) {
+            if (j+2 >= tooltip.size()) break;
+            if (tooltip.get(j+2).getString().contains("▶")) {
+                ordinal = j;
+                break;
+            }
+        }
+        return ordinal;
     }
 
     public void clickAndWaitForServer(int slotID, int button) {
@@ -126,6 +137,7 @@ public class AuctionsBrowserScreen extends Screen {
         x = (this.width - 176)/2;
         y = (this.height - 187)/2;
         sortWidget = new SortWidget(x + 25, y+81, this); addDrawableChild(sortWidget);
+        auctionTypeWidget = new AuctionTypeWidget(x + 134, y + 77, this); addDrawableChild(auctionTypeWidget);
         markDirty();
     }
 
@@ -139,6 +151,10 @@ public class AuctionsBrowserScreen extends Screen {
         }
 
         context.drawCenteredTextWithShadow(textRenderer, "Auction House", this.width/2, 5, Colors.WHITE);
+        if (isWaitingForServer()) {
+            String s = "Waiting for server...";
+            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, 0xFFFFFFFF, true);
+        }
 
         MatrixStack matrices = context.getMatrices();
         matrices.push();
