@@ -78,6 +78,13 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.flag(OptionFlag.ASSET_RELOAD)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.visitorHelper"))
+						.binding(defaults.general.visitorHelper,
+								() -> config.general.visitorHelper,
+								newValue -> config.general.visitorHelper = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
@@ -640,6 +647,60 @@ public class GeneralCategory {
 										() -> config.general.flameOverlay.flameOpacity,
 										newValue -> config.general.flameOverlay.flameOpacity = newValue)
 								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.8f).step(0.1f))
+								.build())
+						.build())
+
+				//Search overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableBazaar"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableBazaar.@Tooltip")))
+								.binding(defaults.general.searchOverlay.enableBazaar,
+										() -> config.general.searchOverlay.enableBazaar,
+										newValue -> config.general.searchOverlay.enableBazaar = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableAuctionHouse"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableAuctionHouse.@Tooltip")))
+								.binding(defaults.general.searchOverlay.enableAuctionHouse,
+										() -> config.general.searchOverlay.enableAuctionHouse,
+										newValue -> config.general.searchOverlay.enableAuctionHouse = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.keepPreviousSearches"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.keepPreviousSearches.@Tooltip")))
+								.binding(defaults.general.searchOverlay.keepPreviousSearches,
+										() -> config.general.searchOverlay.keepPreviousSearches,
+										newValue -> config.general.searchOverlay.keepPreviousSearches = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.maxSuggestions.@Tooltip")))
+								.binding(defaults.general.searchOverlay.maxSuggestions,
+										() -> config.general.searchOverlay.maxSuggestions,
+										newValue -> config.general.searchOverlay.maxSuggestions = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLength"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLength.@Tooltip")))
+								.binding(defaults.general.searchOverlay.historyLength,
+										() -> config.general.searchOverlay.historyLength,
+										newValue -> config.general.searchOverlay.historyLength = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableCommands"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.enableCommands.@Tooltip")))
+								.binding(defaults.general.searchOverlay.enableCommands,
+										() -> config.general.searchOverlay.enableCommands,
+										newValue -> config.general.searchOverlay.enableCommands = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 				.build();

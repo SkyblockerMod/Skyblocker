@@ -175,6 +175,9 @@ public class SkyblockerConfig {
 		public boolean dontStripSkinAlphaValues = true;
 
 		@SerialEntry
+		public boolean visitorHelper = true;
+
+		@SerialEntry
 		public TabHudConf tabHud = new TabHudConf();
 
 		@SerialEntry
@@ -236,6 +239,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public FlameOverlay flameOverlay = new FlameOverlay();
+
+		@SerialEntry
+		public SearchOverlay searchOverlay = new SearchOverlay();
 
 		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
@@ -412,6 +418,31 @@ public class SkyblockerConfig {
 		public Alignment alignment = Alignment.MIDDLE;
 	}
 
+	public enum Direction {
+		HORIZONTAL, VERTICAL;
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case HORIZONTAL -> "Horizontal";
+				case VERTICAL -> "Vertical";
+			};
+		}
+	}
+
+	public enum Alignment {
+		LEFT, RIGHT, MIDDLE;
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case LEFT -> "Left";
+				case RIGHT -> "Right";
+				case MIDDLE -> "Middle";
+			};
+		}
+	}
+
 	public static class TeleportOverlay {
 		@SerialEntry
 		public boolean enableTeleportOverlays = true;
@@ -440,29 +471,30 @@ public class SkyblockerConfig {
 		public float flameOpacity = 0f;
 	}
 
-	public enum Direction {
-		HORIZONTAL, VERTICAL;
+	public static class SearchOverlay {
+		@SerialEntry
+		public boolean enableBazaar = true;
 
-		@Override
-		public String toString() {
-			return switch (this) {
-				case HORIZONTAL -> "Horizontal";
-				case VERTICAL -> "Vertical";
-			};
-		}
-	}
+		@SerialEntry
+		public boolean enableAuctionHouse = true;
 
-	public enum Alignment {
-		LEFT, RIGHT, MIDDLE;
+		@SerialEntry
+		public boolean keepPreviousSearches = false;
 
-		@Override
-		public String toString() {
-			return switch (this) {
-				case LEFT -> "Left";
-				case RIGHT -> "Right";
-				case MIDDLE -> "Middle";
-			};
-		}
+		@SerialEntry
+		public int maxSuggestions = 3;
+
+		@SerialEntry
+		public int historyLength = 3;
+
+		@SerialEntry
+		public boolean enableCommands = false;
+
+		@SerialEntry
+		public List<String> bazaarHistory = new ArrayList<>();
+
+		@SerialEntry
+		public List<String> auctionHistory = new ArrayList<>();
 	}
 
 	public static class RichPresence {
@@ -608,6 +640,9 @@ public class SkyblockerConfig {
 		public Barn barn = new Barn();
 
 		@SerialEntry
+		public CrimsonIsle crimsonIsle = new CrimsonIsle();
+
+		@SerialEntry
 		public Dungeons dungeons = new Dungeons();
 
 		@SerialEntry
@@ -621,6 +656,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public SpidersDen spidersDen = new SpidersDen();
+
+		@SerialEntry
+		public Garden garden = new Garden();
 	}
 
 	public static class Dungeons {
@@ -959,6 +997,37 @@ public class SkyblockerConfig {
 		public boolean solveTreasureHunter = true;
 	}
 
+	public static class CrimsonIsle {
+		@SerialEntry
+		public Kuudra kuudra = new Kuudra();
+	}
+
+	public static class Kuudra {
+		@SerialEntry
+		public boolean supplyWaypoints = true;
+
+		@SerialEntry
+		public boolean fuelWaypoints = true;
+
+		@SerialEntry
+		public Waypoint.Type suppliesAndFuelWaypointType = Waypoint.Type.WAYPOINT;
+
+		@SerialEntry
+		public boolean ballistaBuildWaypoints = true;
+
+		@SerialEntry
+		public boolean safeSpotWaypoints = true;
+
+		@SerialEntry
+		public boolean pearlWaypoints = true;
+
+		@SerialEntry
+		public boolean noArrowPoisonWarning = true;
+
+		@SerialEntry
+		public int arrowPoisonThreshold = 16;
+	}
+
 	public static class Rift {
 		@SerialEntry
 		public boolean mirrorverseWaypoints = true;
@@ -1005,6 +1074,11 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean highlightFoundRelics = true;
+	}
+
+	public static class Garden {
+		@SerialEntry
+		public boolean dicerTitlePrevent = true;
 	}
 
 	public static class Slayer {
@@ -1103,6 +1177,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean hideMana = false;
+
+		@SerialEntry
+		public ChatFilterResult hideDicer = ChatFilterResult.PASS;
 	}
 
 	public enum Info {
