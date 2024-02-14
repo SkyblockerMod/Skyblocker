@@ -19,9 +19,11 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,6 +38,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class InGameHudMixin {
     @Unique
     private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
+    @Unique
+    private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
+
     @Unique
     private final FancyStatusBars statusBars = new FancyStatusBars();
 
@@ -100,5 +105,12 @@ public abstract class InGameHudMixin {
         }
 
         return cooldownProgress;
+    }
+
+    @Inject(method = "setTitle", at = @At("HEAD"), cancellable = true)
+    private void skyblocker$dicerTitlePrevent(Text title, CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().locations.garden.dicerTitlePrevent && title != null && DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
+            ci.cancel();
+        }
     }
 }
