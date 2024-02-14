@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
@@ -37,7 +38,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -69,6 +69,20 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         if (this.client != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
             WikiLookup.openWiki(this.focusedSlot, client.player);
         }
+    }
+
+    @Inject(at = @At("RETURN"), method = "render")
+    public void skyblocker$renderScreen(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        if (!Utils.isOnSkyblock()) return;
+
+        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+            VisitorHelper.renderScreen(this.getTitle().getString(), context, textRenderer, handler, mouseX, mouseY);
+    }
+
+    @Inject(at = @At("HEAD"), method = "mouseClicked")
+    public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+            VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
     }
 
     @SuppressWarnings("DataFlowIssue")
@@ -167,8 +181,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
                     if (ItemProtection.isItemProtected(stack)) ci.cancel();
                 }
 
-                //Prevent selling to NPC shops
+
                 if (this.client != null && this.handler instanceof GenericContainerScreenHandler genericContainerScreenHandler && genericContainerScreenHandler.getRows() == 6) {
+                    VisitorHelper.onSlotClick(slot, slotId, this.getTitle().getString());
+
+                    //Prevent selling to NPC shops
                     ItemStack sellItem = this.handler.slots.get(49).getStack();
 
                     if (sellItem.getName().getString().equals("Sell Item") || skyblocker$doesLoreContain(sellItem, this.client, "buyback")) {
