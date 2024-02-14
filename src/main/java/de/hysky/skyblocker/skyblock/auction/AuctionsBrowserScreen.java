@@ -56,6 +56,7 @@ public class AuctionsBrowserScreen extends Screen {
     // WIDGETS
     private SortWidget sortWidget;
     private AuctionTypeWidget auctionTypeWidget;
+    private RarityWidget rarityWidget;
 
     public int x = 0;
     public int y = 0;
@@ -102,13 +103,20 @@ public class AuctionsBrowserScreen extends Screen {
                 List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
                 int ordinal = getOrdinal(tooltip);
                 auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(ordinal));
+            } else if (slot.hasStack() && stack.isOf(Items.ENDER_EYE) && stack.getName().getString().toLowerCase().contains("item tier")) {
+                rarityWidget.setSlotId(i);
+                List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                int ordinal = getOrdinal(tooltip);
+                String split = tooltip.get(ordinal+2).getString().substring(2);
+                rarityWidget.setText(tooltip.subList(1, tooltip.size()-3), split);
+
             }
         }
     }
 
     private static int getOrdinal(List<Text> tooltip) {
         int ordinal = 0;
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < tooltip.size()-3; j++) {
             if (j+2 >= tooltip.size()) break;
             if (tooltip.get(j+2).getString().contains("▶")) {
                 ordinal = j;
@@ -138,6 +146,7 @@ public class AuctionsBrowserScreen extends Screen {
         y = (this.height - 187)/2;
         sortWidget = new SortWidget(x + 25, y+81, this); addDrawableChild(sortWidget);
         auctionTypeWidget = new AuctionTypeWidget(x + 134, y + 77, this); addDrawableChild(auctionTypeWidget);
+        rarityWidget = new RarityWidget(x + 73, y+80, this); addDrawableChild(rarityWidget);
         markDirty();
     }
 
