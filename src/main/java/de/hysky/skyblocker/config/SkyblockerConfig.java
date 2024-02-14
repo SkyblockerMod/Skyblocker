@@ -621,6 +621,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public SpidersDen spidersDen = new SpidersDen();
+
+		@SerialEntry
+		public Garden garden = new Garden();
 	}
 
 	public static class Dungeons {
@@ -1020,6 +1023,11 @@ public class SkyblockerConfig {
 		public boolean highlightFoundRelics = true;
 	}
 
+	public static class Garden {
+		@SerialEntry
+		public boolean dicerTitlePrevent = true;
+	}
+
 	public static class Slayer {
 		@SerialEntry
 		public EndermanSlayer endermanSlayer = new EndermanSlayer();
@@ -1116,6 +1124,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean hideMana = false;
+
+		@SerialEntry
+		public ChatFilterResult hideDicer = ChatFilterResult.PASS;
 	}
 
 	public enum Info {
