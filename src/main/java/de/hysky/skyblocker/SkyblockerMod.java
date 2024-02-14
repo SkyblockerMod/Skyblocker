@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
+import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.CreeperBeams;
@@ -137,6 +138,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SecretsTracker.init();
         ApiUtils.init();
         Debug.init();
+        Kuudra.init();
         RenderHelper.init();
         containerSolverManager.init();
         statusBarTracker.init();

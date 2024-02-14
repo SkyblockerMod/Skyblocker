@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
 import java.util.function.Supplier;
 
-public class Waypoint {
+public class Waypoint implements Renderable {
     protected static final float DEFAULT_HIGHLIGHT_ALPHA = 0.5f;
     protected static final float DEFAULT_LINE_WIDTH = 5f;
     public final BlockPos pos;
@@ -74,6 +75,7 @@ public class Waypoint {
         return colorComponents;
     }
 
+    @Override
     public void render(WorldRenderContext context) {
         switch (typeSupplier.get()) {
             case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, getColorComponents(), alpha, throughWalls);

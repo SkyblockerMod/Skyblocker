@@ -608,6 +608,9 @@ public class SkyblockerConfig {
 		public Barn barn = new Barn();
 
 		@SerialEntry
+		public CrimsonIsle crimsonIsle = new CrimsonIsle();
+
+		@SerialEntry
 		public Dungeons dungeons = new Dungeons();
 
 		@SerialEntry
@@ -954,6 +957,37 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean solveTreasureHunter = true;
+	}
+
+	public static class CrimsonIsle {
+		@SerialEntry
+		public Kuudra kuudra = new Kuudra();
+	}
+
+	public static class Kuudra {
+		@SerialEntry
+		public boolean supplyWaypoints = true;
+
+		@SerialEntry
+		public boolean fuelWaypoints = true;
+
+		@SerialEntry
+		public Waypoint.Type suppliesAndFuelWaypointType = Waypoint.Type.WAYPOINT;
+
+		@SerialEntry
+		public boolean ballistaBuildWaypoints = true;
+
+		@SerialEntry
+		public boolean safeSpotWaypoints = true;
+
+		@SerialEntry
+		public boolean pearlWaypoints = true;
+
+		@SerialEntry
+		public boolean noArrowPoisonWarning = true;
+
+		@SerialEntry
+		public int arrowPoisonThreshold = 16;
 	}
 
 	public static class Rift {
