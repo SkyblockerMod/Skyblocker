@@ -175,6 +175,10 @@ public class SkyblockerConfig {
 		public boolean dontStripSkinAlphaValues = true;
 
 		@SerialEntry
+		public boolean dungeonQuality = true;
+
+
+		@SerialEntry
 		public TabHudConf tabHud = new TabHudConf();
 
 		@SerialEntry

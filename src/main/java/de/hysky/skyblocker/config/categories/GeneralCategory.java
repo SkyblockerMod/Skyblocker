@@ -78,6 +78,14 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.flag(OptionFlag.ASSET_RELOAD)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.dungeonQuality"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.dungeonQuality.@Tooltip")))
+						.binding(defaults.general.dungeonQuality,
+								() -> config.general.dungeonQuality,
+								newValue -> config.general.dungeonQuality = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
