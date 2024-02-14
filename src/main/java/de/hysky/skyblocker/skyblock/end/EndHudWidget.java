@@ -14,9 +14,7 @@ import net.minecraft.util.Formatting;
 import java.text.NumberFormat;
 
 public class EndHudWidget extends Widget {
-
-    private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE,
-            Formatting.BOLD);
+    private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
     public static final EndHudWidget INSTANCE = new EndHudWidget(TITLE, Formatting.DARK_PURPLE.getColorValue());
 

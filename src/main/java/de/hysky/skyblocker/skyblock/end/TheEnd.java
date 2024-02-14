@@ -33,15 +33,13 @@ import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class TheEnd {
     protected static final Logger LOGGER = LoggerFactory.getLogger(TheEnd.class);
 
-    public static ArrayList<UUID> hitZealots = new ArrayList<>();
+    public static Set<UUID> hitZealots = new HashSet<>();
     public static int zealotsSinceLastEye = 0;
     public static int zealotsKilled = 0;
     public static int eyes = 0;
@@ -92,7 +90,7 @@ public class TheEnd {
                         //MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
                         for (int i = 0; i < 5; i++) {
                             if (world.getBlockState(new BlockPos(protectorLocation.x, i+5, protectorLocation.z)).isOf(Blocks.PLAYER_HEAD)) {
-                                stage = i+1;
+                                stage = i + 1;
                                 currentProtectorLocation = protectorLocation;
                                 EndHudWidget.INSTANCE.update();
                                 break locationsLoop;
@@ -118,7 +116,7 @@ public class TheEnd {
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             if (Utils.isInTheEnd()) return;
             String lowerCase = message.getString().toLowerCase();
-            if (lowerCase.contains("tremor") && stage != 0) stage+=1; // TODO: If stage is 0 re-scan.
+            if (lowerCase.contains("tremor") && stage != 0) stage += 1; // TODO: If stage is 0 re-scan.
             else if (lowerCase.contains("rises from below")) stage = 5;
             else if (lowerCase.contains("protector down") || lowerCase.contains("has risen")) resetLocation();
             else return;
@@ -147,9 +145,7 @@ public class TheEnd {
             dirty = true;
             hitZealots.remove(enderman.getUuid());
             EndHudWidget.INSTANCE.update();
-
         }
-
     }
 
     public static boolean isZealot(EndermanEntity enderman) {
@@ -193,11 +189,11 @@ public class TheEnd {
         CompletableFuture.runAsync(() -> {
             try (BufferedReader reader = Files.newBufferedReader(FILE)) {
                 PROFILES_STATS = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-                LOGGER.debug("[Skyblocker] Loaded end stats");
+                LOGGER.debug("[Skyblocker End] Loaded end stats");
             } catch (NoSuchFileException ignored) {
                 PROFILES_STATS = new JsonObject();
             } catch (Exception e) {
-                LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load end stats", e);
+                LOGGER.error("[Skyblocker End] Failed to load end stats", e);
             }
         });
     }
@@ -232,10 +228,10 @@ public class TheEnd {
     private static void performSave() {
         try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
             SkyblockerMod.GSON.toJson(PROFILES_STATS, writer);
-            LOGGER.info("[Skyblocker] Saved end stats");
+            LOGGER.info("[Skyblocker End] Saved end stats");
             dirty = false;
         } catch (Exception e) {
-            LOGGER.error("[Skyblocker] Failed to save end stats", e);
+            LOGGER.error("[Skyblocker End] Failed to save end stats", e);
         }
     }
 

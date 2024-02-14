@@ -976,6 +976,24 @@ public class SkyblockerConfig {
 		public int mcGrubberStacks = 0;
 	}
 
+	public static class TheEnd {
+
+		@SerialEntry
+		public boolean hudEnabled = true;
+
+		@SerialEntry
+		public boolean enableBackground = true;
+
+		@SerialEntry
+		public boolean waypoint = true;
+
+		@SerialEntry
+		public int x = 10;
+
+		@SerialEntry
+		public int y = 10;
+	}
+
 	public static class SpidersDen {
 		@SerialEntry
 		public Relics relics = new Relics();
@@ -1085,24 +1103,6 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean hideMana = false;
-	}
-
-	public static class TheEnd {
-
-		@SerialEntry
-		public boolean hudEnabled = true;
-
-		@SerialEntry
-		public boolean enableBackground = true;
-
-		@SerialEntry
-		public boolean waypoint = true;
-
-		@SerialEntry
-		public int x = 10;
-
-		@SerialEntry
-		public int y = 10;
 	}
 
 	public enum Info {
