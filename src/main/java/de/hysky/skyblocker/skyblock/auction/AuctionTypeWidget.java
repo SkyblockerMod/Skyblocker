@@ -10,11 +10,7 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
     /**
      * @param x             x position
      * @param y             y position
-     * @param width         width
-     * @param height        height
-     * @param message       probably useless, just put the widget name
      * @param parent        the parent AuctionsBrowser
-     * @param defaultOption the default option <strong>should be the one at ordinal 0</strong>
      */
     public AuctionTypeWidget(int x, int y, AuctionsBrowserScreen parent) {
         super(x, y, 17, 17, Text.literal("Auction Type Widget"), parent, Option.ALL);
