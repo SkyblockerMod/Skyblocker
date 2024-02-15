@@ -25,11 +25,7 @@ public class TableComponent extends Component {
 
         // pad extra to add a vertical line later
         this.cellW = Math.max(this.cellW, c.width + PAD_S + PAD_L);
-
-        // assume all rows are equally high so overwriting doesn't matter
-        // if this wasn't the case, drawing would need more math
-        // not doing any of that if it's not needed
-        this.cellH = c.height + PAD_S;
+        this.cellH = Math.max(c.height + PAD_S, cellH);
 
         this.width = this.cellW * this.cols;
         this.height = (this.cellH * this.rows) - PAD_S / 2;
@@ -40,8 +36,9 @@ public class TableComponent extends Component {
     public void render(DrawContext context, int xpos, int ypos) {
         for (int x = 0; x < cols; x++) {
             for (int y = 0; y < rows; y++) {
-                if (comps[x][y] != null) {
-                    comps[x][y].render(context, xpos + (x * cellW), ypos + y * cellH);
+                Component comp = comps[x][y];
+                if (comp != null) {
+                    comp.render(context, xpos + (x * cellW), ypos + y * cellH + (cellH / 2 - comp.height / 2));
                 }
             }
             // add a line before the col if we're not drawing the first one
