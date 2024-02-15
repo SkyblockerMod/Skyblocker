@@ -174,7 +174,7 @@ public class ChatRule {
         }
 
         //filter
-        if (testFilter.isEmpty()) return false;
+        if (testFilter.isBlank()) return false;
         if(isRegex) {
             if (isPartialMatch) {
                if (! Pattern.compile(testFilter).matcher(testString).find()) return false;
@@ -190,7 +190,7 @@ public class ChatRule {
         }
 
         //location
-        if (validLocations.isEmpty()){ //if no locations do not check
+        if (validLocations.isBlank()){ //if no locations do not check
             return true;
         }
         String rawLocation = Utils.getLocationRaw();

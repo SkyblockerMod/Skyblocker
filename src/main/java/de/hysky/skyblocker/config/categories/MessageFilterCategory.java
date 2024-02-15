@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudConfigScreen;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -136,7 +137,22 @@ public class MessageFilterCategory {
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new ChatRulesConfigScreen(screen)))
 								.build())
-
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.announcementLength"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.announcementLength.@Tooltip")))
+								.binding(defaults.messages.chatRuleConfig.announcementLength,
+										() -> config.messages.chatRuleConfig.announcementLength,
+										newValue -> config.messages.chatRuleConfig.announcementLength = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(5, 200).step(1))
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.announcementScale"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.announcementScale.@Tooltip")))
+								.binding(defaults.messages.chatRuleConfig.announcementScale,
+										() -> config.messages.chatRuleConfig.announcementScale,
+										newValue -> config.messages.chatRuleConfig.announcementScale = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 8).step(1))
+								.build())
 						.build())
 				.build();
 	}

@@ -1,15 +1,10 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
@@ -78,14 +73,16 @@ public class ChatRulesHandler {
             if (rule.isMatch(plain)) {
                 //get a replacement message
                 Text newMessage;
-                if (!rule.getReplaceMessage().isEmpty()){
+                if (!rule.getReplaceMessage().isBlank()){
                     newMessage = Text.of(rule.getReplaceMessage());
                 }
                 else {
                     newMessage =message;
                 }
 
-                //todo show announcement
+                if (rule.getShowAnnouncement()){
+                    ChatRuleAnnouncementScreen.setText(newMessage);
+                }
 
                 //show in action bar
                 if (rule.getShowActionBar() && CLIENT.player != null) {
@@ -102,7 +99,7 @@ public class ChatRulesHandler {
         return true;
     }
     private static String trimItemColor(String str) {
-        if (str.isEmpty()) return str;
+        if (str.isBlank()) return str;
         return str.replaceAll("§[0-9a-g]", "");
     }
 
