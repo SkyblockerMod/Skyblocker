@@ -5,10 +5,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ChatRulesHandler {
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatRule.class);
     private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chatRules.json");
 
@@ -32,7 +35,7 @@ public class ChatRulesHandler {
 
     public static void init() {
         loadChatRules();
-        ClientReceiveMessageEvents.GAME.register(ChatRulesHandler::checkMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
     }
 
     private static void loadChatRules() {
@@ -62,8 +65,45 @@ public class ChatRulesHandler {
         }
     }
 
-    private static void checkMessage(Text message, Boolean overlay) {
+    /**
+     * Checks each rule in {@link ChatRulesHandler#chatRuleList} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
+     * @param message the chat message
+     * @param overlay if its overlay
+     */
+    private static boolean checkMessage(Text message, Boolean overlay) {
+        if (!Utils.isOnSkyblock()) return true; //do not work not on skyblock
+        if (overlay) return true; //ignore messages in overlay
+        String plain = trimItemColor(message.getString());
+        for (ChatRule rule : chatRuleList)  {
+            if (rule.isMatch(plain)) {
+                //get a replacement message
+                Text newMessage;
+                if (!rule.getReplaceMessage().isEmpty()){
+                    newMessage = Text.of(rule.getReplaceMessage());
+                }
+                else {
+                    newMessage =message;
+                }
 
+                //todo show announcement
+
+                //show in action bar
+                if (rule.getShowActionBar() && CLIENT.player != null) {
+                    CLIENT.player.sendMessage(newMessage, true);
+                }
+                //hide message
+                if (!rule.getHideMessage()  && CLIENT.player != null){
+                    CLIENT.player.sendMessage(newMessage, false);
+                }
+                //do not send original message
+                return false;
+            }
+        }
+        return true;
+    }
+    private static String trimItemColor(String str) {
+        if (str.isEmpty()) return str;
+        return str.replaceAll("§[0-9a-g]", "");
     }
 
 }
