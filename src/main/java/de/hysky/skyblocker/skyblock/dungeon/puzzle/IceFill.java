@@ -28,16 +28,14 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class IceFill extends DungeonPuzzle {
     public static final IceFill INSTANCE = new IceFill();
     private static final float[] RED_COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
-    private static final BlockPos BOARD_1_ORIGIN = new BlockPos(16, 70, 9);
-    private static final BlockPos BOARD_2_ORIGIN = new BlockPos(17, 71, 16);
-    private static final BlockPos BOARD_3_ORIGIN = new BlockPos(18, 72, 25);
+    private static final BlockPos[] BOARD_ORIGINS = {
+            new BlockPos(16, 70, 9),
+            new BlockPos(17, 71, 16),
+            new BlockPos(18, 72, 25)
+    };
     private CompletableFuture<Void> solve;
-    private final boolean[][] iceFillBoard1 = new boolean[3][3];
-    private final boolean[][] iceFillBoard2 = new boolean[5][5];
-    private final boolean[][] iceFillBoard3 = new boolean[7][7];
-    private final List<Vector2ic> iceFillPath1 = new ArrayList<>();
-    private final List<Vector2ic> iceFillPath2 = new ArrayList<>();
-    private final List<Vector2ic> iceFillPath3 = new ArrayList<>();
+    private final boolean[][][] iceFillBoards = {new boolean[3][3], new boolean[5][5], new boolean[7][7]};
+    private final List<List<Vector2ic>> iceFillPaths = List.of(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
     private IceFill() {
         super("ice-fill", "ice-path");
@@ -47,22 +45,22 @@ public class IceFill extends DungeonPuzzle {
         if (Debug.debugEnabled()) {
             ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
                     .then(literal("printBoard1").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoard1)));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoards[0])));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printBoard2").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoard2)));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoards[1])));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printBoard3").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoard3)));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoards[2])));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printPath1").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPath1.toString()));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.get(0).toString()));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printPath2").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPath2.toString()));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.get(1).toString()));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printPath3").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPath3.toString()));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.get(2).toString()));
                         return Command.SINGLE_SUCCESS;
                     }))
             )))));
@@ -89,18 +87,10 @@ public class IceFill extends DungeonPuzzle {
 
         solve = CompletableFuture.runAsync(() -> {
             BlockPos.Mutable pos = new BlockPos.Mutable();
-            boolean board1Changed = updateBoard(client.world, room, iceFillBoard1, pos.set(BOARD_1_ORIGIN));
-            boolean board2Changed = updateBoard(client.world, room, iceFillBoard2, pos.set(BOARD_2_ORIGIN));
-            boolean board3Changed = updateBoard(client.world, room, iceFillBoard3, pos.set(BOARD_3_ORIGIN));
-
-            if (board1Changed) {
-                solve(iceFillBoard1, iceFillPath1);
-            }
-            if (board2Changed) {
-                solve(iceFillBoard2, iceFillPath2);
-            }
-            if (board3Changed) {
-                solve(iceFillBoard3, iceFillPath3);
+            for (int i = 0; i < 3; i++) {
+                if (updateBoard(client.world, room, iceFillBoards[i], pos.set(BOARD_ORIGINS[i]))) {
+                    solve(iceFillBoards[i], iceFillPaths.get(i));
+                }
             }
         });
     }
@@ -141,52 +131,18 @@ public class IceFill extends DungeonPuzzle {
             }
         }
 
-        Vector2ic newPos = pos.add(1, 0, new Vector2i());
-        if (newPos.x() < iceFillBoard.length && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
-            path.add(newPos);
-            visited.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
-            if (newPath != null) {
-                return newPath;
+        Vector2ic[] newPosArray = {pos.add(1, 0, new Vector2i()), pos.add(-1, 0, new Vector2i()), pos.add(0, 1, new Vector2i()), pos.add(0, -1, new Vector2i())};
+        for (Vector2ic newPos : newPosArray) {
+            if (newPos.x() >= 0 && newPos.x() < iceFillBoard.length && newPos.y() >= 0 && newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
+                path.add(newPos);
+                visited.add(newPos);
+                List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
+                if (newPath != null) {
+                    return newPath;
+                }
+                path.remove(path.size() - 1);
+                visited.remove(newPos);
             }
-            path.remove(path.size() - 1);
-            visited.remove(newPos);
-        }
-
-        newPos = pos.add(-1, 0, new Vector2i());
-        if (newPos.x() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
-            path.add(newPos);
-            visited.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
-            if (newPath != null) {
-                return newPath;
-            }
-            path.remove(path.size() - 1);
-            visited.remove(newPos);
-        }
-
-        newPos = pos.add(0, 1, new Vector2i());
-        if (newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
-            path.add(newPos);
-            visited.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
-            if (newPath != null) {
-                return newPath;
-            }
-            path.remove(path.size() - 1);
-            visited.remove(newPos);
-        }
-
-        newPos = pos.add(0, -1, new Vector2i());
-        if (newPos.y() >= 0 && !iceFillBoard[newPos.x()][newPos.y()] && !visited.contains(newPos)) {
-            path.add(newPos);
-            visited.add(newPos);
-            List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
-            if (newPath != null) {
-                return newPath;
-            }
-            path.remove(path.size() - 1);
-            visited.remove(newPos);
         }
 
         return null;
@@ -198,9 +154,9 @@ public class IceFill extends DungeonPuzzle {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();
-        renderPath(context, room, iceFillPath1, BOARD_1_ORIGIN);
-        renderPath(context, room, iceFillPath2, BOARD_2_ORIGIN);
-        renderPath(context, room, iceFillPath3, BOARD_3_ORIGIN);
+        for (int i = 0; i < 3; i++) {
+            renderPath(context, room, iceFillPaths.get(i), BOARD_ORIGINS[i]);
+        }
     }
 
     private void renderPath(WorldRenderContext context, Room room, List<Vector2ic> iceFillPath, BlockPos originPos) {
