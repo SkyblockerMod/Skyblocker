@@ -37,7 +37,7 @@ public class DwarvenHud {
                     "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
                     "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
                     "Goblin Raid",
-                    "(?:Powder Ghast|Star Sentry) Puncher",
+                    "(?:Powder Ghast|Star Sentry|Treasure Hoarder) Puncher",
                     "(?<!Lucky )Raffle",
                     "Lucky Raffle",
                     "2x Mithril Powder Collector",
