@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHud;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
+import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
@@ -121,6 +122,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FireFreezeStaffTimer.init();
         GuardianHealth.init();
         TheRift.init();
+        TheEnd.init();
         SearchOverManager.init();
         TitleContainer.init();
         ScreenMaster.init();

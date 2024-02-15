@@ -2,11 +2,11 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
+import de.hysky.skyblocker.skyblock.end.EndHudConfigScreen;
+import de.hysky.skyblocker.skyblock.end.TheEnd;
+import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class LocationsCategory {
@@ -78,6 +78,49 @@ public class LocationsCategory {
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
 								.build())
 						.build())
+
+				// The end
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.hudEnabled"))
+								.binding(defaults.locations.end.hudEnabled,
+										() -> config.locations.end.hudEnabled,
+										newValue -> config.locations.end.hudEnabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground")) // Reusing that string cuz sure
+								.binding(defaults.locations.end.enableBackground,
+										() -> config.locations.end.enableBackground,
+										newValue -> config.locations.end.enableBackground = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.waypoint"))
+								.binding(defaults.locations.end.waypoint,
+										() -> config.locations.end.waypoint,
+										newValue -> config.locations.end.waypoint = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.screen"))
+								.text(Text.translatable("text.skyblocker.open")) // Reusing again lol
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new EndHudConfigScreen(screen)))
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.resetName"))
+								.text(Text.translatable("text.autoconfig.skyblocker.option.locations.end.resetText"))
+								.action((screen, opt) -> {
+									TheEnd.zealotsKilled = 0;
+									TheEnd.zealotsSinceLastEye = 0;
+									TheEnd.eyes = 0;
+								})
+								.build())
+						.build()
+
+				)
 
 				//Spider's Den
 				.group(OptionGroup.createBuilder()
