@@ -26,8 +26,8 @@ public class ChatRuleConfigScreen extends Screen {
     private TextFieldWidget filterInput;
     private ButtonWidget partialMatchToggle;
     private ButtonWidget regexToggle;
-    //todo location dropdown or somthig
-    //todo item selection thing
+    private ButtonWidget ignoreCaseToggle;
+    private TextFieldWidget locationsInput;
 
     private ButtonWidget hideMessageToggle;
     private ButtonWidget actionBarToggle;
@@ -42,10 +42,9 @@ public class ChatRuleConfigScreen extends Screen {
     private IntIntPair filterLabelTextPos;
     private IntIntPair partialMatchTextPos;
     private IntIntPair regexTextPos;
+    private  IntIntPair ignoreCaseTextPos;
 
-    private IntIntPair validLocationLabelTextPos;
-
-    private IntIntPair validItemLabelTextPos;
+    private IntIntPair locationLabelTextPos;
 
     private IntIntPair outputsLabelTextPos;
 
@@ -73,8 +72,8 @@ public class ChatRuleConfigScreen extends Screen {
     protected void init() {
         super.init();
         if (client == null) return;
-
-        IntIntPair currentPos = IntIntPair.of(5,15);
+        //start centered on the X and 1/3 down on the Y
+        IntIntPair currentPos = IntIntPair.of((this.width - getMaxUsedWidth()) / 2,(int)((this.height -getMaxUsedHeight()) * 0.33));
         int lineXOffset = 0;
 
         nameLabelTextPos = currentPos;
@@ -112,8 +111,23 @@ public class ChatRuleConfigScreen extends Screen {
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
                 .build();
+        lineXOffset += 75 + SPACER_X;
+        ignoreCaseTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
+        lineXOffset += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.ignoreCase")) + SPACER_X;
+        ignoreCaseToggle = ButtonWidget.builder(enabledButtonText(chatRule.getIgnoreCase()), a -> {
+                    chatRule.setIgnoreCase(!chatRule.getIgnoreCase());
+                    ignoreCaseToggle.setMessage(enabledButtonText(chatRule.getIgnoreCase()));
+                })
+                .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
+                .size(75,20)
+                .build();
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
 
+        locationLabelTextPos = currentPos;
+        lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.locations")) + SPACER_X;
+        locationsInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
+        locationsInput.setText(chatRule.getValidLocations());
+        currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
 
         outputsLabelTextPos = IntIntPair.of(currentPos.leftInt() - 10,currentPos.rightInt());
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
@@ -166,11 +180,35 @@ public class ChatRuleConfigScreen extends Screen {
         addDrawableChild(filterInput);
         addDrawableChild(partialMatchToggle);
         addDrawableChild(regexToggle);
+        addDrawableChild(ignoreCaseToggle);
+        addDrawableChild(locationsInput);
         addDrawableChild(hideMessageToggle);
         addDrawableChild(actionBarToggle);
         addDrawableChild(announcementToggle);
         addDrawableChild(replaceMessageInput);
         addDrawableChild(finishButton);
+    }
+
+    /**
+     * works out the width of the maximum line
+     * @return
+     */
+    private int getMaxUsedWidth() {
+        if (client == null) return 0;
+        //text
+        int total = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.partialMatch"));
+        total += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.regex"));
+        total += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.ignoreCase"));
+        //space
+        total += SPACER_X * 6;
+        //button width
+        total += 75 * 3;
+        return total;
+    }
+
+    private int getMaxUsedHeight() {
+        //there are 7 rows so just times the spacer by 7
+        return SPACER_Y * 8;
     }
 
     private Text enabledButtonText(boolean enabled) {
@@ -189,16 +227,17 @@ public class ChatRuleConfigScreen extends Screen {
         //draw labels ands text
         int yOffset = (SPACER_Y - this.textRenderer.fontHeight) / 2;
         context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.inputs"), inputsLabelTextPos.leftInt(), inputsLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.name"), nameLabelTextPos.leftInt(), nameLabelTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.filter"), filterLabelTextPos.leftInt(), filterLabelTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.partialMatch"), partialMatchTextPos.leftInt(), partialMatchTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.regex"), regexTextPos.leftInt(), regexTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        //context.drawTextWithShadow(this.textRenderer,"valid", validItemLabelTextPos.leftInt(), validItemLabelTextPos.rightInt(), 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.outputs"), outputsLabelTextPos.leftInt(), outputsLabelTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.hideMessage"), hideMessageTextPos.leftInt(), hideMessageTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.actionBar"), actionBarTextPos.leftInt(), actionBarTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.announcement"), announcementTextPos.leftInt(), announcementTextPos.rightInt()+ yOffset, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace"), replaceMessageLabelTextPos.leftInt(), replaceMessageLabelTextPos.rightInt()+ yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.name"), nameLabelTextPos.leftInt(), nameLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.filter"), filterLabelTextPos.leftInt(), filterLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.partialMatch"), partialMatchTextPos.leftInt(), partialMatchTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.regex"), regexTextPos.leftInt(), regexTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.ignoreCase"), ignoreCaseTextPos.leftInt(), ignoreCaseTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.locations"), locationLabelTextPos.leftInt(), locationLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.outputs"), outputsLabelTextPos.leftInt(), outputsLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.hideMessage"), hideMessageTextPos.leftInt(), hideMessageTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.actionBar"), actionBarTextPos.leftInt(), actionBarTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.announcement"), announcementTextPos.leftInt(), announcementTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace"), replaceMessageLabelTextPos.leftInt(), replaceMessageLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
     }
 
     @Override
@@ -214,6 +253,7 @@ public class ChatRuleConfigScreen extends Screen {
         chatRule.setName(nameInput.getText());
         chatRule.setFilter(filterInput.getText());
         chatRule.setReplaceMessage(replaceMessageInput.getText());
+        chatRule.setValidLocations(locationsInput.getText());
 
         ChatRulesHandler.chatRuleList.set(chatRuleIndex,chatRule);
     }

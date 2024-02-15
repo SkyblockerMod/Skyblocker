@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.utils.Utils;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.Sound;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -14,22 +13,22 @@ import java.util.regex.Pattern;
  */
 public class ChatRule {
 
-    public String name;
+    private String name;
     //inputs
 
-    public Boolean enabled;
-    public Boolean isPartialMatch;
-    public Boolean isRegex;
-    public Boolean isIgnoreCase;
-    public String filter;
-    public LocationOption validLocation;
+    private Boolean enabled;
+    private Boolean isPartialMatch;
+    private Boolean isRegex;
+    private Boolean isIgnoreCase;
+    private String filter;
+    private String validLocations;
 
     //output
-    public Boolean hideMessage;
-    public Boolean showActionBar;
-    public Boolean showAnnouncement;
-    public String replaceMessage; //todo extract parts of original message
-    public Sound customSound;
+    private Boolean hideMessage;
+    private Boolean showActionBar;
+    private Boolean showAnnouncement;
+    private String replaceMessage; //todo extract parts of original message
+    private Sound customSound;
     /**
      * Creates a chat rule with default options.
      */
@@ -41,7 +40,7 @@ public class ChatRule {
         this.isRegex = false;
         this.isIgnoreCase = true;
         this.filter = "";
-        this.validLocation = LocationOption.None;
+        this.validLocations = "";
 
         this.hideMessage = true;
         this.showActionBar = false;
@@ -51,14 +50,14 @@ public class ChatRule {
     }
 
 
-    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, LocationOption validLocation, List<ItemStack> validItems, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, Sound customSound) {
+    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, String validLocation, List<ItemStack> validItems, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, Sound customSound) {
         this.name = name;
         this.enabled = enabled;
         this.isPartialMatch = isPartialMatch;
         this.isRegex = isRegex;
         this.isIgnoreCase = isIgnoreCase;
         this.filter = filter;
-        this.validLocation = validLocation;
+        this.validLocations = validLocation;
         this.hideMessage = hideMessage;
         this.showActionBar = showActionBar;
         this.showAnnouncement = showAnnouncement;
@@ -90,6 +89,14 @@ public class ChatRule {
         isRegex = regex;
     }
 
+    public Boolean getIgnoreCase() {
+        return isIgnoreCase;
+    }
+
+    public void setIgnoreCase(Boolean ignoreCase) {
+        isIgnoreCase = ignoreCase;
+    }
+
     public String getFilter() {
         return filter;
     }
@@ -97,16 +104,6 @@ public class ChatRule {
     public void setFilter(String filter) {
         this.filter = filter;
     }
-
-    public LocationOption getValidLocation() {
-        return validLocation;
-    }
-
-    public void setValidLocation(LocationOption validLocation) {
-        this.validLocation = validLocation;
-    }
-
-
 
     public Boolean getHideMessage() {
         return hideMessage;
@@ -148,6 +145,14 @@ public class ChatRule {
         this.customSound = customSound;
     }
 
+    public String getValidLocations() {
+        return validLocations;
+    }
+
+    public void setValidLocations(String validLocations) {
+        this.validLocations = validLocations;
+    }
+
     /**
      * checks every input option and if the games state and the inputted str matches them returns true.
      * @param inputString the chat message to check if fits
@@ -185,22 +190,30 @@ public class ChatRule {
         }
 
         //location
+        if (validLocations.isEmpty()){ //if no locations do not check
+            return true;
+        }
         String rawLocation = Utils.getLocationRaw();
-        switch (validLocation){ //todo maybe add functionality straight into utils
-            case Island -> {
-                if (!rawLocation.equals("private_island")) return false;
-            }
-            case Hub -> {
-                if (!rawLocation.equals("hub")) return false;
-            }
-            case Garden -> {
-                if (!rawLocation.equals("garden")) return false;
-            }
-            default -> {}
+        Boolean isLocationValid = null;
+        for (String validLocation : validLocations.replace(" ", "").split(",")) {//the locations are raw locations split by "," and start with ! if not locations
+                if (validLocation.startsWith("!")) {//not location (
+                    if (Objects.equals(validLocation.substring(1), rawLocation)) {
+                        isLocationValid = false;
+                        break;
+                    }
+                }else {
+                    if (Objects.equals(validLocation, rawLocation)) { //normal location
+                        isLocationValid = true;
+                        break;
+                    }
+                }
+        }
+        if (isLocationValid == null || !isLocationValid){//if location is not in the list at all and is a not a "!" location or and is a normal location
+            return true;
         }
 
 
-        return true;
+        return false;
     }
 
     public String getName() {
