@@ -310,6 +310,10 @@ public class AuctionsBrowserScreen extends Screen {
             playClickSound();
             return true;
         }
+        if (hoveredSlot != null) {
+            clickAndWaitForServer(hoveredSlot.id);
+            return true;
+        }
         return false;
     }
 
