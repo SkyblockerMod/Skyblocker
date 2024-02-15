@@ -89,6 +89,7 @@ public class ChatRuleConfigScreen extends Screen {
         lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.filter")) + SPACER_X;
         filterInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
         filterInput.setText(chatRule.getFilter());
+        filterInput.setMaxLength(96);
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
         lineXOffset = 0;
 
@@ -168,6 +169,7 @@ public class ChatRuleConfigScreen extends Screen {
         lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace")) + SPACER_X;
         replaceMessageInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
         replaceMessageInput.setText(chatRule.getReplaceMessage());
+        replaceMessageInput.setMaxLength(96);
 
         finishButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.finish"), a -> {
                 close();

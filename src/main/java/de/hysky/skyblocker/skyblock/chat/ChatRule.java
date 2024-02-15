@@ -208,7 +208,7 @@ public class ChatRule {
                     }
                 }
         }
-        if (isLocationValid == null || !isLocationValid){//if location is not in the list at all and is a not a "!" location or and is a normal location
+        if (isLocationValid == null || isLocationValid){//if location is not in the list at all and is a not a "!" location or and is a normal location
             return true;
         }
 
