@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -83,6 +82,7 @@ public class RarityWidget extends ClickableWidget {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
+        if (parent.isWaitingForServer()) return;
         if (slotId == -1) return;
         if (isOnLeftArrow((int) mouseX)) {
             parent.clickAndWaitForServer(slotId, 1);
