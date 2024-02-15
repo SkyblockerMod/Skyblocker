@@ -140,6 +140,18 @@ public class ItemTooltip {
             }
         }
 
+        if (SkyblockerConfigManager.get().general.dungeonQuality) {
+            NbtCompound ea = ItemUtils.getExtraAttributes(stack);
+            if (ea != null && ea.contains("baseStatBoostPercentage")) {
+                int baseStatBoostPercentage = ea.getInt("baseStatBoostPercentage");
+                if (baseStatBoostPercentage == 50) {
+                    lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
+                } else {
+                    lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
+                }
+            }
+        }
+
         if (TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
             lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
                     .formatted(Formatting.LIGHT_PURPLE)
@@ -281,7 +293,6 @@ public class ItemTooltip {
         }
         return internalName;
     }
-
 
     private static Text getCoinsMessage(double price, int count) {
         // Format the price string once

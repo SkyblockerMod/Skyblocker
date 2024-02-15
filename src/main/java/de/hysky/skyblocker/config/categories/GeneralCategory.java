@@ -79,6 +79,14 @@ public class GeneralCategory {
 						.flag(OptionFlag.ASSET_RELOAD)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.dungeonQuality"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.dungeonQuality.@Tooltip")))
+						.binding(defaults.general.dungeonQuality,
+								() -> config.general.dungeonQuality,
+								newValue -> config.general.dungeonQuality = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.visitorHelper"))
 						.binding(defaults.general.visitorHelper,
 								() -> config.general.visitorHelper,
