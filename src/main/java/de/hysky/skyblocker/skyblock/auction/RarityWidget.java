@@ -39,15 +39,16 @@ public class RarityWidget extends ClickableWidget {
         // Text
         TextRenderer textRenderer = parent.getTextRender();
         int textWidth = textRenderer.getWidth(current);
+        int color = 0xFFEAEAEA;
         if (textWidth > 34) {
             matrices.push();
             //matrices.translate(-7-getX(), -5.5f-getY(), 0);
             matrices.translate(7, 5.5f, 0);
             matrices.scale(34.f/textWidth, 34.f/textWidth, 1.f);
-            context.drawText(textRenderer, current, 0, -textRenderer.fontHeight/2, Colors.WHITE, false);
+            context.drawText(textRenderer, current, 0, -textRenderer.fontHeight/2, color, false);
             matrices.pop();
         } else {
-            context.drawText(textRenderer, current, 7, 2, Colors.WHITE, false);
+            context.drawText(textRenderer, current, 7, 2, color, false);
         }
 
         matrices.pop();
