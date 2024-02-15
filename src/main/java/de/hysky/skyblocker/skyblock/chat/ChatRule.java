@@ -20,6 +20,7 @@ public class ChatRule {
     public Boolean enabled;
     public Boolean isPartialMatch;
     public Boolean isRegex;
+    public Boolean isIgnoreCase;
     public String filter;
     public LocationOption validLocation;
 
@@ -38,6 +39,7 @@ public class ChatRule {
         this.enabled = true;
         this.isPartialMatch = false;
         this.isRegex = false;
+        this.isIgnoreCase = true;
         this.filter = "";
         this.validLocation = LocationOption.None;
 
@@ -49,11 +51,12 @@ public class ChatRule {
     }
 
 
-    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, String filter, LocationOption validLocation, List<ItemStack> validItems, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, Sound customSound) {
+    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, LocationOption validLocation, List<ItemStack> validItems, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, Sound customSound) {
         this.name = name;
         this.enabled = enabled;
         this.isPartialMatch = isPartialMatch;
         this.isRegex = isRegex;
+        this.isIgnoreCase = isIgnoreCase;
         this.filter = filter;
         this.validLocation = validLocation;
         this.hideMessage = hideMessage;
@@ -147,26 +150,37 @@ public class ChatRule {
 
     /**
      * checks every input option and if the games state and the inputted str matches them returns true.
-     * @param str the chat message to check if fits
+     * @param inputString the chat message to check if fits
      * @return if the inputs are all true and the outputs should be performed
      */
-    public Boolean isMatch(String str, MinecraftClient client){
+    public Boolean isMatch(String inputString){
         //enabled
         if (!enabled) return false;
 
+        //ignore case
+        String testString;
+        String testFilter;
+        if (isIgnoreCase){
+            testString = inputString.toLowerCase();
+            testFilter = filter.toLowerCase();
+        }else {
+            testString = inputString;
+            testFilter = filter;
+        }
+
         //filter
-        if (filter.isEmpty()) return false;
+        if (testFilter.isEmpty()) return false;
         if(isRegex) {
             if (isPartialMatch) {
-               if (! Pattern.compile(filter).matcher(str).find()) return false;
+               if (! Pattern.compile(testFilter).matcher(testString).find()) return false;
             }else {
-                if (!str.matches(filter)) return false;
+                if (!testString.matches(testFilter)) return false;
             }
         } else{
             if (isPartialMatch) {
-                if (!str.contains(filter)) return false;
+                if (!testString.contains(testFilter)) return false;
             }else {
-                if (!filter.equals(str)) return false;
+                if (!testFilter.equals(testString)) return false;
             }
         }
 

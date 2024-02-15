@@ -126,6 +126,7 @@ public class MessageFilterCategory {
 								() -> config.messages.hideDicer,
 								newValue -> config.messages.hideDicer = newValue)
 						.controller(ConfigUtils::createEnumCyclingListController)
+						.build())
 				//chat rules options
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules"))
