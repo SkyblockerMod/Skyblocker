@@ -16,7 +16,8 @@ public class ChatRuleConfigScreen extends Screen {
     private static final int SPACER_X = 5;
     private static final int SPACER_Y = 25;
 
-    private  ChatRule chatRule;
+    private final int chatRuleIndex;
+    private final ChatRule chatRule;
 
     //widgets
     private ButtonWidget finishButton;
@@ -61,9 +62,10 @@ public class ChatRuleConfigScreen extends Screen {
 
 
 
-    public ChatRuleConfigScreen(Screen parent, ChatRule chatRule) {
+    public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
         super(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen"));
-        this.chatRule = chatRule;
+        this.chatRuleIndex = chatRuleIndex;
+        this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
         this.parent = parent;
     }
 
@@ -160,8 +162,6 @@ public class ChatRuleConfigScreen extends Screen {
                 .size(75,20)
                 .build();
 
-
-
         addDrawableChild(nameInput);
         addDrawableChild(filterInput);
         addDrawableChild(partialMatchToggle);
@@ -171,8 +171,6 @@ public class ChatRuleConfigScreen extends Screen {
         addDrawableChild(announcementToggle);
         addDrawableChild(replaceMessageInput);
         addDrawableChild(finishButton);
-
-
     }
 
     private Text enabledButtonText(boolean enabled) {
@@ -208,7 +206,15 @@ public class ChatRuleConfigScreen extends Screen {
         //todo add checks to see if valid rule e.g. has name
         //and if valid save a
         if (client != null ) {
+            save();
             client.setScreen(parent);
         }
+    }
+    private void save(){
+        chatRule.setName(nameInput.getText());
+        chatRule.setFilter(filterInput.getText());
+        chatRule.setReplaceMessage(replaceMessageInput.getText());
+
+        ChatRulesHandler.chatRuleList.set(chatRuleIndex,chatRule);
     }
 }
