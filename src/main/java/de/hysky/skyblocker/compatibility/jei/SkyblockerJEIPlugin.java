@@ -4,10 +4,12 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.registration.IModIngredientRegistration;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRuntimeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.library.load.registration.SubtypeRegistration;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
@@ -29,18 +31,12 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.useNbtForSubtypes(ItemRepository.getItemsStream().map(ItemStack::getItem).toArray(Item[]::new));
-    }
-
-    @Override
-    public void registerIngredients(IModIngredientRegistration registration) {
-
+        registration.useNbtForSubtypes(ItemRepository.getItemsStream().map(ItemStack::getItem).distinct().filter(item -> !((SubtypeRegistration) registration).getInterpreters().contains(VanillaTypes.ITEM_STACK, item)).toArray(Item[]::new));
     }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        skyblockCraftingRecipeCategory = new SkyblockCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper());
-        registration.addRecipeCategories(skyblockCraftingRecipeCategory);
+        registration.addRecipeCategories(skyblockCraftingRecipeCategory = new SkyblockCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -58,5 +54,12 @@ public class SkyblockerJEIPlugin implements IModPlugin {
                         'i', Ingredient.ofStacks(recipe.getGrid().get(8))
                 ), "abc", "def", "ghi"), recipe.getResult()))
         ).toList());
+    }
+
+    @Override
+    public void registerRuntime(IRuntimeRegistration registration) {
+        if (!ItemRepository.getItems().isEmpty()) {
+            registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
+        }
     }
 }
