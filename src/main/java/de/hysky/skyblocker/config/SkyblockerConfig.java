@@ -177,7 +177,7 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public boolean dungeonQuality = true;
 
-    @SerialEntry
+		@SerialEntry
 		public boolean visitorHelper = true;
 
 		@SerialEntry

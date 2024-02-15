@@ -82,7 +82,6 @@ public class ItemTooltip {
             lbinExist = true;
         }
 
-
         if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
             if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 nullWarning();
@@ -141,15 +140,15 @@ public class ItemTooltip {
             }
         }
 
-        if (ItemUtils.getExtraAttributes(stack).contains("baseStatBoostPercentage") && SkyblockerConfigManager.get().general.dungeonQuality){
-            if (getBaseStatBoostPercentage(stack) == 50) {
-                lines.add(Text.literal(String.format("%-18s", "Item Quality:"))
-                        .formatted(Formatting.RED)
-                        .append(getBaseStatBoostPercentage(stack) + "/50").formatted(Formatting.BOLD));
-            } else {
-                lines.add(Text.literal(String.format("%-21s", "Item Quality:"))
-                        .formatted(Formatting.BLUE)
-                        .append(getBaseStatBoostPercentage(stack) + "/50"));
+        if (SkyblockerConfigManager.get().general.dungeonQuality) {
+            NbtCompound ea = ItemUtils.getExtraAttributes(stack);
+            if (ea != null && ea.contains("baseStatBoostPercentage")) {
+                int baseStatBoostPercentage = ea.getInt("baseStatBoostPercentage");
+                if (baseStatBoostPercentage == 50) {
+                    lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
+                } else {
+                    lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
+                }
             }
         }
 
@@ -293,11 +292,6 @@ public class ItemTooltip {
             }
         }
         return internalName;
-    }
-
-    public static int getBaseStatBoostPercentage(ItemStack stack) {
-        NbtCompound ea = ItemUtils.getExtraAttributes(stack);
-        return ea.getInt("baseStatBoostPercentage");
     }
 
     private static Text getCoinsMessage(double price, int count) {
