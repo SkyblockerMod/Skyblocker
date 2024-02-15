@@ -89,7 +89,7 @@ public class ChatRulesConfigScreen extends Screen {
 
     @Override
     public void close() {
-        if (client != null ) { //todo && chatRuleConfigListWidget.hasChanges()
+        if (client != null && chatRulesConfigListWidget.hasChanges()) {
             client.setScreen(new ConfirmScreen(confirmedAction -> {
                 if (confirmedAction) {
                     this.client.setScreen(parent);
@@ -103,8 +103,6 @@ public class ChatRulesConfigScreen extends Screen {
     }
 
     protected void updateButtons() {
-        buttonDelete.active = Shortcuts.isShortcutsLoaded() && chatRulesConfigListWidget.getSelectedOrNull() != null;
-        buttonNew.active = Shortcuts.isShortcutsLoaded() ; //todo ? && chatRuleConfigListWidget.getCategory().isPresent()
-        buttonDone.active = Shortcuts.isShortcutsLoaded();
+        buttonDelete.active = chatRulesConfigListWidget.getSelectedOrNull() != null;
     }
 }

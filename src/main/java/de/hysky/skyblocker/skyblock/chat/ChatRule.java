@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.utils.Utils;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.Sound;
 import net.minecraft.item.ItemStack;
@@ -13,22 +14,21 @@ import java.util.regex.Pattern;
  */
 public class ChatRule {
 
-    private String name;
+    public String name;
     //inputs
-    private Boolean enabled;
-    private Boolean isPartialMatch;
-    private Boolean isRegex;
-    private String filter;
-    private LocationOption validLocation;
-    private List<ItemStack> validItems;
+
+    public Boolean enabled;
+    public Boolean isPartialMatch;
+    public Boolean isRegex;
+    public String filter;
+    public LocationOption validLocation;
 
     //output
-    private Boolean hideMessage;
-    private Boolean showActionBar;
-    private Boolean showAnnouncement;
-    private String replaceMessage; //todo extract parts of original message
-    private Sound customSound;
-
+    public Boolean hideMessage;
+    public Boolean showActionBar;
+    public Boolean showAnnouncement;
+    public String replaceMessage; //todo extract parts of original message
+    public Sound customSound;
     /**
      * Creates a chat rule with default options.
      */
@@ -40,7 +40,6 @@ public class ChatRule {
         this.isRegex = false;
         this.filter = "";
         this.validLocation = LocationOption.None;
-        this.validItems = List.of();
 
         this.hideMessage = true;
         this.showActionBar = false;
@@ -57,7 +56,6 @@ public class ChatRule {
         this.isRegex = isRegex;
         this.filter = filter;
         this.validLocation = validLocation;
-        this.validItems = validItems;
         this.hideMessage = hideMessage;
         this.showActionBar = showActionBar;
         this.showAnnouncement = showAnnouncement;
@@ -105,13 +103,7 @@ public class ChatRule {
         this.validLocation = validLocation;
     }
 
-    public List<ItemStack> getValidItems() {
-        return validItems;
-    }
 
-    public void setValidItems(List<ItemStack> validItems) {
-        this.validItems = validItems;
-    }
 
     public Boolean getHideMessage() {
         return hideMessage;
@@ -146,7 +138,7 @@ public class ChatRule {
     }
 
     public Sound getCustomSound() {
-        return customSound;
+       return customSound;
     }
 
     public void setCustomSound(Sound customSound) {
@@ -193,12 +185,6 @@ public class ChatRule {
             default -> {}
         }
 
-        //held items
-        if (!validItems.isEmpty()){
-            if (client.player == null) return false;
-            ItemStack heldItem = client.player.getMainHandStack();
-            if (!validItems.contains(heldItem)) return false;
-        }
 
         return true;
     }

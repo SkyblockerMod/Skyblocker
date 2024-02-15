@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
+import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
 import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.CreeperBeams;
@@ -107,6 +108,7 @@ public class SkyblockerMod implements ClientModInitializer {
         CrystalsLocationsManager.init();
         ChatMessageListener.init();
         Shortcuts.init();
+        ChatRulesHandler.init();
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();

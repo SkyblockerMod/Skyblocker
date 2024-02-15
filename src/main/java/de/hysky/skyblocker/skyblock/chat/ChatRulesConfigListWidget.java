@@ -4,7 +4,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -17,18 +16,29 @@ import java.util.List;
 
 public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.chatRuleConfigEntry> {
 
-    private List<ChatRule> chatRules;
 
     private final ChatRulesConfigScreen screen;
+
+    private Boolean hasChanged;
 
     public ChatRulesConfigListWidget(MinecraftClient minecraftClient, ChatRulesConfigScreen screen, int width, int height, int y, int itemHeight) {
         super(minecraftClient, width, height, y, itemHeight);
         this.screen = screen;
-        chatRules = List.of(); //todo load existing
+        this.hasChanged = false;
         //add entry fall all existing rules
-        for (ChatRule rule : chatRules){
-            addEntry(new chatRuleConfigEntry(rule));
+        for (int i = 0; i < (long) ChatRulesHandler.chatRuleList.size(); i++){
+            addEntry(new chatRuleConfigEntry(i));
         }
+    }
+
+    @Override
+    public int getRowWidth() {
+        return super.getRowWidth() + 100;
+    }
+
+    @Override
+    protected int getScrollbarPositionX() {
+        return super.getScrollbarPositionX() + 50;
     }
 
     @Override
@@ -38,29 +48,36 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
     }
 
     protected void addRuleAfterSelected() {
-        children().add(children().indexOf(getSelectedOrNull()) + 1, new chatRuleConfigEntry(new ChatRule()));
+        hasChanged = true;
+        int newIndex = children().indexOf(getSelectedOrNull()) + 1;
+        ChatRulesHandler.chatRuleList.add(newIndex, new ChatRule());
+        children().add(newIndex, new chatRuleConfigEntry(newIndex));
     }
 
     protected boolean removeEntry(chatRuleConfigEntry entry) {
+        hasChanged = true;
         return super.removeEntry(entry);
     }
 
 
     protected void saveRules() {
-        //todo save rules
-        /*
-        shortcutMaps.forEach(Map::clear);
-        getNotEmptyShortcuts().forEach(ShortcutsConfigListWidget.ShortcutEntry::save);
-        Shortcuts.saveShortcuts(MinecraftClient.getInstance()); // Save shortcuts to disk
-         */
+        hasChanged = false;
+        ChatRulesHandler.saveChatRules();
     }
 
-    public class chatRuleConfigEntry extends ElementListWidget.Entry<ChatRulesConfigListWidget.chatRuleConfigEntry> {
+
+    protected boolean hasChanges(){
+        return (hasChanged || children().stream().anyMatch(chatRuleConfigEntry::hasChange));
+    }
+
+    public class chatRuleConfigEntry extends Entry<chatRuleConfigEntry> {
 
         private static final int SPACING = 20;
 
         //data
+        private int chatRuleIndex;
         private ChatRule chatRule;
+
 
 
         private final List<? extends Element> children;
@@ -74,8 +91,9 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         private final int enabledX;
 
 
-        public chatRuleConfigEntry(ChatRule chatRule) {
-            this.chatRule = chatRule;
+        public chatRuleConfigEntry(int chatRuleIndex) {
+            this.chatRuleIndex = chatRuleIndex;
+            this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
 
             //initialize the widgets
             int currentX  = width / 2 - 160;
@@ -96,7 +114,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
             currentX += SPACING; //spacer
 
             openConfigWidget = ButtonWidget.builder(Text.of("Edit Rule"), a -> {
-                        client.setScreen(new ChatRuleConfigScreen(screen, chatRule));
+                        client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex));
             })
                     .size(100,20)
                     .position(currentX,5)
@@ -114,9 +132,12 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
             }
         }
         private void toggleEnabled() {
+            hasChanged = true;
             chatRule.setEnabled(!chatRule.getEnabled());
             enabledWidget.setMessage(enabledButtonText());
         }
+
+
 
         @Override
         public List<? extends Selectable> selectableChildren() {
@@ -148,6 +169,10 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
             //text
             context.drawTextWithShadow(client.textRenderer, "Rule: \"" + chatRule.getName() + "\"", labelX, y + 5, 0xFFFFFF);
             context.drawTextWithShadow(client.textRenderer, "enabled:", enabledX, y + 5, 0xFFFFFF);
+        }
+
+        public boolean hasChange() {
+            return (!chatRule.getEnabled().equals(ChatRulesHandler.chatRuleList.get(chatRuleIndex).getEnabled()));
         }
     }
 }
