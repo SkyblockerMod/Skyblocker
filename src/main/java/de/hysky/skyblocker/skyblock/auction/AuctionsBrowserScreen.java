@@ -19,6 +19,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -65,6 +66,8 @@ public class AuctionsBrowserScreen extends Screen {
     private @Nullable Slot hoveredSlot = null;
     private int prevPageSlotId = -1;
     private int nextPageSlotId = -1;
+    private int searchSlotId = -1;
+    private String search = "";
 
     private int currentPage = 1;
     private int totalPages = 1;
@@ -142,6 +145,19 @@ public class AuctionsBrowserScreen extends Screen {
                 if (!pageParsed) {
                     parsePage(stack);
                     pageParsed = true;
+                }
+            } else if (stack.isOf(Items.OAK_SIGN) && stackName.contains("search")) {
+                searchSlotId = i;
+                List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                for (Text text : tooltip) {
+                    String string = text.getString();
+                    if (string.contains("Filtered:")) {
+                        String[] split = string.split(":");
+                        if (split.length < 2) {
+                            search = "";
+                        } else search = split[1].trim();
+                        break;
+                    }
                 }
             }
         }
@@ -254,7 +270,13 @@ public class AuctionsBrowserScreen extends Screen {
         matrices.pop();
         // Inventory title
         context.drawText(this.textRenderer, playerInventory.getDisplayName(), 8, 187-94, 0x404040, false);
+        // Slot highlight
         if (highlightSlotX != -1) HandledScreen.drawSlotHighlight(context, highlightSlotX, highlightSlotY, 0);
+
+        // Search
+        context.enableScissor(x+7, y+4, x+97, y+16);
+        context.drawText(textRenderer, Text.literal(search).fillStyle(Style.EMPTY.withUnderline(onSearchField(mouseX, mouseY))), 9, 6, Colors.WHITE, true);
+        context.disableScissor();
 
         // Scrollbar
         if (prevPageSlotId != -1) {
@@ -296,6 +318,12 @@ public class AuctionsBrowserScreen extends Screen {
         return localX > 154 && localX < 169 && localY > 43 && localY < 75;
     }
 
+    private boolean onSearchField(int mouseX, int mouseY) {
+        int localX = mouseX - x;
+        int localY = mouseY - y;
+        return localX > 6 && localX < 97 && localY > 3 && localY < 16;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
@@ -312,6 +340,11 @@ public class AuctionsBrowserScreen extends Screen {
         }
         if (hoveredSlot != null) {
             clickAndWaitForServer(hoveredSlot.id);
+            return true;
+        }
+        if (onSearchField((int)mouseX, (int) mouseY) && searchSlotId != -1) {
+            clickAndWaitForServer(searchSlotId);
+            playClickSound();
             return true;
         }
         return false;

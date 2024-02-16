@@ -24,7 +24,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
         if (player == null) return;
         T screenHandler = type.create(id, player.getInventory());
         if (!(screenHandler instanceof  GenericContainerScreenHandler containerScreenHandler)) return;
-        if (PartyFinderScreen.possibleInventoryNames.contains(name.getString().toLowerCase())) {
+        String nameLowerCase = name.getString().toLowerCase();
+        if (PartyFinderScreen.possibleInventoryNames.contains(nameLowerCase)) {
             if (!SkyblockerConfigManager.get().general.betterPartyFinder) return;
             if (client.currentScreen != null) {
                 String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
@@ -44,7 +45,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
             }
 
             ci.cancel();
-        } else if (name.getString().toLowerCase().contains("auctions browser")) {
+        } else if (nameLowerCase.contains("auctions browser") || nameLowerCase.contains("auctions:")) {
             if (!SkyblockerConfigManager.get().general.betterAuctionsBrowser) return;
             client.player.currentScreenHandler = containerScreenHandler;
             if (client.currentScreen instanceof AuctionsBrowserScreen screen) {
