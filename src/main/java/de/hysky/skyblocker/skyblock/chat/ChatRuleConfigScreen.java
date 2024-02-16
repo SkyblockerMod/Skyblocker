@@ -88,8 +88,8 @@ public class ChatRuleConfigScreen extends Screen {
         filterLabelTextPos = currentPos;
         lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.filter")) + SPACER_X;
         filterInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
-        filterInput.setText(chatRule.getFilter());
         filterInput.setMaxLength(96);
+        filterInput.setText(chatRule.getFilter());
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
         lineXOffset = 0;
 
@@ -168,13 +168,13 @@ public class ChatRuleConfigScreen extends Screen {
         replaceMessageLabelTextPos = currentPos;
         lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace")) + SPACER_X;
         replaceMessageInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
-        replaceMessageInput.setText(chatRule.getReplaceMessage());
         replaceMessageInput.setMaxLength(96);
+        replaceMessageInput.setText(chatRule.getReplaceMessage());
 
         finishButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.finish"), a -> {
                 close();
         })
-                .position((int) (this.width * 0.66), this.height - SPACER_Y)
+                .position(this.width - 75 - SPACER_Y, this.height - SPACER_Y)
                 .size(75,20)
                 .build();
 
@@ -193,7 +193,7 @@ public class ChatRuleConfigScreen extends Screen {
 
     /**
      * works out the width of the maximum line
-     * @return
+     * @return the max used width
      */
     private int getMaxUsedWidth() {
         if (client == null) return 0;

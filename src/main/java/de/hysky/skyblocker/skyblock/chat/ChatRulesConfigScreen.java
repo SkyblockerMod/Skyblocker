@@ -14,10 +14,8 @@ import net.minecraft.text.Text;
 public class ChatRulesConfigScreen extends Screen {
 
     private ChatRulesConfigListWidget chatRulesConfigListWidget;
-    private ButtonWidget buttonDelete;
     private ButtonWidget buttonNew;
     private ButtonWidget buttonDone;
-    private double scrollAmount;
     private final Screen parent;
 
     public ChatRulesConfigScreen() {
@@ -25,7 +23,7 @@ public class ChatRulesConfigScreen extends Screen {
     }
 
     public ChatRulesConfigScreen(Screen parent) {
-        super(Text.translatable("skyblocker.shortcuts.config")); //todo correct name for whole code
+        super(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen"));
         this.parent = parent;
     }
 
@@ -41,44 +39,24 @@ public class ChatRulesConfigScreen extends Screen {
         addDrawableChild(chatRulesConfigListWidget);
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().marginX(5).marginY(2);
-        GridWidget.Adder adder = gridWidget.createAdder(2);
-        buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.delete"), button -> {
-            ChatRulesConfigListWidget.chatRuleConfigEntry currentChatRuleConfigEntry = chatRulesConfigListWidget.getSelectedOrNull();
-            if (client != null && currentChatRuleConfigEntry != null ) {
-                scrollAmount = chatRulesConfigListWidget.getScrollAmount();
-                client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", currentChatRuleConfigEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL)); //todo load text for this config
-            }
-        }).build();
-        adder.add(buttonDelete);
-        buttonNew = ButtonWidget.builder(Text.translatable("skyblocker.shortcuts.new"), buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()).build();
-        adder.add(buttonNew);
+        GridWidget.Adder adder = gridWidget.createAdder(3);
         adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> {
             if (client != null) {
                 close();
             }
         }).build());
+        buttonNew = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.new"), buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()).build();
+        adder.add(buttonNew);
         buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
             chatRulesConfigListWidget.saveRules();
             if (client != null) {
                 close();
             }
-        }).tooltip(Tooltip.of(Text.translatable("skyblocker.shortcuts.commandSuggestionTooltip"))).build();
+        }).build();
         adder.add(buttonDone);
         gridWidget.refreshPositions();
         SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
         gridWidget.forEachChild(this::addDrawableChild);
-        updateButtons();
-    }
-
-    private void deleteEntry(boolean confirmedAction) {
-        if (client != null) {
-            ChatRulesConfigListWidget.chatRuleConfigEntry currentChatRuleConfigEntry = chatRulesConfigListWidget.getSelectedOrNull();
-            if (confirmedAction && currentChatRuleConfigEntry != null) {
-                chatRulesConfigListWidget.removeEntry(currentChatRuleConfigEntry);
-            }
-            client.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
-            chatRulesConfigListWidget.setScrollAmount(scrollAmount);
-        }
     }
 
     @Override
@@ -100,9 +78,5 @@ public class ChatRulesConfigScreen extends Screen {
         } else {
             this.client.setScreen(parent);
         }
-    }
-
-    protected void updateButtons() {
-        buttonDelete.active = chatRulesConfigListWidget.getSelectedOrNull() != null;
     }
 }

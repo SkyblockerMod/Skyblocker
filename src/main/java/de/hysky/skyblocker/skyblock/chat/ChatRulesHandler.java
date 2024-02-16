@@ -69,7 +69,7 @@ public class ChatRulesHandler {
         if (!Utils.isOnSkyblock()) return true; //do not work not on skyblock
         if (overlay) return true; //ignore messages in overlay
         String plain = trimItemColor(message.getString());
-        for (ChatRule rule : chatRuleList)  {
+        for (ChatRule rule : chatRuleList) {
             if (rule.isMatch(plain)) {
                 //get a replacement message
                 Text newMessage;
@@ -77,7 +77,7 @@ public class ChatRulesHandler {
                     newMessage = Text.of(rule.getReplaceMessage());
                 }
                 else {
-                    newMessage =message;
+                    newMessage = message;
                 }
 
                 if (rule.getShowAnnouncement()){

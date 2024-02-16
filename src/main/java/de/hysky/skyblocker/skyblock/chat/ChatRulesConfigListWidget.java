@@ -4,17 +4,19 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.List;
 
-public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.chatRuleConfigEntry> {
+public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
 
 
     private final ChatRulesConfigScreen screen;
@@ -25,6 +27,8 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         super(minecraftClient, width, height, y, itemHeight);
         this.screen = screen;
         this.hasChanged = false;
+        //add labels
+        addEntry(new chatRuleLabelsEntry());
         //add entry fall all existing rules
         for (int i = 0; i < (long) ChatRulesHandler.chatRuleList.size(); i++){
             addEntry(new chatRuleConfigEntry(i));
@@ -41,20 +45,16 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         return super.getScrollbarPositionX() + 50;
     }
 
-    @Override
-    public void setSelected(@Nullable ChatRulesConfigListWidget.chatRuleConfigEntry entry) {
-        super.setSelected(entry);
-        screen.updateButtons();
-    }
+
 
     protected void addRuleAfterSelected() {
         hasChanged = true;
         int newIndex = children().indexOf(getSelectedOrNull()) + 1;
         ChatRulesHandler.chatRuleList.add(newIndex, new ChatRule());
-        children().add(newIndex, new chatRuleConfigEntry(newIndex));
+        children().add(newIndex + 1, new chatRuleConfigEntry(newIndex));
     }
 
-    protected boolean removeEntry(chatRuleConfigEntry entry) {
+    protected boolean removeEntry(AbstractChatRuleEntry entry) {
         hasChanged = true;
         return super.removeEntry(entry);
     }
@@ -67,28 +67,52 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
 
     protected boolean hasChanges(){
-        return (hasChanged || children().stream().anyMatch(chatRuleConfigEntry::hasChange));
+        return (hasChanged || children().stream().filter(chatRuleConfigEntry.class::isInstance).map(chatRuleConfigEntry.class::cast).anyMatch(chatRuleConfigEntry::isChange));
     }
 
-    public class chatRuleConfigEntry extends Entry<chatRuleConfigEntry> {
+    protected static abstract class AbstractChatRuleEntry extends Entry<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
+    }
 
-        private static final int SPACING = 20;
+    private class chatRuleLabelsEntry extends AbstractChatRuleEntry {
 
+        @Override
+        public List<? extends Selectable> selectableChildren() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends Element> children() {
+            return List.of();
+        }
+
+        @Override
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleName"), width / 2 - 125, y + 5, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleEnabled"), width / 2, y + 5, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.modify"), width / 2 + 100, y + 5, 0xFFFFFF);
+        }
+    }
+
+    private class chatRuleConfigEntry extends AbstractChatRuleEntry {
         //data
         private int chatRuleIndex;
         private ChatRule chatRule;
 
-
-
         private final List<? extends Element> children;
 
-        //widgets
-        private final ButtonWidget enabledWidget;
-        private final ButtonWidget openConfigWidget;
+
+
+            //widgets
+        private final ButtonWidget enabledButton;
+        private final ButtonWidget openConfigButton;
+        private final ButtonWidget deleteButton;
+
 
         //text locations
-        private final int labelX;
-        private final int enabledX;
+        private final int nameX = width / 2 - 125;
+
+        //saved data
+        private double oldScrollAmount = 0;
 
 
         public chatRuleConfigEntry(int chatRuleIndex) {
@@ -96,48 +120,57 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
             this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
 
             //initialize the widgets
-            int currentX  = width / 2 - 160;
-            labelX = currentX;
-            currentX += client.textRenderer.getWidth("Rule: \"" + chatRule.getName() + "\"");
-            currentX += SPACING; //spacer
 
-            enabledX = currentX;
-            currentX += client.textRenderer.getWidth("Enabled:");
-            enabledWidget = ButtonWidget.builder(enabledButtonText() , a -> {
+            enabledButton = ButtonWidget.builder(enabledButtonText() , a -> {
                 toggleEnabled();
             })
                     .size(50,20)
-                    .position(currentX,5)
+                    .position(width / 2 - 25,5)
                     .build()
             ;
-            currentX += 50;
-            currentX += SPACING; //spacer
 
-            openConfigWidget = ButtonWidget.builder(Text.of("Edit Rule"), a -> {
+            openConfigButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.editRule"), a -> {
                         client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex));
             })
-                    .size(100,20)
-                    .position(currentX,5)
+                    .size(50,20)
+                    .position(width / 2 + 45,5)
+                    .build()
+            ;
+            deleteButton = ButtonWidget.builder(Text.translatable("selectServer.delete"), a -> {
+                        oldScrollAmount = getScrollAmount();
+                        client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+                    })
+                    .size(50,20)
+                    .position(width / 2 + 105,5)
                     .build()
             ;
 
-            children = List.of(enabledWidget, openConfigWidget);
+
+            children = List.of(enabledButton, openConfigButton, deleteButton);
         }
 
         private Text enabledButtonText() {
             if (chatRule.getEnabled()){
-                return Text.literal("TRUE").withColor(Color.green.getRGB());
+                return Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.true").withColor(Color.green.getRGB());
             }else {
-                return Text.literal("FALSE").withColor(Color.red.getRGB());
+                return Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.false").withColor(Color.red.getRGB());
             }
         }
         private void toggleEnabled() {
             hasChanged = true;
             chatRule.setEnabled(!chatRule.getEnabled());
-            enabledWidget.setMessage(enabledButtonText());
+            enabledButton.setMessage(enabledButtonText());
         }
 
-
+        private void deleteEntry(boolean confirmedAction) {
+            if (confirmedAction){
+                //delete this
+                ChatRulesHandler.chatRuleList.remove(chatRuleIndex);
+                removeEntry(this);
+            }
+            client.setScreen(screen);
+            setScrollAmount(oldScrollAmount);
+        }
 
         @Override
         public List<? extends Selectable> selectableChildren() {
@@ -162,16 +195,17 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) { //todo get strings form en_us.json
             //widgets
-            enabledWidget.setY(y);
-            enabledWidget.render(context, mouseX, mouseY, tickDelta);
-            openConfigWidget.setY(y);
-            openConfigWidget.render(context, mouseX, mouseY, tickDelta);
+            enabledButton.setY(y);
+            enabledButton.render(context, mouseX, mouseY, tickDelta);
+            openConfigButton.setY(y);
+            openConfigButton.render(context, mouseX, mouseY, tickDelta);
+            deleteButton.setY(y);
+            deleteButton.render(context, mouseX, mouseY, tickDelta);
             //text
-            context.drawTextWithShadow(client.textRenderer, "Rule: \"" + chatRule.getName() + "\"", labelX, y + 5, 0xFFFFFF);
-            context.drawTextWithShadow(client.textRenderer, "enabled:", enabledX, y + 5, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, chatRule.getName(), nameX, y + 5, 0xFFFFFF);
         }
 
-        public boolean hasChange() {
+        public boolean isChange() {
             return (!chatRule.getEnabled().equals(ChatRulesHandler.chatRuleList.get(chatRuleIndex).getEnabled()));
         }
     }
