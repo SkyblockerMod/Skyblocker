@@ -7,7 +7,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.Locale;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
@@ -15,6 +16,10 @@ import java.util.Locale;
 
 public class HudPowderWidget extends Widget {
 
+    /**
+     * American number format
+     */
+    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
     /**
      * current value of Mithril Powder
      */
@@ -60,7 +65,11 @@ public class HudPowderWidget extends Widget {
      * @return integer value
      */
     private static int parsePowder(String str) {
-        return Integer.parseInt(str.replace(",", ""));
+        try {
+            return NUMBER_FORMAT.parse(str).intValue();
+        } catch (ParseException e) {
+            return 0;
+        }
     }
 
     /**
@@ -70,10 +79,8 @@ public class HudPowderWidget extends Widget {
      * @return formatted string
      */
     private static String formatPowderString(int powder, int diff) {
-        if (diff == 0) return String.format(Locale.US, "%,d", powder);
-
-        String difString = String.format(Locale.US, "%s%,d", diff > 0 ? "+" : "", diff);
-        return String.format(Locale.US, "%,d (%s)", powder, difString);
+        if (diff == 0) return NUMBER_FORMAT.format(powder);
+        return NUMBER_FORMAT.format(powder) + (diff > 0 ? " (+" : " (") + NUMBER_FORMAT.format(diff) + ")";
     }
 
     /**
