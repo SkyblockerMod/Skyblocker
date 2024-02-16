@@ -7,6 +7,8 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.Sprite;
@@ -23,6 +25,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -68,6 +71,7 @@ public class AuctionsBrowserScreen extends Screen {
     private int nextPageSlotId = -1;
     private int searchSlotId = -1;
     private String search = "";
+    private int resetSlotId = -1;
 
     private int currentPage = 1;
     private int totalPages = 1;
@@ -76,6 +80,7 @@ public class AuctionsBrowserScreen extends Screen {
     private SortWidget sortWidget;
     private AuctionTypeWidget auctionTypeWidget;
     private RarityWidget rarityWidget;
+    private ButtonWidget resetFiltersButton;
 
     public int x = 0;
     public int y = 0;
@@ -91,13 +96,13 @@ public class AuctionsBrowserScreen extends Screen {
     public void markDirty() {dirty = true; dirtiedTime = System.currentTimeMillis();}
     public void changeHandlerAndUpdate(GenericContainerScreenHandler handler) {
         this.handler = handler;
-        update();
+        markDirty();
     }
 
     @Override
     public void tick() {
         if (!this.client.player.isAlive() || this.client.player.isRemoved()) this.client.player.closeHandledScreen();
-        if (dirty && System.currentTimeMillis() - dirtiedTime > 50) update();
+        if (dirty && System.currentTimeMillis() - dirtiedTime > 40) update();
     }
 
     public void update() {
@@ -111,6 +116,8 @@ public class AuctionsBrowserScreen extends Screen {
         }
         nextPageSlotId = -1;
         prevPageSlotId = -1;
+        resetSlotId = -1;
+        resetFiltersButton.active = false;
 
         boolean pageParsed = false;
         for (int i = (handler.getRows() - 1) * 9; i < handler.getRows() * 9; i++) {
@@ -159,6 +166,9 @@ public class AuctionsBrowserScreen extends Screen {
                         break;
                     }
                 }
+            } else if (stack.isOf(Items.ANVIL) && stackName.contains("reset")) {
+                resetSlotId = i;
+                resetFiltersButton.active = true;
             }
         }
         if (!pageParsed) {
@@ -173,8 +183,8 @@ public class AuctionsBrowserScreen extends Screen {
         str = str.substring(1, str.length() - 1); // remove parentheses
         String[] parts = str.split("/"); // split the string
         try {
-            currentPage = Integer.parseInt(parts[0]); // parse current page
-            totalPages = Integer.parseInt(parts[1]); // parse total
+            currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page
+            totalPages = Integer.parseInt(parts[1].replace(",", "")); // parse total
         } catch (NumberFormatException ignored) {}
     }
 
@@ -211,6 +221,10 @@ public class AuctionsBrowserScreen extends Screen {
         sortWidget = new SortWidget(x + 25, y+81, this); addDrawableChild(sortWidget);
         auctionTypeWidget = new AuctionTypeWidget(x + 134, y + 77, this); addDrawableChild(auctionTypeWidget);
         rarityWidget = new RarityWidget(x + 73, y+80, this); addDrawableChild(rarityWidget);
+        resetFiltersButton = new ScaledTextButtonWidget(x+10, y+77, 12, 12, Text.literal("↻"), this::onResetPressed);
+        addDrawableChild(resetFiltersButton);
+        resetFiltersButton.setTooltip(Tooltip.of(Text.literal("Reset Filters")));
+        resetFiltersButton.setTooltipDelay(500);
         markDirty();
     }
 
@@ -294,7 +308,7 @@ public class AuctionsBrowserScreen extends Screen {
         if (totalPages <= 1)
             context.drawGuiTexture(SCROLLER_TEXTURE, 156, 18, 12, 15);
         else
-            context.drawGuiTexture(SCROLLER_TEXTURE, 156, (int) (18 + (float)(currentPage-1)/(totalPages-1)*37), 12, 15);
+            context.drawGuiTexture(SCROLLER_TEXTURE, 156, (int) (18 + (float)(Math.min(currentPage, totalPages)-1)/(totalPages-1)*37), 12, 15);
 
 
         matrices.pop();
@@ -350,6 +364,12 @@ public class AuctionsBrowserScreen extends Screen {
         return false;
     }
 
+    private void onResetPressed(ButtonWidget buttonWidget) {
+        buttonWidget.setFocused(false); // Annoying.
+        if (resetSlotId == -1) return;
+        clickAndWaitForServer(resetSlotId);
+    }
+
     public static void playClickSound() {
         MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f));
     }
@@ -361,4 +381,25 @@ public class AuctionsBrowserScreen extends Screen {
     }
 
     public TextRenderer getTextRender() {return textRenderer;}
+
+    private static class ScaledTextButtonWidget extends ButtonWidget {
+
+        protected ScaledTextButtonWidget(int x, int y, int width, int height, Text message, PressAction onPress) {
+            super(x, y, width, height, message, onPress, Supplier::get);
+        }
+
+        // Code taken mostly from YACL by isxander. Love you <3
+        @Override
+        public void drawMessage(DrawContext graphics, TextRenderer textRenderer, int color) {
+            TextRenderer font = MinecraftClient.getInstance().textRenderer;
+            MatrixStack pose = graphics.getMatrices();
+            float textScale = 2.f;
+
+            pose.push();
+            pose.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float)this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1, 0);
+            pose.scale(textScale, textScale, 1);
+            graphics.drawText(font, getMessage(), 0, 0, color | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
+            pose.pop();
+        }
+    }
 }
