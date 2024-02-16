@@ -82,6 +82,8 @@ public class AuctionsBrowserScreen extends Screen {
     private RarityWidget rarityWidget;
     private ButtonWidget resetFiltersButton;
 
+    private final List<CategoryTabWidget> categoryTabWidgets = new ArrayList<>(6);
+
     public int x = 0;
     public int y = 0;
 
@@ -108,12 +110,16 @@ public class AuctionsBrowserScreen extends Screen {
     public void update() {
         dirty = false;
         waitingForServer = false;
+
+        // AUCTION ITEMS
         auctionedItems.clear();
         for (int i = 1; i < 5; i++) {
             for (int j = 2; j < 8; j++) {
                 auctionedItems.add(handler.slots.get(i*9 + j));
             }
         }
+
+        // BOTTOM ROW
         nextPageSlotId = -1;
         prevPageSlotId = -1;
         resetSlotId = -1;
@@ -175,6 +181,28 @@ public class AuctionsBrowserScreen extends Screen {
             currentPage = 1;
             totalPages = 1;
         }
+        // CATEGORIES
+        for (int i = 0; i < handler.getRows(); i++) {
+            Slot slot = handler.slots.get(i * 9);
+            if (!slot.hasStack()) return;
+            ItemStack stack = slot.getStack();
+            List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+            if (tooltip.size() < 2) return;
+            if (!tooltip.get(1).getString().toLowerCase().contains("category")) return;
+            CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(i);
+            categoryTabWidget.setIcon(stack);
+            categoryTabWidget.setSlotId(i*9);
+            for (int j = tooltip.size() - 1; j >= 0; j--) {
+                String lowerCase = tooltip.get(j).getString().toLowerCase();
+                if (lowerCase.contains("currently")) {
+                    categoryTabWidget.setToggled(true);
+                    break;
+                } else if (lowerCase.contains("click")) {
+                    categoryTabWidget.setToggled(false);
+                    break;
+                } else categoryTabWidget.setToggled(false);
+            }
+        }
     }
 
     private void parsePage(ItemStack stack) {
@@ -225,6 +253,20 @@ public class AuctionsBrowserScreen extends Screen {
         addDrawableChild(resetFiltersButton);
         resetFiltersButton.setTooltip(Tooltip.of(Text.literal("Reset Filters")));
         resetFiltersButton.setTooltipDelay(500);
+        if (categoryTabWidgets.isEmpty())
+            for (int i = 0; i < 6; i++) {
+                CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this);
+                categoryTabWidgets.add(categoryTabWidget);
+                //addDrawableChild(categoryTabWidget);
+                // manually rendered in the render method to have it not render behind the durability bars
+                categoryTabWidget.setPosition(x-30, y+3+i*28);
+            }
+        else
+            for (int i = 0; i < categoryTabWidgets.size(); i++) {
+                CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(i);
+                categoryTabWidget.setPosition(x-30, y+3+i*28);
+
+            }
         markDirty();
     }
 
@@ -312,6 +354,10 @@ public class AuctionsBrowserScreen extends Screen {
 
 
         matrices.pop();
+
+        for (CategoryTabWidget categoryTabWidget : categoryTabWidgets) {
+            categoryTabWidget.render(context, mouseX, mouseY, delta);
+        }
 
         if (this.hoveredSlot != null) {
             ItemStack itemStack = hoveredSlot.getStack();
