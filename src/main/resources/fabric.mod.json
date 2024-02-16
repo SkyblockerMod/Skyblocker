@@ -33,10 +33,10 @@
   ],
   "accessWidener": "skyblocker.accesswidener",
   "depends": {
-    "fabricloader": ">=0.15.6",
-    "fabric-api": ">=0.95.5+1.20.5",
+    "fabricloader": ">=0.15.7",
+    "fabric-api": ">=0.96.2+1.20.5",
     "yet_another_config_lib_v3": ">=3.3.2+1.20.4",
-    "minecraft": "~1.20.5-alpha.24.5.a"
+    "minecraft": "~1.20.5-alpha.24.7.a"
   },
   "conflicts": {
     "immediatelyfast": "<=1.2.10+1.20.4"

@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.mixin;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.scoreboard.Scoreboard;
 import org.slf4j.Logger;
