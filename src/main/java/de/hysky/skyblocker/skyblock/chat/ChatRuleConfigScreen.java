@@ -6,15 +6,31 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 
 import java.awt.*;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 public class ChatRuleConfigScreen extends Screen {
 
     private static final int SPACER_X = 5;
     private static final int SPACER_Y = 25;
+
+    private final Map<MutableText, SoundEvent> soundsLookup = Map.ofEntries(
+            entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.pling"), SoundEvents.BLOCK_NOTE_BLOCK_PLING.value()),
+            entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.cave"), SoundEvents.AMBIENT_CAVE.value()),
+            entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.zombie"), SoundEvents.ENTITY_ZOMBIE_AMBIENT),
+            entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.crit"), SoundEvents.ENTITY_PLAYER_ATTACK_CRIT),
+            entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.arrowHit"), SoundEvents.ENTITY_ARROW_HIT_PLAYER),
+            entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.amethyst"), SoundEvents.BLOCK_AMETHYST_BLOCK_HIT),
+            entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.anvil"), SoundEvents.BLOCK_ANVIL_LAND)
+    );//todo amathis / more sounds
 
     private final int chatRuleIndex;
     private final ChatRule chatRule;
@@ -32,8 +48,8 @@ public class ChatRuleConfigScreen extends Screen {
     private ButtonWidget hideMessageToggle;
     private ButtonWidget actionBarToggle;
     private ButtonWidget announcementToggle;
+    private ButtonWidget soundsToggle;
     private TextFieldWidget replaceMessageInput;
-    //todo custom sound thing
 
     //textLocations
     private IntIntPair nameLabelTextPos;
@@ -51,11 +67,10 @@ public class ChatRuleConfigScreen extends Screen {
     private IntIntPair hideMessageTextPos;
     private IntIntPair actionBarTextPos;
     private IntIntPair announcementTextPos;
-
+    private IntIntPair customSoundLabelTextPos;
     private IntIntPair replaceMessageLabelTextPos;
 
-    private IntIntPair customSoundLabelTextPos;
-
+    private int currentSoundIndex;
 
     private final Screen parent;
 
@@ -66,6 +81,7 @@ public class ChatRuleConfigScreen extends Screen {
         this.chatRuleIndex = chatRuleIndex;
         this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
         this.parent = parent;
+        this.currentSoundIndex = soundsLookup.values().stream().toList().indexOf(chatRule.getCustomSound());
     }
 
     @Override
@@ -164,7 +180,23 @@ public class ChatRuleConfigScreen extends Screen {
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
                 .build();
+        lineXOffset += 75 + SPACER_X;
+        customSoundLabelTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
+        lineXOffset += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds")) + SPACER_X;
+        soundsToggle = ButtonWidget.builder(getSoundName(), a -> {
+                currentSoundIndex += 1;
+                if (currentSoundIndex == soundsLookup.size()) {
+                    currentSoundIndex = -1;
+                }
+                MutableText newText = getSoundName();
+                soundsToggle.setMessage(newText);
+                chatRule.setCustomSound(soundsLookup.get(newText));
+                })
+                .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
+                .size(100,20)
+                .build();
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
+
         replaceMessageLabelTextPos = currentPos;
         lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace")) + SPACER_X;
         replaceMessageInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
@@ -187,6 +219,7 @@ public class ChatRuleConfigScreen extends Screen {
         addDrawableChild(hideMessageToggle);
         addDrawableChild(actionBarToggle);
         addDrawableChild(announcementToggle);
+        addDrawableChild(soundsToggle);
         addDrawableChild(replaceMessageInput);
         addDrawableChild(finishButton);
     }
@@ -239,6 +272,7 @@ public class ChatRuleConfigScreen extends Screen {
         context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.hideMessage"), hideMessageTextPos.leftInt(), hideMessageTextPos.rightInt() + yOffset, 0xFFFFFF);
         context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.actionBar"), actionBarTextPos.leftInt(), actionBarTextPos.rightInt() + yOffset, 0xFFFFFF);
         context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.announcement"), announcementTextPos.leftInt(), announcementTextPos.rightInt() + yOffset, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds"), customSoundLabelTextPos.leftInt(), customSoundLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
         context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace"), replaceMessageLabelTextPos.leftInt(), replaceMessageLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
     }
 
@@ -259,4 +293,13 @@ public class ChatRuleConfigScreen extends Screen {
 
         ChatRulesHandler.chatRuleList.set(chatRuleIndex,chatRule);
     }
+
+    private MutableText getSoundName() {
+        if (currentSoundIndex == -1){
+            return  Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.none");
+        }
+        return soundsLookup.keySet().stream().toList().get(currentSoundIndex);
+    }
+
+
 }

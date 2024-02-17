@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.chat;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.sound.Sound;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +30,7 @@ public class ChatRule {
     private Boolean showActionBar;
     private Boolean showAnnouncement;
     private String replaceMessage; //todo extract parts of original message
-    private Sound customSound;
+    private SoundEvent customSound;
     /**
      * Creates a chat rule with default options.
      */
@@ -47,22 +49,6 @@ public class ChatRule {
         this.showAnnouncement = false;
         this.replaceMessage = null;
         this.customSound = null;
-    }
-
-
-    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, String validLocation, List<ItemStack> validItems, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, Sound customSound) {
-        this.name = name;
-        this.enabled = enabled;
-        this.isPartialMatch = isPartialMatch;
-        this.isRegex = isRegex;
-        this.isIgnoreCase = isIgnoreCase;
-        this.filter = filter;
-        this.validLocations = validLocation;
-        this.hideMessage = hideMessage;
-        this.showActionBar = showActionBar;
-        this.showAnnouncement = showAnnouncement;
-        this.replaceMessage = replaceMessage;
-        this.customSound = customSound;
     }
 
     public Boolean getEnabled() { //todo remove unused getters and set
@@ -137,11 +123,11 @@ public class ChatRule {
         this.replaceMessage = replaceMessage;
     }
 
-    public Sound getCustomSound() {
+    public SoundEvent getCustomSound() {
        return customSound;
     }
 
-    public void setCustomSound(Sound customSound) {
+    public void setCustomSound(SoundEvent customSound) {
         this.customSound = customSound;
     }
 

@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,14 +74,14 @@ public class ChatRulesHandler {
             if (rule.isMatch(plain)) {
                 //get a replacement message
                 Text newMessage;
-                if (!rule.getReplaceMessage().isBlank()){
+                if (!rule.getReplaceMessage().isBlank()) {
                     newMessage = Text.of(rule.getReplaceMessage());
                 }
                 else {
                     newMessage = message;
                 }
 
-                if (rule.getShowAnnouncement()){
+                if (rule.getShowAnnouncement()) {
                     ChatRuleAnnouncementScreen.setText(newMessage);
                 }
 
@@ -88,10 +89,17 @@ public class ChatRulesHandler {
                 if (rule.getShowActionBar() && CLIENT.player != null) {
                     CLIENT.player.sendMessage(newMessage, true);
                 }
+
                 //hide message
-                if (!rule.getHideMessage()  && CLIENT.player != null){
+                if (!rule.getHideMessage()  && CLIENT.player != null) {
                     CLIENT.player.sendMessage(newMessage, false);
                 }
+
+                //play sound
+                if (rule.getCustomSound() != null && CLIENT.player != null) {
+                    CLIENT.player.playSound(rule.getCustomSound(), 100f, 0.1f);
+                }
+
                 //do not send original message
                 return false;
             }
