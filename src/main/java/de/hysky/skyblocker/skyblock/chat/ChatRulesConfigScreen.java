@@ -53,9 +53,6 @@ public class ChatRulesConfigScreen extends Screen {
                 close();
             }
         }).build();
-        adder.add(buttonDone);
-        gridWidget.refreshPositions();
-        SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
         gridWidget.forEachChild(this::addDrawableChild);
     }
 
