@@ -25,7 +25,7 @@ import java.util.Map;
 public class ChatRulesHandler {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatRule.class);
-    private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chatRules.json");
+    private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
 
     protected static final List<ChatRule> chatRuleList = new ArrayList<>();
 
