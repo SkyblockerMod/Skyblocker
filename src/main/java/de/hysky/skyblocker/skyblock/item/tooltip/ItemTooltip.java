@@ -144,10 +144,19 @@ public class ItemTooltip {
             NbtCompound ea = ItemUtils.getExtraAttributes(stack);
             if (ea != null && ea.contains("baseStatBoostPercentage")) {
                 int baseStatBoostPercentage = ea.getInt("baseStatBoostPercentage");
-                if (baseStatBoostPercentage == 50) {
+                boolean max_quality = baseStatBoostPercentage == 50;
+                if (max_quality) {
                     lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
                 } else {
                     lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
+                }
+                if (ea.contains("item_tier")) {     // sometimes it just isn't here?
+                    int item_tier = ea.getInt("item_tier");
+                    if (max_quality) {
+                        lines.add(Text.literal(String.format("%-17s", "Floor Tier:") + item_tier).formatted(Formatting.RED).formatted(Formatting.BOLD));
+                    } else {
+                        lines.add(Text.literal(String.format("%-21s", "Floor Tier:") + item_tier).formatted(Formatting.BLUE));
+                    }
                 }
             }
         }

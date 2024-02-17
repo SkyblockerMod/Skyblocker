@@ -89,7 +89,7 @@
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip": "Enable Exotic Tooltip",
   "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip.@Tooltip": "Displays the type of exotic below the item's name if an armor piece is exotic.",
   "text.autoconfig.skyblocker.option.general.dungeonQuality": "Dungeon Quality",
-  "text.autoconfig.skyblocker.option.general.dungeonQuality.@Tooltip": "Displays quality of dungeon drops from mobs",
+  "text.autoconfig.skyblocker.option.general.dungeonQuality.@Tooltip": "Displays quality and tier of dungeon drops from mobs.\n\n\nReminder:\nTier 1-7 are dropped from F1-F7\nTier 4-7 are also dropped from M1-M4\nTier 8-10 are dropped only from M5-M7",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay": "Item Info Display",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo": "Attribute Shard Info",
   "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Displays the attribute's level as the stack count and the initials of the attribute's name.",
