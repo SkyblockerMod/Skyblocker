@@ -17,7 +17,7 @@ import java.text.ParseException;
 public class HudPowderWidget extends Widget {
 
     /**
-     * American number format
+     * Number format instance
      */
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
     /**
@@ -31,11 +31,11 @@ public class HudPowderWidget extends Widget {
     /**
      * the difference between the previous and current value of Mithril Powder
      */
-    private static int mithrilPowderDif = 0;
+    private static int mithrilPowderDiff = 0;
     /**
      * the difference between the previous and current value of Gemstone Powder
      */
-    private static int gemstonePowderDif = 0;
+    private static int gemstonePowderDiff = 0;
     /**
      * The initial value of the timer for the difference update delay countdown.
      */
@@ -61,6 +61,7 @@ public class HudPowderWidget extends Widget {
 
     /**
      * Converts a string with a number and commas between digits to an integer value.
+     *
      * @param str a string with a number and commas between digits
      * @return integer value
      */
@@ -74,8 +75,9 @@ public class HudPowderWidget extends Widget {
 
     /**
      * Converts Powder and difference values to a string and adds commas to the digits of the numbers.
+     *
      * @param powder the value of Mithril or Gemstone Powder
-     * @param diff the difference between the previous and current value of Mithril or Gemstone Powder
+     * @param diff   the difference between the previous and current value of Mithril or Gemstone Powder
      * @return formatted string
      */
     private static String formatPowderString(int powder, int diff) {
@@ -86,7 +88,7 @@ public class HudPowderWidget extends Widget {
     /**
      * Updates Powders and difference values when Powder values change or every 2 seconds.
      */
-    private static void updatePowders(){
+    private static void updatePowders() {
         long elapsedTime = System.currentTimeMillis() - startTime;
 
         int newMithrilPowder = parsePowder(DwarvenHud.mithrilPowder);
@@ -95,8 +97,8 @@ public class HudPowderWidget extends Widget {
         if (newMithrilPowder != mithrilPowder || newGemstonePowder != gemstonePowder || elapsedTime > 2000) {
             startTime = System.currentTimeMillis();
 
-            mithrilPowderDif = newMithrilPowder - mithrilPowder;
-            gemstonePowderDif = newGemstonePowder - gemstonePowder;
+            mithrilPowderDiff = newMithrilPowder - mithrilPowder;
+            gemstonePowderDiff = newGemstonePowder - gemstonePowder;
 
             mithrilPowder = newMithrilPowder;
             gemstonePowder = newGemstonePowder;
@@ -106,8 +108,8 @@ public class HudPowderWidget extends Widget {
     @Override
     public void updateContent() {
         updatePowders();
-        String mithrilPowderString = formatPowderString(mithrilPowder, mithrilPowderDif);
-        String gemstonePowderString = formatPowderString(gemstonePowder, gemstonePowderDif);
+        String mithrilPowderString = formatPowderString(mithrilPowder, mithrilPowderDiff);
+        String gemstonePowderString = formatPowderString(gemstonePowder, gemstonePowderDiff);
 
         this.addSimpleIcoText(Ico.MITHRIL, "Mithril: ", Formatting.AQUA, mithrilPowderString);
         this.addSimpleIcoText(Ico.AMETHYST_SHARD, "Gemstone: ", Formatting.DARK_PURPLE, gemstonePowderString);
