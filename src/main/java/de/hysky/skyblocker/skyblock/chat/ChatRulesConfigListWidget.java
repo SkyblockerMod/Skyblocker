@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.screen.ScreenTexts;
@@ -132,6 +133,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
             })
                     .size(50,20)
                     .position(width / 2 + 45,5)
+                    .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.editRule.@Tooltip")))
                     .build()
             ;
             deleteButton = ButtonWidget.builder(Text.translatable("selectServer.delete"), a -> {

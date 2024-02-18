@@ -37,6 +37,7 @@ public class ChatRulesHandler {
      * list of possible locations still formatted for the tool tip
      */
     protected static final List<String> locationsList = new ArrayList<>();
+
     protected static final List<ChatRule> chatRuleList = new ArrayList<>();
 
     public static void init() {

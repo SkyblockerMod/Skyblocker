@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.sound.SoundEvent;
@@ -30,7 +31,7 @@ public class ChatRuleConfigScreen extends Screen {
             entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.arrowHit"), SoundEvents.ENTITY_ARROW_HIT_PLAYER),
             entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.amethyst"), SoundEvents.BLOCK_AMETHYST_BLOCK_HIT),
             entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.anvil"), SoundEvents.BLOCK_ANVIL_LAND)
-    );//todo amathis / more sounds
+    );
 
     private final int chatRuleIndex;
     private final ChatRule chatRule;
@@ -96,6 +97,7 @@ public class ChatRuleConfigScreen extends Screen {
         lineXOffset  = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.name")) + SPACER_X;
         nameInput =  new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 100, 20, Text.of(""));
         nameInput.setText(chatRule.getName());
+        nameInput.setTooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.name.@Tooltip")));
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
 
         inputsLabelTextPos = currentPos;
@@ -106,6 +108,7 @@ public class ChatRuleConfigScreen extends Screen {
         filterInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
         filterInput.setMaxLength(96);
         filterInput.setText(chatRule.getFilter());
+        filterInput.setTooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.filter.@Tooltip")));
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
         lineXOffset = 0;
 
@@ -117,6 +120,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
                 .build();
         lineXOffset += 75 + SPACER_X;
         regexTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
@@ -127,6 +131,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.regex.@Tooltip")))
                 .build();
         lineXOffset += 75 + SPACER_X;
         ignoreCaseTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
@@ -137,6 +142,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
                 .build();
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
 
@@ -144,6 +150,9 @@ public class ChatRuleConfigScreen extends Screen {
         lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.locations")) + SPACER_X;
         locationsInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
         locationsInput.setText(chatRule.getValidLocations());
+        MutableText locationToolTip = Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.locations.@Tooltip");
+        ChatRulesHandler.locationsList.forEach(location -> locationToolTip.append(" " + location + ",\n"));
+        locationsInput.setTooltip(Tooltip.of(locationToolTip));
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
 
         outputsLabelTextPos = IntIntPair.of(currentPos.leftInt() - 10,currentPos.rightInt());
@@ -157,6 +166,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
                 .build();
         lineXOffset += 75 + SPACER_X;
         actionBarTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
@@ -167,6 +177,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.actionBar.@Tooltip")))
                 .build();
         lineXOffset = 0;
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
@@ -179,6 +190,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(75,20)
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.announcement.@Tooltip")))
                 .build();
         lineXOffset += 75 + SPACER_X;
         customSoundLabelTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
@@ -198,6 +210,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(100,20)
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sound.@Tooltip")))
                 .build();
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
 
@@ -205,6 +218,7 @@ public class ChatRuleConfigScreen extends Screen {
         lineXOffset = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace")) + SPACER_X;
         replaceMessageInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
         replaceMessageInput.setMaxLength(96);
+        replaceMessageInput.setTooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace.@Tooltip")));
         replaceMessageInput.setText(chatRule.getReplaceMessage());
 
         finishButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.finish"), a -> {
