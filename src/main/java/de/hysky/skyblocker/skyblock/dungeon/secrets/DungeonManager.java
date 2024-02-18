@@ -563,7 +563,9 @@ public class DungeonManager {
         if (room != null && currentRoom != room) {
             if (currentRoom != null && room.getType() == Room.Type.FAIRY) {
                 currentRoom.nextRoom = room;
-                room.keyFound = currentRoom.keyFound;
+                if (currentRoom.keyFound) {
+                    room.keyFound = true;
+                }
             }
             currentRoom = room;
         }

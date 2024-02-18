@@ -67,6 +67,11 @@ public abstract class Widget {
         this.addComponent(new IcoTextComponent(ico, txt));
     }
 
+    public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, String content) {
+        Text txt = Widget.simpleEntryText(content, string, fmt);
+        this.addComponent(new IcoTextComponent(ico, txt));
+    }
+
     /**
      * Calculate the size of this widget.
      * <b>Must be called before returning from the widget constructor and after all
