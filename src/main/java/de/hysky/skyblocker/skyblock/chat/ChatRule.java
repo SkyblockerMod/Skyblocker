@@ -181,23 +181,25 @@ public class ChatRule {
         }
         String rawLocation = Utils.getLocationRaw();
         Boolean isLocationValid = null;
-        for (String validLocation : validLocations.replace(" ", "").split(",")) {//the locations are raw locations split by "," and start with ! if not locations
-                if (validLocation.startsWith("!")) {//not location (
-                    if (Objects.equals(validLocation.substring(1), rawLocation)) {
-                        isLocationValid = false;
-                        break;
-                    }
-                }else {
-                    if (Objects.equals(validLocation, rawLocation)) { //normal location
-                        isLocationValid = true;
-                        break;
-                    }
+        for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are raw locations split by "," and start with ! if not locations
+            String rawValidLocation = ChatRulesHandler.locations.get(validLocation.replace("!",""));
+            if (rawValidLocation == null) continue;
+            if (validLocation.startsWith("!")) {//not location
+                if (Objects.equals(rawValidLocation, rawLocation.toLowerCase())) {
+                    isLocationValid = false;
+                    break;
                 }
+            }
+            else {
+                if (Objects.equals(rawValidLocation, rawLocation.toLowerCase())) { //normal location
+                    isLocationValid = true;
+                    break;
+                }
+            }
         }
-        if (isLocationValid == null || isLocationValid){//if location is not in the list at all and is a not a "!" location or and is a normal location
+        if (isLocationValid != null && isLocationValid){//if location is not in the list at all and is a not a "!" location or and is a normal location
             return true;
         }
-
 
         return false;
     }
