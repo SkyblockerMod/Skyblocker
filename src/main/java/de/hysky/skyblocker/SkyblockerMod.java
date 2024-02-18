@@ -26,7 +26,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
-import de.hysky.skyblocker.skyblock.searchOverlay.SearchOverManager;
+import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
 import de.hysky.skyblocker.skyblock.special.SpecialEffects;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.searchOverlay;
+package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -96,13 +96,15 @@ public class SearchOverManager {
         HashMap<String, String> namesToId = new HashMap<>();
 
         //get bazaar items
-        try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/bazaar", "")) {
-            JsonObject products = JsonParser.parseString(response.content()).getAsJsonObject().get("products").getAsJsonObject();
+        try {
+            if (TooltipInfoType.BAZAAR.getData() == null) TooltipInfoType.BAZAAR.run();
+
+            JsonObject products = TooltipInfoType.BAZAAR.getData();
             for (Map.Entry<String, JsonElement> entry : products.entrySet()) {
                 if (entry.getValue().isJsonObject()) {
                     JsonObject product = entry.getValue().getAsJsonObject();
-                    String id = product.get("product_id").getAsString();
-                    int sellVolume = product.get("quick_status").getAsJsonObject().get("sellVolume").getAsInt();
+                    String id = product.get("id").getAsString();
+                    int sellVolume = product.get("sellVolume").getAsInt();
                     if (sellVolume == 0)
                         continue; //do not add items that do not sell e.g. they are not actual in the bazaar
                     Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
@@ -334,7 +336,7 @@ public class SearchOverManager {
         }
     }
 
-    static Pair<String, String> splitString(String s) {
+    public static Pair<String, String> splitString(String s) {
         if (s.length() <= 15) {
             return Pair.of(s, "");
         }
