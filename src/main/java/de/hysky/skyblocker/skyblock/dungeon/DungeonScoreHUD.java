@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -11,13 +13,19 @@ public class DungeonScoreHUD {
 	private DungeonScoreHUD() {
 	}
 
+	public static void init() {
+		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> render(context));
+	}
+
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen
 	private static final Text extraSpace = Text.literal(" ").append(Text.literal(" ").formatted(Formatting.BOLD));
 
-	public static void render(DrawContext context) {
-		int x = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreX;
-		int y = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreY;
-		render(context, x, y);
+	private static void render(DrawContext context) {
+		if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && SkyblockerConfigManager.get().locations.dungeons.dungeonScore.enableScoreHUD) {
+			int x = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreX;
+			int y = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreY;
+			render(context, x, y);
+		}
 	}
 
 	public static void render(DrawContext context, int x, int y) {

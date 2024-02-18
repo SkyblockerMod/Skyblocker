@@ -1,11 +1,15 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -20,6 +24,7 @@ public class DungeonMap {
     private static Integer cachedMapId = null;
 
     public static void init() {
+    	HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> render(context));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("dungeon")
@@ -30,7 +35,7 @@ public class DungeonMap {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
     }
 
-    public static void render(MatrixStack matrices) {
+    private static void render(MatrixStack matrices) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
 
@@ -60,6 +65,12 @@ public class DungeonMap {
             cachedMapId = mapId;
             return mapId;
         } else return cachedMapId != null ? cachedMapId : DEFAULT_MAP_ID;
+    }
+
+    private static void render(DrawContext context) {
+        if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().locations.dungeons.enableMap) {
+            render(context.getMatrices());
+        }
     }
 
     private static void reset() {

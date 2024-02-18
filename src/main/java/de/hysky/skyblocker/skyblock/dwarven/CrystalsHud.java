@@ -2,11 +2,11 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -34,7 +34,7 @@ public class CrystalsHud {
                         .then(ClientCommandManager.literal("crystals")
                                 .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
 
-        HudRenderCallback.EVENT.register((context, tickDelta) -> {
+        HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
             if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled
                     || CLIENT.player == null
                     || !visible) {
@@ -65,7 +65,7 @@ public class CrystalsHud {
         //and set position and scale
         MatrixStack matrices = context.getMatrices();
         matrices.push();
-        matrices.translate(hudX, hudY, 200f);
+        matrices.translate(hudX, hudY, 0f);
         matrices.scale(scale, scale, 0f);
 
         //draw map texture
