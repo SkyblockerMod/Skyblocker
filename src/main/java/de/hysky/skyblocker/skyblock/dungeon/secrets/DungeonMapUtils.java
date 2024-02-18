@@ -3,12 +3,12 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -286,14 +286,13 @@ public class DungeonMapUtils {
     }
 
     private static boolean hasWitherOrBloodDoor(World world, Vector2ic pos, BlockPos.Mutable doorPos) {
-        return isWitherOrBloodDoor(world, doorPos.set(pos.x() - 2, 69, pos.y() + 14)) ||
-                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 14, 69, pos.y() - 2)) ||
-                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 14, 69, pos.y() + 30)) ||
-                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 30, 69, pos.y() + 14));
+        return isWitherOrBloodDoor(world, doorPos.set(pos.x() + 1, 72, pos.y() + 17)) ||
+                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 17, 72, pos.y() + 1)) ||
+                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 17, 72, pos.y() + 33)) ||
+                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 33, 72, pos.y() + 17));
     }
 
-    private static boolean isWitherOrBloodDoor(World world, BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
-        return state.isOf(Blocks.COAL_BLOCK) || state.isOf(Blocks.RED_TERRACOTTA);
+    private static boolean isWitherOrBloodDoor(World world, BlockPos.Mutable pos) {
+        return world.getStatesInBox(Box.enclosing(pos, pos.move(-3, -3, -3))).allMatch(state -> state.isOf(Blocks.COAL_BLOCK) || state.isOf(Blocks.RED_TERRACOTTA));
     }
 }
