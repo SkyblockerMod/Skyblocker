@@ -8,10 +8,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.mixin.accessor.LayeredDrawerAccessor;
 import de.hysky.skyblocker.skyblock.FancyStatusBars;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonScoreHUD;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -94,11 +90,6 @@ public abstract class InGameHudMixin {
             return;
         if (statusBars.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight()))
             ci.cancel();
-
-        if (Utils.isInDungeons() && DungeonScore.isDungeonStarted()) {
-            if (SkyblockerConfigManager.get().locations.dungeons.enableMap && !DungeonManager.isInBoss()) DungeonMap.render(context.getMatrices());
-            if (SkyblockerConfigManager.get().locations.dungeons.dungeonScore.enableScoreHUD) DungeonScoreHUD.render(context);
-        }
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
