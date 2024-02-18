@@ -6,8 +6,10 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,13 +71,13 @@ public class ChatRulesHandler {
     private static boolean checkMessage(Text message, Boolean overlay) {
         if (!Utils.isOnSkyblock()) return true; //do not work not on skyblock
         if (overlay) return true; //ignore messages in overlay
-        String plain = trimItemColor(message.getString());
+        String plain =  Formatting.strip(message.getString());
         for (ChatRule rule : chatRuleList) {
             if (rule.isMatch(plain)) {
                 //get a replacement message
                 Text newMessage;
                 if (!rule.getReplaceMessage().isBlank()) {
-                    newMessage = Text.of(rule.getReplaceMessage());
+                    newMessage = formatText(rule.getReplaceMessage());
                 }
                 else {
                     newMessage = message;
@@ -106,9 +108,31 @@ public class ChatRulesHandler {
         }
         return true;
     }
-    private static String trimItemColor(String str) {
-        if (str.isBlank()) return str;
-        return str.replaceAll("§[0-9a-g]", "");
+
+    /**
+     * Converts a string with color codes into a formatted Text object
+     * @param codedString the string with color codes in
+     * @return formatted text
+     */
+
+    protected static MutableText formatText(String codedString) {
+        if (codedString.contains(String.valueOf(Formatting.FORMATTING_CODE_PREFIX)) || codedString.contains("&")){
+            MutableText newText =  Text.literal("");
+            String[] parts = codedString.split("[" + Formatting.FORMATTING_CODE_PREFIX +"&]");
+            Style style = Style.EMPTY;
+            for (String part : parts) {
+                if (part.isEmpty()) continue;
+                Formatting formatting =  Formatting.byCode(part.charAt(0));
+                if (formatting != null){
+                    style = style.withFormatting(formatting);
+                    Text.literal(part.substring(1)).getWithStyle(style).forEach(newText::append);
+                } else {
+                    newText.append(Text.of(part));
+                }
+            }
+            return  newText;
+        }
+        return  Text.literal(codedString);
     }
 
 }

@@ -190,7 +190,11 @@ public class ChatRuleConfigScreen extends Screen {
                 }
                 MutableText newText = getSoundName();
                 soundsToggle.setMessage(newText);
-                chatRule.setCustomSound(soundsLookup.get(newText));
+                SoundEvent sound = soundsLookup.get(newText);
+                chatRule.setCustomSound(sound);
+                if (client.player != null && sound != null) {
+                    client.player.playSound(sound, 100f, 0.1f);
+                }
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(100,20)

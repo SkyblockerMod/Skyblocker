@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
@@ -53,7 +51,11 @@ public class ChatRulesConfigScreen extends Screen {
                 close();
             }
         }).build();
+        adder.add(buttonDone);
+        gridWidget.refreshPositions();
+        SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
         gridWidget.forEachChild(this::addDrawableChild);
+
     }
 
     @Override

@@ -1,15 +1,12 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudConfigScreen;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+
 
 public class ChatRuleAnnouncementScreen {
 
@@ -25,7 +22,10 @@ public class ChatRuleAnnouncementScreen {
             }
             render(context, tickDelta);
         });
+
     }
+
+
 
     /**
      * renders {@link ChatRuleAnnouncementScreen#text} to the middle of the top of the screen.
