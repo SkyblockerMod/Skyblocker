@@ -29,7 +29,6 @@ public class SpidersDenServerWidget extends Widget {
         private final String text;
         private final Formatting formatting;
 
-
         BroodmotherState(String text, Formatting formatting) {
             this.text = text;
             this.formatting = formatting;
@@ -71,6 +70,9 @@ public class SpidersDenServerWidget extends Widget {
         return BroodmotherState.from(state.split(": ")[1]);
     }
 
+    /**
+     * Updates the information in the widget.
+     */
     @Override
     public void updateContent() {
         this.addSimpleIcoText(Ico.MAP, "Area:", Formatting.DARK_AQUA, 41);
