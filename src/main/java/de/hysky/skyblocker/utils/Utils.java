@@ -3,10 +3,8 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -37,14 +35,16 @@ import java.util.concurrent.CompletableFuture;
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
-    private static final String DUNGEONS_LOCATION = "dungeon";
-    private static final String CRYSTAL_HOLLOWS_LOCATION = "crystal_hollows";
-    private static final String DWARVEN_MINES_LOCATION = "mining_3";
 
     private static final String PROFILE_PREFIX = "Profile: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
     private static boolean isInjected = false;
+    /**
+     * Current Skyblock location (from /locraw)
+     */
+    @NotNull
+    private static Location location = Location.UNKNOWN;
     /**
      * The profile name parsed from the player list.
      */
@@ -88,31 +88,30 @@ public class Utils {
     }
 
     public static boolean isInDungeons() {
-        return getLocationRaw().equals(DUNGEONS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DUNGEON || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInCrystalHollows() {
-        return getLocationRaw().equals(CRYSTAL_HOLLOWS_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.CRYSTAL_HOLLOWS || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInDwarvenMines() {
-        return getLocationRaw().equals(DWARVEN_MINES_LOCATION) || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DWARVEN_MINES || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInTheRift() {
-        return getLocationRaw().equals(TheRift.LOCATION);
+        return location == Location.THE_RIFT;
     }
 
     /**
      * @return if the player is in the end island
      */
     public static boolean isInTheEnd() {
-        // /locraw returns "combat_3" when in The End
-        return getLocationRaw().equals("combat_3");
+        return location == Location.THE_END;
     }
 
     public static boolean isInKuudra() {
-        return getLocationRaw().equals(Kuudra.LOCATION);
+        return location == Location.KUUDRAS_HOLLOW;
     }
 
     public static boolean isInjected() {
@@ -130,6 +129,14 @@ public class Utils {
     @NotNull
     public static String getProfileId() {
         return profileId;
+    }
+
+    /**
+     * @return the location parsed from /locraw.
+     */
+    @NotNull
+    public static Location getLocation() {
+        return location;
     }
 
     /**
@@ -376,31 +383,45 @@ public class Utils {
     }
 
     /**
+     * Parses /locraw chat message and updates {@link #server}, {@link #gameType}, {@link #locationRaw}, {@link #map}
+     * and {@link #location}
+     *
+     * @param message json message from chat
+     */
+    private static void parseLocRaw(String message) {
+        JsonObject locRaw = JsonParser.parseString(message).getAsJsonObject();
+
+        if (locRaw.has("server")) {
+            server = locRaw.get("server").getAsString();
+        }
+        if (locRaw.has("gameType")) {
+            gameType = locRaw.get("gameType").getAsString();
+        }
+        if (locRaw.has("mode")) {
+            locationRaw = locRaw.get("mode").getAsString();
+            location = Location.from(locationRaw);
+        } else {
+            location = Location.UNKNOWN;
+        }
+        if (locRaw.has("map")) {
+            map = locRaw.get("map").getAsString();
+        }
+    }
+
+    /**
      * Parses the /locraw reply from the server and updates the player's profile id
      *
      * @return not display the message in chat if the command is sent by the mod
      */
     public static boolean onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
+
         if (message.startsWith("{\"server\":") && message.endsWith("}")) {
-            JsonObject locRaw = JsonParser.parseString(message).getAsJsonObject();
-            if (locRaw.has("server")) {
-                server = locRaw.get("server").getAsString();
-                if (locRaw.has("gameType")) {
-                    gameType = locRaw.get("gameType").getAsString();
-                }
-                if (locRaw.has("mode")) {
-                    locationRaw = locRaw.get("mode").getAsString();
-                }
-                if (locRaw.has("map")) {
-                    map = locRaw.get("map").getAsString();
-                }
+            parseLocRaw(message);
+            boolean shouldFilter = !sentLocRaw;
+            sentLocRaw = false;
 
-                boolean shouldFilter = !sentLocRaw;
-                sentLocRaw = false;
-
-                return shouldFilter;
-            }
+            return shouldFilter;
         }
 
         if (isOnSkyblock && message.startsWith("Profile ID: ")) {
@@ -419,6 +440,7 @@ public class Utils {
         gameType = "";
         locationRaw = "";
         map = "";
+        location = Location.UNKNOWN;
     }
 
     private static void tickMayorCache(boolean refresh) {
