@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.searchOverlay;
+package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -336,7 +336,7 @@ public class SearchOverManager {
         }
     }
 
-    static Pair<String, String> splitString(String s) {
+    public static Pair<String, String> splitString(String s) {
         if (s.length() <= 15) {
             return Pair.of(s, "");
         }
