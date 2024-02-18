@@ -10,7 +10,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class Kuudra {
-	public static final String LOCATION = "kuudra";
 	static KuudraPhase phase = KuudraPhase.OTHER;
 
 	public static void init() {

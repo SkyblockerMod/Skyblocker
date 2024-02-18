@@ -8,11 +8,6 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class TheRift {
-    /**
-     * @see de.hysky.skyblocker.utils.Utils#isInTheRift() Utils#isInTheRift().
-     */
-    public static final String LOCATION = "rift";
-
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MirrorverseWaypoints::render);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
