@@ -383,36 +383,6 @@ public class Utils {
     }
 
     /**
-     * Parses {@link #locationRaw} and updates the {@link #location}
-     *
-     * @param locationRaw the location raw parsed from /locraw
-     */
-    private static void parseLocation(String locationRaw) {
-        switch (locationRaw) {
-            case "dynamic" -> location = Location.PRIVATE_ISLAND;
-            case "garden" -> location = Location.GARDEN;
-            case "hub" -> location = Location.HUB;
-            case "farming_1" -> location = Location.THE_FARMING_ISLAND;
-            case "foraging_1" -> location = Location.THE_PARK;
-            case "combat_1" -> location = Location.SPIDERS_DEN;
-            case "combat_2" -> location = Location.BLAZING_FORTRESS;
-            case "combat_3" -> location = Location.THE_END;
-            case "crimson_isle" -> location = Location.CRIMSON_ISLE;
-            case "mining_1" -> location = Location.GOLD_MINE;
-            case "mining_2" -> location = Location.DEEP_CAVERNS;
-            case "mining_3" -> location = Location.DWARVEN_MINES;
-            case "dungeon_hub" -> location = Location.DUNGEON_HUB;
-            case "winter" -> location = Location.WINTER_ISLAND;
-            case "rift" -> location = Location.THE_RIFT;
-            case "dark_auction" -> location = Location.DARK_AUCTION;
-            case "crystal_hollows" -> location = Location.CRYSTAL_HOLLOWS;
-            case "dungeon" -> location = Location.DUNGEON;
-            case "kuudra" -> location = Location.KUUDRAS_HOLLOW;
-            default -> location = Location.UNKNOWN;
-        }
-    }
-
-    /**
      * Parses /locraw chat message and updates {@link #server}, {@link #gameType}, {@link #locationRaw}, {@link #map}
      * and {@link #location}
      *
@@ -429,7 +399,7 @@ public class Utils {
         }
         if (locRaw.has("mode")) {
             locationRaw = locRaw.get("mode").getAsString();
-            parseLocation(locationRaw);
+            location = Location.from(locationRaw);
         } else {
             location = Location.UNKNOWN;
         }
