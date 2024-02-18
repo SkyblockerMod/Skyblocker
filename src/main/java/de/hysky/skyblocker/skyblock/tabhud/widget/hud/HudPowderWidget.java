@@ -9,6 +9,7 @@ import net.minecraft.util.Formatting;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
@@ -17,9 +18,9 @@ import java.text.ParseException;
 public class HudPowderWidget extends Widget {
 
     /**
-     * Number format instance
+     * American number format instance
      */
-    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
+    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
     /**
      * current value of Mithril Powder
      */
