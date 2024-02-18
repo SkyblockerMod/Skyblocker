@@ -17,8 +17,6 @@ import java.awt.*;
 import java.util.List;
 
 public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
-
-
     private final ChatRulesConfigScreen screen;
 
     private Boolean hasChanged;
@@ -45,7 +43,6 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         return super.getScrollbarPositionX() + 50;
     }
 
-
     protected void addRuleAfterSelected() {
         hasChanged = true;
         int newIndex = children().indexOf(getSelectedOrNull()) + 1;
@@ -58,12 +55,10 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         return super.removeEntry(entry);
     }
 
-
     protected void saveRules() {
         hasChanged = false;
         ChatRulesHandler.saveChatRules();
     }
-
 
     protected boolean hasChanges(){
         return (hasChanged || children().stream().filter(chatRuleConfigEntry.class::isInstance).map(chatRuleConfigEntry.class::cast).anyMatch(chatRuleConfigEntry::isChange));
@@ -94,22 +89,18 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
     private class chatRuleConfigEntry extends AbstractChatRuleEntry {
         //data
-        private int chatRuleIndex;
-        private ChatRule chatRule;
+        private final int chatRuleIndex;
+        private final ChatRule chatRule;
 
         private final List<? extends Element> children;
 
-
-
-            //widgets
+        //widgets
         private final ButtonWidget enabledButton;
         private final ButtonWidget openConfigButton;
         private final ButtonWidget deleteButton;
 
-
-        //text locations
+        //text location
         private final int nameX = width / 2 - 125;
-
         //saved data
         private double oldScrollAmount = 0;
 
@@ -118,15 +109,10 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
             this.chatRuleIndex = chatRuleIndex;
             this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
 
-            //initialize the widgets
-
-            enabledButton = ButtonWidget.builder(enabledButtonText() , a -> {
-                toggleEnabled();
-            })
+            enabledButton = ButtonWidget.builder(enabledButtonText() , a -> toggleEnabled())
                     .size(50,20)
                     .position(width / 2 - 25,5)
-                    .build()
-            ;
+                    .build();
 
             openConfigButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.editRule"), a -> {
                         client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex));
@@ -134,17 +120,15 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
                     .size(50,20)
                     .position(width / 2 + 45,5)
                     .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.editRule.@Tooltip")))
-                    .build()
-            ;
+                    .build();
+
             deleteButton = ButtonWidget.builder(Text.translatable("selectServer.delete"), a -> {
                         oldScrollAmount = getScrollAmount();
                         client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
                     })
                     .size(50,20)
                     .position(width / 2 + 105,5)
-                    .build()
-            ;
-
+                    .build();
 
             children = List.of(enabledButton, openConfigButton, deleteButton);
         }
@@ -182,7 +166,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
                 @Override
                 public void appendNarrations(NarrationMessageBuilder builder) {
-                    builder.put(NarrationPart.TITLE); //todo add more e.g. , targetName, replacementName
+                    builder.put(NarrationPart.TITLE,chatRule.getName());
                 }
             });
         }

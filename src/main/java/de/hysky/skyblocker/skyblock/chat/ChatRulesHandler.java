@@ -81,7 +81,6 @@ public class ChatRulesHandler {
         catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to load locations!", e);
         }
-        System.out.println(locations);
     }
 
     protected static void saveChatRules() {
@@ -146,7 +145,6 @@ public class ChatRulesHandler {
      * @param codedString the string with color codes in
      * @return formatted text
      */
-
     protected static MutableText formatText(String codedString) {
         if (codedString.contains(String.valueOf(Formatting.FORMATTING_CODE_PREFIX)) || codedString.contains("&")){
             MutableText newText =  Text.literal("");
@@ -166,5 +164,4 @@ public class ChatRulesHandler {
         }
         return  Text.literal(codedString);
     }
-
 }

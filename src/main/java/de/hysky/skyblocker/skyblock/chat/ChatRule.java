@@ -1,12 +1,8 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.sound.Sound;
-import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -16,8 +12,8 @@ import java.util.regex.Pattern;
 public class ChatRule {
 
     private String name;
-    //inputs
 
+    //inputs
     private Boolean enabled;
     private Boolean isPartialMatch;
     private Boolean isRegex;
@@ -29,7 +25,7 @@ public class ChatRule {
     private Boolean hideMessage;
     private Boolean showActionBar;
     private Boolean showAnnouncement;
-    private String replaceMessage; //todo extract parts of original message
+    private String replaceMessage;
     private SoundEvent customSound;
     /**
      * Creates a chat rule with default options.
@@ -51,7 +47,7 @@ public class ChatRule {
         this.customSound = null;
     }
 
-    public Boolean getEnabled() { //todo remove unused getters and set
+    public Boolean getEnabled() {
         return enabled;
     }
 
@@ -211,16 +207,6 @@ public class ChatRule {
     public void setName(String name) {
         this.name = name;
     }
-
-    public enum LocationOption {
-        None,
-        Island,
-        Hub,
-        Garden; //todo add more
-
-    }
-
-
 }
 
 

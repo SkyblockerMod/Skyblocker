@@ -12,13 +12,7 @@ import net.minecraft.text.Text;
 public class ChatRulesConfigScreen extends Screen {
 
     private ChatRulesConfigListWidget chatRulesConfigListWidget;
-    private ButtonWidget buttonNew;
-    private ButtonWidget buttonDone;
     private final Screen parent;
-
-    public ChatRulesConfigScreen() {
-        this(null);
-    }
 
     public ChatRulesConfigScreen(Screen parent) {
         super(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen"));
@@ -43,9 +37,9 @@ public class ChatRulesConfigScreen extends Screen {
                 close();
             }
         }).build());
-        buttonNew = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.new"), buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()).build();
-        adder.add(buttonNew);
-        buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
+        ButtonWidget buttonNew1 = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.new"), buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()).build();
+        adder.add(buttonNew1);
+        ButtonWidget buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
             chatRulesConfigListWidget.saveRules();
             if (client != null) {
                 close();

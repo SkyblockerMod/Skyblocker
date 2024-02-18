@@ -19,7 +19,6 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 public class ChatRuleConfigScreen extends Screen {
-
     private static final int SPACER_X = 5;
     private static final int SPACER_Y = 25;
 
@@ -35,17 +34,12 @@ public class ChatRuleConfigScreen extends Screen {
 
     private final int chatRuleIndex;
     private final ChatRule chatRule;
-
-    //widgets
-    private ButtonWidget finishButton;
-
     private TextFieldWidget nameInput;
     private TextFieldWidget filterInput;
     private ButtonWidget partialMatchToggle;
     private ButtonWidget regexToggle;
     private ButtonWidget ignoreCaseToggle;
     private TextFieldWidget locationsInput;
-
     private ButtonWidget hideMessageToggle;
     private ButtonWidget actionBarToggle;
     private ButtonWidget announcementToggle;
@@ -55,16 +49,12 @@ public class ChatRuleConfigScreen extends Screen {
     //textLocations
     private IntIntPair nameLabelTextPos;
     private IntIntPair inputsLabelTextPos;
-
     private IntIntPair filterLabelTextPos;
     private IntIntPair partialMatchTextPos;
     private IntIntPair regexTextPos;
     private  IntIntPair ignoreCaseTextPos;
-
     private IntIntPair locationLabelTextPos;
-
     private IntIntPair outputsLabelTextPos;
-
     private IntIntPair hideMessageTextPos;
     private IntIntPair actionBarTextPos;
     private IntIntPair announcementTextPos;
@@ -74,8 +64,6 @@ public class ChatRuleConfigScreen extends Screen {
     private int currentSoundIndex;
 
     private final Screen parent;
-
-
 
     public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
         super(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen"));
@@ -91,7 +79,7 @@ public class ChatRuleConfigScreen extends Screen {
         if (client == null) return;
         //start centered on the X and 1/3 down on the Y
         IntIntPair currentPos = IntIntPair.of((this.width - getMaxUsedWidth()) / 2,(int)((this.height -getMaxUsedHeight()) * 0.33));
-        int lineXOffset = 0;
+        int lineXOffset;
 
         nameLabelTextPos = currentPos;
         lineXOffset  = client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.name")) + SPACER_X;
@@ -221,11 +209,9 @@ public class ChatRuleConfigScreen extends Screen {
         replaceMessageInput.setTooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace.@Tooltip")));
         replaceMessageInput.setText(chatRule.getReplaceMessage());
 
-        finishButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.finish"), a -> {
-                close();
-        })
+        ButtonWidget finishButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.finish"), a -> close())
                 .position(this.width - 75 - SPACER_Y, this.height - SPACER_Y)
-                .size(75,20)
+                .size(75, 20)
                 .build();
 
         addDrawableChild(nameInput);
@@ -243,7 +229,7 @@ public class ChatRuleConfigScreen extends Screen {
     }
 
     /**
-     * works out the width of the maximum line
+     * Works out the width of the maximum line
      * @return the max used width
      */
     private int getMaxUsedWidth() {
@@ -259,8 +245,12 @@ public class ChatRuleConfigScreen extends Screen {
         return total;
     }
 
+    /**
+     * Works out the height used
+     * @return height used by the gui
+     */
     private int getMaxUsedHeight() {
-        //there are 7 rows so just times the spacer by 7
+        //there are 8 rows so just times the spacer by 8
         return SPACER_Y * 8;
     }
 
@@ -318,6 +308,4 @@ public class ChatRuleConfigScreen extends Screen {
         }
         return soundsLookup.keySet().stream().toList().get(currentSoundIndex);
     }
-
-
 }

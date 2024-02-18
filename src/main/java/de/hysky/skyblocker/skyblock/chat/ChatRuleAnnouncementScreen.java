@@ -9,10 +9,8 @@ import net.minecraft.text.Text;
 
 
 public class ChatRuleAnnouncementScreen {
-
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static float timer;
-
     private static Text text = null;
 
     public static void init() {
@@ -22,10 +20,7 @@ public class ChatRuleAnnouncementScreen {
             }
             render(context, tickDelta);
         });
-
     }
-
-
 
     /**
      * renders {@link ChatRuleAnnouncementScreen#text} to the middle of the top of the screen.
@@ -46,6 +41,7 @@ public class ChatRuleAnnouncementScreen {
 
         matrices.pop();
     }
+
     protected static void setText(Text newText) {
         text = newText;
         timer =  SkyblockerConfigManager.get().messages.chatRuleConfig.announcementLength;
