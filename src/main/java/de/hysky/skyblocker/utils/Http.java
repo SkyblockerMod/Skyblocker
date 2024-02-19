@@ -53,7 +53,7 @@ public class Http {
 		String body = new String(decodedInputStream.readAllBytes());
 		HttpHeaders headers = response.headers();
 
-		return new ApiResponse(body, response.statusCode(), getCacheStatus(headers), getAge(headers));
+		return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
 	}
 
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
@@ -115,12 +115,12 @@ public class Http {
 	}
 
 	/**
-	 * Returns the cache status of the resource
+	 * Returns the cache statuses of the resource. All possible cache status values conform to Cloudflare's.
 	 * 
-	 * @see <a href="https://developers.cloudflare.com/cache/concepts/default-cache-behavior/#cloudflare-cache-responses">Cloudflare Cache Docs</a>
+	 * @see <a href="https://developers.cloudflare.com/cache/concepts/cache-responses/">Cloudflare Cache Docs</a>
 	 */
-	private static String getCacheStatus(HttpHeaders headers) {
-		return headers.firstValue("CF-Cache-Status").orElse("UNKNOWN");
+	private static String[] getCacheStatuses(HttpHeaders headers) {
+		return new String[] { headers.firstValue("CF-Cache-Status").orElse("UNKNOWN"), headers.firstValue("Local-Cache-Status").orElse("UNKNOWN") };
 	}
 
 	private static int getAge(HttpHeaders headers) {
@@ -128,7 +128,7 @@ public class Http {
 	}
 
 	//TODO If ever needed, we could just replace cache status with the response headers and go from there
-	public record ApiResponse(String content, int statusCode, String cacheStatus, int age) implements AutoCloseable {
+	public record ApiResponse(String content, int statusCode, String[] cacheStatuses, int age) implements AutoCloseable {
 
 		public boolean ok() {
 			return statusCode == 200;
@@ -139,7 +139,7 @@ public class Http {
 		}
 
 		public boolean cached() {
-			return cacheStatus.equals("HIT");
+			return cacheStatuses[0].equals("HIT") || cacheStatuses[1].equals("HIT");
 		}
 
 		@Override
