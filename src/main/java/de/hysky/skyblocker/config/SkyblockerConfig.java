@@ -723,6 +723,12 @@ public class SkyblockerConfig {
 		public boolean solveBoulder = true;
 
 		@SerialEntry
+		public boolean solveIceFill = true;
+
+		@SerialEntry
+		public boolean solveSilverfish = true;
+
+		@SerialEntry
 		public boolean fireFreezeStaffTimer = true;
 
 		@SerialEntry

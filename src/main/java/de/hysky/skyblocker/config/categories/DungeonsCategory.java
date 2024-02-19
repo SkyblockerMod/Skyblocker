@@ -417,6 +417,20 @@ public class DungeonsCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveIceFill"))
+						.binding(defaults.locations.dungeons.solveIceFill,
+								() -> config.locations.dungeons.solveIceFill,
+								newValue -> config.locations.dungeons.solveIceFill = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveSilverfish"))
+						.binding(defaults.locations.dungeons.solveSilverfish,
+								() -> config.locations.dungeons.solveSilverfish,
+								newValue -> config.locations.dungeons.solveSilverfish = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer"))
 						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer.@Tooltip")))
 						.binding(defaults.locations.dungeons.fireFreezeStaffTimer,
