@@ -11,10 +11,13 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Map.entry;
 
@@ -70,7 +73,19 @@ public class ChatRuleConfigScreen extends Screen {
         this.chatRuleIndex = chatRuleIndex;
         this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
         this.parent = parent;
-        this.currentSoundIndex = soundsLookup.values().stream().toList().indexOf(chatRule.getCustomSound());
+        this.currentSoundIndex = getCurrentSoundIndex();
+    }
+
+    private int getCurrentSoundIndex() {
+        List<SoundEvent> soundOptions = soundsLookup.values().stream().toList();
+        Identifier ruleSoundId = chatRule.getCustomSound().getId();
+        for (int i = 0; i < soundOptions.size(); i++) {
+            if (soundOptions.get(i).getId().compareTo(ruleSoundId) == 0) {
+                return i;
+            }
+        }
+        //not found
+        return -1;
     }
 
     @Override
@@ -198,7 +213,7 @@ public class ChatRuleConfigScreen extends Screen {
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
                 .size(100,20)
-                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sound.@Tooltip")))
+                .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.@Tooltip")))
                 .build();
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
 
