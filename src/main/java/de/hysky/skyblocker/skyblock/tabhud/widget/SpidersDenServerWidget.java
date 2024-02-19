@@ -22,7 +22,9 @@ public class SpidersDenServerWidget extends Widget {
     private enum BroodmotherState {
         SOON("Soon", Formatting.GOLD),
         AWAKENING("Awakening", Formatting.GOLD),
+        IMMINENT("Imminent", Formatting.DARK_RED),
         ALIVE("Alive!", Formatting.DARK_RED),
+        SLAIN("Slain", Formatting.YELLOW),
         DORMANT("Dormant", Formatting.YELLOW),
         UNKNOWN("Unknown", Formatting.GRAY);
 
@@ -80,7 +82,6 @@ public class SpidersDenServerWidget extends Widget {
         this.addSimpleIcoText(Ico.EMERALD, "Gems:", Formatting.GREEN, 43);
 
         BroodmotherState broodmotherState = parseTab();
-        this.addSimpleIcoText(
-                Ico.SPIDER_EYE, "Broodmother: ", broodmotherState.formatting(), broodmotherState.text());
+        this.addSimpleIcoText(Ico.SPIDER_EYE, "Broodmother: ", broodmotherState.formatting(), broodmotherState.text());
     }
 }
