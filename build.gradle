@@ -1,7 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.modrinth.minotaur' version '2.+'
+	id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -92,13 +92,6 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// ensure that the encoding is set to UTF-8, no matter what the system default is
-	// this fixes some edge cases with special characters not displaying correctly
-	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-	// If Javadoc is generated, this must be specified in that task too.
-
-
-	// Minecraft 1.18 upwards uses Java 17.
 	it.options.release = 17
 }
 
@@ -122,30 +115,39 @@ test {
 	useJUnitPlatform()
 }
 
-modrinth {
-	token = System.getenv('MODRINTH_TOKEN')
-	projectId = project.modrinth_id
-	versionNumber = "v${project.version}"
-	versionName = "Skyblocker ${project.mod_version} for ${project.minecraft_version}"
-	uploadFile = remapJar
-	gameVersions = [project.minecraft_version]
-	loaders = ["fabric"]
-	versionType = "release"
-	dependencies {
-		required.project "fabric-api"
-		optional.project "modmenu"
-		optional.project "rei"
-		optional.project "emi"
-	}
+publishMods {
+	file = remapJar.archiveFile
 	changelog = System.getenv('CHANGELOG')
-	syncBodyFrom = rootProject.file("MRREADME.md").text
-}
+	version = "v${project.version}"
+	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
+	modLoaders.add("fabric")
+	type = STABLE
 
-tasks.modrinth.doLast {
-	println "::set-output name=url::https://modrinth.com/mod/skyblocker-liap/version/$uploadInfo.id"
-}
+	modrinth {
+		accessToken = System.getenv("MODRINTH_TOKEN")
+		projectId = modrinth_id
+		minecraftVersions.add(minecraft_version)
+		announcementTitle = "<:modrinth:900697862206287882> Download from Modrinth"
+		requires("fabric-api")
+		optional("modmenu", "rei", "emi")
+	}
 
-tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+	curseforge {
+		accessToken = System.getenv("CURSEFORGE_TOKEN")
+		projectId = curseforge_id
+		minecraftVersions.add(minecraft_version)
+		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
+		projectSlug = "skyblocker"
+		requires("fabric-api")
+		optional("roughly-enough-items", "emi")
+	}
+
+	discord {
+		webhookUrl = System.getenv("DISCORD_WEBHOOK")
+		username = "Changelog"
+		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version}\n" + it}
+	}
+}
 
 // configure the maven publication
 publishing {

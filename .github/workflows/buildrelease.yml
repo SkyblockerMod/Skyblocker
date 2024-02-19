@@ -17,9 +17,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '17'
@@ -30,7 +30,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Artifacts
           path: build/libs/
@@ -46,55 +46,29 @@ jobs:
           CHANGELOGtmp="${CHANGELOGtmp//$'\n'/'%0A'}"
           CHANGELOGtmp="${CHANGELOGtmp//$'\r'/'%0D'}"
           
-          echo "::set-output name=changelog::$CHANGELOGtmp"
+          # changelog for Github release
+          echo "changelog=$CHANGELOGtmp" >> $GITHUB_OUTPUT
           
-          echo "Changelog:\n$CHANGELOG"
+          #echo "Changelog:\n$CHANGELOG" # for debugging
 
           changelog="${CHANGELOG}"
+          highlight_section=$(echo "$changelog" | awk '/## Highlight/{flag=1;next}/^$/{flag=0}flag')
+          highlight_section="# Highlight\n$highlight_section\n\nhttps://hysky.de/"
 
-          # Because of the 2000 char limit in Discord shorten the changelog
-
-          # Calculate the number of characters to delete
-          delete_chars=$((${#changelog} + 350 - 2000 - 15))
+          # Format highlight_section with printf
+          highlight_section=$(printf "%s" "$highlight_section")
           
-          # Check if delete_chars is greater than 0
-          if [ $delete_chars -gt 0 ]; then
-
-              # Extract the "What's Changed" section from the changelog
-              changed_section=$(echo "$changelog" | awk '/## What'\''s Changed/{flag=1;next}/^$/{flag=0}flag')
-
-              # Trim the changed_section based on the delete_chars value and remove the last line
-              modified_section="${changed_section::-delete_chars}"
-              modified_section=$(echo "$modified_section" | sed '$d')
-
-              # Add "[...] and more" at the end of modified_section
-              modified_section+="\n[...] and more"
-
-              # Format modified_section with printf
-              modified_section=$(printf "%s" "$modified_section")
-
-              # Generate the modified_changelog by inserting modified_section after the "What's Changed" section
-              modified_changelog=$(awk -v modified_section="$modified_section" '
-                      /^## What'\''s Changed/ { print; print modified_section; f=1; next }
-                      f && /^$/ { f=0 }
-                      !f { print }
-                      END { if (f) print "" }
-                  ' ORS='\n' <<< "$changelog")
-
-              # Format the modified_changelog by removing "@" characters and enclosing URLs in "<>"
-              # modified_changelog=$(echo "$modified_changelog" | sed -e 's/@//g' -e 's|https\?://[^[:space:]]*|<\0>|g')
-          
-          # Store the modified_changelog in the CHANGELOG variable
-          CHANGELOG=$(echo -n "$modified_changelog")
-          fi
+          # Store the highlight_section in the CHANGELOG variable
+          CHANGELOG=$(echo -n "$highlight_section")
           
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
           CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
           CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
           
-          echo "::set-output name=changelog_discord::$CHANGELOG"
+          # changelog for rest
+          echo "changelog_highlight=$CHANGELOG" >> $GITHUB_OUTPUT
 
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v7
         id: fname
         with:
           result-encoding: string
@@ -110,35 +84,13 @@ jobs:
           token: ${{ secrets.GH_RELEASE }}
           files: build/libs/${{ steps.fname.outputs.result }}
 
-      - name: Publish to Modrinth
-        id: modrinth
+      - name: Publish using mod-publish-plugin
+        run: ./gradlew build publishMods
         env:
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN  }}
-          CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
-        run: ./gradlew modrinth
-
-      - name: Get version tag
-        id: version_tag
-        run: |
-          [[ ! "$GITHUB_REF" =~ refs/tags ]] && exit
-          echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
-
-      - name: Discord notification
-        shell: bash
-        run: |
-          OUTPUT="
-          <@&1134565945482948638>
-          ## Skyblocker ${{ steps.version_tag.outputs.value }}
-          
-          ${{ steps.read_changelog.outputs.changelog_discord }}
-          
-          :inbox_tray: Download latest version on Modrinth or Github:
-          <:modrinth:900697862206287882> ${{ steps.modrinth.outputs.url }}
-          <:github:900697885706952725> ${{ steps.uploadrelease.outputs.url }}
-          
-          https://hysky.de/"
-
-          curl -H "Content-Type: application/json" -d '{"content":"'"${OUTPUT//$'\n'/\\n}"'", "flags": 4}' "${{ secrets.DISCORD_WEBHOOK }}"
+          CHANGELOG: ${{ steps.read_changelog.outputs.changelog_highlight }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
 
       - name: Trigger Modpack
         shell: bash
