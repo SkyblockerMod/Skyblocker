@@ -47,6 +47,21 @@ public class ChatRule {
         this.customSound = null;
     }
 
+    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, String validLocations, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, SoundEvent customSound) {
+        this.name = name;
+        this.enabled = enabled;
+        this.isPartialMatch = isPartialMatch;
+        this.isRegex = isRegex;
+        this.isIgnoreCase = isIgnoreCase;
+        this.filter = filter;
+        this.validLocations = validLocations;
+        this.hideMessage = hideMessage;
+        this.showActionBar = showActionBar;
+        this.showAnnouncement = showAnnouncement;
+        this.replaceMessage = replaceMessage;
+        this.customSound = customSound;
+    }
+
     protected String getName() {
         return name;
     }

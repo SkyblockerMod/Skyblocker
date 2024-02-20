@@ -155,6 +155,7 @@ public class ChatRuleConfigScreen extends Screen {
         locationsInput = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
         locationsInput.setText(chatRule.getValidLocations());
         MutableText locationToolTip = Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.locations.@Tooltip");
+        locationToolTip.append("\n");
         ChatRulesHandler.locationsList.forEach(location -> locationToolTip.append(" " + location + ",\n"));
         locationsInput.setTooltip(Tooltip.of(locationToolTip));
         currentPos = IntIntPair.of(currentPos.leftInt(),currentPos.rightInt() + SPACER_Y);
@@ -300,10 +301,12 @@ public class ChatRuleConfigScreen extends Screen {
         context.drawTextWithShadow(this.textRenderer,Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace"), replaceMessageLabelTextPos.leftInt(), replaceMessageLabelTextPos.rightInt() + yOffset, 0xFFFFFF);
     }
 
+    /**
+     * Saves and returns to parent screen
+     */
     @Override
     public void close() {
-        //todo add checks to see if valid rule e.g. has name
-        //and if valid save a
+
         if (client != null ) {
             save();
             client.setScreen(parent);

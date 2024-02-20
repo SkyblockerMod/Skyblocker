@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -55,11 +56,21 @@ public class ChatRulesHandler {
 
             LOGGER.info("[Skyblocker] Loaded chat rules");
         } catch (NoSuchFileException e) {
-            //todo create default chat rules
+            registerDefaultChatRules();
             LOGGER.warn("[Skyblocker] chat rule file not found, using default rules. This is normal when using for the first time.");
         } catch (IOException e) {
             LOGGER.error("[Skyblocker] Failed to load shortcuts file", e);
         }
+    }
+
+    private static void registerDefaultChatRules() {
+        //clean hub chat
+        ChatRule cleanHubRule = new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", "hub", true, false, false, "", null);
+        //mining Ability
+        ChatRule miningAbilityRule = new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", "Crystal Hollows, Dwarven Mines", false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER);
+
+        chatRuleList.add(cleanHubRule);
+        chatRuleList.add(miningAbilityRule);
     }
 
     private static void loadLocations() {
