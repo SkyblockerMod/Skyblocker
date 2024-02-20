@@ -465,10 +465,10 @@ public class SkyblockerConfig {
 
 	public static class FlameOverlay {
 		@SerialEntry
-		public float flameHeight = 0f;
+		public int flameHeight = 100;
 
 		@SerialEntry
-		public float flameOpacity = 0f;
+		public int flameOpacity = 100;
 	}
 
 	public static class SearchOverlay {
