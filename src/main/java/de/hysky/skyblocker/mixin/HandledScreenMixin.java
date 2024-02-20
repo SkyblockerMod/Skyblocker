@@ -75,13 +75,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     public void skyblocker$renderScreen(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (!Utils.isOnSkyblock()) return;
 
-        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+        if (SkyblockerConfigManager.get().locations.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
             VisitorHelper.renderScreen(this.getTitle().getString(), context, textRenderer, handler, mouseX, mouseY);
     }
 
     @Inject(at = @At("HEAD"), method = "mouseClicked")
     public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+        if (SkyblockerConfigManager.get().locations.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
             VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
     }
 

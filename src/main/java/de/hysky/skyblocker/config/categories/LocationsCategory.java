@@ -153,6 +153,13 @@ public class LocationsCategory {
 										newValue -> config.locations.garden.dicerTitlePrevent = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.visitorHelper"))
+								.binding(defaults.locations.garden.visitorHelper,
+										() -> config.locations.garden.visitorHelper,
+										newValue -> config.locations.garden.visitorHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 				.build();
 	}

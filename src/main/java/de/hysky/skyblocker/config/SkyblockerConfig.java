@@ -178,9 +178,6 @@ public class SkyblockerConfig {
 		public boolean dungeonQuality = true;
 
 		@SerialEntry
-		public boolean visitorHelper = true;
-
-		@SerialEntry
 		public TabHudConf tabHud = new TabHudConf();
 
 		@SerialEntry
@@ -1091,6 +1088,9 @@ public class SkyblockerConfig {
 	public static class Garden {
 		@SerialEntry
 		public boolean dicerTitlePrevent = true;
+
+		@SerialEntry
+		public boolean visitorHelper = true;
 	}
 
 	public static class Slayer {
