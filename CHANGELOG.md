@@ -1,3 +1,79 @@
+# Release 1.18.0
+
+## Highlight
+* **New Dungeon Solvers**:
+  * Silverfish Solvers by @kevinthegreat1
+  * Ice Fill Solvers by @kevinthegreat1
+  * Boulder Solver by @LifeIsAParadox
+* **Crystal Hollows Feature**:
+  * Crystal Hollows Map by @olim88 and @AzureAaron
+  * Waypoints for special locations by @olim88 and @AzureAaron
+  * Powder HUD by @olim88 and @AzureAaron
+    * Mithril
+    * Gemstone
+* **Kuudra Features** by @AzureAaron
+  * Kuudra waypoints
+  * No arrow poison warning
+  * Low arrow poison warning
+* **Search overlays for bz and ah** by @olim88
+* **End HUD Widget** by @viciscat
+  * Zealots
+    * *Since last eye*
+    * *Total zealots kills*
+    * *Avg kills per eye*
+  * Endstone Protector
+    * *stage*
+    * *Location*
+* **Garden Features**:
+  * Visitor helper by @esteban4567890
+    * easy way to buy items that visitors require from bazaar by clicking the text
+  * Disable title and chat messages for Melon/Pumpkin Dicer by @Ghost-3
+* **Improve Item Protection feature** by @LifeIsAParadox
+  * protect item with shortcut "v"
+  * indicator in form of a star
+
+## What's Changed
+* Nothing to see here by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/526
+* Crystal hollows fetures by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/523
+* Beacon Highlighter performance fix + Fix fire sales widget by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/521
+* Fix chest value not getting price data under certain circumstances by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/522
+* Update mayor cache every 20 minutes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/525
+* Update IF conflict by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/529
+* Remove 1.20.2 from version selection menu in issue templates by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/530
+* Add the missing starter commission to the Dwarven HUD. by @Kaluub in https://github.com/SkyblockerMod/Skyblocker/pull/532
+* Kuudra Features by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/519
+* Disable title and chat messages for Melon/Pumpkin Dicer by @Ghost-3 in https://github.com/SkyblockerMod/Skyblocker/pull/534
+* Add Visitor helper by @esteban4567890 in https://github.com/SkyblockerMod/Skyblocker/pull/535
+* Search overlays for bz and ah by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/537
+* Add End HUD Widget by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/524
+* Boulder Solver by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/540
+* Item Quality (dungeon drops) by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/541
+* Treasure Hoarder Puncher Commission fix by @Ghost-3 in https://github.com/SkyblockerMod/Skyblocker/pull/542
+* center table components in tabhud by @btwonion in https://github.com/SkyblockerMod/Skyblocker/pull/543
+* Check all door blocks and fix fairy room door by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/536
+* Show the diff in the Powders widget by @Ghost-3 in https://github.com/SkyblockerMod/Skyblocker/pull/544
+* Add Item Floor Tier to tooltip by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/546
+* Better location management by @Ghost-3 in https://github.com/SkyblockerMod/Skyblocker/pull/547
+* Small search overlay changes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/548
+* Fix powder hud not updating when commissions hud is disabled by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/550
+* Improve secrets caching behaviour by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/545
+* Spider's Den Server Widget by @Ghost-3 in https://github.com/SkyblockerMod/Skyblocker/pull/553
+* Fix beacon highlights persisting after the boss dies by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/554
+* use mod-publish-plugin by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/556
+* Add Silverfish and Ice Fill Solvers by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/533
+* Fix discoveries index by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/557
+* Support the local memory cache for the API by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/558
+* 4 small changes by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/561
+* Improve Item Protection feature by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/562
+
+## New Contributors
+* @olim88 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/523
+* @Ghost-3 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/534
+* @esteban4567890 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/535
+* @Fluboxer made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/541
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.17.0...v1.18.0
+___
 # Release 1.17.0
 
 ## Highlight
