@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.searchOverlay;
+package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import it.unimi.dsi.fastutil.Pair;
 import org.junit.jupiter.api.Assertions;

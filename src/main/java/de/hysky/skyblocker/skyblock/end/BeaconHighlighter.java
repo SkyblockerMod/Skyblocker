@@ -3,8 +3,11 @@ package de.hysky.skyblocker.skyblock.end;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
@@ -20,6 +23,20 @@ public class BeaconHighlighter {
      */
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);
+        ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+        ClientReceiveMessageEvents.GAME.register(BeaconHighlighter::onMessage);
+    }
+
+    private static void reset() {
+        beaconPositions.clear();
+    }
+
+    private static void onMessage(Text text, boolean overlay) {
+        if (Utils.isInTheEnd() && !overlay) {
+            String message = text.getString();
+
+            if (message.contains("SLAYER QUEST COMPLETE!") || message.contains("NICE! SLAYER BOSS SLAIN!")) reset();
+        }
     }
 
     /**
@@ -28,7 +45,7 @@ public class BeaconHighlighter {
      *
      * @param context An instance of WorldRenderContext for the RenderHelper to use
      */
-    public static void render(WorldRenderContext context) {
+    private static void render(WorldRenderContext context) {
         if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons) {
             for (BlockPos pos : beaconPositions) {
                 RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, false);

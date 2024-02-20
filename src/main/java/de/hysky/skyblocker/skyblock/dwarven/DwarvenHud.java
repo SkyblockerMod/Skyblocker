@@ -203,8 +203,8 @@ public class DwarvenHud {
     }
 
     public static void update() {
-        if (client.player == null || client.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions || (!Utils.isInCrystalHollows()
-                && !Utils.isInDwarvenMines()))
+        if (client.player == null || client.getNetworkHandler() == null || (!SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) 
+                || (!Utils.isInCrystalHollows() && !Utils.isInDwarvenMines()))
             return;
 
         commissionList = new ArrayList<>();

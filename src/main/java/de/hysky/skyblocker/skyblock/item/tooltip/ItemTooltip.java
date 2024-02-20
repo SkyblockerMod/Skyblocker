@@ -140,14 +140,36 @@ public class ItemTooltip {
             }
         }
 
+        final Map<Integer, String> itemTierFloors = new HashMap<>() {{
+            put(1, "F1");
+            put(2, "F2");
+            put(3, "F3");
+            put(4, "F4/M1");
+            put(5, "F5/M2");
+            put(6, "F6/M3");
+            put(7, "F7/M4");
+            put(8, "M5");
+            put(9, "M6");
+            put(10, "M7");
+        }};
+
         if (SkyblockerConfigManager.get().general.dungeonQuality) {
             NbtCompound ea = ItemUtils.getExtraAttributes(stack);
             if (ea != null && ea.contains("baseStatBoostPercentage")) {
                 int baseStatBoostPercentage = ea.getInt("baseStatBoostPercentage");
-                if (baseStatBoostPercentage == 50) {
+                boolean maxQuality = baseStatBoostPercentage == 50;
+                if (maxQuality) {
                     lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
                 } else {
                     lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
+                }
+                if (ea.contains("item_tier")) {     // sometimes it just isn't here?
+                    int itemTier = ea.getInt("item_tier");
+                    if (maxQuality) {
+                        lines.add(Text.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + itemTierFloors.get(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
+                    } else {
+                        lines.add(Text.literal(String.format("%-21s", "Floor Tier:") + itemTier + " (" + itemTierFloors.get(itemTier) + ")").formatted(Formatting.BLUE));
+                    }
                 }
             }
         }

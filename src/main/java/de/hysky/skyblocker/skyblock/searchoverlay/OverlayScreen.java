@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.searchOverlay;
+package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
