@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.mixin;
 
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.utils.JoinWorldPlaceholderScreen;
 import de.hysky.skyblocker.utils.ReconfiguringPlaceholderScreen;
 import de.hysky.skyblocker.utils.Utils;
@@ -34,6 +35,7 @@ public abstract class MinecraftClientMixin {
     public void skyblocker$handleInputEvents(CallbackInfo ci) {
         if (Utils.isOnSkyblock()) {
             HotbarSlotLock.handleInputEvents(player);
+            ItemProtection.handleHotbarKeyPressed(player);
         }
     }
 

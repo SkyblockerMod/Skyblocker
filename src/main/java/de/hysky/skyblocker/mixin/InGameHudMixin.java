@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
@@ -10,6 +11,7 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScoreHUD;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
@@ -38,6 +40,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class InGameHudMixin {
     @Unique
     private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
+
+    @Unique
+    private static final Identifier ITEM_PROTECTION = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
     @Unique
     private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
@@ -56,10 +61,17 @@ public abstract class InGameHudMixin {
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V", ordinal = 0))
     public void skyblocker$renderHotbarItemLockOrRarityBg(float tickDelta, DrawContext context, CallbackInfo ci, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
         if (Utils.isOnSkyblock()) {
+            // slot lock
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(player.getInventory().main.get(index), context, x, y);
             if (HotbarSlotLock.isLocked(index)) {
                 RenderSystem.enableBlend();
                 context.drawTexture(SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
+                RenderSystem.disableBlend();
+            }
+            //item protection
+            if (ItemProtection.isItemProtected(player.getInventory().main.get(index))){
+                RenderSystem.enableBlend();
+                context.drawTexture(ITEM_PROTECTION, x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
         }

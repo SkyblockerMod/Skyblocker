@@ -10,13 +10,23 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
+	public static KeyBinding itemProtection;
 
 	public static void init() {
+		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+				"key.itemProtection",
+				GLFW.GLFW_KEY_V,
+				"key.categories.skyblocker"
+		));
 		ClientCommandRegistrationCallback.EVENT.register(ItemProtection::registerCommand);
 	}
 
@@ -60,5 +70,29 @@ public class ItemProtection {
 		}
 
 		return Command.SINGLE_SUCCESS;
+	}
+
+	public static void handleKeyPressed(ItemStack heldItem) {
+		if (!Utils.isOnSkyblock() || heldItem.isEmpty()) return;
+
+		String itemUuid = ItemUtils.getItemUuid(heldItem);
+		if (!itemUuid.isEmpty()) {
+			ObjectOpenHashSet<String> protectedItems = SkyblockerConfigManager.get().general.protectedItems;
+
+			if (!protectedItems.contains(itemUuid)) {
+				protectedItems.add(itemUuid);
+				SkyblockerConfigManager.save();
+			} else {
+				protectedItems.remove(itemUuid);
+				SkyblockerConfigManager.save();
+			}
+		}
+	}
+
+	public static void handleHotbarKeyPressed(ClientPlayerEntity player) {
+		while (itemProtection.wasPressed()) {
+			ItemStack heldItem = player.getMainHandStack();
+			handleKeyPressed(heldItem);
+		}
 	}
 }
