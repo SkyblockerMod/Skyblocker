@@ -11,9 +11,11 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -73,7 +75,19 @@ public class ItemProtection {
 	}
 
 	public static void handleKeyPressed(ItemStack heldItem) {
-		if (!Utils.isOnSkyblock() || heldItem.isEmpty()) return;
+		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
+		if (playerEntity == null){
+			return;
+		}
+		if (!Utils.isOnSkyblock()) {
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.unableToProtect")));
+			return;
+		}
+
+        if (heldItem.isEmpty()) {
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
+            return;
+        }
 
 		String itemUuid = ItemUtils.getItemUuid(heldItem);
 		if (!itemUuid.isEmpty()) {
@@ -82,10 +96,16 @@ public class ItemProtection {
 			if (!protectedItems.contains(itemUuid)) {
 				protectedItems.add(itemUuid);
 				SkyblockerConfigManager.save();
+
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
 			} else {
 				protectedItems.remove(itemUuid);
 				SkyblockerConfigManager.save();
+
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
 			}
+		} else {
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
 		}
 	}
 
