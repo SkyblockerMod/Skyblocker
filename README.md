@@ -31,7 +31,10 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Quiz - Ouro the Omniscient*
   - *Tic Tac Toe*
   - *Waterboard*
-  - *Terminal:*
+  - *Silverfish*
+  - *Ice Fill*
+  - *Boulder*
+  - Terminal:
     - *Order*
     - *Coloured Items*
     - *Item Name*
@@ -47,6 +50,16 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **resourcepack recoloring textures in dungeons**
 - **score title and sound**
 
+### Kuudra Features
+- **Kuudra waypoints**
+  - *Supplies*
+  - *Supply Piles*
+  - *Fuel Cells*
+  - *Safe Spots*
+  - *Pearl*
+- **No arrow poison warning**
+- **Low arrow poison warning**
+
 ### Item and Armor Customization:
 - *Item Renaming*
 - *Custom Armor Dye Colors*
@@ -59,19 +72,20 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Defense*
   - *XP*
 
-### Dwarven Mines:
+### Dwarven Mines / Crystal Hollows:
 - **Dwarven Mines Solver:**
-  - *Fetchur*
-  - *Puzzler*
-- **Commission/Powder HUD**
+  - Fetchur
+  - Puzzler
+- **Crystal Hollows**
+  - Crystal Hollows Map
+    - *Shows players location in Crystal Hollows*
+    - *Highlights important waypoints in Crystal Hollows*
+  - Crystal Hollows Waypoints
+    - *Shows waypoints for special locations*
+    - *Find locations in chat messages*
+- **Commission HUD**
   - *Provides information on Dwarven Mines quests*
-  - *Provides information on powder amounts*
-- **Crystal Hollows Waypoints**
-  - *show waypoints for special location*
-  - *find locations in chat messages*
-- **Crystal Hollows Map HUD**
-  - *Shows players location in crystal hollows*
-  - *Shows important waypoints in crystal hollows*
+- **Powder HUD**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -91,6 +105,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Beacon Highlighting
   - Nukekubi Head Highlighting
 
+### Garden Features:
+- **Visitor Helper**
+  - buy items that visitors require from bazaar by clicking the text
+- **Disable title and chat messages for Melon/Pumpkin Dicer**
+
 ### Visual Enhancements:
 - **Fancy Tab HUD:** Fully configurable with a resource pack.
 - **1.8 Hitbox for Lever and Farmland**
@@ -101,18 +120,29 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Circle or Square
 - **Item Cooldown Display**
 - **Configure Fire-Overlay Height**
+- **End HUD Widget**
+  - Zealots
+    - *Since last eye*
+    - *Total zealots kills*
+    - *Avg kills per eye*
+  - Endstone Protector
+    - *stage*
+    - *Location*
 
 ### User Interface Enhancements:
+- **Search overlays for bz and ah**
 - **Attribute Shard Info Display**
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
-  - *NPC Prices*
+  - *NPC Sell Prices*
   - *Motes Prices*
   - *bazaar (average, lowest bin)*
   - *Auction House*
   - *Museum*
   - *Exotic Armor Identifier*
+  - *Item Quality*
+  - **
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
@@ -223,9 +253,15 @@ information.
 |:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
 |                                [Grayray75](https://github.com/Grayray75)                                 |                                [alexiayaa](https://github.com/alexiayaa)                                 | [KhafraDev](https://github.com/KhafraDev)                                                                | [btwonion](https://github.com/btwonion)                                                                |
 
-| [<img alt="KhafraDev" src="https://github.com/Kaluub.png" width="100">](https://github.com/Kaluub) | [<img alt="KhafraDev" src="https://github.com/Emirlol.png" width="100">](https://github.com/Emirlol) | [<img alt="KhafraDev" src="https://github.com/Thsgun.png" width="100">](https://github.com/Thsgun) |
-|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| [Kaluub](https://github.com/Kaluub)                                                                | [Emirlol](https://github.com/Emirlol)                                                                | [Thsgun](https://github.com/Thsgun)                                                                |      
+
+| [<img alt="KhafraDev" src="https://github.com/Kaluub.png" width="100">](https://github.com/Kaluub) | [<img alt="KhafraDev" src="https://github.com/Emirlol.png" width="100">](https://github.com/Emirlol) | [<img alt="KhafraDev" src="https://github.com/LegendaryLilac.png" width="100">](https://github.com/LegendaryLilac) | [<img alt="KhafraDev" src="https://github.com/olim88.png" width="100">](https://github.com/olim88) |
+|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| [Kaluub](https://github.com/Kaluub)                                                                | [Emirlol](https://github.com/Emirlol)                                                                | [LegendaryLilac](https://github.com/LegendaryLilac)                                                                | [olim88](https://github.com/olim88)                                                                |
+
+| [<img alt="Ghost-3" src="https://github.com/Ghost-3.png" width="100">](https://github.com/Ghost-3) | [<img alt="esteban4567890" src="https://github.com/esteban4567890.png" width="100">](https://github.com/esteban4567890) | [<img alt="Fluboxer" src="https://github.com/Fluboxer.png" width="100">](https://github.com/Fluboxer) |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| [Ghost-3](https://github.com/Ghost-3)                                                              | [esteban4567890](https://github.com/esteban4567890)                                                                     | [Fluboxer](https://github.com/Fluboxer)                                                               |
+     
 
 ### Translators
 
