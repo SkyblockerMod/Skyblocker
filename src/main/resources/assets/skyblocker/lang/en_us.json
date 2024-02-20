@@ -370,7 +370,7 @@
   "text.autoconfig.skyblocker.option.messages.hideDicer.@Tooltip": "Filters the Dicer messages from chat.",
   "text.autoconfig.skyblocker.option.messages.chatRules": "Custom Chat Rules",
   "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength": "Announcement Display Time",
-  "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength.@Tooltip": "The amount of time the announcements will show for in ticks.",
+  "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength.@Tooltip": "The amount of time the announcement will show for in ticks.",
   "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale": "Announcement Size",
   "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale.@Tooltip": "The amount to scale the size of the announcement.",
   "text.autoconfig.skyblocker.option.messages.chatRules.screen": "Chat Rules Config...",
