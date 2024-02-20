@@ -31,5 +31,6 @@
     "skyblocker.tips.customArmorDyeColors": "Apply a custom dye colour to your leather armour with /skyblocker custom dyeColor",
     "skyblocker.tips.customArmorTrims": "You can set custom armour trims on your armour using /skyblocker custom armorTrim.",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle": "Enable Livid Colour Title",
-    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip": "Display the livid colour in the title during the Livid boss fight."
+    "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip": "Display the livid colour in the title during the Livid boss fight.",
+    "skyblocker.end.hud.protectorLocations.center": "Centre"
 }

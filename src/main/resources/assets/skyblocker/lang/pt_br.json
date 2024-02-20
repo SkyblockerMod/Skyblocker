@@ -171,7 +171,7 @@
     "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip": "Usar a wiki oficial em vez da wiki do Fandom.",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds": "Fundos de Raridade de Item",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Mostra um fundo colorido atrás de um item, a cor representa a raridade do item.",
-    "text.autoconfig.skyblocker.option.locations.dungeons.mapScreen": "Configuração da posição do mapa da dungeon...",
+    "text.autoconfig.skyblocker.option.locations.dungeons.mapScreen": "Configuração da posição do Mapa da Dungeon e Pontuação...",
     "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Guia para Puzzle dos Three Weridos",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]": "Simples: Exibe nome e porcentagem.",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralThreshold": "Limite neutro",
@@ -201,7 +201,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Texto da cor do Livid",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Guia para puzzle do Puzzler",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Interface da mina dos anões",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabled": "Ativado",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style": "Estilo para a interface",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]": "\nClássico: Exibe nome e porcentagem em uma caixa super simples.",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Ativar fundo",
@@ -283,5 +282,8 @@
     "text.autoconfig.skyblocker.option.quickNav.button.clickEvent": "Evento ao clicar",
     "text.autoconfig.skyblocker.option.general.waypoints.enableWaypoints": "Ativar Waypoints",
     "text.autoconfig.skyblocker.option.general.waypoints.waypointType": "Tipo de Waypoint",
-    "text.autoconfig.skyblocker.option.general.waypoints.waypointType.generalNote": "\n\n\nEssa opção não aplica para todos os waypoints. Alguns waypoints como waypoints secretos tem seu próprio opção de tipo de waypoint."
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType.generalNote": "\n\n\nEssa opção não aplica para todos os waypoints. Alguns waypoints como waypoints secretos tem seu próprio opção de tipo de waypoint.",
+    "text.autoconfig.skyblocker.option.general.mythologicalRitual": "Assistente de Ritual Mitológico",
+    "text.autoconfig.skyblocker.option.general.mythologicalRitual.enableMythologicalRitualHelper": "Ativar Assistente de Ritual Mitológico",
+    "text.autoconfig.skyblocker.option.general.enableTips": "Ativar Dicas"
 }
