@@ -42,6 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 @Mixin(HandledScreen.class)
@@ -75,13 +76,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     public void skyblocker$renderScreen(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (!Utils.isOnSkyblock()) return;
 
-        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+        if (SkyblockerConfigManager.get().locations.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
             VisitorHelper.renderScreen(this.getTitle().getString(), context, textRenderer, handler, mouseX, mouseY);
     }
 
     @Inject(at = @At("HEAD"), method = "mouseClicked")
     public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+        if (SkyblockerConfigManager.get().locations.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
             VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
     }
 
@@ -167,6 +168,37 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
             }
 
             if (slot != null) {
+                // Prevent some menu items from dragging and dropping
+                String itemName = slot.getStack().getName().getString();
+                if (SkyblockerConfigManager.get().general.hideEmptyTooltips) {
+                    Set<String> blockedItemPatterns = Set.of(
+                            " ", // Empty menu item
+                            "Locked Page",
+                            "Quick Crafting Slot",
+                            "Locked Backpack Slot 2", //Regular expressions won't be utilized here since the search by contains is based on plain text rather than regex syntax
+                            "Locked Backpack Slot 3",
+                            "Locked Backpack Slot 4",
+                            "Locked Backpack Slot 5",
+                            "Locked Backpack Slot 6",
+                            "Locked Backpack Slot 7",
+                            "Locked Backpack Slot 8",
+                            "Locked Backpack Slot 9",
+                            "Locked Backpack Slot 10",
+                            "Locked Backpack Slot 11",
+                            "Locked Backpack Slot 12",
+                            "Locked Backpack Slot 13",
+                            "Locked Backpack Slot 14",
+                            "Locked Backpack Slot 15",
+                            "Locked Backpack Slot 16",
+                            "Locked Backpack Slot 17",
+                            "Locked Backpack Slot 18",
+                            "Preparing"
+                    );
+                    if (blockedItemPatterns.contains(itemName)) {
+                        ci.cancel();
+                    }
+                }
+
                 // When you click your drop key while hovering over an item
                 if (actionType == SlotActionType.THROW) {
                     ItemStack stack = slot.getStack();

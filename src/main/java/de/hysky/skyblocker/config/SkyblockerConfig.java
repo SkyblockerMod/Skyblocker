@@ -178,9 +178,6 @@ public class SkyblockerConfig {
 		public boolean dungeonQuality = true;
 
 		@SerialEntry
-		public boolean visitorHelper = true;
-
-		@SerialEntry
 		public TabHudConf tabHud = new TabHudConf();
 
 		@SerialEntry
@@ -468,10 +465,10 @@ public class SkyblockerConfig {
 
 	public static class FlameOverlay {
 		@SerialEntry
-		public float flameHeight = 0f;
+		public int flameHeight = 100;
 
 		@SerialEntry
-		public float flameOpacity = 0f;
+		public int flameOpacity = 100;
 	}
 
 	public static class SearchOverlay {
@@ -1091,6 +1088,9 @@ public class SkyblockerConfig {
 	public static class Garden {
 		@SerialEntry
 		public boolean dicerTitlePrevent = true;
+
+		@SerialEntry
+		public boolean visitorHelper = true;
 	}
 
 	public static class Slayer {

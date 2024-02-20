@@ -86,13 +86,6 @@ public class GeneralCategory {
 								newValue -> config.general.dungeonQuality = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.general.visitorHelper"))
-						.binding(defaults.general.visitorHelper,
-								() -> config.general.visitorHelper,
-								newValue -> config.general.visitorHelper = newValue)
-						.controller(ConfigUtils::createBooleanController)
-						.build())
 
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
@@ -642,19 +635,21 @@ public class GeneralCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay"))
 						.collapsed(true)
-						.option(Option.<Float>createBuilder()
+						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameHeight"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameHeight.@Tooltip")))
 								.binding(defaults.general.flameOverlay.flameHeight,
 										() -> config.general.flameOverlay.flameHeight,
 										newValue -> config.general.flameOverlay.flameHeight = newValue)
-								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.5f).step(0.01f))
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1))
 								.build())
-						.option(Option.<Float>createBuilder()
+						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameOpacity"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.flameOverlay.flameOpacity.@Tooltip")))
 								.binding(defaults.general.flameOverlay.flameOpacity,
 										() -> config.general.flameOverlay.flameOpacity,
 										newValue -> config.general.flameOverlay.flameOpacity = newValue)
-								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.0f, 0.8f).step(0.1f))
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1))
 								.build())
 						.build())
 
