@@ -52,17 +52,17 @@
   - *Defense*
   - *XP*
 
-### Dwarven Mines / Crystal hollows:
+### Dwarven Mines / Crystal Hollows:
 - **Dwarven Mines Solver:**
   - Fetchur
   - Puzzler
-- **Crystal hollows**
+- **Crystal Hollows**
   - Crystal Hollows Map
-    - *Shows players location in crystal hollows*
-    - *Shows important waypoints in crystal hollows*
+    - *Shows players location in Crystal Hollows*
+    - *Highlights important waypoints in Crystal Hollows*
   - Crystal Hollows Waypoints
-    - *show waypoints for special location*
-    - *find locations in chat messages*
+    - *Shows waypoints for special locations*
+    - *Find locations in chat messages*
 - **Commission HUD**
   - *Provides information on Dwarven Mines quests*
 - **Powder HUD**
