@@ -30,7 +30,7 @@ public class ChatRule {
     /**
      * Creates a chat rule with default options.
      */
-    public ChatRule(){
+    protected ChatRule(){
         this.name = "New Rule";
 
         this.enabled = true;
@@ -47,91 +47,99 @@ public class ChatRule {
         this.customSound = null;
     }
 
-    public Boolean getEnabled() {
+    protected String getName() {
+        return name;
+    }
+
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    protected Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
+    protected void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    public Boolean getPartialMatch() {
+    protected Boolean getPartialMatch() {
         return isPartialMatch;
     }
 
-    public void setPartialMatch(Boolean partialMatch) {
+    protected void setPartialMatch(Boolean partialMatch) {
         isPartialMatch = partialMatch;
     }
 
-    public Boolean getRegex() {
+    protected Boolean getRegex() {
         return isRegex;
     }
 
-    public void setRegex(Boolean regex) {
+    protected void setRegex(Boolean regex) {
         isRegex = regex;
     }
 
-    public Boolean getIgnoreCase() {
+    protected Boolean getIgnoreCase() {
         return isIgnoreCase;
     }
 
-    public void setIgnoreCase(Boolean ignoreCase) {
+    protected void setIgnoreCase(Boolean ignoreCase) {
         isIgnoreCase = ignoreCase;
     }
 
-    public String getFilter() {
+    protected String getFilter() {
         return filter;
     }
 
-    public void setFilter(String filter) {
+    protected void setFilter(String filter) {
         this.filter = filter;
     }
 
-    public Boolean getHideMessage() {
+    protected Boolean getHideMessage() {
         return hideMessage;
     }
 
-    public void setHideMessage(Boolean hideMessage) {
+    protected void setHideMessage(Boolean hideMessage) {
         this.hideMessage = hideMessage;
     }
 
-    public Boolean getShowActionBar() {
+    protected Boolean getShowActionBar() {
         return showActionBar;
     }
 
-    public void setShowActionBar(Boolean showActionBar) {
+    protected void setShowActionBar(Boolean showActionBar) {
         this.showActionBar = showActionBar;
     }
 
-    public Boolean getShowAnnouncement() {
+    protected Boolean getShowAnnouncement() {
         return showAnnouncement;
     }
 
-    public void setShowAnnouncement(Boolean showAnnouncement) {
+    protected void setShowAnnouncement(Boolean showAnnouncement) {
         this.showAnnouncement = showAnnouncement;
     }
 
-    public String getReplaceMessage() {
+    protected String getReplaceMessage() {
         return replaceMessage;
     }
 
-    public void setReplaceMessage(String replaceMessage) {
+    protected void setReplaceMessage(String replaceMessage) {
         this.replaceMessage = replaceMessage;
     }
 
-    public SoundEvent getCustomSound() {
+    protected SoundEvent getCustomSound() {
        return customSound;
     }
 
-    public void setCustomSound(SoundEvent customSound) {
+    protected void setCustomSound(SoundEvent customSound) {
         this.customSound = customSound;
     }
 
-    public String getValidLocations() {
+    protected String getValidLocations() {
         return validLocations;
     }
 
-    public void setValidLocations(String validLocations) {
+    protected void setValidLocations(String validLocations) {
         this.validLocations = validLocations;
     }
 
@@ -140,7 +148,7 @@ public class ChatRule {
      * @param inputString the chat message to check if fits
      * @return if the inputs are all true and the outputs should be performed
      */
-    public Boolean isMatch(String inputString){
+    protected Boolean isMatch(String inputString){
         //enabled
         if (!enabled) return false;
 
@@ -198,15 +206,7 @@ public class ChatRule {
         }
 
         return false;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    }    
 }
 
 

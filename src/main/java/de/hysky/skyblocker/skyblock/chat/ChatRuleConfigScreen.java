@@ -77,6 +77,7 @@ public class ChatRuleConfigScreen extends Screen {
     }
 
     private int getCurrentSoundIndex() {
+        if (chatRule.getCustomSound() == null) return -1; //if no sound just return -1
         List<SoundEvent> soundOptions = soundsLookup.values().stream().toList();
         Identifier ruleSoundId = chatRule.getCustomSound().getId();
         for (int i = 0; i < soundOptions.size(); i++) {
