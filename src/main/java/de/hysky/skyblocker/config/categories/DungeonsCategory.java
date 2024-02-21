@@ -279,6 +279,14 @@ public class DungeonsCategory {
 										newValue -> config.locations.dungeons.dungeonChestProfit.includeEssence = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.croesusProfit"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.croesusProfit.@Tooltip")))
+								.binding(defaults.locations.dungeons.dungeonChestProfit.croesusProfit,
+										() -> config.locations.dungeons.dungeonChestProfit.croesusProfit,
+										newValue -> config.locations.dungeons.dungeonChestProfit.croesusProfit = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralThreshold"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralThreshold.@Tooltip")))
@@ -325,14 +333,6 @@ public class DungeonsCategory {
 						.binding(defaults.locations.dungeons.croesusHelper,
 								() -> config.locations.dungeons.croesusHelper,
 								newValue -> config.locations.dungeons.croesusHelper = newValue)
-						.controller(ConfigUtils::createBooleanController)
-						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.croesusProfit"))
-						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.croesusProfit.@Tooltip")))
-						.binding(defaults.locations.dungeons.croesusProfit,
-								() -> config.locations.dungeons.croesusProfit,
-								newValue -> config.locations.dungeons.croesusProfit = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()

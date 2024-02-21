@@ -2,17 +2,13 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
-import it.unimi.dsi.fastutil.longs.LongBooleanPair;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -20,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CroesusProfit extends ContainerSolver {
-    private static final Logger LOGGER = LogManager.getLogger();
     private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>[0-9]+)");
     private static final Pattern CHEST_PATTERN = Pattern.compile("literal\\{(.*?) Chest}");
     public CroesusProfit() {
@@ -29,7 +24,7 @@ public class CroesusProfit extends ContainerSolver {
 
     @Override
     protected boolean isEnabled() {
-        return SkyblockerConfigManager.get().locations.dungeons.croesusProfit;
+        return SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.croesusProfit;
     }
 
     @Override
@@ -37,7 +32,7 @@ public class CroesusProfit extends ContainerSolver {
         List<ColorHighlight> highlights = new ArrayList<>();
         ItemStack bestChest = null, secondBestChest = null;
         long bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
-        long dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY")*2; // lesser ones don't worth the hassle
+        long dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2; // lesser ones don't worth the hassle
 
         for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
             ItemStack stack = entry.getValue();
@@ -78,7 +73,7 @@ public class CroesusProfit extends ContainerSolver {
         String chestType = (matcher.find() ? matcher.group(1) : "Error");     // we are doing it for sole reason of saving us headache of a spirit pet rarity
 
         boolean processingContents = false;
-        for (Text line : chest.getTooltip(null, TooltipContext.BASIC)) {
+        for (Text line : ItemUtils.getNbtTooltips(chest)) {
             String lineString = line.getString();
             if (lineString.contains("Contents")) {
                 processingContents = true;
