@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.events.LocationEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -391,6 +392,8 @@ public class Utils {
     private static void parseLocRaw(String message) {
         JsonObject locRaw = JsonParser.parseString(message).getAsJsonObject();
 
+        Location newLocation = Location.UNKNOWN;
+
         if (locRaw.has("server")) {
             server = locRaw.get("server").getAsString();
         }
@@ -399,12 +402,15 @@ public class Utils {
         }
         if (locRaw.has("mode")) {
             locationRaw = locRaw.get("mode").getAsString();
-            location = Location.from(locationRaw);
-        } else {
-            location = Location.UNKNOWN;
+            newLocation = Location.from(locationRaw);
         }
         if (locRaw.has("map")) {
             map = locRaw.get("map").getAsString();
+        }
+
+        if (newLocation != location){
+            location = newLocation;
+            LocationEvents.CHANGE.invoker().onLocationChange(location);
         }
     }
 
