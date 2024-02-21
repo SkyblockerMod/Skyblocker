@@ -91,12 +91,8 @@ public class CroesusProfit extends ContainerSolver {
                         chestValue += getItemPrice(("ESSENCE_" + matcher.group("type")).toUpperCase()) * Integer.parseInt(matcher.group("amount"));
                     }
                 } else {
-                    if (lineString.contains("Spirit")) {    // I hate pets in chests. Speaking of which, this is only part of code I'm really not sure of
-                        if (Objects.equals(chestType, "Diamond")) {
-                            chestValue += getItemPrice("Spirit Epic");      // Diamond chest containts epic spirit
-                        } else {
-                            chestValue += getItemPrice(lineString);
-                        }
+                    if (lineString.contains("Spirit")) {
+                        chestValue += Objects.equals(chestType, "Diamond") ? getItemPrice("Spirit Epic") : getItemPrice(lineString);
                     } else {
                         chestItems.add(lineString);
                     }
