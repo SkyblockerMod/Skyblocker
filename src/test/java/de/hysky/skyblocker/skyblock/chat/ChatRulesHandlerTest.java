@@ -7,10 +7,6 @@ import net.minecraft.util.Formatting;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class ChatRulesHandlerTest {
 
     @Test
@@ -29,7 +25,7 @@ class ChatRulesHandlerTest {
         //generated text
         MutableText text = ChatRulesHandler.formatText("&1test&nline&2dark green&oitalic");
 
-        Assertions.assertEquals(text,testText);
+        Assertions.assertEquals(text, testText);
 
     }
 }

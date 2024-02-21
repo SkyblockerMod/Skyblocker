@@ -3,8 +3,6 @@ package de.hysky.skyblocker.skyblock.chat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ChatRuleTest {
 
     @Test
@@ -13,25 +11,25 @@ class ChatRuleTest {
         //test enabled check
         testRule.setFilter("test");
         testRule.setEnabled(false);
-        Assertions.assertEquals(testRule.isMatch("test"),false);
+        Assertions.assertEquals(testRule.isMatch("test"), false);
         //test simple filter works
         testRule.setEnabled(true);
-        Assertions.assertEquals(testRule.isMatch("test"),true);
+        Assertions.assertEquals(testRule.isMatch("test"), true);
         //test partial match works
-        Assertions.assertEquals(testRule.isMatch("test extra"),false);
+        Assertions.assertEquals(testRule.isMatch("test extra"), false);
         testRule.setPartialMatch(true);
-        Assertions.assertEquals(testRule.isMatch("test extra"),true);
+        Assertions.assertEquals(testRule.isMatch("test extra"), true);
         //test ignore case works
-        Assertions.assertEquals(testRule.isMatch("TEST"),true);
+        Assertions.assertEquals(testRule.isMatch("TEST"), true);
         testRule.setIgnoreCase(false);
-        Assertions.assertEquals(testRule.isMatch("TEST"),false);
+        Assertions.assertEquals(testRule.isMatch("TEST"), false);
 
         //test regex
         testRule = new ChatRule();
         testRule.setRegex(true);
         testRule.setFilter("[0-9]+");
-        Assertions.assertEquals(testRule.isMatch("1234567"),true);
-        Assertions.assertEquals(testRule.isMatch("1234567 test"),false);
+        Assertions.assertEquals(testRule.isMatch("1234567"), true);
+        Assertions.assertEquals(testRule.isMatch("1234567 test"), false);
 
     }
 }

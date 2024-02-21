@@ -30,7 +30,7 @@ public class ChatRule {
     /**
      * Creates a chat rule with default options.
      */
-    protected ChatRule(){
+    protected ChatRule() {
         this.name = "New Rule";
 
         this.enabled = true;
@@ -163,43 +163,46 @@ public class ChatRule {
      * @param inputString the chat message to check if fits
      * @return if the inputs are all true and the outputs should be performed
      */
-    protected Boolean isMatch(String inputString){
+    protected Boolean isMatch(String inputString) {
         //enabled
         if (!enabled) return false;
 
         //ignore case
         String testString;
         String testFilter;
-        if (isIgnoreCase){
+
+        if (isIgnoreCase) {
             testString = inputString.toLowerCase();
             testFilter = filter.toLowerCase();
-        }else {
+        } else {
             testString = inputString;
             testFilter = filter;
         }
 
         //filter
         if (testFilter.isBlank()) return false;
-        if(isRegex) {
+        if (isRegex) {
             if (isPartialMatch) {
-               if (! Pattern.compile(testFilter).matcher(testString).find()) return false;
-            }else {
+               if (!Pattern.compile(testFilter).matcher(testString).find()) return false;
+            } else {
                 if (!testString.matches(testFilter)) return false;
             }
-        } else{
+        } else {
             if (isPartialMatch) {
                 if (!testString.contains(testFilter)) return false;
-            }else {
+            } else {
                 if (!testFilter.equals(testString)) return false;
             }
         }
 
         //location
-        if (validLocations.isBlank()){ //if no locations do not check
+        if (validLocations.isBlank()) { //if no locations do not check
             return true;
         }
+
         String rawLocation = Utils.getLocationRaw();
         Boolean isLocationValid = null;
+
         for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are raw locations split by "," and start with ! if not locations
             String rawValidLocation = ChatRulesHandler.locations.get(validLocation.replace("!",""));
             if (rawValidLocation == null) continue;
@@ -208,15 +211,16 @@ public class ChatRule {
                     isLocationValid = false;
                     break;
                 }
-            }
-            else {
+            } else {
                 if (Objects.equals(rawValidLocation, rawLocation.toLowerCase())) { //normal location
                     isLocationValid = true;
                     break;
                 }
             }
         }
-        if (isLocationValid != null && isLocationValid){//if location is not in the list at all and is a not a "!" location or and is a normal location
+
+        //if location is not in the list at all and is a not a "!" location or and is a normal location
+        if (isLocationValid != null && isLocationValid) {
             return true;
         }
 

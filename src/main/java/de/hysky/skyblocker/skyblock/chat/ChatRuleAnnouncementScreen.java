@@ -7,7 +7,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
-
 public class ChatRuleAnnouncementScreen {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static float timer;
@@ -37,7 +36,7 @@ public class ChatRuleAnnouncementScreen {
         matrices.translate(context.getScaledWindowWidth() / 2f, context.getScaledWindowHeight() * 0.3, 0f);
         matrices.scale(scale, scale, 0f);
         //render text
-        context.drawCenteredTextWithShadow(CLIENT.textRenderer,text,0, 0, 0xFFFFFF);
+        context.drawCenteredTextWithShadow(CLIENT.textRenderer, text, 0, 0, 0xFFFFFFFF);
 
         matrices.pop();
     }
