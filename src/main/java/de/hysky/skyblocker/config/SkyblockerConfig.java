@@ -684,6 +684,9 @@ public class SkyblockerConfig {
 		public boolean croesusHelper = true;
 
 		@SerialEntry
+		public boolean croesusProfit = true;
+
+		@SerialEntry
 		public boolean enableMap = true;
 
 		@SerialEntry

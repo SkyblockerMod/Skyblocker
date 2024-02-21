@@ -328,6 +328,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.croesusProfit"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.croesusProfit.@Tooltip")))
+						.binding(defaults.locations.dungeons.croesusProfit,
+								() -> config.locations.dungeons.croesusProfit,
+								newValue -> config.locations.dungeons.croesusProfit = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.enableMap"))
 						.binding(defaults.locations.dungeons.enableMap,
 								() -> config.locations.dungeons.enableMap,

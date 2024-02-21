@@ -252,6 +252,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor": "Loss Color",
   "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Croesus Helper",
   "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.croesusProfit": "Croesus Chest Profit Calculator",
+  "text.autoconfig.skyblocker.option.locations.dungeons.croesusProfit.@Tooltip": "Highlight chests with best profit at Croesus NPC",
   "text.autoconfig.skyblocker.option.locations.dungeons.enableMap": "Enable Map",
   "text.autoconfig.skyblocker.option.locations.dungeons.mapScreen": "Dungeon Map & Score Placement Config...",
   "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "Map Scaling",
