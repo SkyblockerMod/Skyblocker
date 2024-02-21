@@ -42,7 +42,7 @@ public class ContainerSolverManager {
                 new CroesusHelper(),
                 new ChronomatronSolver(),
                 new SuperpairsSolver(),
-                new UltrasequencerSolver()
+                UltrasequencerSolver.INSTANCE
         };
     }
 
