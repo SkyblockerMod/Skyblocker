@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class ChatRulesHandler {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -42,8 +43,8 @@ public class ChatRulesHandler {
     protected static final List<ChatRule> chatRuleList = new ArrayList<>();
 
     public static void init() {
-        loadChatRules();
-        loadLocations();
+        CompletableFuture.runAsync(ChatRulesHandler::loadChatRules);
+        CompletableFuture.runAsync(ChatRulesHandler::loadLocations);
         ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
     }
 
