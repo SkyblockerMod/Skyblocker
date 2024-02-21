@@ -6,6 +6,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+@Environment(EnvType.CLIENT)
 public class LocationEvents {
     public static final Event<LocationChange> CHANGE =
             EventFactory.createArrayBacked(LocationChange.class, callbacks -> location -> {

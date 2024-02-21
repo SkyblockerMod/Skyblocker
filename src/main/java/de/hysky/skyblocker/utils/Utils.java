@@ -385,7 +385,8 @@ public class Utils {
 
     /**
      * Parses /locraw chat message and updates {@link #server}, {@link #gameType}, {@link #locationRaw}, {@link #map}
-     * and {@link #location}
+     * and {@link #location}.
+     * It also invokes location change event.
      *
      * @param message json message from chat
      */
@@ -408,7 +409,7 @@ public class Utils {
             map = locRaw.get("map").getAsString();
         }
 
-        if (newLocation != location){
+        if (newLocation != location) {
             location = newLocation;
             LocationEvents.CHANGE.invoker().onLocationChange(location);
         }
