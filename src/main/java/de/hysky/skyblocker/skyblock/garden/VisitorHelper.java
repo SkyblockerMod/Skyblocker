@@ -1,13 +1,17 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -32,11 +36,20 @@ public class VisitorHelper {
     private static final Map<String, ItemStack> itemCache = new HashMap<>();
     private static final int TEXT_START_X = 4;
     private static final int TEXT_START_Y = 4;
+    private static final int TEXT_INDENT = 8;
     private static final int LINE_SPACING = 3;
 
+    public static void init() {
+        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            String title = screen.getTitle().getString();
+            if (SkyblockerConfigManager.get().locations.garden.visitorHelper && screen instanceof HandledScreen<?> handledScreen && (Utils.getLocationRaw().equals("garden") && !title.contains("Logbook") || title.startsWith("Bazaar"))) {
+                ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) -> renderScreen(title, context, client.textRenderer, handledScreen.getScreenHandler(), mouseX, mouseY));
+            }
+        });
+    }
+
     public static void renderScreen(String title, DrawContext context, TextRenderer textRenderer, ScreenHandler handler, int mouseX, int mouseY) {
-        if (handler.getCursorStack() == ItemStack.EMPTY)
-            processVisitorItem(title, handler);
+        if (handler.getCursorStack() == ItemStack.EMPTY) processVisitorItem(title, handler);
         drawScreenItems(context, textRenderer, mouseX, mouseY);
     }
 
@@ -51,9 +64,9 @@ public class VisitorHelper {
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
                 String itemText = itemEntry.getKey();
-                textWidth = textRenderer.getWidth(itemText);
+                textWidth = textRenderer.getWidth(itemText + " x" + itemEntry.getIntValue());
 
-                if (isMouseOverText(mouseX, mouseY, TEXT_START_X, yPosition, textWidth, textHeight)) {
+                if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
                     MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
                     return;
                 }
@@ -107,6 +120,8 @@ public class VisitorHelper {
     }
 
     private static void drawScreenItems(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY) {
+        context.getMatrices().push();
+        context.getMatrices().translate(0, 0, 200);
         int index = 0;
         for (Map.Entry<String, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
             String visitorName = visitorEntry.getKey();
@@ -117,6 +132,7 @@ public class VisitorHelper {
                 index = drawItemEntryWithHover(context, textRenderer, itemEntry, index, mouseX, mouseY);
             }
         }
+        context.getMatrices().pop();
     }
 
     private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Map.Entry<String, Integer> itemEntry, int index, int mouseX, int mouseY) {
@@ -145,8 +161,8 @@ public class VisitorHelper {
 
     private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, ItemStack stack, int amount, int index, int mouseX, int mousseY) {
         Text text = Serialization.fromJson(stack.getSubNbt("display").getString("Name")).append(" x" + amount);
-        drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + 8, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
-        context.drawItem(stack, TEXT_START_X + 10 + textRenderer.getWidth(text), TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)) - textRenderer.fontHeight + 5);
+        drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + TEXT_INDENT, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
+        context.drawItem(stack, TEXT_START_X + TEXT_INDENT + 2 + textRenderer.getWidth(text), TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)) - textRenderer.fontHeight + 5);
     }
 
     private static void drawTextWithOptionalUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int mouseX, int mouseY) {

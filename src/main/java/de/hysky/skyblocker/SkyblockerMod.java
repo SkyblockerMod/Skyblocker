@@ -18,6 +18,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -139,6 +140,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemProtection.init();
         CreeperBeams.init();
         Boulder.init();
+        VisitorHelper.init();
         ItemRarityBackgrounds.init();
         MuseumItemCache.init();
         SecretsTracker.init();
