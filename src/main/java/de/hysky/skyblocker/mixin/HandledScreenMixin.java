@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
@@ -16,11 +17,9 @@ import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,6 +28,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -42,6 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 @Mixin(HandledScreen.class)
@@ -51,6 +52,34 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
      */
     @Unique
     private static final int OUT_OF_BOUNDS_SLOT = -999;
+
+    @Unique
+    private static final Identifier ITEM_PROTECTION = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+
+    @Unique
+    private static final Set<String> FILLER_ITEMS = Set.of(
+            " ", // Empty menu item
+            "Locked Page",
+            "Quick Crafting Slot",
+            "Locked Backpack Slot 2", //Regular expressions won't be utilized here since the search by contains is based on plain text rather than regex syntax
+            "Locked Backpack Slot 3",
+            "Locked Backpack Slot 4",
+            "Locked Backpack Slot 5",
+            "Locked Backpack Slot 6",
+            "Locked Backpack Slot 7",
+            "Locked Backpack Slot 8",
+            "Locked Backpack Slot 9",
+            "Locked Backpack Slot 10",
+            "Locked Backpack Slot 11",
+            "Locked Backpack Slot 12",
+            "Locked Backpack Slot 13",
+            "Locked Backpack Slot 14",
+            "Locked Backpack Slot 15",
+            "Locked Backpack Slot 16",
+            "Locked Backpack Slot 17",
+            "Locked Backpack Slot 18",
+            "Preparing"
+    );
 
     @Shadow
     @Nullable
@@ -66,22 +95,21 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     @Inject(at = @At("HEAD"), method = "keyPressed")
     public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-        if (this.client != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
-            WikiLookup.openWiki(this.focusedSlot, client.player);
+        if (this.client != null && this.focusedSlot != null && keyCode != 256) {
+            //wiki lookup
+            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
+                WikiLookup.openWiki(this.focusedSlot, client.player);
+            }
+            //item protection
+            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
+                ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
+            }
         }
-    }
-
-    @Inject(at = @At("RETURN"), method = "render")
-    public void skyblocker$renderScreen(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (!Utils.isOnSkyblock()) return;
-
-        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
-            VisitorHelper.renderScreen(this.getTitle().getString(), context, textRenderer, handler, mouseX, mouseY);
     }
 
     @Inject(at = @At("HEAD"), method = "mouseClicked")
     public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (SkyblockerConfigManager.get().general.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+        if (SkyblockerConfigManager.get().locations.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
             VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
     }
 
@@ -121,6 +149,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         return skyblocker$experimentSolvers$getStack(slot, stack);
     }
 
+    /**
+     * Redirects getStack calls to account for different stacks in experiment solvers.
+     */
     @Unique
     private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
         ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
@@ -131,81 +162,84 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         return stack;
     }
 
-    @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"))
-    private void skyblocker$experimentSolvers$onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
-        if (slot != null) {
-            ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
-            if (currentSolver instanceof ExperimentSolver experimentSolver && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-                if (experimentSolver instanceof ChronomatronSolver chronomatronSolver) {
-                    Item item = chronomatronSolver.getChronomatronSlots().get(chronomatronSolver.getChronomatronCurrentOrdinal());
-                    if ((slot.getStack().isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(slot.getStack().getItem()) == item) && chronomatronSolver.incrementChronomatronCurrentOrdinal() >= chronomatronSolver.getChronomatronSlots().size()) {
-                        chronomatronSolver.setState(ExperimentSolver.State.END);
-                    }
-                } else if (experimentSolver instanceof SuperpairsSolver superpairsSolver) {
-                    superpairsSolver.setSuperpairsPrevClickedSlot(slot.getIndex());
-                    superpairsSolver.setSuperpairsCurrentSlot(ItemStack.EMPTY);
-                } else if (experimentSolver instanceof UltrasequencerSolver ultrasequencerSolver && slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot()) {
-                    int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
-                    ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().map(Map.Entry::getKey).ifPresentOrElse(ultrasequencerSolver::setUltrasequencerNextSlot, () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
-                }
-            }
-        }
-    }
-
     /**
      * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks)
      * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item
      */
-    @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At("HEAD"), cancellable = true)
-    private void skyblocker$onSlotInteract(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
-        if (Utils.isOnSkyblock()) {
-            // When you try and drop the item by picking it up then clicking outside of the screen
-            if (slotId == OUT_OF_BOUNDS_SLOT) {
-                ItemStack cursorStack = this.handler.getCursorStack();
+    @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
+    private void skyblocker$onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
+        if (!Utils.isOnSkyblock()) return;
 
-                if (ItemProtection.isItemProtected(cursorStack)) ci.cancel();
-            }
+        // Item Protection
+        // When you try and drop the item by picking it up then clicking outside the screen
+        if (slotId == OUT_OF_BOUNDS_SLOT && ItemProtection.isItemProtected(this.handler.getCursorStack())) {
+            ci.cancel();
+            return;
+        }
 
-            if (slot != null) {
-                // When you click your drop key while hovering over an item
-                if (actionType == SlotActionType.THROW) {
-                    ItemStack stack = slot.getStack();
+        if (slot == null) return;
+        String title = getTitle().getString();
+        ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack());
+        ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
 
-                    if (ItemProtection.isItemProtected(stack)) ci.cancel();
-                }
+        // Prevent clicks on filler items
+        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+                // Allow clicks in Ultrasequencer and Superpairs
+                (!UltrasequencerSolver.INSTANCE.getName().matcher(title).matches() || SkyblockerConfigManager.get().general.experiments.enableUltrasequencerSolver)) {
+            ci.cancel();
+            return;
+        }
+        // Item Protection
+        // When you click your drop key while hovering over an item
+        if (actionType == SlotActionType.THROW && ItemProtection.isItemProtected(stack)) {
+            ci.cancel();
+            return;
+        }
+        // Prevent salvaging
+        if (title.equals("Salvage Items") && ItemProtection.isItemProtected(stack)) {
+            ci.cancel();
+            return;
+        }
+        if (this.handler instanceof GenericContainerScreenHandler genericContainerScreenHandler && genericContainerScreenHandler.getRows() == 6) {
+            VisitorHelper.onSlotClick(slot, slotId, title);
 
-                //Prevent salvaging
-                if (this.getTitle().getString().equals("Salvage Items")) {
-                    ItemStack stack = slot.getStack();
-
-                    if (ItemProtection.isItemProtected(stack)) ci.cancel();
-                }
-
-
-                if (this.client != null && this.handler instanceof GenericContainerScreenHandler genericContainerScreenHandler && genericContainerScreenHandler.getRows() == 6) {
-                    VisitorHelper.onSlotClick(slot, slotId, this.getTitle().getString());
-
-                    //Prevent selling to NPC shops
-                    ItemStack sellItem = this.handler.slots.get(49).getStack();
-
-                    if (sellItem.getName().getString().equals("Sell Item") || skyblocker$doesLoreContain(sellItem, this.client, "buyback")) {
-                        ItemStack stack = slot.getStack();
-
-                        if (ItemProtection.isItemProtected(stack)) ci.cancel();
-                    }
+            // Prevent selling to NPC shops
+            ItemStack sellStack = this.handler.slots.get(49).getStack();
+            if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getNbtTooltip(sellStack, text -> text.contains("buyback")) != null) {
+                if (slotId != 49 && ItemProtection.isItemProtected(stack)) {
+                    ci.cancel();
+                    return;
                 }
             }
         }
-    }
 
-    //TODO make this a util method somewhere else, eventually
-    private static boolean skyblocker$doesLoreContain(ItemStack stack, MinecraftClient client, String searchString) {
-        return stack.getTooltip(client.player, TooltipContext.BASIC).stream().map(Text::getString).anyMatch(line -> line.contains(searchString));
+        // Experiment Solvers
+        if (currentSolver instanceof ExperimentSolver experimentSolver && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
+            if (experimentSolver instanceof ChronomatronSolver chronomatronSolver) {
+                Item item = chronomatronSolver.getChronomatronSlots().get(chronomatronSolver.getChronomatronCurrentOrdinal());
+                if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && chronomatronSolver.incrementChronomatronCurrentOrdinal() >= chronomatronSolver.getChronomatronSlots().size()) {
+                    chronomatronSolver.setState(ExperimentSolver.State.END);
+                }
+            } else if (experimentSolver instanceof SuperpairsSolver superpairsSolver) {
+                superpairsSolver.setSuperpairsPrevClickedSlot(slot.getIndex());
+                superpairsSolver.setSuperpairsCurrentSlot(ItemStack.EMPTY);
+            } else if (experimentSolver instanceof UltrasequencerSolver ultrasequencerSolver && slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot()) {
+                int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
+                ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().map(Map.Entry::getKey).ifPresentOrElse(ultrasequencerSolver::setUltrasequencerNextSlot, () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
+            }
+            return;
+        }
     }
 
     @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
     private void skyblocker$drawItemRarityBackground(DrawContext context, Slot slot, CallbackInfo ci) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds)
             ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
+        // Item protection
+        if (ItemProtection.isItemProtected(slot.getStack())) {
+            RenderSystem.enableBlend();
+            context.drawTexture(ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+            RenderSystem.disableBlend();
+        }
     }
 }

@@ -12,9 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 public class UltrasequencerSolver extends ExperimentSolver {
+    public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
     private int ultrasequencerNextSlot;
 
-    public UltrasequencerSolver() {
+    private UltrasequencerSolver() {
         super("^Ultrasequencer \\(\\w+\\)$");
     }
 

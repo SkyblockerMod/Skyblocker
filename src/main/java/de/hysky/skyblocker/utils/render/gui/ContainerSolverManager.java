@@ -44,7 +44,7 @@ public class ContainerSolverManager {
                 new CroesusProfit(),
                 new ChronomatronSolver(),
                 new SuperpairsSolver(),
-                new UltrasequencerSolver()
+                UltrasequencerSolver.INSTANCE
         };
     }
 

@@ -51,7 +51,7 @@ public class ItemTooltip {
         boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
 
         if (TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
-            lines.add(Text.literal(String.format("%-21s", "NPC Price:"))
+            lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
                     .formatted(Formatting.YELLOW)
                     .append(getCoinsMessage(TooltipInfoType.NPC.getData().get(internalID).getAsDouble(), count)));
         }
