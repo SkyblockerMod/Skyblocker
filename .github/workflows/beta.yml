@@ -1,6 +1,7 @@
 name: Build Beta
 
 on:
+  merge_group:
   push:
     branches:
       - master

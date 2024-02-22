@@ -1,3 +1,14 @@
+# Release 1.18.1
+
+## Highlight
+* Fix Ultrasequencer not clickable by @kevinthegreat1
+
+## What's Changed
+* Fix clicking in Ultrasequencer by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/567
+* Fix workflow by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/568
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.18.0...v1.18.1
+___
 # Release 1.18.0
 
 ## Highlight
