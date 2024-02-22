@@ -195,8 +195,8 @@ public class CroesusProfit extends ContainerSolver {
         put("Spirit Sword", "SPIRIT_SWORD");    // F4 M4
         put("Spirit Shortbow", "ITEM_SPIRIT_BOW");
         put("Spirit Boots", "THORNS_BOOTS");
-        put("Spirit", "SPIRIT;4");    // Spirit pet (Legendary)
-        put("Spirit Epic", "SPIRIT;3");
+        put("Spirit", "LVL_1_LEGENDARY_SPIRIT");    // Spirit pet (Legendary)
+        put("Spirit Epic", "LVL_1_EPIC_SPIRIT");
 
         put("Second Master Star", "SECOND_MASTER_STAR");
         put("Spirit Wing", "SPIRIT_WING");
@@ -250,6 +250,12 @@ public class CroesusProfit extends ContainerSolver {
         put("Wither Catalyst", "WITHER_CATALYST");
         put("Wither Cloak Sword", "WITHER_CLOAK");
         put("Wither Blood", "WITHER_BLOOD");
+
+        put("Shiny Wither Helmet", "SHINY_WITHER_HELMET");  // M7 shiny drops
+        put("Shiny Wither Chestplate", "SHINY_WITHER_CHESTPLATE");
+        put("Shiny Wither Leggings", "SHINY_WITHER_LEGGINGS");
+        put("Shiny Wither Boots", "SHINY_WITHER_BOOTS");
+        put("Shiny Necron's Handle", "SHINY_NECRON_HANDLE");
     }};
 }
 
