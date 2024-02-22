@@ -42,12 +42,13 @@ jobs:
           CHANGELOG=$(sed '/___/Q' CHANGELOG.md)
           CHANGELOG=$(echo "$CHANGELOG" | sed 1d)
           
-          CHANGELOGtmp="${CHANGELOG//'%'/'%25'}"
-          CHANGELOGtmp="${CHANGELOGtmp//$'\n'/'%0A'}"
-          CHANGELOGtmp="${CHANGELOGtmp//$'\r'/'%0D'}"
-          
           # changelog for Github release
-          echo "changelog=$CHANGELOGtmp" >> $GITHUB_OUTPUT
+          delimiter="$(openssl rand -hex 8)"
+          {
+            echo "changelog<<${delimiter}"
+            echo "$CHANGELOGtmp"
+            echo "${delimiter}"
+          } >> $GITHUB_OUTPUT
           
           #echo "Changelog:\n$CHANGELOG" # for debugging
 
@@ -61,12 +62,13 @@ jobs:
           # Store the highlight_section in the CHANGELOG variable
           CHANGELOG=$(echo -n "$highlight_section")
           
-          CHANGELOG="${CHANGELOG//'%'/'%25'}"
-          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
-          
           # changelog for rest
-          echo "changelog_highlight=$CHANGELOG" >> $GITHUB_OUTPUT
+          delimiter="$(openssl rand -hex 8)"
+          {
+            echo "changelog_highlight<<${delimiter}"
+            echo "$CHANGELOG"
+            echo "${delimiter}"
+          } >> $GITHUB_OUTPUT
 
       - uses: actions/github-script@v7
         id: fname
