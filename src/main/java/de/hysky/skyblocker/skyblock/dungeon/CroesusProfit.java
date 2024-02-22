@@ -3,21 +3,22 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
-import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CroesusProfit extends ContainerSolver {
     private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>[0-9]+)");
-    private static final Pattern CHEST_PATTERN = Pattern.compile("literal\\{(.*?) Chest}");
     public CroesusProfit() {
         super(".*Catacombs - Floor.*");
     }
@@ -69,9 +70,6 @@ public class CroesusProfit extends ContainerSolver {
         int chestPrice = 0;
         List<String> chestItems = new ArrayList<>();
 
-        Matcher matcher = CHEST_PATTERN.matcher(chest.getName().toString());
-        String chestType = (matcher.find() ? matcher.group(1) : "Error");     // we are doing it for sole reason of saving us headache of a spirit pet rarity
-
         boolean processingContents = false;
         for (Text line : ItemUtils.getNbtTooltips(chest)) {
             String lineString = line.getString();
@@ -86,13 +84,13 @@ public class CroesusProfit extends ContainerSolver {
 
             if (processingContents) {
                 if (lineString.contains("Essence")) {
-                    matcher = ESSENCE_PATTERN.matcher(lineString);
+                    Matcher matcher = ESSENCE_PATTERN.matcher(lineString);
                     if (matcher.matches()) {    // add to chest value result of multiplying price of essence on it's amount
                         chestValue += getItemPrice(("ESSENCE_" + matcher.group("type")).toUpperCase()) * Integer.parseInt(matcher.group("amount"));
                     }
                 } else {
-                    if (lineString.contains("Spirit")) {
-                        chestValue += Objects.equals(chestType, "Diamond") ? getItemPrice("Spirit Epic") : getItemPrice(lineString);
+                    if (lineString.contains("Spirit")) {    // TODO: make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
+                        chestValue += line.getStyle().toString().contains("color=dark_purple") ? getItemPrice("Spirit Epic") : getItemPrice(lineString);
                     } else {
                         chestItems.add(lineString);
                     }
@@ -104,6 +102,7 @@ public class CroesusProfit extends ContainerSolver {
         }
         return chestValue-chestPrice;
     }
+
 
     private long getItemPrice(String itemDisplayName) {
         JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
@@ -123,13 +122,6 @@ public class CroesusProfit extends ContainerSolver {
         return itemValue;
     }
 
-    private String getChestType(String name) {
-        Matcher matcher = CHEST_PATTERN.matcher(name);
-        if (matcher.find()) {    // add to chest value result of multiplying price of essence on it's amount
-            return matcher.group();
-        }
-        return name;
-    }
 
     // I did a thing :(
     final Map<String, String> dungeonDropsNameToId = new HashMap<>() {{
