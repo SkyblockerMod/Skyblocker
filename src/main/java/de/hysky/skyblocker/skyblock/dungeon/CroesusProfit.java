@@ -255,7 +255,7 @@ public class CroesusProfit extends ContainerSolver {
         put("Shiny Wither Chestplate", "SHINY_WITHER_CHESTPLATE");
         put("Shiny Wither Leggings", "SHINY_WITHER_LEGGINGS");
         put("Shiny Wither Boots", "SHINY_WITHER_BOOTS");
-        put("Shiny Necron's Handle", "SHINY_NECRON_HANDLE");
+        put("Shiny Necron's Handle", "SHINY_NECRON_HANDLE");    // cool thing
     }};
 }
 
