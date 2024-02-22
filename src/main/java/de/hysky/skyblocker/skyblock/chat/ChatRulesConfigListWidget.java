@@ -125,7 +125,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
             deleteButton = ButtonWidget.builder(Text.translatable("selectServer.delete"), a -> {
                         oldScrollAmount = getScrollAmount();
-                        client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+                        client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.deleteQuestion"), Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
                     })
                     .size(50, 20)
                     .position(width / 2 + 105, 5)

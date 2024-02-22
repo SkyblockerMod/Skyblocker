@@ -33,6 +33,8 @@ public class ChatRuleConfigScreen extends Screen {
             entry(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.anvil"), SoundEvents.BLOCK_ANVIL_LAND)
     );
 
+    private int buttonWidth = 75;
+
     private final int chatRuleIndex;
     private final ChatRule chatRule;
     private TextFieldWidget nameInput;
@@ -94,7 +96,8 @@ public class ChatRuleConfigScreen extends Screen {
         super.init();
         if (client == null) return;
         //start centered on the X and 1/3 down on the Y
-        IntIntPair currentPos = IntIntPair.of((this.width - getMaxUsedWidth()) / 2, (int)((this.height -getMaxUsedHeight()) * 0.33));
+        calculateMaxButtonWidth();
+        IntIntPair currentPos = IntIntPair.of((this.width - getMaxUsedWidth()) / 2,(int)((this.height - getMaxUsedHeight()) * 0.33));
         int lineXOffset;
 
         nameLabelTextPos = currentPos;
@@ -123,29 +126,29 @@ public class ChatRuleConfigScreen extends Screen {
                     partialMatchToggle.setMessage(enabledButtonText(chatRule.getPartialMatch()));
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
-                .size(75, 20)
+                .size(buttonWidth,20)
                 .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
                 .build();
-        lineXOffset += 75 + SPACER_X;
-        regexTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset, currentPos.rightInt());
+        lineXOffset += buttonWidth + SPACER_X;
+        regexTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
         lineXOffset += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.regex")) + SPACER_X;
         regexToggle = ButtonWidget.builder(enabledButtonText(chatRule.getRegex()), a -> {
                     chatRule.setRegex(!chatRule.getRegex());
                     regexToggle.setMessage(enabledButtonText(chatRule.getRegex()));
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
-                .size(75, 20)
+                .size(buttonWidth,20)
                 .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.regex.@Tooltip")))
                 .build();
-        lineXOffset += 75 + SPACER_X;
-        ignoreCaseTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset, currentPos.rightInt());
+        lineXOffset += buttonWidth + SPACER_X;
+        ignoreCaseTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
         lineXOffset += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.ignoreCase")) + SPACER_X;
         ignoreCaseToggle = ButtonWidget.builder(enabledButtonText(chatRule.getIgnoreCase()), a -> {
                     chatRule.setIgnoreCase(!chatRule.getIgnoreCase());
                     ignoreCaseToggle.setMessage(enabledButtonText(chatRule.getIgnoreCase()));
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
-                .size(75, 20)
+                .size(buttonWidth,20)
                 .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
                 .build();
         currentPos = IntIntPair.of(currentPos.leftInt(), currentPos.rightInt() + SPACER_Y);
@@ -170,18 +173,18 @@ public class ChatRuleConfigScreen extends Screen {
                     hideMessageToggle.setMessage(enabledButtonText(chatRule.getHideMessage()));
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
-                .size(75, 20)
+                .size(buttonWidth,20)
                 .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
                 .build();
-        lineXOffset += 75 + SPACER_X;
-        actionBarTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset, currentPos.rightInt());
+        lineXOffset += buttonWidth + SPACER_X;
+        actionBarTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
         lineXOffset += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.actionBar")) + SPACER_X;
         actionBarToggle = ButtonWidget.builder(enabledButtonText(chatRule.getShowActionBar()), a -> {
                     chatRule.setShowActionBar(!chatRule.getShowActionBar());
                     actionBarToggle.setMessage(enabledButtonText(chatRule.getShowActionBar()));
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
-                .size(75, 20)
+                .size(buttonWidth,20)
                 .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.actionBar.@Tooltip")))
                 .build();
         lineXOffset = 0;
@@ -194,11 +197,11 @@ public class ChatRuleConfigScreen extends Screen {
                     announcementToggle.setMessage(enabledButtonText(chatRule.getShowAnnouncement()));
                 })
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
-                .size(75, 20)
+                .size(buttonWidth,20)
                 .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.announcement.@Tooltip")))
                 .build();
-        lineXOffset += 75 + SPACER_X;
-        customSoundLabelTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset, currentPos.rightInt());
+        lineXOffset += buttonWidth + SPACER_X;
+        customSoundLabelTextPos = IntIntPair.of(currentPos.leftInt() + lineXOffset,currentPos.rightInt());
         lineXOffset += client.textRenderer.getWidth(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds")) + SPACER_X;
         soundsToggle = ButtonWidget.builder(getSoundName(), a -> {
                 currentSoundIndex += 1;
@@ -213,7 +216,7 @@ public class ChatRuleConfigScreen extends Screen {
                     client.player.playSound(sound, 100f, 0.1f);
                 }})
                 .position(currentPos.leftInt() + lineXOffset, currentPos.rightInt())
-                .size(100, 20)
+                .size(buttonWidth,20)
                 .tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.@Tooltip")))
                 .build();
         currentPos = IntIntPair.of(currentPos.leftInt(), currentPos.rightInt() + SPACER_Y);
@@ -226,8 +229,8 @@ public class ChatRuleConfigScreen extends Screen {
         replaceMessageInput.setText(chatRule.getReplaceMessage());
 
         ButtonWidget finishButton = ButtonWidget.builder(Text.translatable("text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.finish"), a -> close())
-                .position(this.width - 75 - SPACER_Y, this.height - SPACER_Y)
-                .size(75, 20)
+                .position(this.width - buttonWidth - SPACER_Y, this.height - SPACER_Y)
+                .size(buttonWidth, 20)
                 .build();
 
         addDrawableChild(nameInput);
@@ -245,6 +248,18 @@ public class ChatRuleConfigScreen extends Screen {
     }
 
     /**
+     * if the maxUsedWidth is above the available width decrease the button width to fix this
+     */
+    private void calculateMaxButtonWidth() {
+        if (client == null || client.currentScreen == null) return;
+        buttonWidth = 75;
+        int available = client.currentScreen.width - getMaxUsedWidth() - SPACER_X * 2;
+        if (available >= 0) return; //keep the largest size if room
+        buttonWidth += available / 3; //remove the needed width from the width of the total 3 buttons
+        buttonWidth = Math.max(10,buttonWidth); //do not let the width go below 10
+    }
+
+    /**
      * Works out the width of the maximum line
      * @return the max used width
      */
@@ -257,8 +272,7 @@ public class ChatRuleConfigScreen extends Screen {
         //space
         total += SPACER_X * 6;
         //button width
-        total += 75 * 3;
-
+        total += buttonWidth * 3;
         return total;
     }
 
