@@ -162,14 +162,18 @@ public class VisitorHelper {
     private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, ItemStack stack, int amount, int index, int mouseX, int mousseY) {
         Text text = Serialization.fromJson(stack.getSubNbt("display").getString("Name")).append(" x" + amount);
         drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + TEXT_INDENT, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
+        // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
         context.drawItem(stack, TEXT_START_X + TEXT_INDENT + 2 + textRenderer.getWidth(text), TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)) - textRenderer.fontHeight + 5);
     }
 
     private static void drawTextWithOptionalUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int mouseX, int mouseY) {
+        context.getMatrices().push();
+        context.getMatrices().translate(0, 0, 150); // This also puts our z at 350
         context.drawText(textRenderer, text, x, y, -1, true);
         if (isMouseOverText(mouseX, mouseY, x, y, textRenderer.getWidth(text), textRenderer.fontHeight)) {
             context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, -1);
         }
+        context.getMatrices().pop();
     }
 
     private static boolean isMouseOverText(double mouseX, double mouseY, int x, int y, int width, int height) {
