@@ -8,7 +8,6 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
-import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -47,41 +46,14 @@ public class DwarvenMinesCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud"))
 						.collapsed(false)
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabledCommissions"))
-								.binding(defaults.locations.dwarvenMines.dwarvenHud.enabledCommissions,
-										() -> config.locations.dwarvenMines.dwarvenHud.enabledCommissions,
-										newValue -> config.locations.dwarvenMines.dwarvenHud.enabledCommissions = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabledPowder"))
-								.binding(defaults.locations.dwarvenMines.dwarvenHud.enabledPowder,
-										() -> config.locations.dwarvenMines.dwarvenHud.enabledPowder,
-										newValue -> config.locations.dwarvenMines.dwarvenHud.enabledPowder = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
 						.option(Option.<SkyblockerConfig.DwarvenHudStyle>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[0]"),
-										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[1]"),
-										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[2]")))
+										Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.style.@Tooltip[1]")))
 								.binding(defaults.locations.dwarvenMines.dwarvenHud.style,
 										() -> config.locations.dwarvenMines.dwarvenHud.style,
 										newValue -> config.locations.dwarvenMines.dwarvenHud.style = newValue)
 								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(ButtonOption.createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.screen"))
-								.text(Text.translatable("text.skyblocker.open"))
-								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new DwarvenHudConfigScreen(screen)))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground"))
-								.binding(defaults.locations.dwarvenMines.dwarvenHud.enableBackground,
-										() -> config.locations.dwarvenMines.dwarvenHud.enableBackground,
-										newValue -> config.locations.dwarvenMines.dwarvenHud.enableBackground = newValue)
-								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 				//crystal HUD

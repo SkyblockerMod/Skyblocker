@@ -930,28 +930,7 @@ public class SkyblockerConfig {
 
 	public static class DwarvenHud {
 		@SerialEntry
-		public boolean enabledCommissions = true;
-
-		@SerialEntry
-		public boolean enabledPowder = true;
-
-		@SerialEntry
 		public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
-
-		@SerialEntry
-		public boolean enableBackground = true;
-
-		@SerialEntry
-		public int x = 10;
-
-		@SerialEntry
-		public int y = 10;
-
-		@SerialEntry
-		public int powderX = 10;
-
-		@SerialEntry
-		public int powderY = 70;
 	}
 
 	public static class CrystalsHud {
@@ -983,14 +962,13 @@ public class SkyblockerConfig {
 	}
 
 	public enum DwarvenHudStyle {
-		SIMPLE, FANCY, CLASSIC;
+		SIMPLE, FANCY;
 
 		@Override
 		public String toString() {
 			return switch (this) {
 				case SIMPLE -> "Simple";
 				case FANCY -> "Fancy";
-				case CLASSIC -> "Classic";
 			};
 		}
 	}

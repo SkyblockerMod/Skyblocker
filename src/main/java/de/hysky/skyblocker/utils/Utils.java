@@ -95,10 +95,6 @@ public class Utils {
         return location == Location.CRYSTAL_HOLLOWS || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
-    public static boolean isInDwarvenMines() {
-        return location == Location.DWARVEN_MINES || FabricLoader.getInstance().isDevelopmentEnvironment();
-    }
-
     public static boolean isInTheRift() {
         return location == Location.THE_RIFT;
     }
