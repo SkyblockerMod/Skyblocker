@@ -23,13 +23,13 @@ import java.util.Map;
 
 public class ScreenMaster {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
+    protected static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
 
-    private static final int VERSION = 1;
+    protected static final int VERSION = 1;
 
-    private static final HashMap<String, ScreenBuilder> standardMap = new HashMap<>();
-    private static final HashMap<String, ScreenBuilder> screenAMap = new HashMap<>();
-    private static final HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
+    protected static final HashMap<String, ScreenBuilder> standardMap = new HashMap<>();
+    protected static final HashMap<String, ScreenBuilder> screenAMap = new HashMap<>();
+    protected static final HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
 
     /**
      * Load a screen mapping from an identifier
