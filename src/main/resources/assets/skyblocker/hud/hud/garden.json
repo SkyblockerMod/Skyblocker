@@ -1,44 +1,20 @@
 {
-    "widgets":[
+    "widgets": [
         {
-            "name": "GardenServerWidget",
-            "alias": "gsw"
-        },
-        {
-            "name": "ComposterWidget",
+            "name": "JacobsContestWidget",
             "alias": "cw"
-        },
-        {
-            "name": "GardenVisitorsWidget",
-            "alias": "vw"
-        },
-        {
-            "name": "CameraPositionWidget",
-            "alias": "cpw"
         }
     ],
     "layout": [
         {
-            "op": "stack",
-            "direction": "vertical",
-            "align": "center",
-            "apply_to": ["gsw", "vw"]
-        },
-        {
-            "op": "stack",
-            "direction": "vertical",
-            "align": "center",
-            "apply_to": ["cw", "cpw"]
+            "op": "align",
+            "reference": "left",
+            "apply_to": ["cw"]
         },
         {
             "op": "align",
-            "reference": "leftOfCenter",
-            "apply_to": ["gsw", "vw"]
-        },
-        {
-            "op": "align",
-            "reference": "rightOfCenter",
-            "apply_to": ["cw", "cpw"]
+            "reference": "top",
+            "apply_to": ["cw"]
         }
     ]
 }

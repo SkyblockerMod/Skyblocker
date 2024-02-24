@@ -1,44 +1,30 @@
 {
     "widgets":[
         {
-            "name": "ServerWidget",
-            "alias": "sw"
-        },
-        {
             "name": "PowderWidget",
             "alias": "pw"
         },
         {
             "name": "CommsWidget",
             "alias": "cw"
-        },
-        {
-            "name": "ForgeWidget",
-            "alias": "fw"
         }
     ],
     "layout": [
         {
-            "op": "stack",
-            "direction": "vertical",
-            "align": "center",
-            "apply_to": ["sw", "cw"]
-        },
-        {
-            "op": "stack",
-            "direction": "vertical",
-            "align": "center",
-            "apply_to": ["fw", "pw"]
+            "op": "align",
+            "reference": "left",
+            "apply_to": ["pw", "cw"]
         },
         {
             "op": "align",
-            "reference": "leftOfCenter",
-            "apply_to": ["sw", "cw"]
+            "reference": "top",
+            "apply_to": ["pw", "cw"]
         },
         {
-            "op": "align",
-            "reference": "rightOfCenter",
-            "apply_to": ["pw", "fw"]
+            "op": "collideAgainst",
+            "direction": "bot",
+            "widgets": ["pw"],
+            "colliders": ["cw"]
         }
     ]
 }
