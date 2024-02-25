@@ -9,14 +9,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Environment(EnvType.CLIENT)
 public class LocationEvents {
     public static final Event<LocationChange> CHANGE =
-            EventFactory.createArrayBacked(LocationChange.class, callbacks -> location -> {
+            EventFactory.createArrayBacked(LocationChange.class, callbacks -> newLocation -> {
                 for (LocationChange callback : callbacks)
-                    callback.onLocationChange(location);
+                    callback.onLocationChange(newLocation);
             });
 
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface LocationChange {
-        void onLocationChange(Location location);
+        void onLocationChange(Location newLocation);
     }
 }
