@@ -3,7 +3,9 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
@@ -20,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -31,6 +32,7 @@ public class ChatRulesHandler {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatRule.class);
     private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
+    private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
     /**
      * look up table for the locations input by the users to raw locations
      */
@@ -50,15 +52,16 @@ public class ChatRulesHandler {
 
     private static void loadChatRules() {
         try (BufferedReader reader = Files.newBufferedReader(CHAT_RULE_FILE)) {
-            Type chatRulesType = new TypeToken<Map<String, List<ChatRule>>>() {}.getType();
-            Map<String, List<ChatRule>> chatRules = SkyblockerMod.GSON.fromJson(reader,chatRulesType);
+            Map<String, List<ChatRule>> chatRules = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
+            LOGGER.info("[Sky: " + chatRules.toString());
+            
             chatRuleList.addAll(chatRules.get("rules"));
 
             LOGGER.info("[Skyblocker] Loaded chat rules");
         } catch (NoSuchFileException e) {
             registerDefaultChatRules();
             LOGGER.warn("[Skyblocker] chat rule file not found, using default rules. This is normal when using for the first time.");
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to load shortcuts file", e);
         }
     }
@@ -95,11 +98,11 @@ public class ChatRulesHandler {
 
     protected static void saveChatRules() {
         JsonObject chatRuleJson = new JsonObject();
-        chatRuleJson.add("rules", SkyblockerMod.GSON.toJsonTree(chatRuleList));
+        chatRuleJson.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, chatRuleList).result().orElseThrow());
         try (BufferedWriter writer = Files.newBufferedWriter(CHAT_RULE_FILE)) {
             SkyblockerMod.GSON.toJson(chatRuleJson, writer);
             LOGGER.info("[Skyblocker] Saved chat rules file");
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to save chat rules file", e);
         }
     }
