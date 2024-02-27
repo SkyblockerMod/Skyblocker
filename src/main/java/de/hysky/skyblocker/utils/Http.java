@@ -33,10 +33,6 @@ public class Http {
 			.followRedirects(Redirect.NORMAL)
 			.build();
 
-	public static String sendGetRequest(String url) throws IOException, InterruptedException {
-		return sendCacheableGetRequest(url).content();
-	}
-
 	private static ApiResponse sendCacheableGetRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
@@ -54,6 +50,26 @@ public class Http {
 		HttpHeaders headers = response.headers();
 
 		return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
+	}
+	
+	public static InputStream downloadContent(String url) throws IOException, InterruptedException {
+		HttpRequest request = HttpRequest.newBuilder()
+				.GET()
+				.header("Accept", "*/*")
+				.header("Accept-Encoding", "gzip, deflate")
+				.header("User-Agent", USER_AGENT)
+				.version(Version.HTTP_2)
+				.uri(URI.create(url))
+				.build();
+
+		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
+		InputStream decodedInputStream = getDecodedInputStream(response);
+
+		return decodedInputStream;
+	}
+	
+	public static String sendGetRequest(String url) throws IOException, InterruptedException {
+		return sendCacheableGetRequest(url).content();
 	}
 
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
