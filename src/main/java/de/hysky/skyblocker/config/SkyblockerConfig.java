@@ -1192,6 +1192,15 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public ChatFilterResult hideDicer = ChatFilterResult.PASS;
+
+		@SerialEntry
+		public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
+	}
+	public static class ChatRuleConfig {
+		@SerialEntry
+		public int announcementLength = 60;
+		@SerialEntry
+		public int announcementScale = 3;
 	}
 
 	public enum Info {
