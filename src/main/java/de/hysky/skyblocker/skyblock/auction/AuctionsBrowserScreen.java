@@ -1,8 +1,12 @@
 package de.hysky.skyblocker.skyblock.auction;
 
+import com.google.gson.JsonElement;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.render.gui.HandlerBackedScreen;
+import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -26,8 +30,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 @SuppressWarnings("DataFlowIssue") // For this.client and stuff
@@ -42,6 +49,7 @@ public class AuctionsBrowserScreen extends HandlerBackedScreen {
     public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
     private final PlayerInventory playerInventory;
     private final List<Slot> auctionedItems = new ArrayList<>(24);
+    private Int2BooleanOpenHashMap highlight = new Int2BooleanOpenHashMap(24);
     private @Nullable Slot hoveredSlot = null;
     private int prevPageSlotId = -1;
     private int nextPageSlotId = -1;
@@ -73,9 +81,37 @@ public class AuctionsBrowserScreen extends HandlerBackedScreen {
 
         // AUCTION ITEMS
         auctionedItems.clear();
+        highlight.clear();
         for (int i = 1; i < 5; i++) {
             for (int j = 2; j < 8; j++) {
-                auctionedItems.add(handler.slots.get(i*9 + j));
+                Slot slot = handler.slots.get(i * 9 + j);
+                auctionedItems.add(slot);
+                ItemStack stack = slot.getStack();
+                List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                for (int k = tooltip.size() - 1; k >= 0; k--) {
+                    Text text = tooltip.get(k);
+                    String string = text.getString();
+                    if (string.toLowerCase().contains("buy it now:")) {
+                        String[] split = string.split(":");
+                        if (split.length < 2) continue;
+                        String coins = split[1].replace(",", "").replace("coins", "").trim();
+                        try {
+                            int parsed = Integer.parseInt(coins);
+                            String name = ItemTooltip.getInternalNameFromNBT(stack, false);
+                            String internalID = ItemTooltip.getInternalNameFromNBT(stack, true);
+                            String neuName = name;
+                            if (name == null || internalID == null) break;
+                            if (name.startsWith("ISSHINY_")) {
+                                neuName = internalID;
+                            }
+                            JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemTooltip.getNeuName(internalID, neuName));
+                            if (jsonElement == null) break;
+                            else {
+                                highlight.put(slot.id, jsonElement.getAsDouble() > parsed);
+                            }
+                        } catch (NumberFormatException ignored) {}
+                    }
+                }
             }
         }
 
@@ -253,6 +289,9 @@ public class AuctionsBrowserScreen extends HandlerBackedScreen {
                 highlightSlotX = x1;
                 highlightSlotY = y1;
                 this.hoveredSlot = slot;
+            }
+            if (highlight.getOrDefault(slot.id, false)) {
+                context.drawBorder(x1, y1, 16, 16, new Color(0, 255, 0, 100).getRGB());
             }
             context.drawItem(slot.getStack(), x1, y1);
             context.drawItemInSlot(this.textRenderer, slot.getStack(), x1, y1);
