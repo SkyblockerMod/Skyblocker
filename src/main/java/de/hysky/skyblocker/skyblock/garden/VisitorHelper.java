@@ -21,6 +21,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.text.Text.Serialization;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,9 +140,7 @@ public class VisitorHelper {
         String itemName = itemEntry.getKey();
         int amount = itemEntry.getValue();
         ItemStack stack = getCachedItem(itemName);
-        if (stack != null) {
-            drawItemEntryWithHover(context, textRenderer, stack, amount, index, mouseX, mouseY);
-        }
+        drawItemEntryWithHover(context, textRenderer, stack, itemName, amount, index, mouseX, mouseY);
         return index + 1;
     }
 
@@ -149,21 +148,26 @@ public class VisitorHelper {
         String strippedName = Formatting.strip(displayName);
         ItemStack cachedStack = itemCache.get(strippedName);
         if (cachedStack != null) return cachedStack;
-        NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItems().values().stream()
+        Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
+        if (items == null) return null;
+        ItemStack stack = items.values().stream()
                 .filter(i -> Formatting.strip(i.getDisplayName()).equals(strippedName))
                 .findFirst()
+                .map(NEUItem::getSkyblockItemId)
+                .map(ItemRepository::getItemStack)
                 .orElse(null);
-        if (neuItem == null) return null;
-        ItemStack stack = ItemRepository.getItemStack(neuItem.getSkyblockItemId());
+        if (stack == null) return null;
         itemCache.put(strippedName, stack);
         return stack;
     }
 
-    private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, ItemStack stack, int amount, int index, int mouseX, int mousseY) {
-        Text text = Serialization.fromJson(stack.getSubNbt("display").getString("Name")).append(" x" + amount);
+    private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mousseY) {
+        Text text = stack != null ? Serialization.fromJson(stack.getSubNbt("display").getString("Name")).append(" x" + amount) : Text.literal(itemName + " x" + amount);
         drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + TEXT_INDENT, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
         // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
-        context.drawItem(stack, TEXT_START_X + TEXT_INDENT + 2 + textRenderer.getWidth(text), TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)) - textRenderer.fontHeight + 5);
+        if (stack != null) {
+            context.drawItem(stack, TEXT_START_X + TEXT_INDENT + 2 + textRenderer.getWidth(text), TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)) - textRenderer.fontHeight + 5);
+        }
     }
 
     private static void drawTextWithOptionalUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int mouseX, int mouseY) {
