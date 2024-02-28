@@ -2,10 +2,10 @@ package de.hysky.skyblocker.skyblock.auction;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.render.gui.HandlerBackedScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -17,9 +17,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -33,7 +31,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @SuppressWarnings("DataFlowIssue") // For this.client and stuff
-public class AuctionsBrowserScreen extends Screen {
+public class AuctionsBrowserScreen extends HandlerBackedScreen {
 
     private static final Identifier BACKGROUND_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/auctions_gui/browser/background.png");
     private static final Identifier SCROLLER_TEXTURE = new Identifier("container/creative_inventory/scroller");
@@ -42,28 +40,6 @@ public class AuctionsBrowserScreen extends Screen {
     private static final Identifier down_arrow_tex = new Identifier(SkyblockerMod.NAMESPACE, "down_arrow_even");
     public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(up_arrow_tex);
     public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
-    private boolean waitingForServer = true;
-
-    // <editor-fold desc="Boring handled screen stuff">
-    @Override
-    public boolean shouldPause() {
-        return false;
-    }
-    @Override
-    public void close() {
-        this.client.player.closeHandledScreen();
-        super.close();
-    }
-    @Override
-    public void removed() {
-        if (this.client.player == null) {
-            return;
-        }
-        ((ScreenHandler)this.handler).onClosed(this.client.player);
-    }
-    // </editor-fold>
-
-    private GenericContainerScreenHandler handler;
     private final PlayerInventory playerInventory;
     private final List<Slot> auctionedItems = new ArrayList<>(24);
     private @Nullable Slot hoveredSlot = null;
@@ -87,29 +63,13 @@ public class AuctionsBrowserScreen extends Screen {
     public int x = 0;
     public int y = 0;
 
-    public AuctionsBrowserScreen(GenericContainerScreenHandler handler, PlayerInventory playerInventory) {
-        super(Text.literal("Auctions Browser"));
+    public AuctionsBrowserScreen(GenericContainerScreenHandler handler, PlayerInventory playerInventory, Text inventoryName) {
+        super(Text.literal("Auctions Browser"), inventoryName, handler);
         this.handler = handler;
         this.playerInventory = playerInventory;
     }
 
-    private boolean dirty = false;
-    private long dirtiedTime;
-    public void markDirty() {dirty = true; dirtiedTime = System.currentTimeMillis();}
-    public void changeHandlerAndUpdate(GenericContainerScreenHandler handler) {
-        this.handler = handler;
-        markDirty();
-    }
-
-    @Override
-    public void tick() {
-        if (!this.client.player.isAlive() || this.client.player.isRemoved()) this.client.player.closeHandledScreen();
-        if (dirty && System.currentTimeMillis() - dirtiedTime > 40) update();
-    }
-
-    public void update() {
-        dirty = false;
-        waitingForServer = false;
+    public boolean update() {
 
         // AUCTION ITEMS
         auctionedItems.clear();
@@ -184,11 +144,11 @@ public class AuctionsBrowserScreen extends Screen {
         // CATEGORIES
         for (int i = 0; i < handler.getRows(); i++) {
             Slot slot = handler.slots.get(i * 9);
-            if (!slot.hasStack()) return;
+            if (!slot.hasStack()) continue;
             ItemStack stack = slot.getStack();
             List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
-            if (tooltip.size() < 2) return;
-            if (!tooltip.get(1).getString().toLowerCase().contains("category")) return;
+            if (tooltip.size() < 2) continue;
+            if (!tooltip.get(1).getString().toLowerCase().contains("category")) continue;
             CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(i);
             categoryTabWidget.setIcon(stack);
             categoryTabWidget.setSlotId(i*9);
@@ -203,6 +163,7 @@ public class AuctionsBrowserScreen extends Screen {
                 } else categoryTabWidget.setToggled(false);
             }
         }
+        return true;
     }
 
     private void parsePage(ItemStack stack) {
@@ -228,19 +189,6 @@ public class AuctionsBrowserScreen extends Screen {
         return ordinal;
     }
 
-    public void clickAndWaitForServer(int slotID, int button) {
-        //System.out.println("hey");
-        assert client != null;
-        assert client.interactionManager != null;
-        client.interactionManager.clickSlot(handler.syncId, slotID, button, SlotActionType.PICKUP, client.player);
-        waitingForServer = true;
-    }
-    public void clickAndWaitForServer(int slotId) { clickAndWaitForServer(slotId, 0);}
-
-    public boolean isWaitingForServer() {
-        return waitingForServer;
-    }
-
     @Override
     protected void init() {
         super.init();
@@ -257,7 +205,7 @@ public class AuctionsBrowserScreen extends Screen {
             for (int i = 0; i < 6; i++) {
                 CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this);
                 categoryTabWidgets.add(categoryTabWidget);
-                //addDrawableChild(categoryTabWidget);
+                addSelectableChild(categoryTabWidget); // This method only makes it clickable, does not add it to the drawables list
                 // manually rendered in the render method to have it not render behind the durability bars
                 categoryTabWidget.setPosition(x-30, y+3+i*28);
             }
@@ -267,7 +215,6 @@ public class AuctionsBrowserScreen extends Screen {
                 categoryTabWidget.setPosition(x-30, y+3+i*28);
 
             }
-        markDirty();
     }
 
     @Override
@@ -311,18 +258,7 @@ public class AuctionsBrowserScreen extends Screen {
             context.drawItemInSlot(this.textRenderer, slot.getStack(), x1, y1);
         }
         // Player inv
-        for (int row = 0; row < 3; ++row) {
-            for (int column = 0; column < 9; ++column) {
-                int x1 = 8 + column * 18;
-                int y1 = 105 + row * 18;
-                context.drawItem(playerInventory.getStack(column + row * 9 + 9), x1, y1);
-                context.drawItemInSlot(this.textRenderer, playerInventory.getStack(column + row * 9 + 9), x1, y1);
-            }
-        }
-        for (int slot = 0; slot < 9; ++slot) {
-            context.drawItem(playerInventory.getStack(slot), 8 + slot * 18, 163);
-            context.drawItemInSlot(this.textRenderer, playerInventory.getStack(slot), 8 + slot * 18, 163);
-        }
+        renderPlayerInventory(context, playerInventory, this.textRenderer, 8, 105, mouseX-x, mouseY-y);
         matrices.pop();
         // Inventory title
         context.drawText(this.textRenderer, playerInventory.getDisplayName(), 8, 187-94, 0x404040, false);
@@ -387,7 +323,7 @@ public class AuctionsBrowserScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
-        if (waitingForServer) return false;
+        if (isWaitingForServer()) return false;
         if (onScrollbarTop((int)mouseX, (int) mouseY) && prevPageSlotId != -1) {
             clickAndWaitForServer(prevPageSlotId);
             playClickSound();

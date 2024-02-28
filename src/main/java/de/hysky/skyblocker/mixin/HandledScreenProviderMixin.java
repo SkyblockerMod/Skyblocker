@@ -2,6 +2,7 @@ package de.hysky.skyblocker.mixin;
 
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionsBrowserScreen;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import net.minecraft.client.MinecraftClient;
@@ -45,14 +46,29 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
             }
 
             ci.cancel();
+
+        // BETTER AH
         } else if (nameLowerCase.contains("auctions browser") || nameLowerCase.contains("auctions:")) {
             if (!SkyblockerConfigManager.get().general.betterAuctionsBrowser) return;
             client.player.currentScreenHandler = containerScreenHandler;
             if (client.currentScreen instanceof AuctionsBrowserScreen screen) {
-                screen.changeHandlerAndUpdate(containerScreenHandler);
+                screen.changeHandlerAndMarkDirty(containerScreenHandler, name);
             } else {
-                client.setScreen(new AuctionsBrowserScreen(containerScreenHandler, player.getInventory()));
+                client.setScreen(new AuctionsBrowserScreen(containerScreenHandler, player.getInventory(), name));
             }
+            ci.cancel();
+        } else if (nameLowerCase.contains("auction view")) {
+            if (!SkyblockerConfigManager.get().general.betterAuctionsBrowser) return;
+            client.player.currentScreenHandler = containerScreenHandler;
+            if (client.currentScreen instanceof AuctionViewScreen screen) {
+                screen.changeHandlerAndMarkDirty(containerScreenHandler, name);
+            } else {
+                client.setScreen(new AuctionViewScreen(player.getInventory(), name, containerScreenHandler));
+            }
+            ci.cancel();
+        } else if (nameLowerCase.contains("confirm") && client.currentScreen instanceof AuctionViewScreen screen) {
+            client.player.currentScreenHandler = containerScreenHandler;
+            screen.changeHandlerAndMarkDirty(containerScreenHandler, name);
             ci.cancel();
         }
     }

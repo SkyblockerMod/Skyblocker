@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixin;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.AuctionsBrowserScreen;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
+import de.hysky.skyblocker.utils.render.gui.HandlerBackedScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,7 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
         Screen currentScreen = MinecraftClient.getInstance().currentScreen;
         if (currentScreen instanceof PartyFinderScreen screen) {
             screen.markDirty();
-        } else if (currentScreen instanceof AuctionsBrowserScreen screen) {
+        } else if (currentScreen instanceof HandlerBackedScreen screen) {
             screen.markDirty();
         }
     }
@@ -39,7 +40,7 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
         Screen currentScreen = MinecraftClient.getInstance().currentScreen;
         if (currentScreen instanceof PartyFinderScreen screen) {
             screen.markDirty();
-        } else if (currentScreen instanceof AuctionsBrowserScreen screen) {
+        } else if (currentScreen instanceof HandlerBackedScreen screen) {
             screen.markDirty();
         }
     }

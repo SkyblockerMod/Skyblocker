@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.rift.HealingMelonIndicator;
 import de.hysky.skyblocker.skyblock.searchoverlay.OverlayScreen;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.HandlerSignBackedScreen;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -54,6 +55,12 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
         // Fancy Party Finder
         if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase().contains("level")) {
             partyFinderScreen.updateSign(sign, front);
+            callbackInfo.cancel();
+            return;
+        }
+        // General stuff
+        if (client.currentScreen instanceof HandlerSignBackedScreen screen) {
+            screen.changeSign(sign, front);
             callbackInfo.cancel();
             return;
         }
