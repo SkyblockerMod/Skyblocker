@@ -92,8 +92,8 @@ public class MythologicalRitual {
                     griffinBurrows.get(pos).init();
                 }
             } else if (ParticleTypes.DUST.equals(packet.getParameters().getType())) {
-                BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ()).down(2);
-                GriffinBurrow burrow = griffinBurrows.get(pos);
+                BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ());
+                GriffinBurrow burrow = griffinBurrows.get(pos.down(2));
                 if (burrow == null) {
                     return;
                 }
@@ -106,7 +106,7 @@ public class MythologicalRitual {
                 if (burrow.nextBurrowLine == null) {
                     burrow.nextBurrowLine = new Vec3d[1001];
                 }
-                fillLine(burrow.nextBurrowLine, Vec3d.of(pos), nextBurrowDirection);
+                fillLine(burrow.nextBurrowLine, Vec3d.ofCenter(pos.up()), nextBurrowDirection);
             } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType()) && packet.getCount() == 2) {
                 if (System.currentTimeMillis() > lastEchoTime + 10_000) {
                     return;
