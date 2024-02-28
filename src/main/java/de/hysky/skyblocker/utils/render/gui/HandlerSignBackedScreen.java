@@ -55,6 +55,7 @@ public abstract class HandlerSignBackedScreen extends HandlerBackedScreen{
         if (currentBackend == Backend.INVENTORY)
             super.close();
         else {
+            assert this.client != null;
             this.client.setScreen(null);
             sendSignPacket(new String[]{});
         }

@@ -32,9 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 @SuppressWarnings("DataFlowIssue") // For this.client and stuff
@@ -49,7 +47,7 @@ public class AuctionsBrowserScreen extends HandlerBackedScreen {
     public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
     private final PlayerInventory playerInventory;
     private final List<Slot> auctionedItems = new ArrayList<>(24);
-    private Int2BooleanOpenHashMap highlight = new Int2BooleanOpenHashMap(24);
+    private final Int2BooleanOpenHashMap highlight = new Int2BooleanOpenHashMap(24);
     private @Nullable Slot hoveredSlot = null;
     private int prevPageSlotId = -1;
     private int nextPageSlotId = -1;

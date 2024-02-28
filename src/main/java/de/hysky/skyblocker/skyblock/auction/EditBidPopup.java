@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.utils.render.gui.BarebonesPopupScreen;
-import de.hysky.skyblocker.utils.render.gui.HandlerSignBackedScreen;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.*;
@@ -57,6 +56,7 @@ public class EditBidPopup extends BarebonesPopupScreen {
     }
 
     private boolean isStringGood(String s) {
+        assert this.client != null;
         return this.client.textRenderer.getWidth(minimumBid) <= this.signBlockEntity.getMaxTextWidth();
     }
 

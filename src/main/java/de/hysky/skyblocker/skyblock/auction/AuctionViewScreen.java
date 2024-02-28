@@ -72,6 +72,7 @@ public class AuctionViewScreen extends HandlerSignBackedScreen {
         x = (this.width - 176)/2;
         y = (this.height - 187)/2;
         if (closingPopup) {
+            assert this.client != null;
             this.client.setScreen(null);
             return;
         }
@@ -204,6 +205,7 @@ public class AuctionViewScreen extends HandlerSignBackedScreen {
         int finalCancelSlot = cancelSlot;
 
         openingPopup = true;
+        assert client != null;
         client.setScreen(new PopupScreen.Builder(this, Text.literal("Confirm Bid/Purchase"))
                 .button(Text.literal("Yes"), popupScreen -> {
                     clickAndWaitForServer(finalConfirmSlot);

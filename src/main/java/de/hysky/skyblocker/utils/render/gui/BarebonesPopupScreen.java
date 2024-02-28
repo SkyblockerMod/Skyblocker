@@ -22,6 +22,7 @@ public class BarebonesPopupScreen extends Screen {
 
     @Override
     public void close() {
+        assert this.client != null;
         this.client.setScreen(this.backgroundScreen);
     }
 

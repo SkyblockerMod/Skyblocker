@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.mixin;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.auction.AuctionsBrowserScreen;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.utils.render.gui.HandlerBackedScreen;
 import net.minecraft.client.MinecraftClient;
