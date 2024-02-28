@@ -42,8 +42,6 @@ public class Fetchur extends ChatPatternListener {
 
         answers.put("yellow and see through", Text.translatable("block.minecraft.yellow_stained_glass").getString());
         answers.put("circular and sometimes moves", Text.translatable("item.minecraft.compass").getString());
-        // TODO remove when typo fixed by hypixel
-        answers.put("circlular and sometimes moves", Text.translatable("item.minecraft.compass").getString());
         answers.put("expensive minerals", "Mithril");
         answers.put("useful during celebrations", Text.translatable("item.minecraft.firework_rocket").getString());
         answers.put("hot and gives energy", "Cheap / Decent / Black Coffee");
@@ -56,10 +54,5 @@ public class Fetchur extends ChatPatternListener {
         answers.put("shiny and makes sparks", Text.translatable("item.minecraft.flint_and_steel").getString());
         answers.put("green and some dudes trade stuff for it", Text.translatable("item.minecraft.emerald").getString());
         answers.put("red and soft", Text.translatable("block.minecraft.red_wool").getString());
-
-        // old riddles that should no longer be active
-        // TODO remove if not seen for a few months
-        answers.put("round and green, or purple", Text.translatable("item.minecraft.ender_pearl").getString()); // removed Aug 21, 2021
-        answers.put("red and white and you can mine it", Text.translatable("block.minecraft.nether_quartz_ore").getString()); // removed Sep 26, 2023
     }
 }
