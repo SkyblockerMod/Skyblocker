@@ -6,20 +6,23 @@ import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.item.Items;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import java.util.List;
+
+import com.mojang.authlib.properties.Property;
 
 public class MobGlow {
 	public static boolean shouldMobGlow(Entity entity) {
@@ -113,19 +116,18 @@ public class MobGlow {
 		for (ItemStack armorItem : entity.getArmorItems()) {
 			// hacky way to check if an item is a player head w/o
 			// some shenanigans
-			if (!armorItem.toString().startsWith("1 player_head"))
+			if (!armorItem.isOf(Items.PLAYER_HEAD))
 				continue;
 
 			// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id for the nukekubi head,
 			// compare against it to exclusively find armorstands that are nukekubi heads
-			NbtCompound skullOwner = armorItem.getSubNbt("SkullOwner");
-			if (skullOwner != null) {
+			ProfileComponent profile = armorItem.get(DataComponentTypes.PROFILE);
+			if (profile != null) {
 				// get the texture of the nukekubi head item itself and compare it
-				String texture = skullOwner
-						.getCompound("Properties")
-						.getList("textures", NbtElement.COMPOUND_TYPE)
-						.getCompound(0)
-						.getString("Value");
+				String texture = profile.properties().get("textures").stream()
+						.map(Property::value)
+						.findFirst()
+						.orElse("None");
 
 				return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
 			}

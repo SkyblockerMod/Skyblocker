@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixin.accessor.SkullBlockEntityAccessor;
 import net.minecraft.client.MinecraftClient;
@@ -12,10 +12,10 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -25,6 +25,8 @@ import net.minecraft.util.Identifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +40,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     String floor = "???";
     String dungeon = "???";
     String note = "";
-    NbtCompound floorSkullNBT = new NbtCompound();
+    PropertyMap floorSkullProperties = new PropertyMap();
     Identifier partyLeaderSkin = DefaultSkinHelper.getTexture();
     Player[] partyMembers = new Player[4];
 
@@ -87,14 +89,14 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (PartyFinderScreen.floorIconsMaster == null || PartyFinderScreen.floorIconsNormal == null) continue;
                 if (dungeon.contains("Master Mode")) {
                     try {
-                        floorSkullNBT = StringNbtReader.parse(PartyEntryListWidget.BASE_SKULL_NBT.replace("%TEXTURE%", PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(), "")));
-                    } catch (CommandSyntaxException e) {
+                        floorSkullProperties = PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(), new PropertyMap());
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 } else {
                     try {
-                        floorSkullNBT = StringNbtReader.parse(PartyEntryListWidget.BASE_SKULL_NBT.replace("%TEXTURE%", PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(), "")));
-                    } catch (CommandSyntaxException e) {
+                    	floorSkullProperties = PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(), new PropertyMap());
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -226,7 +228,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             }
         }
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        stack.setNbt(floorSkullNBT);
+        stack.set(DataComponentTypes.PROFILE, new ProfileComponent("SkyblockerCustomPF", Optional.of(UUID.randomUUID()), floorSkullProperties));
         context.drawItem(stack, 317, 3);
 
         int textWidth = textRenderer.getWidth(floor);

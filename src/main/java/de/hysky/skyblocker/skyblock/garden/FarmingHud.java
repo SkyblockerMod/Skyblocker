@@ -54,7 +54,7 @@ public class FarmingHud {
                 }
 
                 ItemStack stack = MinecraftClient.getInstance().player.getMainHandStack();
-                Matcher matcher = ItemUtils.getNbtTooltip(stack, FarmingHud.COUNTER);
+                Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, FarmingHud.COUNTER);
                 if (matcher != null) {
                     try {
                         int count = NUMBER_FORMAT.parse(matcher.group("count")).intValue();

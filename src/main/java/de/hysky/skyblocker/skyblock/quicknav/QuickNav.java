@@ -5,12 +5,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -21,8 +21,6 @@ import java.util.Locale;
 import java.util.regex.PatternSyntaxException;
 
 public class QuickNav {
-    private static final String skyblockHubIconNbt = "{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}";
-    private static final String dungeonHubIconNbt = "{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;1605800870,415127827,-1236127084,15358548],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}}}}";
 
     public static void init() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
@@ -74,7 +72,6 @@ public class QuickNav {
         return new QuickNavButton(id,
                 uiTitleMatches,
                 buttonInfo.clickEvent,
-                ItemStack.fromNbt(StringNbtReader.parse(nbtString))
-        );
+                ItemStackComponentizationFixer.fixUpItem(StringNbtReader.parse(nbtString)));
     }
 }

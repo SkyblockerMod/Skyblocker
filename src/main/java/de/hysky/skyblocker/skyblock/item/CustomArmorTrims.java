@@ -34,11 +34,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 public class CustomArmorTrims {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomArmorTrims.class);
-	public static final Object2ObjectOpenHashMap<ArmorTrimId, Optional<ArmorTrim>> TRIMS_CACHE = new Object2ObjectOpenHashMap<>();
+	public static final Object2ObjectOpenHashMap<ArmorTrimId, ArmorTrim> TRIMS_CACHE = new Object2ObjectOpenHashMap<>();
 	private static boolean trimsInitialized = false;
 
 	public static void init() {
@@ -65,7 +63,7 @@ public class CustomArmorTrims {
 					// Something went terribly wrong
 					if (trim == null) throw new IllegalStateException("Trim shouldn't be null! [" + "\"" + material + "\",\"" + pattern + "\"]");
 
-					TRIMS_CACHE.put(new ArmorTrimId(material, pattern), Optional.of(trim));
+					TRIMS_CACHE.put(new ArmorTrimId(material, pattern), trim);
 				}
 			}
 

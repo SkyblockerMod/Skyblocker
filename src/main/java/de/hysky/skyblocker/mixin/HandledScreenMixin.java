@@ -205,7 +205,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
             // Prevent selling to NPC shops
             ItemStack sellStack = this.handler.slots.get(49).getStack();
-            if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getNbtTooltip(sellStack, text -> text.contains("buyback")) != null) {
+            if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
                 if (slotId != 49 && ItemProtection.isItemProtected(stack)) {
                     ci.cancel();
                     return;

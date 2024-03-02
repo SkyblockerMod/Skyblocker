@@ -1,18 +1,26 @@
 package de.hysky.skyblocker.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.hysky.skyblocker.mixin.accessor.ItemStackAccessor;
+import com.mojang.serialization.JsonOps;
+
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.dynamic.Codecs;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -39,12 +47,17 @@ public class ItemUtils {
     private static final SimpleDateFormat OLD_OBTAINED_DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
+    private static final Gson GSON = new Gson(); //GSON Instance with no config
 
-    public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemNbtCommand() {
-        return literal("dumpHeldItemNbt").executes(context -> {
-            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item Nbt: " + context.getSource().getPlayer().getMainHandStack().writeNbt(new NbtCompound())));
+    public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
+        return literal("dumpHeldItem").executes(context -> {
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + GSON.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, context.getSource().getPlayer().getMainHandStack()).result().orElseThrow())));
             return Command.SINGLE_SUCCESS;
         });
+    }
+    
+    public static NbtComponent getCustomData(@NotNull ItemStack stack) {
+        return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
     }
 
     /**
@@ -54,7 +67,7 @@ public class ItemUtils {
      * @return an optional containing the {@code ExtraAttributes} NBT tag of the item stack
      */
     public static Optional<NbtCompound> getExtraAttributesOptional(@NotNull ItemStack stack) {
-        return Optional.ofNullable(stack.getSubNbt(EXTRA_ATTRIBUTES));
+        return Optional.ofNullable(getExtraAttributes(stack));
     }
 
     /**
@@ -65,7 +78,9 @@ public class ItemUtils {
      */
     @Nullable
     public static NbtCompound getExtraAttributes(@NotNull ItemStack stack) {
-        return stack.getSubNbt(EXTRA_ATTRIBUTES);
+    	NbtComponent customData = getCustomData(stack);
+        NbtCompound customNbt = customData.copyNbt();
+        return customNbt.contains(EXTRA_ATTRIBUTES) ? customNbt.getCompound(EXTRA_ATTRIBUTES) : null;
     }
 
     /**
@@ -166,7 +181,7 @@ public class ItemUtils {
             return IntIntPair.of(pickonimbusDurability, 5000);
         }
 
-        String drillFuel = Formatting.strip(getNbtTooltip(stack, FUEL_PREDICATE));
+        String drillFuel = Formatting.strip(getLoreLineIf(stack, FUEL_PREDICATE));
         if (drillFuel != null) {
             String[] drillFuelStrings = NOT_DURABILITY.matcher(drillFuel).replaceAll("").trim().split("/");
             return IntIntPair.of(Integer.parseInt(drillFuelStrings[0]), Integer.parseInt(drillFuelStrings[1]) * 1000);
@@ -176,8 +191,8 @@ public class ItemUtils {
     }
 
     @Nullable
-    public static String getNbtTooltip(ItemStack item, Predicate<String> predicate) {
-        for (Text line : getNbtTooltips(item)) {
+    public static String getLoreLineIf(ItemStack item, Predicate<String> predicate) {
+        for (Text line : getLore(item)) {
             String string = line.getString();
             if (predicate.test(string)) {
                 return string;
@@ -188,8 +203,8 @@ public class ItemUtils {
     }
 
     @Nullable
-    public static Matcher getNbtTooltip(ItemStack item, Pattern pattern) {
-        for (Text line : getNbtTooltips(item)) {
+    public static Matcher getLoreLineIfMatch(ItemStack item, Pattern pattern) {
+        for (Text line : getLore(item)) {
             String string = line.getString();
             Matcher matcher = pattern.matcher(string);
             if (matcher.matches()) {
@@ -200,19 +215,24 @@ public class ItemUtils {
         return null;
     }
 
-    public static List<Text> getNbtTooltips(ItemStack item) {
-        NbtCompound displayNbt = item.getSubNbt("display");
-        if (displayNbt == null || !displayNbt.contains("Lore", NbtElement.LIST_TYPE)) {
-            return Collections.emptyList();
-        }
+    public static List<Text> getLore(ItemStack item) {
+        LoreComponent lore = item.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT);
 
-        return displayNbt.getList("Lore", NbtElement.STRING_TYPE).stream().map(NbtElement::asString).map(Text.Serialization::fromJson).filter(Objects::nonNull).map(text -> Texts.setStyleIfAbsent(text, ItemStackAccessor.getLORE_STYLE())).map(Text.class::cast).toList();
+        return lore.styledLines();
+    }
+    
+    public static PropertyMap propertyMapWithTexture(String textureValue) {
+    	return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).result().orElseThrow();
     }
 
     public static ItemStack getSkyblockerStack() {
         try {
-            return ItemStack.fromNbt(StringNbtReader.parse("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}"));
-        } catch (CommandSyntaxException e) {
+            ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+            stack.set(DataComponentTypes.PROFILE, new ProfileComponent("SkyblockerStack", Optional.of(java.util.UUID.randomUUID()), propertyMapWithTexture("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=")));
+
+            return stack;
+            //return ItemStack.parseOptional(MinecraftClient.getInstance().player.getRegistryManager(), StringNbtReader.parse("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}"));
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

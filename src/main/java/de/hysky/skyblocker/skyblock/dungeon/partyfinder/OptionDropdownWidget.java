@@ -29,7 +29,6 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         this.screen = screen;
         this.slotId = slotId;
         setX(x);
-        setRenderBackground(false);
         setRenderHeader(true, 25);
         this.name = name;
         this.selectedOption = selectedOption;
