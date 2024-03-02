@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -12,14 +13,11 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.text.Text.Serialization;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -27,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -85,30 +84,27 @@ public class VisitorHelper {
 
     private static void processVisitorItem(String visitorName, ScreenHandler handler) {
         ItemStack visitorItem = handler.getSlot(13).getStack();
-        if (visitorItem == null || !visitorItem.hasNbt() || !visitorItem.getNbt().asString().contains("Times Visited")) return;
+        if (visitorItem == null || !visitorItem.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorItem, t -> t.contains("Times Visited")) == null) return;
         ItemStack acceptButton = handler.getSlot(29).getStack();
         if (acceptButton == null) return;
-        NbtCompound acceptButtonNbt = acceptButton.getSubNbt("display");
-        if (acceptButtonNbt == null || !acceptButtonNbt.contains("Lore", NbtElement.LIST_TYPE)) return;
-        processLore(visitorName, acceptButtonNbt.getList("Lore", NbtElement.STRING_TYPE));
+        processLore(visitorName, ItemUtils.getLore(acceptButton));
     }
 
-    private static void processLore(String visitorName, NbtList loreList) {
+    private static void processLore(String visitorName, List<Text> loreList) {
         boolean saveRequiredItems = false;
         for (int i = 0; i < loreList.size(); i++) {
-            String lore = loreList.getString(i);
+            String lore = loreList.get(i).getString();
             if (lore.contains("Items Required"))
                 saveRequiredItems = true;
             else if (lore.contains("Rewards"))
                 break;
             else if (saveRequiredItems)
-                updateItemMap(visitorName, lore);
+                updateItemMap(visitorName, loreList.get(i));
         }
     }
 
-    private static void updateItemMap(String visitorName, String lore) {
-        Text itemText = Serialization.fromJson(lore);
-        String[] splitItemText = itemText.getString().split(" x");
+    private static void updateItemMap(String visitorName, Text lore) {
+        String[] splitItemText = lore.getString().split(" x");
         String itemName = splitItemText[0].trim();
         if (itemName.isEmpty()) return;
         try {
@@ -117,7 +113,7 @@ public class VisitorHelper {
             visitorMap.putIfAbsent(itemName, amount);
             itemMap.putIfAbsent(visitorName, visitorMap);
         } catch (Exception e) {
-            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: " + itemText.getString(), e);
+            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: " + lore.getString(), e);
         }
     }
 
@@ -163,7 +159,7 @@ public class VisitorHelper {
     }
 
     private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mousseY) {
-        Text text = stack != null ? Serialization.fromJson(stack.getSubNbt("display").getString("Name")).append(" x" + amount) : Text.literal(itemName + " x" + amount);
+    	Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
         drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + TEXT_INDENT, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
         // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
         if (stack != null) {

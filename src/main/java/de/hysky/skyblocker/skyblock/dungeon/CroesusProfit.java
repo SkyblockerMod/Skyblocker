@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public class CroesusProfit extends ContainerSolver {
 
         for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null && stack.getName().toString().contains("Chest")) {
+            if (stack != null && stack.contains(DataComponentTypes.LORE) && ItemUtils.getLoreLineIf(stack, s -> s.contains("Chest")) != null) {
                 long value = valueChest(stack);
                 if (value > bestValue) {
                     secondBestChest = bestChest;
@@ -53,7 +54,7 @@ public class CroesusProfit extends ContainerSolver {
 
         for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null) {
+            if (stack != null && stack.contains(DataComponentTypes.LORE)) {
                 if (stack.equals(bestChest)) {
                     highlights.add(ColorHighlight.green(entry.getKey()));
                 } else if (stack.equals(secondBestChest) && secondBestValue > dungeonKeyPriceData) {
@@ -71,7 +72,7 @@ public class CroesusProfit extends ContainerSolver {
         List<String> chestItems = new ArrayList<>();
 
         boolean processingContents = false;
-        for (Text line : ItemUtils.getNbtTooltips(chest)) {
+        for (Text line : ItemUtils.getLore(chest)) {
             String lineString = line.getString();
             if (lineString.contains("Contents")) {
                 processingContents = true;

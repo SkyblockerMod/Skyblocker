@@ -1,6 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import com.google.gson.JsonParser;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
@@ -15,18 +20,16 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtInt;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,8 +64,13 @@ public class BackpackPreview {
             String id = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "") + "/" + Utils.getProfileId();
             if (!id.equals(loaded)) {
                 saveDir = SkyblockerMod.CONFIG_DIR.resolve("backpack-preview/" + id);
-                //noinspection ResultOfMethodCallIgnored
-                saveDir.toFile().mkdirs();
+
+                try {
+                    Files.createDirectories(saveDir);
+                } catch (Exception e) {
+                    LOGGER.error("[Skyblocker] Failed to create the backpack preview save directory! Path: {}", saveDir, e);
+                }
+
                 // load storage again because profile id changed
                 loaded = id;
                 loadStorages();
@@ -73,10 +81,10 @@ public class BackpackPreview {
     private static void loadStorages() {
         for (int index = 0; index < STORAGE_SIZE; ++index) {
             storages[index] = null;
-            Path storageFile = saveDir.resolve(index + ".nbt");
+            Path storageFile = saveDir.resolve(index + ".json");
             if (Files.isRegularFile(storageFile)) {
-                try {
-                    storages[index] = Storage.fromNbt(Objects.requireNonNull(NbtIo.read(storageFile)));
+                try (BufferedReader reader = Files.newBufferedReader(storageFile)) {
+                    storages[index] = Storage.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
                 } catch (Exception e) {
                     LOGGER.error("Failed to load backpack preview file: " + storageFile.getFileName().toString(), e);
                 }
@@ -93,11 +101,12 @@ public class BackpackPreview {
     }
 
     private static void saveStorage(int index) {
-        try {
-            NbtIo.write(storages[index].toNbt(), saveDir.resolve(index + ".nbt"));
+        Path storageFile = saveDir.resolve(index + ".json");
+        try (BufferedWriter writer = Files.newBufferedWriter(storageFile)) {
+            SkyblockerMod.GSON.toJson(Storage.CODEC.encodeStart(JsonOps.INSTANCE, storages[index]).result().orElseThrow(), writer);
             storages[index].markClean();
         } catch (Exception e) {
-            LOGGER.error("Failed to save backpack preview file: " + index + ".nbt", e);
+            LOGGER.error("Failed to save backpack preview file: " + index + ".json", e);
         }
     }
 
@@ -129,7 +138,7 @@ public class BackpackPreview {
         context.drawTexture(TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        context.drawText(textRenderer, storages[index].name, x + 8, y + 6, 0x404040, false);
+        context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0x404040, false);
 
         matrices.translate(0f, 0f, 200f);
         for (int i = 9; i < storages[index].size(); ++i) {
@@ -159,6 +168,10 @@ public class BackpackPreview {
     }
 
     static class Storage {
+        private static final Codec<Storage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.STRING.fieldOf("name").forGetter(Storage::name),
+                ItemStack.CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList))
+                .apply(instance, (name, items) -> Storage.create(name, items)));
         private final Inventory inventory;
         private final String name;
         private boolean dirty;
@@ -167,6 +180,10 @@ public class BackpackPreview {
             this.inventory = inventory;
             this.name = name;
             this.dirty = dirty;
+        }
+        
+        private String name() {
+            return name;
         }
 
         private int size() {
@@ -181,23 +198,19 @@ public class BackpackPreview {
             dirty = false;
         }
 
-        @NotNull
-        private static Storage fromNbt(NbtCompound root) {
-            SimpleInventory inventory = new SimpleInventory(root.getList("list", NbtCompound.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(ItemStack::fromNbt).toArray(ItemStack[]::new));
-            return new Storage(inventory, root.getString("name"), false);
+        private static Storage create(String name, List<ItemStack> items) {
+            SimpleInventory inventory = new SimpleInventory(items.toArray(ItemStack[]::new));
+            return new Storage(inventory, name, false);
         }
 
-        @NotNull
-        private NbtCompound toNbt() {
-            NbtCompound root = new NbtCompound();
-            NbtList list = new NbtList();
+        private List<ItemStack> getItemList() {
+            List<ItemStack> items = new ArrayList<>();
+
             for (int i = 0; i < size(); ++i) {
-                list.add(getStack(i).writeNbt(new NbtCompound()));
+                items.add(getStack(i));
             }
-            root.put("list", list);
-            root.put("size", NbtInt.of(size()));
-            root.putString("name", name);
-            return root;
+
+            return items;
         }
     }
 }

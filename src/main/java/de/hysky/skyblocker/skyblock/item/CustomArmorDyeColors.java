@@ -12,8 +12,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 
 public class CustomArmorDyeColors {
@@ -40,7 +40,7 @@ public class CustomArmorDyeColors {
 		}
 
 	if (Utils.isOnSkyblock() && heldItem != null) {
-			if (heldItem.getItem() instanceof DyeableItem) {
+			if (heldItem.isIn(ItemTags.DYEABLE)) {
 				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
 				if (!itemUuid.isEmpty()) {

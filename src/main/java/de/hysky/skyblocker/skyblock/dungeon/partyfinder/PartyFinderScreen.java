@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.google.gson.JsonObject;
+import com.mojang.authlib.properties.PropertyMap;
+
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -99,8 +102,8 @@ public class PartyFinderScreen extends Screen {
 
     private boolean waitingForServer = false;
 
-    public static Map<String, String> floorIconsNormal = null;
-    public static Map<String, String> floorIconsMaster = null;
+    public static Map<String, PropertyMap> floorIconsNormal = null;
+    public static Map<String, PropertyMap> floorIconsMaster = null;
 
     public static void initClass() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
@@ -110,8 +113,8 @@ public class PartyFinderScreen extends Screen {
                 floorIconsMaster = new HashMap<>();
                 try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/catacombs/floorskulls.json"))) {
                     JsonObject json = SkyblockerMod.GSON.fromJson(skullTextureReader, JsonObject.class);
-                    json.getAsJsonObject("normal").asMap().forEach((s, jsonElement) -> floorIconsNormal.put(s, jsonElement.getAsString()));
-                    json.getAsJsonObject("master").asMap().forEach((s, jsonElement) -> floorIconsMaster.put(s, jsonElement.getAsString()));
+                    json.getAsJsonObject("normal").asMap().forEach((s, tex) -> floorIconsNormal.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));
+                    json.getAsJsonObject("master").asMap().forEach((s, tex) -> floorIconsMaster.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));
                     LOGGER.debug("[Skyblocker] Dungeons floor skull textures json loaded");
                 } catch (Exception e) {
                     LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
@@ -136,7 +139,6 @@ public class PartyFinderScreen extends Screen {
         int widget_height = (int) (this.height * 0.8);
         int entryListTopY = Math.max(43, (int) (height * 0.1));
         this.partyEntryListWidget = new PartyEntryListWidget(client, width, widget_height, entryListTopY, 68);
-        partyEntryListWidget.setRenderBackground(false);
 
         // Search field
         this.searchField = new TextFieldWidget(textRenderer, partyEntryListWidget.getRowLeft() + 12, entryListTopY - 12, partyEntryListWidget.getRowWidth() - 12 * 3 - 6, 12, Text.literal("Search..."));

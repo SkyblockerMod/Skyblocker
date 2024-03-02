@@ -40,6 +40,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.PosArgument;
 import net.minecraft.command.argument.TextArgumentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -462,7 +463,7 @@ public class DungeonManager {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map."));
                 return Command.SINGLE_SUCCESS;
             }
-            MapState map = FilledMapItem.getMapState(FilledMapItem.getMapId(stack), client.world);
+            MapState map = FilledMapItem.getMapState(stack.get(DataComponentTypes.MAP_ID), client.world);
             if (map == null) {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map state."));
                 return Command.SINGLE_SUCCESS;
@@ -539,7 +540,7 @@ public class DungeonManager {
             physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
             currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
         }
-        MapState map = FilledMapItem.getMapState(DungeonMap.getMapId(client.player.getInventory().main.get(8)), client.world);
+        MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world);
         if (map == null) {
             return;
         }

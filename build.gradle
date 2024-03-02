@@ -36,7 +36,12 @@ dependencies {
 	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	//Layered Yarn & Mojmap - used to fill in intermediary names
+	mappings loom.layered {
+		//Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
+		//officialMojangMappings()
+		mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API

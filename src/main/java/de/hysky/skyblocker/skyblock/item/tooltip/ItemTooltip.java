@@ -13,13 +13,14 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.DyeableItem;
+import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -198,12 +199,13 @@ public class ItemTooltip {
             }
         }
 
-        if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.getNbt() != null) {
+        if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID)) {
             String uuid = ItemUtils.getItemUuid(stack);
             boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
+            int dyeColor = DyedColorComponent.getColor(stack, -1);
 
-            if (!hasCustomDye && DyeableItem.hasColor(stack)) {
-                String colorHex = String.format("%06X", DyeableItem.getColor(stack));
+            if (!hasCustomDye && dyeColor != -1) {
+                String colorHex = String.format("%06X", dyeColor);
                 String expectedHex = ExoticTooltip.getExpectedHex(internalID);
 
                 boolean correctLine = false;
@@ -212,13 +214,13 @@ public class ItemTooltip {
                     if (existingTooltip.startsWith("Color: ")) {
                         correctLine = true;
 
-                        addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, existingTooltip);
+                        addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack).copyNbt(), colorHex, expectedHex, existingTooltip);
                         break;
                     }
                 }
 
                 if (!correctLine) {
-                    addExoticTooltip(lines, internalID, stack.getNbt(), colorHex, expectedHex, "");
+                    addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack).copyNbt(), colorHex, expectedHex, "");
                 }
             }
         }
