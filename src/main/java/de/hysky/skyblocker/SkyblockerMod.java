@@ -2,6 +2,8 @@ package de.hysky.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import de.hysky.skyblocker.config.ImageRepoLoader;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
@@ -94,6 +96,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SkyblockerConfigManager.init();
         Tips.init();
         NEURepoManager.init();
+        ImageRepoLoader.init();
         ItemRepository.init();
         PlayerHeadHashCache.init();
         HotbarSlotLock.init();

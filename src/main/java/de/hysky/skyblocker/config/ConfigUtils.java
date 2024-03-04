@@ -1,16 +1,26 @@
 package de.hysky.skyblocker.config;
 
 import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.controller.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
+import net.minecraft.util.Identifier;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FileUtils;
+
+import java.nio.file.Path;
 import java.util.function.Function;
 
 public class ConfigUtils {
 	public static final ValueFormatter<Formatting> FORMATTING_FORMATTER = formatting -> Text.literal(StringUtils.capitalize(formatting.getName().replaceAll("_", " ")));
 	public static final ValueFormatter<Float> FLOAT_TWO_FORMATTER = value -> Text.literal(String.format("%,.2f", value).replaceAll("[\u00a0\u202F]", " "));
+	private static final Path IMAGE_DIRECTORY = ImageRepoLoader.REPO_DIRECTORY.resolve("Skyblocker-Assets-images");
 
 	public static BooleanControllerBuilder createBooleanController(Option<Boolean> opt) {
 		return BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true);
@@ -33,5 +43,16 @@ public class ConfigUtils {
 	 */
 	public static <E extends Enum<E>> Function<Option<E>, ControllerBuilder<E>> getEnumDropdownControllerFactory(ValueFormatter<E> formatter) {
 		return opt -> EnumDropdownControllerBuilder.create(opt).formatValue(formatter);
+	}
+
+	/**
+	 * Creates an {@link OptionDescription} with an image and text.
+	 */
+	@SafeVarargs
+	public static OptionDescription withImage(Path imagePath, @Nullable Text... texts) {
+		return OptionDescription.createBuilder()
+				.text(ArrayUtils.isNotEmpty(texts) ? texts : new Text[] {})
+				.image(IMAGE_DIRECTORY.resolve(imagePath), new Identifier(SkyblockerMod.NAMESPACE, "config_image_" + FileUtils.normalizePath(imagePath)))
+				.build();
 	}
 }
