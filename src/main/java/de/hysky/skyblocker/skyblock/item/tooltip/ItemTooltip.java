@@ -249,7 +249,7 @@ public class ItemTooltip {
 
     public static void nullWarning() {
         if (!sentNullWarning && client.player != null) {
-            client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")), false);
+            LOGGER.warn(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")).getString());
             sentNullWarning = true;
         }
     }
@@ -355,13 +355,17 @@ public class ItemTooltip {
 
     // If these options is true beforehand, the client will get first data of these options while loading.
     // After then, it will only fetch the data if it is on Skyblock.
-    public static int minute = -1;
+    public static int minute = 0;
 
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(() -> {
-            if (!Utils.isOnSkyblock() && 0 < minute++) {
+            if (!Utils.isOnSkyblock() && 0 < minute) {
                 sentNullWarning = false;
                 return;
+            }
+
+            if (++minute % 60 == 0) {
+                sentNullWarning = false;
             }
 
             List<CompletableFuture<Void>> futureList = new ArrayList<>();
@@ -387,9 +391,10 @@ public class ItemTooltip {
             TooltipInfoType.MUSEUM.downloadIfEnabled(futureList);
             TooltipInfoType.COLOR.downloadIfEnabled(futureList);
 
-            minute++;
-            CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new))
-                    .whenComplete((unused, throwable) -> sentNullWarning = false);
+            CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new)).exceptionally(e -> {
+                LOGGER.error("Encountered unknown error while downloading tooltip data", e);
+                return null;
+            });
         }, 1200, true);
     }
 }
