@@ -863,6 +863,9 @@ public class SkyblockerConfig {
 		public boolean includeEssence = true;
 
 		@SerialEntry
+		public boolean croesusProfit = true;
+
+		@SerialEntry
 		public int neutralThreshold = 1000;
 
 		@SerialEntry

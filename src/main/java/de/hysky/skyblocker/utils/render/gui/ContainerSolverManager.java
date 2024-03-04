@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.render.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
+import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
@@ -40,6 +41,7 @@ public class ContainerSolverManager {
                 new OrderTerminal(),
                 new StartsWithTerminal(),
                 new CroesusHelper(),
+                new CroesusProfit(),
                 new ChronomatronSolver(),
                 new SuperpairsSolver(),
                 UltrasequencerSolver.INSTANCE
