@@ -32,6 +32,7 @@ public class CreeperBeams extends DungeonPuzzle {
             DyeColor.LIME.getColorComponents(),
             DyeColor.YELLOW.getColorComponents(),
             DyeColor.MAGENTA.getColorComponents(),
+            DyeColor.PINK.getColorComponents(),
     };
     private static final float[] GREEN_COLOR_COMPONENTS = DyeColor.GREEN.getColorComponents();
 
@@ -155,7 +156,7 @@ public class CreeperBeams extends DungeonPuzzle {
         ArrayList<Beam> result = new ArrayList<>();
         allLines.sort(Comparator.comparingDouble(ObjectDoublePair::rightDouble));
 
-        while (result.size() < 4 && !allLines.isEmpty()) {
+        while (result.size() < 5 && !allLines.isEmpty()) {
             Beam solution = allLines.get(0).left();
             result.add(solution);
 
@@ -165,7 +166,7 @@ public class CreeperBeams extends DungeonPuzzle {
             allLines.removeIf(beam -> solution.containsComponentOf(beam.left()));
         }
 
-        if (result.size() != 4) {
+        if (result.size() < 4) {
             LOGGER.error("Not enough solutions found. This is bad...");
         }
 
