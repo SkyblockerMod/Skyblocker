@@ -194,5 +194,10 @@
     "text.autoconfig.skyblocker.option.general.enableTips": "启用提示",
     "text.autoconfig.skyblocker.option.general.shortcuts.config": "设置精简命令",
     "key.itemProtection": "保护物品",
-    "text.autoconfig.skyblocker.option.general.visitorHelper": "访客助手"
+    "text.autoconfig.skyblocker.option.general.visitorHelper": "访客助手",
+    "text.autoconfig.skyblocker.option.general.chestValue.enableChestValue.@Tooltip": "在容器中添加一个计算其价值的按钮",
+    "text.autoconfig.skyblocker.option.general.chestValue.color": "箱子价值颜色",
+    "text.autoconfig.skyblocker.option.general.chestValue.enableChestValue": "启用箱子价值计算",
+    "text.autoconfig.skyblocker.option.general.specialEffects.rareDungeonDropEffects": "稀有地牢掉落效果",
+    "text.autoconfig.skyblocker.option.general.specialEffects": "特效"
 }
