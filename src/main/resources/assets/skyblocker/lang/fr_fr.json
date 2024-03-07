@@ -166,7 +166,6 @@
     "text.autoconfig.skyblocker.option.general.chestValue.enableChestValue.@Tooltip": "Ajoute un bouton dans les contenants permettant de calculer leur valeur.",
     "text.autoconfig.skyblocker.option.general.specialEffects": "Effets spéciaux",
     "text.autoconfig.skyblocker.option.general.titleContainer.@Tooltip": "Utilisé pour afficher plusieurs titres à la fois, Exemple: Vampire Slayer",
-    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds": "",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Affiche un fond coloré derrière les objets, la couleur représente la rareté de l'objet.",
     "text.autoconfig.skyblocker.option.general.wikiLookup.enableWikiLookup.@Tooltip": "Ouvre la page du wiki de l'objet survolé avec la touche F4.",
     "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip": "Utilise le wiki officiel plutôt que le wiki Fandom.",
