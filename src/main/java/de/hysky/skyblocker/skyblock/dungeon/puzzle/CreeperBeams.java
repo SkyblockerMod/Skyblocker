@@ -166,7 +166,7 @@ public class CreeperBeams extends DungeonPuzzle {
             allLines.removeIf(beam -> solution.containsComponentOf(beam.left()));
         }
 
-        if (result.size() < 4) {
+        if (result.size() < 5) {
             LOGGER.error("Not enough solutions found. This is bad...");
         }
 
