@@ -409,5 +409,7 @@
     "skyblocker.customArmorTrims.notAnArmorPiece": "§c该物品不是护甲！",
     "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.locations.@Tooltip": "过滤器生效的地点列表。用“,”分隔各地点名称。如果希望它在除某个位置之外的任何地方都可以工作，使用“!”。地点名称：",
     "skyblocker.end.hud.avgKillsPerEye": "平均每只眼所需击杀：%d",
-    "skyblocker.dungeons.puzzle.boulder.noSolution": "没有找到解法！"
+    "skyblocker.dungeons.puzzle.boulder.noSolution": "没有找到解法！",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.croesusProfit": "Croesus宝箱利润计算器",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "高亮显示NPC Croesus处利润最高的宝箱。\n\n\n利润最高的宝箱将用绿色标识。\n如果有宝箱值得使用地牢钥匙，将使用黄色标识"
 }
