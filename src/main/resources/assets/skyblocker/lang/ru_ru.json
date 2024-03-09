@@ -296,7 +296,7 @@
     "skyblocker.customItemNames.noItemUuid": "§b[§6Skyblocker§b] §cВы должны держать предмет, у которого есть uuid, чтобы задать пользовательское имя!",
     "skyblocker.shortcuts.deleteWarning": "Сокращение '%s' будет потеряно навсегда! (Надолго!)",
     "skyblocker.shortcuts.new": "Новое сокращение",
-    "skyblocker.customItemNames.unableToSetName": "§b[§6Skyblocker§b] §cНевозможно задать имя предмета :( (Вы в skyblock?, у вас в руках предмет?)",
+    "skyblocker.customItemNames.unableToSetName": "§b[§6Skyblocker§b] §cНевозможно задать имя предмета :( (Вы на скайблоке?, у вас в руках предмет?)",
     "skyblocker.shortcuts.command.replacement": "Замена команды",
     "skyblocker.shortcuts.commandArg.tooltip": "Заменить одно или несколько слов/аргументов команды, содержащей несколько слов/аргументов, вместо того, чтобы сопоставлять всю команду.",
     "skyblocker.shortcuts.notLoaded": "§c§ІСокращения еще не загружены",
