@@ -162,5 +162,6 @@
     "text.autoconfig.skyblocker.option.general.itemCooldown.enableItemCooldowns": "Включить задержку предмета",
     "text.autoconfig.skyblocker.option.general.itemCooldown": "Задержка предмета",
     "text.autoconfig.skyblocker.option.general.compactorDeletorPreview": "Включить предпросмотр Compactor/Deletor",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumInfo": "Включить музейную информацию"
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumInfo": "Включить музейную информацию",
+    "text.autoconfig.skyblocker.option.general.tabHud.nameSorting.@Tooltip": "Алфавитная сортировка сортирует имена в алфавитном порядке, в то время как сортировка по умолчанию не имеет определенного порядка."
 }
