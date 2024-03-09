@@ -26,7 +26,7 @@ import net.minecraft.util.Formatting;
 public abstract class Widget {
 
     private final ArrayList<Component> components = new ArrayList<>();
-    private int w = 0, h = 0;
+    protected int w = 0, h = 0;
     private int x = 0, y = 0;
     private final int color;
     private final Text title;
@@ -93,16 +93,16 @@ public abstract class Widget {
         w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + Widget.txtRend.getWidth(title) + 4 + 4 + 1);
     }
 
+    public final int getX() {
+        return this.x;
+    }
+
     public final void setX(int x) {
         this.x = x;
     }
 
     public final int getY() {
         return this.y;
-    }
-
-    public final int getX() {
-        return this.x;
     }
 
     public final void setY(int y) {
@@ -113,8 +113,25 @@ public abstract class Widget {
         return this.w;
     }
 
+    public void setWidth(int width) {
+        this.w = width;
+    }
+
     public final int getHeight() {
         return this.h;
+    }
+
+    public void setHeight(int height) {
+        this.h = height;
+    }
+
+    public void setDimensions(int size) {
+        setDimensions(size, size);
+    }
+
+    public void setDimensions(int width, int height) {
+        this.w = width;
+        this.h = height;
     }
 
     /**

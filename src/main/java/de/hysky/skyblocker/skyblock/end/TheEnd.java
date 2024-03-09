@@ -76,7 +76,7 @@ public class TheEnd {
             if (!Utils.isInTheEnd()) return;
             if (!SkyblockerConfigManager.get().locations.end.hudEnabled) return;
 
-            EndHudWidget.INSTANCE.render(drawContext, SkyblockerConfigManager.get().locations.end.enableBackground);
+            EndHudWidget.INSTANCE.render(drawContext, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
         });
 
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {

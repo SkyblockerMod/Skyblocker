@@ -2,34 +2,27 @@ package de.hysky.skyblocker.skyblock.end;
 
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import net.minecraft.client.gui.DrawContext;
+import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
+import java.util.List;
+
 public class EndHudConfigScreen extends HudConfigScreen {
     public EndHudConfigScreen(Screen parent) {
-        super(Text.literal("End HUD Config"), EndHudWidget.INSTANCE, parent);
+        super(Text.literal("End HUD Config"), parent, EndHudWidget.INSTANCE);
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
+    @Override
+    protected List<IntIntMutablePair> getConfigPos(SkyblockerConfig config) {
+        return List.of(IntIntMutablePair.of(config.locations.end.x, config.locations.end.y));
     }
 
     @Override
-    protected int[] getPosFromConfig(SkyblockerConfig config) {
-        return new int[]{
-                config.locations.end.x,
-                config.locations.end.y,
-        };
-    }
-
-    @Override
-    protected void savePos(SkyblockerConfig configManager, int x, int y) {
-        configManager.locations.end.x = x;
-        configManager.locations.end.y = y;
-    }
-
-    @Override
-    protected void renderWidget(DrawContext context, int x, int y) {
-        EndHudWidget.INSTANCE.setX(x);
-        EndHudWidget.INSTANCE.setY(y);
-        EndHudWidget.INSTANCE.render(context, SkyblockerConfigManager.get().locations.end.enableBackground);
+    protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
+        configManager.locations.end.x = widgets.get(0).getX();
+        configManager.locations.end.y = widgets.get(0).getY();
     }
 }

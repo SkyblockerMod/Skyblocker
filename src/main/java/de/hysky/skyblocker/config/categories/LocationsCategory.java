@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.end.EndHudConfigScreen;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.garden.FarmingHudConfigScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -91,13 +92,6 @@ public class LocationsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground")) // Reusing that string cuz sure
-								.binding(defaults.locations.end.enableBackground,
-										() -> config.locations.end.enableBackground,
-										newValue -> config.locations.end.enableBackground = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.waypoint"))
 								.binding(defaults.locations.end.waypoint,
 										() -> config.locations.end.waypoint,
@@ -147,6 +141,18 @@ public class LocationsCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.farmingHud.enableHud"))
+								.binding(defaults.locations.garden.farmingHud.enableHud,
+										() -> config.locations.garden.farmingHud.enableHud,
+										newValue -> config.locations.garden.farmingHud.enableHud = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.farmingHud.config"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new FarmingHudConfigScreen(screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.dicerTitlePrevent"))
 								.binding(defaults.locations.garden.dicerTitlePrevent,
 										() -> config.locations.garden.dicerTitlePrevent,
@@ -154,7 +160,7 @@ public class LocationsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.visitorHelper"))
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.visitorHelper"))
 								.binding(defaults.locations.garden.visitorHelper,
 										() -> config.locations.garden.visitorHelper,
 										newValue -> config.locations.garden.visitorHelper = newValue)

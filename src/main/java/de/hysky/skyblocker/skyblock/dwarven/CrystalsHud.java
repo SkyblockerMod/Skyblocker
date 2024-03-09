@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -14,13 +13,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
-
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
 
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -47,9 +45,8 @@ public class CrystalsHud {
         });
     }
 
-    protected static IntIntPair getDimensionsForConfig() {
-        int size = (int) (62 * SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling);
-        return IntIntPair.of(size, size);
+    protected static int getDimensionsForConfig() {
+        return (int) (62 * SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling);
     }
 
 
@@ -119,7 +116,7 @@ public class CrystalsHud {
     }
 
     /**
-     * Converts an X and Z coordinate in the crystal hollow to a X and Y coordinate on the map.
+     * Converts an X and Z coordinate in the crystal hollow to an X and Y coordinate on the map.
      *
      * @param x the world X coordinate
      * @param z the world Z coordinate
@@ -142,8 +139,8 @@ public class CrystalsHud {
      * Based off code from {@link net.minecraft.client.render.MapRenderer}
      */
     private static float yaw2Cardinal(float yaw) {
-        yaw += + 180; //flip direction
-        byte clipped = (byte) ((yaw += yaw < 0.0 ? -8.0 : 8.0) * 16.0 / 360.0);
+        yaw += 180; //flip direction
+        byte clipped = (byte) ((yaw + (yaw < 0.0 ? -8.0 : 8.0)) * 16.0 / 360.0);
 
         return (clipped * 360f) / 16f;
     }
