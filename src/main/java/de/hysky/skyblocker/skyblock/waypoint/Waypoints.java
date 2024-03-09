@@ -29,6 +29,7 @@ import java.util.List;
 public class Waypoints {
     private static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
     private static final Codec<List<WaypointCategory>> CODEC = WaypointCategory.CODEC.listOf();
+    private static final Codec<List<WaypointCategory>> SKYTILS_CODEC = WaypointCategory.SKYTILS_CODEC.listOf();
     private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
     static final Multimap<String, WaypointCategory> waypoints = MultimapBuilder.hashKeys().arrayListValues().build();
 
@@ -48,16 +49,22 @@ public class Waypoints {
         }
     }
 
-    public static Collection<WaypointCategory> fromSkytilsBase64(String base64) {
+    public static List<WaypointCategory> fromSkytilsBase64(String base64) {
         return fromSkytilsJson(new String(Base64.getDecoder().decode(base64)));
     }
 
-    public static Collection<WaypointCategory> fromSkytilsJson(String waypointCategories) {
-        JsonObject waypointCategoriesJson = SkyblockerMod.GSON.fromJson(waypointCategories, JsonObject.class);
-        return waypointCategoriesJson.getAsJsonArray("categories").asList().stream()
-                .map(JsonObject.class::cast)
-                .map(WaypointCategory::fromSkytilsJson)
-                .toList();
+    public static List<WaypointCategory> fromSkytilsJson(String waypointCategories) {
+        return SKYTILS_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(waypointCategories, JsonObject.class).getAsJsonArray("categories")).resultOrPartial(LOGGER::error).orElseThrow();
+    }
+
+    public static String toSkytilsBase64(Collection<WaypointCategory> waypointCategories) {
+        return Base64.getEncoder().encodeToString(toSkytilsJson(waypointCategories).getBytes());
+    }
+
+    public static String toSkytilsJson(Collection<WaypointCategory> waypointCategories) {
+        JsonObject waypointCategoriesJson = new JsonObject();
+        waypointCategoriesJson.add("categories", SKYTILS_CODEC.encodeStart(JsonOps.INSTANCE, List.copyOf(waypointCategories)).resultOrPartial(LOGGER::error).orElseThrow());
+        return SkyblockerMod.GSON.toJson(waypointCategoriesJson);
     }
 
     public static void saveWaypoints(MinecraftClient client) {
