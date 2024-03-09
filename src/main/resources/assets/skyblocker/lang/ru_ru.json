@@ -313,5 +313,10 @@
     "skyblocker.customDyeColors.removed": "§b[§6Skyblocker§b] §fУдален пользовательский цвет окраски этого предмета.",
     "skyblocker.customDyeColors.unableToSetColor": "§b[§6Skyblocker§b] §cНевозможно установить пользовательский цвет окраски :( (Вы на скайблоке?, у вас в руках предмет?)",
     "skyblocker.customDyeColors.notDyeable": "§b[§6Skyblocker§b] §cЭтот предмет не является окрашиваемым предметом брони!",
-    "skyblocker.customDyeColors.noItemUuid": "§b[§6Skyblocker§b] §cВы должны держать предмет, у которого есть uuid, чтобы установить пользовательский цвет окраски!"
+    "skyblocker.customDyeColors.noItemUuid": "§b[§6Skyblocker§b] §cВы должны держать предмет, у которого есть uuid, чтобы установить пользовательский цвет окраски!",
+    "skyblocker.customArmorTrims.removed": "§b[§6Skyblocker§b] §fУдалена пользовательская отделка брони этого предмета.",
+    "skyblocker.customArmorTrims.notAnArmorPiece": "§b[§6Skyblocker§b] §cЭтот предмет не является броней!",
+    "skyblocker.customArmorTrims.neverHad": "§b[§6Skyblocker§b] §fДанный предмет не имеет комплекта отделки брони, но почему бы его не добавить? ;)",
+    "skyblocker.customArmorTrims.added": "§b[§6Skyblocker§b] §fУстановите индивидуальную отделку брони для удерживаемого предмета!",
+    "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§b[§6Skyblocker§b] §cВы предоставили либо недопустимый материал, либо недопустимый кузнечный шаблон!"
 }
