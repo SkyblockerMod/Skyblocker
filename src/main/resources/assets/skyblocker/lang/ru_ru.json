@@ -148,5 +148,19 @@
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningInDungeons": "Включить предупреждение о нехватке стрел (только в данжах)",
     "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningAfterDungeon": "Включить предупреждение о нехватке стрел (после прохождения данжа)",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts": "Включить сокращения аргументов команд",
-    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "Чем меньше значение, тем чаще происходит обновление, что может привести к лагам."
+    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "Чем меньше значение, тем чаще происходит обновление, что может привести к лагам.",
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Сокращения, которые заменяют одно или больше слов/аргументов команды, которая имеет множество слов/аргументов. Редактируйте сокращения с помощью \"/skyblocker shortcuts\". Сокращения должны быть включены, чтобы это вступило в силу.",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip": "Стандартная метка: показывается столб света от маяка.\n\nКонтур метки: отображает метки и её обводку, также показывает столб света маяка.\n\nПодсветка: Просто подсвечивает метку.\n\nПодсветка с контуром: подсвечивает метку и показывает её контур.\n\nКонтур: Просто показывает контур метки.",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType.generalNote": "\n\n\nЭти настройки применяются не ко всем меткам. Некоторые из меток, например секретные, имеют персональную настройку.",
+    "text.autoconfig.skyblocker.option.general.tabHud.plainPlayerNames.@Tooltip": "Включить показ никнеймов игроков на публичном острове без специального форматирования.",
+    "text.autoconfig.skyblocker.option.general.mythologicalRitual": "Помощь с мифологическими ритуалами",
+    "text.autoconfig.skyblocker.option.general.mythologicalRitual.enableMythologicalRitualHelper": "Включить помощь с мифологическими ритуалами",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableObtainedDate": "Включить дату получения",
+    "text.autoconfig.skyblocker.option.general.waypoints.enableWaypoints": "Включить метки на карте",
+    "text.autoconfig.skyblocker.option.general.waypoints": "Метки на карте",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType": "Тип меток",
+    "text.autoconfig.skyblocker.option.general.itemCooldown.enableItemCooldowns": "Включить задержку предмета",
+    "text.autoconfig.skyblocker.option.general.itemCooldown": "Задержка предмета",
+    "text.autoconfig.skyblocker.option.general.compactorDeletorPreview": "Включить предпросмотр Compactor/Deletor",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumInfo": "Включить музейную информацию"
 }
