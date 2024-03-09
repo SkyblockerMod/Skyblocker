@@ -105,7 +105,7 @@
     "skyblocker.fairySouls.markAllFound": "§b[§6Skyblocker§b] §rПометил все fairy souls на текущем острове как найденные",
     "text.autoconfig.skyblocker.option.general.experiments.enableChronomatronSolver": "Решать Chronomatron",
     "text.autoconfig.skyblocker.option.general.experiments.enableSuperpairsSolver": "Подсвечивать Пары Superpairs",
-    "skyblocker.fairySouls.markAllMissing": "§b[§6Skyblocker§b] §rВсе души фей (fairy souls), которые есть на этом острове, теперь отмечены как еще не найденные",
+    "skyblocker.fairySouls.markAllMissing": "§b[§6Skyblocker§b] §rПометил все души фей на текущем острове как отсутствующие",
     "text.autoconfig.skyblocker.option.general.fairySouls": "Помощь В Нахождении Fairy Souls (Душ Фей)",
     "text.autoconfig.skyblocker.option.general.fairySouls.enableFairySoulsHelper": "Включить Помощь В Поиске Fairy Souls",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice": "Показать Цену Motes",
@@ -287,5 +287,6 @@
     "text.autoconfig.skyblocker.option.general.hideStatusEffectOverlay": "Скрыть отображение статуса эффектов",
     "skyblocker.dungeons.secrets.markSecretFound": "§b[§6Skyblocker§b] §гПометил секрет #%d как найденный.",
     "skyblocker.dungeons.secrets.markSecretMissingUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как пропущенный.",
-    "skyblocker.dungeons.secrets.markSecretFoundUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как найденный."
+    "skyblocker.dungeons.secrets.markSecretFoundUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как найденный.",
+    "skyblocker.rift.mania": "Mania!"
 }
