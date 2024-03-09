@@ -283,7 +283,7 @@
     "text.autoconfig.skyblocker.option.general.shortcuts.config": "Настройка сокращений...",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo": "Информация об Attribute Shard",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay": "Отображение информации о предмете",
-    "skyblocker.dungeons.secrets.markSecretMissing": "§b[§6Skyblocker§b] §rПометил секрет #%d как отсутствующий.",
+    "skyblocker.dungeons.secrets.markSecretMissing": "§b[§6Skyblocker§b] §rПометил секрет #%d как пропущенный.",
     "text.autoconfig.skyblocker.option.general.hideStatusEffectOverlay": "Скрыть отображение статуса эффектов",
     "skyblocker.dungeons.secrets.markSecretFound": "§b[§6Skyblocker§b] §гПометил секрет #%d как найденный."
 }
