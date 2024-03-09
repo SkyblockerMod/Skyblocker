@@ -290,7 +290,7 @@
     "skyblocker.dungeons.secrets.markSecretFoundUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как найденный.",
     "skyblocker.rift.mania": "Mania!",
     "skyblocker.relics.markAllFound": "§b[§6Skyblocker§b] §rПометил все реликвии как найденные",
-    "skyblocker.relics.markAllMissing": "§b[§6Skyblocker§b] §rПометил все реликвии как отсутствующие",
+    "skyblocker.relics.markAllMissing": "§b[§6Skyblocker§b] §rПометил все реликвии как пропущенные",
     "skyblocker.shortcuts.config": "Настройка сокращений",
     "skyblocker.shortcuts.commandSuggestionTooltip": "В связи с ограничениями Minecraft предложения команд будут работать только после перезапуска игры.",
     "skyblocker.customItemNames.noItemUuid": "§b[§6Skyblocker§b] §cВы должны держать предмет, у которого есть uuid, чтобы задать пользовательское имя!",
@@ -303,5 +303,8 @@
     "skyblocker.shortcuts.deleteQuestion": "Вы уверены, что хотите удалить это сокращение?",
     "skyblocker.customItemNames.neverHad": "§b[§6Skyblocker§b] §fДанный предмет не имеет пользовательского названия, но почему бы его не добавить? ;)",
     "skyblocker.customItemNames.added": "§b[§6Skyblocker§b] §fЗадайте собственное имя для удерживаемого предмета!",
-    "skyblocker.customItemNames.removed": "§b[§6Skyblocker§b] §fУдалено пользовательское имя этого предмета."
+    "skyblocker.customItemNames.removed": "§b[§6Skyblocker§b] §fУдалено пользовательское имя этого предмета.",
+    "skyblocker.shortcuts.command.target": "Затронутая команда",
+    "skyblocker.shortcuts.commandArg.replacement": "Замена аргумента команды",
+    "skyblocker.shortcuts.commandArg.target": "Аргумент затронутой команды"
 }
