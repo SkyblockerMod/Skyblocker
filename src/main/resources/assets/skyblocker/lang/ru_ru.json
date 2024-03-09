@@ -319,6 +319,6 @@
     "skyblocker.customArmorTrims.neverHad": "§b[§6Skyblocker§b] §fДанный предмет не имеет комплекта отделки брони, но почему бы его не добавить? ;)",
     "skyblocker.customArmorTrims.added": "§b[§6Skyblocker§b] §fУстановите индивидуальную отделку брони для удерживаемого предмета!",
     "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§b[§6Skyblocker§b] §cВы предоставили либо недопустимый материал, либо недопустимый кузнечный шаблон!",
-    "skyblocker.customArmorTrims.unableToSetTrim": "§b[§6Skyblocker§b] §cНевозможно установить пользовательскую отделку брони :( (Вы в skyblock?, у вас в руках предмет?)",
+    "skyblocker.customArmorTrims.unableToSetTrim": "§b[§6Skyblocker§b] §cНевозможно установить пользовательскую отделку брони :( (Вы на скайблоке?, у вас в руках предмет?)",
     "skyblocker.customArmorTrims.noItemUuid": "§b[§6Skyblocker§b] §cВы должны держать предмет, у которого есть uuid, чтобы установить пользовательскую отделку брони!"
 }
