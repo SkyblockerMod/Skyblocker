@@ -288,5 +288,7 @@
     "skyblocker.dungeons.secrets.markSecretFound": "§b[§6Skyblocker§b] §гПометил секрет #%d как найденный.",
     "skyblocker.dungeons.secrets.markSecretMissingUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как пропущенный.",
     "skyblocker.dungeons.secrets.markSecretFoundUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как найденный.",
-    "skyblocker.rift.mania": "Mania!"
+    "skyblocker.rift.mania": "Mania!",
+    "skyblocker.relics.markAllFound": "§b[§6Skyblocker§b] §rПометил все реликвии как найденные",
+    "skyblocker.relics.markAllMissing": "§b[§6Skyblocker§b] §rПометил все реликвии как отсутствующие"
 }
