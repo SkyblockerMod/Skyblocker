@@ -195,7 +195,7 @@
   "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning": "No Arrow Poison Warning",
   "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Warns you when you pull out a bow and have no Toxic Arrow Poison in your inventory. Only works during the DPS phase.",
   "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poison Warning Threshold",
-  "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "If the amount of Toxic Arrow Poison you have in your inventory is below the set threshold then you will receive a warning.",
+  "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "If the amount of Toxic Arrow Poison you have in your inventory is below the set threshold then you will receive a warning.\n\n16 is absolute minimum\nYou want 32 for smooth 'DPS' phase with prefire",
   "text.autoconfig.skyblocker.option.locations.spidersDen": "Spider's Den",
   "text.autoconfig.skyblocker.option.locations.spidersDen.relics": "Hidden Relics Helper",
   "text.autoconfig.skyblocker.option.locations.spidersDen.relics.enableRelicsHelper": "Enable Hidden Relics Helper",
