@@ -1037,7 +1037,7 @@ public class SkyblockerConfig {
 		public boolean noArrowPoisonWarning = true;
 
 		@SerialEntry
-		public int arrowPoisonThreshold = 16;
+		public int arrowPoisonThreshold = 32;
 	}
 
 	public static class Rift {
