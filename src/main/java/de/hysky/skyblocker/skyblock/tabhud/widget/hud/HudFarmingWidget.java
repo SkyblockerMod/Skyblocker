@@ -54,7 +54,7 @@ public class HudFarmingWidget extends Widget {
         addSimpleIcoText(icon, "Counter: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
         addSimpleIcoText(icon, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.cropsPerMinute() / 100 * 100));
         addSimpleIcoText(icon, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
-        addComponent(new ProgressComponent(Ico.HOE, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.YELLOW.getColorValue()));
+        addComponent(new ProgressComponent(Ico.LANTERN, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
         addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.farmingXpPerHour()));
 
         double yaw = client.getCameraEntity().getYaw();
