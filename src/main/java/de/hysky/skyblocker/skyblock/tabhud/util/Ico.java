@@ -53,12 +53,23 @@ public class Ico {
     public static final ItemStack COMPOSTER = new ItemStack(Items.COMPOSTER);
     public static final ItemStack SAPLING = new ItemStack(Items.OAK_SAPLING);
     public static final ItemStack SEEDS = new ItemStack(Items.WHEAT_SEEDS);
+    public static final ItemStack WHEAT = new ItemStack(Items.WHEAT);
+    public static final ItemStack CARROT = new ItemStack(Items.CARROT);
+    public static final ItemStack POTATO = new ItemStack(Items.POTATO);
+    public static final ItemStack SUGAR_CANE = new ItemStack(Items.SUGAR_CANE);
+    public static final ItemStack NETHER_WART = new ItemStack(Items.NETHER_WART);
+    public static final ItemStack MUSHROOM = new ItemStack(Items.RED_MUSHROOM);
+    public static final ItemStack CACTUS = new ItemStack(Items.CACTUS);
+    public static final ItemStack MELON = new ItemStack(Items.MELON);
+    public static final ItemStack PUMPKIN = new ItemStack(Items.PUMPKIN);
+    public static final ItemStack COCOA_BEANS = new ItemStack(Items.COCOA_BEANS);
     public static final ItemStack MILESTONE = new ItemStack(Items.LODESTONE);
     public static final ItemStack PICKAXE = new ItemStack(Items.IRON_PICKAXE);
     public static final ItemStack NETHER_STAR = new ItemStack(Items.NETHER_STAR);
     public static final ItemStack HEART_OF_THE_SEA = new ItemStack(Items.HEART_OF_THE_SEA);
     public static final ItemStack EXPERIENCE_BOTTLE = new ItemStack(Items.EXPERIENCE_BOTTLE);
     public static final ItemStack PINK_DYE = new ItemStack(Items.PINK_DYE);
+    public static final ItemStack LIME_DYE = new ItemStack(Items.LIME_DYE);
     public static final ItemStack ENCHANTED_BOOK = new ItemStack(Items.ENCHANTED_BOOK);
     public static final ItemStack SPIDER_EYE = new ItemStack(Items.SPIDER_EYE);
 }

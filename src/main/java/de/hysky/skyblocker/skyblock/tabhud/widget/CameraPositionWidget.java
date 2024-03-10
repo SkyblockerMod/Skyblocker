@@ -8,8 +8,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
 public class CameraPositionWidget extends Widget {
-    private static final MutableText TITLE = Text.literal("Camera Pos").formatted(Formatting.DARK_PURPLE,
-            Formatting.BOLD);
+    private static final MutableText TITLE = Text.literal("Camera Pos").formatted(Formatting.DARK_PURPLE, Formatting.BOLD);
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     public CameraPositionWidget() {
@@ -21,17 +20,7 @@ public class CameraPositionWidget extends Widget {
         double yaw = CLIENT.getCameraEntity().getYaw();
         double pitch = CLIENT.getCameraEntity().getPitch();
 
-        this.addComponent(
-                new PlainTextComponent(Text.literal("Yaw: " + roundToDecimalPlaces(MathHelper.wrapDegrees(yaw), 3))));
-        this.addComponent(new PlainTextComponent(
-                Text.literal("Pitch: " + roundToDecimalPlaces(MathHelper.wrapDegrees(pitch), 3))));
-
-    }
-
-    // https://stackoverflow.com/a/33889423
-    private static double roundToDecimalPlaces(double value, int decimalPlaces) {
-        double shift = Math.pow(10, decimalPlaces);
-
-        return Math.round(value * shift) / shift;
+        addComponent(new PlainTextComponent(Text.literal("Yaw: " + String.format("%.3f", MathHelper.wrapDegrees(yaw)))));
+        addComponent(new PlainTextComponent(Text.literal("Pitch: " + String.format("%.3f", MathHelper.wrapDegrees(pitch)))));
     }
 }
