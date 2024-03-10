@@ -9,9 +9,8 @@ import java.util.Comparator;
 
 @Mixin(PlayerListHud.class)
 public interface PlayerListHudAccessor {
-
     @Accessor("ENTRY_ORDERING")
     static Comparator<PlayerListEntry> getOrdering() {
-        throw new AssertionError();
+        throw new UnsupportedOperationException();
     }
 }

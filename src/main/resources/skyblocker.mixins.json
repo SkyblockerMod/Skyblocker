@@ -39,6 +39,7 @@
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",
     "accessor.ItemStackAccessor",
+    "accessor.MessageHandlerAccessor",
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
