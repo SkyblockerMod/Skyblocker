@@ -13,7 +13,7 @@ import net.minecraft.item.map.MapState;
 
 public class DungeonMap {
     private static final int mapId = 1024;
-    private static void render(MatrixStack matrices) {
+    public static void render(MatrixStack matrices) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
 
