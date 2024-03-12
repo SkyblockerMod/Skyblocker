@@ -320,5 +320,17 @@
     "skyblocker.customArmorTrims.added": "§b[§6Skyblocker§b] §fУстановите индивидуальную отделку брони для удерживаемого предмета!",
     "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§b[§6Skyblocker§b] §cВы предоставили либо недопустимый материал, либо недопустимый кузнечный шаблон!",
     "skyblocker.customArmorTrims.unableToSetTrim": "§b[§6Skyblocker§b] §cНевозможно установить пользовательскую отделку брони :( (Вы на скайблоке?, у вас в руках предмет?)",
-    "skyblocker.customArmorTrims.noItemUuid": "§b[§6Skyblocker§b] §cВы должны держать предмет, у которого есть uuid, чтобы установить пользовательскую отделку брони!"
+    "skyblocker.customArmorTrims.noItemUuid": "§b[§6Skyblocker§b] §cВы должны держать предмет, у которого есть uuid, чтобы установить пользовательскую отделку брони!",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumInfo.@Tooltip": "Если этот предмет можно пожертвовать музею, то покажется его категория (оружие, броня, инструменты, специальное). Также он покажет, был-ли отдан этот предмет музею, или нет (несовместимо с бесплатными).\n\nВключите API музея, чтобы информация была более точной!",
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "На выбор есть круглый и квадратный фон редкости!",
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundStyle": "Стиль фоновой редкости предмета",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip": "Включить подсказку редкости",
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Показывает цвет редкости предмата позади него(кроме обычного).",
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Видимость фоновой редкости предмета",
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.itemRarityBackgrounds": "Фоновый цвет редкости",
+    "text.autoconfig.skyblocker.option.general.itemProtection": "Защита предмета",
+    "text.autoconfig.skyblocker.option.general.itemProtection.slotLockStyle": "Стиль слота с закреплённым предметом",
+    "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra": "Kuudra",
+    "text.autoconfig.skyblocker.option.general.dungeonQuality": "Данж-качество",
+    "text.autoconfig.skyblocker.option.general.dungeonQuality.@Tooltip": "Показывает качество и уровень дропа из данжа с мобов.\n\n\nПример:\nУр. 1-3 падает на 1-3 этажах\nУр. 4-7 падает на 4-7 этажах, или с 1-4 ур. Мастера\nУр. 8-10 падает только с 5-7 ур. Мастера"
 }
