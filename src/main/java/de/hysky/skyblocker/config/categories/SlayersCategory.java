@@ -22,10 +22,10 @@ public class SlayersCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightNukekubiHeads"))
-								.binding(defaults.slayer.endermanSlayer.highlightNukekubiHeads,
-										() -> config.slayer.endermanSlayer.highlightNukekubiHeads,
-										newValue -> config.slayer.endermanSlayer.highlightNukekubiHeads = newValue)
+								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.enableYangGlyphsNotification"))
+								.binding(defaults.slayer.endermanSlayer.enableYangGlyphsNotification,
+										() -> config.slayer.endermanSlayer.enableYangGlyphsNotification,
+										newValue -> config.slayer.endermanSlayer.enableYangGlyphsNotification = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -33,6 +33,13 @@ public class SlayersCategory {
 								.binding(defaults.slayer.endermanSlayer.highlightBeacons,
 										() -> config.slayer.endermanSlayer.highlightBeacons,
 										newValue -> config.slayer.endermanSlayer.highlightBeacons = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightNukekubiHeads"))
+								.binding(defaults.slayer.endermanSlayer.highlightNukekubiHeads,
+										() -> config.slayer.endermanSlayer.highlightNukekubiHeads,
+										newValue -> config.slayer.endermanSlayer.highlightNukekubiHeads = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
