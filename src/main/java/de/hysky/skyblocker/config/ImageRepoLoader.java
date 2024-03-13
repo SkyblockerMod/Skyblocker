@@ -56,7 +56,7 @@ public class ImageRepoLoader {
 
 						//Delete all directories to clear potentially now unused/old files
 						//TODO change this to only delete periodically?
-						deleteDirectories();
+						if (Files.exists(REPO_DIRECTORY)) deleteDirectories();
 
 						try (ZipInputStream zis = new ZipInputStream(in)) {
 							ZipEntry entry;
