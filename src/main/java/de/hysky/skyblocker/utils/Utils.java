@@ -37,6 +37,8 @@ public class Utils {
     private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
 
     private static final String PROFILE_PREFIX = "Profile: ";
+    private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
+    public static final String PROFILE_ID_PREFIX = "Profile ID: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
     private static boolean isInjected = false;
@@ -424,10 +426,16 @@ public class Utils {
             return shouldFilter;
         }
 
-        if (isOnSkyblock && message.startsWith("Profile ID: ")) {
-            profileId = message.replace("Profile ID: ", "");
+        if (isOnSkyblock) {
+            if (message.startsWith(PROFILE_MESSAGE_PREFIX)) {
+                profile = message.substring(PROFILE_MESSAGE_PREFIX.length(), message.indexOf("§b"));
+            }
 
-            MuseumItemCache.tick(profileId);
+            if (message.startsWith(PROFILE_ID_PREFIX)) {
+                profileId = message.substring(PROFILE_ID_PREFIX.length());
+
+                MuseumItemCache.tick(profileId);
+            }
         }
 
         return true;
