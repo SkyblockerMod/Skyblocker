@@ -48,7 +48,7 @@ public class BeaconHighlighter {
     private static void render(WorldRenderContext context) {
         if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons) {
             for (BlockPos pos : beaconPositions) {
-                RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, false);
+                RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, true);
             }
         }
     }
