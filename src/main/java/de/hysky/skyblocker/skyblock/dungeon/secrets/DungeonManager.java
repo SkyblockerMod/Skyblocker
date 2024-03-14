@@ -616,7 +616,7 @@ public class DungeonManager {
 
         String message = text.getString();
 
-        if (overlay && isCurrentRoomMatched()) {
+        if (isCurrentRoomMatched()) {
             currentRoom.onChatMessage(message);
         }
 
@@ -666,7 +666,7 @@ public class DungeonManager {
     @SuppressWarnings("JavadocReference")
     private static ActionResult onUseBlock(World world, BlockHitResult hitResult) {
         if (isCurrentRoomMatched()) {
-            currentRoom.onUseBlock(world, hitResult);
+            currentRoom.onUseBlock(world, hitResult.getBlockPos());
         }
         return ActionResult.PASS;
     }
@@ -677,16 +677,10 @@ public class DungeonManager {
      * If the collector is the player, {@link #currentRoom} is used as an optimization.
      */
     @SuppressWarnings("JavadocReference")
-    public static void onItemPickup(ItemEntity itemEntity, LivingEntity collector, boolean isPlayer) {
-        if (isPlayer) {
-            if (isCurrentRoomMatched()) {
-                currentRoom.onItemPickup(itemEntity, collector);
-            }
-        } else {
-            Room room = getRoomAtPhysical(collector.getPos());
-            if (isRoomMatched(room)) {
-                room.onItemPickup(itemEntity, collector);
-            }
+    public static void onItemPickup(ItemEntity itemEntity) {
+        Room room = getRoomAtPhysical(itemEntity.getPos());
+        if (isRoomMatched(room)) {
+            room.onItemPickup(itemEntity);
         }
     }
 

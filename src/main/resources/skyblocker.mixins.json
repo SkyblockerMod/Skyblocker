@@ -9,6 +9,7 @@
     "BatEntityMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
+    "ClientWorldMixin",
     "DataTrackerMixin",
     "DrawContextMixin",
     "DyeableItemMixin",
