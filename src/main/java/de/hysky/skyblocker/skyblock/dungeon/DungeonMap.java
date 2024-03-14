@@ -17,7 +17,7 @@ import net.minecraft.item.map.MapState;
 
 public class DungeonMap {
     private static final int DEFAULT_MAP_ID = 1024;
-    private static int cachedMapId = -1;
+    private static Integer cachedMapId = null;
 
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
@@ -59,14 +59,10 @@ public class DungeonMap {
             int mapId = FilledMapItem.getMapId(stack);
             cachedMapId = mapId;
             return mapId;
-        } else if (cachedMapId != -1) {
-            return cachedMapId;
-        } else {
-            return DEFAULT_MAP_ID;
-        }
+        } else return cachedMapId != null ? cachedMapId : DEFAULT_MAP_ID;
     }
 
     private static void reset() {
-        cachedMapId = -1;
+        cachedMapId = null;
     }
 }
