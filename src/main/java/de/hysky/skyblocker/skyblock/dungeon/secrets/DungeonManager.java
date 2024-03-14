@@ -15,6 +15,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
@@ -529,11 +530,7 @@ public class DungeonManager {
             physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
             currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
         }
-        ItemStack stack = client.player.getInventory().main.get(8);
-        if (!stack.isOf(Items.FILLED_MAP)) {
-            return;
-        }
-        MapState map = FilledMapItem.getMapState(FilledMapItem.getMapId(stack), client.world);
+        MapState map = FilledMapItem.getMapState(DungeonMap.getMapId(client.player.getInventory().main.get(8)), client.world);
         if (map == null) {
             return;
         }
