@@ -428,10 +428,8 @@ public class Utils {
 
         if (isOnSkyblock) {
             if (message.startsWith(PROFILE_MESSAGE_PREFIX)) {
-                profile = message.substring(PROFILE_MESSAGE_PREFIX.length(), message.indexOf("§b"));
-            }
-
-            if (message.startsWith(PROFILE_ID_PREFIX)) {
+                profile = message.substring(PROFILE_MESSAGE_PREFIX.length()).split("§b")[0];
+            } else if (message.startsWith(PROFILE_ID_PREFIX)) {
                 profileId = message.substring(PROFILE_ID_PREFIX.length());
 
                 MuseumItemCache.tick(profileId);

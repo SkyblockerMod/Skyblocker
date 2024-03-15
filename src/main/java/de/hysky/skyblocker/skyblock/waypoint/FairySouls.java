@@ -79,10 +79,9 @@ public class FairySouls {
             try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
                 for (Map.Entry<String, JsonElement> foundFairiesForProfileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     for (Map.Entry<String, JsonElement> foundFairiesForLocationJson : foundFairiesForProfileJson.getValue().getAsJsonObject().asMap().entrySet()) {
-                        String profile = foundFairiesForProfileJson.getKey();
-                        Map<BlockPos, ProfileAwareWaypoint> fairiesForLocation = fairySouls.get(profile);
+                        Map<BlockPos, ProfileAwareWaypoint> fairiesForLocation = fairySouls.get(foundFairiesForLocationJson.getKey());
                         for (JsonElement foundFairy : foundFairiesForLocationJson.getValue().getAsJsonArray().asList()) {
-                            fairiesForLocation.get(PosUtils.parsePosString(foundFairy.getAsString())).setFound(profile);
+                            fairiesForLocation.get(PosUtils.parsePosString(foundFairy.getAsString())).setFound(foundFairiesForProfileJson.getKey());
                         }
                     }
                 }
