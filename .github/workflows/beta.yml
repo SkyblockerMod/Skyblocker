@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - bleeding-edge
     paths-ignore:
       - 'src/main/resources/assets/skyblocker/lang/**'
   pull_request:
