@@ -1,6 +1,6 @@
-package de.hysky.skyblocker.skyblock.tabhud.widget.hud;
+package de.hysky.skyblocker.skyblock.garden;
 
-import de.hysky.skyblocker.skyblock.garden.FarmingHud;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -15,7 +15,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 
-public class HudFarmingWidget extends Widget {
+public class FarmingHudWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
     private static final Map<String, ItemStack> FARMING_TOOLS = Map.ofEntries(
             Map.entry("THEORETICAL_HOE_WHEAT_1", Ico.WHEAT),
@@ -39,11 +39,13 @@ public class HudFarmingWidget extends Widget {
             Map.entry("PUMPKIN_DICER", Ico.PUMPKIN),
             Map.entry("COCO_CHOPPER", Ico.COCOA_BEANS)
     );
-    public static final HudFarmingWidget INSTANCE = new HudFarmingWidget();
+    public static final FarmingHudWidget INSTANCE = new FarmingHudWidget();
     private final MinecraftClient client = MinecraftClient.getInstance();
 
-    public HudFarmingWidget() {
+    public FarmingHudWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
+        setX(SkyblockerConfigManager.get().locations.garden.farmingHud.x);
+        setY(SkyblockerConfigManager.get().locations.garden.farmingHud.y);
         update();
     }
 

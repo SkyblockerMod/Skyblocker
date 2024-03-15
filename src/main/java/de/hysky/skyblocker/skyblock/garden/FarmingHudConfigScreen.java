@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.garden;
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudFarmingWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -12,7 +11,7 @@ import java.util.List;
 
 public class FarmingHudConfigScreen extends HudConfigScreen {
     public FarmingHudConfigScreen(Screen parent) {
-        super(Text.literal("Farming HUD Config"), parent, HudFarmingWidget.INSTANCE);
+        super(Text.literal("Farming HUD Config"), parent, FarmingHudWidget.INSTANCE);
     }
 
     @SuppressWarnings("SuspiciousNameCombination")

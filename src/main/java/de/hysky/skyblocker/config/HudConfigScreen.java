@@ -52,7 +52,6 @@ public abstract class HudConfigScreen extends Screen {
     @Override
     public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        renderBackground(context, mouseX, mouseY, delta);
         renderWidget(context, widgets);
         context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
     }
