@@ -54,7 +54,7 @@ public class DungeonMap {
     }
 
     public static int getMapId(ItemStack stack) {
-        if (stack.isOf(Items.FILLED_MAP) && stack.hasNbt()) {
+        if (stack.isOf(Items.FILLED_MAP)) {
             @SuppressWarnings("DataFlowIssue")
             int mapId = FilledMapItem.getMapId(stack);
             cachedMapId = mapId;
