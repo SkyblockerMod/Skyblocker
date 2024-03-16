@@ -3,6 +3,9 @@ package de.hysky.skyblocker.mixin;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
+import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableHandler;
+import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -41,6 +44,11 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
                 client.setScreen(new PartyFinderScreen(containerScreenHandler, player.getInventory(), name));
             }
 
+            ci.cancel();
+        } else if (Utils.isOnSkyblock() && screenHandler instanceof GenericContainerScreenHandler containerScreenHandler && name.getString().toLowerCase().contains("craft item")) {
+            SkyblockCraftingTableHandler skyblockCraftingTableHandler = new SkyblockCraftingTableHandler(containerScreenHandler, player.getInventory());
+            client.player.currentScreenHandler = skyblockCraftingTableHandler;
+            client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableHandler, player.getInventory(), Text.literal("Craft Item")));
             ci.cancel();
         }
     }
