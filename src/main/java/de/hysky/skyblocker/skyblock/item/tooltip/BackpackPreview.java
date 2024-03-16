@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -55,7 +54,6 @@ public class BackpackPreview {
     }
 
     public static void tick() {
-        Utils.update(); // force update isOnSkyblock to prevent crash on disconnect
         if (Utils.isOnSkyblock()) {
             // save all dirty storages
             saveStorages();

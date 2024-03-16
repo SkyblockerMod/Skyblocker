@@ -17,14 +17,14 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
     private static final Identifier MAP_ICON = new Identifier("textures/map/map_icons.png");
-    private static final String[] SMALL_LOCATIONS = { "Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian" };
+    private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian");
 
     public static boolean visible = false;
 
@@ -80,8 +80,8 @@ public class CrystalsHud {
                 Vector2ic renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
                 int locationSize = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.locationSize;
 
-                if (Arrays.asList(SMALL_LOCATIONS).contains(waypoint.name.getString())) {//if small location half the location size
-                    locationSize = locationSize / 2;
+                if (SMALL_LOCATIONS.contains(waypoint.name.getString())) {//if small location half the location size
+                    locationSize /= 2;
                 }
 
                 //fill square of size locationSize around the coordinates of the location
