@@ -8,14 +8,14 @@ import net.minecraft.screen.slot.Slot;
 
 import java.util.Arrays;
 
-public class SkyblockCraftingTableHandler extends GenericContainerScreenHandler {
+public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHandler {
 
     private static final int[] normalSlots = new int[]{
             10, 11, 12,     16,
             19, 20, 21, 23, 25,
             28, 29, 30,     34
     };
-    public SkyblockCraftingTableHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows) {
+    public SkyblockCraftingTableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows) {
         super(type, syncId, playerInventory, inventory, rows);
         for (int i = 0; i < rows*9; i++) {
             Slot originalSlot = slots.get(i);
@@ -39,7 +39,7 @@ public class SkyblockCraftingTableHandler extends GenericContainerScreenHandler 
         }
     }
 
-    public SkyblockCraftingTableHandler(GenericContainerScreenHandler handler, PlayerInventory playerInventory) {
+    public SkyblockCraftingTableScreenHandler(GenericContainerScreenHandler handler, PlayerInventory playerInventory) {
         this(handler.getType(), handler.syncId, playerInventory, handler.getInventory(), handler.getRows());
     }
 
