@@ -514,10 +514,7 @@ public class DungeonManager {
      */
     @SuppressWarnings("JavadocReference")
     private static void update() {
-        if (!Utils.isInDungeons()) {
-            if (mapEntrancePos != null) {
-                reset();
-            }
+        if (!Utils.isInDungeons() || isInBoss()) {
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
