@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -24,9 +23,8 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.RotationAxis;
 
-public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingTableHandler> {
+public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingTableScreenHandler> {
     private static final Identifier TEXTURE = new Identifier("textures/gui/container/crafting_table.png");
     protected static final ButtonTextures MORE_CRAFTS_TEXTURES = new ButtonTextures(
             new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button"),
@@ -38,7 +36,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     private boolean narrow;
     private TexturedButtonWidget moreCraftsButton;
 
-    public SkyblockCraftingTableScreen(SkyblockCraftingTableHandler handler, PlayerInventory inventory, Text title) {
+    public SkyblockCraftingTableScreen(SkyblockCraftingTableScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         this.backgroundWidth += 22;
     }
@@ -47,7 +45,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     protected void init() {
         super.init();
         this.narrow = this.width < 379;
-        this.recipeBook.initialize(this.width, this.height, this.client, this.narrow, new Dummy());
+        this.recipeBook.initialize(this.width, this.height, this.client, this.narrow, new DummyRecipeScreenHandler());
         this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth) + 11;
         this.addDrawableChild(new TexturedButtonWidget(this.x + 5, this.height / 2 - 49, 20, 18, RecipeBookWidget.BUTTON_TEXTURES, button -> {
             this.recipeBook.toggleOpen();
@@ -88,13 +86,6 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         }
         this.drawMouseoverTooltip(context, mouseX, mouseY);
         this.recipeBook.drawTooltip(context, this.x, this.y, mouseX, mouseY);
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        String text = "Quick Craft™";
-        matrices.translate(this.x + 173 - textRenderer.fontHeight, this.y + textRenderer.getWidth(text) + 7, 0);
-        matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(90));
-        context.drawText(textRenderer, text, 0, 0, 0x404040, false);
-        matrices.pop();
     }
 
 
@@ -144,9 +135,9 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     }
 
 
-    static class Dummy extends AbstractRecipeScreenHandler<SimpleInventory> {
+    static class DummyRecipeScreenHandler extends AbstractRecipeScreenHandler<SimpleInventory> {
 
-        public Dummy() {
+        public DummyRecipeScreenHandler() {
             super(ScreenHandlerType.GENERIC_9X6, -69);
         }
 
