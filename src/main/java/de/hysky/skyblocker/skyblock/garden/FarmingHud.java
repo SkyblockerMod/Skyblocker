@@ -33,7 +33,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-    private static final Pattern COUNTER = Pattern.compile("Counter: (?<count>[\\d,]+) \\w+");
+    private static final Pattern COUNTER = Pattern.compile("Counter: (?<count>[\\d,]+) .+");
     private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>\\d+.?\\d*)%\\)");
     private static final Deque<IntLongPair> counter = new ArrayDeque<>();
     private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
