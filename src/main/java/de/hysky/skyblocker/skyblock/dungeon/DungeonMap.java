@@ -4,48 +4,65 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
-import net.minecraft.nbt.NbtCompound;
-import org.apache.commons.lang3.StringUtils;
 
 public class DungeonMap {
+    private static final int DEFAULT_MAP_ID = 1024;
+    private static Integer cachedMapId = null;
+
+    public static void init() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
+                .then(ClientCommandManager.literal("hud")
+                        .then(ClientCommandManager.literal("dungeon")
+                                .executes(Scheduler.queueOpenScreenCommand(DungeonMapConfigScreen::new))
+                        )
+                )
+        ));
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+    }
+
     public static void render(MatrixStack matrices) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
-        ItemStack item = client.player.getInventory().main.get(8);
-        NbtCompound tag = item.getNbt();
 
-        if (tag != null && tag.contains("map")) {
-            String tag2 = tag.asString();
-            tag2 = StringUtils.substringBetween(tag2, "map:", "}");
-            int mapid = Integer.parseInt(tag2);
-            VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
-            MapRenderer map = client.gameRenderer.getMapRenderer();
-            MapState state = FilledMapItem.getMapState(mapid, client.world);
-            float scaling = SkyblockerConfigManager.get().locations.dungeons.mapScaling;
-            int x = SkyblockerConfigManager.get().locations.dungeons.mapX;
-            int y = SkyblockerConfigManager.get().locations.dungeons.mapY;
+        int mapId = getMapId(client.player.getInventory().main.get(8));
 
-            if (state == null) return;
-            matrices.push();
-            matrices.translate(x, y, 0);
-            matrices.scale(scaling, scaling, 0f);
-            map.draw(matrices, vertices, mapid, state, false, 15728880);
-            vertices.draw();
-            matrices.pop();
-        }
+        MapState state = FilledMapItem.getMapState(mapId, client.world);
+        if (state == null) return;
+
+        int x = SkyblockerConfigManager.get().locations.dungeons.mapX;
+        int y = SkyblockerConfigManager.get().locations.dungeons.mapY;
+        float scaling = SkyblockerConfigManager.get().locations.dungeons.mapScaling;
+        VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
+        MapRenderer mapRenderer = client.gameRenderer.getMapRenderer();
+
+        matrices.push();
+        matrices.translate(x, y, 0);
+        matrices.scale(scaling, scaling, 0f);
+        mapRenderer.draw(matrices, vertices, mapId, state, false, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        vertices.draw();
+        matrices.pop();
     }
 
-	public static void init() { //Todo: consider renaming the command to a more general name since it'll also have dungeon score and maybe other stuff in the future
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
-                .then(ClientCommandManager.literal("hud")
-                        .then(ClientCommandManager.literal("dungeonmap")
-                                .executes(Scheduler.queueOpenScreenCommand(DungeonMapConfigScreen::new))))));
+    public static int getMapId(ItemStack stack) {
+        if (stack.isOf(Items.FILLED_MAP)) {
+            @SuppressWarnings("DataFlowIssue")
+            int mapId = FilledMapItem.getMapId(stack);
+            cachedMapId = mapId;
+            return mapId;
+        } else return cachedMapId != null ? cachedMapId : DEFAULT_MAP_ID;
+    }
+
+    private static void reset() {
+        cachedMapId = null;
     }
 }

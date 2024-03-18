@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScoreHUD;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -91,7 +92,7 @@ public abstract class InGameHudMixin {
             ci.cancel();
 
         if (Utils.isInDungeons() && DungeonScore.isDungeonStarted()) {
-            if (SkyblockerConfigManager.get().locations.dungeons.enableMap) DungeonMap.render(context.getMatrices());
+            if (SkyblockerConfigManager.get().locations.dungeons.enableMap && !DungeonManager.isInBoss()) DungeonMap.render(context.getMatrices());
             if (SkyblockerConfigManager.get().locations.dungeons.dungeonScore.enableScoreHUD) DungeonScoreHUD.render(context);
         }
     }
