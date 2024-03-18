@@ -36,6 +36,7 @@
     "YggdrasilServicesKeyInfoMixin",
     "accessor.BeaconBlockEntityRendererInvoker",
     "accessor.DrawContextInvoker",
+    "accessor.EndermanEntityAccessor",
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",
     "accessor.ItemStackAccessor",

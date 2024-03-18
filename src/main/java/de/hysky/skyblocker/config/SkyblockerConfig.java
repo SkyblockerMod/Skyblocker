@@ -1117,10 +1117,13 @@ public class SkyblockerConfig {
 
 	public static class EndermanSlayer {
 		@SerialEntry
-		public boolean highlightNukekubiHeads = true;
+		public boolean enableYangGlyphsNotification = true;
 
 		@SerialEntry
 		public boolean highlightBeacons = true;
+
+		@SerialEntry
+		public boolean highlightNukekubiHeads = true;
 	}
 
 	public static class VampireSlayer {

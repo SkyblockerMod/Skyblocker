@@ -44,7 +44,7 @@ public class MobGlow {
 
 					// Regular Mobs
 					if (!(entity instanceof ArmorStandEntity)) {
-						List<ArmorStandEntity> armorStands = getArmorStands(entity.getWorld(), box);
+						List<ArmorStandEntity> armorStands = getArmorStands(entity);
 
 						if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
 							return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
@@ -79,7 +79,11 @@ public class MobGlow {
 		return false;
 	}
 
-	private static List<ArmorStandEntity> getArmorStands(World world, Box box) {
+	public static List<ArmorStandEntity> getArmorStands(Entity entity) {
+		return getArmorStands(entity.getWorld(), entity.getBoundingBox());
+	}
+
+	public static List<ArmorStandEntity> getArmorStands(World world, Box box) {
 		return world.getEntitiesByClass(ArmorStandEntity.class, box.expand(0, 2, 0), EntityPredicates.NOT_MOUNTED);
 	}
 
