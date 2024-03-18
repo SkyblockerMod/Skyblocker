@@ -19,7 +19,6 @@ jobs:
       - name: Set Labels
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GH_LABELER }}
           script: |
             const { owner, repo, number: pull_number } = context.issue;
             const { data: pullRequest } = await github.rest.pulls.get({ owner, repo, pull_number });
