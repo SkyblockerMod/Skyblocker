@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -180,6 +181,19 @@ public class ItemUtils {
             String string = line.getString();
             if (predicate.test(string)) {
                 return string;
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static Matcher getNbtTooltip(ItemStack item, Pattern pattern) {
+        for (Text line : getNbtTooltips(item)) {
+            String string = line.getString();
+            Matcher matcher = pattern.matcher(string);
+            if (matcher.matches()) {
+                return matcher;
             }
         }
 

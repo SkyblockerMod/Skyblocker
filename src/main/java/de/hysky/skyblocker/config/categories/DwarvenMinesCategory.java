@@ -76,13 +76,6 @@ public class DwarvenMinesCategory {
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new DwarvenHudConfigScreen(screen)))
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground"))
-								.binding(defaults.locations.dwarvenMines.dwarvenHud.enableBackground,
-										() -> config.locations.dwarvenMines.dwarvenHud.enableBackground,
-										newValue -> config.locations.dwarvenMines.dwarvenHud.enableBackground = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
 						.build())
 				//crystal HUD
 				.group(OptionGroup.createBuilder()

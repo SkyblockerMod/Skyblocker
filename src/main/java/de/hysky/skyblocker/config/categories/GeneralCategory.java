@@ -107,6 +107,14 @@ public class GeneralCategory {
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(10, 200).step(1))
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground.@Tooltip")))
+								.binding(defaults.general.tabHud.enableHudBackground,
+										() -> config.general.tabHud.enableHudBackground,
+										newValue -> config.general.tabHud.enableHudBackground = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.plainPlayerNames"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.tabHud.plainPlayerNames.@Tooltip")))
 								.binding(defaults.general.tabHud.plainPlayerNames,

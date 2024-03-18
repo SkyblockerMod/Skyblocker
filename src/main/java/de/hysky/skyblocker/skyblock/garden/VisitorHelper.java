@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 //TODO: check inventory items, sum all repeated items into one
@@ -111,7 +112,7 @@ public class VisitorHelper {
         String itemName = splitItemText[0].trim();
         if (itemName.isEmpty()) return;
         try {
-            int amount = splitItemText.length == 2 ? NumberFormat.getInstance().parse(splitItemText[1].trim()).intValue() : 1;
+            int amount = splitItemText.length == 2 ? NumberFormat.getInstance(Locale.US).parse(splitItemText[1].trim()).intValue() : 1;
             Object2IntMap<String> visitorMap = itemMap.getOrDefault(visitorName, new Object2IntOpenHashMap<>());
             visitorMap.putIfAbsent(itemName, amount);
             itemMap.putIfAbsent(visitorName, visitorMap);

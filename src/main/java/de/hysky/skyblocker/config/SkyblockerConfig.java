@@ -267,6 +267,9 @@ public class SkyblockerConfig {
 		public int tabHudScale = 100;
 
 		@SerialEntry
+		public boolean enableHudBackground = true;
+
+		@SerialEntry
 		public boolean plainPlayerNames = false;
 
 		@SerialEntry
@@ -945,9 +948,6 @@ public class SkyblockerConfig {
 		public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
 
 		@SerialEntry
-		public boolean enableBackground = true;
-
-		@SerialEntry
 		public int x = 10;
 
 		@SerialEntry
@@ -1063,9 +1063,6 @@ public class SkyblockerConfig {
 		public boolean hudEnabled = true;
 
 		@SerialEntry
-		public boolean enableBackground = true;
-
-		@SerialEntry
 		public boolean waypoint = true;
 
 		@SerialEntry
@@ -1090,10 +1087,24 @@ public class SkyblockerConfig {
 
 	public static class Garden {
 		@SerialEntry
+		public FarmingHud farmingHud = new FarmingHud();
+
+		@SerialEntry
 		public boolean dicerTitlePrevent = true;
 
 		@SerialEntry
 		public boolean visitorHelper = true;
+	}
+
+	public static class FarmingHud {
+		@SerialEntry
+		public boolean enableHud = true;
+
+		@SerialEntry
+		public int x;
+
+		@SerialEntry
+		public int y;
 	}
 
 	public static class Slayer {
@@ -1199,6 +1210,7 @@ public class SkyblockerConfig {
 		@SerialEntry
 		public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
 	}
+
 	public static class ChatRuleConfig {
 		@SerialEntry
 		public int announcementLength = 60;

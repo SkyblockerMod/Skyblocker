@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.end;
+package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -9,20 +9,22 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class EndHudConfigScreen extends HudConfigScreen {
-    public EndHudConfigScreen(Screen parent) {
-        super(Text.literal("End HUD Config"), parent, EndHudWidget.INSTANCE);
+public class FarmingHudConfigScreen extends HudConfigScreen {
+    public FarmingHudConfigScreen(Screen parent) {
+        super(Text.literal("Farming HUD Config"), parent, FarmingHudWidget.INSTANCE);
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
     @Override
     protected List<IntIntMutablePair> getConfigPos(SkyblockerConfig config) {
-        return List.of(IntIntMutablePair.of(config.locations.end.x, config.locations.end.y));
+        return List.of(
+                IntIntMutablePair.of(config.locations.garden.farmingHud.x, config.locations.garden.farmingHud.y)
+        );
     }
 
     @Override
     protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
-        configManager.locations.end.x = widgets.get(0).getX();
-        configManager.locations.end.y = widgets.get(0).getY();
+        configManager.locations.garden.farmingHud.x = widgets.get(0).getX();
+        configManager.locations.garden.farmingHud.y = widgets.get(0).getY();
     }
 }

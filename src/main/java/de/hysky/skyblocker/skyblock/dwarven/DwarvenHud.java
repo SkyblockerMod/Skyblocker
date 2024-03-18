@@ -6,8 +6,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudPowderWidget;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -56,7 +54,7 @@ public class DwarvenHud {
                                 .executes(Scheduler.queueOpenScreenCommand(DwarvenHudConfigScreen::new))))));
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
-            if ((!SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder)
+            if ((!SkyblockerConfigManager.get().general.tabHud.enableHudBackground && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder)
                     || client.options.playerListKey.isPressed()
                     || client.player == null
                     || (!Utils.isInDwarvenMines() && !Utils.isInCrystalHollows())) {
@@ -72,52 +70,11 @@ public class DwarvenHud {
         });
     }
 
-    /**
-     * Gets the dimensions (width, height) for the commissions hud and the powder hud
-     * @param commissions what commissions to get the dimensions for
-     * @return a {@link Pair} of {@link IntIntPair} with the first pair being for the commissions hud and the second pair being for the powder hud
-     */
-    public static Pair<IntIntPair,IntIntPair> getDimForConfig(List<Commission> commissions) {
-        return switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
-            case SIMPLE -> {
-                HudCommsWidget.INSTANCE_CFG.updateData(commissions, false);
-                yield Pair.of(
-                        IntIntPair.of(
-                                HudCommsWidget.INSTANCE_CFG.getWidth(),
-                                HudCommsWidget.INSTANCE_CFG.getHeight()),
-                        IntIntPair.of(
-                                HudPowderWidget.INSTANCE_CFG.getWidth(),
-                                HudPowderWidget.INSTANCE_CFG.getHeight())
-                );
-            }
-            case FANCY -> {
-                HudCommsWidget.INSTANCE_CFG.updateData(commissions, true);
-                yield Pair.of(
-                        IntIntPair.of(
-                                HudCommsWidget.INSTANCE_CFG.getWidth(),
-                                HudCommsWidget.INSTANCE_CFG.getHeight()),
-                        IntIntPair.of(
-                                HudPowderWidget.INSTANCE_CFG.getWidth(),
-                                HudPowderWidget.INSTANCE_CFG.getHeight())
-                );
-            }
-            default -> Pair.of(
-                    IntIntPair.of(
-                            200,
-                            20 * commissions.size()),
-                    IntIntPair.of(
-                            200,
-                           40)
-            );
-        };
-    }
-
     public static void render(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-
         switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
-            case SIMPLE -> renderSimple(hcw,hpw, context, comHudX, comHudY,powderHudX,powderHudY, commissions);
-            case FANCY -> renderFancy(hcw,hpw, context, comHudX, comHudY,powderHudX,powderHudY, commissions);
-            case CLASSIC -> renderClassic(context, comHudX, comHudY,powderHudX,powderHudY, commissions);
+            case SIMPLE -> renderSimple(hcw, hpw, context, comHudX, comHudY, powderHudX, powderHudY, commissions);
+            case FANCY -> renderFancy(hcw, hpw, context, comHudX, comHudY, powderHudX, powderHudY, commissions);
+            case CLASSIC -> renderClassic(context, comHudX, comHudY, powderHudX, powderHudY, commissions);
         }
     }
 
@@ -131,11 +88,11 @@ public class DwarvenHud {
      * @param commissions the commissions to render to the commissions hud
      */
     public static void renderClassic(DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground) {
+        if (SkyblockerConfigManager.get().general.tabHud.enableHudBackground) {
             context.fill(comHudX, comHudY, comHudX + 200, comHudY + (20 * commissions.size()), 0x64000000);
             context.fill(powderHudX, powderHudY, powderHudX + 200, powderHudY + 40, 0x64000000);
         }
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
+        if (SkyblockerConfigManager.get().general.tabHud.enableHudBackground) {
             int y = 0;
             for (Commission commission : commissions) {
                 float percentage;
@@ -167,43 +124,41 @@ public class DwarvenHud {
     }
 
     public static void renderSimple(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
+        if (SkyblockerConfigManager.get().general.tabHud.enableHudBackground) {
             hcw.updateData(commissions, false);
             hcw.update();
             hcw.setX(comHudX);
             hcw.setY(comHudY);
-            hcw.render(context,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+            hcw.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
         }
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) {
             hpw.update();
             hpw.setX(powderHudX);
             hpw.setY(powderHudY);
-            hpw.render(context,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+            hpw.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
         }
     }
 
     public static void renderFancy(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
+        if (SkyblockerConfigManager.get().general.tabHud.enableHudBackground) {
             hcw.updateData(commissions, true);
             hcw.update();
             hcw.setX(comHudX);
             hcw.setY(comHudY);
             hcw.render(context,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+                    SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
         }
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) {
             hpw.update();
             hpw.setX(powderHudX);
             hpw.setY(powderHudY);
             hpw.render(context,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enableBackground);
+                    SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
         }
     }
 
     public static void update() {
-        if (client.player == null || client.getNetworkHandler() == null || (!SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) 
+        if (client.player == null || client.getNetworkHandler() == null || (!SkyblockerConfigManager.get().general.tabHud.enableHudBackground && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) 
                 || (!Utils.isInCrystalHollows() && !Utils.isInDwarvenMines()))
             return;
 
