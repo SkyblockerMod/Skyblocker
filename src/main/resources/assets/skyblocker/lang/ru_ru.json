@@ -337,5 +337,19 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.profitColor": "Прибыльный цвет",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.lossColor": "Убыточный цвет",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralThreshold.@Tooltip": "Показывает порог нулевой окупаемости.",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralColor": "Нейтральный цвет"
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralColor": "Нейтральный цвет",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator": "Включить калькулятор прибыли",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet": "Включая цену Kismet",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "При включении, если вы использовали kismet, цена одного из них будет вычтена из прибыли",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip.@Tooltip": "Отображает тип экзотики под названием предмета, если предмет брони является экзотическим.",
+    "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Если количество токсичного яда для стрел, которое есть у вас в инвентаре, ниже установленного порога, вы получите предупреждение.\n\n16 - это абсолютный минимум.\nВам нужно 32 для плавной фазы \"DPS\" с предварительным выстрелом.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit": "Калькулятор прибыли от сундука в подземелье",
+    "text.autoconfig.skyblocker.option.locations.dungeons.solveTicTacToe.@Tooltip": "Помещает в красную рамку следующий лучший ход, который вы можете сделать!",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "Сообщение, которое будет отправлено в чат при достижении показателя %d в подземельях. Строка \"[score]\" будет заменена на показатель подземелья (%d).",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD": "Включить HUD результатов",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Отображает результат прохождения подземелья в HUD.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nПримечание: Это корректно работает только в том случае, если сообщения о смерти включены в настройках вашего скайблока. Если вы хотите скрыть сообщения о смерти, используйте вместо этого параметр мода \"Hide Player Death Messages\", чтобы разрешить дальнейшую обработку сообщений о смерти.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Отображает прибыль от сундука подземелья в заголовке экрана сундука.\nЗеленый, если есть прибыль.\nКрасный, если прибыли нет.\nСерый, если вы ничего не получаете или теряете.\nСиний, если расчеты были основаны на неполных данных.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Отключение **не рекомендуется**, если вы забывчивый человек.",
+    "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold": "Порог предупреждения о отравлении стрелой"
 }
