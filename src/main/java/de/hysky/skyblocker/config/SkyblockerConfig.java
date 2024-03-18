@@ -178,6 +178,9 @@ public class SkyblockerConfig {
 		public boolean dungeonQuality = true;
 
 		@SerialEntry
+		public boolean enableNewYearCakesHelper = true;
+
+		@SerialEntry
 		public TabHudConf tabHud = new TabHudConf();
 
 		@SerialEntry

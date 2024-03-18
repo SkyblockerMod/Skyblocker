@@ -86,6 +86,14 @@ public class GeneralCategory {
 								newValue -> config.general.dungeonQuality = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper.@Tooltip")))
+						.binding(defaults.general.enableNewYearCakesHelper,
+								() -> config.general.enableNewYearCakesHelper,
+								newValue -> config.general.enableNewYearCakesHelper = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				//Tab Hud
 				.group(OptionGroup.createBuilder()
