@@ -11,6 +11,6 @@ public interface BeaconBlockEntityRendererInvoker {
     @SuppressWarnings("unused")
     @Invoker("renderBeam")
     static void renderBeam(MatrixStack matrices, VertexConsumerProvider vertexConsumers, float tickDelta, long worldTime, int yOffset, int maxY, float[] color) {
-        throw new IllegalStateException("Mixin invoker failed to apply.");
+        throw new UnsupportedOperationException();
     }
 }
