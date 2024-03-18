@@ -42,7 +42,6 @@
     "text.autoconfig.skyblocker.option.messages.hideImplosion": "Ocultar el mensaje de Implosion",
     "text.autoconfig.skyblocker.option.messages.hideCombo": "Ocultar Mensajes de Combos",
     "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "Obscurece los cofres que ya han sido abiertos.",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "Habilitar Fondo",
     "text.autoconfig.skyblocker.option.general.itemTooltip": "Información extra de los objetos",
     "skyblocker.itemTooltip.nullMessage": "§cEl precio en la información en los objetos se actualiza cada 60 segundos. De lo contrario revisa lastest.log",
     "text.autoconfig.skyblocker.option.richPresence.info.@Tooltip": "Este valor no importa si estas ciclando",
