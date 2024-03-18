@@ -52,7 +52,7 @@ public class FairySouls {
     @SuppressWarnings("UnusedReturnValue")
     public static CompletableFuture<Void> runAsyncAfterFairySoulsLoad(Runnable runnable) {
         if (fairySoulsLoaded == null) {
-            LOGGER.error("Fairy Souls have not being initialized yet! Please ensure the Fairy Souls module is initialized before modules calling this method in SkyblockerMod#onInitializeClient. This error can be safely ignore in a test environment.");
+            LOGGER.error("[Skyblocker] Fairy Souls have not being initialized yet! Please ensure the Fairy Souls module is initialized before modules calling this method in SkyblockerMod#onInitializeClient. This error can be safely ignore in a test environment.");
             return CompletableFuture.completedFuture(null);
         }
         return fairySoulsLoaded.thenRunAsync(runnable);
@@ -79,10 +79,9 @@ public class FairySouls {
             try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
                 for (Map.Entry<String, JsonElement> foundFairiesForProfileJson : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     for (Map.Entry<String, JsonElement> foundFairiesForLocationJson : foundFairiesForProfileJson.getValue().getAsJsonObject().asMap().entrySet()) {
-                        String profile = foundFairiesForLocationJson.getKey();
-                        Map<BlockPos, ProfileAwareWaypoint> fairiesForLocation = fairySouls.get(profile);
+                        Map<BlockPos, ProfileAwareWaypoint> fairiesForLocation = fairySouls.get(foundFairiesForLocationJson.getKey());
                         for (JsonElement foundFairy : foundFairiesForLocationJson.getValue().getAsJsonArray().asList()) {
-                            fairiesForLocation.get(PosUtils.parsePosString(foundFairy.getAsString())).setFound(profile);
+                            fairiesForLocation.get(PosUtils.parsePosString(foundFairy.getAsString())).setFound(foundFairiesForProfileJson.getKey());
                         }
                     }
                 }

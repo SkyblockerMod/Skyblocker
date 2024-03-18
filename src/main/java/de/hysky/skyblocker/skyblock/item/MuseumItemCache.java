@@ -1,26 +1,10 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.io.ByteArrayInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.Base64;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.util.UndashedUuid;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
@@ -29,12 +13,21 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtTagSizeTracker;
-import net.minecraft.util.Util;
+import net.minecraft.nbt.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
@@ -142,9 +135,8 @@ public class MuseumItemCache {
 	public static void tick(String profileId) {
 		if (loaded.isDone()) {
 			String uuid = UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
-			Object2ObjectOpenHashMap<String, ProfileMuseumData> playerData = MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, uuid1 -> Util.make(new Object2ObjectOpenHashMap<>(), map -> {
-				map.put(profileId, ProfileMuseumData.EMPTY);
-			}));
+			Object2ObjectOpenHashMap<String, ProfileMuseumData> playerData = MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
+			playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY);
 
 			if (playerData.get(profileId).stale()) updateData4ProfileMember(uuid, profileId);
 		}

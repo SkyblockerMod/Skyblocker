@@ -71,7 +71,7 @@ public class EnigmaSouls {
 			try (BufferedReader reader = Files.newBufferedReader(FOUND_SOULS_FILE)) {
 				for (Map.Entry<String, JsonElement> profile : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
 					for (JsonElement foundSoul : profile.getValue().getAsJsonArray().asList()) {
-						SOUL_WAYPOINTS.get(PosUtils.parsePosString(foundSoul.getAsString())).setFound();
+						SOUL_WAYPOINTS.get(PosUtils.parsePosString(foundSoul.getAsString())).setFound(profile.getKey());
 					}
 				}
 			} catch (NoSuchFileException ignored) {
