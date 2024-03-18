@@ -29,12 +29,10 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -54,6 +52,7 @@ import java.util.regex.Pattern;
 public class Room implements Tickable, Renderable {
     private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
+    private static final String LOCKED_CHEST = "That chest is locked!";
     private static final Vec3d DOOR_SIZE = new Vec3d(3, 4, 3);
     protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
     protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
@@ -99,6 +98,8 @@ public class Room implements Tickable, Renderable {
 
     protected List<Tickable> tickables = new ArrayList<>();
     protected List<Renderable> renderables = new ArrayList<>();
+    private BlockPos lastChestSecret;
+    private long lastChestSecretTime;
     /**
      * Stores the next room in the dungeon. Currently only used if the next room is the fairy room.
      */
@@ -207,7 +208,7 @@ public class Room implements Tickable, Renderable {
         SecretWaypoint.Category category = SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category");
         Text waypointName = context.getArgument("name", Text.class);
         addCustomWaypoint(secretIndex, category, waypointName, pos);
-        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName)));
+        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.stringifiedTranslatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName)));
     }
 
     /**
@@ -241,7 +242,7 @@ public class Room implements Tickable, Renderable {
     protected void removeCustomWaypoint(CommandContext<FabricClientCommandSource> context, BlockPos pos) {
         SecretWaypoint waypoint = removeCustomWaypoint(pos);
         if (waypoint != null) {
-            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointRemoved", pos.getX(), pos.getY(), pos.getZ(), name, waypoint.secretIndex, waypoint.category, waypoint.name)));
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.stringifiedTranslatable("skyblocker.dungeons.secrets.customWaypointRemoved", pos.getX(), pos.getY(), pos.getZ(), name, waypoint.secretIndex, waypoint.category, waypoint.name)));
         } else {
             context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointNotFound", pos.getX(), pos.getY(), pos.getZ(), name)));
         }
@@ -549,11 +550,14 @@ public class Room implements Tickable, Renderable {
     }
 
     /**
-     * Sets all secrets as found if {@link #isAllSecretsFound(String)}.
+     * Sets all secrets as found if {@link #isAllSecretsFound(String)} and sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
      */
     protected void onChatMessage(String message) {
         if (isAllSecretsFound(message)) {
             secretWaypoints.values().forEach(SecretWaypoint::setFound);
+        } else if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
+            secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
+                    .ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
         }
     }
 
@@ -572,58 +576,72 @@ public class Room implements Tickable, Renderable {
     }
 
     /**
-     * Marks the secret at the interaction position as found when the player interacts with a chest or a player head,
-     * if there is a secret at the interaction position.
+     * Marks the secret at the interaction position as found when the player interacts with a chest, player head, or lever
+     * if there is a secret at the interaction position and saves the position to {@link #lastChestSecret} if the block is a chest.
      *
-     * @param world     the world to get the block from
-     * @param hitResult the block being interacted with
-     * @see #onSecretFound(SecretWaypoint, String, Object...)
+     * @param world the world to get the block from
+     * @param pos   the position of the block being interacted with
+     * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
      */
-    protected void onUseBlock(World world, BlockHitResult hitResult) {
-        BlockState state = world.getBlockState(hitResult.getBlockPos());
-        if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
-            secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
-                    .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
+    protected void onUseBlock(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        if ((state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) && lastChestSecretTime + 1000 < System.currentTimeMillis() || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
+            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
+                    .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
+            if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) {
+                lastChestSecret = pos;
+                lastChestSecretTime = System.currentTimeMillis();
+            }
         } else if (state.isOf(Blocks.LEVER)) {
-            secretWaypoints.column(hitResult.getBlockPos()).values().stream().filter(SecretWaypoint::isLever).forEach(SecretWaypoint::setFound);
+            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::isLever).forEach(SecretWaypoint::setFound);
         }
     }
 
     /**
-     * Marks the closest secret that requires item pickup no greater than 6 blocks away as found when the player picks up a secret item.
+     * Marks the closest secret that requires item pickup no greater than 6 blocks away as found when a secret item is removed from the world.
      *
      * @param itemEntity the item entity being picked up
-     * @param collector  the collector of the item
-     * @see #onSecretFound(SecretWaypoint, String, Object...)
+     * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
      */
-    protected void onItemPickup(ItemEntity itemEntity, LivingEntity collector) {
+    protected void onItemPickup(ItemEntity itemEntity) {
         if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getStack().getName().getString()::contains)) {
             return;
         }
-        secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(collector))).filter(SecretWaypoint.getRangePredicate(collector))
-                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} picked up a {} from a {} secret, setting secret #{} as found", collector.getName().getString(), itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
+        secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(itemEntity))).filter(SecretWaypoint.getRangePredicate(itemEntity))
+                .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected item {} removed from a {} secret, setting secret #{} as found", itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
     /**
      * Marks the closest bat secret as found when a bat is killed.
      *
      * @param bat the bat being killed
-     * @see #onSecretFound(SecretWaypoint, String, Object...)
+     * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
      */
     protected void onBatRemoved(AmbientEntity bat) {
         secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat)))
-                .ifPresent(secretWaypoint -> onSecretFound(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
+                .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
     /**
-     * Marks all secret waypoints with the same index as the given {@link SecretWaypoint} as found.
+     * Marks all secret waypoints with the same index as the given {@link SecretWaypoint} as found and logs the given message.
      *
      * @param secretWaypoint the secret waypoint to read the index from.
      * @param msg            the message to log
      * @param args           the args for the {@link org.slf4j.Logger#info(String, Object...) Logger#info(String, Object...)} call
      */
-    private void onSecretFound(SecretWaypoint secretWaypoint, String msg, Object... args) {
-        secretWaypoints.row(secretWaypoint.secretIndex).values().forEach(SecretWaypoint::setFound);
+    private void markSecretsFoundAndLogInfo(SecretWaypoint secretWaypoint, String msg, Object... args) {
+        markSecretsAndLogInfo(secretWaypoint, true, msg, args);
+    }
+
+    /**
+     * Marks all secret waypoints with the same index as the given {@link SecretWaypoint} as found or missing and logs the given message.
+     * @param secretWaypoint the secret waypoint to read the index from.
+     * @param found          whether to mark the secret as found or missing
+     * @param msg            the message to log
+     * @param args           the args for the {@link org.slf4j.Logger#info(String, Object...) Logger#info(String, Object...)} call
+     */
+    private void markSecretsAndLogInfo(SecretWaypoint secretWaypoint, boolean found, String msg, Object... args) {
+        markSecrets(secretWaypoint.secretIndex, found);
         DungeonManager.LOGGER.info(msg, args);
     }
 
