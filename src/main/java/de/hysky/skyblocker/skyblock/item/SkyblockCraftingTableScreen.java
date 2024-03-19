@@ -51,7 +51,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
             this.recipeBook.toggleOpen();
             this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth) + 11;
             button.setPosition(this.x + 5, this.height / 2 - 49);
-            if(moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174, this.y+62);
+            if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174, this.y + 62);
         }));
         moreCraftsButton = new TexturedButtonWidget(this.x + 174, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
                 button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
@@ -100,7 +100,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
         context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
-        context.drawGuiTexture(QUICK_CRAFT, i+173, j, 0, 25, 84);
+        context.drawGuiTexture(QUICK_CRAFT, i + 173, j, 0, 25, 84);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
 
     @Override
     protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button) {
-        boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
+        boolean bl = mouseX < (double) left || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
         return this.recipeBook.isClickOutsideBounds(mouseX, mouseY, this.x, this.y, this.backgroundWidth, this.backgroundHeight, button) && bl;
     }
 
