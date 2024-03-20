@@ -206,6 +206,8 @@
   "text.autoconfig.skyblocker.option.locations.garden.farmingHud.config": "Farming HUD Config...",
   "text.autoconfig.skyblocker.option.locations.garden.dicerTitlePrevent": "Enable Dicer Title Prevent",
   "text.autoconfig.skyblocker.option.locations.garden.visitorHelper": "Visitor helper",
+  "text.autoconfig.skyblocker.option.locations.garden.lockMouseTool": "Lock camera when holding a farming tool",
+  "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "Lock camera when on the ground",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableRoomMatching": "Enable Room Matching",
@@ -494,6 +496,8 @@
   "skyblocker.end.hud.protectorLocations.back": "Back",
   "skyblocker.end.hud.protectorLocations.rightFront": "Right Front",
   "skyblocker.end.hud.protectorLocations.rightBack": "Right Back",
+
+  "skyblocker.garden.hud.mouseLocked": "Mouse locked.",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
   "skyblocker.rift.healNow": "Heal now!",
