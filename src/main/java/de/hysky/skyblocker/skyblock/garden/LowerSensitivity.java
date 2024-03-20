@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 public class LowerSensitivity {
 
     private static boolean sensitivityLowered = false;
+
     public static void init() {
         ClientTickEvents.END_WORLD_TICK.register(world -> {
             if (!Utils.isOnSkyblock() || Utils.getLocation() != Location.GARDEN || MinecraftClient.getInstance().player == null) {
