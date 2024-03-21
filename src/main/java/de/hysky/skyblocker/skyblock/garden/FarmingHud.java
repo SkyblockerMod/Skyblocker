@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -12,7 +13,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -41,7 +41,7 @@ public class FarmingHud {
     private static float farmingXpPercentProgress;
 
     public static void init() {
-        HudRenderCallback.EVENT.register((context, tickDelta) -> {
+        HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
             if (shouldRender()) {
                 if (!counter.isEmpty() && counter.peek().rightLong() + 10_000 < System.currentTimeMillis()) {
                     counter.poll();
