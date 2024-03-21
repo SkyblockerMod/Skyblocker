@@ -54,7 +54,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     }
 
     @Override
-    protected int getScrollbarPositionX() {
+    protected int getScrollbarX() {
         return getRowLeft() + getRowWidth();
     }
 

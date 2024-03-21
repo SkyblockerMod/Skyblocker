@@ -7,6 +7,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
+import net.minecraft.item.map.Type;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -46,7 +47,7 @@ public class DungeonMapUtils {
     @Nullable
     private static Vector2i getMapPlayerPos(MapState map) {
         for (MapIcon icon : map.getIcons()) {
-            if (icon.type() == MapIcon.Type.FRAME) {
+            if (icon.type() == Type.FRAME) {
                 return new Vector2i((icon.x() >> 1) + 64, (icon.z() >> 1) + 64);
             }
         }

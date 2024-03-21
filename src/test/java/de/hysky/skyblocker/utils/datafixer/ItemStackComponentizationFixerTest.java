@@ -34,7 +34,7 @@ public class ItemStackComponentizationFixerTest {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
 		JsonElement stackJson = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, fixedStack).result().orElseThrow();
 
-		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
+		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}
 
 	private static NbtCompound convertToNbt(String nbt) {

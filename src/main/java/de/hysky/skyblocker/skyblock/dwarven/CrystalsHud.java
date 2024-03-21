@@ -23,8 +23,9 @@ import java.util.Map;
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
-    private static final Identifier MAP_ICON = new Identifier("textures/map/map_icons.png");
+    private static final Identifier MAP_ICON = new Identifier("textures/map/decorations/player.png");
     private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian");
+
 
     public static boolean visible = false;
 
@@ -109,7 +110,7 @@ public class CrystalsHud {
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw2Cardinal(playerRotation)), 2.5f, 3.5f, 0);
 
         //draw marker on map
-        context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 128, 128);
+        context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
 
         //todo add direction (can not work out how to rotate)
         matrices.pop();
