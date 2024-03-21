@@ -64,7 +64,7 @@
   "text.autoconfig.skyblocker.option.general.quiverWarning.enableQuiverWarningAfterDungeon": "Enable Quiver Warning After a Dungeon",
   "text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
   "text.autoconfig.skyblocker.option.general.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
-  "text.autoconfig.skyblocker.option.general.tabHud": "Fancy tab HUD",
+  "text.autoconfig.skyblocker.option.general.tabHud": "Fancy tab HUD (Temporarily disabled outside dungeons)",
   "text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled": "Enable fancy tab HUD",
   "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale": "Scale factor of fancy tab HUD",
   "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip": "Value in %, relative to your vanilla GUI scale",
