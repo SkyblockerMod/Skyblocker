@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -42,7 +43,7 @@ public class DwarvenHud {
                     "First Event",
                     "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector",
                     "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
-                    "Chest Looter").map(s -> Pattern.compile("^.*(" + s + "): (\\d+\\.?\\d*%|DONE)"))
+                    "Chest Looter").map(s -> Pattern.compile("(" + s + "): (\\d+\\.?\\d*%|DONE)"))
             .collect(Collectors.toList());
     public static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril Powder: [0-9,]+");
     public static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone Powder: [0-9,]+");
@@ -164,27 +165,28 @@ public class DwarvenHud {
 
         commissionList = new ArrayList<>();
 
-        client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
-            if (playerListEntry.getDisplayName() != null) {
-                //find commissions
-                for (Pattern pattern : COMMISSIONS) {
-                    Matcher matcher = pattern.matcher(playerListEntry.getDisplayName().getString());
-                    if (matcher.find()) {
-                        commissionList.add(new Commission(matcher.group(1), matcher.group(2)));
-                    }
-
-                }
-                //find powder
-                Matcher mithrilMatcher = MITHRIL_PATTERN.matcher(playerListEntry.getDisplayName().getString());
-                if (mithrilMatcher.find()){
-                    mithrilPowder = mithrilMatcher.group(0).split(": ")[1];
-                }
-                Matcher gemstoneMatcher = GEMSTONE_PATTERN.matcher(playerListEntry.getDisplayName().getString());
-                if (gemstoneMatcher.find()){
-                    gemStonePowder = gemstoneMatcher.group(0).split(": ")[1];
+        for (PlayerListEntry playerListEntry : client.getNetworkHandler().getPlayerList()) {
+            if (playerListEntry.getDisplayName() == null) {
+                continue;
+            }
+            //find commissions
+            String name = playerListEntry.getDisplayName().getString().strip();
+            for (Pattern pattern : COMMISSIONS) {
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.matches()) {
+                    commissionList.add(new Commission(matcher.group(1), matcher.group(2)));
                 }
             }
-        });
+            //find powder
+            Matcher mithrilMatcher = MITHRIL_PATTERN.matcher(name);
+            if (mithrilMatcher.matches()) {
+                mithrilPowder = mithrilMatcher.group(0).split(": ")[1];
+            }
+            Matcher gemstoneMatcher = GEMSTONE_PATTERN.matcher(name);
+            if (gemstoneMatcher.matches()) {
+                gemStonePowder = gemstoneMatcher.group(0).split(": ")[1];
+            }
+        }
     }
 
     // steamroller tactics to get visibility from outside classes (HudCommsWidget)

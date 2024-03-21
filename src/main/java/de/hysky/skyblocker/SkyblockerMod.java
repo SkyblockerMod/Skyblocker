@@ -166,7 +166,6 @@ public class SkyblockerMod implements ClientModInitializer {
         Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
         Scheduler.INSTANCE.scheduleCyclic(DwarvenHud::update, 40);
         Scheduler.INSTANCE.scheduleCyclic(CrystalsHud::update, 40);
-        Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
         Scheduler.INSTANCE.scheduleCyclic(PlayerListMgr::updateList, 20);
     }
 

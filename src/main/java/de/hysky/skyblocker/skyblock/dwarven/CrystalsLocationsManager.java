@@ -9,6 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -47,12 +48,13 @@ public class CrystalsLocationsManager {
     /**
      * A look-up table to convert between location names and waypoint in the {@link CrystalsWaypoint.Category} values.
      */
-    protected static final Map<String, CrystalsWaypoint.Category> WAYPOINT_LOCATIONS = Arrays.stream(CrystalsWaypoint.Category.values()).collect(Collectors.toMap(CrystalsWaypoint.Category::toString, Function.identity()));
+    private static final Map<String, CrystalsWaypoint.Category> WAYPOINT_LOCATIONS = Arrays.stream(CrystalsWaypoint.Category.values()).collect(Collectors.toMap(CrystalsWaypoint.Category::toString, Function.identity()));
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 
     protected static Map<String, CrystalsWaypoint> activeWaypoints = new HashMap<>();
 
     public static void init() {
+        Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
         ClientReceiveMessageEvents.GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
@@ -83,7 +85,7 @@ public class CrystalsLocationsManager {
                 for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
                     if (value.toLowerCase().contains(waypointLocation.toLowerCase())) { //todo be more lenient
                         //all data found to create waypoint
-                        addCustomWaypoint(Text.of(waypointLocation),blockPos);
+                        addCustomWaypoint(waypointLocation, blockPos);
                         return;
                     }
                 }
@@ -144,7 +146,7 @@ public class CrystalsLocationsManager {
         BlockPos blockPos = location.toAbsoluteBlockPos(new ServerCommandSource(null, source.getPosition(), source.getRotation(), null, 0, null, null, null, null));
 
         if (WAYPOINT_LOCATIONS.containsKey(place)) {
-            addCustomWaypoint(Text.of(place), blockPos);
+            addCustomWaypoint(place, blockPos);
 
             //tell the client it has done this
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
@@ -158,10 +160,10 @@ public class CrystalsLocationsManager {
     }
 
 
-    private static void addCustomWaypoint( Text waypointName, BlockPos pos) {
-        CrystalsWaypoint.Category category = WAYPOINT_LOCATIONS.get(waypointName.getString());
-        CrystalsWaypoint waypoint = new CrystalsWaypoint(category, waypointName, pos);
-        activeWaypoints.put(waypointName.getString(), waypoint);
+    private static void addCustomWaypoint(String waypointName, BlockPos pos) {
+        CrystalsWaypoint.Category category = WAYPOINT_LOCATIONS.get(waypointName);
+        CrystalsWaypoint waypoint = new CrystalsWaypoint(category, Text.literal(waypointName), pos);
+        activeWaypoints.put(waypointName, waypoint);
     }
 
     public static void render(WorldRenderContext context) {
@@ -184,12 +186,12 @@ public class CrystalsLocationsManager {
         }
 
         //get if the player is in the crystals
-        String location = Utils.getIslandArea().replace("⏣ ", "");
+        String location = Utils.getIslandArea().substring(2);
         //if new location and needs waypoint add waypoint
         if (!location.equals("Unknown") && WAYPOINT_LOCATIONS.containsKey(location) && !activeWaypoints.containsKey(location)) {
             //add waypoint at player location
             BlockPos playerLocation = CLIENT.player.getBlockPos();
-            addCustomWaypoint(Text.of(location), playerLocation);
+            addCustomWaypoint(location, playerLocation);
         }
     }
 }
