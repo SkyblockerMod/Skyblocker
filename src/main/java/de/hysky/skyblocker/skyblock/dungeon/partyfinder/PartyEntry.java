@@ -228,7 +228,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             }
         }
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        stack.set(DataComponentTypes.PROFILE, new ProfileComponent("SkyblockerCustomPF", Optional.of(UUID.randomUUID()), floorSkullProperties));
+        stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerCustomPFSkull" + floor), Optional.of(UUID.randomUUID()), floorSkullProperties));
         context.drawItem(stack, 317, 3);
 
         int textWidth = textRenderer.getWidth(floor);

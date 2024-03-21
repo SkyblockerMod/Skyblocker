@@ -34,7 +34,7 @@ public class EndHudWidget extends Widget {
     private static final ItemStack POPPY = new ItemStack(Items.POPPY);
 
     static {
-        ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent("MHF_Enderman", Optional.empty(), new PropertyMap()));
+        ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
         POPPY.addEnchantment(Enchantments.INFINITY, 1);
 
         INSTANCE.setX(SkyblockerConfigManager.get().locations.end.x);

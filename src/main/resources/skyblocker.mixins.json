@@ -21,7 +21,6 @@
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
-    "ItemMixin",
     "ItemStackMixin",
     "LeverBlockMixin",
     "LivingEntityRendererMixin",

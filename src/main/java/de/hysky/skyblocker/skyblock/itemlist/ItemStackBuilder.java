@@ -69,7 +69,7 @@ public class ItemStackBuilder {
             UUID uuid = UUID.fromString(skullUuid.group(1));
             String textureValue = skullTexture.group(1);
 
-            stack.set(DataComponentTypes.PROFILE, new ProfileComponent(internalName, Optional.of(uuid), ItemUtils.propertyMapWithTexture(textureValue)));
+            stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of(internalName), Optional.of(uuid), ItemUtils.propertyMapWithTexture(textureValue)));
         }
 
         // add leather armor dye color

@@ -47,8 +47,8 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
     }
 
     @Override
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 50;
+    protected int getScrollbarX() {
+        return super.getScrollbarX() + 50;
     }
 
     protected Optional<ShortcutCategoryEntry> getCategory() {
