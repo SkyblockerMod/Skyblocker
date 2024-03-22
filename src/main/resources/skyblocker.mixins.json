@@ -50,5 +50,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "accessor.SlotAccessor"
+  ]
 }
