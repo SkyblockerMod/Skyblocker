@@ -2,6 +2,8 @@ package de.hysky.skyblocker.mixin;
 
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
+import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
@@ -26,6 +28,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
         if (player == null) return;
         if (!Utils.isOnSkyblock()) return;
         T screenHandler = type.create(id, player.getInventory());
+        if (!(screenHandler instanceof  GenericContainerScreenHandler containerScreenHandler)) return;
+        if (PartyFinderScreen.possibleInventoryNames.contains(name.getString().toLowerCase())) {
         if (SkyblockerConfigManager.get().general.betterPartyFinder && screenHandler instanceof GenericContainerScreenHandler containerScreenHandler && PartyFinderScreen.possibleInventoryNames.contains(name.getString().toLowerCase())) {
             if (client.currentScreen != null) {
                 String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
@@ -44,6 +48,12 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
                 client.setScreen(new PartyFinderScreen(containerScreenHandler, player.getInventory(), name));
             }
 
+            ci.cancel();
+        } else if (name.getString().toLowerCase().contains("auctions browser")) {
+            System.out.println("another one");
+            AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, false);
+            client.player.currentScreenHandler = auctionHouseScreenHandler;
+            client.setScreen(new AuctionBrowserScreen(auctionHouseScreenHandler, client.player.getInventory()));
             ci.cancel();
         } else if (SkyblockerConfigManager.get().general.fancyCraftingTable && screenHandler instanceof GenericContainerScreenHandler containerScreenHandler && name.getString().toLowerCase().contains("craft item")) {
             SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
