@@ -52,7 +52,7 @@ public class FarmingHudWidget extends Widget {
     @SuppressWarnings("DataFlowIssue")
     @Override
     public void updateContent() {
-        ItemStack icon = FARMING_TOOLS.getOrDefault(ItemUtils.getItemId(client.player.getMainHandStack()), Ico.HOE);
+        ItemStack icon = client.player == null ? Ico.HOE: FARMING_TOOLS.getOrDefault(ItemUtils.getItemId(client.player.getMainHandStack()), Ico.HOE);
         addSimpleIcoText(icon, "Counter: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
         addSimpleIcoText(icon, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.cropsPerMinute() / 100 * 100));
         addSimpleIcoText(icon, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
