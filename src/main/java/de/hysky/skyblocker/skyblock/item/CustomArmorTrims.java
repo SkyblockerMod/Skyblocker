@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
@@ -30,6 +31,9 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.util.stream.Collectors;
+
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,19 +50,20 @@ public class CustomArmorTrims {
 
 	private static void initializeTrimCache() {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		if (trimsInitialized || player == null) {
+		FabricLoader loader = FabricLoader.getInstance();
+		if (trimsInitialized || (player == null && !loader.isDevelopmentEnvironment())) {
 			return;
 		}
 		try {
 			TRIMS_CACHE.clear();
-			DynamicRegistryManager registryManager = player.networkHandler.getRegistryManager();
-			for (Identifier material : registryManager.get(RegistryKeys.TRIM_MATERIAL).getIds()) {
-				for (Identifier pattern : registryManager.get(RegistryKeys.TRIM_PATTERN).getIds()) {
+			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, player); 
+			for (Identifier material : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().map(r -> new Identifier(r.value().assetName())).collect(Collectors.toSet())) {
+				for (Identifier pattern : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().map(r -> r.value().assetId()).collect(Collectors.toSet())) {
 					NbtCompound compound = new NbtCompound();
 					compound.putString("material", material.toString());
 					compound.putString("pattern", pattern.toString());
 
-					ArmorTrim trim = ArmorTrim.CODEC.parse(RegistryOps.of(NbtOps.INSTANCE, registryManager), compound).resultOrPartial(LOGGER::error).orElse(null);
+					ArmorTrim trim = ArmorTrim.CODEC.parse(RegistryOps.of(NbtOps.INSTANCE, wrapperLookup), compound).resultOrPartial(LOGGER::error).orElse(null);
 
 					// Something went terribly wrong
 					if (trim == null) throw new IllegalStateException("Trim shouldn't be null! [" + "\"" + material + "\",\"" + pattern + "\"]");
@@ -72,6 +77,10 @@ public class CustomArmorTrims {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Encountered an exception while caching armor trims", e);
 		}
+	}
+
+	private static RegistryWrapper.WrapperLookup getWrapperLookup(FabricLoader loader, ClientPlayerEntity player) {
+		return !loader.isDevelopmentEnvironment() ? player.networkHandler.getRegistryManager() : BuiltinRegistries.createWrapperLookup();
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
