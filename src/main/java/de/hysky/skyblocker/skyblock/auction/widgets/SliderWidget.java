@@ -7,9 +7,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-
 // This is kinda excessive, but I thought it was a good idea
 public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends ClickableWidget {
     private final SlotClickHandler clickSlot;
