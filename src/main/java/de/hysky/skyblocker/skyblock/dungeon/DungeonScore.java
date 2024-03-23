@@ -208,7 +208,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGE_CONFIG.mimicMessage);
+		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + MIMIC_MESSAGE_CONFIG.mimicMessage);
 		mimicKilled = true;
 	}
 

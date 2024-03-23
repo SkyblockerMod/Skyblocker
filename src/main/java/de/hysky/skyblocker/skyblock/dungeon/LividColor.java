@@ -11,7 +11,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
@@ -82,7 +81,7 @@ public class LividColor {
                 .append(CONFIG.lividColorText.replaceAll("\\[color]", colorString))
                 .formatted(LividColor.color);
         if (CONFIG.enableLividColorText) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(message.getString());
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + message.getString());
         }
         if (CONFIG.enableLividColorTitle) {
             client.inGameHud.setDefaultTitleFade();
