@@ -2,8 +2,10 @@ package de.hysky.skyblocker.mixin;
 
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
+import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
@@ -26,7 +28,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
         if (player == null) return;
         T screenHandler = type.create(id, player.getInventory());
         if (!(screenHandler instanceof  GenericContainerScreenHandler containerScreenHandler)) return;
-        if (PartyFinderScreen.possibleInventoryNames.contains(name.getString().toLowerCase())) {
+        String nameLowercase = name.getString().toLowerCase();
+        if (PartyFinderScreen.possibleInventoryNames.contains(nameLowercase)) {
             if (client.currentScreen != null) {
                 String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
                 if (lowerCase.contains("group builder")) return;
@@ -45,11 +48,23 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
             }
 
             ci.cancel();
-        } else if (name.getString().toLowerCase().contains("auctions browser")) {
-            System.out.println("another one");
+        } else if (nameLowercase.contains("auctions browser") || nameLowercase.contains("auctions: ")) {
             AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, false);
             client.player.currentScreenHandler = auctionHouseScreenHandler;
-            client.setScreen(new AuctionBrowserScreen(auctionHouseScreenHandler, client.player.getInventory()));
+            if (client.currentScreen instanceof AuctionBrowserScreen auctionBrowserScreen) {
+                auctionBrowserScreen.changeHandler(auctionHouseScreenHandler);
+            } else client.setScreen(new AuctionBrowserScreen(auctionHouseScreenHandler, client.player.getInventory()));
+            ci.cancel();
+        } else if (nameLowercase.contains("auction view")) {
+            AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, true);
+            client.player.currentScreenHandler = auctionHouseScreenHandler;
+            if (client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
+                auctionViewScreen.changeHandler(auctionHouseScreenHandler);
+            } else client.setScreen(new AuctionViewScreen(auctionHouseScreenHandler, client.player.getInventory(), name));
+            ci.cancel();
+        } else if ((nameLowercase.contains("confirm purchase") || nameLowercase.contains("confirm bid")) && client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
+            client.setScreen(auctionViewScreen.getConfirmPurchasePopup(name));
+            client.player.currentScreenHandler = containerScreenHandler;
             ci.cancel();
         }
     }
