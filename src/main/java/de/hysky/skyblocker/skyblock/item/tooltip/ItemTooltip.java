@@ -20,6 +20,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,27 +93,7 @@ public class ItemTooltip {
                   We are skipping check average prices for potions, runes
                   and enchanted books because there is no data for their in API.
                  */
-                switch (internalID) {
-                    case "PET" -> {
-                        neuName = neuName.replaceAll("LVL_\\d*_", "");
-                        String[] parts = neuName.split("_");
-                        String type = parts[0];
-                        neuName = neuName.replaceAll(type + "_", "");
-                        neuName = neuName + "-" + type;
-                        neuName = neuName.replace("UNCOMMON", "1")
-                                .replace("COMMON", "0")
-                                .replace("RARE", "2")
-                                .replace("EPIC", "3")
-                                .replace("LEGENDARY", "4")
-                                .replace("MYTHIC", "5")
-                                .replace("-", ";");
-                    }
-                    case "RUNE" -> neuName = neuName.replaceAll("_(?!.*_)", ";");
-                    case "POTION" -> neuName = "";
-                    case "ATTRIBUTE_SHARD" ->
-                            neuName = internalID + "+" + neuName.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
-                    default -> neuName = neuName.replace(":", "-");
-                }
+                neuName = getNeuName(internalID, neuName);
 
                 if (!neuName.isEmpty() && lbinExist) {
                     SkyblockerConfig.Average type = config.avg;
@@ -262,6 +243,32 @@ public class ItemTooltip {
                 lines.add(title.append(stateText));
             }
         }
+    }
+
+    @NotNull
+    public static String getNeuName(String internalID, String neuName) {
+        switch (internalID) {
+            case "PET" -> {
+                neuName = neuName.replaceAll("LVL_\\d*_", "");
+                String[] parts = neuName.split("_");
+                String type = parts[0];
+                neuName = neuName.replaceAll(type + "_", "");
+                neuName = neuName + "-" + type;
+                neuName = neuName.replace("UNCOMMON", "1")
+                        .replace("COMMON", "0")
+                        .replace("RARE", "2")
+                        .replace("EPIC", "3")
+                        .replace("LEGENDARY", "4")
+                        .replace("MYTHIC", "5")
+                        .replace("-", ";");
+            }
+            case "RUNE" -> neuName = neuName.replaceAll("_(?!.*_)", ";");
+            case "POTION" -> neuName = "";
+            case "ATTRIBUTE_SHARD" ->
+                    neuName = internalID + "+" + neuName.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
+            default -> neuName = neuName.replace(":", "-");
+        }
+        return neuName;
     }
 
     private static void addExoticTooltip(List<Text> lines, String internalID, NbtCompound nbt, String colorHex, String expectedHex, String existingTooltip) {

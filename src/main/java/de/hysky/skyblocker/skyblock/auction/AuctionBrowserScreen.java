@@ -1,11 +1,15 @@
 package de.hysky.skyblocker.skyblock.auction;
 
+import com.google.gson.JsonElement;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
+import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -25,6 +29,7 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -49,6 +54,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     public static final int PREV_PAGE_BUTTON = 46;
     public static final int NEXT_PAGE_BUTTON = 53;
+
+    private final Int2BooleanOpenHashMap isSlotHighlighted = new Int2BooleanOpenHashMap(24);
 
 
     // WIDGETS
@@ -154,6 +161,14 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     }
 
     @Override
+    protected void drawSlot(DrawContext context, Slot slot) {
+        if (isSlotHighlighted.getOrDefault(slot.id, false)) {
+            context.drawBorder(slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
+        }
+        super.drawSlot(context, slot);
+    }
+
+    @Override
     protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
         if (slotId >= handler.getRows()*9) return;
         super.onMouseClick(slot, slotId, button, actionType);
@@ -199,50 +214,88 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
         if (client == null || stack.isEmpty()) return;
         isWaitingForServer = false;
-        if (slotId == PREV_PAGE_BUTTON) prevPageVisible = false;
-        if (slotId == NEXT_PAGE_BUTTON) nextPageVisible = false;
-        if (slotId == SORT_BUTTON_SLOT) {
-            sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
-        } else if (slotId == AUCTION_TYPE_BUTTON_SLOT) {
-            auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
-        } else if (slotId == RARITY_BUTTON_SLOT) {
-            List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
-            int ordinal = getOrdinal(tooltip);
-            String split = tooltip.get(ordinal+2).getString().substring(2);
-            rarityWidget.setText(tooltip.subList(1, tooltip.size()-3), split);
-        } else if (slotId == RESET_BUTTON_SLOT) {
-            if (resetFiltersButton != null) resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
-        } else if (slotId < this.handler.getRows()*9 && slotId%9 == 0) {
-            CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
-            categoryTabWidget.setSlotId(slotId);
-            categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
-            List<Text> tooltip = handler.getSlot(slotId).getStack().getTooltip(client.player, TooltipContext.BASIC);
-            for (int j = tooltip.size() - 1; j >= 0; j--) {
-                String lowerCase = tooltip.get(j).getString().toLowerCase();
-                if (lowerCase.contains("currently")) {
-                    categoryTabWidget.setToggled(true);
-                    break;
-                } else if (lowerCase.contains("click")) {
-                    categoryTabWidget.setToggled(false);
-                    break;
-                } else categoryTabWidget.setToggled(false);
+
+        switch (slotId) {
+            case PREV_PAGE_BUTTON -> {
+                prevPageVisible = false;
+                if (stack.isOf(Items.ARROW)) {
+                    prevPageVisible = true;
+                    parsePage(stack);
+                }
             }
-        } else if (slotId == PREV_PAGE_BUTTON && stack.isOf(Items.ARROW)) {
-            prevPageVisible = true;
-            parsePage(stack);
-        } else if (slotId == NEXT_PAGE_BUTTON && stack.isOf(Items.ARROW)) {
-            nextPageVisible = true;
-            parsePage(stack);
-        } else if (slotId == SEARCH_BUTTON_SLOT) {
-            List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
-            for (Text text : tooltip) {
-                String string = text.getString();
-                if (string.contains("Filtered:")) {
-                    String[] split = string.split(":");
-                    if (split.length < 2) {
-                        search = "";
-                    } else search = split[1].trim();
-                    break;
+            case NEXT_PAGE_BUTTON -> {
+                nextPageVisible = false;
+                if (stack.isOf(Items.ARROW)) {
+                    nextPageVisible = true;
+                    parsePage(stack);
+                }
+            }
+            case SORT_BUTTON_SLOT -> sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
+            case AUCTION_TYPE_BUTTON_SLOT -> auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
+            case RARITY_BUTTON_SLOT -> {
+                List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                int ordinal = getOrdinal(tooltip);
+                String split = tooltip.get(ordinal+2).getString().substring(2);
+                rarityWidget.setText(tooltip.subList(1, tooltip.size()-3), split);
+            }
+            case RESET_BUTTON_SLOT -> {
+                if (resetFiltersButton != null) resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
+            }
+            case SEARCH_BUTTON_SLOT -> {
+                List<Text> tooltipSearch = stack.getTooltip(client.player, TooltipContext.BASIC);
+                for (Text text : tooltipSearch) {
+                    String string = text.getString();
+                    if (string.contains("Filtered:")) {
+                        String[] splitSearch = string.split(":");
+                        if (splitSearch.length < 2) {
+                            search = "";
+                        } else search = splitSearch[1].trim();
+                        break;
+                    }
+                }
+            }
+            default -> {
+                if (slotId < this.handler.getRows()*9 && slotId%9 == 0) {
+                    CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
+                    categoryTabWidget.setSlotId(slotId);
+                    categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
+                    List<Text> tooltipDefault = handler.getSlot(slotId).getStack().getTooltip(client.player, TooltipContext.BASIC);
+                    for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
+                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase();
+                        if (lowerCase.contains("currently")) {
+                            categoryTabWidget.setToggled(true);
+                            break;
+                        } else if (lowerCase.contains("click")) {
+                            categoryTabWidget.setToggled(false);
+                            break;
+                        } else categoryTabWidget.setToggled(false);
+                    }
+                } else if (slotId > 9 && slotId < (handler.getRows()-1)*9 && slotId%9 > 1 && slotId%9 < 8) {
+                    List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                    for (int k = tooltip.size() - 1; k >= 0; k--) {
+                        Text text = tooltip.get(k);
+                        String string = text.getString();
+                        if (string.toLowerCase().contains("buy it now:")) {
+                            String[] split = string.split(":");
+                            if (split.length < 2) continue;
+                            String coins = split[1].replace(",", "").replace("coins", "").trim();
+                            try {
+                                int parsed = Integer.parseInt(coins);
+                                String name = ItemTooltip.getInternalNameFromNBT(stack, false);
+                                String internalID = ItemTooltip.getInternalNameFromNBT(stack, true);
+                                String neuName = name;
+                                if (name == null || internalID == null) break;
+                                if (name.startsWith("ISSHINY_")) {
+                                    neuName = internalID;
+                                }
+                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemTooltip.getNeuName(internalID, neuName));
+                                if (jsonElement == null) break;
+                                else {
+                                    isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);
+                                }
+                            } catch (NumberFormatException ignored) {}
+                        }
+                    }
                 }
             }
         }
