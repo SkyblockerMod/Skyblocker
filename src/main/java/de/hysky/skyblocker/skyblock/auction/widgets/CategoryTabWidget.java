@@ -33,11 +33,11 @@ public class CategoryTabWidget extends ToggleButtonWidget {
         if (textures == null) return;
         Identifier identifier = textures.get(true, this.toggled);
         int x = getX();
-        if (toggled) x-=2;
+        if (toggled) x -= 2;
         //RenderSystem.disableDepthTest();
         context.drawGuiTexture(identifier, x, this.getY(), this.width, this.height);
         //RenderSystem.enableDepthTest();
-        context.drawItem(icon, x+9, getY()+5);
+        context.drawItem(icon, x + 9, getY() + 5);
 
         if (isMouseOver(mouseX, mouseY)) {
             context.getMatrices().push();

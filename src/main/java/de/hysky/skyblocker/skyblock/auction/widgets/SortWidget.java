@@ -9,9 +9,9 @@ import net.minecraft.util.math.MathHelper;
 public class SortWidget extends SliderWidget<SortWidget.Option> {
 
     /**
-     * @param x             x position
-     * @param y             y position
-     * @param clickSlot     the parent AuctionsBrowser
+     * @param x         x position
+     * @param y         y position
+     * @param clickSlot the parent AuctionsBrowser
      */
     public SortWidget(int x, int y, SlotClickHandler clickSlot) {
         super(x, y, 36, 9, Text.literal("Sort Widget"), clickSlot, Option.HIGH);
@@ -26,17 +26,21 @@ public class SortWidget extends SliderWidget<SortWidget.Option> {
         private final Identifier texture;
         private static final String prefix = "textures/gui/auctions_gui/sort_widget/";
         private static final Identifier HOVER_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, prefix + "hover.png");
-        private static final Identifier BACK_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE,prefix + "back.png");
+        private static final Identifier BACK_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, prefix + "back.png");
 
         Option(String textureName) {
             texture = new Identifier(SkyblockerMod.NAMESPACE, prefix + textureName);
         }
+
         public Identifier getOptionTexture() {
             return texture;
         }
 
         private static final Option[] values = values();
-        public static Option get(int ordinal) {return values[MathHelper.clamp(ordinal, 0, values.length-1)];}
+
+        public static Option get(int ordinal) {
+            return values[MathHelper.clamp(ordinal, 0, values.length - 1)];
+        }
 
         @Override
         public boolean isVertical() {

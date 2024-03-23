@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
-    protected static final Identifier BACKGROUND_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE,"textures/gui/auctions_gui/browser/background_view.png");
+    protected static final Identifier BACKGROUND_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background_view.png");
 
     DirectionalLayoutWidget verticalLayout = DirectionalLayoutWidget.vertical();
 
@@ -59,7 +59,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         cantAffordText = new TextWidget(Text.literal("Can't Afford"), textRenderer).alignCenter();
         verticalLayout.add(cantAffordText);
 
-        verticalLayout.add(ButtonWidget.builder(Text.literal(isBinAuction?"Buy!":"Bid!"), button -> {
+        verticalLayout.add(ButtonWidget.builder(Text.literal(isBinAuction ? "Buy!" : "Bid!"), button -> {
             if (buySlotID == -1) return;
             clickSlot(buySlotID);
         }).size(50, 12).build());
@@ -83,7 +83,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     private void updateLayout() {
         verticalLayout.refreshPositions();
-        SimplePositioningWidget.setPos(verticalLayout, x, y+36, backgroundWidth, 60);
+        SimplePositioningWidget.setPos(verticalLayout, x, y + 36, backgroundWidth, 60);
     }
 
     @Override
@@ -95,10 +95,12 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
+        if (isWaitingForServer) context.drawText(textRenderer, "Waiting...", 0, 0, Colors.WHITE, true);
+
         MatrixStack matrices = context.getMatrices();
 
         matrices.push();
-        matrices.translate(x+77, y+14, 0);
+        matrices.translate(x + 77, y + 14, 0);
         matrices.scale(1.375f, 1.375f, 1.375f);
         //matrices.translate(0, 0, 100f);
         ItemStack stack = handler.getSlot(13).getStack();
@@ -120,7 +122,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     @Override
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
         super.drawMouseoverTooltip(context, x, y);
-        if (x>this.x+75 && x<this.x+75+26 && y>this.y+13 && y<this.y+13+26) {
+        if (x > this.x + 75 && x < this.x + 75 + 26 && y > this.y + 13 && y < this.y + 13 + 26) {
             context.drawTooltip(this.textRenderer, this.getTooltipFromItem(handler.getSlot(13).getStack()), x, y);
         }
     }
@@ -156,6 +158,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     private int buySlotID = -1;
     private boolean priceParsed = false;
+
     private void getPriceFromTooltip(List<Text> tooltip) {
         if (priceParsed) return;
         String minBid = null;
