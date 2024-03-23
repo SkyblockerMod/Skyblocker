@@ -20,13 +20,11 @@ public class AuctionHouseScreenHandler extends GenericContainerScreenHandler {
             SlotAccessor slotAccessor = (SlotAccessor) slot;
             slotAccessor.setY(slot.y+2-yOffset);
         }
-
-        if (isView) return;
         // disable ALL THE OTHER SLOTS MWAHAHAHA and also move the good ones around and stuff
         for (int i = 0; i < rows*9; i++) {
             int lineI = i % 9;
             Slot slot = slots.get(i);
-            if (i>9 && i<(rows-1)*9 && lineI > 1 && lineI < 8) {
+            if (!isView && i>9 && i<(rows-1)*9 && lineI > 1 && lineI < 8) {
                 int miniInventorySlot = lineI - 2 + (i/9 - 1)*6;
                 SlotAccessor slotAccessor = (SlotAccessor) slot;
                 slotAccessor.setX(8 + miniInventorySlot%8 * 18);
