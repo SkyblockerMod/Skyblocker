@@ -26,6 +26,8 @@ import java.util.List;
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
     protected static final Identifier BACKGROUND_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background_view.png");
 
+    public static final int BACK_BUTTON_SLOT = 49;
+
     DirectionalLayoutWidget verticalLayout = DirectionalLayoutWidget.vertical();
 
     public final boolean isBinAuction;
@@ -35,14 +37,17 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     private TextWidget cantAffordText;
     public String minBid = "";
 
-    private BuyState buyState = BuyState.CANT_AFFORD;
+    private BuyState buyState = null;
     private MutableText priceText = Text.literal("?");
+    private ButtonWidget buyButton;
 
     public AuctionViewScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         backgroundHeight = 187;
         isBinAuction = this.getTitle().getString().toLowerCase().contains("bin");
         playerInventoryTitleY = 93;
+        titleX = 5;
+        titleY = 4;
     }
 
     @Override
@@ -59,12 +64,18 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         cantAffordText = new TextWidget(Text.literal("Can't Afford"), textRenderer).alignCenter();
         verticalLayout.add(cantAffordText);
 
-        verticalLayout.add(ButtonWidget.builder(Text.literal(isBinAuction ? "Buy!" : "Bid!"), button -> {
+        buyButton = ButtonWidget.builder(Text.literal(isBinAuction ? "Buy!" : "Bid!"), button -> {
             if (buySlotID == -1) return;
             clickSlot(buySlotID);
-        }).size(50, 12).build());
+        }).size(50, 12).build();
+        verticalLayout.add(buyButton);
         verticalLayout.forEachChild(this::addDrawableChild);
         updateLayout();
+
+        addDrawableChild(new ButtonWidget.Builder( Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+                .position(x + backgroundWidth - 16, y+4)
+                .size(12, 12)
+                .build());
 
 
     }
@@ -78,6 +89,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
             case AFFORD -> cantAffordText.setMessage(Text.empty());
         }
         cantAffordText.setWidth(textRenderer.getWidth(cantAffordText.getMessage()));
+        buyButton.active = buyState != BuyState.CANT_AFFORD;
         updateLayout();
     }
 

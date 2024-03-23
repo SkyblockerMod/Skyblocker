@@ -84,7 +84,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         resetFiltersButton.setTooltipDelay(500);
 
         addDrawableChild(new ButtonWidget.Builder( Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
-                .position(x + backgroundWidth - 16, y+4)
+                .position(x + 98, y+4)
                 .size(12, 12)
                 .build());
 
@@ -142,7 +142,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                 context.drawSprite(159, 72, 0, 6, 3, DOWN_ARROW.get());
             else context.drawSprite(159, 72, 0, 6, 3, DOWN_ARROW.get(), 0.54f, 0.54f, 0.54f, 1);
         }
-        context.drawText(textRenderer, String.format("%d/%d", currentPage, totalPages), 99, 6, Colors.GRAY, false);
+        context.drawText(textRenderer, String.format("%d/%d", currentPage, totalPages), 111, 6, Colors.GRAY, false);
         if (totalPages <= 1)
             context.drawGuiTexture(SCROLLER_TEXTURE, 156, 18, 12, 15);
         else
