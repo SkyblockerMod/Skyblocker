@@ -21,13 +21,12 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
     float posProgress;
 
     /**
-     *
-     * @param x x position
-     * @param y y position
-     * @param width width
-     * @param height height
-     * @param message probably useless, just put the widget name
-     * @param clickSlot the parent AuctionsBrowser
+     * @param x             x position
+     * @param y             y position
+     * @param width         width
+     * @param height        height
+     * @param message       probably useless, just put the widget name
+     * @param clickSlot     the parent AuctionsBrowser
      * @param defaultOption the default option <strong>should be the one at ordinal 0</strong>
      */
     public SliderWidget(int x, int y, int width, int height, Text message, SlotClickHandler clickSlot, E defaultOption) {
@@ -51,8 +50,8 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
         context.getMatrices().push();
         context.getMatrices().translate(getX(), getY(), 0);
 
-        int x = current.isVertical() ? 0: Math.round(posProgress);
-        int y = current.isVertical() ? Math.round(posProgress): 0;
+        int x = current.isVertical() ? 0 : Math.round(posProgress);
+        int y = current.isVertical() ? Math.round(posProgress) : 0;
 
         int optionWidth = current.getOptionSize()[0];
         int optionHeight = current.getOptionSize()[1];
@@ -89,7 +88,9 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+    }
+
     public interface OptionInfo {
         boolean isVertical();
 

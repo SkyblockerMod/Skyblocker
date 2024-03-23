@@ -4,7 +4,6 @@ import de.hysky.skyblocker.utils.render.gui.BarebonesPopupScreen;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Style;
@@ -69,7 +68,7 @@ public class EditBidPopup extends BarebonesPopupScreen {
     }
 
     private void done(ButtonWidget widget) {
-        if(!isStringGood(textFieldWidget.getText().trim())) return;
+        if (!isStringGood(textFieldWidget.getText().trim())) return;
         sendPacket(textFieldWidget.getText().trim());
         this.close();
     }
@@ -88,6 +87,7 @@ public class EditBidPopup extends BarebonesPopupScreen {
     @Override
     public void close() {
         if (!packetSent) sendPacket("");
+        assert this.client != null;
         this.client.setScreen(null);
     }
 

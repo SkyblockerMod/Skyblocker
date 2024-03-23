@@ -57,7 +57,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     private RarityWidget rarityWidget;
     private ButtonWidget resetFiltersButton;
     private final List<CategoryTabWidget> categoryTabWidgets = new ArrayList<>(6);
-    private String search;
+    private String search = "";
 
     public AuctionBrowserScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory) {
         super(handler, inventory, Text.literal("Auctions Browser"));
@@ -69,8 +69,6 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     @Override
     protected void init() {
         super.init();
-        x = (this.width - 176) / 2;
-        y = (this.height - 187) / 2;
         sortWidget = new SortWidget(x + 25, y + 81, this::clickSlot);
         sortWidget.setSlotId(SORT_BUTTON_SLOT);
         addDrawableChild(sortWidget);
@@ -84,6 +82,12 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         addDrawableChild(resetFiltersButton);
         resetFiltersButton.setTooltip(Tooltip.of(Text.literal("Reset Filters")));
         resetFiltersButton.setTooltipDelay(500);
+
+        addDrawableChild(new ButtonWidget.Builder( Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+                .position(x + backgroundWidth - 16, y+4)
+                .size(12, 12)
+                .build());
+
         if (categoryTabWidgets.isEmpty())
             for (int i = 0; i < 6; i++) {
                 CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this::clickSlot);
@@ -261,6 +265,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     private boolean prevPageVisible = false;
     private boolean nextPageVisible = false;
     private void parsePage(ItemStack stack) {
+        assert client != null;
         List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
         String str = tooltip.get(1).getString().trim();
         str = str.substring(1, str.length() - 1); // remove parentheses
