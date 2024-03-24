@@ -1,3 +1,42 @@
+# Release 1.19.0
+
+## Highlight
+* Fix dungeon detection when holding bow
+* Farming HUD: shows counter, crops/min, blocks/s, farming level, farming xp/h, and yaw and pitch
+* Custom Chat Rules: create custom filters for certain chat messages and then hide, announce, play sound or change the output
+* Croesus profit calculator: highlights the chest with the highest outcome
+
+## What's Changed
+* Custom Chat Rules by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/560
+* Automatic Labeling by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/574
+* Remove no longer used Fetchur riddles by @alexiayaa in https://github.com/SkyblockerMod/Skyblocker/pull/571
+* Tweak particle direction detection by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/573
+* Croesus profit calculator by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/565
+* Fix chat spam by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/576
+* Image Repo Loader by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/578
+* Fix VisitorHelper crash by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/579
+* One more creeper beam by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/583
+* 32 TAPs for kuudra default by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/591
+* Fixes error when the directory doesn't exist by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/593
+* Add breaks for force close world loading screen mod by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/587
+* Farming HUD & HUD Refactor by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/589
+* Fix potential stack overflow with chat rules by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/592
+* Add Yang Glyph Notification by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/594
+* Dungeonmap fix + rewrite by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/595
+* Fix fairy and enigma souls profile loading and add chat profile detection by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/596
+* Fix bugs with secret detection by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/597
+* Refactor Dwarven, Crystals, and Backpack Preview by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/601
+* Tab hud quick fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/608
+* Fix #609 by viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/610
+
+## Translation update
+* https://github.com/SkyblockerMod/Skyblocker/pull/582
+* Chinese (Simplified) by AC19970 and PumpkinXD
+* French by maDU59
+* Russian by wilson-wtf, Ghost-3 and R2kip
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.18.1...v1.19.0
+___
 # Release 1.18.1
 
 ## Highlight

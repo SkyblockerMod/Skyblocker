@@ -24,6 +24,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Minimap & Score**
 - **Starred Mob Glow**
 - **Croesus Helper**
+  - highlight not opened chests
+  - profit calculator
 - **Puzzle Solver:**
   - *Three Weirdos*
   - *Blaze*
@@ -103,9 +105,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Steak Stake Indicator
 - **Enderman:**
   - Beacon Highlighting
+  - Yang Glyph Notification
   - Nukekubi Head Highlighting
 
 ### Garden Features:
+- **Farming HUD**
 - **Visitor Helper**
   - buy items that visitors require from bazaar by clicking the text
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
@@ -181,6 +185,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Suppress badlion packet warnings**
 - **remove screens when switching island**
 - **skin transparency correction**
+- **Custom Chat Rules**
 
 </details>
 
@@ -267,11 +272,11 @@ information.
 
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](https://github.com/msg-programs)) \
 Indonesian ([null2264](https://github.com/null2264)) \
-Russian ([HyperSoop](https://github.com/HyperSoop) & [CrimsonIsle](https://github.com/CrimsonIsle) & [Ghost-3](https://github.com/Ghost-3))\
-French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat) & [Kiverty](https://github.com/Kiverty)) \
+Russian ([HyperSoop](https://github.com/HyperSoop) & [CrimsonIsle](https://github.com/CrimsonIsle) & [Ghost-3](https://github.com/Ghost-3) & [wilson-wtf](https://github.com/wilson-wtf) & [R2kip](https://github.com/R2kip))\
+French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat) & [Kiverty](https://github.com/Kiverty) & [maDU59](https://github.com/maDU59)) \
 Japanese ([hirochisan](https://github.com/hirochisan)) \
 Chinese ([catandA](https://github.com/catandA)) \
-Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD) & [user123321111](https://github.com/user123321111) & [sunnytia](https://github.com/sunnytia)) \
+Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD) & [user123321111](https://github.com/user123321111) & [sunnytia](https://github.com/sunnytia) & [AC19970](https://github.com/AC19970)) \
 Korean ([lantice3720](https://github.com/lantice3720)) \
 Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
 Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \

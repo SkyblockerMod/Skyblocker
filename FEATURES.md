@@ -4,6 +4,8 @@
 - **Minimap & Score**
 - **Starred Mob Glow**
 - **Croesus Helper**
+  - highlight not opened chests
+  - profit calculator
 - **Puzzle Solver:**
   - *Three Weirdos*
   - *Blaze*
@@ -83,9 +85,11 @@
   - Steak Stake Indicator
 - **Enderman:**
   - Beacon Highlighting
+  - Yang Glyph Notification
   - Nukekubi Head Highlighting
 
 ### Garden Features:
+- **Farming HUD**
 - **Visitor Helper**
   - buy items that visitors require from bazaar by clicking the text
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
@@ -161,3 +165,4 @@
 - **Suppress badlion packet warnings**
 - **remove screens when switching island**
 - **skin transparency correction**
+- **Custom Chat Rules**
