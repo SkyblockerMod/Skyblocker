@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper.AccessoryReport;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -238,6 +239,27 @@ public class ItemTooltip {
                 }
             }
         }
+
+        if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+            AccessoryReport report = AccessoriesHelper.calculateReport4Accessory(internalID);
+
+            if (report != AccessoryReport.INELIGIBLE) {
+                MutableText title = Text.literal(String.format("%-19s", "Accessory: ")).withColor(0xf57542);
+
+                Text stateText = switch (report) {
+                    case HAS_HIGHEST_TIER -> Text.literal("✔ Collected").formatted(Formatting.GREEN);
+                    case IS_GREATER_TIER -> Text.literal("✦ Upgrade").withColor(0x218bff);
+                    case HAS_GREATER_TIER -> Text.literal("↑ Upgradable").withColor(0xf8d048);
+                    case OWNS_BETTER_TIER -> Text.literal("↓ Downgrade").formatted(Formatting.GRAY);
+                    case MISSING -> Text.literal("✖ Missing").formatted(Formatting.RED);
+
+                    //Should never be the case
+                    default -> Text.literal("? Unknown").formatted(Formatting.GRAY);
+                };
+
+                lines.add(title.append(stateText));
+            }
+        }
     }
 
     private static void addExoticTooltip(List<Text> lines, String internalID, NbtCompound nbt, String colorHex, String expectedHex, String existingTooltip) {
@@ -390,6 +412,7 @@ public class ItemTooltip {
             TooltipInfoType.MOTES.downloadIfEnabled(futureList);
             TooltipInfoType.MUSEUM.downloadIfEnabled(futureList);
             TooltipInfoType.COLOR.downloadIfEnabled(futureList);
+            TooltipInfoType.ACCESSORIES.downloadIfEnabled(futureList);
 
             CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new)).exceptionally(e -> {
                 LOGGER.error("Encountered unknown error while downloading tooltip data", e);

@@ -25,6 +25,7 @@ import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.garden.FarmingHud;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -102,6 +103,7 @@ public class SkyblockerMod implements ClientModInitializer {
         PlayerHeadHashCache.init();
         HotbarSlotLock.init();
         ItemTooltip.init();
+        AccessoriesHelper.init();
         WikiLookup.init();
         FairySouls.init();
         Relics.init();
