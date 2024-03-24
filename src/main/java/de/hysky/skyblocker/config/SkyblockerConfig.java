@@ -251,6 +251,9 @@ public class SkyblockerConfig {
 		public SearchOverlay searchOverlay = new SearchOverlay();
 
 		@SerialEntry
+		public FancyAuctionHouse fancyAuctionHouse = new FancyAuctionHouse();
+
+		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
 
 		@SerialEntry
@@ -267,6 +270,13 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
+	}
+
+	public static class FancyAuctionHouse {
+		@SerialEntry
+		public boolean enabled = true;
+		@SerialEntry
+		public boolean highlightCheapBIN = true;
 	}
 
 	public static class TabHudConf {
