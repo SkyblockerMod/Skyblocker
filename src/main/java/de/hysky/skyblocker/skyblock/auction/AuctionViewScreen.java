@@ -36,7 +36,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     public final boolean isBinAuction;
     private TextWidget priceWidget;
-    private final Text clickToEditBidText = Text.literal("Click to edit Bid!").setStyle(Style.EMPTY.withUnderline(true));
+    private final Text clickToEditBidText = Text.translatable("skyblocker.fancyAuctionHouse.editBid").setStyle(Style.EMPTY.withUnderline(true));
 
     private TextWidget infoTextWidget;
     public String minBid = "";
@@ -59,7 +59,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     protected void init() {
         super.init();
         verticalLayout.spacing(2).getMainPositioner().alignHorizontalCenter();
-        priceTextWidget = new TextWidget(Text.literal(isBinAuction ? "Price:" : "New Bid:"), textRenderer).alignCenter();
+        priceTextWidget = new TextWidget(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid"), textRenderer).alignCenter();
         verticalLayout.add(priceTextWidget);
 
         priceWidget = new TextWidget(Text.literal("?"), textRenderer).alignCenter();
@@ -70,7 +70,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer).alignCenter();
         verticalLayout.add(infoTextWidget);
 
-        buyButton = ButtonWidget.builder(Text.literal(isBinAuction ? "Buy!" : "Bid!"), button -> {
+        buyButton = ButtonWidget.builder(isBinAuction ?  Text.translatable("skyblocker.fancyAuctionHouse.buy") : Text.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {
             if (buySlotID == -1) return;
             clickSlot(buySlotID);
         }).size(60, 15).build();
@@ -91,30 +91,30 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         buyState = newState;
         switch (buyState) {
             case CANT_AFFORD -> {
-                infoTextWidget.setMessage(Text.literal("Can't Afford!").withColor(Colors.RED));
+                infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.cantAfford").withColor(Colors.RED));
                 buyButton.active = false;
             }
-            case TOP_BID -> infoTextWidget.setMessage(Text.literal("Already top bid!").withColor(Colors.LIGHT_YELLOW));
+            case TOP_BID -> infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.alreadyTopBid").withColor(Colors.LIGHT_YELLOW));
             case AFFORD -> infoTextWidget.setMessage(Text.empty());
             case COLLECT_AUCTION -> {
-                infoTextWidget.setMessage(changeProfile ? Text.literal("On a different profile"): wonAuction ? Text.empty() : Text.literal("Didn't win :("));
+                infoTextWidget.setMessage(changeProfile ? Text.translatable("skyblocker.fancyAuctionHouse.differentProfile"): wonAuction ? Text.empty() : Text.translatable("skyblocker.fancyAuctionHouse.didntWin"));
                 //priceWidget.setMessage(Text.empty());
                 priceWidget.active = false;
 
                 if (changeProfile) {
-                    buyButton.setMessage(Text.literal("Change Profile").setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
+                    buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.changeProfile").setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
                 } else if (wonAuction) {
-                    buyButton.setMessage(Text.literal("Collect Auction"));
+                    buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.collectAuction"));
                 } else {
-                    buyButton.setMessage(Text.literal("Collect Bid"));
+                    buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.collectBid"));
                 }
                 buyButton.setWidth(textRenderer.getWidth(buyButton.getMessage()) + 4);
 
-                priceTextWidget.setMessage(Text.literal("Auction Ended!"));
+                priceTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.auctionEnded"));
                 priceTextWidget.setWidth(textRenderer.getWidth(priceTextWidget.getMessage()));
             }
             case CANCELLABLE_AUCTION -> {
-                buyButton.setMessage(Text.literal("Cancel Auction").setStyle(Style.EMPTY.withColor(Formatting.RED)));
+                buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.cancelAuction").setStyle(Style.EMPTY.withColor(Formatting.RED)));
                 buyButton.setWidth(textRenderer.getWidth(buyButton.getMessage()) + 4);
 
                 buyButton.active = true;
@@ -124,7 +124,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
                 buyButton.visible = false;
                 priceWidget.active = false;
 
-                infoTextWidget.setMessage(Text.literal("This is your auction!"));
+                infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.yourAuction"));
             }
         }
         infoTextWidget.setWidth(textRenderer.getWidth(infoTextWidget.getMessage()));
@@ -245,7 +245,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
                 String[] split = string.split(":");
                 if (split.length < 2) continue;
                 if (buyState != BuyState.CANT_AFFORD && !isBinAuction) {
-                    infoTextWidget.setMessage(Text.literal("You pay: " + split[1].trim()));
+                    infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.youPay", split[1].trim()));
                     infoTextWidget.setWidth(textRenderer.getWidth(infoTextWidget.getMessage()));
                 }
 
@@ -279,9 +279,9 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         // This really shouldn't be possible to be null in its ACTUAL use case.
         //noinspection DataFlowIssue
         return new PopupScreen.Builder(this, title)
-                .button(Text.literal("Confirm"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 11, 0, SlotActionType.PICKUP, client.player))
-                .button(Text.literal("Cancel"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player))
-                .message(Text.literal(isBinAuction ? "Price: " : "New Bid: ").append(priceText)).build();
+                .button(Text.translatable("text.skyblocker.confirm"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 11, 0, SlotActionType.PICKUP, client.player))
+                .button(Text.translatable("gui.cancel"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player))
+                .message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText)).build();
     }
 
     private enum BuyState {

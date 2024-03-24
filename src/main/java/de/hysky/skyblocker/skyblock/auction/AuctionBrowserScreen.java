@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.auction;
 
 import com.google.gson.JsonElement;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
@@ -162,7 +163,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     protected void drawSlot(DrawContext context, Slot slot) {
-        if (isSlotHighlighted.getOrDefault(slot.id, false)) {
+        if (SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN && isSlotHighlighted.getOrDefault(slot.id, false)) {
             context.drawBorder(slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
         }
         super.drawSlot(context, slot);
@@ -272,6 +273,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     }
                 } else if (slotId > 9 && slotId < (handler.getRows()-1)*9 && slotId%9 > 1 && slotId%9 < 8) {
                     List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                    if (!SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN) return;
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
                         String string = text.getString();
