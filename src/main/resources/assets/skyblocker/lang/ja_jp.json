@@ -46,7 +46,6 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Fetchurの要求アイテムの表示",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Puzzler Puzzleのソルバー",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "ドワーフマインでのHUD",
-    "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enableBackground": "バックグラウンド表示を有効にする",
     "text.autoconfig.skyblocker.category.messages": "メッセージ",
     "text.autoconfig.skyblocker.option.messages.hideAbility": "アビリティのクールダウンを非表示にする",
     "text.autoconfig.skyblocker.option.messages.hideHeal": "回復メッセージを非表示にする",
