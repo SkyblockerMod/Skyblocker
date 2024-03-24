@@ -157,6 +157,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Hungry Hiker*
 
 ### Chat Features:
+- **Custom Chat Rules**
 - **Hide Messages:**
   - *Ability Cooldown*
   - *Heal*
@@ -185,7 +186,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Suppress badlion packet warnings**
 - **remove screens when switching island**
 - **skin transparency correction**
-- **Custom Chat Rules**
 
 </details>
 

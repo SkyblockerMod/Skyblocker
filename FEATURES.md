@@ -137,6 +137,7 @@
   - *Hungry Hiker*
 
 ### Chat Features:
+- **Custom Chat Rules**
 - **Hide Messages:**
   - *Ability Cooldown*
   - *Heal*
@@ -165,4 +166,3 @@
 - **Suppress badlion packet warnings**
 - **remove screens when switching island**
 - **skin transparency correction**
-- **Custom Chat Rules**
