@@ -52,7 +52,7 @@ public class FarmingHudWidget extends Widget {
 
     @Override
     public void updateContent() {
-        ItemStack icon = client.player == null ? Ico.HOE: FARMING_TOOLS.getOrDefault(ItemUtils.getItemId(client.player.getMainHandStack()), Ico.HOE);
+        ItemStack icon = client.player == null ? Ico.HOE : FARMING_TOOLS.getOrDefault(ItemUtils.getItemId(client.player.getMainHandStack()), Ico.HOE);
         addSimpleIcoText(icon, "Counter: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
         addSimpleIcoText(icon, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.cropsPerMinute() / 100 * 100));
         addSimpleIcoText(icon, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
@@ -61,8 +61,8 @@ public class FarmingHudWidget extends Widget {
         addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.farmingXpPerHour()));
 
         Entity cameraEntity = client.getCameraEntity();
-        double yaw = cameraEntity == null ? 0.0d: cameraEntity.getYaw();
-        double pitch = cameraEntity == null ? 0.0d: cameraEntity.getPitch();
+        double yaw = cameraEntity == null ? 0.0d : cameraEntity.getYaw();
+        double pitch = cameraEntity == null ? 0.0d : cameraEntity.getPitch();
         addComponent(new PlainTextComponent(Text.literal("Yaw: " + String.format("%.3f", MathHelper.wrapDegrees(yaw))).formatted(Formatting.YELLOW)));
         addComponent(new PlainTextComponent(Text.literal("Pitch: " + String.format("%.3f", MathHelper.wrapDegrees(pitch))).formatted(Formatting.YELLOW)));
     }
