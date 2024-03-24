@@ -34,7 +34,7 @@ public class EditBidPopup extends BarebonesPopupScreen {
         super.init();
         layout = DirectionalLayoutWidget.vertical();
         layout.spacing(8).getMainPositioner().alignHorizontalCenter();
-        textFieldWidget = new TextFieldWidget(textRenderer, 120, 15, Text.empty()){
+        textFieldWidget = new TextFieldWidget(textRenderer, 120, 15, Text.empty()) {
             @Override
             public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
                 if (!super.keyPressed(keyCode, scanCode, modifiers)) {

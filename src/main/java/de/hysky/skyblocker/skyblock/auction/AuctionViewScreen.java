@@ -70,7 +70,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer).alignCenter();
         verticalLayout.add(infoTextWidget);
 
-        buyButton = ButtonWidget.builder(isBinAuction ?  Text.translatable("skyblocker.fancyAuctionHouse.buy") : Text.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {
+        buyButton = ButtonWidget.builder(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.buy") : Text.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {
             if (buySlotID == -1) return;
             clickSlot(buySlotID);
         }).size(60, 15).build();
@@ -78,8 +78,8 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         verticalLayout.forEachChild(this::addDrawableChild);
         updateLayout();
 
-        addDrawableChild(new ButtonWidget.Builder( Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
-                .position(x + backgroundWidth - 16, y+4)
+        addDrawableChild(new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+                .position(x + backgroundWidth - 16, y + 4)
                 .size(12, 12)
                 .build());
 
@@ -94,10 +94,11 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
                 infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.cantAfford").withColor(Colors.RED));
                 buyButton.active = false;
             }
-            case TOP_BID -> infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.alreadyTopBid").withColor(Colors.LIGHT_YELLOW));
+            case TOP_BID ->
+                    infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.alreadyTopBid").withColor(Colors.LIGHT_YELLOW));
             case AFFORD -> infoTextWidget.setMessage(Text.empty());
             case COLLECT_AUCTION -> {
-                infoTextWidget.setMessage(changeProfile ? Text.translatable("skyblocker.fancyAuctionHouse.differentProfile"): wonAuction ? Text.empty() : Text.translatable("skyblocker.fancyAuctionHouse.didntWin"));
+                infoTextWidget.setMessage(changeProfile ? Text.translatable("skyblocker.fancyAuctionHouse.differentProfile") : wonAuction ? Text.empty() : Text.translatable("skyblocker.fancyAuctionHouse.didntWin"));
                 //priceWidget.setMessage(Text.empty());
                 priceWidget.active = false;
 
@@ -259,9 +260,9 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
             }
             text.visit((style, asString) -> {
                 // The regex removes [, ] and +. To ignore mvp++ rank and orange + in mvp+
-                String res = Objects.equals(style.getColor(), TextColor.fromFormatting(Formatting.GOLD)) && !asString.matches(".*[]\\[+].*") && !asString.contains("Collect") ? asString: null;
+                String res = Objects.equals(style.getColor(), TextColor.fromFormatting(Formatting.GOLD)) && !asString.matches(".*[]\\[+].*") && !asString.contains("Collect") ? asString : null;
                 return Optional.ofNullable(res);
-            }, Style.EMPTY).ifPresent(s -> stringAtomicReference.set(stringAtomicReference.get()+s));
+            }, Style.EMPTY).ifPresent(s -> stringAtomicReference.set(stringAtomicReference.get() + s));
         }
         //System.out.println("Experiment: " + stringAtomicReference.get());
         if (priceString == null) priceString = stringAtomicReference.get();
