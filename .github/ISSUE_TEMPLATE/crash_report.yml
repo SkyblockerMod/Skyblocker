@@ -24,7 +24,7 @@ body:
     attributes:
       label: Skyblocker Version
       description: What version of Skyblocker are you running? Every part is important! If you do not know what version you are using, look at the file name in your "mods" folder.
-      placeholder: ex. skyblocker-1.17.0+1.20.4.jar
+      placeholder: ex. skyblocker-1.19.0+1.20.4.jar
     validations:
       required: true
   - type: textarea

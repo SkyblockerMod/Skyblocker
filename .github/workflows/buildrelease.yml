@@ -46,7 +46,7 @@ jobs:
           delimiter="$(openssl rand -hex 8)"
           {
             echo "changelog<<${delimiter}"
-            echo "$CHANGELOGtmp"
+            echo "$CHANGELOG"
             echo "${delimiter}"
           } >> $GITHUB_OUTPUT
           
@@ -54,7 +54,7 @@ jobs:
 
           changelog="${CHANGELOG}"
           highlight_section=$(echo "$changelog" | awk '/## Highlight/{flag=1;next}/^$/{flag=0}flag')
-          highlight_section="# Highlight\n$highlight_section\n\nhttps://hysky.de/"
+          highlight_section=$'# Highlight\n'"$highlight_section"$'\n\nhttps://hysky.de/'
 
           # Format highlight_section with printf
           highlight_section=$(printf "%s" "$highlight_section")
