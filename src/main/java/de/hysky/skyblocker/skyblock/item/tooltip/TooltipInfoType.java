@@ -25,7 +25,7 @@ public enum TooltipInfoType implements Runnable {
     OBTAINED(itemTooltip -> itemTooltip.enableObtainedDate),
     MUSEUM("https://hysky.de/api/museum", itemTooltip -> itemTooltip.enableMuseumInfo, true),
     COLOR("https://hysky.de/api/color", itemTooltip -> itemTooltip.enableExoticTooltip, true),
-    ACCESSORIES("https://api.azureaaron.net/skyblock/accessories", itemTooltip -> itemTooltip.enableAccessoriesHelper, true, AccessoriesHelper::refreshData);
+    ACCESSORIES("https://hysky.de/api/accessories", itemTooltip -> itemTooltip.enableAccessoriesHelper, true, AccessoriesHelper::refreshData);
 
     private final String address;
     private final Predicate<SkyblockerConfig.ItemTooltip> dataEnabled;
