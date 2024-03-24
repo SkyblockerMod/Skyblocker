@@ -17,11 +17,15 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
     protected static final Identifier BACKGROUND_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background_view.png");
@@ -34,12 +38,13 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     private TextWidget priceWidget;
     private final Text clickToEditBidText = Text.literal("Click to edit Bid!").setStyle(Style.EMPTY.withUnderline(true));
 
-    private TextWidget cantAffordText;
+    private TextWidget infoTextWidget;
     public String minBid = "";
 
     private BuyState buyState = null;
     private MutableText priceText = Text.literal("?");
     private ButtonWidget buyButton;
+    private TextWidget priceTextWidget;
 
     public AuctionViewScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -54,20 +59,21 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     protected void init() {
         super.init();
         verticalLayout.spacing(2).getMainPositioner().alignHorizontalCenter();
-        verticalLayout.add(new TextWidget(Text.literal(isBinAuction ? "Price:" : "New Bid:"), textRenderer).alignCenter());
+        priceTextWidget = new TextWidget(Text.literal(isBinAuction ? "Price:" : "New Bid:"), textRenderer).alignCenter();
+        verticalLayout.add(priceTextWidget);
 
         priceWidget = new TextWidget(Text.literal("?"), textRenderer).alignCenter();
         priceWidget.setWidth(textRenderer.getWidth(clickToEditBidText));
         priceWidget.active = true;
         verticalLayout.add(priceWidget);
 
-        cantAffordText = new TextWidget(Text.literal("Can't Afford"), textRenderer).alignCenter();
-        verticalLayout.add(cantAffordText);
+        infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer).alignCenter();
+        verticalLayout.add(infoTextWidget);
 
         buyButton = ButtonWidget.builder(Text.literal(isBinAuction ? "Buy!" : "Bid!"), button -> {
             if (buySlotID == -1) return;
             clickSlot(buySlotID);
-        }).size(50, 12).build();
+        }).size(60, 15).build();
         verticalLayout.add(buyButton);
         verticalLayout.forEachChild(this::addDrawableChild);
         updateLayout();
@@ -84,12 +90,44 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         if (newState == buyState) return;
         buyState = newState;
         switch (buyState) {
-            case CANT_AFFORD -> cantAffordText.setMessage(Text.literal("Can't Afford!").withColor(Colors.RED));
-            case TOP_BID -> cantAffordText.setMessage(Text.literal("Already top bid!").withColor(Colors.LIGHT_YELLOW));
-            case AFFORD -> cantAffordText.setMessage(Text.empty());
+            case CANT_AFFORD -> {
+                infoTextWidget.setMessage(Text.literal("Can't Afford!").withColor(Colors.RED));
+                buyButton.active = false;
+            }
+            case TOP_BID -> infoTextWidget.setMessage(Text.literal("Already top bid!").withColor(Colors.LIGHT_YELLOW));
+            case AFFORD -> infoTextWidget.setMessage(Text.empty());
+            case COLLECT_AUCTION -> {
+                infoTextWidget.setMessage(changeProfile ? Text.literal("On a different profile"): wonAuction ? Text.empty() : Text.literal("Didn't win :("));
+                //priceWidget.setMessage(Text.empty());
+                priceWidget.active = false;
+
+                if (changeProfile) {
+                    buyButton.setMessage(Text.literal("Change Profile").setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
+                } else if (wonAuction) {
+                    buyButton.setMessage(Text.literal("Collect Auction"));
+                } else {
+                    buyButton.setMessage(Text.literal("Collect Bid"));
+                }
+                buyButton.setWidth(textRenderer.getWidth(buyButton.getMessage()) + 4);
+
+                priceTextWidget.setMessage(Text.literal("Auction Ended!"));
+                priceTextWidget.setWidth(textRenderer.getWidth(priceTextWidget.getMessage()));
+            }
+            case CANCELLABLE_AUCTION -> {
+                buyButton.setMessage(Text.literal("Cancel Auction").setStyle(Style.EMPTY.withColor(Formatting.RED)));
+                buyButton.setWidth(textRenderer.getWidth(buyButton.getMessage()) + 4);
+
+                buyButton.active = true;
+                buyButton.visible = true;
+            }
+            case OWN_AUCTION -> {
+                buyButton.visible = false;
+                priceWidget.active = false;
+
+                infoTextWidget.setMessage(Text.literal("This is your auction!"));
+            }
         }
-        cantAffordText.setWidth(textRenderer.getWidth(cantAffordText.getMessage()));
-        buyButton.active = buyState != BuyState.CANT_AFFORD;
+        infoTextWidget.setWidth(textRenderer.getWidth(infoTextWidget.getMessage()));
         updateLayout();
     }
 
@@ -120,7 +158,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         context.drawItemInSlot(textRenderer, stack, 0, 0);
         matrices.pop();
 
-        if (!isBinAuction) {
+        if (!isBinAuction && buyState != BuyState.COLLECT_AUCTION) {
             if (priceWidget.isMouseOver(mouseX, mouseY) && buyState != BuyState.CANT_AFFORD) {
                 priceWidget.setMessage(clickToEditBidText);
             } else {
@@ -152,6 +190,10 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
         if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13) return;
         assert client != null;
+        if (stack.isOf(Items.RED_TERRACOTTA)) { // Red terracotta shows up when you can cancel it
+            changeState(BuyState.CANCELLABLE_AUCTION);
+            buySlotID = slotId;
+        }
         if (priceParsed) return;
         if (stack.isOf(Items.POISONOUS_POTATO)) {
             changeState(BuyState.CANT_AFFORD);
@@ -165,30 +207,64 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
             changeState(BuyState.TOP_BID);
             getPriceFromTooltip(stack.getTooltip(client.player, TooltipContext.BASIC));
             buySlotID = slotId;
+        } else if (stack.isOf(Items.NAME_TAG)) {
+            getPriceFromTooltip(stack.getTooltip(client.player, TooltipContext.BASIC));
+            changeProfile = true;
+            buySlotID = slotId;
+        }
+        String lowerCase = stack.getName().getString().toLowerCase();
+        if (priceParsed && lowerCase.contains("collect auction")) {
+            changeState(BuyState.COLLECT_AUCTION);
         }
     }
 
     private int buySlotID = -1;
     private boolean priceParsed = false;
+    private boolean wonAuction = true;
+    private boolean changeProfile = false;
 
     private void getPriceFromTooltip(List<Text> tooltip) {
         if (priceParsed) return;
         String minBid = null;
-        String priceString = "???";
+        String priceString = null;
+        AtomicReference<String> stringAtomicReference = new AtomicReference<>("");
+
         for (Text text : tooltip) {
             String string = text.getString();
             String thingToLookFor = (isBinAuction) ? "price:" : "new bid:";
-            if (string.toLowerCase().contains(thingToLookFor)) {
+            String lowerCase = string.toLowerCase();
+            if (lowerCase.contains(thingToLookFor)) {
                 String[] split = string.split(":");
                 if (split.length < 2) continue;
                 priceString = split[1].trim();
-                break;
-            } else if (string.toLowerCase().contains("minimum bid:") && !isBinAuction) {
+            } else if (lowerCase.contains("minimum bid:") && !isBinAuction) {
                 String[] split = string.split(":");
                 if (split.length < 2) continue;
                 minBid = split[1].replace("coins", "").replace(",", "").trim();
+            } else if (lowerCase.contains("you pay:")) {
+                String[] split = string.split(":");
+                if (split.length < 2) continue;
+                if (buyState != BuyState.CANT_AFFORD && !isBinAuction) {
+                    infoTextWidget.setMessage(Text.literal("You pay: " + split[1].trim()));
+                    infoTextWidget.setWidth(textRenderer.getWidth(infoTextWidget.getMessage()));
+                }
+
+            } else if (lowerCase.contains("top bid:")) { // Shows up when an auction ended and you lost
+                wonAuction = false;
+            } else if (lowerCase.contains("correct profile")) { // When an auction ended but on a different profile
+                changeProfile = true;
+                priceWidget.setMessage(Text.empty());
+            } else if (lowerCase.contains("own auction")) { // it's yours
+                changeState(BuyState.OWN_AUCTION);
             }
+            text.visit((style, asString) -> {
+                // The regex removes [, ] and +. To ignore mvp++ rank and orange + in mvp+
+                String res = Objects.equals(style.getColor(), TextColor.fromFormatting(Formatting.GOLD)) && !asString.matches(".*[]\\[+].*") && !asString.contains("Collect") ? asString: null;
+                return Optional.ofNullable(res);
+            }, Style.EMPTY).ifPresent(s -> stringAtomicReference.set(stringAtomicReference.get()+s));
         }
+        //System.out.println("Experiment: " + stringAtomicReference.get());
+        if (priceString == null) priceString = stringAtomicReference.get();
         if (minBid != null) this.minBid = minBid;
         else this.minBid = priceString;
         priceText = Text.literal(priceString).setStyle(Style.EMPTY.withFormatting(Formatting.BOLD).withColor(Formatting.GOLD));
@@ -211,6 +287,9 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     private enum BuyState {
         CANT_AFFORD,
         AFFORD,
-        TOP_BID
+        TOP_BID,
+        COLLECT_AUCTION,
+        CANCELLABLE_AUCTION,
+        OWN_AUCTION
     }
 }

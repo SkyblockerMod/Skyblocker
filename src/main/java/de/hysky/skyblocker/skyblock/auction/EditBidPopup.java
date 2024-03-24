@@ -9,6 +9,7 @@ import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 public class EditBidPopup extends BarebonesPopupScreen {
     private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
@@ -33,7 +34,18 @@ public class EditBidPopup extends BarebonesPopupScreen {
         super.init();
         layout = DirectionalLayoutWidget.vertical();
         layout.spacing(8).getMainPositioner().alignHorizontalCenter();
-        textFieldWidget = new TextFieldWidget(textRenderer, 120, 15, Text.empty());
+        textFieldWidget = new TextFieldWidget(textRenderer, 120, 15, Text.empty()){
+            @Override
+            public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+                if (!super.keyPressed(keyCode, scanCode, modifiers)) {
+                    if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+                        done(null);
+                        return true;
+                    }
+                } else return true;
+                return false;
+            }
+        };
         textFieldWidget.setTextPredicate(this::isStringGood);
         layout.add(new TextWidget(Text.literal("- Set Bid -").fillStyle(Style.EMPTY.withBold(true)), textRenderer));
         layout.add(textFieldWidget);
@@ -76,7 +88,7 @@ public class EditBidPopup extends BarebonesPopupScreen {
     private void sendPacket(String string) {
         assert MinecraftClient.getInstance().player != null;
         MinecraftClient.getInstance().player.networkHandler.sendPacket(new UpdateSignC2SPacket(signBlockEntity.getPos(), signFront,
-                string,
+                string.replace("coins", ""),
                 "",
                 "",
                 ""
