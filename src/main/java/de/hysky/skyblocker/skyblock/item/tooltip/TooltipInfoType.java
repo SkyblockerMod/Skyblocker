@@ -6,12 +6,14 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
-import org.jetbrains.annotations.Nullable;
 
 import java.net.http.HttpHeaders;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Nullable;
 
 public enum TooltipInfoType implements Runnable {
     NPC("https://hysky.de/api/npcprice", itemTooltip -> itemTooltip.enableNPCPrice, true),
@@ -22,7 +24,8 @@ public enum TooltipInfoType implements Runnable {
     MOTES("https://hysky.de/api/motesprice", itemTooltip -> itemTooltip.enableMotesPrice, itemTooltip -> itemTooltip.enableMotesPrice && Utils.isInTheRift(), true),
     OBTAINED(itemTooltip -> itemTooltip.enableObtainedDate),
     MUSEUM("https://hysky.de/api/museum", itemTooltip -> itemTooltip.enableMuseumInfo, true),
-    COLOR("https://hysky.de/api/color", itemTooltip -> itemTooltip.enableExoticTooltip, true);
+    COLOR("https://hysky.de/api/color", itemTooltip -> itemTooltip.enableExoticTooltip, true),
+    ACCESSORIES("https://api.azureaaron.net/skyblock/accessories", itemTooltip -> itemTooltip.enableAccessoriesHelper, true, AccessoriesHelper::refreshData);
 
     private final String address;
     private final Predicate<SkyblockerConfig.ItemTooltip> dataEnabled;
@@ -30,12 +33,23 @@ public enum TooltipInfoType implements Runnable {
     private JsonObject data;
     private final boolean cacheable;
     private long hash;
+    private final Consumer<JsonObject> callback;
 
     /**
      * Use this for when you're adding tooltip info that has no data associated with it
      */
     TooltipInfoType(Predicate<SkyblockerConfig.ItemTooltip> enabled) {
-        this(null, itemTooltip -> false, enabled, null, false);
+        this(null, itemTooltip -> false, enabled, false, null);
+    }
+
+    /**
+     * @param address   the address to download the data from
+     * @param enabled   the predicate to check if the data should be downloaded and the tooltip should be shown
+     * @param cacheable whether the data should be cached
+     * @param callback  called when the {@code data} is refreshed
+     */
+    TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> enabled, boolean cacheable, Consumer<JsonObject> callback) {
+        this(address, enabled, enabled, cacheable, callback);
     }
 
     /**
@@ -44,7 +58,7 @@ public enum TooltipInfoType implements Runnable {
      * @param cacheable whether the data should be cached
      */
     TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> enabled, boolean cacheable) {
-        this(address, enabled, enabled, null, cacheable);
+        this(address, enabled, enabled, cacheable, null);
     }
 
     /**
@@ -54,7 +68,7 @@ public enum TooltipInfoType implements Runnable {
      * @param cacheable      whether the data should be cached
      */
     TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> dataEnabled, Predicate<SkyblockerConfig.ItemTooltip> tooltipEnabled, boolean cacheable) {
-        this(address, dataEnabled, tooltipEnabled, null, cacheable);
+        this(address, dataEnabled, tooltipEnabled, cacheable, null);
     }
 
     /**
@@ -64,12 +78,13 @@ public enum TooltipInfoType implements Runnable {
      * @param data           the data
      * @param cacheable      whether the data should be cached
      */
-    TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> dataEnabled, Predicate<SkyblockerConfig.ItemTooltip> tooltipEnabled, @Nullable JsonObject data, boolean cacheable) {
+    TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> dataEnabled, Predicate<SkyblockerConfig.ItemTooltip> tooltipEnabled, boolean cacheable, @Nullable Consumer<JsonObject> callback) {
         this.address = address;
         this.dataEnabled = dataEnabled;
         this.tooltipEnabled = tooltipEnabled;
-        this.data = data;
+        this.data = null;
         this.cacheable = cacheable;
+        this.callback = callback;
     }
 
     /**
@@ -146,6 +161,8 @@ public enum TooltipInfoType implements Runnable {
                 else this.hash = hash;
             }
             data = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(address), JsonObject.class);
+
+            if (callback != null) callback.accept(data);
         } catch (Exception e) {
             ItemTooltip.LOGGER.warn("[Skyblocker] Failed to download " + this + " prices!", e);
         }

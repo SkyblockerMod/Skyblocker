@@ -434,6 +434,16 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableExoticTooltip = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]"), Text.literal("\n\n✔ Collected").formatted(Formatting.GREEN), Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]"),
+										Text.literal("\n✦ Upgrade").withColor(0x218bff), Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]"), Text.literal("\n↑ Upgradable").withColor(0xf8d048), Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]"),
+												Text.literal("\n↓ Downgrade").formatted(Formatting.GRAY), Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[4]"), Text.literal("\n✖ Missing").formatted(Formatting.RED), Text.translatable("text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]")))
+								.binding(defaults.general.itemTooltip.enableAccessoriesHelper,
+										() -> config.general.itemTooltip.enableAccessoriesHelper,
+										newValue -> config.general.itemTooltip.enableAccessoriesHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 
 				//Item Info Display

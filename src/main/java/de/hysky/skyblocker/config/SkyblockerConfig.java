@@ -555,6 +555,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean enableExoticTooltip = true;
+
+		@SerialEntry
+		public boolean enableAccessoriesHelper = true;
 	}
 
 	public static class ItemInfoDisplay {
