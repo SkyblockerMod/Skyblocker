@@ -25,7 +25,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
         ClientPlayerEntity player = client.player;
         if (player == null) return;
         T screenHandler = type.create(id, player.getInventory());
-        if (!(screenHandler instanceof  GenericContainerScreenHandler containerScreenHandler)) return;
+        if (!(screenHandler instanceof GenericContainerScreenHandler containerScreenHandler)) return;
         String nameLowercase = name.getString().toLowerCase();
         if (SkyblockerConfigManager.get().general.betterPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase)) {
             if (client.currentScreen != null) {
@@ -58,7 +58,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
             client.player.currentScreenHandler = auctionHouseScreenHandler;
             if (client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
                 auctionViewScreen.changeHandler(auctionHouseScreenHandler);
-            } else client.setScreen(new AuctionViewScreen(auctionHouseScreenHandler, client.player.getInventory(), name));
+            } else
+                client.setScreen(new AuctionViewScreen(auctionHouseScreenHandler, client.player.getInventory(), name));
             ci.cancel();
         } else if (SkyblockerConfigManager.get().general.fancyAuctionHouse.enabled && (nameLowercase.contains("confirm purchase") || nameLowercase.contains("confirm bid")) && client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
             client.setScreen(auctionViewScreen.getConfirmPurchasePopup(name));

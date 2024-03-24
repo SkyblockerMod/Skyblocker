@@ -91,8 +91,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         resetFiltersButton.setTooltip(Tooltip.of(Text.literal("Reset Filters")));
         resetFiltersButton.setTooltipDelay(500);
 
-        addDrawableChild(new ButtonWidget.Builder( Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
-                .position(x + 98, y+4)
+        addDrawableChild(new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+                .position(x + 98, y + 4)
                 .size(12, 12)
                 .build());
 
@@ -132,9 +132,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
         MatrixStack matrices = context.getMatrices();
         matrices.push();
-        matrices.translate(x,y,0);
+        matrices.translate(x, y, 0);
         // Search
-        context.enableScissor(x+7, y+4, x+97, y+16);
+        context.enableScissor(x + 7, y + 4, x + 97, y + 16);
         context.drawText(textRenderer, Text.literal(search).fillStyle(Style.EMPTY.withUnderline(onSearchField(mouseX, mouseY))), 9, 6, Colors.WHITE, true);
         context.disableScissor();
 
@@ -154,7 +154,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         if (totalPages <= 1)
             context.drawGuiTexture(SCROLLER_TEXTURE, 156, 18, 12, 15);
         else
-            context.drawGuiTexture(SCROLLER_TEXTURE, 156, (int) (18 + (float)(Math.min(currentPage, totalPages)-1)/(totalPages-1)*37), 12, 15);
+            context.drawGuiTexture(SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
 
         matrices.pop();
 
@@ -171,23 +171,23 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
-        if (slotId >= handler.getRows()*9) return;
+        if (slotId >= handler.getRows() * 9) return;
         super.onMouseClick(slot, slotId, button, actionType);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isWaitingForServer) return super.mouseClicked(mouseX, mouseY, button);
-        if (onScrollbarTop((int)mouseX, (int) mouseY) && prevPageVisible) {
+        if (onScrollbarTop((int) mouseX, (int) mouseY) && prevPageVisible) {
             clickSlot(PREV_PAGE_BUTTON);
             return true;
         }
-        if (onScrollbarBottom((int)mouseX, (int) mouseY) && nextPageVisible) {
+        if (onScrollbarBottom((int) mouseX, (int) mouseY) && nextPageVisible) {
             clickSlot(NEXT_PAGE_BUTTON);
             return true;
         }
 
-        if (onSearchField((int)mouseX, (int) mouseY)) {
+        if (onSearchField((int) mouseX, (int) mouseY)) {
             clickSlot(SEARCH_BUTTON_SLOT);
             return true;
         }
@@ -205,6 +205,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         int localY = mouseY - y;
         return localX > 154 && localX < 169 && localY > 43 && localY < 80;
     }
+
     private boolean onSearchField(int mouseX, int mouseY) {
         int localX = mouseX - x;
         int localY = mouseY - y;
@@ -231,16 +232,19 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     parsePage(stack);
                 }
             }
-            case SORT_BUTTON_SLOT -> sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
-            case AUCTION_TYPE_BUTTON_SLOT -> auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
+            case SORT_BUTTON_SLOT ->
+                    sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
+            case AUCTION_TYPE_BUTTON_SLOT ->
+                    auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
             case RARITY_BUTTON_SLOT -> {
                 List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
                 int ordinal = getOrdinal(tooltip);
-                String split = tooltip.get(ordinal+2).getString().substring(2);
-                rarityWidget.setText(tooltip.subList(1, tooltip.size()-3), split);
+                String split = tooltip.get(ordinal + 2).getString().substring(2);
+                rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
             }
             case RESET_BUTTON_SLOT -> {
-                if (resetFiltersButton != null) resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
+                if (resetFiltersButton != null)
+                    resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
             }
             case SEARCH_BUTTON_SLOT -> {
                 List<Text> tooltipSearch = stack.getTooltip(client.player, TooltipContext.BASIC);
@@ -256,7 +260,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                 }
             }
             default -> {
-                if (slotId < this.handler.getRows()*9 && slotId%9 == 0) {
+                if (slotId < this.handler.getRows() * 9 && slotId % 9 == 0) {
                     CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
                     categoryTabWidget.setSlotId(slotId);
                     categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
@@ -271,7 +275,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                             break;
                         } else categoryTabWidget.setToggled(false);
                     }
-                } else if (slotId > 9 && slotId < (handler.getRows()-1)*9 && slotId%9 > 1 && slotId%9 < 8) {
+                } else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
                     List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
                     if (!SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN) return;
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
@@ -295,7 +299,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                                 else {
                                     isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);
                                 }
-                            } catch (NumberFormatException ignored) {}
+                            } catch (NumberFormatException ignored) {
+                            }
                         }
                     }
                 }
@@ -305,9 +310,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     private static int getOrdinal(List<Text> tooltip) {
         int ordinal = 0;
-        for (int j = 0; j < tooltip.size()-3; j++) {
-            if (j+2 >= tooltip.size()) break;
-            if (tooltip.get(j+2).getString().contains("▶")) {
+        for (int j = 0; j < tooltip.size() - 3; j++) {
+            if (j + 2 >= tooltip.size()) break;
+            if (tooltip.get(j + 2).getString().contains("▶")) {
                 ordinal = j;
                 break;
             }
@@ -319,6 +324,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     int totalPages = 1;
     private boolean prevPageVisible = false;
     private boolean nextPageVisible = false;
+
     private void parsePage(ItemStack stack) {
         assert client != null;
         List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
@@ -328,12 +334,13 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         try {
             currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page
             totalPages = Integer.parseInt(parts[1].replace(",", "")); // parse total
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
     }
 
     @Override
     protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button) {
-        return mouseX < (double)left - 32 || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
+        return mouseX < (double) left - 32 || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
     }
 
     private static class ScaledTextButtonWidget extends ButtonWidget {
@@ -350,7 +357,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
             float textScale = 2.f;
 
             pose.push();
-            pose.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float)this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1, 0);
+            pose.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1, 0);
             pose.scale(textScale, textScale, 1);
             graphics.drawText(font, getMessage(), 0, 0, color | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
             pose.pop();
