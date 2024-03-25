@@ -95,7 +95,7 @@
     "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "フィッシングヘルパーを有効にするか",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale": "tab HUDの要素の大きさ",
     "key.skyblocker.defaultTgl": "tabを開いたときに表示されるHUDをデフォルトに戻す",
-    "text.autoconfig.skyblocker.option.general.tabHud": "ファンシーなtab HUD",
+    "text.autoconfig.skyblocker.option.general.tabHud": "ファンシーなtab HUD（この機能は一時的に利用できなくなる）",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale.@Tooltip": "バニラGUIとの比 (%)で設定します",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled": "ファンシーなtab HUDを有効にする",
     "text.autoconfig.skyblocker.option.general.fairySouls": "フェアリーソウルヘルパー",
@@ -124,5 +124,15 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER2": "レイヤー2",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.RIGHT": "右側",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.NONE": "オフ",
-    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "バニラでもどこでも動きます。「/skyblocker shortcuts」で編集でき、使用するには少なくともこの下の設定のうちの一つが有効になっている必要があります。"
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "バニラでもどこでも動きます。「/skyblocker shortcuts」で編集でき、使用するには少なくともこの下の設定のうちの一つが有効になっている必要があります。",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableMuseumInfo": "博物館について情報を表示する",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableObtainedDate": "アイテムを取得した日付を表示する",
+    "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground": "HUDの背景を有効にする",
+    "text.autoconfig.skyblocker.option.general.waypoints": "ウェイポイント",
+    "text.autoconfig.skyblocker.option.general.waypoints.enableWaypoints": "ウェイポイント有効にする",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType": "ウェイポイントの種類",
+    "key.itemProtection": "アイテムを保護する",
+    "text.autoconfig.skyblocker.option.general.enableTips": "ヒント有効にする",
+    "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki": "Hypixelのwikiを使う",
+    "text.autoconfig.skyblocker.option.general.wikiLookup.officialWiki.@Tooltip": "Fandomのwikiではなく、Hypixelの公式wikiを使用する。"
 }
