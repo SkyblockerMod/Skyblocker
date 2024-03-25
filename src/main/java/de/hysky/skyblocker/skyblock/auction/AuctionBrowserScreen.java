@@ -29,6 +29,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -306,6 +307,19 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                 }
             }
         }
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_UP && prevPageVisible) {
+            clickSlot(PREV_PAGE_BUTTON);
+            return true;
+        }
+        if (keyCode == GLFW.GLFW_KEY_DOWN && nextPageVisible) {
+            clickSlot(NEXT_PAGE_BUTTON);
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     private static int getOrdinal(List<Text> tooltip) {
