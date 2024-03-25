@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.compatibility.emi;
 
 import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
-import de.hysky.skyblocker.utils.ItemUtils;
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -9,13 +8,12 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class SkyblockEmiRecipe extends EmiCraftingRecipe {
     private final String craftText;
 
     public SkyblockEmiRecipe(SkyblockCraftingRecipe recipe) {
-        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()), Identifier.of("skyblock", ItemUtils.getItemId(recipe.getResult()).toLowerCase().replace(';', '_') + "_" + recipe.getResult().getCount()));
+        super(recipe.getGrid().stream().map(EmiStack::of).map(EmiIngredient.class::cast).toList(), EmiStack.of(recipe.getResult()), recipe.getId());
         this.craftText = recipe.getCraftText();
     }
 
