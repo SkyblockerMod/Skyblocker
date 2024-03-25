@@ -114,7 +114,6 @@
     "skyblocker.end.hud.zealotsSinceLastEye": "自上個召喚之眼以來：%d",
     "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "啟用物品掉落保護",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Livid Boss戰時傳送到聊天列的訊息， 字串 「[color]」 將會被替換為真Livid的顏色。",
-    "emi.category.skyblocker.skyblock": "",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "啟用指令別名",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts": "啟用含參指令別名",
     "skyblocker.partyFinder.join": "點擊加入",
