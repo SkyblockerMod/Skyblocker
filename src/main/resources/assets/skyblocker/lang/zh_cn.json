@@ -451,7 +451,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeKismet": "包含 Kismet 价格",
     "text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints": "启用Enigma之魂路径点",
     "text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints.@Tooltip": "注意：许多Enigma之魂需要一些前置任务方能获得，所以建议参考网络视频攻略。",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableExoticTooltip": "",
     "text.autoconfig.skyblocker.option.slayer.endermanSlayer.enableYangGlyphsNotification": "启用Yang Glyphs提醒",
     "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.ballistaBuildWaypoints": "弩炮建造点路径点",
     "text.autoconfig.skyblocker.option.locations.rift.highlightFoundEnigmaSouls": "高亮已找到的Enigma之魂",
