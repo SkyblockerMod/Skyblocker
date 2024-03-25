@@ -160,7 +160,11 @@ public class MuseumItemCache {
 						.fieldOf("collectedItemIds")
 						.forGetter(i -> new ObjectOpenHashSet<String>(i.collectedItemIds())))
 				.apply(instance, ProfileMuseumData::new));
-		private static final Codec<Map<String, Map<String, ProfileMuseumData>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, CODEC));
+		//Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		private static final Codec<Map<String, Map<String, ProfileMuseumData>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, CODEC)
+				.xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new))
+		.xmap(Object2ObjectOpenHashMap::new, m -> (Map) new Object2ObjectOpenHashMap(m));
 
 		private boolean stale() {
 			return System.currentTimeMillis() > lastUpdated + MAX_AGE;
