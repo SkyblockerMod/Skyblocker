@@ -940,5 +940,12 @@
     "secrets": 1,
     "fairysoul": false,
     "sbp": "four-banner"
+  },
+  "Zodd-1": {
+    "category": "1x1",
+    "secrets": 1,
+    "fairysoul": false,
+    "dsg": "null",
+    "sbp": null
   }
 }

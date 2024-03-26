@@ -86,7 +86,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class DungeonManager {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonManager.class);
     private static final String DUNGEONS_PATH = "dungeons";
-    private static final Path CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
+    private static Path CUSTOM_WAYPOINTS_DIR;
     private static final Pattern KEY_FOUND = Pattern.compile("^(?:\\[.+] )?(?<name>\\w+) has obtained (?<type>Wither|Blood) Key!$");
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
@@ -214,6 +214,7 @@ public class DungeonManager {
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
      */
     public static void init() {
+        CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
         if (!SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableRoomMatching) {
             return;
         }
