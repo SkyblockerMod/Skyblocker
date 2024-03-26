@@ -21,15 +21,10 @@ public class LowerSensitivity {
             if (SkyblockerConfigManager.get().locations.garden.lockMouseTool) {
                 ItemStack mainHandStack = MinecraftClient.getInstance().player.getMainHandStack();
                 String itemId = ItemUtils.getItemId(mainHandStack);
-                boolean isHoldingTool = FarmingHudWidget.FARMING_TOOLS.containsKey(itemId);
-                if (isHoldingTool && !sensitivityLowered) lowerSensitivity(true);
-                else if (!isHoldingTool && sensitivityLowered) lowerSensitivity(false);
+                boolean shouldLockMouse = FarmingHudWidget.FARMING_TOOLS.containsKey(itemId) && (!SkyblockerConfigManager.get().locations.garden.lockMouseGroundOnly || MinecraftClient.getInstance().player.isOnGround());
+                if (shouldLockMouse && !sensitivityLowered) lowerSensitivity(true);
+                else if (!shouldLockMouse && sensitivityLowered) lowerSensitivity(false);
 
-            }
-            if (SkyblockerConfigManager.get().locations.garden.lockMouseGround) {
-                boolean onGround = MinecraftClient.getInstance().player.isOnGround();
-                if (onGround && !sensitivityLowered) lowerSensitivity(true);
-                else if (!onGround && sensitivityLowered) lowerSensitivity(false);
             }
         });
     }

@@ -1099,7 +1099,7 @@ public class SkyblockerConfig {
 		public boolean lockMouseTool = false;
 
 		@SerialEntry
-		public boolean lockMouseGround = false;
+		public boolean lockMouseGroundOnly = false;
 	}
 
 	public static class FarmingHud {

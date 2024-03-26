@@ -175,9 +175,9 @@ public class LocationsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.lockMouseGround"))
-								.binding(defaults.locations.garden.lockMouseGround,
-										() -> config.locations.garden.lockMouseGround,
-										newValue -> config.locations.garden.lockMouseGround = newValue)
+								.binding(defaults.locations.garden.lockMouseGroundOnly,
+										() -> config.locations.garden.lockMouseGroundOnly,
+										newValue -> config.locations.garden.lockMouseGroundOnly = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())

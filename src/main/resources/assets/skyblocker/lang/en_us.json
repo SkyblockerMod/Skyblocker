@@ -207,7 +207,7 @@
   "text.autoconfig.skyblocker.option.locations.garden.dicerTitlePrevent": "Enable Dicer Title Prevent",
   "text.autoconfig.skyblocker.option.locations.garden.visitorHelper": "Visitor helper",
   "text.autoconfig.skyblocker.option.locations.garden.lockMouseTool": "Lock camera when holding a farming tool",
-  "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "Lock camera when on the ground",
+  "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "Only lock camera when on the ground",
   "text.autoconfig.skyblocker.option.locations.dungeons": "Dungeons",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableRoomMatching": "Enable Room Matching",
