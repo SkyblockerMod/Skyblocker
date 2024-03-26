@@ -6,7 +6,11 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+
+import java.util.function.Supplier;
 
 public class FancyStatusBars {
     private static final Identifier BARS = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/bars.png");
@@ -37,6 +41,9 @@ public class FancyStatusBars {
     private int fill(int value, int max) {
         return (100 * value) / max;
     }
+
+    private static final Identifier TEST = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_test");
+    private static final Supplier<Sprite> SUPPLIER = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(TEST);
 
     public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
@@ -77,6 +84,12 @@ public class FancyStatusBars {
         for (var bar : bars) {
             bar.drawText(context);
         }
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.translate(50, 50, 0);
+        matrices.scale(2,2,1);
+        context.drawSprite(0, 0, 0, 60, 5, SUPPLIER.get(), 1, 0.25f, 0.25f, 1);
+        matrices.pop();
         return true;
     }
 
