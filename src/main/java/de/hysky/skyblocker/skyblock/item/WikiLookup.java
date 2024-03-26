@@ -40,7 +40,7 @@ public class WikiLookup {
             getSkyblockId(slot);
             try {
                 String wikiLink = ItemRepository.getWikiLink(id, player);
-                CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink));
+                if (wikiLink != null) CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink));
             } catch (IndexOutOfBoundsException | IllegalStateException e) {
                 LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
                 if (player != null) {

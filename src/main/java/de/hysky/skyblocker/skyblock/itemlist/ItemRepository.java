@@ -69,7 +69,7 @@ public class ItemRepository {
 
     public static String getWikiLink(String internalName, PlayerEntity player) {
         NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(internalName);
-        if (item == null || item.getInfo().isEmpty()) {
+        if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
             warnNoWikiLink(player);
             return null;
         }
