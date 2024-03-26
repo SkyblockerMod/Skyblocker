@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class FarmingHudWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
-    private static final Map<String, ItemStack> FARMING_TOOLS = Map.ofEntries(
+    public static final Map<String, ItemStack> FARMING_TOOLS = Map.ofEntries(
             Map.entry("THEORETICAL_HOE_WHEAT_1", Ico.WHEAT),
             Map.entry("THEORETICAL_HOE_WHEAT_2", Ico.WHEAT),
             Map.entry("THEORETICAL_HOE_WHEAT_3", Ico.WHEAT),
@@ -65,5 +65,8 @@ public class FarmingHudWidget extends Widget {
         double pitch = cameraEntity == null ? 0.0d : cameraEntity.getPitch();
         addComponent(new PlainTextComponent(Text.literal("Yaw: " + String.format("%.3f", MathHelper.wrapDegrees(yaw))).formatted(Formatting.YELLOW)));
         addComponent(new PlainTextComponent(Text.literal("Pitch: " + String.format("%.3f", MathHelper.wrapDegrees(pitch))).formatted(Formatting.YELLOW)));
+        if (LowerSensitivity.isSensitivityLowered()) {
+            addComponent(new PlainTextComponent(Text.translatable("skyblocker.garden.hud.mouseLocked").formatted(Formatting.ITALIC)));
+        }
     }
 }

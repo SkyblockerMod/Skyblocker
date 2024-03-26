@@ -23,6 +23,7 @@ import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.garden.FarmingHud;
+import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
@@ -113,6 +114,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DwarvenHud.init();
         CrystalsHud.init();
         FarmingHud.init();
+        LowerSensitivity.init();
         CrystalsLocationsManager.init();
         ChatMessageListener.init();
         Shortcuts.init();

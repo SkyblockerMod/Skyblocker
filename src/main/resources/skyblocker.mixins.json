@@ -25,6 +25,7 @@
     "LeverBlockMixin",
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
+    "MouseMixin",
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
