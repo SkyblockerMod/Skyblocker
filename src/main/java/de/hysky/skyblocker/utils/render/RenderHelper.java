@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
+import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -12,8 +13,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
+import net.minecraft.client.texture.Scaling;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
@@ -28,6 +32,7 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.slf4j.Logger;
 
+import java.awt.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -368,6 +373,72 @@ public class RenderHelper {
 
     public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+    }
+
+    private static void drawSprite(DrawContext context, Sprite sprite, int i, int j, int k, int l, int x, int y, int z, int width, int height, float red, float green, float blue, float alpha) {
+        if (width == 0 || height == 0) {
+            return;
+        }
+        ((DrawContextInvoker) context).invokeDrawTexturedQuad(sprite.getAtlasId(), x, x + width, y, y + height, z, sprite.getFrameU((float)k / (float)i), sprite.getFrameU((float)(k + width) / (float)i), sprite.getFrameV((float)l / (float)j), sprite.getFrameV((float)(l + height) / (float)j), red, green, blue, alpha);
+    }
+    private static void drawSpriteTiled(DrawContext context, Sprite sprite, int x, int y, int z, int width, int height, int i, int j, int tileWidth, int tileHeight, int k, int l, float red, float green, float blue, float alpha) {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+        if (tileWidth <= 0 || tileHeight <= 0) {
+            throw new IllegalArgumentException("Tiled sprite texture size must be positive, got " + tileWidth + "x" + tileHeight);
+        }
+        for (int m = 0; m < width; m += tileWidth) {
+            int n = Math.min(tileWidth, width - m);
+            for (int o = 0; o < height; o += tileHeight) {
+                int p = Math.min(tileHeight, height - o);
+                drawSprite(context, sprite, k, l, i, j, x + m, y + o, z, n, p, red, green, blue, alpha);
+            }
+        }
+    }
+
+    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, float red, float green, float blue, float alpha) {
+        Sprite sprite = MinecraftClient.getInstance().getGuiAtlasManager().getSprite(texture);
+        Scaling scaling = MinecraftClient.getInstance().getGuiAtlasManager().getScaling(sprite);
+        if (!(scaling instanceof Scaling.NineSlice nineSlice)) return;
+        Scaling.NineSlice.Border border = nineSlice.border();
+        int z = 0;
+
+        int i = Math.min(border.left(), width / 2);
+        int j = Math.min(border.right(), width / 2);
+        int k = Math.min(border.top(), height / 2);
+        int l = Math.min(border.bottom(), height / 2);
+        if (width == nineSlice.width() && height == nineSlice.height()) {
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, width, height, red, green, blue, alpha);
+            return;
+        }
+        if (height == nineSlice.height()) {
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, i, height, red, green, blue, alpha);
+            drawSpriteTiled(context, sprite, x + i, y, z, width - j - i, height, i, 0, nineSlice.width() - j - i, nineSlice.height(), nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, z, j, height, red, green, blue, alpha);
+            return;
+        }
+        if (width == nineSlice.width()) {
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, width, k, red, green, blue, alpha);
+            drawSpriteTiled(context, sprite, x, y + k, z, width, height - l - k, 0, k, nineSlice.width(), nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, z, width, l, red, green, blue, alpha);
+            return;
+        }
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, i, k, red, green, blue, alpha);
+        drawSpriteTiled(context, sprite, x + i, y, z, width - j - i, k, i, 0, nineSlice.width() - j - i, k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, z, j, k, red, green, blue, alpha);
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, z, i, l, red, green, blue, alpha);
+        drawSpriteTiled(context, sprite, x + i, y + height - l, z, width - j - i, l, i, nineSlice.height() - l, nineSlice.width() - j - i, l, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, nineSlice.height() - l, x + width - j, y + height - l, z, j, l, red, green, blue, alpha);
+        drawSpriteTiled(context, sprite, x, y + k, z, i, height - l - k, 0, k, i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+        drawSpriteTiled(context, sprite, x + i, y + k, z, width - j - i, height - l - k, i, k, nineSlice.width() - j - i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+        drawSpriteTiled(context, sprite, x + width - j, y + k, z, i, height - l - k, nineSlice.width() - j, k, j, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+    }
+
+    private static final float[] colorBuffer = new float[4];
+    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
+        color.getComponents(colorBuffer);
+        renderNineSliceColored(context, texture, x, y, width, height, colorBuffer[0],colorBuffer[1],colorBuffer[2],colorBuffer[3]);
     }
 
     // TODO Get rid of reflection once the new Sodium is released
