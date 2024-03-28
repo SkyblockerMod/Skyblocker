@@ -622,7 +622,7 @@ public class SkyblockerConfig {
 		public boolean enableWikiLookup = true;
 
 		@SerialEntry
-		public boolean officialWiki = false;
+		public boolean officialWiki = true;
 	}
 
 	public static class ChestValue {
