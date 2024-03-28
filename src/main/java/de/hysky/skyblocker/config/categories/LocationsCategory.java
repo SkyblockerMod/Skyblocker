@@ -166,6 +166,20 @@ public class LocationsCategory {
 										newValue -> config.locations.garden.visitorHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.lockMouseTool"))
+								.binding(defaults.locations.garden.lockMouseTool,
+										() -> config.locations.garden.lockMouseTool,
+										newValue -> config.locations.garden.lockMouseTool = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.lockMouseGround"))
+								.binding(defaults.locations.garden.lockMouseGroundOnly,
+										() -> config.locations.garden.lockMouseGroundOnly,
+										newValue -> config.locations.garden.lockMouseGroundOnly = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 				.build();
 	}

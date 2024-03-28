@@ -1097,6 +1097,12 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public boolean visitorHelper = true;
+
+		@SerialEntry
+		public boolean lockMouseTool = false;
+
+		@SerialEntry
+		public boolean lockMouseGroundOnly = false;
 	}
 
 	public static class FarmingHud {
