@@ -84,6 +84,7 @@ public class ContainerSolverManager {
                         groups[i] = matcher.group(i + 1);
                     }
                     currentSolver.start(screen);
+                    markDirty();
                     return;
                 }
             }
