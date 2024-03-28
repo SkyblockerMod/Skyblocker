@@ -113,7 +113,7 @@ public class ContainerSolverManager {
         for (ColorHighlight highlight : highlights) {
             Slot slot = slots.get(highlight.slot());
             int color = highlight.color();
-            context.fillGradient(slot.x, slot.y, slot.x + 16, slot.y + 16, color, color);
+            context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, color);
         }
         RenderSystem.colorMask(true, true, true, true);
     }
