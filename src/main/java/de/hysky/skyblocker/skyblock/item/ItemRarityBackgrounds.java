@@ -17,7 +17,6 @@ import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
@@ -48,7 +47,7 @@ public class ItemRarityBackgrounds {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			String title = screen.getTitle().getString();
 
-			if (Utils.isOnSkyblock() && (title.equals("The Hex") || title.equals("Craft Item") || title.equals("Anvil") || title.equals("Reforge Anvil"))) {
+			if (Utils.isOnSkyblock() && (title.contains("The Hex") || title.equals("Craft Item") || title.equals("Anvil") || title.equals("Reforge Anvil"))) {
 				ScreenEvents.remove(screen).register(screen1 -> CACHE.clear());
 			}
 		});
@@ -74,8 +73,8 @@ public class ItemRarityBackgrounds {
 
 		if (CACHE.containsKey(hashCode)) return CACHE.get(hashCode);
 
-		List<Text> tooltip = stack.getTooltip(player, TooltipContext.BASIC);
-		String[] stringifiedTooltip = tooltip.stream().map(Text::getString).toArray(String[]::new);
+		List<Text> lore = ItemUtils.getLore(stack);
+		String[] stringifiedTooltip = lore.stream().map(Text::getString).toArray(String[]::new);
 
 		for (String rarityString : LORE_RARITIES.keySet()) {
 			if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarityString))) {
