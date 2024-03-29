@@ -5,9 +5,9 @@ import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
-import net.minecraft.item.map.MapIcon;
+import net.minecraft.item.map.MapDecoration;
+import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
-import net.minecraft.item.map.Type;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -46,9 +46,9 @@ public class DungeonMapUtils {
 
     @Nullable
     private static Vector2i getMapPlayerPos(MapState map) {
-        for (MapIcon icon : map.getIcons()) {
-            if (icon.type() == Type.FRAME) {
-                return new Vector2i((icon.x() >> 1) + 64, (icon.z() >> 1) + 64);
+        for (MapDecoration decoration : map.getDecorations()) {
+            if (decoration.type().value().equals(MapDecorationTypes.FRAME.value())) {
+                return new Vector2i((decoration.x() >> 1) + 64, (decoration.z() >> 1) + 64);
             }
         }
         return null;
