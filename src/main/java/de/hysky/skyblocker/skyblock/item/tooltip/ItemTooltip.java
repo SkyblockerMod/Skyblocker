@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.DyeableItem;
@@ -241,16 +242,16 @@ public class ItemTooltip {
         }
 
         if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
-            AccessoryReport report = AccessoriesHelper.calculateReport4Accessory(internalID);
+            Pair<AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 
-            if (report != AccessoryReport.INELIGIBLE) {
+            if (report.left() != AccessoryReport.INELIGIBLE) {
                 MutableText title = Text.literal(String.format("%-19s", "Accessory: ")).withColor(0xf57542);
 
-                Text stateText = switch (report) {
+                Text stateText = switch (report.left()) {
                     case HAS_HIGHEST_TIER -> Text.literal("✔ Collected").formatted(Formatting.GREEN);
-                    case IS_GREATER_TIER -> Text.literal("✦ Upgrade").withColor(0x218bff);
-                    case HAS_GREATER_TIER -> Text.literal("↑ Upgradable").withColor(0xf8d048);
-                    case OWNS_BETTER_TIER -> Text.literal("↓ Downgrade").formatted(Formatting.GRAY);
+                    case IS_GREATER_TIER -> Text.literal("✦ Upgrade ").withColor(0x218bff).append(Text.literal(report.right()).withColor(0xf8f8ff));
+                    case HAS_GREATER_TIER -> Text.literal("↑ Upgradable ").withColor(0xf8d048).append(Text.literal(report.right()).withColor(0xf8f8ff));
+                    case OWNS_BETTER_TIER -> Text.literal("↓ Downgrade ").formatted(Formatting.GRAY).append(Text.literal(report.right()).withColor(0xf8f8ff));
                     case MISSING -> Text.literal("✖ Missing").formatted(Formatting.RED);
 
                     //Should never be the case
