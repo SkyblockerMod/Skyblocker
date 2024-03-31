@@ -504,5 +504,14 @@
     "skyblocker.customDyeColors.noItemUuid": "§c你必须手持一个有uuid的物品才能为其设置自定义染料颜色！",
     "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§c你提供的是无效的材料或无效的装饰图案！",
     "text.autoconfig.skyblocker.option.general.searchOverlay.historyLength.@Tooltip": "界面显示的搜索历史的最大条数。",
-    "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.cave": "洞窟"
+    "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds.cave": "洞窟",
+    "text.autoconfig.skyblocker.option.locations.garden.lockMouseTool": "当手持农具时锁定镜头",
+    "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "仅当在地面上时锁定镜头",
+    "skyblocker.garden.hud.mouseLocked": "鼠标已锁定。",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength": "告示显示时长",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength.@Tooltip": "显示公告的时间长度，以游戏刻为单位。",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale": "告示尺寸",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale.@Tooltip": "告示的缩放级别。",
+    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper": "启用新年蛋糕助手",
+    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper.@Tooltip": "以绿色高亮显示缺少的新年蛋糕、红色高亮显示已有的蛋糕。\n\n需要至少打开一次蛋糕背包才能生效。"
 }
