@@ -2,7 +2,10 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.fancybars.BarGrid;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBar;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -10,6 +13,11 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class FancyStatusBars {
@@ -18,11 +26,11 @@ public class FancyStatusBars {
     private final MinecraftClient client = MinecraftClient.getInstance();
     private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
 
-    private final StatusBar[] bars = new StatusBar[]{
-            new StatusBar(0, 16733525, 2), // Health Bar
-            new StatusBar(1, 5636095, 2),  // Intelligence Bar
-            new StatusBar(2, 12106180, 1), // Defence Bar
-            new StatusBar(3, 8453920, 1),  // Experience Bar
+    private final OldStatusBar[] bars = new OldStatusBar[]{
+            new OldStatusBar(0, 16733525, 2, new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}), // Health Bar
+            new OldStatusBar(1, 5636095, 2, new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}),  // Intelligence Bar
+            new OldStatusBar(2, 12106180, 1, new Color[]{new Color(255, 255, 255)}), // Defence Bar
+            new OldStatusBar(3, 8453920, 1, new Color[]{new Color(100, 220, 70)}),  // Experience Bar
     };
 
     // Positions to show the bars
@@ -30,6 +38,16 @@ public class FancyStatusBars {
     // Anything outside the set values hides the bar
     private final int[] anchorsX = new int[3];
     private final int[] anchorsY = new int[3];
+
+    public static BarGrid barGrid = new BarGrid();
+    public static Map<String, StatusBar> statusBars = new HashMap<>();
+
+    static {
+        statusBars.put("health", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, null));
+        statusBars.put("intelligence", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, null));
+        statusBars.put("defense", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"),  new Color[]{new Color(255, 255, 255)}, false, null));
+        statusBars.put("experience", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(100, 220, 70)}, false, null));
+    }
 
     public FancyStatusBars() {
         moveBar(0, 0);
@@ -42,8 +60,9 @@ public class FancyStatusBars {
         return (100 * value) / max;
     }
 
-    private static final Identifier TEST = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_test");
-    private static final Supplier<Sprite> SUPPLIER = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(TEST);
+    private static final Identifier BAR_FILL = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_fill");
+    private static final Identifier BAR_BACK = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Supplier<Sprite> SUPPLIER = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(BAR_FILL);
 
     public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
@@ -129,8 +148,9 @@ public class FancyStatusBars {
         }
     }
 
-    private class StatusBar {
+    private class OldStatusBar {
         public final int[] fill;
+        private final Color[] colors;
         public int offsetX;
         private final int v;
         private final int text_color;
@@ -138,13 +158,14 @@ public class FancyStatusBars {
         public int bar_width;
         public Object text;
 
-        private StatusBar(int i, int textColor, int fillNum) {
+        private OldStatusBar(int i, int textColor, int fillNum, Color[] colors) {
             this.v = i * 9;
             this.text_color = textColor;
             this.fill = new int[fillNum];
             this.fill[0] = 100;
             this.anchorNum = 0;
             this.text = "";
+            this.colors = colors;
         }
 
         public void update(StatusBarTracker.Resource resource) {
@@ -163,23 +184,13 @@ public class FancyStatusBars {
             context.drawTexture(BARS, anchorsX[anchorNum] + offsetX, anchorsY[anchorNum], 0, v, 9, 9);
 
             // Draw the background for the bar
-            context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 10, anchorsY[anchorNum], 10, v, 2, 9);
-            for (int i = 2; i < bar_width - 2; i += 58) {
-                context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 10 + i, anchorsY[anchorNum], 12, v, Math.min(58, bar_width - 2 - i), 9);
-            }
-            context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 10 + bar_width - 2, anchorsY[anchorNum], 70, v, 2, 9);
+            context.drawGuiTexture(BAR_BACK, anchorsX[anchorNum]+ offsetX+10, anchorsY[anchorNum]+1, bar_width, 7);
 
             // Draw the filled part of the bar
             for (int i = 0; i < fill.length; i++) {
                 int fill_width = this.fill[i] * (bar_width - 2) / 100;
                 if (fill_width >= 1) {
-                    context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 11, anchorsY[anchorNum], 72 + i * 60, v, 1, 9);
-                }
-                for (int j = 1; j < fill_width - 1; j += 58) {
-                    context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 11 + j, anchorsY[anchorNum], 73 + i * 60, v, Math.min(58, fill_width - 1 - j), 9);
-                }
-                if (fill_width == bar_width - 2) {
-                    context.drawTexture(BARS, anchorsX[anchorNum] + offsetX + 11 + fill_width - 1, anchorsY[anchorNum], 131 + i * 60, v, 1, 9);
+                    RenderHelper.renderNineSliceColored(context, BAR_FILL, anchorsX[anchorNum] + offsetX + 11, anchorsY[anchorNum]+2, fill_width, 5, colors[i]);
                 }
             }
         }
