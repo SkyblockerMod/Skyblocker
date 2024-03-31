@@ -499,5 +499,14 @@
     "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.actionBar.@Tooltip": "在操作欄中顯示此訊息。",
     "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.announcement": "顯示公告：",
     "skyblocker.quiverWarning.empty": "你的箭袋空了！",
-    "skyblocker.tips.customItemNames": "使用/skyblocker custom renameItem 自訂物品名稱"
+    "skyblocker.tips.customItemNames": "使用/skyblocker custom renameItem 自訂物品名稱",
+    "text.autoconfig.skyblocker.option.locations.garden.lockMouseTool": "手持農具時鎖定鏡頭",
+    "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "僅當在地面上時鎖定鏡頭",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength": "告示顯示時長",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale.@Tooltip": "告示的縮放等級。",
+    "skyblocker.garden.hud.mouseLocked": "滑鼠已鎖定。",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength.@Tooltip": "顯示公告的時間長度，以遊戲刻為單位。",
+    "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale": "告示尺寸",
+    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper.@Tooltip": "以綠色高亮顯示缺少的新年蛋糕、紅色高亮顯示已有的蛋糕。\n\n需要至少打開一次蛋糕背包才能生效。",
+    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper": "啟用新年蛋糕助手"
 }
