@@ -78,7 +78,7 @@ public class VisitorHelper {
     }
 
     public static void onSlotClick(Slot slot, int slotId, String title) {
-        if (slotId == 29 || slotId == 13) {
+        if (slotId == 29 || slotId == 13 || slotId == 33) {
             itemMap.remove(title);
         }
     }
