@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -31,9 +32,11 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
@@ -44,9 +47,9 @@ import net.minecraft.screen.slot.Slot;
 public class AccessoriesHelper {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("collected_accessories.json");
-	private static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag \\(\\d+\\/\\d+\\)");
+	private static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag \\((?<page>\\d+)\\/\\d+\\)");
 	//UUID -> Profile Id & Data
-	private static final Map<String, Map<String, ProfileAccessoryData>> COLLECTED_ACCESSORIES = new Object2ObjectOpenHashMap<>();
+	private static final Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, ProfileAccessoryData>> COLLECTED_ACCESSORIES = new Object2ObjectOpenHashMap<>();
 	private static final Predicate<String> NON_EMPTY = s -> !s.isEmpty();
 	private static final Predicate<Accessory> HAS_FAMILY = Accessory::hasFamily;
 	private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
@@ -60,21 +63,24 @@ public class AccessoriesHelper {
 		ClientLifecycleEvents.CLIENT_STOPPING.register((_client) -> save());
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof GenericContainerScreen genericContainerScreen) {
-				if (ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString()).matches()) {
+				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
+
+				if (matcher.matches()) {
 					ScreenEvents.afterTick(screen).register(_screen -> {
 						GenericContainerScreenHandler handler = genericContainerScreen.getScreenHandler();
 
-						collectAccessories(handler.slots.subList(0, handler.getRows() * 9));
+						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), Integer.parseInt(matcher.group("page")));
 					});
 				}
 			}
 		});
 	}
 
+	//Note: JsonOps.COMPRESSED must be used if you're using maps with non-string keys
 	private static void load() {
 		loaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-				COLLECTED_ACCESSORIES.putAll(ProfileAccessoryData.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow());
+				COLLECTED_ACCESSORIES.putAll(ProfileAccessoryData.SERIALIZATION_CODEC.parse(JsonOps.COMPRESSED, JsonParser.parseReader(reader)).result().orElseThrow());
 			} catch (NoSuchFileException ignored) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Accessory Helper] Failed to load accessory file!", e);
@@ -84,13 +90,13 @@ public class AccessoriesHelper {
 
 	private static void save() {
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			SkyblockerMod.GSON.toJson(ProfileAccessoryData.SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, COLLECTED_ACCESSORIES).result().orElseThrow(), writer);
+			SkyblockerMod.GSON.toJson(ProfileAccessoryData.SERIALIZATION_CODEC.encodeStart(JsonOps.COMPRESSED, COLLECTED_ACCESSORIES).result().orElseThrow(), writer);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Accessory Helper] Failed to save accessory file!", e);
 		}
 	}
 
-	private static void collectAccessories(List<Slot> slots) {	
+	private static void collectAccessories(List<Slot> slots, int page) {	
 		//Is this even needed?
 		if (!loaded.isDone()) return;
 
@@ -107,7 +113,7 @@ public class AccessoriesHelper {
 
 		ProfileAccessoryData profileData = playerData.get(Utils.getProfileId());
 
-		profileData.accessoryIds().addAll(accessoryIds);
+		profileData.pages().put(page, new ObjectOpenHashSet<>(accessoryIds));
 	}
 
 	static Pair<AccessoryReport, String> calculateReport4Accessory(String accessoryId) {
@@ -115,7 +121,9 @@ public class AccessoriesHelper {
 
 		Accessory accessory = ACCESSORY_DATA.get(accessoryId);		
 		String uuid = UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
-		Set<Accessory> collectedAccessories = COLLECTED_ACCESSORIES.get(uuid).get(Utils.getProfileId()).accessoryIds().stream()
+		Set<Accessory> collectedAccessories = COLLECTED_ACCESSORIES.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>()).computeIfAbsent(Utils.getProfileId(), profileId -> ProfileAccessoryData.createDefault()).pages().int2ObjectEntrySet().stream()
+				.map(Entry::getValue)
+				.flatMap(ObjectOpenHashSet::stream)
 				.filter(ACCESSORY_DATA::containsKey)
 				.map(ACCESSORY_DATA::get)
 				.collect(Collectors.toSet());
@@ -183,21 +191,17 @@ public class AccessoriesHelper {
 		}
 	}
 
-	private record ProfileAccessoryData(Set<String> accessoryIds) {
+	private record ProfileAccessoryData(Int2ObjectOpenHashMap<ObjectOpenHashSet<String>> pages) {
 		private static final Codec<ProfileAccessoryData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.listOf()
-				.xmap(ObjectOpenHashSet::new, ObjectArrayList::new)
-				.fieldOf("accessoryIds")
-				.forGetter(i -> new ObjectOpenHashSet<String>(i.accessoryIds())))
+				Codec.unboundedMap(Codec.INT, Codec.STRING.listOf().xmap(ObjectOpenHashSet::new, ObjectArrayList::new))
+				.xmap(Int2ObjectOpenHashMap::new, Int2ObjectOpenHashMap::new).fieldOf("pages").forGetter(ProfileAccessoryData::pages))
 				.apply(instance, ProfileAccessoryData::new));
-		//Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		private static final Codec<Map<String, Map<String, ProfileAccessoryData>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, CODEC)
+		private static final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, ProfileAccessoryData>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, CODEC)
 				.xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new))
-		.xmap(Object2ObjectOpenHashMap::new, m -> (Map) new Object2ObjectOpenHashMap(m));
+		.xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
 
 		private static ProfileAccessoryData createDefault() {
-			return new ProfileAccessoryData(new ObjectOpenHashSet<>());
+			return new ProfileAccessoryData(new Int2ObjectOpenHashMap<>());
 		}
 	}
 
