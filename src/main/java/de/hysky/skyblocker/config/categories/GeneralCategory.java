@@ -56,6 +56,13 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.fancyCraftingUi"))
+						.binding(defaults.general.fancyCraftingUi,
+								() -> config.general.fancyCraftingUi,
+								newValue -> config.general.fancyCraftingUi = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.hideEmptyTooltips"))
 						.binding(defaults.general.hideEmptyTooltips,
 								() -> config.general.hideEmptyTooltips,
