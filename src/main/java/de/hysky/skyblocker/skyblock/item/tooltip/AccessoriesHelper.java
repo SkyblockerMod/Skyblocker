@@ -152,10 +152,10 @@ public class AccessoriesHelper {
 				.mapToInt(ACCESSORY_TIER)
 				.max();
 
-		if (accessory.tier() > highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.IS_GREATER_TIER, String.format("(%d/%d)", accessory.tier(), maxTierInFamily));
+		if (accessory.tier() > highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.IS_GREATER_TIER, String.format("(%d→%d/%d)", highestTierOfAllCollectedInFamily.orElse(0), accessory.tier(), maxTierInFamily));
 
 		//If this accessory is a lower tier than one already obtained from same family
-		if (accessory.tier() < highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.OWNS_BETTER_TIER, String.format("(%d/%d)", highestTierOfAllCollectedInFamily.orElse(0), maxTierInFamily));
+		if (accessory.tier() < highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.OWNS_BETTER_TIER, String.format("(%d→%d/%d)", highestTierOfAllCollectedInFamily.orElse(0), accessory.tier(), maxTierInFamily));
 
 		//If there is an accessory in the same family that has a higher tier
 		//Take the accessories in the same family, then check if there is an accessory whose tier is greater than {@code accessory}
