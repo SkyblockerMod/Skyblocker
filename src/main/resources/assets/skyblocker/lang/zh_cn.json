@@ -513,5 +513,6 @@
     "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale": "告示尺寸",
     "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale.@Tooltip": "告示的缩放级别。",
     "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper": "启用新年蛋糕助手",
-    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper.@Tooltip": "以绿色高亮显示缺少的新年蛋糕、红色高亮显示已有的蛋糕。\n\n需要至少打开一次蛋糕背包才能生效。"
+    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper.@Tooltip": "以绿色高亮显示缺少的新年蛋糕、红色高亮显示已有的蛋糕。\n\n需要至少打开一次蛋糕背包才能生效。",
+    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "值越低，更新越频繁，可能会导致卡顿。"
 }
