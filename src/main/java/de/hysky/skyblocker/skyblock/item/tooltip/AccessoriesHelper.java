@@ -32,7 +32,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -47,7 +46,7 @@ import net.minecraft.screen.slot.Slot;
 public class AccessoriesHelper {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("collected_accessories.json");
-	private static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag \\((?<page>\\d+)\\/\\d+\\)");
+	private static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag \\((?<page>\\d+)/\\d+\\)");
 	//UUID -> Profile Id & Data
 	private static final Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, ProfileAccessoryData>> COLLECTED_ACCESSORIES = new Object2ObjectOpenHashMap<>();
 	private static final Predicate<String> NON_EMPTY = s -> !s.isEmpty();
@@ -104,16 +103,12 @@ public class AccessoriesHelper {
 				.map(Slot::getStack)
 				.map(ItemUtils::getItemId)
 				.filter(NON_EMPTY)
-				.collect(Collectors.toUnmodifiableList());
+				.toList();
 
 		String uuid = UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
 
-		Map<String, ProfileAccessoryData> playerData = COLLECTED_ACCESSORIES.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
-		playerData.putIfAbsent(Utils.getProfileId(), ProfileAccessoryData.createDefault());
-
-		ProfileAccessoryData profileData = playerData.get(Utils.getProfileId());
-
-		profileData.pages().put(page, new ObjectOpenHashSet<>(accessoryIds));
+        COLLECTED_ACCESSORIES.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>()).computeIfAbsent(Utils.getProfileId(), profileId -> ProfileAccessoryData.createDefault()).pages()
+				.put(page, new ObjectOpenHashSet<>(accessoryIds));
 	}
 
 	static Pair<AccessoryReport, String> calculateReport4Accessory(String accessoryId) {
@@ -121,14 +116,13 @@ public class AccessoriesHelper {
 
 		Accessory accessory = ACCESSORY_DATA.get(accessoryId);		
 		String uuid = UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
-		Set<Accessory> collectedAccessories = COLLECTED_ACCESSORIES.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>()).computeIfAbsent(Utils.getProfileId(), profileId -> ProfileAccessoryData.createDefault()).pages().int2ObjectEntrySet().stream()
-				.map(Entry::getValue)
+		Set<Accessory> collectedAccessories = COLLECTED_ACCESSORIES.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>()).computeIfAbsent(Utils.getProfileId(), profileId -> ProfileAccessoryData.createDefault()).pages().values().stream()
 				.flatMap(ObjectOpenHashSet::stream)
 				.filter(ACCESSORY_DATA::containsKey)
 				.map(ACCESSORY_DATA::get)
 				.collect(Collectors.toSet());
 
-		//If the player has this accessory and it doesn't belong to a family
+		//If the player has this accessory, and it doesn't belong to a family
 		if (collectedAccessories.contains(accessory) && accessory.family().isEmpty()) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
 
 		Predicate<Accessory> HAS_SAME_FAMILY = accessory::hasSameFamily;
@@ -146,30 +140,22 @@ public class AccessoriesHelper {
 				.collect(Collectors.toSet());
 
 		///If the player has the highest tier accessory in this family
-		//Take the the accessories in the same family as {@code accessory}, then get the one with the highest tier
+		//Take the accessories in the same family as {@code accessory}, then get the one with the highest tier
 		Optional<Accessory> highestTierOfFamily = accessoriesInTheSameFamily.stream()
 				.max(Comparator.comparingInt(ACCESSORY_TIER));
+		int maxTierInFamily = highestTierOfFamily.orElse(Accessory.EMPTY).tier();
 
-		if (highestTierOfFamily.isPresent()) {
-			Accessory highestTier = highestTierOfFamily.get();
+		if (collectedAccessoriesInTheSameFamily.stream().anyMatch(ca -> ca.tier() == maxTierInFamily)) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
 
-			if (collectedAccessoriesInTheSameFamily.contains(highestTier)) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
-
-			//For when the highest tier is tied
-			if (highestTier.hasSameFamily(accessory) && collectedAccessoriesInTheSameFamily.stream().allMatch(ca -> ca.tier() == highestTier.tier())) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
-		}
-
-		//If this accessory is a higher tier than all of other collected accessories in the same family
+		//If this accessory is a higher tier than all the other collected accessories in the same family
 		OptionalInt highestTierOfAllCollectedInFamily = collectedAccessoriesInTheSameFamily.stream()
 				.mapToInt(ACCESSORY_TIER)
 				.max();
 
-		int maxTierInFamily = highestTierOfFamily.orElse(Accessory.EMPTY).tier();
-
-		if (highestTierOfAllCollectedInFamily.isPresent() && accessory.tier() > highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.IS_GREATER_TIER, String.format("(%d/%d)", accessory.tier(), maxTierInFamily));
+		if (accessory.tier() > highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.IS_GREATER_TIER, String.format("(%d/%d)", accessory.tier(), maxTierInFamily));
 
 		//If this accessory is a lower tier than one already obtained from same family
-		if (highestTierOfAllCollectedInFamily.isPresent() && accessory.tier() < highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.OWNS_BETTER_TIER, String.format("(%d/%d)", highestTierOfAllCollectedInFamily.orElse(0), maxTierInFamily));
+		if (accessory.tier() < highestTierOfAllCollectedInFamily.getAsInt()) return Pair.of(AccessoryReport.OWNS_BETTER_TIER, String.format("(%d/%d)", highestTierOfAllCollectedInFamily.orElse(0), maxTierInFamily));
 
 		//If there is an accessory in the same family that has a higher tier
 		//Take the accessories in the same family, then check if there is an accessory whose tier is greater than {@code accessory}
@@ -183,9 +169,7 @@ public class AccessoriesHelper {
 
 	static void refreshData(JsonObject data) {
 		try {
-			Map<String, Accessory> accessoryData = Accessory.MAP_CODEC.parse(JsonOps.INSTANCE, data).result().orElseThrow();
-
-			ACCESSORY_DATA = accessoryData;
+            ACCESSORY_DATA = Accessory.MAP_CODEC.parse(JsonOps.INSTANCE, data).result().orElseThrow();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Accessory Helper] Failed to parse data!", e);
 		}
@@ -229,10 +213,10 @@ public class AccessoriesHelper {
 
 	enum AccessoryReport {
 		HAS_HIGHEST_TIER, //You've collected the highest tier - Collected
-		IS_GREATER_TIER, //This accessory is an upgrade from the one in the same family that you already have - Upgrade -- Shows you what tier this accessory is in it's family
+		IS_GREATER_TIER, //This accessory is an upgrade from the one in the same family that you already have - Upgrade -- Shows you what tier this accessory is in its family
 		HAS_GREATER_TIER, //This accessory has a higher tier upgrade - Upgradable -- Shows you the highest tier accessory you've collected in that family
 		OWNS_BETTER_TIER, //You've collected an accessory in this family with a higher tier - Downgrade -- Shows you the highest tier accessory you've collected in that family
 		MISSING, //You don't have any accessories in this family - Missing
-		INELIGIBLE;
+		INELIGIBLE
 	}
 }
