@@ -113,6 +113,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Visitor Helper**
   - buy items that visitors require from bazaar by clicking the text
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
+- **Basic garden mouse locking feature (set mouse sensitivity to 0)**
 
 ### Visual Enhancements:
 - **Fancy Tab HUD:** Fully configurable with a resource pack.
@@ -150,6 +151,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
+- **New Year Cakes Helper**
 
 ### Barn Features:
 - **Barn Solver:**

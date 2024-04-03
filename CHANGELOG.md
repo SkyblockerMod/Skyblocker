@@ -1,3 +1,25 @@
+# Release 1.19.1
+
+## Highlight
+* Fix Croesus Solver crash
+* Basic garden mouse locking feature (set sensitivity to 0)
+* New Year Cakes Helper
+* add Zodd room (Dungeon Secrets)
+
+## What's Changed
+* Add New Year Cakes Helper by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/603
+* Basic garden mouse locking feature by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/607
+* Fix Commissions Hud & Wiki Lookup by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/616
+* Redraw square rarity background by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/619
+* Update IF conflict by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/620
+* Croesus Solver crash fix by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/621
+* Fix Dwarven Hud by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/617
+* Update Dungeon Secrets (Zodd Room) by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/618
+* Remove Visitor from Visitor Helper when you refuse their offer by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/626
+* Fix labeler by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/604
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.19.0...v1.19.1
+___
 # Release 1.19.0
 
 ## Highlight
