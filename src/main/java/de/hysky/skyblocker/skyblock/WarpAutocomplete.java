@@ -1,20 +1,15 @@
 package de.hysky.skyblocker.skyblock;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
-import net.minecraft.text.Text;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -96,13 +91,13 @@ public class WarpAutocomplete {
     private record ArgType(List<String> possibleWarps) implements ArgumentType<String> {
 
         @Override
-            public String parse(StringReader reader) throws CommandSyntaxException {
-                return reader.readUnquotedString();
-            }
-
-            @Override
-            public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-                return CommandSource.suggestMatching(possibleWarps, builder);
-            }
+        public String parse(StringReader reader) {
+            return reader.readUnquotedString();
         }
+
+        @Override
+        public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+            return CommandSource.suggestMatching(possibleWarps, builder);
+        }
+    }
 }

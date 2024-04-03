@@ -6,7 +6,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.command.CommandSource;
-import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
