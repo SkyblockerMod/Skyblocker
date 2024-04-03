@@ -85,6 +85,13 @@ public class LocationsCategory {
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.enableEnderNodeHelper"))
+								.binding(defaults.locations.end.enableEnderNodeHelper,
+										() -> config.locations.end.enableEnderNodeHelper,
+										newValue -> config.locations.end.enableEnderNodeHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.hudEnabled"))
 								.binding(defaults.locations.end.hudEnabled,
 										() -> config.locations.end.hudEnabled,

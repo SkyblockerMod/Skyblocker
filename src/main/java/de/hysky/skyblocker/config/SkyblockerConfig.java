@@ -1067,6 +1067,8 @@ public class SkyblockerConfig {
 	}
 
 	public static class TheEnd {
+		@SerialEntry
+		public boolean enableEnderNodeHelper = true;
 
 		@SerialEntry
 		public boolean hudEnabled = true;
