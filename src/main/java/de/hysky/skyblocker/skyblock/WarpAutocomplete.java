@@ -33,7 +33,7 @@ public class WarpAutocomplete {
     public static void init() {
         CompletableFuture.supplyAsync(() -> {
             try {
-                JsonArray jsonElements = SkyblockerMod.GSON.fromJson(Http.sendGetRequest("https://staging.hysky.de/api/locations"), JsonArray.class);
+                JsonArray jsonElements = SkyblockerMod.GSON.fromJson(Http.sendGetRequest("https://hysky.de/api/locations"), JsonArray.class);
                 return jsonElements.asList().stream().map(JsonElement::getAsString).toList();
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to download warps list", e);
