@@ -508,5 +508,9 @@
     "text.autoconfig.skyblocker.option.messages.chatRules.announcementLength.@Tooltip": "顯示公告的時間長度，以遊戲刻為單位。",
     "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale": "告示尺寸",
     "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper.@Tooltip": "以綠色高亮顯示缺少的新年蛋糕、紅色高亮顯示已有的蛋糕。\n\n需要至少打開一次蛋糕背包才能生效。",
-    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper": "啟用新年蛋糕助手"
+    "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper": "啟用新年蛋糕助手",
+    "text.autoconfig.skyblocker.option.general.titleContainer.@Tooltip": "用於同時顯示多個標題，例如：吸血鬼殺手",
+    "text.autoconfig.skyblocker.option.general.titleContainer.titleContainerScale": "標題容器縮放",
+    "text.autoconfig.skyblocker.option.general.titleContainer.config": "標題容器位置設定",
+    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "值越小，更新越頻繁，可能會導致卡頓。"
 }
