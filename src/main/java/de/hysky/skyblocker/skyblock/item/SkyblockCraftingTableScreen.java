@@ -29,7 +29,8 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     protected static final ButtonTextures MORE_CRAFTS_TEXTURES = new ButtonTextures(
             new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button"),
             new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button_disabled"),
-            new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button_highlighted"));
+            new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button_highlighted")
+    );
 
     protected static final Identifier QUICK_CRAFT = new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/quick_craft_overlay");
     private final ItemListWidget recipeBook = new ItemListWidget();
@@ -56,7 +57,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         moreCraftsButton = new TexturedButtonWidget(this.x + 174, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
                 button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
         moreCraftsButton.setTooltipDelay(250);
-        moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More crafts")));
+        moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More Crafts")));
         this.addDrawableChild(moreCraftsButton);
         assert (client != null ? client.player : null) != null;
         client.player.currentScreenHandler = handler; // recipe book replaces it with the Dummy one fucking DUMBASS
@@ -130,8 +131,6 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
         super.onMouseClick(slot, slotId, button, actionType);
         this.recipeBook.slotClicked(slot);
-        // Don't make the more item head skull thing show up
-        if (slot != null && slot.id == 26) handler.setCursorStack(ItemStack.EMPTY);
     }
 
 
@@ -142,14 +141,10 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         }
 
         @Override
-        public void populateRecipeFinder(RecipeMatcher finder) {
-
-        }
+        public void populateRecipeFinder(RecipeMatcher finder) {}
 
         @Override
-        public void clearCraftingSlots() {
-
-        }
+        public void clearCraftingSlots() {}
 
         @Override
         public boolean matches(RecipeEntry<? extends Recipe<SimpleInventory>> recipe) {

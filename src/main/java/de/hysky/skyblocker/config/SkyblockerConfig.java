@@ -160,7 +160,7 @@ public class SkyblockerConfig {
 		public boolean betterPartyFinder = true;
 
 		@SerialEntry
-		public boolean fancyCraftingUi = true;
+		public boolean fancyCraftingTable = true;
 
 		@SerialEntry
 		public boolean backpackPreviewWithoutShift = false;

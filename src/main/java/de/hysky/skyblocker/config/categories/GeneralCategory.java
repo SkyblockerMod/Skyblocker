@@ -42,6 +42,13 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.fancyCraftingTable"))
+						.binding(defaults.general.fancyCraftingTable,
+								() -> config.general.fancyCraftingTable,
+								newValue -> config.general.fancyCraftingTable = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.backpackPreviewWithoutShift"))
 						.binding(defaults.general.backpackPreviewWithoutShift,
 								() -> config.general.backpackPreviewWithoutShift,
@@ -53,13 +60,6 @@ public class GeneralCategory {
 						.binding(defaults.general.compactorDeletorPreview,
 								() -> config.general.compactorDeletorPreview,
 								newValue -> config.general.compactorDeletorPreview = newValue)
-						.controller(ConfigUtils::createBooleanController)
-						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.general.fancyCraftingUi"))
-						.binding(defaults.general.fancyCraftingUi,
-								() -> config.general.fancyCraftingUi,
-								newValue -> config.general.fancyCraftingUi = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()

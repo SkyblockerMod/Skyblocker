@@ -45,7 +45,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
             }
 
             ci.cancel();
-        } else if (SkyblockerConfigManager.get().general.fancyCraftingUi && screenHandler instanceof GenericContainerScreenHandler containerScreenHandler && name.getString().toLowerCase().contains("craft item")) {
+        } else if (SkyblockerConfigManager.get().general.fancyCraftingTable && screenHandler instanceof GenericContainerScreenHandler containerScreenHandler && name.getString().toLowerCase().contains("craft item")) {
             SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
             client.player.currentScreenHandler = skyblockCraftingTableScreenHandler;
             client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(), Text.literal("Craft Item")));

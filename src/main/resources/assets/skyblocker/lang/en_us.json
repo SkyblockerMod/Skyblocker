@@ -154,7 +154,7 @@
   "text.autoconfig.skyblocker.option.general.searchOverlay.enableCommands.@Tooltip": "Opens the bazaar search with \"/bzs\" and auction house with \"/ahs\". A re-log is required for this setting to be updated.",
   "text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel": "History:",
   "text.autoconfig.skyblocker.option.general.betterPartyFinder": "Better Party Finder",
-  "text.autoconfig.skyblocker.option.general.fancyCraftingUi": "Fancy Crafting UI",
+  "text.autoconfig.skyblocker.option.general.fancyCraftingTable": "Fancy Crafting Table UI",
   "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
   "skyblocker.itemTooltip.noData": "§cNo Data",
 
