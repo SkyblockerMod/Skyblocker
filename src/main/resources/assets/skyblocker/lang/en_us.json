@@ -348,6 +348,7 @@
   "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip": "Used for calculating Motes sell prices.",
 
   "text.autoconfig.skyblocker.option.locations.end": "The End",
+  "text.autoconfig.skyblocker.option.locations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
   "text.autoconfig.skyblocker.option.locations.end.hudEnabled": "HUD Enabled",
   "text.autoconfig.skyblocker.option.locations.end.screen": "End HUD Config...",
   "text.autoconfig.skyblocker.option.locations.end.waypoint": "End Protector Waypoint",

@@ -21,6 +21,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CrystalsHud;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
+import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.garden.FarmingHud;
 import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
@@ -107,6 +108,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FairySouls.init();
         Relics.init();
         MythologicalRitual.init();
+        EnderNodes.init();
         BackpackPreview.init();
         QuickNav.init();
         ItemCooldowns.init();
