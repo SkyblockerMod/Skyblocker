@@ -47,7 +47,8 @@
     "accessor.ScreenAccessor",
     "accessor.SkullBlockEntityAccessor",
     "accessor.WorldRendererAccessor",
-    "discordipc.ConnectionMixin"
+    "discordipc.ConnectionMixin",
+    "CommandTreeS2CPacketMixin"
   ],
   "injectors": {
     "defaultRequire": 1
