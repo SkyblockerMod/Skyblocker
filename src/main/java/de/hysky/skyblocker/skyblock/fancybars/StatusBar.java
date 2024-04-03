@@ -26,7 +26,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     public int gridX = 0;
     public int gridY = 0;
 
-    public float size = 1;
+    public int size = 1;
     private int width = 0;
 
     public float fill = 0;

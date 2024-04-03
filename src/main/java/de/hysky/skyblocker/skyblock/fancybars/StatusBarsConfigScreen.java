@@ -34,7 +34,7 @@ public class StatusBarsConfigScreen extends Screen {
             cursorBar.setY(mouseY);
             cursorBar.render(context, mouseX, mouseY, delta);
 
-            for (ScreenRect screenRect : meaningFullName.keySet()) {
+            mainLoop: for (ScreenRect screenRect : meaningFullName.keySet()) {
                 for (NavigationDirection value : NavigationDirection.values()) {
                     boolean overlaps = screenRect.getBorder(value).overlaps(new ScreenRect(new ScreenPos(mouseX - 1, mouseY - 1), 3, 3));
                     if (overlaps) {
@@ -44,8 +44,19 @@ public class StatusBarsConfigScreen extends Screen {
                             if (value.getAxis().equals(NavigationAxis.VERTICAL)) {
                                 if (value.isPositive()) {
                                     FancyStatusBars.barGrid.addRow(ints[1]+1, ints[0]>0);
+                                    FancyStatusBars.barGrid.add(1, ints[1] + 1, cursorBar);
+                                } else {
+                                    FancyStatusBars.barGrid.addRow(ints[1], ints[0]>0);
+                                    FancyStatusBars.barGrid.add(1, ints[1], cursorBar);
+                                }
+                            } else {
+                                if (value.isPositive()) {
+                                    FancyStatusBars.barGrid.add(ints[0] + 1, ints[1], cursorBar);
+                                } else {
+                                    FancyStatusBars.barGrid.add(ints[0], ints[1], cursorBar);
                                 }
                             }
+                            break mainLoop;
                         }
                     }
                 }

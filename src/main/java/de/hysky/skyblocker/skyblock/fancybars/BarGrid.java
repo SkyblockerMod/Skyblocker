@@ -90,4 +90,9 @@ public class BarGrid {
             }
         }
     }
+
+    public int getTopSize() {return top.size();}
+
+    public int getBottomLeftSize() {return bottomLeft.size();}
+    public int getBottomRightSize() {return bottomRight.size();}
 }

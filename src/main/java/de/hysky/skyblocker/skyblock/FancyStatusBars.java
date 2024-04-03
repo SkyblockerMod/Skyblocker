@@ -47,6 +47,83 @@ public class FancyStatusBars {
         statusBars.put("intelligence", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, null));
         statusBars.put("defense", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"),  new Color[]{new Color(255, 255, 255)}, false, null));
         statusBars.put("experience", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(100, 220, 70)}, false, null));
+
+        barGrid.addRow(1, false);
+        barGrid.add(1, 1, statusBars.get("health"));
+        barGrid.add(2, 1, statusBars.get("intelligence"));
+        barGrid.addRow(2, false);
+        barGrid.add(1, 2, statusBars.get("experience"));
+        barGrid.addRow(-1, true);
+        barGrid.add(1, -1, statusBars.get("defense"));
+    }
+
+    public static void updatePositions() {
+        final float hotbarSize = 182;
+        final int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
+        final int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
+
+        // THE TOP
+        for (int i = 0; i < barGrid.getTopSize(); i++) {
+            List<StatusBar> row = barGrid.getRow(i + 1, false);
+            if (row.isEmpty()) continue;
+            int totalSize = 0;
+            for (StatusBar bar : row) {
+                totalSize += bar.size;
+            }
+
+            // Fix sizing
+            whileLoop: while (totalSize != 12) {
+                if (totalSize > 12) {
+                    for (StatusBar bar : row) {
+                        bar.size--;
+                        totalSize--;
+                        if (totalSize == 12) break whileLoop;
+                    }
+                } else {
+                    for (StatusBar bar : row) {
+                        bar.size++;
+                        totalSize++;
+                        if (totalSize == 12) break whileLoop;
+                    }
+                }
+            }
+
+            int x = width/2 - 91;
+            int y = height - 33 - 10*i;
+            for (StatusBar bar : row) {
+                bar.setX(x);
+                bar.setY(y);
+                bar.setWidth((int) ((bar.size / 12.f)*hotbarSize));
+                x += bar.getWidth();
+            }
+        }
+
+        // BOTTOM LEFT
+        for (int i = 0; i < barGrid.getBottomLeftSize(); i++) {
+            List<StatusBar> row = barGrid.getRow(-(i + 1), false);
+            if (row.isEmpty()) continue;
+            int x = width/2 - 91 - 2;
+            int y = height - 15-10*i;
+            for (StatusBar bar : row) {
+                bar.setY(y);
+                bar.setWidth(bar.size*25);
+                x -= bar.getWidth();
+                bar.setX(x);
+            }
+        }
+        // BOTTOM RIGHT
+        for (int i = 0; i < barGrid.getBottomRightSize(); i++) {
+            List<StatusBar> row = barGrid.getRow(-(i + 1), true);
+            if (row.isEmpty()) continue;
+            int x = width/2 + 91 + 2;
+            int y = height - 15-10*i;
+            for (StatusBar bar : row) {
+                bar.setX(x);
+                bar.setY(y);
+                bar.setWidth(bar.size*25);
+                x += bar.getWidth();
+            }
+        }
     }
 
     public FancyStatusBars() {
