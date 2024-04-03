@@ -13,7 +13,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.entity.player.PlayerInventory;
@@ -372,7 +371,7 @@ public class PartyFinderScreen extends Screen {
                 if (slot.id > (handler.getRows() - 1) * 9 - 1 || !slot.hasStack()) continue;
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                     assert this.client != null;
-                    parties.add(new PartyEntry(slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC), this, slot.id));
+                    parties.add(new PartyEntry(ItemUtils.getLore(slot.getStack()), this, slot.id));
                 } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase().contains("previous")) {
                     prevPageSlotId = slot.id;
                     previousPageButton.active = true;
@@ -401,7 +400,7 @@ public class PartyFinderScreen extends Screen {
                 deListSlotId = slot.id;
             } else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                 assert this.client != null;
-                tooltips = slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC);
+                tooltips = ItemUtils.getLore(slot.getStack());
             }
         }
         if (tooltips != null) {

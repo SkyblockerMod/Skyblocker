@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixin.accessor.MinecraftClientAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -19,6 +20,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
+import net.minecraft.util.ApiServices;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -74,6 +76,7 @@ public class Utils {
     private static boolean canSendLocRaw = false;
 
     private static String mayor = "";
+    private static ApiServices apiServices;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -217,7 +220,6 @@ public class Utils {
         }
 
         if (sidebar.isEmpty() && !fabricLoader.isDevelopmentEnvironment()) return;
-        String string = sidebar.toString();
 
         if (fabricLoader.isDevelopmentEnvironment() || isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
@@ -465,5 +467,17 @@ public class Utils {
             if (!s.isEmpty()) mayor = s;
         });
 
+    }
+
+    public static ApiServices getApiServices() {
+        if (apiServices == null) {
+        	MinecraftClient client = MinecraftClient.getInstance();
+            ApiServices apiServicesInstance = ApiServices.create(((MinecraftClientAccessor) client).getAuthenticationService(), client.runDirectory);
+            apiServices = apiServicesInstance;
+            
+            return apiServicesInstance;
+        } else {
+            return apiServices;
+        }
     }
 }

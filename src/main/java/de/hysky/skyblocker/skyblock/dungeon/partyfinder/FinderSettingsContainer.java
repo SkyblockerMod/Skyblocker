@@ -5,7 +5,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -14,6 +13,8 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class FinderSettingsContainer extends ContainerWidget {
     private boolean isInitialized = false;
@@ -161,7 +162,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      * @return true if all goes well
      */
     private boolean setRangeFromTooltip(ItemStack stack, RangedValueWidget widget) {
-        for (Text text : stack.getTooltip(null, TooltipContext.BASIC)) {
+        for (Text text : ItemUtils.getLore(stack)) {
             String textLowerCase = text.getString().toLowerCase();
             if (textLowerCase.contains("selected:")) {
                 String[] split = text.getString().split(":");
@@ -186,7 +187,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      * @return true if all goes well
      */
     private boolean setSelectedElementFromTooltip(Slot slot, ItemStack stack, OptionDropdownWidget dropdownWidget) {
-        for (Text text : stack.getTooltip(null, TooltipContext.BASIC)) {
+        for (Text text : ItemUtils.getLore(stack)) {
             String textLowerCase = text.getString().toLowerCase();
             if (textLowerCase.contains("selected:")) {
                 String[] split = text.getString().split(":");

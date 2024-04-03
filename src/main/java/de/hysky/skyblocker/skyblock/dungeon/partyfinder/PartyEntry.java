@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixin.accessor.SkullBlockEntityAccessor;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -145,7 +146,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (matcher.find()) classLevel = Integer.parseInt(matcher.group(1));
                 Player player = new Player(playerName, className, classLevel);
 
-                SkullBlockEntityAccessor.invokeFetchProfile(playerNameTrim).thenAccept(
+                SkullBlockEntityAccessor.invokeFetchProfileByName(playerNameTrim, Utils.getApiServices()).thenAccept(
                         gameProfile -> gameProfile.ifPresent(profile -> player.skinTexture = (client.getSkinProvider().getSkinTextures(profile).texture())));
 
                 if (playerNameTrim.equals(partyHost)) {
@@ -170,7 +171,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             partyLeader = new Player(Text.literal("Error"), "Error", -1);
         }
 
-        SkullBlockEntityAccessor.invokeFetchProfile(partyLeader.name.getString()).thenAccept(
+        SkullBlockEntityAccessor.invokeFetchProfileByName(partyLeader.name.getString(), Utils.getApiServices()).thenAccept(
                 gameProfile -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
     }
 

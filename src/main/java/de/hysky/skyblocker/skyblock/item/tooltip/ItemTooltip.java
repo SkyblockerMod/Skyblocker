@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -34,7 +34,7 @@ public class ItemTooltip {
     protected static final SkyblockerConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
 
-    public static void getTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
+    public static void getTooltip(ItemStack stack, TooltipType context, List<Text> lines) {
         if (!Utils.isOnSkyblock() || client.player == null) return;
 
         String name = getInternalNameFromNBT(stack, false);

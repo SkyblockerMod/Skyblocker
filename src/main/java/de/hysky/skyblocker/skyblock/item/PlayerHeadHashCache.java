@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
@@ -50,8 +49,8 @@ public class PlayerHeadHashCache {
 	//From MinecraftProfileTexture#getHash
 	public static String getSkinHash(String url) {
 		try {
-			return FilenameUtils.getBaseName(new URL(url).getPath());
-		} catch (MalformedURLException e) {
+			return FilenameUtils.getBaseName(new URI(url).getPath());
+		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Player Head Hash Cache] Malformed Skin URL! URL: {}", url, e);
 		}
 

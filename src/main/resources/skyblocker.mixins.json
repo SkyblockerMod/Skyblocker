@@ -44,6 +44,7 @@
     "accessor.HandledScreenAccessor",
     "accessor.LayeredDrawerAccessor",
     "accessor.MessageHandlerAccessor",
+    "accessor.MinecraftClientAccessor",
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
