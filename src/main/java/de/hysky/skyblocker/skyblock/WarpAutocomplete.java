@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
  * the mixin {@link de.hysky.skyblocker.mixin.CommandTreeS2CPacketMixin}
  */
 public class WarpAutocomplete {
-
     public static @Nullable LiteralCommandNode<FabricClientCommandSource> COMMAND_THING = null;
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(WarpAutocomplete.class);
