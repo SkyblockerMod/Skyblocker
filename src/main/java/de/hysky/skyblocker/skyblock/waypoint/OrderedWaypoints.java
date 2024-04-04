@@ -69,7 +69,7 @@ public class OrderedWaypoints {
 	private static final Map<String, OrderedWaypointGroup> WAYPOINTS = new Object2ObjectOpenHashMap<>();
 	private static final Semaphore SEMAPHORE = new Semaphore(1);
 	private static final Object2IntOpenHashMap<String> INDEX_STORE = new Object2IntOpenHashMap<>();
-	private static final int RADIUS = 3;
+	private static final int RADIUS = 2;
 	private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
 
 	private static CompletableFuture<Void> loaded;
@@ -137,7 +137,7 @@ public class OrderedWaypoints {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		int rgb = hex != null ? Integer.decode("0x" + hex.replace("#", "")).intValue() : Integer.MIN_VALUE;
+		int rgb = hex != null ? Integer.decode("0x" + hex.replace("#", "")) : Integer.MIN_VALUE;
 		float[] colorComponents = rgb != Integer.MIN_VALUE ? new float[] { (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF } : new float[0];
 
 		OrderedWaypointGroup group = WAYPOINTS.computeIfAbsent(groupName, name -> new OrderedWaypointGroup(name, true, new ObjectArrayList<>()));
@@ -227,7 +227,7 @@ public class OrderedWaypoints {
 					for (int i = 0; i < waypoints.size(); i++) {
 						OrderedWaypoint waypoint = waypoints.get(i);
 
-						if (player.getBlockPos().isWithinDistance(waypoint.getPos(), RADIUS)) {
+						if (waypoint.getPos().isWithinDistance(player.getPos(), RADIUS)) {
 							centreIndex = i;
 							INDEX_STORE.put(group.name(), i);
 
@@ -462,6 +462,6 @@ public class OrderedWaypoints {
 	private enum RelativeIndex {
 		PREVIOUS,
 		CURRENT,
-		NEXT;
+		NEXT
 	}
 }
