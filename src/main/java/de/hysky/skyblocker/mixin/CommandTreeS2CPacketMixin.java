@@ -11,11 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(targets = "net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket$CommandTree")
 public class CommandTreeS2CPacketMixin {
-
-    @ModifyExpressionValue(method = "getNode", at = @At(ordinal = 1, value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/CommandTreeS2CPacket$CommandTree;getNode(I)Lcom/mojang/brigadier/tree/CommandNode;"))
+    @ModifyExpressionValue(method = "getNode", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/CommandTreeS2CPacket$CommandTree;getNode(I)Lcom/mojang/brigadier/tree/CommandNode;", ordinal = 1))
     public CommandNode<? extends CommandSource> modifyCommandSuggestions(CommandNode<CommandSource> original) {
-        if (WarpAutocomplete.COMMAND_THING != null && original instanceof LiteralCommandNode<?> literalCommandNode && literalCommandNode.getLiteral().equals("warp") && Utils.isOnHypixel()) {
-            return WarpAutocomplete.COMMAND_THING;
+        if (Utils.isOnHypixel() && WarpAutocomplete.commandNode != null && original instanceof LiteralCommandNode<?> literalCommandNode && literalCommandNode.getLiteral().equals("warp")) {
+            return WarpAutocomplete.commandNode;
         }
         return original;
     }

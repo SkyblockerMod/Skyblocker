@@ -2,16 +2,11 @@ package de.hysky.skyblocker.skyblock;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
 import org.jetbrains.annotations.Nullable;
@@ -21,13 +16,16 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
 /**
  * the mixin {@link de.hysky.skyblocker.mixin.CommandTreeS2CPacketMixin}
  */
 public class WarpAutocomplete {
-    public static @Nullable LiteralCommandNode<FabricClientCommandSource> COMMAND_THING = null;
-
-    protected static final Logger LOGGER = LoggerFactory.getLogger(WarpAutocomplete.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WarpAutocomplete.class);
+    @Nullable
+    public static LiteralCommandNode<FabricClientCommandSource> commandNode;
 
     public static void init() {
         CompletableFuture.supplyAsync(() -> {
@@ -37,25 +35,12 @@ public class WarpAutocomplete {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to download warps list", e);
             }
-            return List.of("");
-        }).thenAccept(strings -> COMMAND_THING = ClientCommandManager
-                .literal("warp")
+            return List.<String>of();
+        }).thenAccept(warps -> commandNode = literal("warp")
                 .requires(fabricClientCommandSource -> Utils.isOnSkyblock())
-                .then(ClientCommandManager.argument("destination", new ArgType(strings))
-                ).build());
-
-    }
-
-    private record ArgType(List<String> possibleWarps) implements ArgumentType<String> {
-
-        @Override
-        public String parse(StringReader reader) {
-            return reader.readUnquotedString();
-        }
-
-        @Override
-        public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-            return CommandSource.suggestMatching(possibleWarps, builder);
-        }
+                .then(argument("destination", StringArgumentType.string())
+                        .suggests((context, builder) -> CommandSource.suggestMatching(warps, builder))
+                ).build()
+        );
     }
 }
