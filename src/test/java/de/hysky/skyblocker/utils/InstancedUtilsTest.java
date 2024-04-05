@@ -68,7 +68,7 @@ public class InstancedUtilsTest {
 			try {
 				return (boolean) InstancedUtils.equals(getClass()).invokeExact(this, o);
 			} catch (Throwable ignored) {
-				return false;
+				return super.equals(o);
 			}
 		}
 		
@@ -86,7 +86,7 @@ public class InstancedUtilsTest {
 			try {
 				return (String) InstancedUtils.toString(getClass()).invokeExact(this);
 			} catch (Throwable ignored) {
-				return "";
+				return super.toString();
 			}
 		}
 	}
