@@ -138,7 +138,7 @@ public class OrderedWaypoints {
 		}
 
 		int rgb = hex != null ? Integer.decode("0x" + hex.replace("#", "")) : Integer.MIN_VALUE;
-		float[] colorComponents = rgb != Integer.MIN_VALUE ? new float[] { (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF } : new float[0];
+		float[] colorComponents = rgb != Integer.MIN_VALUE ? new float[] { ((rgb >> 16) & 0xFF) / 255f, ((rgb >> 8) & 0xFF) / 255f, (rgb & 0xFF) / 255f } : new float[0];
 
 		OrderedWaypointGroup group = WAYPOINTS.computeIfAbsent(groupName, name -> new OrderedWaypointGroup(name, true, new ObjectArrayList<>()));
 		OrderedWaypoint waypoint = new OrderedWaypoint(pos, colorComponents);
@@ -247,35 +247,12 @@ public class OrderedWaypoints {
 					current.render(wrc, RelativeIndex.CURRENT, currentIndex);
 					next.render(wrc, RelativeIndex.NEXT, nextIndex);
 
-					//Chunk the line
-					//Idk why but the line is glitchy when moving sideways
-					Vec3d[] line = splitLine(player.getPos().add(0, 1, 0), Vec3d.ofCenter(next.getPos().up()));
-
-					RenderHelper.renderLinesFromPoints(wrc, line, LIGHT_GRAY, 1f, 5f, true);
+					RenderHelper.renderLineFromCursor(wrc, Vec3d.ofCenter(next.getPos().up()), LIGHT_GRAY, 1f, 5f);
 				}
 			}
 
 			SEMAPHORE.release();
 		}
-	}
-
-	private static Vec3d[] splitLine(Vec3d start, Vec3d end) {
-		ObjectArrayList<Vec3d> segments = new ObjectArrayList<>();
-
-		Vec3d direction = end.subtract(start).normalize();
-		double length = start.subtract(end).length();
-		int numSegments = (int) Math.ceil(length);
-
-		Vec3d currentPoint = start;
-
-		for (int i = 0; i < numSegments; i++) {
-			segments.add(currentPoint);
-			currentPoint = currentPoint.add(direction);
-		}
-
-		segments.add(end);
-
-		return segments.toArray(Vec3d[]::new);
 	}
 
 	private static void load() {
