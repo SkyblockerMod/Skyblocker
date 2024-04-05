@@ -558,6 +558,14 @@
   "skyblocker.customArmorTrims.added": "§fSet a custom armor trim for your currently held item!",
   "skyblocker.customArmorTrims.noItemUuid": "§cYou must be holding an item that has a uuid in order to set a custom armor trim!",
   "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)",
+  
+  "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX color code was supplied!",
+  "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armor piece!",
+  "skyblocker.customAnimatedDyes.removed": "Removed this item's custom animated dye.",
+  "skyblocker.customAnimatedDyes.neverHad": "This item doesn't have a custom animated dye set, but why not add one? ;)",
+  "skyblocker.customAnimatedDyes.added": "Set a custom animated dye for your currently held item!",
+  "skyblocker.customAnimatedDyes.noItemUuid": "§cYou must be holding an item that has a uuid in order to set a custom animated dye.",
+  "skyblocker.customAnimatedDyes.unableToSetDye": "§cUnable to set a custom animated dye :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.quiverWarning.50Left": "You only have 50 Arrows left in your Quiver!",
   "skyblocker.quiverWarning.10Left": "You only have 10 Arrows left in your Quiver!",
@@ -577,6 +585,7 @@
   "skyblocker.tips.customItemNames": "Customize the names of your items with /skyblocker custom renameItem",
   "skyblocker.tips.customArmorDyeColors": "Apply a custom dye color to your leather armour with /skyblocker custom dyeColor",
   "skyblocker.tips.customArmorTrims": "You can set custom armor trims on your armor using /skyblocker custom armorTrim.",
+  "skyblocker.tips.customAnimatedDyes": "You can apply a custom animated dye to your leather armour with /skyblocker custom animatedDye!",
   "skyblocker.tips.fancyTabExtraInfo": "Did you know you can see extra info on our fancy tab menu when holding N or M?",
   "skyblocker.tips.helpCommand": "Use command /skyblocker help and you might find some more nifty features!",
   "skyblocker.tips.discordRichPresence": "Use Discord Rich Presence to show your friends how loaded you are!",
