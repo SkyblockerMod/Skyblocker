@@ -187,6 +187,56 @@ public class RenderHelper {
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
+    public static void renderLineFromCursor(WorldRenderContext context, Vec3d point, float[] colorComponents, float alpha, float lineWidth) {
+        Vec3d camera = context.camera().getPos();
+        MatrixStack matrices = context.matrixStack();
+
+        matrices.push();
+        matrices.translate(-camera.x, -camera.y, -camera.z);
+
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder buffer = tessellator.getBuffer();
+        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.lineWidth(lineWidth);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+
+        Vec3d offset = Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw());
+        Vec3d cameraPoint = camera.add(offset);
+
+        buffer.begin(DrawMode.LINES, VertexFormats.LINES);
+        Vector3f normal = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
+        buffer
+                .vertex(positionMatrix, (float) cameraPoint.x , (float) cameraPoint.y, (float) cameraPoint.z)
+                .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
+                .normal(normal.x, normal.y, normal.z)
+                .next();
+
+        buffer
+                .vertex(positionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
+                .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
+                .normal(normal.x, normal.y, normal.z)
+                .next();
+
+
+        tessellator.draw();
+
+        matrices.pop();
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        RenderSystem.lineWidth(1f);
+        RenderSystem.enableCull();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+    }
+
     public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {
         Vec3d camera = context.camera().getPos();
         MatrixStack matrices = context.matrixStack();

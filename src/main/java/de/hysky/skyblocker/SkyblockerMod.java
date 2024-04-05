@@ -40,6 +40,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
+import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
 import de.hysky.skyblocker.skyblock.waypoint.Relics;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -109,6 +110,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FairySouls.init();
         Relics.init();
         MythologicalRitual.init();
+        OrderedWaypoints.init();
         BackpackPreview.init();
         QuickNav.init();
         ItemCooldowns.init();
