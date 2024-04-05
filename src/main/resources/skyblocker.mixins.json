@@ -47,9 +47,11 @@
     "accessor.ScreenAccessor",
     "accessor.SkullBlockEntityAccessor",
     "accessor.WorldRendererAccessor",
-    "discordipc.ConnectionMixin"
+    "discordipc.ConnectionMixin",
+    "accessor.SlotAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": []
 }

@@ -11,6 +11,7 @@
   "text.skyblocker.quit_config": "Changes Not Saved",
   "text.skyblocker.quit_config_sure": "Are you sure you want to quit editing the config? Changes will not be saved!",
   "text.skyblocker.quit_discard": "Quit & Discard Changes",
+  "text.skyblocker.confirm": "Confirm",
 
   "text.autoconfig.skyblocker.title": "Skyblocker Settings",
 
@@ -162,6 +163,9 @@
   "text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel": "History:",
   "text.autoconfig.skyblocker.option.general.betterPartyFinder": "Better Party Finder",
   "text.autoconfig.skyblocker.option.general.fancyCraftingTable": "Fancy Crafting Table UI",
+  "text.autoconfig.skyblocker.option.general.betterAuctionHouse": "Better Auction House",
+  "text.autoconfig.skyblocker.option.general.betterAuctionHouse.enabled": "Enabled",
+  "text.autoconfig.skyblocker.option.general.betterAuctionHouse.highlightUnderAvgPrice": "Highlight BIN under average price",
   "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
   "skyblocker.itemTooltip.noData": "§cNo Data",
 
@@ -601,6 +605,23 @@
   "skyblocker.partyFinder.yourParty": "Your party",
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
+
+  "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
+  "skyblocker.fancyAuctionHouse.price": "Price:",
+  "skyblocker.fancyAuctionHouse.newBid": "New Bid:",
+  "skyblocker.fancyAuctionHouse.buy": "Buy!",
+  "skyblocker.fancyAuctionHouse.bid": "Bid!",
+  "skyblocker.fancyAuctionHouse.cantAfford": "Can't Afford!",
+  "skyblocker.fancyAuctionHouse.alreadyTopBid": "Already Top Bid!",
+  "skyblocker.fancyAuctionHouse.differentProfile": "On a different profile",
+  "skyblocker.fancyAuctionHouse.didntWin": "Didn't win :(",
+  "skyblocker.fancyAuctionHouse.changeProfile": "Change Profile",
+  "skyblocker.fancyAuctionHouse.collectAuction": "Collect Auction",
+  "skyblocker.fancyAuctionHouse.collectBid": "Collect Bid",
+  "skyblocker.fancyAuctionHouse.auctionEnded": "Auction Ended!",
+  "skyblocker.fancyAuctionHouse.cancelAuction": "Cancel Auction",
+  "skyblocker.fancyAuctionHouse.yourAuction": "This is your auction!",
+  "skyblocker.fancyAuctionHouse.youPay": "You pay: %s",
 
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
