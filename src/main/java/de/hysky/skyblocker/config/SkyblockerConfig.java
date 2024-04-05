@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -260,6 +261,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customArmorTrims = new Object2ObjectOpenHashMap<>();
+
+		@SerialEntry
+		public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
 	}
 
 	public static class TabHudConf {

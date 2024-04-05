@@ -73,7 +73,7 @@ public class CustomArmorDyeColors {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static boolean isHexadecimalColor(String s) {
+	public static boolean isHexadecimalColor(String s) {
 		return s.replace("#", "").chars().allMatch(c -> "0123456789ABCDEFabcdef".indexOf(c) >= 0) && s.replace("#", "").length() == 6;
 	}
 }
