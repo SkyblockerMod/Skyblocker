@@ -52,12 +52,12 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
     }
 
     protected Optional<ShortcutCategoryEntry> getCategory() {
-        if (getSelectedOrNull() instanceof ShortcutCategoryEntry category) {
-            return Optional.of(category);
-        } else if (getSelectedOrNull() instanceof ShortcutEntry shortcutEntry) {
-            return Optional.of(shortcutEntry.category);
-        }
-        return Optional.empty();
+        return switch (getSelectedOrNull()) {
+            case ShortcutCategoryEntry category -> Optional.of(category);
+            case ShortcutEntry shortcutEntry -> Optional.of(shortcutEntry.category);
+
+            default -> Optional.empty();
+        };
     }
 
     @Override

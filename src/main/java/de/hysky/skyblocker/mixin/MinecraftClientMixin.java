@@ -43,11 +43,12 @@ public abstract class MinecraftClientMixin {
     @ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
     public Screen modifySetScreen(Screen screen) {
         if (Utils.isOnSkyblock()) {
-            if (screen instanceof DownloadingTerrainScreen) {
-                return null;
-            } else if (screen instanceof ReconfiguringScreen && this.getNetworkHandler() != null) {
-                return new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
-            }
+            return switch (screen) {
+                case DownloadingTerrainScreen _s -> null;
+                case ReconfiguringScreen _s when this.getNetworkHandler() != null -> new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
+
+                default -> screen;
+            };
         }
         return screen;
     }
