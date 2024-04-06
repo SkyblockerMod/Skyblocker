@@ -48,7 +48,8 @@
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.com/invite/aNNJHQykck",
-        "modmenu.modrinth": "https://modrinth.com/mod/skyblocker-liap"
+        "modmenu.modrinth": "https://modrinth.com/mod/skyblocker-liap",
+        "text.skyblocker.translate": "https://translate.hysky.de"
       }
     }
   }
