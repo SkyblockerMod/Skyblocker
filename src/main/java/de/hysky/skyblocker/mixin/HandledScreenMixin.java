@@ -215,19 +215,26 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
         // Experiment Solvers
         if (currentSolver instanceof ExperimentSolver experimentSolver && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-            if (experimentSolver instanceof ChronomatronSolver chronomatronSolver) {
-                Item item = chronomatronSolver.getChronomatronSlots().get(chronomatronSolver.getChronomatronCurrentOrdinal());
-                if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && chronomatronSolver.incrementChronomatronCurrentOrdinal() >= chronomatronSolver.getChronomatronSlots().size()) {
-                    chronomatronSolver.setState(ExperimentSolver.State.END);
+            switch (experimentSolver) {
+                case ChronomatronSolver chronomatronSolver -> {
+                    Item item = chronomatronSolver.getChronomatronSlots().get(chronomatronSolver.getChronomatronCurrentOrdinal());
+                    if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && chronomatronSolver.incrementChronomatronCurrentOrdinal() >= chronomatronSolver.getChronomatronSlots().size()) {
+                        chronomatronSolver.setState(ExperimentSolver.State.END);
+                    }
                 }
-            } else if (experimentSolver instanceof SuperpairsSolver superpairsSolver) {
-                superpairsSolver.setSuperpairsPrevClickedSlot(slot.getIndex());
-                superpairsSolver.setSuperpairsCurrentSlot(ItemStack.EMPTY);
-            } else if (experimentSolver instanceof UltrasequencerSolver ultrasequencerSolver && slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot()) {
-                int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
-                ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().map(Map.Entry::getKey).ifPresentOrElse(ultrasequencerSolver::setUltrasequencerNextSlot, () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
+
+                case SuperpairsSolver superpairsSolver -> {
+                    superpairsSolver.setSuperpairsPrevClickedSlot(slot.getIndex());
+                    superpairsSolver.setSuperpairsCurrentSlot(ItemStack.EMPTY);
+                }
+
+                case UltrasequencerSolver ultrasequencerSolver when slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot() -> {
+                    int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
+                    ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().map(Map.Entry::getKey).ifPresentOrElse(ultrasequencerSolver::setUltrasequencerNextSlot, () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
+                }
+
+                default -> { /*Do Nothing*/ }
             }
-            return;
         }
     }
 
