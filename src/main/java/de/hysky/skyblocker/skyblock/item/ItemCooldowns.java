@@ -82,9 +82,7 @@ public class ItemCooldowns {
                 if (!element.getAsJsonObject().get("active").getAsString().equals("true")) continue;
                 if (element.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) {
                     CalcMonkeyExp = Double.parseDouble(element.getAsJsonObject().get("exp").getAsString());
-                    // = Double.parseDouble(MonkeyExp);
                     MonkeyLevel = 0;
-                    //CalcMonkeyExp = 16000000;
                     for (int xpLevel : EXPERIENCE_LEVELS) {
                         if (CalcMonkeyExp < xpLevel) {
                             break;
@@ -93,20 +91,16 @@ public class ItemCooldowns {
                             MonkeyLevel++;
                         }
                     }
-                    //CalcMonkeyLevel = MonkeyLevel;
-                    //}
                 }
             }
         } catch (Exception e) {
             System.out.println("Pet Level Error or something Idk");
-            //LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! Name: {}", name, e);
         }
         double BaseCooldown = 2000;
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
                 double EvolvedAxesCooldownReductionPercentage = MonkeyLevel * 0.5;
-                //double ProcessedCooldown = EvolvedAxesCooldownReductionPercentage * 10000;
                 double MonkeyPetCDRReduction = (BaseCooldown * EvolvedAxesCooldownReductionPercentage) / 100;
                double currentCooldown = BaseCooldown - MonkeyPetCDRReduction;
             if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
