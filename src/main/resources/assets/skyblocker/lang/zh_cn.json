@@ -514,5 +514,15 @@
     "text.autoconfig.skyblocker.option.messages.chatRules.announcementScale.@Tooltip": "告示的缩放级别。",
     "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper": "启用新年蛋糕助手",
     "text.autoconfig.skyblocker.option.general.enableNewYearCakesHelper.@Tooltip": "以绿色高亮显示缺少的新年蛋糕、红色高亮显示已有的蛋糕。\n\n需要至少打开一次蛋糕背包才能生效。",
-    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "值越低，更新越频繁，可能会导致卡顿。"
+    "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "值越低，更新越频繁，可能会导致卡顿。",
+    "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo": "显示Attribute Ahard信息",
+    "emi.category.skyblocker.skyblock": "Skyblock",
+    "text.autoconfig.skyblocker.option.general.fancyCraftingTable": "炫酷的工作台UI",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "当将鼠标悬停在某个饰品上时，你将得知是否已经拥有它，以及它与当前的饰品相比更差还是更好。状态列表：",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper": "启用饰品助手",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "你已拥有该系列中最高级的饰品。",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]": "该饰品可以升级。同时显示目前拥有该系列中哪个级别的饰品。",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "该饰品是现有同系列饰品升级后的版本。同时展示了该饰品在其系列中的级别。",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[4]": "你已经拥有同系列中比这个更好的饰品。同时显示你拥有该系列中哪一级别的饰品。",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "你没有该系列的饰品。"
 }
