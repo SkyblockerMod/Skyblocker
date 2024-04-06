@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.time.Duration;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemListWidget;
 import net.minecraft.client.gui.DrawContext;
@@ -56,7 +58,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         }));
         moreCraftsButton = new TexturedButtonWidget(this.x + 174, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
                 button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
-        moreCraftsButton.setTooltipDelay(250);
+        moreCraftsButton.setTooltipDelay(Duration.ofMillis(250L));
         moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More Crafts")));
         this.addDrawableChild(moreCraftsButton);
         assert (client != null ? client.player : null) != null;
