@@ -50,62 +50,74 @@ public class ItemCooldowns {
     public static int MonkeyLevel = 1;
     public static double CalcMonkeyExp = 0;
     public static int CalcMonkeyLevel = 1;
+    public static int PetLevelApiDelay = 0; //3min 180000
+    public static double currentCooldown = 0;
 
     public static void init() {
         ClientPlayerBlockBreakEvents.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
     }
 
-    public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
-        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return;
+    public static void currentCooldown() {
         String name = MinecraftClient.getInstance().getSession().getUsername();
         String playeruuid = ApiUtils.name2Uuid(name);
-        try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + playeruuid)) {
-            if (!response.ok())
-                throw new IllegalStateException("Failed to get profile uuid for player " + name + "! Response: " + response.content());
-            JsonObject responseJson = JsonParser.parseString(response.content()).getAsJsonObject();
+        if (PetLevelApiDelay == 0)
+            try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + playeruuid)) {
+                if (!response.ok())
+                    throw new IllegalStateException("Failed to get profile uuid for player " + name + "! Response: " + response.content());
+                JsonObject responseJson = JsonParser.parseString(response.content()).getAsJsonObject();
+                JsonObject players = StreamSupport.stream(responseJson.getAsJsonArray("profiles").spliterator(), false)
+                        .map(JsonElement::getAsJsonObject)
+                        .filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("No selected profile found!?"))
+                        .getAsJsonObject("members").entrySet().stream()
+                        .filter(entry -> entry.getKey().equals(playeruuid))
+                        .map(Map.Entry::getValue)
+                        .map(JsonElement::getAsJsonObject)
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("Player somehow not found inside their own profile!"));
 
-            JsonObject players = StreamSupport.stream(responseJson.getAsJsonArray("profiles").spliterator(), false)
-                    .map(JsonElement::getAsJsonObject)
-                    .filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("No selected profile found!?"))
-                    .getAsJsonObject("members").entrySet().stream()
-                    .filter(entry -> entry.getKey().equals(playeruuid))
-                    .map(Map.Entry::getValue)
-                    .map(JsonElement::getAsJsonObject)
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Player somehow not found inside their own profile!"));
-
-            for (JsonElement element : players.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
-                if (!element.getAsJsonObject().get("type").getAsString().equals("MONKEY")) continue;
-                if (!element.getAsJsonObject().get("active").getAsString().equals("true")) continue;
-                if (element.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) {
-                    CalcMonkeyExp = Double.parseDouble(element.getAsJsonObject().get("exp").getAsString());
-                    MonkeyLevel = 0;
-                    for (int xpLevel : EXPERIENCE_LEVELS) {
-                        if (CalcMonkeyExp < xpLevel) {
-                            break;
-                        } else {
-                            CalcMonkeyExp -= xpLevel;
-                            MonkeyLevel++;
+                for (JsonElement element : players.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
+                    if (!element.getAsJsonObject().get("type").getAsString().equals("MONKEY")) continue;
+                    if (!element.getAsJsonObject().get("active").getAsString().equals("true")) continue;
+                    if (element.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) {
+                        CalcMonkeyExp = Double.parseDouble(element.getAsJsonObject().get("exp").getAsString());
+                        MonkeyLevel = 0;
+                        for (int xpLevel : EXPERIENCE_LEVELS) {
+                            if (CalcMonkeyExp < xpLevel) {
+                                break;
+                            } else {
+                                CalcMonkeyExp -= xpLevel;
+                                MonkeyLevel++;
+                            }
                         }
                     }
                 }
+            } catch (Exception e) {
+                System.out.println("Pet Level Error or something Idk");
             }
-        } catch (Exception e) {
-            System.out.println("Pet Level Error or something Idk");
-        }
         double BaseCooldown = 2000;
+        double EvolvedAxesCooldownReductionPercentage = MonkeyLevel * 0.5;
+        double MonkeyPetCDRReduction = (BaseCooldown * EvolvedAxesCooldownReductionPercentage) / 100;
+        currentCooldown = BaseCooldown - MonkeyPetCDRReduction;
+        PetLevelApiDelay = 180000;
+    }
+    public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
+        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return;
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
-                double EvolvedAxesCooldownReductionPercentage = MonkeyLevel * 0.5;
-                double MonkeyPetCDRReduction = (BaseCooldown * EvolvedAxesCooldownReductionPercentage) / 100;
-               double currentCooldown = BaseCooldown - MonkeyPetCDRReduction;
+            if (PetLevelApiDelay == 0) {
+                currentCooldown();
+                PetLevelApiDelay = 180000;
+            }
+            else {
+                PetLevelApiDelay--;
+            }
             if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
                 if (!isOnCooldown(JUNGLE_AXE_ID) || !isOnCooldown(TREECAPITATOR_ID)) {
-                    ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry((int)currentCooldown));
+                    ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry((int) currentCooldown));
                 }
             }
         }
