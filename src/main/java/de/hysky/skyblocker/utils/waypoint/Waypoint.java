@@ -14,7 +14,7 @@ public class Waypoint implements Renderable {
     public final BlockPos pos;
     final Box box;
     final Supplier<Type> typeSupplier;
-    final float[] colorComponents;
+    protected final float[] colorComponents;
     final float alpha;
     final float lineWidth;
     final boolean throughWalls;
