@@ -240,6 +240,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip")))
 								.binding(defaults.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold,
 										() -> config.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold,
 										newValue -> config.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold = newValue)
