@@ -1,4 +1,5 @@
 package de.hysky.skyblocker.skyblock.item;
+
 import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,20 +20,23 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import com.mojang.util.UndashedUuid;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.stream.StreamSupport;
+import java.util.concurrent.CompletableFuture;
+
 public class ItemCooldowns {
     private static final String JUNGLE_AXE_ID = "JUNGLE_AXE";
     private static final String TREECAPITATOR_ID = "TREECAPITATOR_AXE";
     private static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
     private static final ImmutableList<String> BAT_ARMOR_IDS = ImmutableList.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
-
+    public static final long HypixelApiCooldown = 180000; //3min 180000
     private static final Map<String, CooldownEntry> ITEM_COOLDOWNS = new HashMap<>();
     private static final int[] EXPERIENCE_LEVELS = {
             0, 660, 730, 800, 880, 960, 1050, 1150, 1260, 1380, 1510, 1650, 1800, 1960, 2130,
@@ -45,23 +49,26 @@ public class ItemCooldowns {
             561700, 611700, 666700, 726700, 791700, 861700, 936700, 1016700, 1101700, 1191700,
             1286700, 1386700, 1496700, 1616700, 1746700, 1886700
     };
-
-    public static String MonkeyExp = "";
     public static int MonkeyLevel = 1;
     public static double CalcMonkeyExp = 0;
-    public static int CalcMonkeyLevel = 1;
-    public static int PetLevelApiDelay = 0; //3min 180000
     public static double currentCooldown = 0;
+    public static long unixTimeStamp = 0;
 
     public static void init() {
         ClientPlayerBlockBreakEvents.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
+        unixTimeStamp = System.currentTimeMillis() - HypixelApiCooldown;
     }
 
     public static void currentCooldown() {
-        String name = MinecraftClient.getInstance().getSession().getUsername();
-        String playeruuid = ApiUtils.name2Uuid(name);
-        if (PetLevelApiDelay == 0)
+        long DeltaTime = System.currentTimeMillis() - unixTimeStamp;
+        if (DeltaTime < HypixelApiCooldown) {
+            return;
+        }
+        unixTimeStamp = System.currentTimeMillis();
+        CompletableFuture.runAsync(() -> {
+            String name = MinecraftClient.getInstance().getSession().getUsername();
+            String playeruuid = ApiUtils.name2Uuid(name);
             try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + playeruuid)) {
                 if (!response.ok())
                     throw new IllegalStateException("Failed to get profile uuid for player " + name + "! Response: " + response.content());
@@ -77,7 +84,6 @@ public class ItemCooldowns {
                         .map(JsonElement::getAsJsonObject)
                         .findFirst()
                         .orElseThrow(() -> new IllegalStateException("Player somehow not found inside their own profile!"));
-
                 for (JsonElement element : players.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
                     if (!element.getAsJsonObject().get("type").getAsString().equals("MONKEY")) continue;
                     if (!element.getAsJsonObject().get("active").getAsString().equals("true")) continue;
@@ -95,26 +101,21 @@ public class ItemCooldowns {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Pet Level Error or something Idk");
+                System.out.println("[Skyblocker] Failed to get Player Pet Data, is the API Down/Limited?");
             }
-        double BaseCooldown = 2000;
-        double EvolvedAxesCooldownReductionPercentage = MonkeyLevel * 0.5;
-        double MonkeyPetCDRReduction = (BaseCooldown * EvolvedAxesCooldownReductionPercentage) / 100;
-        currentCooldown = BaseCooldown - MonkeyPetCDRReduction;
-        PetLevelApiDelay = 180000;
+            double BaseCooldown = 2000;
+            double EvolvedAxesCooldownReductionPercentage = MonkeyLevel * 0.5;
+            double MonkeyPetCDRReduction = (BaseCooldown * EvolvedAxesCooldownReductionPercentage) / 100;
+            currentCooldown = BaseCooldown - MonkeyPetCDRReduction;
+        });
     }
+
     public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
         if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return;
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
-            if (PetLevelApiDelay == 0) {
-                currentCooldown();
-                PetLevelApiDelay = 180000;
-            }
-            else {
-                PetLevelApiDelay--;
-            }
+            currentCooldown();
             if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
                 if (!isOnCooldown(JUNGLE_AXE_ID) || !isOnCooldown(TREECAPITATOR_ID)) {
                     ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry((int) currentCooldown));
@@ -122,8 +123,10 @@ public class ItemCooldowns {
             }
         }
     }
+
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity player, World world, Hand hand) {
-        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return TypedActionResult.pass(ItemStack.EMPTY);
+        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns)
+            return TypedActionResult.pass(ItemStack.EMPTY);
 
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
