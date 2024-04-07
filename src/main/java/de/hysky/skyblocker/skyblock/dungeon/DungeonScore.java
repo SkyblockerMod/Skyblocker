@@ -56,6 +56,7 @@ public class DungeonScore {
 	private static String currentFloor;
 	private static boolean isCurrentFloorEntrance;
 	private static boolean floorHasMimics;
+	private static boolean sentCrypts;
 	private static boolean sent270;
 	private static boolean sent300;
 	private static boolean mimicKilled;
@@ -112,6 +113,14 @@ public class DungeonScore {
 			}
 			sent270 = true;
 		}
+
+		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && (5 > getCrypts())) {
+			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(getCrypts())));
+			}
+			sentCrypts = true;
+		}
+
 		if (!sent300 && score >= 300) {
 			if (SCORE_CONFIG.enableDungeonScore300Message) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
@@ -132,6 +141,7 @@ public class DungeonScore {
 		currentFloor = "";
 		isCurrentFloorEntrance = false;
 		floorHasMimics = false;
+		sentCrypts = false;
 		sent270 = false;
 		sent300 = false;
 		mimicKilled = false;
