@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.logging.LogUtils;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -25,7 +24,9 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import org.slf4j.Logger;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -35,8 +36,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -103,33 +102,34 @@ public class CrystalsLocationsManager {
             LOGGER.error("[Skyblocker Crystals Locations Manager] Encountered an exception while extracing a location from a chat message!", e);
         }
     }
-    protected static Boolean checkInCrystals(BlockPos pos){
+
+    protected static Boolean checkInCrystals(BlockPos pos) {
         //checks if a location is inside crystal hollows bounds
         return pos.getX() >= 202 && pos.getX() <= 823
                 && pos.getZ() >= 202 && pos.getZ() <= 823
-                && pos.getY() >= 31  && pos.getY() <= 188;
+                && pos.getY() >= 31 && pos.getY() <= 188;
     }
 
     private static void registerWaypointLocationCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-            .then(literal("crystalWaypoints")
-                .then(argument("pos", BlockPosArgumentType.blockPos())
-                        .then(argument("place", StringArgumentType.greedyString())
-                                .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
-                                .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
+                .then(literal("crystalWaypoints")
+                        .then(argument("pos", BlockPosArgumentType.blockPos())
+                                .then(argument("place", StringArgumentType.greedyString())
+                                        .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
+                                        .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
+                                )
+                        )
+                        .then(literal("share")
+                                .then(argument("place", StringArgumentType.greedyString())
+                                        .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
+                                        .executes(context -> shareWaypoint(getString(context, "place")))
+                                )
                         )
                 )
-                .then(literal("share")
-                        .then(argument("place",StringArgumentType.greedyString())
-                                .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
-                                .executes(context -> shareWaypoint(getString(context, "place")))
-                        )
-                )
-            )
         );
     }
 
-    protected static Text getSetLocationMessage(String location,BlockPos blockPos) {
+    protected static Text getSetLocationMessage(String location, BlockPos blockPos) {
         MutableText text = Constants.PREFIX.get();
         text.append(Text.literal("Added waypoint for "));
         Color locationColor = WAYPOINT_LOCATIONS.get(location).color;
@@ -170,17 +170,14 @@ public class CrystalsLocationsManager {
 
     public static int shareWaypoint(String place) {
         if (activeWaypoints.containsKey(place)) {
-            BlockPos location = activeWaypoints.get(place).pos;
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString()+ " " + place + ": " + location.getX() + ", " + location.getY() + ", " + location.getZ());
-        }
-        else {
+            BlockPos pos = activeWaypoints.get(place).pos;
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+        } else {
             //send fail message
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
                 return 0;
             }
-            MutableText failMessage = Constants.PREFIX.get();
-            failMessage.append(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.shareFail").withColor(Color.RED.getRGB()));
-            CLIENT.player.sendMessage(failMessage, false);
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.shareFail").formatted(Formatting.RED)), false);
         }
 
         return Command.SINGLE_SUCCESS;
