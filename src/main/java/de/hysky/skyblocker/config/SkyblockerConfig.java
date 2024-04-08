@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -103,6 +104,12 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public QuickNavItem button12 = new QuickNavItem(true, new ItemData("crafting_table"), "Craft Item", "/craft");
+
+		@SerialEntry
+		public QuickNavItem button13 = new QuickNavItem(true, new ItemData("bedrock"), "New Quick Nav", "/command");
+
+		@SerialEntry
+		public QuickNavItem button14 = new QuickNavItem(true, new ItemData("chest"), "New Quick Nav 2", "/command");
 	}
 
 	public static class QuickNavItem {
@@ -250,6 +257,9 @@ public class SkyblockerConfig {
 		public SearchOverlay searchOverlay = new SearchOverlay();
 
 		@SerialEntry
+		public FancyAuctionHouse fancyAuctionHouse = new FancyAuctionHouse();
+
+		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
 
 		@SerialEntry
@@ -263,6 +273,16 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customArmorTrims = new Object2ObjectOpenHashMap<>();
+
+		@SerialEntry
+		public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
+	}
+
+	public static class FancyAuctionHouse {
+		@SerialEntry
+		public boolean enabled = true;
+		@SerialEntry
+		public boolean highlightCheapBIN = true;
 	}
 
 	public static class TabHudConf {
@@ -1067,6 +1087,8 @@ public class SkyblockerConfig {
 	}
 
 	public static class TheEnd {
+		@SerialEntry
+		public boolean enableEnderNodeHelper = true;
 
 		@SerialEntry
 		public boolean hudEnabled = true;

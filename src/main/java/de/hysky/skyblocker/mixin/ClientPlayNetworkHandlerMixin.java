@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
+import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.SlayerUtils;
@@ -91,6 +92,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onParticle", at = @At("RETURN"))
     private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
         MythologicalRitual.onParticle(packet);
+        EnderNodes.onParticle(packet);
     }
 
     @ModifyExpressionValue(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;getEntity(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"))

@@ -739,6 +739,26 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
+
+				// Fancy Auction House
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.general.betterAuctionHouse"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.betterAuctionHouse.enabled"))
+								.binding(defaults.general.fancyAuctionHouse.enabled,
+										() -> config.general.fancyAuctionHouse.enabled,
+										newValue -> config.general.fancyAuctionHouse.enabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.betterAuctionHouse.highlightUnderAvgPrice"))
+								.binding(defaults.general.fancyAuctionHouse.highlightCheapBIN,
+										() -> config.general.fancyAuctionHouse.highlightCheapBIN,
+										newValue -> config.general.fancyAuctionHouse.highlightCheapBIN = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 				.build();
 	}
 }

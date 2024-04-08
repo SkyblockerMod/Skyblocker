@@ -11,6 +11,7 @@
   "text.skyblocker.quit_config": "Changes Not Saved",
   "text.skyblocker.quit_config_sure": "Are you sure you want to quit editing the config? Changes will not be saved!",
   "text.skyblocker.quit_discard": "Quit & Discard Changes",
+  "text.skyblocker.confirm": "Confirm",
 
   "text.autoconfig.skyblocker.title": "Skyblocker Settings",
 
@@ -162,6 +163,9 @@
   "text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel": "History:",
   "text.autoconfig.skyblocker.option.general.betterPartyFinder": "Better Party Finder",
   "text.autoconfig.skyblocker.option.general.fancyCraftingTable": "Fancy Crafting Table UI",
+  "text.autoconfig.skyblocker.option.general.betterAuctionHouse": "Better Auction House",
+  "text.autoconfig.skyblocker.option.general.betterAuctionHouse.enabled": "Enabled",
+  "text.autoconfig.skyblocker.option.general.betterAuctionHouse.highlightUnderAvgPrice": "Highlight BIN under average price",
   "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
   "skyblocker.itemTooltip.noData": "§cNo Data",
 
@@ -316,8 +320,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer.@Tooltip": "Display a timer when to use a Fire Freeze Staff in the F3/M3 boss fight.",
   "text.autoconfig.skyblocker.option.locations.dungeons.floor3GuardianHealthDisplay": "Guardian Health Display (F3/M3)",
   "text.autoconfig.skyblocker.option.locations.dungeons.floor3GuardianHealthDisplay.@Tooltip": "Displays guardian's health below them in the F3/M3 boss fight.",
-  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items",
-  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons while holding an item which has been protected using /skyblocker protectItem.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items & on Locked Slots",
+  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons on a locked slot or while holding an item which has been protected using /skyblocker protectItem.",
 
   "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Dwarven Mines",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Enable Drill Fuel",
@@ -356,6 +360,7 @@
   "text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip": "Used for calculating Motes sell prices.",
 
   "text.autoconfig.skyblocker.option.locations.end": "The End",
+  "text.autoconfig.skyblocker.option.locations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
   "text.autoconfig.skyblocker.option.locations.end.hudEnabled": "HUD Enabled",
   "text.autoconfig.skyblocker.option.locations.end.screen": "End HUD Config...",
   "text.autoconfig.skyblocker.option.locations.end.waypoint": "End Protector Waypoint",
@@ -553,6 +558,14 @@
   "skyblocker.customArmorTrims.added": "§fSet a custom armor trim for your currently held item!",
   "skyblocker.customArmorTrims.noItemUuid": "§cYou must be holding an item that has a uuid in order to set a custom armor trim!",
   "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)",
+  
+  "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX color code was supplied!",
+  "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armor piece!",
+  "skyblocker.customAnimatedDyes.removed": "Removed this item's custom animated dye.",
+  "skyblocker.customAnimatedDyes.neverHad": "This item doesn't have a custom animated dye set, but why not add one? ;)",
+  "skyblocker.customAnimatedDyes.added": "Set a custom animated dye for your currently held item!",
+  "skyblocker.customAnimatedDyes.noItemUuid": "§cYou must be holding an item that has a uuid in order to set a custom animated dye.",
+  "skyblocker.customAnimatedDyes.unableToSetDye": "§cUnable to set a custom animated dye :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.quiverWarning.50Left": "You only have 50 Arrows left in your Quiver!",
   "skyblocker.quiverWarning.10Left": "You only have 10 Arrows left in your Quiver!",
@@ -572,6 +585,7 @@
   "skyblocker.tips.customItemNames": "Customize the names of your items with /skyblocker custom renameItem",
   "skyblocker.tips.customArmorDyeColors": "Apply a custom dye color to your leather armour with /skyblocker custom dyeColor",
   "skyblocker.tips.customArmorTrims": "You can set custom armor trims on your armor using /skyblocker custom armorTrim.",
+  "skyblocker.tips.customAnimatedDyes": "You can apply a custom animated dye to your leather armour with /skyblocker custom animatedDye!",
   "skyblocker.tips.fancyTabExtraInfo": "Did you know you can see extra info on our fancy tab menu when holding N or M?",
   "skyblocker.tips.helpCommand": "Use command /skyblocker help and you might find some more nifty features!",
   "skyblocker.tips.discordRichPresence": "Use Discord Rich Presence to show your friends how loaded you are!",
@@ -601,6 +615,23 @@
   "skyblocker.partyFinder.yourParty": "Your party",
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
+
+  "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
+  "skyblocker.fancyAuctionHouse.price": "Price:",
+  "skyblocker.fancyAuctionHouse.newBid": "New Bid:",
+  "skyblocker.fancyAuctionHouse.buy": "Buy!",
+  "skyblocker.fancyAuctionHouse.bid": "Bid!",
+  "skyblocker.fancyAuctionHouse.cantAfford": "Can't Afford!",
+  "skyblocker.fancyAuctionHouse.alreadyTopBid": "Already Top Bid!",
+  "skyblocker.fancyAuctionHouse.differentProfile": "On a different profile",
+  "skyblocker.fancyAuctionHouse.didntWin": "Didn't win :(",
+  "skyblocker.fancyAuctionHouse.changeProfile": "Change Profile",
+  "skyblocker.fancyAuctionHouse.collectAuction": "Collect Auction",
+  "skyblocker.fancyAuctionHouse.collectBid": "Collect Bid",
+  "skyblocker.fancyAuctionHouse.auctionEnded": "Auction Ended!",
+  "skyblocker.fancyAuctionHouse.cancelAuction": "Cancel Auction",
+  "skyblocker.fancyAuctionHouse.yourAuction": "This is your auction!",
+  "skyblocker.fancyAuctionHouse.youPay": "You pay: %s",
 
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",

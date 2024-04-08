@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import org.lwjgl.glfw.GLFW;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
@@ -22,10 +21,6 @@ public class HotbarSlotLock {
 
     public static boolean isLocked(int slot) {
         return SkyblockerConfigManager.get().general.lockedSlots.contains(slot);
-    }
-
-    public static void handleDropSelectedItem(int slot, CallbackInfoReturnable<Boolean> cir) {
-        if (isLocked(slot)) cir.setReturnValue(false);
     }
 
     public static void handleInputEvents(ClientPlayerEntity player) {
