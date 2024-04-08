@@ -15,7 +15,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
 @Environment(value=EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
     private final int index;
@@ -45,12 +44,6 @@ public class QuickNavButton extends ClickableWidget {
         this.command = command;
         this.icon = icon;
     }
-    public static int SetXTest1 = 7;
-    public static int SetXTest2 = 3;
-    public static int SetyTest1 = 7;
-    public static int SetyTest2 = 4;
-
-
     private void updateCoordinates() {
         Screen screen = MinecraftClient.getInstance().currentScreen;
         if (screen instanceof HandledScreen<?> handledScreen) {
@@ -58,8 +51,8 @@ public class QuickNavButton extends ClickableWidget {
             int y = ((HandledScreenAccessor)handledScreen).getY();
             int h = ((HandledScreenAccessor)handledScreen).getBackgroundHeight();
             if (h > 166) --h; // why is this even a thing
-            this.setX(x + this.index % SetXTest1 * 25);
-            this.setY(this.index < SetyTest1 ? y - 25 : y + h - SetyTest2);
+            this.setX(x + this.index % 7 * 25);
+            this.setY(this.index < 7 ? y - 25 : y + h - 4);
         }
     }
 
