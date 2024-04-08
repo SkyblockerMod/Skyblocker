@@ -117,7 +117,7 @@ public class EnderNodes {
         private long lastConfirmed;
 
         private EnderNode(BlockPos pos) {
-            super(pos, SkyblockerConfigManager.get().general.waypoints.waypointType, DyeColor.CYAN.getColorComponents());
+            super(pos, () -> SkyblockerConfigManager.get().general.waypoints.waypointType, DyeColor.CYAN.getColorComponents(), false);
         }
 
         private void updateParticles() {
