@@ -349,6 +349,12 @@ public class SkyblockerConfig {
 	public static class Fishing {
 		@SerialEntry
 		public boolean enableFishingHelper = true;
+
+		@SerialEntry
+		public boolean enableFishingTimer = true;
+
+		@SerialEntry
+		public float fishingTimerScale = 1f;
 	}
 
 	public static class FairySouls {

@@ -226,6 +226,20 @@ public class GeneralCategory {
 										newValue -> config.general.fishing.enableFishingHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer"))
+								.binding(defaults.general.fishing.enableFishingTimer,
+										() -> config.general.fishing.enableFishingTimer,
+										newValue -> config.general.fishing.enableFishingTimer = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale"))
+								.binding(defaults.general.fishing.fishingTimerScale,
+										() -> config.general.fishing.fishingTimerScale,
+										newValue -> config.general.fishing.fishingTimerScale = newValue)
+								.controller(FloatFieldControllerBuilder::create)
+								.build())
 						.build())
 
 				//Fairy Souls Helper
