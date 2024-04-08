@@ -354,6 +354,9 @@ public class SkyblockerConfig {
 		public boolean enableFishingTimer = true;
 
 		@SerialEntry
+		public boolean changeTimerColor = true;
+
+		@SerialEntry
 		public float fishingTimerScale = 1f;
 	}
 

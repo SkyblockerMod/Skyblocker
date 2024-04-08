@@ -20,6 +20,8 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
+
 public class FishingHelper {
     private static final Title title = new Title("skyblocker.fishing.reelNow", Formatting.GREEN);
     private static long startTime;
@@ -83,7 +85,15 @@ public class FishingHelper {
                 float time = Math.round((System.currentTimeMillis()-startTime) / 100f) / 10f; //leave 1dp in seconds
                 float scale = SkyblockerConfigManager.get().general.fishing.fishingTimerScale;
                 Vec3d pos = player.fishHook.getPos().add(0,0.4 + scale / 10,0);
-                RenderHelper.renderText(context, Text.of(String.valueOf(time)), pos, scale, true);
+
+                Text text;
+                if (time >= 20 && SkyblockerConfigManager.get().general.fishing.changeTimerColor) {
+                    text = Text.literal(String.valueOf(time)).withColor(Color.GREEN.getRGB());
+                } else {
+                    text = Text.literal(String.valueOf(time));
+                }
+
+                RenderHelper.renderText(context, text, pos, scale, true);
             }
         }
 

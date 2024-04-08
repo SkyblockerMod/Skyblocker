@@ -233,6 +233,13 @@ public class GeneralCategory {
 										newValue -> config.general.fishing.enableFishingTimer = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.changeTimerColor"))
+								.binding(defaults.general.fishing.changeTimerColor,
+										() -> config.general.fishing.changeTimerColor,
+										newValue -> config.general.fishing.changeTimerColor = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale"))
 								.binding(defaults.general.fishing.fishingTimerScale,
