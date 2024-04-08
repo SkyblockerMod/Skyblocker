@@ -53,7 +53,6 @@ public class ItemCooldowns {
     public static double CalcMonkeyExp = 0;
     public static double currentCooldown = 0;
     public static long unixTimeStamp = 0;
-
     public static void init() {
         ClientPlayerBlockBreakEvents.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
@@ -115,8 +114,8 @@ public class ItemCooldowns {
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
-            currentCooldown();
             if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
+                currentCooldown();
                 if (!isOnCooldown(JUNGLE_AXE_ID) || !isOnCooldown(TREECAPITATOR_ID)) {
                     ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry((int) currentCooldown));
                 }
@@ -127,7 +126,6 @@ public class ItemCooldowns {
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity player, World world, Hand hand) {
         if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns)
             return TypedActionResult.pass(ItemStack.EMPTY);
-
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
             if (!isOnCooldown(GRAPPLING_HOOK_ID) && !isWearingBatArmor(player)) {
