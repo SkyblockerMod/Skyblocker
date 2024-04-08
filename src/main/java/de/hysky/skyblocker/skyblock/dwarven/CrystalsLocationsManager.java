@@ -9,6 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -40,6 +41,7 @@ import org.slf4j.Logger;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.minecraft.command.CommandSource.suggestMatching;
 
 public class CrystalsLocationsManager {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -113,7 +115,14 @@ public class CrystalsLocationsManager {
             .then(literal("crystalWaypoints")
                 .then(argument("pos", BlockPosArgumentType.blockPos())
                         .then(argument("place", StringArgumentType.greedyString())
+                                .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
                                 .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
+                        )
+                )
+                .then(literal("share")
+                        .then(argument("place",StringArgumentType.greedyString())
+                                .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
+                                .executes(context -> shareWaypoint(getString(context, "place")))
                         )
                 )
             )
@@ -154,6 +163,24 @@ public class CrystalsLocationsManager {
             }
 
             CLIENT.player.sendMessage(getSetLocationMessage(place, blockPos), false);
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int shareWaypoint(String place) {
+        if (activeWaypoints.containsKey(place)) {
+            BlockPos location = activeWaypoints.get(place).pos;
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString()+ " " + place + ": " + location.getX() + ", " + location.getY() + ", " + location.getZ());
+        }
+        else {
+            //send fail message
+            if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
+                return 0;
+            }
+            MutableText failMessage = Constants.PREFIX.get();
+            failMessage.append(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.shareFail").withColor(Color.RED.getRGB()));
+            CLIENT.player.sendMessage(failMessage, false);
         }
 
         return Command.SINGLE_SUCCESS;
