@@ -50,6 +50,8 @@ public class QuickNav {
             if (data.button10.render) buttons.add(parseButton(data.button10, screenTitle, 9));
             if (data.button11.render) buttons.add(parseButton(data.button11, screenTitle, 10));
             if (data.button12.render) buttons.add(parseButton(data.button12, screenTitle, 11));
+            if (data.button13.render) buttons.add(parseButton(data.button13, screenTitle, 12));
+            if (data.button14.render) buttons.add(parseButton(data.button14, screenTitle, 13));
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }

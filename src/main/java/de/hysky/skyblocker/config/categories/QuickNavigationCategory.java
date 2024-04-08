@@ -599,7 +599,100 @@ public class QuickNavigationCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.build())
-
+//Button 13
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 13))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.render"))
+								.binding(defaults.quickNav.button13.render,
+										() -> config.quickNav.button13.render,
+										newValue -> config.quickNav.button13.render = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.itemName"))
+								.binding(defaults.quickNav.button13.item.itemName,
+										() -> config.quickNav.button13.item.itemName,
+										newValue -> config.quickNav.button13.item.itemName = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.count"))
+								.binding(defaults.quickNav.button13.item.count,
+										() -> config.quickNav.button13.item.count,
+										newValue -> config.quickNav.button13.item.count = newValue)
+								.controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.binding(defaults.quickNav.button13.item.nbt,
+										() -> config.quickNav.button13.item.nbt,
+										newValue -> config.quickNav.button13.item.nbt = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
+								.binding(defaults.quickNav.button13.uiTitle,
+										() -> config.quickNav.button13.uiTitle,
+										newValue -> config.quickNav.button13.uiTitle = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.clickEvent"))
+								.binding(defaults.quickNav.button13.clickEvent,
+										() -> config.quickNav.button13.clickEvent,
+										newValue -> config.quickNav.button13.clickEvent = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.build())
+				//Button 14
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button", 14))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.render"))
+								.binding(defaults.quickNav.button14.render,
+										() -> config.quickNav.button14.render,
+										newValue -> config.quickNav.button14.render = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.itemName"))
+								.binding(defaults.quickNav.button14.item.itemName,
+										() -> config.quickNav.button14.item.itemName,
+										newValue -> config.quickNav.button14.item.itemName = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.count"))
+								.binding(defaults.quickNav.button14.item.count,
+										() -> config.quickNav.button14.item.count,
+										newValue -> config.quickNav.button14.item.count = newValue)
+								.controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.binding(defaults.quickNav.button14.item.nbt,
+										() -> config.quickNav.button14.item.nbt,
+										newValue -> config.quickNav.button14.item.nbt = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
+								.binding(defaults.quickNav.button14.uiTitle,
+										() -> config.quickNav.button14.uiTitle,
+										newValue -> config.quickNav.button14.uiTitle = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.clickEvent"))
+								.binding(defaults.quickNav.button14.clickEvent,
+										() -> config.quickNav.button14.clickEvent,
+										newValue -> config.quickNav.button14.clickEvent = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.build())
 				.build();
 	}
 }

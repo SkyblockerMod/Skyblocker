@@ -28,7 +28,7 @@ public class QuickNavButton extends ClickableWidget {
      * @return true if the index is less than 6, false otherwise.
      */
     private boolean isTopTab() {
-        return index < 6;
+        return index < 7;
     }
 
     /**
@@ -45,6 +45,11 @@ public class QuickNavButton extends ClickableWidget {
         this.command = command;
         this.icon = icon;
     }
+    public static int SetXTest1 = 7;
+    public static int SetXTest2 = 3;
+    public static int SetyTest1 = 7;
+    public static int SetyTest2 = 4;
+
 
     private void updateCoordinates() {
         Screen screen = MinecraftClient.getInstance().currentScreen;
@@ -53,8 +58,8 @@ public class QuickNavButton extends ClickableWidget {
             int y = ((HandledScreenAccessor)handledScreen).getY();
             int h = ((HandledScreenAccessor)handledScreen).getBackgroundHeight();
             if (h > 166) --h; // why is this even a thing
-            this.setX(x + this.index % 6 * 26 + 4);
-            this.setY(this.index < 6 ? y - 26 : y + h - 4);
+            this.setX(x + this.index % SetXTest1 * 25);
+            this.setY(this.index < SetyTest1 ? y - 25 : y + h - SetyTest2);
         }
     }
 
@@ -95,17 +100,17 @@ public class QuickNavButton extends ClickableWidget {
         // Render the button texture
         int y = this.getY();
         if (this.toggled) {
-            if (this.index < 6) y -= 2;
+            if (this.index < 7) y -= 2;
         } else {
-            y += (this.index >= 6) ? 4 : -2;
+            y += (this.index >= 7) ? 4 : -2;
         }
         int height = this.height - ((this.toggled ) ? 0 : 4);
 
-        context.drawGuiTexture(BUTTON_TEXTURES, this.getX(), y, this.width, height);
+        context.drawGuiTexture(BUTTON_TEXTURES, this.getX(), y, this.width - 1, height);
 
         // Render the button icon
-        int yOffset = !this.toggled && this.index < 6 ? 1 : 0;
-        context.drawItem(this.icon, this.getX() + 5, this.getY() + 6 + yOffset);
+        int yOffset = !this.toggled && this.index < 7 ? 1 : 0;
+        context.drawItem(this.icon, this.getX() + 4, this.getY() + 6 + yOffset);
 
         RenderSystem.enableDepthTest();
     }
