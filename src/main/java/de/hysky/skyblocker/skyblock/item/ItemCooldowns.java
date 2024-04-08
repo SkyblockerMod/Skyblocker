@@ -115,8 +115,8 @@ public class ItemCooldowns {
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
-            currentCooldown();
             if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
+                currentCooldown();
                 if (!isOnCooldown(JUNGLE_AXE_ID) || !isOnCooldown(TREECAPITATOR_ID)) {
                     ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry((int) currentCooldown));
                 }
