@@ -97,5 +97,6 @@
     "text.skyblocker.quit_discard": "Çık & Değişiklikleri Yoksay",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.LAYER1": "Katman 1",
     "text.autoconfig.skyblocker.option.general.enableTips": "Tüyoları Etkinleştir",
-    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Birden fazla kelime/argümandan oluşan komutların birden fazla komut/argümanını değiştiren kısayollar. Kısayolları \"/skyblocker shortcuts\" ile düzenleyebilirsiniz. Bu seçeneğin etki göstermesi için kısayolların etkinleştirilmiş olması gerekir."
+    "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Birden fazla kelime/argümandan oluşan komutların birden fazla komut/argümanını değiştiren kısayollar. Kısayolları \"/skyblocker shortcuts\" ile düzenleyebilirsiniz. Bu seçeneğin etki göstermesi için kısayolların etkinleştirilmiş olması gerekir.",
+    "key.itemProtection": "Öğeyi Koru"
 }
