@@ -34,5 +34,8 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip": "Display the livid colour in the title during the Livid boss fight.",
     "skyblocker.end.hud.protectorLocations.center": "Centre",
     "skyblocker.waypoints.ordered.add.invalidHexColor": "§cInvalid HEX colour code!",
-    "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace.@Tooltip": "Input a new message to output (can be formatted using minecraft colour codes)."
+    "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace.@Tooltip": "Input a new message to output (can be formatted using minecraft colour codes).",
+    "skyblocker.tips.customAnimatedDyes": "You can apply a custom animated dye to your leather armour with /skyblocker custom animatedDye!",
+    "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX colour code was supplied!",
+    "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armour piece!"
 }
