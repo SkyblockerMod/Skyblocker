@@ -299,5 +299,9 @@
     "text.autoconfig.skyblocker.option.general.chestValue.color": "Cor do Valor do Baú",
     "text.autoconfig.skyblocker.option.general.dungeonQuality": "Qualidade da Dungeon",
     "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground": "Ativar Fundo de HUD",
-    "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground.@Tooltip": "Ativa o fundo de uma HUD que não é a tab."
+    "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground.@Tooltip": "Ativa o fundo de uma HUD que não é a tab.",
+    "text.autoconfig.skyblocker.option.general.waypoints": "Waypoints",
+    "text.autoconfig.skyblocker.option.general.chestValue.enableChestValue.@Tooltip": "Adiciona um botão em contêineres para calcular o valor do mesmo.",
+    "text.autoconfig.skyblocker.option.general.chestValue.incompleteColor.@Tooltip": "A cor para mostrar quando o dado dos preços está incompleta.",
+    "text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip": "Waypoint: Mostra um destaque e um raio de beacon.\n\nWaypoint Contornado: Mostra tanto um waypoint e um contorno.\n\nDestaque: Apenas mostra um destaque.\n\nDestaque Contornado: Mostra tanto um destaque e um contorno.\n\nContorno: Apenas mostra um contorno."
 }
