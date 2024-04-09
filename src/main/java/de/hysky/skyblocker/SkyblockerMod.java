@@ -148,6 +148,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TeleportOverlay.init();
         CustomItemNames.init();
         CustomArmorDyeColors.init();
+        CustomArmorAnimatedDyes.init();
         CustomArmorTrims.init();
         TicTacToe.init();
         QuiverWarning.init();
