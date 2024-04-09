@@ -228,6 +228,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer.@Tooltip")))
 								.binding(defaults.general.fishing.enableFishingTimer,
 										() -> config.general.fishing.enableFishingTimer,
 										newValue -> config.general.fishing.enableFishingTimer = newValue)
@@ -235,6 +236,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.changeTimerColor"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.changeTimerColor.@Tooltip")))
 								.binding(defaults.general.fishing.changeTimerColor,
 										() -> config.general.fishing.changeTimerColor,
 										newValue -> config.general.fishing.changeTimerColor = newValue)
@@ -242,10 +244,19 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale.@Tooltip")))
 								.binding(defaults.general.fishing.fishingTimerScale,
 										() -> config.general.fishing.fishingTimerScale,
 										newValue -> config.general.fishing.fishingTimerScale = newValue)
 								.controller(FloatFieldControllerBuilder::create)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers.@Tooltip")))
+								.binding(defaults.general.fishing.hideOtherPlayers,
+										() -> config.general.fishing.hideOtherPlayers,
+										newValue -> config.general.fishing.hideOtherPlayers = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 

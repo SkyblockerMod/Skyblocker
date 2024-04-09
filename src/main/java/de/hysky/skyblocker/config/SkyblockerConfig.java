@@ -358,6 +358,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public float fishingTimerScale = 1f;
+
+		@SerialEntry
+		public boolean hideOtherPlayers = true;
 	}
 
 	public static class FairySouls {

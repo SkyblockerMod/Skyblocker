@@ -30,6 +30,7 @@
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
     "PlayerSkinTextureMixin",
+    "RenderFishMixin",
     "ScoreboardMixin",
     "SocialInteractionsPlayerListWidgetMixin",
     "WorldRendererMixin",
