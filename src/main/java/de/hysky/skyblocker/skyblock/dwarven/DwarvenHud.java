@@ -24,13 +24,14 @@ import java.util.stream.Stream;
 
 public class DwarvenHud {
 
-    public static final MinecraftClient client = MinecraftClient.getInstance();
-    public static List<Commission> commissionList = new ArrayList<>();
+    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static List<Commission> commissionList = new ArrayList<>();
 
     public static String mithrilPowder = "0";
     public static String gemStonePowder = "0";
+    public static String glacitePowder = "0";
 
-    public static final List<Pattern> COMMISSIONS = Stream.of(
+    private static final List<Pattern> COMMISSIONS = Stream.of(
                     "(?:Titanium|Mithril|Hard Stone) Miner",
                     "(?:Ice Walker|Golden Goblin|(?<!Golden )Goblin|Goblin Raid|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
                     "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
@@ -45,8 +46,9 @@ public class DwarvenHud {
                     "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
                     "Chest Looter").map(s -> Pattern.compile("(" + s + "): (\\d+\\.?\\d*%|DONE)")
             ).collect(Collectors.toList());
-    public static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril Powder: [0-9,]+");
-    public static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone Powder: [0-9,]+");
+    private static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril: [0-9,]+");
+    private static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone: [0-9,]+");
+    private static final Pattern GLACITE_PATTERN = Pattern.compile("Glacite: [0-9,]+");
 
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
@@ -185,6 +187,10 @@ public class DwarvenHud {
             Matcher gemstoneMatcher = GEMSTONE_PATTERN.matcher(name);
             if (gemstoneMatcher.matches()) {
                 gemStonePowder = gemstoneMatcher.group(0).split(": ")[1];
+            }
+            Matcher glaciteMatcher = GLACITE_PATTERN.matcher(name);
+            if (glaciteMatcher.matches()) {
+                glacitePowder = glaciteMatcher.group(0).split(": ")[1];
             }
         }
     }

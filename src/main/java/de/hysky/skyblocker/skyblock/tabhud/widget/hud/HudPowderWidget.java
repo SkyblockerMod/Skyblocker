@@ -30,6 +30,10 @@ public class HudPowderWidget extends Widget {
      */
     private static int gemstonePowder = 0;
     /**
+     * current value of Glacite Powder
+     */
+    private static int glacitePowder = 0;
+    /**
      * the difference between the previous and current value of Mithril Powder
      */
     private static int mithrilPowderDiff = 0;
@@ -37,6 +41,10 @@ public class HudPowderWidget extends Widget {
      * the difference between the previous and current value of Gemstone Powder
      */
     private static int gemstonePowderDiff = 0;
+    /**
+     * the difference between the previous and current value of Glacite Powder
+     */
+    private static int glacitePowderDiff = 0;
     /**
      * The initial value of the timer for the difference update delay countdown.
      */
@@ -77,8 +85,8 @@ public class HudPowderWidget extends Widget {
     /**
      * Converts Powder and difference values to a string and adds commas to the digits of the numbers.
      *
-     * @param powder the value of Mithril or Gemstone Powder
-     * @param diff   the difference between the previous and current value of Mithril or Gemstone Powder
+     * @param powder the value of Mithril, Gemstone Powder, or Glacite Powder
+     * @param diff   the difference between the previous and current value of Mithril, Gemstone, or Glacite Powder
      * @return formatted string
      */
     private static String formatPowderString(int powder, int diff) {
@@ -94,15 +102,18 @@ public class HudPowderWidget extends Widget {
 
         int newMithrilPowder = parsePowder(DwarvenHud.mithrilPowder);
         int newGemstonePowder = parsePowder(DwarvenHud.gemStonePowder);
+        int newGlacitePowder = parsePowder(DwarvenHud.glacitePowder);
 
-        if (newMithrilPowder != mithrilPowder || newGemstonePowder != gemstonePowder || elapsedTime > 2000) {
+        if (newMithrilPowder != mithrilPowder || newGemstonePowder != gemstonePowder || newGlacitePowder != glacitePowder || elapsedTime > 2000) {
             startTime = System.currentTimeMillis();
 
             mithrilPowderDiff = newMithrilPowder - mithrilPowder;
             gemstonePowderDiff = newGemstonePowder - gemstonePowder;
+            glacitePowderDiff = newGlacitePowder - glacitePowder;
 
             mithrilPowder = newMithrilPowder;
             gemstonePowder = newGemstonePowder;
+            glacitePowder = newGlacitePowder;
         }
     }
 
@@ -111,9 +122,11 @@ public class HudPowderWidget extends Widget {
         updatePowders();
         String mithrilPowderString = formatPowderString(mithrilPowder, mithrilPowderDiff);
         String gemstonePowderString = formatPowderString(gemstonePowder, gemstonePowderDiff);
+        String glacitePowderString = formatPowderString(glacitePowder, glacitePowderDiff);
 
-        this.addSimpleIcoText(Ico.MITHRIL, "Mithril: ", Formatting.AQUA, mithrilPowderString);
+        this.addSimpleIcoText(Ico.MITHRIL, "Mithril: ", Formatting.DARK_GREEN, mithrilPowderString);
         this.addSimpleIcoText(Ico.AMETHYST_SHARD, "Gemstone: ", Formatting.DARK_PURPLE, gemstonePowderString);
+        this.addSimpleIcoText(Ico.BLUE_ICE, "Glacite: ", Formatting.AQUA, glacitePowderString);
     }
 
 }
