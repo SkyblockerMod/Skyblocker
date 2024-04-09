@@ -83,6 +83,10 @@ public enum Location {
      */
     KUUDRAS_HOLLOW("kuudra"),
     /**
+     * 
+     */
+    GLACITE_MINESHAFT("mineshaft"),
+    /**
      * Unknown Skyblock location
      */
     UNKNOWN("unknown");

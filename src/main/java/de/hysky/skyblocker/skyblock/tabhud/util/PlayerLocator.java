@@ -27,6 +27,7 @@ public class PlayerLocator {
         INSTANCED("kuudra"),
         THE_RIFT("rift"),
         DARK_AUCTION("dark_auction"),
+        GLACITE_MINESHAFT("mineshaft"),
         UNKNOWN("unknown");
 
         public final String internal;

@@ -98,7 +98,7 @@ public class Utils {
     }
 
     public static boolean isInDwarvenMines() {
-        return location == Location.DWARVEN_MINES || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static boolean isInTheRift() {
