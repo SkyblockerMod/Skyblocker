@@ -2,11 +2,14 @@ package de.hysky.skyblocker.skyblock.fancybars;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -21,6 +24,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     private final Color[] colors;
     private final boolean hasOverflow;
     private final @Nullable Color textColor;
+    private final String name;
 
     private @Nullable Consumer<StatusBar> onClick = null;
     public int gridX = 0;
@@ -35,21 +39,41 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     private int x = 0;
     private int y = 0;
 
-    public StatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor) {
+    public StatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor, String name) {
         this.icon = icon;
         this.colors = colors;
         this.hasOverflow = hasOverflow;
         this.textColor = textColor;
+        this.name = name;
+    }
+
+    public StatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor){
+        this(icon, colors, hasOverflow, textColor, "no name");
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        if (width <= 0) return;
         context.drawGuiTexture(icon, x, y, 9, 9);
         context.drawGuiTexture(BAR_BACK, x + 10, y + 1, width - 10, 7);
         RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 11, y + 2, (int) ((width - 12) * fill), 5, colors[0]);
         if (hasOverflow) {
             RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 11, y + 2, (int) ((width - 12) * overflowFill), 5, colors[1]);
         }
+        context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " ; " + gridY , x, y-9, Colors.WHITE, true);
+    }
+
+    public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
+        int temp_x = x;
+        int temp_y = y;
+        int temp_width = width;
+        x = mouseX;
+        y = mouseY;
+        width = 100;
+        render(context, mouseX, mouseY, delta);
+        x = temp_x;
+        y = temp_y;
+        width = temp_width;
     }
 
     // GUI shenanigans
@@ -132,5 +156,17 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     @Override
     public void appendNarrations(NarrationMessageBuilder builder) {
 
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("gridX", gridX)
+                .append("gridY", gridY)
+                .append("size", size)
+                .append("x", x)
+                .append("y", y)
+                .append("width", width)
+                .toString();
     }
 }

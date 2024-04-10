@@ -21,18 +21,20 @@ public class StatusBarsConfigScreen extends Screen {
     private final Map<ScreenRect, int[]> meaningFullName = new HashMap<>();
 
     private @Nullable StatusBar cursorBar = null;
-    protected StatusBarsConfigScreen(Text title) {
-        super(title);
+    public StatusBarsConfigScreen() {
+        super(Text.of("Status Bars Config"));
+        FancyStatusBars.updatePositions();
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        for (ScreenRect screenRect : meaningFullName.keySet()) {
+            context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
+        }
         super.render(context, mouseX, mouseY, delta);
         context.drawGuiTexture(HOTBAR_TEXTURE, width/2 - 91, height-22, 182, 22);
         if (cursorBar != null) {
-            cursorBar.setX(mouseX);
-            cursorBar.setY(mouseY);
-            cursorBar.render(context, mouseX, mouseY, delta);
+            cursorBar.renderCursor(context, mouseX, mouseY, delta);
 
             mainLoop: for (ScreenRect screenRect : meaningFullName.keySet()) {
                 for (NavigationDirection value : NavigationDirection.values()) {
@@ -40,6 +42,8 @@ public class StatusBarsConfigScreen extends Screen {
                     if (overlaps) {
                         int[] ints = meaningFullName.get(screenRect);
                         if (ints[0] != cursorBar.gridX || ints[1] != cursorBar.gridY) {
+                            System.out.println("Moving " + cursorBar);
+                            System.out.println(ints[0] + " " + ints[1]);
                             FancyStatusBars.barGrid.remove(cursorBar.gridX, cursorBar.gridY);
                             if (value.getAxis().equals(NavigationAxis.VERTICAL)) {
                                 if (value.isPositive()) {
@@ -56,8 +60,11 @@ public class StatusBarsConfigScreen extends Screen {
                                     FancyStatusBars.barGrid.add(ints[0], ints[1], cursorBar);
                                 }
                             }
+                            FancyStatusBars.updatePositions();
+                            System.out.println("After " + cursorBar);
                             break mainLoop;
                         }
+                        break;
                     }
                 }
             }
@@ -75,14 +82,36 @@ public class StatusBarsConfigScreen extends Screen {
         statusBar.setOnClick(this::onClick);
     }
 
+    @Override
+    public void removed() {
+        super.removed();
+        FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
+    }
+
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }
+
     private void onClick(StatusBar statusBar) {
         cursorBar = statusBar;
         meaningFullName.clear();
         FancyStatusBars.barGrid.remove(statusBar.gridX, statusBar.gridY);
+        FancyStatusBars.updatePositions();
         FancyStatusBars.statusBars.values().forEach(statusBar1 -> {
             meaningFullName.put(
                     new ScreenRect(new ScreenPos(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
                     new int[]{statusBar1.gridX, statusBar1.gridY});
         });
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (cursorBar != null) {
+            cursorBar = null;
+            FancyStatusBars.updatePositions();
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 }

@@ -1,11 +1,17 @@
 package de.hysky.skyblocker.skyblock;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.BarGrid;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBar;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -43,11 +49,13 @@ public class FancyStatusBars {
     public static Map<String, StatusBar> statusBars = new HashMap<>();
 
     static {
-        statusBars.put("health", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, null));
-        statusBars.put("intelligence", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, null));
-        statusBars.put("defense", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"),  new Color[]{new Color(255, 255, 255)}, false, null));
-        statusBars.put("experience", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(100, 220, 70)}, false, null));
+        statusBars.put("health", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, null, "health"));
+        statusBars.put("intelligence", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, null, "intelligence"));
+        statusBars.put("defense", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"),  new Color[]{new Color(255, 255, 255)}, false, null, "defense"));
+        statusBars.put("experience", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(100, 220, 70)}, false, null, "experience"));
+    }
 
+    public static void init() {
         barGrid.addRow(1, false);
         barGrid.add(1, 1, statusBars.get("health"));
         barGrid.add(2, 1, statusBars.get("intelligence"));
@@ -55,12 +63,24 @@ public class FancyStatusBars {
         barGrid.add(1, 2, statusBars.get("experience"));
         barGrid.addRow(-1, true);
         barGrid.add(1, -1, statusBars.get("defense"));
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
+                ClientCommandManager.literal("skyblocker")
+                        .then(ClientCommandManager.literal("bar_test").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
     }
 
     public static void updatePositions() {
         final float hotbarSize = 182;
         final int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         final int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
+
+        for (StatusBar value : statusBars.values()) {
+            if (value.gridX == 0 || value.gridY == 0) {
+                value.setX(-1);
+                value.setY(-1);
+                value.setWidth(0);
+            }
+        }
 
         // THE TOP
         for (int i = 0; i < barGrid.getTopSize(); i++) {

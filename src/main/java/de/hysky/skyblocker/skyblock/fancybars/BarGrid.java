@@ -33,7 +33,7 @@ public class BarGrid {
             LinkedList<StatusBar> statusBars = (x < 0? bottomLeft: bottomRight).get(Math.abs(y)-1);
             statusBars.add(Math.min(Math.abs(x)-1, statusBars.size()), bar);
             bar.gridY = y;
-            bar.gridX = -(statusBars.indexOf(bar)+1);
+            bar.gridX = (int) ((statusBars.indexOf(bar)+1) * Math.signum(x));
         }
     }
 
@@ -54,6 +54,7 @@ public class BarGrid {
     }
 
     public void remove(int x, int y) {
+        System.out.println("Removing x: " + x + " y: " + y);
         if (y > 0) {
             if (x < 1) throw new IllegalArgumentException("x can't be negative, x: " + x);
             LinkedList<StatusBar> statusBars = top.get(y-1);
