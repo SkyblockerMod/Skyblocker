@@ -42,7 +42,7 @@ public class DwarvenHud {
                     "Lucky Raffle",
                     "2x Mithril Powder Collector",
                     "First Event",
-                    "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector",
+                    "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz|Onyx|Aquamarine|Citrine|Peridot) Gemstone Collector",
                     "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
                     "(?:Umber|Tungsten|Glacite|Scrap) Collector",
                     "Mineshaft Explorer",
