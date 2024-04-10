@@ -31,8 +31,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
         T screenHandler = type.create(id, player.getInventory());
         if (!(screenHandler instanceof GenericContainerScreenHandler containerScreenHandler)) return;
         String nameLowercase = name.getString().toLowerCase();
+        // Better party finder
         if (SkyblockerConfigManager.get().general.betterPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase)) {
-        if (SkyblockerConfigManager.get().general.betterPartyFinder && screenHandler instanceof GenericContainerScreenHandler containerScreenHandler && PartyFinderScreen.possibleInventoryNames.contains(name.getString().toLowerCase())) {
             if (client.currentScreen != null) {
                 String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
                 if (lowerCase.contains("group builder")) return;
@@ -51,6 +51,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
             }
 
             ci.cancel();
+        // Fancy AH
         } else if (SkyblockerConfigManager.get().general.fancyAuctionHouse.enabled && (nameLowercase.contains("auctions browser") || nameLowercase.contains("auctions: "))) {
             AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, false);
             client.player.currentScreenHandler = auctionHouseScreenHandler;
@@ -70,7 +71,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
             client.setScreen(auctionViewScreen.getConfirmPurchasePopup(name));
             client.player.currentScreenHandler = containerScreenHandler;
             ci.cancel();
-        } else if (SkyblockerConfigManager.get().general.fancyCraftingTable && screenHandler instanceof GenericContainerScreenHandler containerScreenHandler && name.getString().toLowerCase().contains("craft item")) {
+        // Fancy crafting table
+        } else if (SkyblockerConfigManager.get().general.fancyCraftingTable && name.getString().toLowerCase().contains("craft item")) {
             SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
             client.player.currentScreenHandler = skyblockCraftingTableScreenHandler;
             client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(), Text.literal("Craft Item")));
