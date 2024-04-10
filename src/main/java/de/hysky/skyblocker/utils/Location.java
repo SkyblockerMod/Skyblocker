@@ -83,7 +83,7 @@ public enum Location {
      */
     KUUDRAS_HOLLOW("kuudra"),
     /**
-     * 
+     * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
      */
     GLACITE_MINESHAFT("mineshaft"),
     /**
