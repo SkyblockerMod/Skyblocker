@@ -524,5 +524,6 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]": "该饰品可以升级。同时显示目前拥有该系列中哪个级别的饰品。",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "该饰品是现有同系列饰品升级后的版本。同时展示了该饰品在其系列中的级别。",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[4]": "你已经拥有同系列中比这个更好的饰品。同时显示你拥有该系列中哪一级别的饰品。",
-    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "你没有该系列的饰品。"
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "你没有该系列的饰品。",
+    "skyblocker.waypoints.ordered.add.invalidHexColor": "§c无效的HEX颜色代码！"
 }
