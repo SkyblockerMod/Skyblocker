@@ -218,7 +218,8 @@ public class ItemTooltip {
         }
 
         if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.getNbt() != null) {
-            boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(ItemUtils.getItemUuid(stack));
+            String uuid = ItemUtils.getItemUuid(stack);
+            boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
 
             if (!hasCustomDye && stack.getItem() instanceof DyeableItem item && item.hasColor(stack)) {
                 String colorHex = String.format("%06X", item.getColor(stack));

@@ -148,6 +148,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TeleportOverlay.init();
         CustomItemNames.init();
         CustomArmorDyeColors.init();
+        CustomArmorAnimatedDyes.init();
         CustomArmorTrims.init();
         TicTacToe.init();
         QuiverWarning.init();
@@ -166,6 +167,8 @@ public class SkyblockerMod implements ClientModInitializer {
         containerSolverManager.init();
         statusBarTracker.init();
         BeaconHighlighter.init();
+        WarpAutocomplete.init();
+
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
         Scheduler.INSTANCE.scheduleCyclic(LividColor::update, 10);
