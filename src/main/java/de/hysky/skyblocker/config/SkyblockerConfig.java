@@ -855,7 +855,7 @@ public class SkyblockerConfig {
 		public boolean enableDungeonCryptsMessage = true;
 
 		@SerialEntry
-		public int dungeonCryptsMessageThreshold = 270;
+		public int dungeonCryptsMessageThreshold = 250;
 
 		@SerialEntry
 		public String dungeonCryptsMessage = "We only have [crypts] crypts out of 5, we need more!";
