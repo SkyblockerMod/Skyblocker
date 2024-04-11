@@ -355,7 +355,7 @@ public class SkyblockerConfig {
 		public boolean enableFishingHelper = true;
 
 		@SerialEntry
-		public boolean enableFishingTimer = true;
+		public boolean enableFishingTimer = false;
 
 		@SerialEntry
 		public boolean changeTimerColor = true;
@@ -364,7 +364,7 @@ public class SkyblockerConfig {
 		public float fishingTimerScale = 1f;
 
 		@SerialEntry
-		public boolean hideOtherPlayers = true;
+		public boolean hideOtherPlayersRods = false;
 	}
 
 	public static class FairySouls {

@@ -253,9 +253,9 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers.@Tooltip")))
-								.binding(defaults.general.fishing.hideOtherPlayers,
-										() -> config.general.fishing.hideOtherPlayers,
-										newValue -> config.general.fishing.hideOtherPlayers = newValue)
+								.binding(defaults.general.fishing.hideOtherPlayersRods,
+										() -> config.general.fishing.hideOtherPlayersRods,
+										newValue -> config.general.fishing.hideOtherPlayersRods = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())

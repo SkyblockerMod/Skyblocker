@@ -96,6 +96,5 @@ public class FishingHelper {
                 RenderHelper.renderText(context, text, pos, scale, true);
             }
         }
-
     }
 }
