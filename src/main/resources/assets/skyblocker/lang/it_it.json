@@ -181,5 +181,7 @@
     "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.announcement": "Mostra Annunci:",
     "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues.@Tooltip": "Quando attivato, i valori alfa dei pixel nelle texture della pelle non vengono più rimossi mentre si è in Skyblock.\n\nQuesto comporta che i pixel “riempitivi” sugli oggetti che utilizzano le Teste dei Giocatori diventano ora completamente trasparenti, sebbene ciò possa avere alcuni effetti collaterali in casi strani.",
     "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Se la quantità di Veleno per Freccie Tossiche che hai nel tuo inventario è inferiore alla soglia impostata, riceverai un avviso.\n\n16 è il minimo assoluto. \nNe vuoi almeno 32 per una fase ‘DPS’ fluida con prefire.",
-    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Mostra il profitto di un baule del dungeon nel titolo dello schermo del baule.\nVerde se c'è profitto.\nRosso se non c'è profitto.\nGrigio se non guadagni o perdi nulla.\nBlu se i calcoli sono stati basati su dati incompleti."
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Mostra il profitto di un baule del dungeon nel titolo dello schermo del baule.\nVerde se c'è profitto.\nRosso se non c'è profitto.\nGrigio se non guadagni o perdi nulla.\nBlu se i calcoli sono stati basati su dati incompleti.",
+    "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.sounds": "Riproduci Suono:",
+    "text.autoconfig.skyblocker.option.slayer.endermanSlayer": "Slayer di Enderman"
 }
