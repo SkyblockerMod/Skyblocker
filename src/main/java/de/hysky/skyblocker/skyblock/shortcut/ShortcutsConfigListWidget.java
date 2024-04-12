@@ -55,6 +55,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         return switch (getSelectedOrNull()) {
             case ShortcutCategoryEntry category -> Optional.of(category);
             case ShortcutEntry shortcutEntry -> Optional.of(shortcutEntry.category);
+            case null -> Optional.empty();
 
             default -> Optional.empty();
         };

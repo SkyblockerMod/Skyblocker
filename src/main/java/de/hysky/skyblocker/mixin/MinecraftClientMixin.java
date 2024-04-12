@@ -40,18 +40,19 @@ public abstract class MinecraftClientMixin {
     }
 
     //Remove Downloading Terrain Screen and Reconfiguring Screen
-    /*@ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
+    @ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
     public Screen modifySetScreen(Screen screen) {
         if (Utils.isOnSkyblock()) {
             return switch (screen) {
                 case DownloadingTerrainScreen _s -> null;
                 case ReconfiguringScreen _s when this.getNetworkHandler() != null -> new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
+                case null -> null;
 
                 default -> screen;
             };
         }
         return screen;
-    }*/
+    }
 
     @ModifyArg(method = "joinWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;reset(Lnet/minecraft/client/gui/screen/Screen;)V"), index = 0)
     private Screen modifyJoinWorld(Screen screen) {

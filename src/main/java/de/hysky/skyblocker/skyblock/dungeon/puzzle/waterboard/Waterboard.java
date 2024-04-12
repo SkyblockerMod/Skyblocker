@@ -123,6 +123,7 @@ public class Waterboard extends DungeonPuzzle {
                     case SwitchCell switchCell -> sb.append(switchCell.id);
                     case Cell c when c.type == Cell.Type.BLOCK -> sb.append('#');
                     case Cell c when c.type == Cell.Type.EMPTY -> sb.append('.');
+                    case null -> sb.append('?');
 
                     default -> sb.append('?');
                 }
