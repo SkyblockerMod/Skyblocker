@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipType;
 import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -34,7 +35,7 @@ public class ItemTooltip {
     protected static final SkyblockerConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
 
-    public static void getTooltip(ItemStack stack, TooltipType context, List<Text> lines) {
+    public static void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
         if (!Utils.isOnSkyblock() || client.player == null) return;
 
         String name = getInternalNameFromNBT(stack, false);
