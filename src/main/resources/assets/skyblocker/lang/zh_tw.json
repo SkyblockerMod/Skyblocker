@@ -524,5 +524,14 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[4]": "你已經擁有同系列中比這個更好的飾品。 同時展現你擁有系列中哪一種等級的飾品。",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo": "顯示Attribute Ahard資訊",
     "text.autoconfig.skyblocker.option.general.fancyCraftingTable": "酷炫的工作台UI",
-    "skyblocker.waypoints.ordered.add.invalidHexColor": "§c無效的HEX顏色代碼！"
+    "skyblocker.waypoints.ordered.add.invalidHexColor": "§c無效的HEX顏色代碼！",
+    "text.autoconfig.skyblocker.option.locations.end.enableEnderNodeHelper": "啟用終界節點助手",
+    "skyblocker.customAnimatedDyes.invalidHex": "§c提供了無效的HEX顏色代碼！",
+    "skyblocker.customAnimatedDyes.notDyeable": "§c該物品不是可染色的護甲部件！",
+    "text.skyblocker.config": "打開設定…",
+    "text.skyblocker.source": "原始碼",
+    "text.skyblocker.website": "網站",
+    "text.skyblocker.translate": "翻譯",
+    "text.skyblocker.modrinth": "Modrinth",
+    "text.skyblocker.discord": "Discord"
 }
