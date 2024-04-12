@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -16,7 +17,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -30,6 +30,8 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -37,7 +39,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
-    protected static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
+    private static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
     private static final Identifier SCROLLER_TEXTURE = new Identifier("container/creative_inventory/scroller");
 
     private static final Identifier up_arrow_tex = new Identifier(SkyblockerMod.NAMESPACE, "up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
@@ -129,7 +132,10 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         for (CategoryTabWidget categoryTabWidget : categoryTabWidgets) {
             categoryTabWidget.render(context, mouseX, mouseY, delta);
         }
-        if (isWaitingForServer) context.drawText(textRenderer, "Waiting...", 0, 0, Colors.WHITE, true);
+        if (isWaitingForServer) {
+            String waiting = "Waiting for server...";
+            context.drawText(textRenderer, waiting, this.width - textRenderer.getWidth(waiting) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
+        }
 
         MatrixStack matrices = context.getMatrices();
         matrices.push();
@@ -234,13 +240,13 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                 }
             }
             case SORT_BUTTON_SLOT ->
-                    sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
+                    sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(ItemUtils.getNbtTooltips(stack))));
             case AUCTION_TYPE_BUTTON_SLOT ->
-                    auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.getTooltip(client.player, TooltipContext.BASIC))));
+                    auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(ItemUtils.getNbtTooltips(stack))));
             case RARITY_BUTTON_SLOT -> {
-                List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
+                List<Text> tooltip = ItemUtils.getNbtTooltips(stack);
                 int ordinal = getOrdinal(tooltip);
-                String split = tooltip.get(ordinal + 2).getString().substring(2);
+                String split = tooltip.get(ordinal + 1).getString().substring(2);
                 rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
             }
             case RESET_BUTTON_SLOT -> {
@@ -248,7 +254,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
             }
             case SEARCH_BUTTON_SLOT -> {
-                List<Text> tooltipSearch = stack.getTooltip(client.player, TooltipContext.BASIC);
+                List<Text> tooltipSearch = ItemUtils.getNbtTooltips(stack);
                 for (Text text : tooltipSearch) {
                     String string = text.getString();
                     if (string.contains("Filtered:")) {
@@ -265,7 +271,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
                     categoryTabWidget.setSlotId(slotId);
                     categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
-                    List<Text> tooltipDefault = handler.getSlot(slotId).getStack().getTooltip(client.player, TooltipContext.BASIC);
+                    List<Text> tooltipDefault = ItemUtils.getNbtTooltips(handler.getSlot(slotId).getStack());
                     for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
                         String lowerCase = tooltipDefault.get(j).getString().toLowerCase();
                         if (lowerCase.contains("currently")) {
@@ -277,8 +283,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                         } else categoryTabWidget.setToggled(false);
                     }
                 } else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
-                    List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
                     if (!SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN) return;
+                    List<Text> tooltip = ItemUtils.getNbtTooltips(stack);
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
                         String string = text.getString();
@@ -287,7 +293,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                             if (split.length < 2) continue;
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
                             try {
-                                int parsed = Integer.parseInt(coins);
+                                long parsed = Long.parseLong(coins);
                                 String name = ItemTooltip.getInternalNameFromNBT(stack, false);
                                 String internalID = ItemTooltip.getInternalNameFromNBT(stack, true);
                                 String neuName = name;
@@ -300,7 +306,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                                 else {
                                     isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);
                                 }
-                            } catch (NumberFormatException ignored) {
+                            } catch (Exception e) {
+                                LOGGER.error("[Skyblocker Fancy Auction House] Failed to parse BIN price", e);
                             }
                         }
                     }
@@ -324,9 +331,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     private static int getOrdinal(List<Text> tooltip) {
         int ordinal = 0;
-        for (int j = 0; j < tooltip.size() - 3; j++) {
-            if (j + 2 >= tooltip.size()) break;
-            if (tooltip.get(j + 2).getString().contains("▶")) {
+        for (int j = 0; j < tooltip.size() - 4; j++) {
+            if (j + 1 >= tooltip.size()) break;
+            if (tooltip.get(j + 1).getString().contains("▶")) {
                 ordinal = j;
                 break;
             }
@@ -341,14 +348,15 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     private void parsePage(ItemStack stack) {
         assert client != null;
-        List<Text> tooltip = stack.getTooltip(client.player, TooltipContext.BASIC);
-        String str = tooltip.get(1).getString().trim();
-        str = str.substring(1, str.length() - 1); // remove parentheses
-        String[] parts = str.split("/"); // split the string
         try {
+            List<Text> tooltip = ItemUtils.getNbtTooltips(stack);
+            String str = tooltip.get(0).getString().trim();
+            str = str.substring(1, str.length() - 1); // remove parentheses
+            String[] parts = str.split("/"); // split the string
             currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page
             totalPages = Integer.parseInt(parts[1].replace(",", "")); // parse total
-        } catch (NumberFormatException ignored) {
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker Fancy Auction House] Failed to parse page arrow", e);
         }
     }
 

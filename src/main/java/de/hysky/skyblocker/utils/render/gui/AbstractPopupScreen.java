@@ -11,11 +11,11 @@ import net.minecraft.util.Identifier;
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
  */
-public class BarebonesPopupScreen extends Screen {
+public class AbstractPopupScreen extends Screen {
     private static final Identifier BACKGROUND_TEXTURE = new Identifier("popup/background");
     private final Screen backgroundScreen;
 
-    protected BarebonesPopupScreen(Text title, Screen backgroundScreen) {
+    protected AbstractPopupScreen(Text title, Screen backgroundScreen) {
         super(title);
         this.backgroundScreen = backgroundScreen;
     }
@@ -44,8 +44,12 @@ public class BarebonesPopupScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        this.backgroundScreen.resize(this.client, width, height);
+        initTabNavigation();
+    }
 
+    @Override
+    protected void initTabNavigation() {
+        this.backgroundScreen.resize(this.client, this.width, this.height);
     }
 
     @Override

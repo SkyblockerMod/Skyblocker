@@ -53,7 +53,6 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
         int optionWidth = current.getOptionSize()[0];
         int optionHeight = current.getOptionSize()[1];
 
-        //context.drawText(parent.getTextRender(), String.valueOf(slotId), 0, -9, Colors.RED, true);
         context.drawTexture(current.getBackTexture(), 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
         context.drawTexture(current.getOptionTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
         if (isHovered()) {

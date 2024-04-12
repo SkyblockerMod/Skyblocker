@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.PopupScreen;
@@ -8,7 +9,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -198,18 +198,18 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         if (priceParsed) return;
         if (stack.isOf(Items.POISONOUS_POTATO)) {
             changeState(BuyState.CANT_AFFORD);
-            getPriceFromTooltip(stack.getTooltip(client.player, TooltipContext.BASIC));
+            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
             buySlotID = slotId;
         } else if (stack.isOf(Items.GOLD_NUGGET)) {
             changeState(BuyState.AFFORD);
-            getPriceFromTooltip(stack.getTooltip(client.player, TooltipContext.BASIC));
+            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
             buySlotID = slotId;
         } else if (stack.isOf(Items.GOLD_BLOCK)) {
             changeState(BuyState.TOP_BID);
-            getPriceFromTooltip(stack.getTooltip(client.player, TooltipContext.BASIC));
+            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
             buySlotID = slotId;
         } else if (stack.isOf(Items.NAME_TAG)) {
-            getPriceFromTooltip(stack.getTooltip(client.player, TooltipContext.BASIC));
+            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
             changeProfile = true;
             buySlotID = slotId;
         }
@@ -264,7 +264,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
                 return Optional.ofNullable(res);
             }, Style.EMPTY).ifPresent(s -> stringAtomicReference.set(stringAtomicReference.get() + s));
         }
-        //System.out.println("Experiment: " + stringAtomicReference.get());
+
         if (priceString == null) priceString = stringAtomicReference.get();
         if (minBid != null) this.minBid = minBid;
         else this.minBid = priceString;

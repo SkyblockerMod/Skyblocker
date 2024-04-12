@@ -15,16 +15,17 @@ public enum SkyblockItemRarity {
 	UNCOMMON(Formatting.GREEN),
 	COMMON(Formatting.WHITE);
 
+	public final int color;
 	public final float r;
 	public final float g;
 	public final float b;
 
 	SkyblockItemRarity(Formatting formatting) {
-		@SuppressWarnings("DataFlowIssue")
-		int rgb = formatting.getColorValue();
+        //noinspection DataFlowIssue
+        this.color = formatting.getColorValue();
 
-		this.r = ((rgb >> 16) & 0xFF) / 255f;
-		this.g = ((rgb >> 8) & 0xFF) / 255f;
-		this.b = (rgb & 0xFF) / 255f;
+		this.r = ((color >> 16) & 0xFF) / 255f;
+		this.g = ((color >> 8) & 0xFF) / 255f;
+		this.b = (color & 0xFF) / 255f;
 	}
 }

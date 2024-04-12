@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import de.hysky.skyblocker.utils.render.gui.BarebonesPopupScreen;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-public class EditBidPopup extends BarebonesPopupScreen {
+public class EditBidPopup extends AbstractPopupScreen {
     private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
     private final String minimumBid;
     private final SignBlockEntity signBlockEntity;

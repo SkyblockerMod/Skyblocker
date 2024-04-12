@@ -47,12 +47,11 @@
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
     "accessor.SkullBlockEntityAccessor",
+    "accessor.SlotAccessor",
     "accessor.WorldRendererAccessor",
-    "discordipc.ConnectionMixin",
-    "accessor.SlotAccessor"
+    "discordipc.ConnectionMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": []
+  }
 }

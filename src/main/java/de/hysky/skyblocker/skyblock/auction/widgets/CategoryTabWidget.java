@@ -34,14 +34,11 @@ public class CategoryTabWidget extends ToggleButtonWidget {
         Identifier identifier = textures.get(true, this.toggled);
         int x = getX();
         if (toggled) x -= 2;
-        //RenderSystem.disableDepthTest();
         context.drawGuiTexture(identifier, x, this.getY(), this.width, this.height);
-        //RenderSystem.enableDepthTest();
         context.drawItem(icon, x + 9, getY() + 5);
 
         if (isMouseOver(mouseX, mouseY)) {
             context.getMatrices().push();
-            //context.getMatrices().translate(0, 0, 500f);
             context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(MinecraftClient.getInstance().player, TooltipContext.BASIC), mouseX, mouseY);
             context.getMatrices().pop();
         }

@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -9,9 +11,11 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Map;
 
 public class RarityWidget extends ClickableWidget {
 
@@ -30,7 +34,6 @@ public class RarityWidget extends ClickableWidget {
         MatrixStack matrices = context.getMatrices();
         matrices.push();
         matrices.translate(getX(), getY(), 0);
-        //context.drawText(parent.getTextRender(), String.valueOf(slotId), 0, -9, Colors.RED, true);
         boolean onLeftArrow = isOnLeftArrow(mouseX);
         boolean onRightArrow = isOnRightArrow(mouseX);
         context.drawTexture(TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
@@ -40,16 +43,15 @@ public class RarityWidget extends ClickableWidget {
         // Text
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int textWidth = textRenderer.getWidth(current);
-        int color = 0xFFEAEAEA;
         if (textWidth > 34) {
+            float scale = 34f / textWidth;
             matrices.push();
-            //matrices.translate(-7-getX(), -5.5f-getY(), 0);
-            matrices.translate(7, 5.5f, 0);
-            matrices.scale(34.f / textWidth, 34.f / textWidth, 1.f);
-            context.drawText(textRenderer, current, 0, -textRenderer.fontHeight / 2, color, false);
+            matrices.translate(0, 5.5, 0);
+            matrices.scale(scale, scale, 1);
+            context.drawCenteredTextWithShadow(textRenderer, current, (int) (24 / scale), -textRenderer.fontHeight / 2, color);
             matrices.pop();
         } else {
-            context.drawText(textRenderer, current, 7, 2, color, false);
+            context.drawCenteredTextWithShadow(textRenderer, current, 24, 2, color);
         }
 
         matrices.pop();
@@ -57,11 +59,11 @@ public class RarityWidget extends ClickableWidget {
 
     }
 
-    private boolean isOnRightArrow(int mouseX) {
+    private boolean isOnRightArrow(double mouseX) {
         return isHovered() && mouseX - getX() > 40;
     }
 
-    private boolean isOnLeftArrow(int mouseX) {
+    private boolean isOnLeftArrow(double mouseX) {
         return isHovered() && mouseX - getX() < 7;
     }
 
@@ -76,18 +78,27 @@ public class RarityWidget extends ClickableWidget {
 
     private List<Text> tooltip = List.of();
     private String current = "?";
+    private int color = 0xFFEAEAEA;
 
     public void setText(List<Text> tooltip, String current) {
         this.tooltip = tooltip;
         this.current = current;
+        for (Map.Entry<String, SkyblockItemRarity> rarity : ItemRarityBackgrounds.LORE_RARITIES.entrySet()) {
+            if (current.toUpperCase().contains(rarity.getKey())) {
+                this.color = rarity.getValue().color | 0xFF000000;
+                return;
+            }
+        }
+        //noinspection DataFlowIssue
+        this.color = Formatting.GRAY.getColorValue() | 0xFF000000;
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
         if (slotId == -1) return;
-        if (isOnLeftArrow((int) mouseX)) {
+        if (isOnLeftArrow(mouseX)) {
             onClick.click(slotId, 1);
-        } else if (isOnRightArrow((int) mouseX)) {
+        } else if (isOnRightArrow(mouseX)) {
             onClick.click(slotId, 0);
         }
     }
