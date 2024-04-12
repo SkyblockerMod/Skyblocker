@@ -40,7 +40,7 @@ public abstract class MinecraftClientMixin {
     }
 
     //Remove Downloading Terrain Screen and Reconfiguring Screen
-    @ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
+    /*@ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
     public Screen modifySetScreen(Screen screen) {
         if (Utils.isOnSkyblock()) {
             return switch (screen) {
@@ -51,7 +51,7 @@ public abstract class MinecraftClientMixin {
             };
         }
         return screen;
-    }
+    }*/
 
     @ModifyArg(method = "joinWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;reset(Lnet/minecraft/client/gui/screen/Screen;)V"), index = 0)
     private Screen modifyJoinWorld(Screen screen) {

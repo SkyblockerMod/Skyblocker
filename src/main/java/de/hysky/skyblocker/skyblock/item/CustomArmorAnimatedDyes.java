@@ -22,8 +22,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -62,7 +62,7 @@ public class CustomArmorAnimatedDyes {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
-			if (heldItem.getItem() instanceof DyeableItem) {
+			if (heldItem.isIn(ItemTags.DYEABLE)) {
 				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
 				if (!itemUuid.isEmpty()) {
