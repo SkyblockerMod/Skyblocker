@@ -110,25 +110,33 @@ public class FancyStatusBars {
 
             int x = width/2 - 91;
             int y = height - 33 - 10*i;
-            for (StatusBar bar : row) {
+            for (int j = 0; j < row.size(); j++) {
+                StatusBar bar = row.get(j);
                 bar.setX(x);
                 bar.setY(y);
                 bar.setWidth((int) ((bar.size / 12.f)*hotbarSize));
                 x += bar.getWidth();
+                bar.gridY = i+1;
+                bar.gridX = j+1;
             }
         }
 
+        final int maxSize = 3;
         // BOTTOM LEFT
         for (int i = 0; i < barGrid.getBottomLeftSize(); i++) {
             List<StatusBar> row = barGrid.getRow(-(i + 1), false);
             if (row.isEmpty()) continue;
             int x = width/2 - 91 - 2;
             int y = height - 15-10*i;
-            for (StatusBar bar : row) {
+            for (int j = 0; j < row.size(); j++) {
+                StatusBar bar = row.get(j);
+                bar.size = Math.min(bar.size, maxSize);
                 bar.setY(y);
                 bar.setWidth(bar.size*25);
                 x -= bar.getWidth();
                 bar.setX(x);
+                bar.gridX = -j-1;
+                bar.gridY = -i-1;
             }
         }
         // BOTTOM RIGHT
@@ -137,11 +145,15 @@ public class FancyStatusBars {
             if (row.isEmpty()) continue;
             int x = width/2 + 91 + 2;
             int y = height - 15-10*i;
-            for (StatusBar bar : row) {
+            for (int j = 0; j < row.size(); j++) {
+                StatusBar bar = row.get(j);
+                bar.size = Math.min(bar.size, maxSize);
                 bar.setX(x);
                 bar.setY(y);
                 bar.setWidth(bar.size*25);
                 x += bar.getWidth();
+                bar.gridX = j+1;
+                bar.gridY = -i-1;
             }
         }
     }
