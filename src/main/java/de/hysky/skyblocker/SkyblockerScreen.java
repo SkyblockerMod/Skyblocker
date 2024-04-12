@@ -1,6 +1,7 @@
 package de.hysky.skyblocker;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.MultilineTextWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
 import net.minecraft.screen.ScreenTexts;
@@ -19,7 +21,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 
-public class InfoScreen extends Screen {
+public class SkyblockerScreen extends Screen {
 	private static final int SPACING = 8;
 	private static final int BUTTON_WIDTH = 210;
 	private static final int HALF_BUTTON_WIDTH = 101; //Same as (210 - 8) / 2
@@ -34,14 +36,14 @@ public class InfoScreen extends Screen {
 	private static final Text DISCORD_TEXT = Text.translatable("text.skyblocker.discord");
 	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
 
-	private InfoScreen() {
+	private SkyblockerScreen() {
 		super(TITLE);
 	}
 
 	public static void initClass() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-					.executes(Scheduler.queueOpenScreenCommand(InfoScreen::new)));
+					.executes(Scheduler.queueOpenScreenCommand(SkyblockerScreen::new)));
 		});
 	}
 
@@ -60,8 +62,13 @@ public class InfoScreen extends Screen {
 		adder.add(ButtonWidget.builder(TRANSLATE_TEXT, ConfirmLinkScreen.opening(this, "https://translate.hysky.de/")).width(HALF_BUTTON_WIDTH).build());
 		adder.add(ButtonWidget.builder(MODRINTH_TEXT, ConfirmLinkScreen.opening(this, "https://modrinth.com/mod/skyblocker-liap")).width(HALF_BUTTON_WIDTH).build());
 		adder.add(ButtonWidget.builder(DISCORD_TEXT, ConfirmLinkScreen.opening(this, "https://discord.gg/aNNJHQykck")).width(HALF_BUTTON_WIDTH).build());
+		adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> this.close()).width(BUTTON_WIDTH).build(), 2);
 
-		this.layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, button -> this.close()).build());
+		MultilineTextWidget tip = new MultilineTextWidget(Text.translatable("skyblocker.tips.tip", Tips.nextTipInternal()), this.textRenderer)
+		.setCentered(true)
+		.setMaxWidth((int) (this.width * 0.7));
+
+		this.layout.addFooter(tip);
 		this.layout.refreshPositions();
 		this.layout.forEachChild(this::addDrawableChild);
 	}
