@@ -103,7 +103,7 @@ public class Tips {
                 .append(Text.translatable("skyblocker.tips.clickDisable").styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker tips disable"))));
     }
 
-    private static Text nextTipInternal() {
+    public static Text nextTipInternal() {
         int randomInt = RANDOM.nextInt(TIPS.size());
         while (randomInt == previousTipIndex) randomInt = RANDOM.nextInt(TIPS.size());
         previousTipIndex = randomInt;

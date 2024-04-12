@@ -99,6 +99,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
         Utils.init();
         SkyblockerConfigManager.init();
+        SkyblockerScreen.initClass();
         Tips.init();
         NEURepoManager.init();
         ImageRepoLoader.init();
