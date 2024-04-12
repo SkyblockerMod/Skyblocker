@@ -24,29 +24,33 @@ import java.util.stream.Stream;
 
 public class DwarvenHud {
 
-    public static final MinecraftClient client = MinecraftClient.getInstance();
-    public static List<Commission> commissionList = new ArrayList<>();
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static List<Commission> commissionList = new ArrayList<>();
 
     public static String mithrilPowder = "0";
     public static String gemStonePowder = "0";
+    public static String glacitePowder = "0";
 
-    public static final List<Pattern> COMMISSIONS = Stream.of(
+    private static final List<Pattern> COMMISSIONS = Stream.of(
                     "(?:Titanium|Mithril|Hard Stone) Miner",
-                    "(?:Ice Walker|Golden Goblin|(?<!Golden )Goblin|Goblin Raid|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
+                    "(?:Glacite Walker|Golden Goblin|(?<!Golden )Goblin|Goblin Raid|Treasure Hoarder|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
                     "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
                     "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
                     "Goblin Raid",
-                    "(?:Powder Ghast|Star Sentry|Treasure Hoarder) Puncher",
+                    "(?:Star Sentry|Treasure Hoarder) Puncher",
                     "(?<!Lucky )Raffle",
                     "Lucky Raffle",
                     "2x Mithril Powder Collector",
                     "First Event",
-                    "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz) Gemstone Collector",
+                    "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz|Onyx|Aquamarine|Citrine|Peridot) Gemstone Collector",
                     "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
-                    "Chest Looter").map(s -> Pattern.compile("(" + s + "): (\\d+\\.?\\d*%|DONE)")
+                    "(?:Umber|Tungsten|Glacite|Scrap) Collector",
+                    "Mineshaft Explorer",
+                    "(?:Chest|Corpse) Looter").map(s -> Pattern.compile("(" + s + "): (\\d+\\.?\\d*%|DONE)")
             ).collect(Collectors.toList());
-    public static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril Powder: [0-9,]+");
-    public static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone Powder: [0-9,]+");
+    private static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril: [0-9,]+");
+    private static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone: [0-9,]+");
+    private static final Pattern GLACITE_PATTERN = Pattern.compile("Glacite: [0-9,]+");
 
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
@@ -59,8 +63,8 @@ public class DwarvenHud {
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
             if (!SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder
-                    || client.options.playerListKey.isPressed()
-                    || client.player == null
+                    || CLIENT.options.playerListKey.isPressed()
+                    || CLIENT.player == null
                     || (!Utils.isInDwarvenMines() && !Utils.isInCrystalHollows())) {
                 return;
             }
@@ -74,7 +78,7 @@ public class DwarvenHud {
         });
     }
 
-    public static void render(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
+    protected static void render(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
             case SIMPLE -> renderSimple(hcw, hpw, context, comHudX, comHudY, powderHudX, powderHudY, commissions);
             case FANCY -> renderFancy(hcw, hpw, context, comHudX, comHudY, powderHudX, powderHudY, commissions);
@@ -91,7 +95,7 @@ public class DwarvenHud {
      * @param powderHudY Y coordinate of the powder hud
      * @param commissions the commissions to render to the commissions hud
      */
-    public static void renderClassic(DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
+    private static void renderClassic(DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().general.tabHud.enableHudBackground) {
             context.fill(comHudX, comHudY, comHudX + 200, comHudY + (20 * commissions.size()), 0x64000000);
             context.fill(powderHudX, powderHudY, powderHudX + 200, powderHudY + 40, 0x64000000);
@@ -106,7 +110,7 @@ public class DwarvenHud {
                     percentage = 100f;
                 }
 
-                context.drawTextWithShadow(client.textRenderer,
+                context.drawTextWithShadow(CLIENT.textRenderer,
                         Text.literal(commission.commission + ": ").formatted(Formatting.AQUA)
                                 .append(Text.literal(commission.progression).formatted(Colors.hypixelProgressColor(percentage))),
                         comHudX + 5, comHudY + y + 5, 0xFFFFFFFF);
@@ -115,16 +119,16 @@ public class DwarvenHud {
         }
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) {
             //render mithril powder then gemstone
-            context.drawTextWithShadow(client.textRenderer,
+            context.drawTextWithShadow(CLIENT.textRenderer,
                     Text.literal("Mithril: " + mithrilPowder).formatted(Formatting.AQUA),
                     powderHudX + 5, powderHudY + 5, 0xFFFFFFFF);
-            context.drawTextWithShadow(client.textRenderer,
+            context.drawTextWithShadow(CLIENT.textRenderer,
                     Text.literal("Gemstone: " + gemStonePowder).formatted(Formatting.DARK_PURPLE),
                     powderHudX + 5, powderHudY + 25, 0xFFFFFFFF);
         }
     }
 
-    public static void renderSimple(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
+    private static void renderSimple(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
             hcw.updateData(commissions, false);
             hcw.update();
@@ -140,7 +144,7 @@ public class DwarvenHud {
         }
     }
 
-    public static void renderFancy(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
+    private static void renderFancy(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
             hcw.updateData(commissions, true);
             hcw.update();
@@ -157,7 +161,7 @@ public class DwarvenHud {
     }
 
     public static void update() {
-        if (client.player == null || client.getNetworkHandler() == null
+        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null
                 || !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder
                 || !Utils.isInCrystalHollows() && !Utils.isInDwarvenMines()) {
             return;
@@ -165,7 +169,7 @@ public class DwarvenHud {
 
         commissionList = new ArrayList<>();
 
-        for (PlayerListEntry playerListEntry : client.getNetworkHandler().getPlayerList()) {
+        for (PlayerListEntry playerListEntry : CLIENT.getNetworkHandler().getPlayerList()) {
             if (playerListEntry.getDisplayName() == null) {
                 continue;
             }
@@ -185,6 +189,10 @@ public class DwarvenHud {
             Matcher gemstoneMatcher = GEMSTONE_PATTERN.matcher(name);
             if (gemstoneMatcher.matches()) {
                 gemStonePowder = gemstoneMatcher.group(0).split(": ")[1];
+            }
+            Matcher glaciteMatcher = GLACITE_PATTERN.matcher(name);
+            if (glaciteMatcher.matches()) {
+                glacitePowder = glaciteMatcher.group(0).split(": ")[1];
             }
         }
     }
