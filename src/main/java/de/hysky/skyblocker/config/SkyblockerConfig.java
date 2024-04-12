@@ -164,6 +164,9 @@ public class SkyblockerConfig {
 		public boolean fancyCraftingTable = true;
 
 		@SerialEntry
+		public boolean oldBars = false;
+
+		@SerialEntry
 		public boolean backpackPreviewWithoutShift = false;
 
 		@SerialEntry

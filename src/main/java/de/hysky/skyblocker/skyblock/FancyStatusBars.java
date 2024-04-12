@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.BarGrid;
@@ -10,6 +8,7 @@ import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import jdk.jshell.EvalException;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +19,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,14 +47,13 @@ public class FancyStatusBars {
     public static BarGrid barGrid = new BarGrid();
     public static Map<String, StatusBar> statusBars = new HashMap<>();
 
-    static {
-        statusBars.put("health", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, null, "health"));
-        statusBars.put("intelligence", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, null, "intelligence"));
-        statusBars.put("defense", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"),  new Color[]{new Color(255, 255, 255)}, false, null, "defense"));
-        statusBars.put("experience", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "temp"), new Color[]{new Color(100, 220, 70)}, false, null, "experience"));
-    }
-
     public static void init() {
+        statusBars.put("health", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/health"), new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, null, "health"));
+        statusBars.put("intelligence", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/intelligence"), new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, null, "intelligence"));
+        statusBars.put("defense", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/defense"),  new Color[]{new Color(255, 255, 255)}, false, null, "defense"));
+        statusBars.put("experience", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/experience"), new Color[]{new Color(100, 220, 70)}, false, null, "experience"));
+
+
         barGrid.addRow(1, false);
         barGrid.add(1, 1, statusBars.get("health"));
         barGrid.add(2, 1, statusBars.get("intelligence"));
@@ -95,14 +93,18 @@ public class FancyStatusBars {
             whileLoop: while (totalSize != 12) {
                 if (totalSize > 12) {
                     for (StatusBar bar : row) {
-                        bar.size--;
-                        totalSize--;
+                        if (bar.size > 2) { // TODO: this can cause infinite looping if we add more than 6 bars
+                            bar.size--;
+                            totalSize--;
+                        }
                         if (totalSize == 12) break whileLoop;
                     }
                 } else {
                     for (StatusBar bar : row) {
-                        bar.size++;
-                        totalSize++;
+                        if (bar.size < 12) {
+                            bar.size++;
+                            totalSize++;
+                        }
                         if (totalSize == 12) break whileLoop;
                     }
                 }
@@ -177,6 +179,25 @@ public class FancyStatusBars {
         var player = client.player;
         if (!SkyblockerConfigManager.get().general.bars.enableBars || player == null || Utils.isInTheRift())
             return false;
+
+        if (!SkyblockerConfigManager.get().general.oldBars) {
+            Collection<StatusBar> barCollection = statusBars.values();
+            for (StatusBar value : barCollection) {
+                value.render(context, -1, -1, client.getLastFrameDuration());
+            }
+            for (StatusBar statusBar : barCollection) {
+                statusBar.renderText(context);
+            }
+            StatusBarTracker.Resource health = statusBarTracker.getHealth();
+            statusBars.get("health").updateValues(health.value() / (float) health.max(), health.overflow() / (float) health.max(), health.value());
+
+            StatusBarTracker.Resource intelligence = statusBarTracker.getMana();
+            statusBars.get("intelligence").updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
+            int defense = statusBarTracker.getDefense();
+            statusBars.get("defense").updateValues(defense / (defense + 100.f), 0, defense);
+            statusBars.get("experience").updateValues(player.experienceProgress, 0, player.experienceLevel);
+            return true;
+        }
         anchorsX[0] = scaledWidth / 2 - 91;
         anchorsY[0] = scaledHeight - 33;
         anchorsX[1] = anchorsX[0];

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -36,6 +37,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     public float fill = 0;
     public float overflowFill = 0;
 
+    private Object text = "";
+
     private int x = 0;
     private int y = 0;
 
@@ -57,10 +60,30 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
         context.drawGuiTexture(icon, x, y, 9, 9);
         context.drawGuiTexture(BAR_BACK, x + 10, y + 1, width - 10, 7);
         RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 11, y + 2, (int) ((width - 12) * fill), 5, colors[0]);
-        if (hasOverflow) {
+        if (hasOverflow && overflowFill > 0) {
             RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 11, y + 2, (int) ((width - 12) * overflowFill), 5, colors[1]);
         }
         context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " ; " + gridY , x, y-9, Colors.WHITE, true);
+    }
+
+    public void updateValues(float fill, float overflowFill, Object text) {
+        this.text = text;
+        this.fill = fill;
+        this.overflowFill = overflowFill;
+    }
+
+    public void renderText(DrawContext context) {
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        String text = this.text.toString();
+        int x = this.x + 11 + (width - textRenderer.getWidth(text) - 12) / 2;
+        int y = this.y - 3;
+
+        final int[] offsets = new int[]{-1, 1};
+        for (int i : offsets) {
+            context.drawText(textRenderer, text, x + i, y, 0, false);
+            context.drawText(textRenderer, text, x, y + i, 0, false);
+        }
+        context.drawText(textRenderer, text, x, y, (textColor == null ? colors[0]: textColor).getRGB(), false);
     }
 
     public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -161,6 +184,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("name", name)
                 .append("gridX", gridX)
                 .append("gridY", gridY)
                 .append("size", size)

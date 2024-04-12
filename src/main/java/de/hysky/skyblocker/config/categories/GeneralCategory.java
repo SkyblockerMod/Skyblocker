@@ -28,6 +28,13 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.literal("old bars"))
+						.binding(defaults.general.oldBars,
+								() -> config.general.oldBars,
+								newValue -> config.general.oldBars = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.acceptReparty"))
 						.binding(defaults.general.acceptReparty,
 								() -> config.general.acceptReparty,

@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import de.hysky.skyblocker.mixin.accessor.WindowAccessor;
 import de.hysky.skyblocker.skyblock.FancyStatusBars;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
@@ -8,8 +10,10 @@ import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,6 +23,8 @@ import java.util.Map;
 public class StatusBarsConfigScreen extends Screen {
 
     private static final Identifier HOTBAR_TEXTURE = new Identifier("hud/hotbar");
+
+    private final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
 
     private final Map<ScreenRect, int[]> meaningFullName = new HashMap<>();
 
@@ -31,6 +37,7 @@ public class StatusBarsConfigScreen extends Screen {
 
     private final int[] currentCoords = new int[]{0, 0};
 
+    @SuppressWarnings("UnreachableCode") // IntelliJ big stupid
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         for (ScreenRect screenRect : meaningFullName.keySet()) {
@@ -38,9 +45,14 @@ public class StatusBarsConfigScreen extends Screen {
         }
         super.render(context, mouseX, mouseY, delta);
         context.drawGuiTexture(HOTBAR_TEXTURE, width / 2 - 91, height - 22, 182, 22);
+        ScreenRect mouseRect = new ScreenRect(new ScreenPos(mouseX - 1, mouseY - 1), 3, 3);
+        assert client != null;
+        WindowAccessor window = (WindowAccessor) (Object) client.getWindow();
+        assert window != null;
         if (cursorBar != null) {
             cursorBar.renderCursor(context, mouseX, mouseY, delta);
-            ScreenRect mouseRect = new ScreenRect(new ScreenPos(mouseX - 1, mouseY - 1), 3, 3);
+            context.drawText(textRenderer, currentCoords[0] + " " + currentCoords[1], 100, 5, Colors.WHITE, true);
+
 
             if (FancyStatusBars.barGrid.getTopSize() == 0 && topBarZone.overlaps(mouseRect) && currentCoords[1] != 1) {
                 FancyStatusBars.barGrid.remove(cursorBar.gridX, cursorBar.gridY);
@@ -63,41 +75,61 @@ public class StatusBarsConfigScreen extends Screen {
                 currentCoords[1] = -1;
                 FancyStatusBars.updatePositions();
             } else rectLoop:for (ScreenRect screenRect : meaningFullName.keySet()) {
-                for (NavigationDirection value : NavigationDirection.values()) {
-                    boolean overlaps = screenRect.getBorder(value).add(value).overlaps(mouseRect);
+                for (NavigationDirection direction : NavigationDirection.values()) {
+                    boolean overlaps  = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
 
                     if (overlaps) {
                         int[] ints = meaningFullName.get(screenRect);
-                        if (ints[0] != currentCoords[0] || ints[1] != currentCoords[1]) {
-                            currentCoords[0] = ints[0];
-                            currentCoords[1] = ints[1];
+                        int offsetX = 0;
+                        int offsetY = 0;
+                        final boolean vertical = direction.getAxis().equals(NavigationAxis.VERTICAL);
+                        if (vertical) {
+                            if (!direction.isPositive()) {
+                                offsetY = ints[1] > 0 ? 1 : 0;
+                            } else {
+                                offsetY = ints[1] > 0 ? 0 : -1;
+                            }
+                        } else {
+                            if (direction.isPositive()) {
+                                offsetX = ints[0] > 0 ? 1 : 0;
+                            } else {
+                                offsetX = ints[0] > 0 ? 0 : -1;
+                            }
+                        }
+                        context.drawText(textRenderer, ints[0] + offsetX + " " + ints[1] + offsetY, 100, 15, Colors.WHITE, true);
+                        if (ints[0] + offsetX != currentCoords[0] || ints[1] + offsetY != currentCoords[1]) {
+                            currentCoords[0] = ints[0] + offsetX;
+                            currentCoords[1] = ints[1] + offsetY;
                             System.out.println("Moving " + cursorBar);
                             System.out.println(ints[0] + " " + ints[1]);
                             FancyStatusBars.barGrid.remove(cursorBar.gridX, cursorBar.gridY);
 
-                            int offset;
-                            if (value.getAxis().equals(NavigationAxis.VERTICAL)) {
-                                if (!value.isPositive()) {
-                                    offset = ints[1] > 0 ? 1 : 0;
-                                } else {
-                                    offset = ints[1] > 0 ? 0 : -1;
-                                }
 
-                                FancyStatusBars.barGrid.addRow(ints[1] + offset, ints[0] > 0);
-                                FancyStatusBars.barGrid.add(ints[0] < 0 ? -1 : 1, ints[1] + offset, cursorBar);
+                            if (vertical) {
+
+                                FancyStatusBars.barGrid.addRow(ints[1] + offsetY, ints[0] > 0);
+                                FancyStatusBars.barGrid.add(ints[0] < 0 ? -1 : 1, ints[1] + offsetY, cursorBar);
                             } else {
-                                if (value.isPositive()) {
-                                    offset = ints[0] > 0 ? 1 : 0;
-                                } else {
-                                    offset = ints[0] > 0 ? 0 : -1;
-                                }
 
-                                FancyStatusBars.barGrid.add(ints[0] + offset, ints[1], cursorBar);
+                                FancyStatusBars.barGrid.add(ints[0] + offsetX, ints[1], cursorBar);
                             }
                             FancyStatusBars.updatePositions();
                             System.out.println("After " + cursorBar);
                         }
                         break rectLoop;
+                    }
+                }
+            }
+        } else {
+            rectLoop:for (ScreenRect screenRect : meaningFullName.keySet()) {
+                for (NavigationDirection direction : new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT}) {
+                    boolean overlaps  = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
+
+                    if (overlaps) {
+                        GLFW.glfwSetCursor(window.getHandle(), RESIZE_CURSOR);
+                        break rectLoop;
+                    } else {
+                        GLFW.glfwSetCursor(window.getHandle(), 0);
                     }
                 }
             }
@@ -114,6 +146,7 @@ public class StatusBarsConfigScreen extends Screen {
         Collection<StatusBar> values = FancyStatusBars.statusBars.values();
         values.forEach(this::setup);
         checkZeroCoordinates(values);
+        updateScreenRects();
         topBarZone = new ScreenRect(width / 2 - 91, height - 22 - 15, 182, 15);
         bottomLeftBarZone = new ScreenRect(width / 2 - 91 - 20, height - 22, 20, 22);
         bottomRightBarZone = new ScreenRect(width / 2 + 91, height - 22, 20, 22);
@@ -136,11 +169,14 @@ public class StatusBarsConfigScreen extends Screen {
         }
     }
 
+    @SuppressWarnings("UnreachableCode")
     @Override
     public void removed() {
         super.removed();
         FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
         FancyStatusBars.updatePositions();
+        GLFW.glfwSetCursor(((WindowAccessor) (Object) client.getWindow()).getHandle(), 0);
+        GLFW.glfwDestroyCursor(RESIZE_CURSOR); // Does it explode if I don't do that?? idk aaaaaaaaa
     }
 
     @Override
