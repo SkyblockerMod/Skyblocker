@@ -26,7 +26,7 @@ import net.minecraft.text.Text;
 public class ItemRarityBackgrounds {
 	private static final SkyblockerConfig.ItemInfoDisplay CONFIG = SkyblockerConfigManager.get().general.itemInfoDisplay;
 	private static final Supplier<Sprite> SPRITE = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(CONFIG.itemRarityBackgroundStyle.tex);
-	private static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
+	public static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
 			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),
 			Map.entry("ULTIMATE", SkyblockItemRarity.ULTIMATE),
 			Map.entry("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it

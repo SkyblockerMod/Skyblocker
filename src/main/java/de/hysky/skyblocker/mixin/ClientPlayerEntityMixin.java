@@ -2,6 +2,8 @@ package de.hysky.skyblocker.mixin;
 
 import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
+import de.hysky.skyblocker.skyblock.auction.EditBidPopup;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -56,6 +58,11 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
             partyFinderScreen.updateSign(sign, front);
             callbackInfo.cancel();
             return;
+        }
+
+        if (client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
+            this.client.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
+            callbackInfo.cancel();
         }
 
         // Search Overlay

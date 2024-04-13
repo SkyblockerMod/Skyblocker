@@ -47,6 +47,7 @@
     "accessor.RecipeBookWidgetAccessor",
     "accessor.ScreenAccessor",
     "accessor.SkullBlockEntityAccessor",
+    "accessor.SlotAccessor",
     "accessor.WorldRendererAccessor",
     "discordipc.ConnectionMixin"
   ],

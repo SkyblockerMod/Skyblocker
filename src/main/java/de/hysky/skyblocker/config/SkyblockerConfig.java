@@ -251,6 +251,9 @@ public class SkyblockerConfig {
 		public SearchOverlay searchOverlay = new SearchOverlay();
 
 		@SerialEntry
+		public FancyAuctionHouse fancyAuctionHouse = new FancyAuctionHouse();
+
+		@SerialEntry
 		public List<Integer> lockedSlots = new ArrayList<>();
 
 		@SerialEntry
@@ -406,6 +409,133 @@ public class SkyblockerConfig {
 		public boolean enableQuiverWarningAfterDungeon = true;
 	}
 
+	public static class ItemList {
+		@SerialEntry
+		public boolean enableItemList = true;
+	}
+
+	public static class ItemTooltip {
+		@SerialEntry
+		public boolean enableNPCPrice = true;
+
+		@SerialEntry
+		public boolean enableMotesPrice = true;
+
+		@SerialEntry
+		public boolean enableAvgBIN = true;
+
+		@SerialEntry
+		public Average avg = Average.THREE_DAY;
+
+		@SerialEntry
+		public boolean enableLowestBIN = true;
+
+		@SerialEntry
+		public boolean enableBazaarPrice = true;
+
+		@SerialEntry
+		public boolean enableObtainedDate = true;
+
+		@SerialEntry
+		public boolean enableMuseumInfo = true;
+
+		@SerialEntry
+		public boolean enableExoticTooltip = true;
+
+		@SerialEntry
+		public boolean enableAccessoriesHelper = true;
+	}
+
+	public enum Average {
+		ONE_DAY, THREE_DAY, BOTH;
+
+		@Override
+		public String toString() {
+			return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
+		}
+	}
+
+	public static class ItemInfoDisplay {
+		@SerialEntry
+		public boolean attributeShardInfo = true;
+
+		@SerialEntry
+		public boolean itemRarityBackgrounds = false;
+
+		@SerialEntry
+		public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
+
+		@SerialEntry
+		public float itemRarityBackgroundsOpacity = 1f;
+	}
+
+	public enum RarityBackgroundStyle {
+		CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
+		SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+
+		public final Identifier tex;
+
+		RarityBackgroundStyle(Identifier tex) {
+			this.tex = tex;
+		}
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case CIRCULAR -> "Circular";
+				case SQUARE -> "Square";
+			};
+		}
+	}
+
+	public static class ItemProtection {
+		@SerialEntry
+		public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+	}
+
+	public enum SlotLockStyle {
+		CLASSIC(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png")),
+		FANCY(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/fancy_slot_lock.png"));
+
+		public final Identifier tex;
+
+		SlotLockStyle(Identifier tex) {
+			this.tex = tex;
+		}
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case CLASSIC -> "Classic";
+				case FANCY -> "FANCY";
+			};
+		}
+	}
+
+	public static class WikiLookup {
+		@SerialEntry
+		public boolean enableWikiLookup = true;
+
+		@SerialEntry
+		public boolean officialWiki = true;
+	}
+
+	public static class ChestValue {
+		@SerialEntry
+		public boolean enableChestValue = true;
+
+		@SerialEntry
+		public Formatting color = Formatting.DARK_GREEN;
+
+		@SerialEntry
+		public Formatting incompleteColor = Formatting.BLUE;
+	}
+
+	public static class SpecialEffects {
+		@SerialEntry
+		public boolean rareDungeonDropEffects = true;
+	}
+
 	public static class Hitbox {
 		@SerialEntry
 		public boolean oldFarmlandHitbox = false;
@@ -510,145 +640,12 @@ public class SkyblockerConfig {
 		public List<String> auctionHistory = new ArrayList<>();
 	}
 
-	public static class RichPresence {
+	public static class FancyAuctionHouse {
 		@SerialEntry
-		public boolean enableRichPresence = false;
-
-		@SerialEntry
-		public Info info = Info.LOCATION;
+		public boolean enabled = true;
 
 		@SerialEntry
-		public boolean cycleMode = false;
-
-		@SerialEntry
-		public String customMessage = "Playing Skyblock";
-	}
-
-	public static class ItemList {
-		@SerialEntry
-		public boolean enableItemList = true;
-	}
-
-	public enum Average {
-		ONE_DAY, THREE_DAY, BOTH;
-
-		@Override
-		public String toString() {
-			return I18n.translate("text.autoconfig.skyblocker.option.general.itemTooltip.avg." + name());
-		}
-	}
-
-	public static class ItemTooltip {
-		@SerialEntry
-		public boolean enableNPCPrice = true;
-
-		@SerialEntry
-		public boolean enableMotesPrice = true;
-
-		@SerialEntry
-		public boolean enableAvgBIN = true;
-
-		@SerialEntry
-		public Average avg = Average.THREE_DAY;
-
-		@SerialEntry
-		public boolean enableLowestBIN = true;
-
-		@SerialEntry
-		public boolean enableBazaarPrice = true;
-
-		@SerialEntry
-		public boolean enableObtainedDate = true;
-
-		@SerialEntry
-		public boolean enableMuseumInfo = true;
-
-		@SerialEntry
-		public boolean enableExoticTooltip = true;
-
-		@SerialEntry
-		public boolean enableAccessoriesHelper = true;
-	}
-
-	public static class ItemInfoDisplay {
-		@SerialEntry
-		public boolean attributeShardInfo = true;
-
-		@SerialEntry
-		public boolean itemRarityBackgrounds = false;
-
-		@SerialEntry
-		public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
-
-		@SerialEntry
-		public float itemRarityBackgroundsOpacity = 1f;
-	}
-
-	public enum RarityBackgroundStyle {
-		CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
-		SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
-
-		public final Identifier tex;
-
-		RarityBackgroundStyle(Identifier tex) {
-			this.tex = tex;
-		}
-
-		@Override
-		public String toString() {
-			return switch (this) {
-				case CIRCULAR -> "Circular";
-				case SQUARE -> "Square";
-			};
-		}
-	}
-
-	public static class ItemProtection {
-		@SerialEntry
-		public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
-	}
-
-	public enum SlotLockStyle {
-		CLASSIC(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png")),
-		FANCY(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/fancy_slot_lock.png"));
-
-		public final Identifier tex;
-
-		SlotLockStyle(Identifier tex) {
-			this.tex = tex;
-		}
-
-		@Override
-		public String toString() {
-			return switch (this) {
-				case CLASSIC -> "Classic";
-				case FANCY -> "FANCY";
-			};
-		}
-	}
-
-	public static class WikiLookup {
-		@SerialEntry
-		public boolean enableWikiLookup = true;
-
-		@SerialEntry
-		public boolean officialWiki = true;
-	}
-
-	public static class ChestValue {
-		@SerialEntry
-		public boolean enableChestValue = true;
-
-		@SerialEntry
-		public Formatting color = Formatting.DARK_GREEN;
-
-		@SerialEntry
-		public Formatting incompleteColor = Formatting.BLUE;
-	}
-
-	public static class SpecialEffects {
-		@SerialEntry
-		public boolean rareDungeonDropEffects = true;
+		public boolean highlightCheapBIN = true;
 	}
 
 	public static class Locations {
@@ -1240,6 +1237,20 @@ public class SkyblockerConfig {
 		public int announcementLength = 60;
 		@SerialEntry
 		public int announcementScale = 3;
+	}
+
+	public static class RichPresence {
+		@SerialEntry
+		public boolean enableRichPresence = false;
+
+		@SerialEntry
+		public Info info = Info.LOCATION;
+
+		@SerialEntry
+		public boolean cycleMode = false;
+
+		@SerialEntry
+		public String customMessage = "Playing Skyblock";
 	}
 
 	public enum Info {
