@@ -351,5 +351,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nПримечание: Это корректно работает только в том случае, если сообщения о смерти включены в настройках вашего скайблока. Если вы хотите скрыть сообщения о смерти, используйте вместо этого параметр мода \"Hide Player Death Messages\", чтобы разрешить дальнейшую обработку сообщений о смерти.",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Отображает прибыль от сундука подземелья в заголовке экрана сундука.\nЗеленый, если есть прибыль.\nКрасный, если прибыли нет.\nСерый, если вы ничего не получаете или теряете.\nСиний, если расчеты были основаны на неполных данных.",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Отключение **не рекомендуется**, если вы забывчивый человек.",
-    "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold": "Порог предупреждения о отравлении стрелой"
+    "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold": "Порог предупреждения о отравлении стрелой",
+    "text.skyblocker.config": "Открыть настройки..."
 }
