@@ -72,7 +72,7 @@
     "text.autoconfig.skyblocker.option.richPresence.info.LOCATION": "LOCATION",
     "text.autoconfig.skyblocker.category.quickNav": "Быстрый Доступ",
     "text.autoconfig.skyblocker.option.quickNav.enableQuickNav": "Включить Быстрый Доступ",
-    "text.autoconfig.skyblocker.option.general.tabHud": "Красивое TAB меню",
+    "text.autoconfig.skyblocker.option.general.tabHud": "Красивое TAB меню(временно отключено вне данжа)",
     "key.skyblocker.defaultTgl": "Показывать стандартное меню TAB",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudEnabled": "Включить красивое TAB меню",
     "text.autoconfig.skyblocker.option.general.tabHud.tabHudScale": "Размер TAB меню",
@@ -352,5 +352,17 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Отображает прибыль от сундука подземелья в заголовке экрана сундука.\nЗеленый, если есть прибыль.\nКрасный, если прибыли нет.\nСерый, если вы ничего не получаете или теряете.\nСиний, если расчеты были основаны на неполных данных.",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Отключение **не рекомендуется**, если вы забывчивый человек.",
     "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold": "Порог предупреждения о отравлении стрелой",
-    "text.skyblocker.config": "Открыть настройки..."
+    "text.skyblocker.config": "Открыть настройки...",
+    "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground": "Вкючить задний фон у HUD",
+    "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground.@Tooltip": "Включает фон у не-таб HUD.",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "Когда включено, показывает наличие аксессуара у вас, также показывает, есть у вас предмет лучше текущего.\nСписок статусов:",
+    "text.skyblocker.source": "Код",
+    "text.skyblocker.website": "Сайь",
+    "text.skyblocker.translate": "Для переводчиков",
+    "text.skyblocker.discord": "Discord-сервер",
+    "text.skyblocker.confirm": "Подтвердить",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "У тебя есть аксессуар лучше текущего.\n(Подсказка: эффекты разных аксессуаров одного \"семейства\" не суммируются)",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper": "Включить подсказки по аксессуарам",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "Текущий аксессуар представляет собой более улучшенную версию того, что у вас уже имеется. Также показывает уровень аксессуара относительно семейства.",
+    "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]": "Этот аксессуар может быть улучшен. Также сообщает, какого уровня аксессуар у вас уже есть."
 }
