@@ -3,10 +3,16 @@ package de.hysky.skyblocker.utils.render.gui;
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.function.Consumer;
 
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
@@ -57,4 +63,35 @@ public class AbstractPopupScreen extends Screen {
         super.onDisplayed();
         this.backgroundScreen.blur();
     }
+
+    public static class EnterConfirmTextFieldWidget extends TextFieldWidget {
+
+        private final Runnable onEnter;
+
+        public EnterConfirmTextFieldWidget(TextRenderer textRenderer, int width, int height, Text text, Runnable onEnter) {
+            this(textRenderer, 0, 0, width, height, text, onEnter);
+        }
+
+        public EnterConfirmTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text,Runnable onEnter) {
+            this(textRenderer, x, y, width, height, null, text, onEnter);
+        }
+
+        public EnterConfirmTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, @Nullable TextFieldWidget copyFrom, Text text, Runnable onEnter) {
+            super(textRenderer, x, y, width, height, copyFrom, text);
+            this.onEnter = onEnter;
+        }
+
+
+        @Override
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            if (!super.keyPressed(keyCode, scanCode, modifiers)) {
+                if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+                    onEnter.run();
+                    return true;
+                }
+            } else return true;
+            return false;
+        }
+    }
+
 }

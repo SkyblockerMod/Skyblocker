@@ -53,6 +53,28 @@ public class BarGrid {
         }
     }
 
+    public void addRowToEnd(boolean top, boolean right) {
+        if (top) {
+            this.top.add(new LinkedList<>());
+        } else {
+            (right ? bottomRight: bottomLeft).add(new LinkedList<>());
+        }
+    }
+
+    public void addToEndOfRow(int row, boolean right, StatusBar bar) {
+        if (row>0) {
+            LinkedList<StatusBar> statusBars = top.get(row - 1);
+            statusBars.add(bar);
+            bar.gridY = row;
+            bar.gridX = statusBars.indexOf(bar)+1;
+        } else if (row<0) {
+            LinkedList<StatusBar> statusBars = (right? bottomRight: bottomLeft).get(Math.abs(row)-1);
+            statusBars.add(bar);
+            bar.gridY = row;
+            bar.gridX = (statusBars.indexOf(bar)+1) * (right ? 1: -1);
+        }
+    }
+
     public void remove(int x, int y) {
         System.out.println("Removing x: " + x + " y: " + y);
         if (y > 0) {
@@ -90,6 +112,21 @@ public class BarGrid {
                 }
             }
         }
+    }
+
+    public boolean coordinatesExist(int x, int y) {
+        if (x == 0 || y == 0) return false;
+        if (y > 0) {
+            if (y > getTopSize()) return false;
+            return x <= getRow(y, false).size();
+        } else {
+            if (Math.abs(y) > (x < 0 ? getBottomLeftSize(): getBottomRightSize())) return false;
+            return Math.abs(x) <= getRow(y, x > 0).size();
+        }
+    }
+
+    public StatusBar getBar(int x, int y) {
+        return getRow(y, x>0).get(Math.abs(x)-1);
     }
 
     public int getTopSize() {return top.size();}

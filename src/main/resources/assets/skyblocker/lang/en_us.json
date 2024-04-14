@@ -496,6 +496,16 @@
   "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues": "Correct Transparent Skin Pixels",
   "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues.@Tooltip": "When enabled, the alpha values of pixels in skin textures are no longer stripped while in Skyblock.\n\nThis results in the \"filler\" pixels on items using Player Heads to now be completely transparent, although this may have some side effects in odd cases.",
 
+  "skyblocker.bars.config.health": "Health",
+  "skyblocker.bars.config.defense": "Defense",
+  "skyblocker.bars.config.intelligence": "Intelligence",
+  "skyblocker.bars.config.experience": "Experience",
+  "skyblocker.bars.config.mainColor": "Main Color",
+  "skyblocker.bars.config.overflowColor": "Overflow Color",
+  "skyblocker.bars.config.textColor": "Text Color",
+  "skyblocker.bars.config.showValue": "Show Value",
+  "skyblocker.bars.config.icon": "Icon",
+
   "skyblocker.updaterepository.failed":  "§cUpdating local repository failed. Remove files manually and restart game.",
 
   "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
