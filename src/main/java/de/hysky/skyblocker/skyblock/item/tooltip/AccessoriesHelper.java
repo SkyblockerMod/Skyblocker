@@ -145,7 +145,7 @@ public class AccessoriesHelper {
 				.max(Comparator.comparingInt(ACCESSORY_TIER));
 		int maxTierInFamily = highestTierOfFamily.orElse(Accessory.EMPTY).tier();
 
-		if (collectedAccessoriesInTheSameFamily.stream().anyMatch(ca -> ca.tier() == maxTierInFamily)) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
+		if (accessory.tier() == maxTierInFamily) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
 
 		//If this accessory is a higher tier than all the other collected accessories in the same family
 		OptionalInt highestTierOfAllCollectedInFamily = collectedAccessoriesInTheSameFamily.stream()
