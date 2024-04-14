@@ -5,7 +5,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
+import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class CategoryTabWidget extends ToggleButtonWidget {
 
         if (isMouseOver(mouseX, mouseY)) {
             context.getMatrices().push();
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(MinecraftClient.getInstance().player, TooltipContext.BASIC), mouseX, mouseY);
+            context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC), mouseX, mouseY);
             context.getMatrices().pop();
         }
 
