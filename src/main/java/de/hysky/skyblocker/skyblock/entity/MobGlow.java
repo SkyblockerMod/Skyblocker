@@ -36,18 +36,9 @@ public class MobGlow {
 					// Minibosses
 					if (entity instanceof PlayerEntity) {
 						switch (name) {
-							case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 							case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
 									"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid": return LividColor.shouldGlow(name);
 						}
-					}
-
-					// Regular Mobs
-					if (!(entity instanceof ArmorStandEntity)) {
-						List<ArmorStandEntity> armorStands = getArmorStands(entity);
-
-						if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-							return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 					}
 
 					// Bats
@@ -92,9 +83,6 @@ public class MobGlow {
 
 		if (entity instanceof PlayerEntity) {
 			return switch (name) {
-				case "Lost Adventurer" -> 0xfee15c;
-				case "Shadow Assassin" -> 0x5b2cb2;
-				case "Diamond Guy" -> 0x57c2f7;
 				case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
 						"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid" -> LividColor.getGlowColor(name);
 				case "Blobbercyst " -> Formatting.GREEN.getColorValue();

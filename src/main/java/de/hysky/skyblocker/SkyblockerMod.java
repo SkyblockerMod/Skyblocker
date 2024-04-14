@@ -23,6 +23,7 @@ import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.garden.FarmingHud;
 import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
@@ -171,6 +172,7 @@ public class SkyblockerMod implements ClientModInitializer {
         statusBarTracker.init();
         BeaconHighlighter.init();
         WarpAutocomplete.init();
+        MobBoundingBoxes.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
