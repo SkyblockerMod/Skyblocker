@@ -34,7 +34,7 @@ public class MobBoundingBoxes {
 			// Minibosses
 			if (entity instanceof PlayerEntity) {
 				switch (name) {
-					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
+					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
 				}
 			}
 
@@ -43,7 +43,7 @@ public class MobBoundingBoxes {
 				List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
 
 				if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-					return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
+					return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
 			}
 		}
 

@@ -709,7 +709,7 @@ public class SkyblockerConfig {
 		public boolean playerSecretsTracker = false;
 
 		@SerialEntry
-		public boolean starredMobGlow = true;
+		public boolean starredMobBoundingBoxes = true;
 
 		@SerialEntry
 		public boolean solveThreeWeirdos = true;

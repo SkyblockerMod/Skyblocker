@@ -42,7 +42,7 @@ public class MobGlow {
 					}
 
 					// Bats
-					return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow && entity instanceof BatEntity;
+					return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes && entity instanceof BatEntity;
 				}
 
 				// Rift
