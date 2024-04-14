@@ -28,7 +28,7 @@ public class MobBoundingBoxes {
 	public static boolean shouldDrawMobBoundingBox(Entity entity) {
 		Box box = entity.getBoundingBox();
 
-		if (Utils.isInDungeons() && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
+		if (Utils.isInDungeons() && !MobGlow.STARRED_MOB_GLOW && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
 			String name = entity.getName().getString();
 
 			// Minibosses
