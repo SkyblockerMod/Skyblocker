@@ -46,9 +46,8 @@ public abstract class MinecraftClientMixin {
             return switch (screen) {
                 case DownloadingTerrainScreen _s -> null;
                 case ReconfiguringScreen _s when this.getNetworkHandler() != null -> new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
-                case null -> null;
 
-                default -> screen;
+                case null, default -> screen;
             };
         }
         return screen;
