@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DwarvenHud {
@@ -32,22 +31,22 @@ public class DwarvenHud {
     public static String glacitePowder = "0";
 
     private static final List<Pattern> COMMISSIONS = Stream.of(
-                    "(?:Titanium|Mithril|Hard Stone) Miner",
-                    "(?:Glacite Walker|Golden Goblin|(?<!Golden )Goblin|Goblin Raid|Treasure Hoarder|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
-                    "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
-                    "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
-                    "Goblin Raid",
-                    "(?:Star Sentry|Treasure Hoarder) Puncher",
-                    "(?<!Lucky )Raffle",
-                    "Lucky Raffle",
-                    "2x Mithril Powder Collector",
-                    "First Event",
-                    "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz|Onyx|Aquamarine|Citrine|Peridot) Gemstone Collector",
-                    "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
-                    "(?:Umber|Tungsten|Glacite|Scrap) Collector",
-                    "Mineshaft Explorer",
-                    "(?:Chest|Corpse) Looter").map(s -> Pattern.compile("(" + s + "): (\\d+\\.?\\d*%|DONE)")
-            ).collect(Collectors.toList());
+            "(?:Titanium|Mithril|Hard Stone) Miner",
+            "(?:Glacite Walker|Golden Goblin|(?<!Golden )Goblin|Goblin Raid|Treasure Hoarder|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst) Slayer",
+            "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
+            "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
+            "Goblin Raid",
+            "(?:Star Sentry|Treasure Hoarder) Puncher",
+            "(?<!Lucky )Raffle",
+            "Lucky Raffle",
+            "2x Mithril Powder Collector",
+            "First Event",
+            "(?:Ruby|Amber|Sapphire|Jade|Amethyst|Topaz|Onyx|Aquamarine|Citrine|Peridot) Gemstone Collector",
+            "(?:Amber|Sapphire|Jade|Amethyst|Topaz) Crystal Hunter",
+            "(?:Umber|Tungsten|Glacite|Scrap) Collector",
+            "Mineshaft Explorer",
+            "(?:Chest|Corpse) Looter").map(s -> Pattern.compile("(" + s + "): (\\d+\\.?\\d*%|DONE)")
+    ).toList();
     private static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril: [0-9,]+");
     private static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone: [0-9,]+");
     private static final Pattern GLACITE_PATTERN = Pattern.compile("Glacite: [0-9,]+");
@@ -111,8 +110,9 @@ public class DwarvenHud {
                 }
 
                 context.drawTextWithShadow(CLIENT.textRenderer,
-                        Text.literal(commission.commission + ": ").formatted(Formatting.AQUA)
-                                .append(Text.literal(commission.progression).formatted(Colors.hypixelProgressColor(percentage))),
+                        Text.literal(commission.commission + ": ").formatted(Formatting.AQUA).append(
+                                Text.literal(commission.progression).withColor(Colors.pcntToCol(percentage))
+                        ),
                         comHudX + 5, comHudY + y + 5, 0xFFFFFFFF);
                 y += 20;
             }
