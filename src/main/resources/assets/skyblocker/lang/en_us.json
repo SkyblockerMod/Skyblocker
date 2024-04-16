@@ -326,8 +326,8 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer.@Tooltip": "Display a timer when to use a Fire Freeze Staff in the F3/M3 boss fight.",
   "text.autoconfig.skyblocker.option.locations.dungeons.floor3GuardianHealthDisplay": "Guardian Health Display (F3/M3)",
   "text.autoconfig.skyblocker.option.locations.dungeons.floor3GuardianHealthDisplay.@Tooltip": "Displays guardian's health below them in the F3/M3 boss fight.",
-  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items",
-  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons while holding an item which has been protected using /skyblocker protectItem.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items & on Locked Slots",
+  "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons on a locked slot or while holding an item which has been protected using /skyblocker protectItem.",
 
   "text.autoconfig.skyblocker.option.locations.dwarvenMines": "Dwarven Mines",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Enable Drill Fuel",
