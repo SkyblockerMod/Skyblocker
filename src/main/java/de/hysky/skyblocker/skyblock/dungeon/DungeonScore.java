@@ -115,7 +115,7 @@ public class DungeonScore {
 			sent270 = true;
 		}
 
-		crypts = getCrypts()
+		crypts = getCrypts();
 		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && crypts < 5) {
 			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)));
