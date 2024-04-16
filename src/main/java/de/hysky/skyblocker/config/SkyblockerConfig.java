@@ -938,6 +938,9 @@ public class SkyblockerConfig {
 		public boolean solvePuzzler = true;
 
 		@SerialEntry
+		public boolean MetalDetectorHelper = true;
+
+		@SerialEntry
 		public DwarvenHud dwarvenHud = new DwarvenHud();
 
 		@SerialEntry

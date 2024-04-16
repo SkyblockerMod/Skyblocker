@@ -20,6 +20,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHud;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
+import de.hysky.skyblocker.skyblock.dwarven.MetalDetector;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
@@ -123,6 +124,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FarmingHud.init();
         LowerSensitivity.init();
         CrystalsLocationsManager.init();
+        MetalDetector.init();
         ChatMessageListener.init();
         Shortcuts.init();
         ChatRulesHandler.init();

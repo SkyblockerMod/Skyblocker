@@ -42,6 +42,13 @@ public class DwarvenMinesCategory {
 								newValue -> config.locations.dwarvenMines.solvePuzzler = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper"))
+						.binding(defaults.locations.dwarvenMines.MetalDetectorHelper,
+								() -> config.locations.dwarvenMines.MetalDetectorHelper,
+								newValue -> config.locations.dwarvenMines.MetalDetectorHelper = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				//Dwarven HUD
 				.group(OptionGroup.createBuilder()
