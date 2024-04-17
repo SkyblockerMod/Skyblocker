@@ -240,10 +240,6 @@ public class FancyStatusBars {
 
     public FancyStatusBars() {}
 
-    private static final Identifier BAR_FILL = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_back");
-    private static final Supplier<Sprite> SUPPLIER = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(BAR_FILL);
-
     public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
         if (!SkyblockerConfigManager.get().general.bars.enableBars || player == null || Utils.isInTheRift())
