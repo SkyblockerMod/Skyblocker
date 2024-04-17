@@ -1,15 +1,9 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.ApiUtils;
-import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.ProfileUtils;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.BlockState;
@@ -22,21 +16,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import com.mojang.util.UndashedUuid;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.session.Session;
-
-import java.util.stream.StreamSupport;
-import java.util.concurrent.CompletableFuture;
 
 public class ItemCooldowns {
     private static final String JUNGLE_AXE_ID = "JUNGLE_AXE";
     private static final String TREECAPITATOR_ID = "TREECAPITATOR_AXE";
     private static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
-    private static final ImmutableList<String> BAT_ARMOR_IDS = ImmutableList.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
-    public static final long HypixelApiCooldown = 180000; //3min 180000
+    private static final List<String> BAT_ARMOR_IDS = List.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
     private static final Map<String, CooldownEntry> ITEM_COOLDOWNS = new HashMap<>();
     private static final int[] EXPERIENCE_LEVELS = {
             0, 660, 730, 800, 880, 960, 1050, 1150, 1260, 1380, 1510, 1650, 1800, 1960, 2130,
@@ -49,64 +36,42 @@ public class ItemCooldowns {
             561700, 611700, 666700, 726700, 791700, 861700, 936700, 1016700, 1101700, 1191700,
             1286700, 1386700, 1496700, 1616700, 1746700, 1886700
     };
-    public static int MonkeyLevel = 1;
-    public static double CalcMonkeyExp = 0;
-    public static double currentCooldown = 0;
-    public static long unixTimeStamp = 0;
+    public static int monkeyLevel = 1;
+    public static double monkeyExp = 0;
+
     public static void init() {
         ClientPlayerBlockBreakEvents.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
-        unixTimeStamp = System.currentTimeMillis() - HypixelApiCooldown;
     }
 
-    public static void currentCooldown() {
-        long DeltaTime = System.currentTimeMillis() - unixTimeStamp;
-        if (DeltaTime < HypixelApiCooldown) {
-            return;
-        }
-        unixTimeStamp = System.currentTimeMillis();
-        CompletableFuture.runAsync(() -> {
-            String name = MinecraftClient.getInstance().getSession().getUsername();
-            String playeruuid = ApiUtils.name2Uuid(name);
-            try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + playeruuid)) {
-                if (!response.ok())
-                    throw new IllegalStateException("Failed to get profile uuid for player " + name + "! Response: " + response.content());
-                JsonObject responseJson = JsonParser.parseString(response.content()).getAsJsonObject();
-                JsonObject players = StreamSupport.stream(responseJson.getAsJsonArray("profiles").spliterator(), false)
-                        .map(JsonElement::getAsJsonObject)
-                        .filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("No selected profile found!?"))
-                        .getAsJsonObject("members").entrySet().stream()
-                        .filter(entry -> entry.getKey().equals(playeruuid))
-                        .map(Map.Entry::getValue)
-                        .map(JsonElement::getAsJsonObject)
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Player somehow not found inside their own profile!"));
-                for (JsonElement element : players.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
-                    if (!element.getAsJsonObject().get("type").getAsString().equals("MONKEY")) continue;
-                    if (!element.getAsJsonObject().get("active").getAsString().equals("true")) continue;
-                    if (element.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) {
-                        CalcMonkeyExp = Double.parseDouble(element.getAsJsonObject().get("exp").getAsString());
-                        MonkeyLevel = 0;
-                        for (int xpLevel : EXPERIENCE_LEVELS) {
-                            if (CalcMonkeyExp < xpLevel) {
-                                break;
-                            } else {
-                                CalcMonkeyExp -= xpLevel;
-                                MonkeyLevel++;
-                            }
+    public static void updateCooldown() {
+        ProfileUtils.updateProfile().thenAccept(player -> {
+            for (JsonElement pet : player.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
+                if (!pet.getAsJsonObject().get("type").getAsString().equals("MONKEY")) continue;
+                if (!pet.getAsJsonObject().get("active").getAsString().equals("true")) continue;
+                if (pet.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) {
+                    monkeyExp = Double.parseDouble(pet.getAsJsonObject().get("exp").getAsString());
+                    monkeyLevel = 0;
+                    for (int xpLevel : EXPERIENCE_LEVELS) {
+                        if (monkeyExp < xpLevel) {
+                            break;
+                        } else {
+                            monkeyExp -= xpLevel;
+                            monkeyLevel++;
                         }
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("[Skyblocker] Failed to get Player Pet Data, is the API Down/Limited?");
             }
-            double BaseCooldown = 2000;
-            double EvolvedAxesCooldownReductionPercentage = MonkeyLevel * 0.5;
-            double MonkeyPetCDRReduction = (BaseCooldown * EvolvedAxesCooldownReductionPercentage) / 100;
-            currentCooldown = BaseCooldown - MonkeyPetCDRReduction;
+        }).exceptionally(e -> {
+            ProfileUtils.LOGGER.error("[Skyblocker Item Cooldown] Failed to get Player Pet Data, is the API Down/Limited?", e);
+            return null;
         });
+    }
+
+    private static int getCooldown() {
+        int baseCooldown = 2000;
+        int monkeyPetCooldownReduction = baseCooldown * monkeyLevel / 200;
+        return baseCooldown - monkeyPetCooldownReduction;
     }
 
     public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
@@ -115,9 +80,9 @@ public class ItemCooldowns {
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
             if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
-                currentCooldown();
+                updateCooldown();
                 if (!isOnCooldown(JUNGLE_AXE_ID) || !isOnCooldown(TREECAPITATOR_ID)) {
-                    ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry((int) currentCooldown));
+                    ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(getCooldown()));
                 }
             }
         }
