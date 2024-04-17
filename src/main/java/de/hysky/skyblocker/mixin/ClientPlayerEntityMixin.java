@@ -27,7 +27,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
-    @Shadow @Final protected MinecraftClient client;
+    @Shadow
+    @Final
+    protected MinecraftClient client;
 
     public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
         super(world, profile);
@@ -35,14 +37,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
     public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
-        if (Utils.isOnSkyblock()) {
-            if (ItemProtection.isItemProtected(this.getInventory().getMainHandStack())) {
-                if (!SkyblockerConfigManager.get().locations.dungeons.allowDroppingProtectedItems
-                        || (SkyblockerConfigManager.get().locations.dungeons.allowDroppingProtectedItems && !Utils.isInDungeons())) {
-                    cir.setReturnValue(false);
-                }
-            }
-            HotbarSlotLock.handleDropSelectedItem(this.getInventory().selectedSlot, cir);
+        if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getInventory().getMainHandStack()) || HotbarSlotLock.isLocked(this.getInventory().selectedSlot))
+                && (!SkyblockerConfigManager.get().locations.dungeons.allowDroppingProtectedItems || !Utils.isInDungeons())) {
+            cir.setReturnValue(false);
         }
     }
 

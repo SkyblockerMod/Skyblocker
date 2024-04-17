@@ -170,7 +170,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     protected void drawSlot(DrawContext context, Slot slot) {
-        if (SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN && isSlotHighlighted.getOrDefault(slot.id, false)) {
+        if (SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN && slot.hasStack() && isSlotHighlighted.getOrDefault(slot.id, false)) {
             context.drawBorder(slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
         }
         super.drawSlot(context, slot);
