@@ -352,7 +352,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
             List<Text> tooltip = ItemUtils.getNbtTooltips(stack);
             String str = tooltip.get(0).getString().trim();
             str = str.substring(1, str.length() - 1); // remove parentheses
-            String[] parts = str.split("/"); // split the string
+            String[] parts = str.split("/"); // targetSize the string
             currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page
             totalPages = Integer.parseInt(parts[1].replace(",", "")); // parse total
         } catch (Exception e) {

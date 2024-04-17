@@ -10,12 +10,14 @@ import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.gui.navigation.NavigationDirection;
+import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ public class StatusBarsConfigScreen extends Screen {
 
     public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
 
-    private final Map<ScreenRect, int[]> meaningFullName = new HashMap<>();
+    private final Map<ScreenRect, BarLocation> meaningFullName = new HashMap<>();
     private static final int HOTBAR_WIDTH = 182;
 
     private @Nullable StatusBar cursorBar = null;
@@ -37,21 +39,24 @@ public class StatusBarsConfigScreen extends Screen {
         FancyStatusBars.updatePositions();
     }
 
-    private final int[] currentCursorCoords = new int[]{0, 0};
+    private BarLocation currentInsertLocation = new BarLocation(null, 0, 0);
 
-    private final Pair<int[], Boolean> resizeHover = new ObjectBooleanMutablePair<>(new int[]{0, 0}, false);
+    private final Pair<BarLocation, Boolean> resizeHover = new ObjectBooleanMutablePair<>(BarLocation.NULL, false);
 
-    private final Pair<int[], int[]> resizedBars = ObjectObjectMutablePair.of(new int[]{0, 0}, new int[]{0, 0});
+    private final Pair<BarLocation, BarLocation> resizedBars = ObjectObjectMutablePair.of(BarLocation.NULL, BarLocation.NULL);
     private boolean resizing = false;
 
     private EditBarWidget editBarWidget;
 
+    // prioritize left and right cuz they are much smaller space than up and down
+    private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
+
     @SuppressWarnings("UnreachableCode") // IntelliJ big stupid
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        for (ScreenRect screenRect : meaningFullName.keySet()) {
+        /*for (ScreenRect screenRect : meaningFullName.keySet()) {
             context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
-        }
+        }*/
         super.render(context, mouseX, mouseY, delta);
         context.drawGuiTexture(HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
         editBarWidget.render(context, mouseX, mouseY, delta);
@@ -60,109 +65,99 @@ public class StatusBarsConfigScreen extends Screen {
         assert client != null;
         WindowAccessor window = (WindowAccessor) (Object) client.getWindow();
         assert window != null;
+
         if (cursorBar != null) {
             cursorBar.renderCursor(context, mouseX, mouseY, delta);
-            context.drawText(textRenderer, currentCursorCoords[0] + " " + currentCursorCoords[1], 100, 5, Colors.WHITE, true);
-
-
-            if (FancyStatusBars.barGrid.getTopSize() == 0 && topBarZone.overlaps(mouseRect) && currentCursorCoords[1] != 1) {
-                FancyStatusBars.barGrid.remove(cursorBar.gridX, cursorBar.gridY);
-                FancyStatusBars.barGrid.addRow(1, true);
-                FancyStatusBars.barGrid.add(1, 1, cursorBar);
-                currentCursorCoords[1] = 1;
-                FancyStatusBars.updatePositions();
-            } else if (FancyStatusBars.barGrid.getBottomLeftSize() == 0 && bottomLeftBarZone.overlaps(mouseRect) && (currentCursorCoords[0] != -1 || currentCursorCoords[1] != -1)) {
-                FancyStatusBars.barGrid.remove(cursorBar.gridX, cursorBar.gridY);
-                FancyStatusBars.barGrid.addRow(-1, false);
-                FancyStatusBars.barGrid.add(-1, -1, cursorBar);
-                currentCursorCoords[0] = -1;
-                currentCursorCoords[1] = -1;
-                FancyStatusBars.updatePositions();
-            } else if (FancyStatusBars.barGrid.getBottomRightSize() == 0 && bottomRightBarZone.overlaps(mouseRect) && (currentCursorCoords[0] != 1 || currentCursorCoords[1] != -1)) {
-                FancyStatusBars.barGrid.remove(cursorBar.gridX, cursorBar.gridY);
-                FancyStatusBars.barGrid.addRow(-1, true);
-                FancyStatusBars.barGrid.add(1, -1, cursorBar);
-                currentCursorCoords[0] = 1;
-                currentCursorCoords[1] = -1;
-                FancyStatusBars.updatePositions();
-            } else rectLoop:for (ScreenRect screenRect : meaningFullName.keySet()) {
-                for (NavigationDirection direction : NavigationDirection.values()) {
+            boolean inserted = false;
+            rectLoop:
+            for (ScreenRect screenRect : meaningFullName.keySet()) {
+                for (NavigationDirection direction : DIRECTION_CHECK_ORDER) {
                     boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
 
                     if (overlaps) {
-                        int[] ints = meaningFullName.get(screenRect);
-                        final boolean vertical = direction.getAxis().equals(NavigationAxis.VERTICAL);
-                        int offsetX = 0;
-                        int offsetY = 0;
-                        if (vertical) {
-                            if (!direction.isPositive()) {
-                                offsetY = ints[1] > 0 ? 1 : 0;
-                            } else {
-                                offsetY = ints[1] > 0 ? 0 : -1;
+                        BarLocation barSnap = meaningFullName.get(screenRect);
+                        if (direction.getAxis().equals(NavigationAxis.VERTICAL)) {
+                            int neighborInsertY = getNeighborInsertY(barSnap, !direction.isPositive());
+                            if (!currentInsertLocation.equals(barSnap.barAnchor(), barSnap.x(), neighborInsertY)) {
+                                if (cursorBar.anchor != null)
+                                    FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
+                                FancyStatusBars.barPositioner.addRow(barSnap.barAnchor(), neighborInsertY);
+                                FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), neighborInsertY, cursorBar);
+                                currentInsertLocation = BarLocation.of(cursorBar);
+                                inserted = true;
                             }
                         } else {
-                            if (direction.isPositive()) {
-                                offsetX = ints[0] > 0 ? 1 : 0;
-                            } else {
-                                offsetX = ints[0] > 0 ? 0 : -1;
+                            int neighborInsertX = getNeighborInsertX(barSnap, direction.isPositive());
+                            if (!currentInsertLocation.equals(barSnap.barAnchor(), neighborInsertX, barSnap.y())) {
+                                if (cursorBar.anchor != null)
+                                    FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
+                                FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), barSnap.y(), neighborInsertX, cursorBar);
+                                currentInsertLocation = BarLocation.of(cursorBar);
+                                inserted = true;
                             }
-                        }
-                        context.drawText(textRenderer, ints[0] + offsetX + " " + ints[1] + offsetY, 100, 15, Colors.WHITE, true);
-                        if (ints[0] + offsetX != currentCursorCoords[0] || ints[1] + offsetY != currentCursorCoords[1]) {
-                            currentCursorCoords[0] = ints[0] + offsetX;
-                            currentCursorCoords[1] = ints[1] + offsetY;
-                            FancyStatusBars.barGrid.remove(cursorBar.gridX, cursorBar.gridY);
-
-
-                            if (vertical) {
-
-                                FancyStatusBars.barGrid.addRow(ints[1] + offsetY, ints[0] > 0);
-                                FancyStatusBars.barGrid.add(ints[0] < 0 ? -1 : 1, ints[1] + offsetY, cursorBar);
-                            } else {
-
-                                FancyStatusBars.barGrid.add(ints[0] + offsetX, ints[1], cursorBar);
-                            }
-                            FancyStatusBars.updatePositions();
                         }
                         break rectLoop;
                     }
                 }
             }
-        } else {
-            // RESIZING STATE
-            if (resizing) {
-                int middleX;
-                boolean bottom;
-
-                int[] left = resizedBars.left();
-                int[] right = resizedBars.right();
-                boolean hasRight = right[0] != 0;
-                boolean hasLeft = left[0] != 0;
-                if (!hasRight) {
-                    StatusBar bar = FancyStatusBars.barGrid.getBar(left[0], left[1]);
-                    middleX = bar.getX() + bar.getWidth();
-                    bottom = bar.gridY < 0;
-                } else {
-                    middleX = FancyStatusBars.barGrid.getBar(right[0], right[1]).getX();
-                    bottom = right[1] < 0;
+            if (inserted) {
+                FancyStatusBars.updatePositions();
+                return;
+            }
+            // check for hovering empty anchors
+            for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
+                if (FancyStatusBars.barPositioner.getRowCount(barAnchor) != 0) continue;
+                ScreenRect anchorHitbox = barAnchor.getAnchorHitbox(barAnchor.getAnchorPosition(width, height));
+                context.fill(anchorHitbox.getLeft(), anchorHitbox.getTop(), anchorHitbox.getRight(), anchorHitbox.getBottom(), 0x99FFFFFF);
+                if (anchorHitbox.overlaps(mouseRect) && currentInsertLocation.barAnchor() != barAnchor) {
+                    if (cursorBar.anchor != null)
+                        FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
+                    FancyStatusBars.barPositioner.addRow(barAnchor);
+                    FancyStatusBars.barPositioner.addBar(barAnchor, 0, cursorBar);
+                    currentInsertLocation = BarLocation.of(cursorBar);
+                    FancyStatusBars.updatePositions();
                 }
-                int i = bottom ? 20 : 10;
+            }
+        } else {
+            if (resizing) { // actively resizing one or 2 bars
+                int middleX;
+
+                BarLocation left = resizedBars.left();
+                BarLocation right = resizedBars.right();
+                boolean hasRight = !right.equals(BarLocation.NULL);
+                boolean hasLeft = !left.equals(BarLocation.NULL);
+                BarPositioner.BarAnchor barAnchor;
+                if (!hasRight) {
+                    barAnchor = left.barAnchor();
+                    StatusBar bar = FancyStatusBars.barPositioner.getBar(barAnchor, left.y(), left.x());
+                    middleX = bar.getX() + bar.getWidth();
+                } else {
+                    barAnchor = right.barAnchor();
+                    middleX = FancyStatusBars.barPositioner.getBar(barAnchor, right.y(), right.x()).getX();
+                }
+
                 boolean doResize = true;
                 StatusBar rightBar = null;
                 StatusBar leftBar = null;
 
-                context.drawText(textRenderer, Integer.toString(mouseX - middleX), 100, 25, -1, true);
+                BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 
+                float widthPerSize;
+                if (sizeRule.isTargetSize())
+                    widthPerSize = (float) sizeRule.totalWidth() / sizeRule.targetSize();
+                else
+                    widthPerSize = sizeRule.widthPerSize();
+
+                // resize towards the left
                 if (mouseX < middleX) {
-                    if (middleX - mouseX > i) {
-
+                    if (middleX - mouseX > widthPerSize / .75f) {
                         if (hasRight) {
-                            rightBar = FancyStatusBars.barGrid.getBar(right[0], right[1]);
-                            if (rightBar.size + 1 > rightBar.getMaximumSize()) doResize = false;
+                            rightBar = FancyStatusBars.barPositioner.getBar(barAnchor, right.y(), right.x());
+                            if (rightBar.size + 1 > sizeRule.maxSize()) doResize = false;
                         }
                         if (hasLeft) {
-                            leftBar = FancyStatusBars.barGrid.getBar(left[0], left[1]);
-                            if (leftBar.size - 1 < leftBar.getMinimumSize()) doResize = false;
+                            leftBar = FancyStatusBars.barPositioner.getBar(barAnchor, left.y(), left.x());
+                            if (leftBar.size - 1 < sizeRule.minSize()) doResize = false;
                         }
 
                         if (doResize) {
@@ -171,18 +166,16 @@ public class StatusBarsConfigScreen extends Screen {
                             FancyStatusBars.updatePositions();
                         }
                     }
-                } else {
-                    if (mouseX - middleX > i) {
-
+                } else { // towards the right
+                    if (mouseX - middleX > widthPerSize / .75f) {
                         if (hasRight) {
-                            rightBar = FancyStatusBars.barGrid.getBar(right[0], right[1]);
-                            if (rightBar.size - 1 < rightBar.getMinimumSize()) doResize = false;
+                            rightBar = FancyStatusBars.barPositioner.getBar(barAnchor, right.y(), right.x());
+                            if (rightBar.size - 1 < sizeRule.minSize()) doResize = false;
                         }
                         if (hasLeft) {
-                            leftBar = FancyStatusBars.barGrid.getBar(left[0], left[1]);
-                            if (leftBar.size + 1 > leftBar.getMaximumSize()) doResize = false;
+                            leftBar = FancyStatusBars.barPositioner.getBar(barAnchor, left.y(), left.x());
+                            if (leftBar.size + 1 > sizeRule.maxSize()) doResize = false;
                         }
-                        context.drawText(textRenderer, leftBar.size + " " + leftBar.getMaximumSize(), 100, 35, -1, true);
 
                         if (doResize) {
                             if (hasRight) rightBar.size--;
@@ -191,29 +184,26 @@ public class StatusBarsConfigScreen extends Screen {
                         }
                     }
                 }
-                GLFW.glfwSetCursor(window.getHandle(), RESIZE_CURSOR);
-            }
-            // NOT RESIZING STATE
-            else {
+
+            } else { // hovering bars
                 rectLoop:
                 for (ScreenRect screenRect : meaningFullName.keySet()) {
                     for (NavigationDirection direction : new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT}) {
                         boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
 
                         if (overlaps && !editBarWidget.isMouseOver(mouseX, mouseY)) {
-                            int[] ints = meaningFullName.get(screenRect);
-                            boolean left = direction.equals(NavigationDirection.LEFT);
-                            if ((ints[0] == 1 && left) || (ints[0] == -1 && !left) || (!left && ints[1] > 0 && ints[0] == FancyStatusBars.barGrid.getRow(ints[1], true).size())) {
+                            BarLocation barLocation = meaningFullName.get(screenRect);
+                            boolean right = direction.equals(NavigationDirection.RIGHT);
+                            // can't resize on the edge of a target size row!
+                            if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
                                 break;
                             }
-                            resizeHover.first()[0] = ints[0];
-                            resizeHover.first()[1] = ints[1];
-                            resizeHover.right(!left);
+                            resizeHover.first(barLocation);
+                            resizeHover.right(right);
                             GLFW.glfwSetCursor(window.getHandle(), RESIZE_CURSOR);
                             break rectLoop;
                         } else {
-                            resizeHover.first()[0] = 0;
-                            resizeHover.first()[1] = 0;
+                            resizeHover.first(BarLocation.NULL);
                             GLFW.glfwSetCursor(window.getHandle(), 0);
                         }
                     }
@@ -222,9 +212,27 @@ public class StatusBarsConfigScreen extends Screen {
         }
     }
 
-    private ScreenRect topBarZone = new ScreenRect(0, 0, 0, 0);
-    private ScreenRect bottomLeftBarZone = new ScreenRect(0, 0, 0, 0);
-    private ScreenRect bottomRightBarZone = new ScreenRect(0, 0, 0, 0);
+    private static int getNeighborInsertX(BarLocation barLocation, boolean right) {
+        BarPositioner.BarAnchor barAnchor = barLocation.barAnchor();
+        int gridX = barLocation.x();
+        if (barAnchor == null) return 0;
+        if (right) {
+            return barAnchor.isRight() ? gridX + 1 : gridX;
+        } else {
+            return barAnchor.isRight() ? gridX : gridX + 1;
+        }
+    }
+
+    private static int getNeighborInsertY(BarLocation barLocation, boolean up) {
+        BarPositioner.BarAnchor barAnchor = barLocation.barAnchor();
+        int gridY = barLocation.y();
+        if (barAnchor == null) return 0;
+        if (up) {
+            return barAnchor.isUp() ? gridY + 1 : gridY;
+        } else {
+            return barAnchor.isUp() ? gridY : gridY + 1;
+        }
+    }
 
     @Override
     protected void init() {
@@ -234,24 +242,31 @@ public class StatusBarsConfigScreen extends Screen {
         addSelectableChild(editBarWidget); // rendering separately to have it above hotbar
         Collection<StatusBar> values = FancyStatusBars.statusBars.values();
         values.forEach(this::setup);
-        checkZeroCoordinates(values);
+        checkNullAnchor(values);
         updateScreenRects();
-        topBarZone = new ScreenRect(width / 2 - HOTBAR_WIDTH / 2, height - 22 - 15, HOTBAR_WIDTH, 15);
-        bottomLeftBarZone = new ScreenRect(width / 2 - HOTBAR_WIDTH / 2 - 20, height - 22, 20, 22);
-        bottomRightBarZone = new ScreenRect(width / 2 + HOTBAR_WIDTH / 2, height - 22, 20, 22);
+        this.addDrawableChild(ButtonWidget.builder(Text.literal("?"),
+                        button -> {
+                            assert client != null;
+                            client.setScreen(new PopupScreen.Builder(this, Text.translatable("skyblocker.bars.config.explanationTitle"))
+                                    .button(Text.translatable("gui.ok"), PopupScreen::close)
+                                    .message(Text.translatable("skyblocker.bars.config.explanation"))
+                                    .build());
+                        })
+                .dimensions(width - 20, (height - 15) / 2, 15, 15)
+                .build());
     }
 
     private void setup(StatusBar statusBar) {
         this.addDrawableChild(statusBar);
-        statusBar.setOnClick(this::onClick);
+        statusBar.setOnClick(this::onBarClick);
     }
 
-    private static void checkZeroCoordinates(Iterable<StatusBar> bars) {
+    private static void checkNullAnchor(Iterable<StatusBar> bars) {
         int offset = 0;
         for (StatusBar statusBar : bars) {
-            if (statusBar.gridX == 0 || statusBar.gridY == 0) {
+            if (statusBar.anchor == null) {
                 statusBar.setX(5);
-                statusBar.setY(5 + offset);
+                statusBar.setY(50 + offset);
                 statusBar.setWidth(30);
                 offset += statusBar.getHeight();
             }
@@ -263,6 +278,7 @@ public class StatusBarsConfigScreen extends Screen {
     public void removed() {
         super.removed();
         FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
+        if (cursorBar != null) cursorBar.ghost = false;
         FancyStatusBars.updatePositions();
         assert client != null;
         GLFW.glfwSetCursor(((WindowAccessor) (Object) client.getWindow()).getHandle(), 0);
@@ -274,11 +290,14 @@ public class StatusBarsConfigScreen extends Screen {
         return false;
     }
 
-    private void onClick(StatusBar statusBar, int button, int mouseX, int mouseY) {
+    private void onBarClick(StatusBar statusBar, int button, int mouseX, int mouseY) {
         if (button == 0) {
             cursorBar = statusBar;
-            FancyStatusBars.barGrid.remove(statusBar.gridX, statusBar.gridY);
+            cursorBar.ghost = true;
+            if (statusBar.anchor != null)
+                FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
             FancyStatusBars.updatePositions();
+            cursorBar.setX(width + 5); // send it to limbo lol
             updateScreenRects();
         } else if (button == 1) {
             int x = Math.min(mouseX - 1, width - editBarWidget.getWidth());
@@ -292,25 +311,27 @@ public class StatusBarsConfigScreen extends Screen {
 
     private void updateScreenRects() {
         meaningFullName.clear();
-        FancyStatusBars.statusBars.values().forEach(statusBar1 -> meaningFullName.put(
-                new ScreenRect(new ScreenPos(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
-                new int[]{statusBar1.gridX, statusBar1.gridY}));
+        FancyStatusBars.statusBars.values().forEach(statusBar1 -> {
+            if (statusBar1.anchor == null) return;
+            meaningFullName.put(
+                    new ScreenRect(new ScreenPos(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
+                    BarLocation.of(statusBar1));
+        });
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (cursorBar != null) {
+            cursorBar.ghost = false;
             cursorBar = null;
             FancyStatusBars.updatePositions();
-            checkZeroCoordinates(FancyStatusBars.statusBars.values());
+            checkNullAnchor(FancyStatusBars.statusBars.values());
             updateScreenRects();
             return true;
         } else if (resizing) {
             resizing = false;
-            resizedBars.left()[0] = 0;
-            resizedBars.left()[1] = 0;
-            resizedBars.right()[0] = 0;
-            resizedBars.right()[1] = 0;
+            resizedBars.left(BarLocation.NULL);
+            resizedBars.right(BarLocation.NULL);
             updateScreenRects();
             return true;
         }
@@ -319,29 +340,23 @@ public class StatusBarsConfigScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        int[] first = resizeHover.first();
+        BarLocation first = resizeHover.first();
         // want the right click thing to have priority
-        if (!editBarWidget.isMouseOver(mouseX, mouseY) && button == 0 && first[0] != 0 && first[1] != 0) {
+        if (!editBarWidget.isMouseOver(mouseX, mouseY) && button == 0 && !first.equals(BarLocation.NULL)) {
+            BarPositioner.BarAnchor barAnchor = first.barAnchor();
+            assert barAnchor != null;
             if (resizeHover.right()) {
-                resizedBars.left()[0] = first[0];
-                resizedBars.left()[1] = first[1];
-                if (FancyStatusBars.barGrid.coordinatesExist(first[0] + 1, first[1])) {
-                    resizedBars.right()[0] = first[0] + 1;
-                    resizedBars.right()[1] = first[1];
-                } else {
-                    resizedBars.right()[0] = 0;
-                    resizedBars.right()[1] = 0;
-                }
+                resizedBars.left(first);
+
+                if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.y(), first.x(), true)) {
+                    resizedBars.right(new BarLocation(barAnchor, first.x() + (barAnchor.isRight() ? 1 : -1), first.y()));
+                } else resizedBars.right(BarLocation.NULL);
             } else {
-                resizedBars.right()[0] = first[0];
-                resizedBars.right()[1] = first[1];
-                if (FancyStatusBars.barGrid.coordinatesExist(first[0] - 1, first[1])) {
-                    resizedBars.left()[0] = first[0] - 1;
-                    resizedBars.left()[1] = first[1];
-                } else {
-                    resizedBars.left()[0] = 0;
-                    resizedBars.left()[1] = 0;
-                }
+                resizedBars.right(first);
+
+                if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.y(), first.x(), false)) {
+                    resizedBars.left(new BarLocation(barAnchor, first.x() + (barAnchor.isRight() ? -1 : 1), first.y()));
+                } else resizedBars.left(BarLocation.NULL);
             }
             resizing = true;
             return true;

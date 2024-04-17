@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -156,6 +157,11 @@ public class GeneralCategory {
 
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.bars.config.openScreen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
+								.build())
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()

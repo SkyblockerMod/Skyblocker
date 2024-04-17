@@ -117,7 +117,7 @@ public class DungeonMapUtils {
      * @param mapEntrancePos the map position of the top left corner of the entrance
      * @param mapRoomSize    the size of a room on the map
      * @return the map position of the top left corner of the room the player is in
-     * @implNote {@code mapPos} is shifted by 2 so room borders are evenly split.
+     * @implNote {@code mapPos} is shifted by 2 so room borders are evenly targetSize.
      * {@code mapPos} is then shifted by {@code offset} to align the top left most room at (0, 0)
      * so subtracting the modulo will give the top left corner of the room shifted by {@code offset}.
      * Finally, {@code mapPos} is shifted back by {@code offset} to its intended position.
@@ -168,7 +168,7 @@ public class DungeonMapUtils {
      * @param x the x position of the coordinate to calculate
      * @param z the z position of the coordinate to calculate
      * @return the physical position of the northwest corner of the room the player is in
-     * @implNote {@code physicalPos} is shifted by 0.5 so room borders are evenly split.
+     * @implNote {@code physicalPos} is shifted by 0.5 so room borders are evenly targetSize.
      * {@code physicalPos} is further shifted by 8 because Hypixel offset dungeons by 8 blocks in Skyblock 0.12.3.
      * Subtracting the modulo gives the northwest corner of the room shifted by 8. Finally, {@code physicalPos} is shifted back by 8 to its intended position.
      */

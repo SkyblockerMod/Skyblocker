@@ -86,12 +86,14 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     private @Nullable OnClick onClick = null;
     public int gridX = 0;
     public int gridY = 0;
+    public @Nullable BarPositioner.BarAnchor anchor = null;
 
     public int size = 1;
     private int width = 0;
 
     public float fill = 0;
     public float overflowFill = 0;
+    public boolean ghost = false;
 
     private Object value = "";
 
@@ -116,6 +118,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (width <= 0) return;
+        // half works lol. only puts transparency on the filler of the bar
+        if (ghost) context.setShaderColor(1f,1f,1f,0.25f);
         switch (iconPosition) {
             case LEFT -> context.drawGuiTexture(icon, x, y, 9, 9);
             case RIGHT -> context.drawGuiTexture(icon, x + width - 9, y, 9, 9);
@@ -130,6 +134,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
         if (hasOverflow && overflowFill > 0) {
             RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * overflowFill), 5, colors[1]);
         }
+        if (ghost) context.setShaderColor(1f,1f,1f,1f);
         //context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
     }
 
@@ -159,13 +164,19 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
         int temp_x = x;
         int temp_y = y;
         int temp_width = width;
+        boolean temp_ghost = ghost;
+
         x = mouseX;
         y = mouseY;
         width = 100;
+        ghost = false;
+
         render(context, mouseX, mouseY, delta);
+
         x = temp_x;
         y = temp_y;
         width = temp_width;
+        ghost = temp_ghost;
     }
 
     // GUI shenanigans
@@ -202,14 +213,6 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     @Override
     public int getHeight() {
         return 9;
-    }
-
-    public int getMinimumSize() {
-        return 2;
-    }
-
-    public int getMaximumSize() {
-        return gridY < 0 ? 6 : 12;
     }
 
     @Override
@@ -267,6 +270,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
                 .append("x", x)
                 .append("y", y)
                 .append("width", width)
+                .append("anchor", anchor)
                 .toString();
     }
 
@@ -315,11 +319,13 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
         if (object.has("text_color")) this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
 
+        String maybeAnchor = object.get("anchor").getAsString().trim();
+        this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
         this.size = object.get("size").getAsInt();
         this.gridX = object.get("x").getAsInt();
         this.gridY = object.get("y").getAsInt();
         // these are optional too, why not
-        if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString());
+        if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
         if (object.has("show_text")) this.showText = object.get("show_text").getAsBoolean();
 
     }
@@ -335,6 +341,9 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
             object.addProperty("text_color", Integer.toHexString(textColor.getRGB()).substring(2));
         }
         object.addProperty("size", size);
+        if (anchor != null) {
+            object.addProperty("anchor", anchor.toString());
+        } else object.addProperty("anchor", "null");
         object.addProperty("x", gridX);
         object.addProperty("y", gridY);
         object.addProperty("icon_position", iconPosition.toString());

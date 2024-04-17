@@ -235,7 +235,7 @@ public class ChatRule {
         String rawLocation = Utils.getLocationRaw();
         Boolean isLocationValid = null;
 
-        for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are raw locations split by "," and start with ! if not locations
+        for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are raw locations targetSize by "," and start with ! if not locations
             String rawValidLocation = ChatRulesHandler.locations.get(validLocation.replace("!",""));
             if (rawValidLocation == null) continue;
             if (validLocation.startsWith("!")) {//not location

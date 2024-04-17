@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.BarGrid;
+import de.hysky.skyblocker.skyblock.fancybars.BarPositioner;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBar;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.utils.Utils;
@@ -15,6 +16,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -57,6 +59,8 @@ public class FancyStatusBars {
     private final int[] anchorsX = new int[3];
     private final int[] anchorsY = new int[3];
 
+    public static BarPositioner barPositioner = new BarPositioner();
+    @Deprecated(forRemoval = true)
     public static BarGrid barGrid = new BarGrid();
     public static Map<String, StatusBar> statusBars = new HashMap<>();
 
@@ -76,17 +80,21 @@ public class FancyStatusBars {
 
         // Default positions
         StatusBar health = statusBars.get("health");
-        health.gridX = 1;
-        health.gridY = 1;
+        health.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
+        health.gridX = 0;
+        health.gridY = 0;
         StatusBar intelligence = statusBars.get("intelligence");
-        intelligence.gridX = 2;
-        intelligence.gridY = 1;
+        intelligence.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
+        intelligence.gridX = 1;
+        intelligence.gridY = 0;
         StatusBar defense = statusBars.get("defense");
-        defense.gridX = 1;
-        defense.gridY = -1;
+        defense.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
+        defense.gridX = 0;
+        defense.gridY = 0;
         StatusBar experience = statusBars.get("experience");
-        experience.gridX = 1;
-        experience.gridY = 2;
+        experience.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
+        experience.gridX = 0;
+        experience.gridY = 1;
 
         CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
             if (object != null) {
@@ -102,8 +110,11 @@ public class FancyStatusBars {
                     }
                 }
             }
-            placeBarsInGrid();
+            placeBarsInPositioner();
             configLoaded = true;
+        }).exceptionally(throwable -> {
+            LOGGER.error("[Skyblocker] Failed reading status bars config", throwable);
+            return null;
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> {
             saveBarConfig();
@@ -119,53 +130,30 @@ public class FancyStatusBars {
         //placeBarsInGrid();
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-                ClientCommandManager.literal("skyblocker")
-                        .then(ClientCommandManager.literal("bar_test").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
+                ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
+                        .then(ClientCommandManager.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
     }
 
     private static boolean configLoaded = false;
 
-    private static void placeBarsInGrid() {
+    private static void placeBarsInPositioner() {
         List<StatusBar> original = statusBars.values().stream().toList();
 
-        // TOP
-        List<StatusBar> barList = new ArrayList<>(original.stream().filter(statusBar -> statusBar.gridY > 0).toList());
-        barList.sort((a, b) -> a.gridY == b.gridY ? Integer.compare(a.gridX, b.gridX) : Integer.compare(a.gridY, b.gridY));
+        for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
+            List<StatusBar> barList = new ArrayList<>(original.stream().filter(bar -> bar.anchor == barAnchor).toList());
+            if (barList.isEmpty()) continue;
+            barList.sort((a, b) -> a.gridY == b.gridY ? Integer.compare(a.gridX, b.gridX) : Integer.compare(a.gridY, b.gridY));
 
-        int y = 0;
-        int rowNum = 0;
-        for (StatusBar statusBar : barList) {
-            if (statusBar.gridY > y) {
-                barGrid.addRowToEnd(true, false);
-                rowNum++;
-                y = statusBar.gridY;
+            int y = -1;
+            int rowNum = -1;
+            for (StatusBar statusBar : barList) {
+                if (statusBar.gridY > y) {
+                    barPositioner.addRow(barAnchor);
+                    rowNum++;
+                    y = statusBar.gridY;
+                }
+                barPositioner.addBar(barAnchor, rowNum, statusBar);
             }
-            barGrid.addToEndOfRow(rowNum, false, statusBar);
-        }
-
-        // BOTTOM LEFT
-        barList.clear();
-        barList.addAll(original.stream().filter(statusBar -> statusBar.gridY < 0 && statusBar.gridX < 0).toList());
-        barList.sort((a, b) -> a.gridY == b.gridY ? -Integer.compare(a.gridX, b.gridX) : -Integer.compare(a.gridY, b.gridY));
-        doBottom(false, barList);
-
-        // BOTTOM RIGHT
-        barList.clear();
-        barList.addAll(original.stream().filter(statusBar -> statusBar.gridY < 0 && statusBar.gridX > 0).toList());
-        barList.sort((a, b) -> a.gridY == b.gridY ? Integer.compare(a.gridX, b.gridX) : -Integer.compare(a.gridY, b.gridY));
-        doBottom(true, barList);
-    }
-
-    private static void doBottom(boolean right, List<StatusBar> barList) {
-        int y = 0;
-        int rowNum = 0;
-        for (StatusBar statusBar : barList) {
-            if (statusBar.gridY < y) {
-                barGrid.addRowToEnd(false, right);
-                rowNum--;
-                y = statusBar.gridY;
-            }
-            barGrid.addToEndOfRow(rowNum, right, statusBar);
         }
     }
 
@@ -193,97 +181,82 @@ public class FancyStatusBars {
 
     public static void updatePositions() {
         if (!configLoaded) return;
-        final float hotbarSize = 182;
         final int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         final int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
 
-        for (StatusBar value : statusBars.values()) {
-            if (value.gridX == 0 || value.gridY == 0) {
-                value.setX(-1);
-                value.setY(-1);
-                value.setWidth(0);
-            }
-        }
+        for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
+            ScreenPos anchorPosition = barAnchor.getAnchorPosition(width, height);
+            BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 
-        // THE TOP
-        for (int i = 0; i < barGrid.getTopSize(); i++) {
-            List<StatusBar> row = barGrid.getRow(i + 1, false);
-            System.out.println(row);
-            if (row.isEmpty()) continue;
-            int totalSize = 0;
-            for (StatusBar bar : row) {
-                totalSize += bar.size;
-            }
+            if (sizeRule.isTargetSize()) {
+                for (int row = 0; row < barPositioner.getRowCount(barAnchor); row++) {
+                    LinkedList<StatusBar> barRow = barPositioner.getRow(barAnchor, row);
+                    if (barRow.isEmpty()) continue;
 
-            // Fix sizing
-            whileLoop:
-            while (totalSize != 12) {
-                if (totalSize > 12) {
-                    for (StatusBar bar : row) {
-                        if (bar.size > bar.getMinimumSize()) { // TODO: this can cause infinite looping if we add more than 6 bars
-                            bar.size--;
-                            totalSize--;
+                    // FIX SIZES
+                    int totalSize = 0;
+                    for (StatusBar statusBar : barRow)
+                        totalSize += (statusBar.size = MathHelper.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize()));
+
+                    whileLoop:
+                    while (totalSize != sizeRule.targetSize()) {
+                        if (totalSize > sizeRule.targetSize()) {
+                            for (StatusBar statusBar : barRow) {
+                                if (statusBar.size > sizeRule.minSize()) {
+                                    statusBar.size--;
+                                    totalSize--;
+                                    if (totalSize == sizeRule.targetSize()) break whileLoop;
+                                }
+                            }
+                        } else {
+                            for (StatusBar statusBar : barRow) {
+                                if (statusBar.size < sizeRule.maxSize()) {
+                                    statusBar.size++;
+                                    totalSize++;
+                                    if (totalSize == sizeRule.targetSize()) break whileLoop;
+                                }
+                            }
                         }
-                        if (totalSize == 12) break whileLoop;
                     }
-                } else {
-                    for (StatusBar bar : row) {
-                        if (bar.size < bar.getMaximumSize()) {
-                            bar.size++;
-                            totalSize++;
-                        }
-                        if (totalSize == 12) break whileLoop;
-                    }
+
                 }
             }
 
-            int x = width / 2 - 91;
-            int y = height - 33 - 10 * i;
-            int size = 0;
-            for (int j = 0; j < row.size(); j++) {
-                StatusBar bar = row.get(j);
-                bar.setX(x + (int) ((size / 12.d) * hotbarSize));
-                bar.setY(y);
-                bar.setWidth((int) ((bar.size / 12.d) * hotbarSize));
-                size += bar.size;
-                bar.gridY = i + 1;
-                bar.gridX = j + 1;
-            }
-        }
+            for (int row = 0; row < barPositioner.getRowCount(barAnchor); row++) {
+                List<StatusBar> barRow = barPositioner.getRow(barAnchor, row);
+                if (barRow.isEmpty()) continue;
 
-        // BOTTOM LEFT
-        for (int i = 0; i < barGrid.getBottomLeftSize(); i++) {
-            List<StatusBar> row = barGrid.getRow(-(i + 1), false);
-            if (row.isEmpty()) continue;
-            int x = width / 2 - 91 - 2;
-            int y = height - 15 - 10 * (barGrid.getBottomLeftSize() - i - 1);
-            for (int j = 0; j < row.size(); j++) {
-                StatusBar bar = row.get(j);
-                bar.size = MathHelper.clamp(bar.size, bar.getMinimumSize(), bar.getMaximumSize());
-                bar.setY(y);
-                bar.setWidth(bar.size * 25);
-                x -= bar.getWidth();
-                bar.setX(x);
-                bar.gridX = -j - 1;
-                bar.gridY = -i - 1;
+
+                // Update the positions
+                float widthPerSize;
+                if (sizeRule.isTargetSize())
+                    widthPerSize = (float) sizeRule.totalWidth() / sizeRule.targetSize();
+                else
+                    widthPerSize = sizeRule.widthPerSize();
+
+                int currSize = 0;
+                for (int i = 0; i < barRow.size(); i++) {
+                    StatusBar statusBar = barRow.get(i);
+                    statusBar.size = MathHelper.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
+
+                    float x = barAnchor.isRight() ?
+                            anchorPosition.x() + currSize * widthPerSize :
+                            anchorPosition.x() - currSize * widthPerSize - statusBar.size * widthPerSize;
+                    statusBar.setX((int) x);
+
+                    int y = barAnchor.isUp() ?
+                            anchorPosition.y() - (row + 1) * (statusBar.getHeight() + 1) :
+                            anchorPosition.y() + row * (statusBar.getHeight() + 1);
+                    statusBar.setY(y);
+
+                    statusBar.setWidth((int) (statusBar.size * widthPerSize));
+                    currSize += statusBar.size;
+                    statusBar.gridX = i;
+                    statusBar.gridY = row;
+
+                }
             }
-        }
-        // BOTTOM RIGHT
-        for (int i = 0; i < barGrid.getBottomRightSize(); i++) {
-            List<StatusBar> row = barGrid.getRow(-(i + 1), true);
-            if (row.isEmpty()) continue;
-            int x = width / 2 + 91 + 2;
-            int y = height - 15 - 10 * (barGrid.getBottomRightSize() - i - 1);
-            for (int j = 0; j < row.size(); j++) {
-                StatusBar bar = row.get(j);
-                bar.size = MathHelper.clamp(bar.size, bar.getMinimumSize(), bar.getMaximumSize());
-                bar.setX(x);
-                bar.setY(y);
-                bar.setWidth(bar.size * 25);
-                x += bar.getWidth();
-                bar.gridX = j + 1;
-                bar.gridY = -i - 1;
-            }
+
         }
     }
 
