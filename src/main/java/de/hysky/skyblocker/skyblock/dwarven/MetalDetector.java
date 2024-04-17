@@ -81,14 +81,14 @@ public class MetalDetector {
             new Vec3i(-37, -21, -22)   // -37, -21, -22
     ));
 
-    private static Vec3i minesCenter = null;
+    protected static Vec3i minesCenter = null;
     private static double previousDistance;
     private static Vec3d previousPlayerPos;
-    private static boolean newTreasure = true;
+    protected static boolean newTreasure = true;
 
     private static boolean startedLooking = false;
 
-    private static List<Vec3i> possibleBlocks = new ArrayList<>();
+    protected static List<Vec3i> possibleBlocks = new ArrayList<>();
 
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(MetalDetector::getDistanceMessage);
@@ -151,7 +151,7 @@ public class MetalDetector {
         }
     }
 
-    private static void updatePossibleBlocks(Double distance, Vec3d playerPos) {
+    protected static void updatePossibleBlocks(Double distance, Vec3d playerPos) {
         if (newTreasure) {
             possibleBlocks = new ArrayList<>();
             newTreasure = false;
@@ -164,8 +164,8 @@ public class MetalDetector {
                 }
             }
             else {
-                for (int x = -distance.intValue(); x < distance; x++) {
-                    for (int z = -distance.intValue(); z < distance; z++) {
+                for (int x = -distance.intValue(); x <= distance; x++) {
+                    for (int z = -distance.intValue(); z <= distance; z++) {
                         Vec3i checkPos =new Vec3i((int)(playerPos.x) + x, (int)playerPos.y, (int)playerPos.z + z);
                         if (Math.abs(playerPos.distanceTo(Vec3d.of(checkPos)) - distance) < 0.25) {
                             possibleBlocks.add(checkPos);
