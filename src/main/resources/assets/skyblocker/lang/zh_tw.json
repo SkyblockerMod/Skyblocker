@@ -112,7 +112,7 @@
     "text.autoconfig.skyblocker.option.slayer.vampireSlayer.effigyUpdateFrequency.@Tooltip": "值越低，更新越頻繁，可能會導致卡頓。",
     "skyblocker.shortcuts.command.replacement": "替代指令",
     "skyblocker.end.hud.zealotsSinceLastEye": "自上個召喚之眼以來：%d",
-    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "啟用物品掉落保護",
+    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "啟用物品掉落保護和鎖定物品欄",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Livid Boss戰時傳送到聊天列的訊息， 字串 「[color]」 將會被替換為真Livid的顏色。",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandShortcuts": "啟用指令別名",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableCommandArgShortcuts": "啟用含參指令別名",
@@ -291,7 +291,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralColor": "中性的顏色",
     "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper.@Tooltip": "將打開過的箱子標記為灰色。",
     "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow": "使星標怪物發光",
-    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "允許在地牢中透過受/skyblocker protectItem指令保護的物品施放職業能力。",
+    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "允許在地牢中透過被鎖定的物品欄或受/skyblocker protectItem指令保護的物品施放職業能力。",
     "text.autoconfig.skyblocker.option.general.specialEffects": "特效",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay": "物品資訊顯示",
     "skyblocker.itemTooltip.noData": "§c沒有數據",
@@ -553,5 +553,13 @@
     "skyblocker.fancyAuctionHouse.collectBid": "收集出價",
     "skyblocker.fancyAuctionHouse.auctionEnded": "拍賣結束！",
     "skyblocker.fancyAuctionHouse.cancelAuction": "取消拍賣",
-    "skyblocker.fancyAuctionHouse.youPay": "你支付：%s"
+    "skyblocker.fancyAuctionHouse.youPay": "你支付：%s",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer": "啟用計時器",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer.@Tooltip": "在浮標上方顯示釣魚時間",
+    "text.autoconfig.skyblocker.option.general.fishing.changeTimerColor": "在20秒時改變計時器",
+    "text.autoconfig.skyblocker.option.general.fishing.changeTimerColor.@Tooltip": "當20秒過去後將計時器變為綠色",
+    "text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale": "釣魚計時器縮放",
+    "text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale.@Tooltip": "釣魚計時器的大小",
+    "text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers": "隱藏其他玩家的釣竿",
+    "text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers.@Tooltip": "隱藏其他玩家的釣竿，使其不顯示在自己的螢幕上"
 }
