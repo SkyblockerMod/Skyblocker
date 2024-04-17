@@ -372,7 +372,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints": "启用默认路径点",
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip": "包括所有未分类的路径点。",
     "skyblocker.relics.markAllFound": "§r将全部遗物标记为已发现",
-    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "启用物品掉落保护",
+    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems": "启用物品掉落保护和锁定物品栏",
     "text.autoconfig.skyblocker.option.messages.hideDicer": "隐藏Dicer信息",
     "text.autoconfig.skyblocker.option.messages.chatRules.screen.new": "新聊天规则",
     "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleName": "规则名称",
@@ -468,7 +468,7 @@
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.screen": "水晶洞窟地图位置设置…",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsHud.showLocations.@Tooltip": "以方块显示水晶洞窟的重要区域，如丛林神庙和仙女石窟。",
     "text.autoconfig.skyblocker.option.locations.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "通过这些路径点，你可以通过同时使用末影珍珠和AOTV实现穿墙。",
-    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "允许在地牢中通过受/skyblocker protectItem命令保护的物品施放职业能力。",
+    "text.autoconfig.skyblocker.option.locations.dungeons.allowDroppingProtectedItems.@Tooltip": "允许在地牢中通过被锁定的物品栏或受/skyblocker protectItem命令保护的物品施放职业能力。",
     "text.autoconfig.skyblocker.option.locations.dungeons.fireFreezeStaffTimer.@Tooltip": "在F3/M3的Boss战中使用受到开火冻结影响的武器时显示计时器。",
     "text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.enabled.@Tooltip": "为丛林神庙和仙女石窟等水晶洞窟中的重要区域添加路径点（在常规/路径点中所选择的路径点）。 ",
     "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace.@Tooltip": "输入要输出的新消息（可以使用Minecraft颜色代码进行格式化）。",
@@ -554,5 +554,13 @@
     "skyblocker.fancyAuctionHouse.buy": "买！",
     "skyblocker.fancyAuctionHouse.bid": "出价！",
     "skyblocker.fancyAuctionHouse.cantAfford": "支付不起！",
-    "skyblocker.fancyAuctionHouse.differentProfile": "在不同的存档中"
+    "skyblocker.fancyAuctionHouse.differentProfile": "在不同的存档中",
+    "text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale.@Tooltip": "钓鱼计时器的大小",
+    "text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers": "隐藏其他玩家的钓竿",
+    "text.autoconfig.skyblocker.option.general.fishing.hideOtherPlayers.@Tooltip": "隐藏其他玩家的钓鱼竿，使其不显示在自己的屏幕上",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer": "启用计时器",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer.@Tooltip": "在浮标上方显示钓鱼时间",
+    "text.autoconfig.skyblocker.option.general.fishing.changeTimerColor": "在20秒时改变计时器",
+    "text.autoconfig.skyblocker.option.general.fishing.changeTimerColor.@Tooltip": "当20秒过去后将计时器变为绿色",
+    "text.autoconfig.skyblocker.option.general.fishing.fishingTimerScale": "钓鱼计时器缩放"
 }
