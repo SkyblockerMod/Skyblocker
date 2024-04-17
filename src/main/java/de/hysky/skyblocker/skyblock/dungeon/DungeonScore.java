@@ -68,7 +68,6 @@ public class DungeonScore {
 	private static int puzzleCount;
 	private static int deathCount;
 	private static int score;
-	private static int crypts;
 	private static final Map<String, Boolean> SpiritPetCache = new HashMap<>();
 
 	public static void init() {
@@ -115,7 +114,7 @@ public class DungeonScore {
 			sent270 = true;
 		}
 
-		crypts = getCrypts();
+		int crypts = getCrypts();
 		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && crypts < 5) {
 			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)));
