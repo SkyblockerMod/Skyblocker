@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.FancyStatusBars;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScoreHUD;

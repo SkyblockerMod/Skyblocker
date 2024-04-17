@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
 import de.hysky.skyblocker.mixin.accessor.WindowAccessor;
-import de.hysky.skyblocker.skyblock.FancyStatusBars;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;

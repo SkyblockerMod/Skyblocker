@@ -164,9 +164,6 @@ public class SkyblockerConfig {
 		public boolean fancyCraftingTable = true;
 
 		@SerialEntry
-		public boolean oldBars = false;
-
-		@SerialEntry
 		public boolean backpackPreviewWithoutShift = false;
 
 		@SerialEntry
@@ -307,42 +304,6 @@ public class SkyblockerConfig {
 	public static class Bars {
 		@SerialEntry
 		public boolean enableBars = true;
-
-		@SerialEntry
-		public BarPositions barPositions = new BarPositions();
-	}
-
-	public static class BarPositions {
-		@SerialEntry
-		public BarPosition healthBarPosition = BarPosition.LAYER1;
-
-		@SerialEntry
-		public BarPosition manaBarPosition = BarPosition.LAYER1;
-
-		@SerialEntry
-		public BarPosition defenceBarPosition = BarPosition.LAYER1;
-
-		@SerialEntry
-		public BarPosition experienceBarPosition = BarPosition.LAYER1;
-
-	}
-
-	public enum BarPosition {
-		LAYER1, LAYER2, RIGHT, NONE;
-
-		@Override
-		public String toString() {
-			return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
-		}
-
-		public int toInt() {
-			return switch (this) {
-				case LAYER1 -> 0;
-				case LAYER2 -> 1;
-				case RIGHT -> 2;
-				case NONE -> -1;
-			};
-		}
 	}
 
 	public static class Experiments {

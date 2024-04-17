@@ -29,13 +29,6 @@ public class GeneralCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.literal("old bars"))
-						.binding(defaults.general.oldBars,
-								() -> config.general.oldBars,
-								newValue -> config.general.oldBars = newValue)
-						.controller(ConfigUtils::createBooleanController)
-						.build())
-				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.acceptReparty"))
 						.binding(defaults.general.acceptReparty,
 								() -> config.general.acceptReparty,
@@ -157,11 +150,6 @@ public class GeneralCategory {
 
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
-						.option(ButtonOption.createBuilder()
-								.name(Text.translatable("skyblocker.bars.config.openScreen"))
-								.text(Text.translatable("text.skyblocker.open"))
-								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
-								.build())
 						.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
@@ -171,33 +159,10 @@ public class GeneralCategory {
 										newValue -> config.general.bars.enableBars = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition"))
-								.binding(defaults.general.bars.barPositions.healthBarPosition,
-										() -> config.general.bars.barPositions.healthBarPosition,
-										newValue -> config.general.bars.barPositions.healthBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition"))
-								.binding(defaults.general.bars.barPositions.manaBarPosition,
-										() -> config.general.bars.barPositions.manaBarPosition,
-										newValue -> config.general.bars.barPositions.manaBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition"))
-								.binding(defaults.general.bars.barPositions.defenceBarPosition,
-										() -> config.general.bars.barPositions.defenceBarPosition,
-										newValue -> config.general.bars.barPositions.defenceBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition"))
-								.binding(defaults.general.bars.barPositions.experienceBarPosition,
-										() -> config.general.bars.barPositions.experienceBarPosition,
-										newValue -> config.general.bars.barPositions.experienceBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.bars.config.openScreen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
 								.build())
 						.build())
 
