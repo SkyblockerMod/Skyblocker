@@ -334,7 +334,7 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Solve Fetchur",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper": "Metal Detector Helper",
-  "text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper.@Tooltip": "Helper for the metal detector puzzle in the Mines of Divan in the Crystal Hollows.",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper.@Tooltip": "Helper for the metal detector puzzle in the Mines of Divan.",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper.startTip": "Stand still in multiple places unit solver has narrowed down locations to one",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper.foundCenter": "Found center of mines now working faster",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper.foundTreasureMessage": "Found treasure",
