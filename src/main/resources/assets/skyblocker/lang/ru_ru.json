@@ -353,7 +353,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Отключение **не рекомендуется**, если вы забывчивый человек.",
     "text.autoconfig.skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold": "Порог предупреждения о отравлении стрелой",
     "text.skyblocker.config": "Открыть настройки...",
-    "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground": "Вкючить задний фон у HUD",
+    "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground": "Включить фон HUD",
     "text.autoconfig.skyblocker.option.general.tabHud.enableHudBackground.@Tooltip": "Включает фон у не-таб HUD.",
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "Когда включено, сообщает есть ли у вас такой аксессуар, а также лучше он или хуже, чем тот, что у вас. Список статусов:",
     "text.skyblocker.source": "Код",
