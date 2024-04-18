@@ -17,8 +17,8 @@ public enum DungeonBoss {
 
     private static final Map<String, DungeonBoss> BOSSES = Arrays.stream(values()).collect(Collectors.toUnmodifiableMap(DungeonBoss::message, Function.identity()));
 
-    public final int floor;
-    public final String message;
+    private final int floor;
+    private final String message;
 
     DungeonBoss(int floor, String message) {
         this.floor = floor;
