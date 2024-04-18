@@ -304,7 +304,7 @@
     "skyblocker.customItemNames.removed": "§b[§6Skyblocker§b] §fУдалено пользовательское имя этого предмета.",
     "skyblocker.shortcuts.command.target": "Целевая Команда",
     "skyblocker.shortcuts.commandArg.replacement": "Замена аргумента команды",
-    "skyblocker.shortcuts.commandArg.target": "Аргумент затронутой команды",
+    "skyblocker.shortcuts.commandArg.target": "Аргумент целевой команды",
     "skyblocker.customDyeColors.invalidHex": "§b[§6Skyblocker§b] §cНеверный HEX-код цвета!",
     "skyblocker.customDyeColors.added": "§b[§6Skyblocker§b] §fУстановите цвет окраски для удерживаемого предмета!",
     "skyblocker.customDyeColors.neverHad": "§b[§6Skyblocker§b] §fДанный предмет не имеет пользовательского набора цветов окраски, но почему бы его не добавить? ;)",
