@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -20,7 +21,7 @@ import net.minecraft.entity.Entity;
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
 
-	@Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/WorldRenderer;regularEntityCount:I", opcode = Opcodes.PUTFIELD))
+	@Inject(method = "render", slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;getEntities()Ljava/lang/Iterable;"), to = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;age:I", opcode = Opcodes.GETFIELD)), at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/WorldRenderer;regularEntityCount:I", opcode = Opcodes.PUTFIELD))
 	private void skyblocker$beforeEntityIsRendered(CallbackInfo ci, @Local Entity entity) {
 		boolean shouldShowBoundingBox = MobBoundingBoxes.shouldDrawMobBoundingBox(entity);
 
