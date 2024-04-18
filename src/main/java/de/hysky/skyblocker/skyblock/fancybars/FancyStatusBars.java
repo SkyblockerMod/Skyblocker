@@ -211,21 +211,35 @@ public class FancyStatusBars {
                     widthPerSize = sizeRule.widthPerSize();
 
                 int currSize = 0;
-                for (int i = 0; i < barRow.size(); i++) {
+                int rowSize = barRow.size();
+                for (int i = 0; i < rowSize; i++) {
+                    // A bit of a padding
+                    int offsetX = 0;
+                    int lessWidth = 0;
+                    if (rowSize > 1) { // Technically bars in the middle of 3+ bars will be smaller than the 2 side ones but shh
+                        if (i==0) lessWidth = 1;
+                        else if (i == rowSize-1) {
+                            lessWidth = 1;
+                            offsetX = 1;
+                        } else {
+                            lessWidth = 2;
+                            offsetX = 1;
+                        }
+                    }
                     StatusBar statusBar = barRow.get(i);
                     statusBar.size = MathHelper.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
 
                     float x = barAnchor.isRight() ?
                             anchorPosition.x() + currSize * widthPerSize :
                             anchorPosition.x() - currSize * widthPerSize - statusBar.size * widthPerSize;
-                    statusBar.setX((int) x);
+                    statusBar.setX(MathHelper.ceil(x) + offsetX);
 
                     int y = barAnchor.isUp() ?
                             anchorPosition.y() - (row + 1) * (statusBar.getHeight() + 1) :
                             anchorPosition.y() + row * (statusBar.getHeight() + 1);
                     statusBar.setY(y);
 
-                    statusBar.setWidth((int) (statusBar.size * widthPerSize));
+                    statusBar.setWidth(MathHelper.floor(statusBar.size * widthPerSize) - lessWidth);
                     currSize += statusBar.size;
                     statusBar.gridX = i;
                     statusBar.gridY = row;
