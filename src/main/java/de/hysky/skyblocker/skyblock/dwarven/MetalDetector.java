@@ -201,7 +201,7 @@ public class MetalDetector {
 
     private static void render(WorldRenderContext context) {
         //only render enabled and if there is a few location options and in the mines of divan
-        if (!SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
+        if (!SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
             return;
         }
         //only one location render just that and guiding line to it
