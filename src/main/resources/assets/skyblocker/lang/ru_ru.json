@@ -558,5 +558,6 @@
     "skyblocker.rift.enigmaSouls.markAllMissing": "§rВсе Enigma Souls помечены как еще не найденные!",
     "skyblocker.customAnimatedDyes.unableToSetDye": "§cНевозможно применить собственную анимацию цвета :( (Вы на скайблоке? У вас в руках есть предмет?)",
     "skyblocker.quiverWarning.50Left": "У вас осталось лишь 50 стрел!",
-    "skyblocker.quiverWarning.empty": "У вас больше нет стрел!"
+    "skyblocker.quiverWarning.empty": "У вас больше нет стрел!",
+    "skyblocker.dungeons.secrets.posMessage": "§rКомната: %s, Направление: %s, X: %d, Y: %d, Z: %d"
 }
