@@ -43,10 +43,10 @@ public class DwarvenMinesCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper"))
-						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.MetalDetectorHelper.@Tooltip")))						.binding(defaults.locations.dwarvenMines.MetalDetectorHelper,
-								() -> config.locations.dwarvenMines.MetalDetectorHelper,
-								newValue -> config.locations.dwarvenMines.MetalDetectorHelper = newValue)
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.metalDetectorHelper"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.metalDetectorHelper.@Tooltip")))						.binding(defaults.locations.dwarvenMines.metalDetectorHelper,
+								() -> config.locations.dwarvenMines.metalDetectorHelper,
+								newValue -> config.locations.dwarvenMines.metalDetectorHelper = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 

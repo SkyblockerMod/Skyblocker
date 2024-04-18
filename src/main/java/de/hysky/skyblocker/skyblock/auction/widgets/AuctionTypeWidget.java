@@ -17,7 +17,7 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
         super(x, y, 17, 17, Text.literal("Auction Type Widget"), slotClick, Option.ALL);
     }
 
-    public enum Option implements OptionInfo {
+    public enum Option implements SliderWidget.OptionInfo {
         ALL("all.png"),
         BIN("bin.png"),
         AUC("auctions.png");
