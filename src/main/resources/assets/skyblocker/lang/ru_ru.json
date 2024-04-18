@@ -302,7 +302,7 @@
     "skyblocker.customItemNames.neverHad": "§b[§6Skyblocker§b] §fДанный предмет не имеет пользовательского названия, но почему бы его не добавить? ;)",
     "skyblocker.customItemNames.added": "§b[§6Skyblocker§b] §fЗадайте собственное имя для удерживаемого предмета!",
     "skyblocker.customItemNames.removed": "§b[§6Skyblocker§b] §fУдалено пользовательское имя этого предмета.",
-    "skyblocker.shortcuts.command.target": "Затронутая команда",
+    "skyblocker.shortcuts.command.target": "Целевая команда",
     "skyblocker.shortcuts.commandArg.replacement": "Замена аргумента команды",
     "skyblocker.shortcuts.commandArg.target": "Аргумент затронутой команды",
     "skyblocker.customDyeColors.invalidHex": "§b[§6Skyblocker§b] §cНеверный HEX-код цвета!",
