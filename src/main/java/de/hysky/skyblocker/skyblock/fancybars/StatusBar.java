@@ -119,7 +119,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (width <= 0) return;
         // half works lol. only puts transparency on the filler of the bar
-        if (ghost) context.setShaderColor(1f,1f,1f,0.25f);
+        if (ghost) context.setShaderColor(1f, 1f, 1f, 0.25f);
         switch (iconPosition) {
             case LEFT -> context.drawGuiTexture(icon, x, y, 9, 9);
             case RIGHT -> context.drawGuiTexture(icon, x + width - 9, y, 9, 9);
@@ -134,7 +134,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
         if (hasOverflow && overflowFill > 0) {
             RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * overflowFill), 5, colors[1]);
         }
-        if (ghost) context.setShaderColor(1f,1f,1f,1f);
+        if (ghost) context.setShaderColor(1f, 1f, 1f, 1f);
         //context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
     }
 

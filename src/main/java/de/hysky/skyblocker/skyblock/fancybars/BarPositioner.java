@@ -175,8 +175,7 @@ public class BarPositioner {
         SCREEN_BOTTOM_RIGHT(true, false,
                 ((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth - 5, scaledHeight - 5)),
                 SizeRule.freeSize(25, 2, 6)
-        ),
-        ;
+        );
 
         private final AnchorPositionProvider positionProvider;
         private final AnchorHitboxProvider hitboxProvider;
@@ -256,8 +255,7 @@ public class BarPositioner {
      * @param minSize      the minimum (free and target size)
      * @param maxSize      the maximum (free and target size, THIS SHOULD BE THE SAME AS {@code targetSize} FOR {@code isTargetSize = true})
      */
-    public record SizeRule(boolean isTargetSize, int targetSize, int totalWidth, int widthPerSize, int minSize,
-                           int maxSize) {
+    public record SizeRule(boolean isTargetSize, int targetSize, int totalWidth, int widthPerSize, int minSize, int maxSize) {
         public static SizeRule freeSize(int widthPerSize, int minSize, int maxSize) {
             return new SizeRule(false, -1, -1, widthPerSize, minSize, maxSize);
         }

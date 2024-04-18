@@ -318,7 +318,7 @@ public class SearchOverManager {
     }
 
     /**
-     * pushes the ({@link SearchOverManager#search}) to the sign. It needs to targetSize it over two lines without splitting a word
+     * pushes the ({@link SearchOverManager#search}) to the sign. It needs to split it over two lines without splitting a word
      */
     private static void pushSign() {
         //splits text into 2 lines max = 30 chars

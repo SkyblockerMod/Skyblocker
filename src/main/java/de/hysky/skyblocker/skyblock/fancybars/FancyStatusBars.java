@@ -250,8 +250,6 @@ public class FancyStatusBars {
         }
     }
 
-    public FancyStatusBars() {}
-
     public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
         if (!SkyblockerConfigManager.get().general.bars.enableBars || player == null || Utils.isInTheRift())
@@ -273,5 +271,5 @@ public class FancyStatusBars {
         statusBars.get("defense").updateValues(defense / (defense + 100.f), 0, defense);
         statusBars.get("experience").updateValues(player.experienceProgress, 0, player.experienceLevel);
         return true;
-        }
+    }
 }

@@ -117,7 +117,7 @@ public class DungeonMapUtils {
      * @param mapEntrancePos the map position of the top left corner of the entrance
      * @param mapRoomSize    the size of a room on the map
      * @return the map position of the top left corner of the room the player is in
-     * @implNote {@code mapPos} is shifted by 2 so room borders are evenly targetSize.
+     * @implNote {@code mapPos} is shifted by 2 so room borders are evenly split.
      * {@code mapPos} is then shifted by {@code offset} to align the top left most room at (0, 0)
      * so subtracting the modulo will give the top left corner of the room shifted by {@code offset}.
      * Finally, {@code mapPos} is shifted back by {@code offset} to its intended position.

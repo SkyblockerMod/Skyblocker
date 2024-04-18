@@ -15,6 +15,7 @@ public interface DrawContextInvoker {
 
     @Invoker
     void invokeDrawTooltip(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner);
+
     @Invoker
     void invokeDrawTexturedQuad(Identifier texture, int x1, int x2, int y1, int y2, int z, float u1, float u2, float v1, float v2, float red, float green, float blue, float alpha);
 }

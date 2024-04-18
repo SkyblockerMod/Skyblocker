@@ -105,7 +105,7 @@ public class EditBarColorPopup extends AbstractPopupScreen {
         @Override
         public void setX(int x) {
             super.setX(x);
-            textFieldWidget.setX(getX()+16);
+            textFieldWidget.setX(getX() + 16);
         }
 
         @Override
