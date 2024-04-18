@@ -629,5 +629,11 @@
     "skyblocker.fancyAuctionHouse.youPay": "Вы заплатите: %s",
     "skyblocker.crimson.kuudra.noArrowPoison": "Нет яда для стрел!",
     "skyblocker.waypoints.ordered.remove.success": "Метка %s успешно удалена из группы %s.",
-    "skyblocker.waypoints.ordered.export.fail": "§cНе удалось экспортировать метки, проверьте latest.log для получения подробной информации."
+    "skyblocker.waypoints.ordered.export.fail": "§cНе удалось экспортировать метки, проверьте latest.log для получения подробной информации.",
+    "skyblocker.tips.wikiLookup": "Нажмите F4, когда навелись на предмет, чтобы открыть его страницу на вики.",
+    "skyblocker.tips.flameOverlay": "Считаете, что огонь занимает слишком много места на экране? В настройках мода вы можете его уменьшить",
+    "skyblocker.tips.quickNav": "Вы можете переназначить кнопки быстрой навигации в настройках мода.",
+    "skyblocker.tips.fairySoulsEnigmaSoulsRelics": "Не знаете как и где начать искать Fairy Souls, Enigma Souls, и Relics? Включите в настройках помощников, они за вас запомнят, что вы уже нашли.",
+    "skyblocker.partyFinder.tabs.partyFinder": "Party Finder",
+    "skyblocker.tips.protectItem": "Предотвратите случайное выбрасывание вещей при помощи /skyblocker protectItem."
 }
