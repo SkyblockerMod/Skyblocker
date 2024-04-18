@@ -385,5 +385,6 @@
     "text.autoconfig.skyblocker.option.general.betterAuctionHouse.enabled": "Включить",
     "text.autoconfig.skyblocker.option.general.betterAuctionHouse.highlightUnderAvgPrice": "Подсвечивать BIN-аукционы по цене ниже средней",
     "text.autoconfig.skyblocker.option.locations.garden.farmingHud.enableHud": "Включить фермерский HUD",
-    "text.autoconfig.skyblocker.option.locations.garden.farmingHud.config": "Конфигурация фермерского HUD..."
+    "text.autoconfig.skyblocker.option.locations.garden.farmingHud.config": "Конфигурация фермерского HUD...",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer": "Включить Таймер"
 }
