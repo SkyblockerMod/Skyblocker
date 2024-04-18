@@ -280,15 +280,6 @@ public class BarPositioner {
             return new BarLocation(bar.anchor, bar.gridX, bar.gridY);
         }
 
-        @Override
-        public boolean equals(Object object) {
-            if (this == object) return true;
-            if (object == null || getClass() != object.getClass()) return false;
-
-            BarLocation that = (BarLocation) object;
-            return x == that.x && y == that.y && barAnchor == that.barAnchor;
-        }
-
         public boolean equals(BarAnchor barAnchor, int x, int y) {
             return x == this.x && y == this.y && barAnchor == this.barAnchor;
         }
