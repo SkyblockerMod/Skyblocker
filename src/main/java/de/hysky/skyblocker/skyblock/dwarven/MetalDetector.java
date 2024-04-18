@@ -17,14 +17,16 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MetalDetector {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
-    private static final Pattern TREASURE_PATTERN = Pattern.compile("(§3§lTREASURE: §b)(\\d+\\.\\d)m");
+    private static final Pattern TREASURE_PATTERN = Pattern.compile("(§3§lTREASURE: §b)(\\d+\\.?\\d?)m");
     private static final Pattern KEEPER_PATTERN = Pattern.compile("Keeper of (\\w+)");
     private static final HashMap<String, Vec3i> keeperOffsets = Util.make(new HashMap<>(), map -> {
         map.put("Diamond", new Vec3i(33, 0, 3));
@@ -89,6 +91,12 @@ public class MetalDetector {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MetalDetector::render);
     }
 
+    /**
+     * process
+     * when a message with the distance to the treasure is sent to the player and then update the helper and workout possible locations using that message
+     * @param text message sent
+     * @param overlay if its to the overlay
+     */
     private static void getDistanceMessage(Text text, boolean overlay) {
         if (!overlay || !SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
             checkChestFound(text);
@@ -134,6 +142,10 @@ public class MetalDetector {
         previousPlayerPos = playerPos;
     }
 
+    /**
+     * reset when if message is sent saying the player found the treasure
+     * @param text message sent to player
+     */
     private static void checkChestFound(Text text) {
         if (!Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
             return;
@@ -143,6 +155,12 @@ public class MetalDetector {
             possibleBlocks = new ArrayList<>();
         }
     }
+
+    /**
+     * using the distance the treasure is from the player work out blocks that are that far away and narrows down possible locations until there is one left
+     * @param distance how far the treasure is from the player
+     * @param playerPos where the player is
+     */
 
     protected static void updatePossibleBlocks(double distance, Vec3d playerPos) {
         if (newTreasure) {
@@ -179,6 +197,10 @@ public class MetalDetector {
         }
     }
 
+    /**
+     * uses the labels for the keepers names to find the central point of the mines of divan so the known offsets can be used
+     */
+
     private static void findCenterOfMines() {
         if (CLIENT.player == null || CLIENT.world == null) {
             return;
@@ -199,6 +221,11 @@ public class MetalDetector {
         }
     }
 
+    /**
+     * renders waypoints for the location of treasure / possible treasure
+     * @param context world render context
+     */
+
     private static void render(WorldRenderContext context) {
         //only render enabled and if there is a few location options and in the mines of divan
         if (!SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
@@ -207,14 +234,14 @@ public class MetalDetector {
         //only one location render just that and guiding line to it
         if (possibleBlocks.size() == 1) {
             Vec3i block = possibleBlocks.get(0).add(0, -1, 0); //the block you are taken to is one block above the chest
-            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.MINES_OF_DIVAN, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure"), new BlockPos(block.getX(), block.getY(), block.getZ()));
+            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure"), new BlockPos(block.getX(), block.getY(), block.getZ()));
             waypoint.render(context);
             RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
             return;
         }
 
         for (Vec3i block : possibleBlocks) {
-            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.MINES_OF_DIVAN, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), new BlockPos(block.getX(), block.getY(), block.getZ()));
+            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), new BlockPos(block.getX(), block.getY(), block.getZ()));
             waypoint.render(context);
         }
     }
