@@ -147,7 +147,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
     public void renderText(DrawContext context) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
-        int barX = iconPosition.equals(IconPosition.LEFT) ? x + 10 : x;
+        int barX = iconPosition.equals(IconPosition.LEFT) ? x + 11 : x;
         String text = this.value.toString();
         int x = barX + (barWith - textRenderer.getWidth(text)) / 2;
         int y = this.y - 3;
