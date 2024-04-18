@@ -397,5 +397,7 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.creeperSolver": "Решать головоломку Creeper Beams",
     "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.scoreScaling": "Размер титров",
     "text.autoconfig.skyblocker.option.locations.garden.lockMouseTool": "Заблокировать управление камерой, когда в руках фермерский инструмент",
-    "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "Блокировать камеру, только когда вы стоите на земле"
+    "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "Блокировать камеру, только когда вы стоите на земле",
+    "text.autoconfig.skyblocker.option.locations.garden.visitorHelper": "Помощник для посетителей",
+    "text.autoconfig.skyblocker.option.locations.dungeons.creeperSolver.@Tooltip": "Выделяет наилучшие лучи для создания и цели для поражения."
 }
