@@ -17,8 +17,9 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,10 +93,10 @@ public class MetalDetector {
     }
 
     /**
-     * process
-     * when a message with the distance to the treasure is sent to the player and then update the helper and workout possible locations using that message
-     * @param text message sent
-     * @param overlay if its to the overlay
+     * Processes the message with the distance to the treasure, updates the helper, and works out possible locations using that message.
+     *
+     * @param text    the message sent to the player
+     * @param overlay if the message is an overlay message
      */
     private static void getDistanceMessage(Text text, boolean overlay) {
         if (!overlay || !SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
@@ -143,8 +144,9 @@ public class MetalDetector {
     }
 
     /**
-     * reset when if message is sent saying the player found the treasure
-     * @param text message sent to player
+     * Processes the found treasure message and resets the helper
+     *
+     * @param text the message sent to the player
      */
     private static void checkChestFound(Text text) {
         if (!Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
@@ -157,11 +159,12 @@ public class MetalDetector {
     }
 
     /**
-     * using the distance the treasure is from the player work out blocks that are that far away and narrows down possible locations until there is one left
-     * @param distance how far the treasure is from the player
-     * @param playerPos where the player is
+     * Works out the possible locations the treasure could be using the distance the treasure is from the player and
+     * narrows down possible locations until there is one left.
+     *
+     * @param distance the distance the treasure is from the player squared
+     * @param playerPos the position of the player
      */
-
     protected static void updatePossibleBlocks(double distance, Vec3d playerPos) {
         if (newTreasure) {
             possibleBlocks = new ArrayList<>();
@@ -198,9 +201,8 @@ public class MetalDetector {
     }
 
     /**
-     * uses the labels for the keepers names to find the central point of the mines of divan so the known offsets can be used
+     * Uses the labels for the keepers names to find the central point of the mines of divan so the known offsets can be used.
      */
-
     private static void findCenterOfMines() {
         if (CLIENT.player == null || CLIENT.world == null) {
             return;
@@ -222,10 +224,9 @@ public class MetalDetector {
     }
 
     /**
-     * renders waypoints for the location of treasure / possible treasure
+     * Renders waypoints for the location of treasure or possible treasure.
      * @param context world render context
      */
-
     private static void render(WorldRenderContext context) {
         //only render enabled and if there is a few location options and in the mines of divan
         if (!SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {

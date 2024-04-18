@@ -517,8 +517,8 @@
   "skyblocker.exotic.glitched": "GLITCHED",
   "skyblocker.exotic.exotic": "EXOTIC",
 
-  "skyblocker.dwarvenMines.metalDetectorHelper.startTip": "Stand still in multiple places unit solver has narrowed down locations to one",
-  "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found center of mines now working faster",
+  "skyblocker.dwarvenMines.metalDetectorHelper.startTip": "Stand still in multiple places until the solver has narrowed down possible locations to one",
+  "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the center of mines, now working faster",
   "skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage": "Found treasure",
   "skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage": "Possible treasure locations: ",
   "skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage": "Something went wrong with the metal detector. Trying again",

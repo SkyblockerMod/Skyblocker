@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 public class MetalDetectorTest {
-
     @Test
     void testFindPossibleBlocks() {
         //test starting without knowing middle
@@ -29,6 +28,5 @@ public class MetalDetectorTest {
         MetalDetector.updatePossibleBlocks(24.9, new Vec3d(10, 1, 10));
         Assertions.assertEquals(MetalDetector.possibleBlocks.size(), 1);
         Assertions.assertEquals(MetalDetector.possibleBlocks.get(0), new Vec3i(1, -20, 20));
-
     }
 }
