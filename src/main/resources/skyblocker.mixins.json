@@ -50,7 +50,6 @@
     "accessor.ScreenAccessor",
     "accessor.SkullBlockEntityAccessor",
     "accessor.SlotAccessor",
-    "accessor.WindowAccessor",
     "accessor.WorldRendererAccessor",
     "discordipc.ConnectionMixin"
   ],

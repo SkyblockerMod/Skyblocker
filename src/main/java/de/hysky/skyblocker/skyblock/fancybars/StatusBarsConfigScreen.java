@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import de.hysky.skyblocker.mixin.accessor.WindowAccessor;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
@@ -12,6 +11,7 @@ import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.Window;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,7 @@ public class StatusBarsConfigScreen extends Screen {
 
     public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
 
-    private final Map<ScreenRect, BarLocation> meaningFullName = new HashMap<>();
+    private final Map<ScreenRect, BarLocation> rectToBarLocation = new HashMap<>();
     private static final int HOTBAR_WIDTH = 182;
 
     private @Nullable StatusBar cursorBar = null;
@@ -50,7 +50,6 @@ public class StatusBarsConfigScreen extends Screen {
     // prioritize left and right cuz they are much smaller space than up and down
     private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
 
-    @SuppressWarnings("UnreachableCode") // IntelliJ big stupid
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         /*for (ScreenRect screenRect : meaningFullName.keySet()) {
@@ -62,19 +61,19 @@ public class StatusBarsConfigScreen extends Screen {
 
         ScreenRect mouseRect = new ScreenRect(new ScreenPos(mouseX - 1, mouseY - 1), 3, 3);
         assert client != null;
-        WindowAccessor window = (WindowAccessor) (Object) client.getWindow();
-        assert window != null;
+        Window window = client.getWindow();
 
         if (cursorBar != null) {
             cursorBar.renderCursor(context, mouseX, mouseY, delta);
             boolean inserted = false;
             rectLoop:
-            for (ScreenRect screenRect : meaningFullName.keySet()) {
+            for (ScreenRect screenRect : rectToBarLocation.keySet()) {
                 for (NavigationDirection direction : DIRECTION_CHECK_ORDER) {
                     boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
 
                     if (overlaps) {
-                        BarLocation barSnap = meaningFullName.get(screenRect);
+                        BarLocation barSnap = rectToBarLocation.get(screenRect);
+                        if (barSnap.barAnchor() == null) break;
                         if (direction.getAxis().equals(NavigationAxis.VERTICAL)) {
                             int neighborInsertY = getNeighborInsertY(barSnap, !direction.isPositive());
                             if (!currentInsertLocation.equals(barSnap.barAnchor(), barSnap.x(), neighborInsertY)) {
@@ -123,8 +122,8 @@ public class StatusBarsConfigScreen extends Screen {
 
                 BarLocation left = resizedBars.left();
                 BarLocation right = resizedBars.right();
-                boolean hasRight = !right.equals(BarLocation.NULL);
-                boolean hasLeft = !left.equals(BarLocation.NULL);
+                boolean hasRight = right.barAnchor() != null;
+                boolean hasLeft = left.barAnchor() != null;
                 BarPositioner.BarAnchor barAnchor;
                 if (!hasRight) {
                     barAnchor = left.barAnchor();
@@ -186,12 +185,13 @@ public class StatusBarsConfigScreen extends Screen {
 
             } else { // hovering bars
                 rectLoop:
-                for (ScreenRect screenRect : meaningFullName.keySet()) {
+                for (ScreenRect screenRect : rectToBarLocation.keySet()) {
                     for (NavigationDirection direction : new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT}) {
                         boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
 
                         if (overlaps && !editBarWidget.isMouseOver(mouseX, mouseY)) {
-                            BarLocation barLocation = meaningFullName.get(screenRect);
+                            BarLocation barLocation = rectToBarLocation.get(screenRect);
+                            if (barLocation.barAnchor() == null) break;
                             boolean right = direction.equals(NavigationDirection.RIGHT);
                             // can't resize on the edge of a target size row!
                             if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
@@ -272,7 +272,6 @@ public class StatusBarsConfigScreen extends Screen {
         }
     }
 
-    @SuppressWarnings("UnreachableCode")
     @Override
     public void removed() {
         super.removed();
@@ -280,7 +279,7 @@ public class StatusBarsConfigScreen extends Screen {
         if (cursorBar != null) cursorBar.ghost = false;
         FancyStatusBars.updatePositions();
         assert client != null;
-        GLFW.glfwSetCursor(((WindowAccessor) (Object) client.getWindow()).getHandle(), 0);
+        GLFW.glfwSetCursor(client.getWindow().getHandle(), 0);
         FancyStatusBars.saveBarConfig();
     }
 
@@ -309,10 +308,10 @@ public class StatusBarsConfigScreen extends Screen {
     }
 
     private void updateScreenRects() {
-        meaningFullName.clear();
+        rectToBarLocation.clear();
         FancyStatusBars.statusBars.values().forEach(statusBar1 -> {
             if (statusBar1.anchor == null) return;
-            meaningFullName.put(
+            rectToBarLocation.put(
                     new ScreenRect(new ScreenPos(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
                     BarLocation.of(statusBar1));
         });
