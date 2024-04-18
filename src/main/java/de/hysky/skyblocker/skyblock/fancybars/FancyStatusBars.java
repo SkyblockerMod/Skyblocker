@@ -217,8 +217,8 @@ public class FancyStatusBars {
                     int offsetX = 0;
                     int lessWidth = 0;
                     if (rowSize > 1) { // Technically bars in the middle of 3+ bars will be smaller than the 2 side ones but shh
-                        if (i==0) lessWidth = 1;
-                        else if (i == rowSize-1) {
+                        if (i == 0) lessWidth = 1;
+                        else if (i == rowSize - 1) {
                             lessWidth = 1;
                             offsetX = 1;
                         } else {

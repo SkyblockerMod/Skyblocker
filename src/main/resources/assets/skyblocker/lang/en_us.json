@@ -499,7 +499,7 @@
   "skyblocker.bars.config.icon": "Icon",
   "skyblocker.bars.config.openScreen": "Status Bars Config screen",
   "skyblocker.bars.config.explanationTitle": "What is this?",
-  "skyblocker.bars.config.explanation": "Welcome to the status bars config screen!\n\nDrag and drop the bars to snap them to an anchor (white squares) or existing bars.\nYou can right click them to edit a bunch of properties.\n\nEverything is saved when you leave",
+  "skyblocker.bars.config.explanation": "Welcome to the status bars config screen!\n\nDrag and drop the bars to snap them to an anchor (white squares) or existing bars.\nYou can right click them to edit a bunch of properties.\nBy hovering your mouse between 2 bars (your cursor should change), you can resize them.\n\nEverything is saved when you leave",
 
   "skyblocker.updaterepository.failed":  "§cUpdating local repository failed. Remove files manually and restart game.",
 
