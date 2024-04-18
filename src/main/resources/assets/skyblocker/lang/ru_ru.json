@@ -409,5 +409,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.solveTicTacToe": "Решать головоломку Tic Tac Toe (Крестики-нолики)",
     "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage": "Сообщение",
     "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage": "Включить сообщение о Мимике",
-    "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Отправляет сообщение в чат после убийства мимика для модов подсчета очков других игроков."
+    "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Отправляет в чат сообщение о смерти Мимика для модов подсчета очков других игроков.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.mimicMessage.mimicMessage": "Сообщение о Мимике"
 }
