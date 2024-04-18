@@ -385,6 +385,17 @@
     "text.autoconfig.skyblocker.option.general.betterAuctionHouse.enabled": "Включить",
     "text.autoconfig.skyblocker.option.general.betterAuctionHouse.highlightUnderAvgPrice": "Подсвечивать BIN-аукционы по цене ниже средней",
     "text.autoconfig.skyblocker.option.locations.garden.farmingHud.enableHud": "Включить фермерский HUD",
-    "text.autoconfig.skyblocker.option.locations.garden.farmingHud.config": "Конфигурация фермерского HUD...",
-    "text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer": "Включить Таймер"
+    "text.autoconfig.skyblocker.option.locations.garden.farmingHud.config": "Настройка фермерского HUD...",
+    "text.autoconfig.skyblocker.option.general.fishing.enableFishingTimer": "Включить Таймер",
+    "text.autoconfig.skyblocker.option.locations.dungeons.blazeSolver.@Tooltip": "Выделяет нужного ифрита зеленым, а следующего по очереди - белым.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker": "Счетчик секретов найденных другими игроками",
+    "text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker.@Tooltip": "Отслеживает количество секретов, которые смогли найти ваши товарищи по команде.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow": "Подсветка звездных мобов",
+    "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "Применяет эффект свечения к звездным мобам в поле зрения\n(Мобы, с которых выбивается ключ для двери)",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.includeEssence": "Учитывать эссенцию",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonChestProfit.neutralThreshold": "Порог окупаемости",
+    "text.autoconfig.skyblocker.option.locations.dungeons.creeperSolver": "Решать головоломку Creeper Beams",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.scoreScaling": "Размер титров",
+    "text.autoconfig.skyblocker.option.locations.garden.lockMouseTool": "Заблокировать управление камерой, когда в руках фермерский инструмент",
+    "text.autoconfig.skyblocker.option.locations.garden.lockMouseGround": "Блокировать камеру, только когда вы стоите на земле"
 }
