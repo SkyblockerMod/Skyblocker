@@ -21,18 +21,17 @@ import net.minecraft.entity.Entity;
 public class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/WorldRenderer;regularEntityCount:I", opcode = Opcodes.PUTFIELD))
-	private void skyblocker$beforeEntityIsRendered(CallbackInfo ci, @Local Entity entity, @Share("renderedBoundingBox") LocalBooleanRef renderedBoundingBox) {
+	private void skyblocker$beforeEntityIsRendered(CallbackInfo ci, @Local Entity entity) {
 		boolean shouldShowBoundingBox = MobBoundingBoxes.shouldDrawMobBoundingBox(entity);
 
 		if (shouldShowBoundingBox) {
-			renderedBoundingBox.set(true);
 			MobBoundingBoxes.submitBox2BeRendered(entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
 		}
 	}
 
 	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
-	private boolean skyblocker$shouldMobGlow(boolean original, @Local Entity entity, @Share("renderedBoundingBox") LocalBooleanRef renderedBoundingBox, @Share("hasCustomGlow") LocalBooleanRef hasCustomGlow) {
-		boolean shouldGlow = !renderedBoundingBox.get() && MobGlow.shouldMobGlow(entity);
+	private boolean skyblocker$shouldMobGlow(boolean original, @Local Entity entity, @Share("hasCustomGlow") LocalBooleanRef hasCustomGlow) {
+		boolean shouldGlow = MobGlow.shouldMobGlow(entity);
 		hasCustomGlow.set(shouldGlow);
 		return original || shouldGlow;
 	}

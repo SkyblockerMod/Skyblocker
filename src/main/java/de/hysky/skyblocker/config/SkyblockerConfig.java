@@ -709,6 +709,9 @@ public class SkyblockerConfig {
 		public boolean playerSecretsTracker = false;
 
 		@SerialEntry
+		public boolean starredMobGlow = false;
+
+		@SerialEntry
 		public boolean starredMobBoundingBoxes = true;
 
 		@SerialEntry

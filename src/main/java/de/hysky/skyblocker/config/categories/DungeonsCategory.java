@@ -363,6 +363,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip")))
+						.binding(defaults.locations.dungeons.starredMobGlow,
+								() -> config.locations.dungeons.starredMobGlow,
+								newValue -> config.locations.dungeons.starredMobGlow = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobBoundingBoxes"))
 						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobBoundingBoxes.@Tooltip")))
 						.binding(defaults.locations.dungeons.starredMobBoundingBoxes,

@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class MobGlow {
-	protected static final boolean STARRED_MOB_GLOW = Boolean.parseBoolean(System.getProperty("skyblocker.starredMobGlow", "false"));
 
 	public static boolean shouldMobGlow(Entity entity) {
 		Box box = entity.getBoundingBox();
@@ -38,22 +37,22 @@ public class MobGlow {
 					// Minibosses
 					if (entity instanceof PlayerEntity) {
 						switch (name) {
-							case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes && STARRED_MOB_GLOW;
+							case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 							case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
 									"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid": return LividColor.shouldGlow(name);
 						}
 					}
 
 					// Regular Mobs
-					if (!(entity instanceof ArmorStandEntity) && STARRED_MOB_GLOW) {
+					if (!(entity instanceof ArmorStandEntity)) {
 						List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
 
 						if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-							return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+							return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 					}
 
 					// Bats
-					return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes && entity instanceof BatEntity;
+					return (SkyblockerConfigManager.get().locations.dungeons.starredMobGlow || SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes) && entity instanceof BatEntity;
 				}
 
 				// Rift

@@ -28,7 +28,7 @@ public class MobBoundingBoxes {
 	public static boolean shouldDrawMobBoundingBox(Entity entity) {
 		Box box = entity.getBoundingBox();
 
-		if (Utils.isInDungeons() && !MobGlow.STARRED_MOB_GLOW && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
+		if (Utils.isInDungeons() && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
 			String name = entity.getName().getString();
 
 			// Minibosses
@@ -51,19 +51,7 @@ public class MobBoundingBoxes {
 	}
 	
 	public static float[] getBoxColor(Entity entity) {
-		String name = entity.getName().getString();
-		int color = 0;
-
-		if (entity instanceof PlayerEntity) {
-			color = switch (name) {
-				case "Lost Adventurer" -> 0xfee15c;
-				case "Shadow Assassin" -> 0x5b2cb2;
-				case "Diamond Guy" -> 0x57c2f7;
-				default -> 0xf57738;
-			};
-		} else {
-			color = 0xf57738;
-		}
+		int color = MobGlow.getGlowColor(entity);
 
 		return new float[] { ((color >> 16) & 0xFF) / 255f, ((color >> 8) & 0xFF) / 255f, (color & 0xFF) / 255f };
 	}
