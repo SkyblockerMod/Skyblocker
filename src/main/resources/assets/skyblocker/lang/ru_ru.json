@@ -383,5 +383,7 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "У вас нет аксессуаров из этого семейства.",
     "text.autoconfig.skyblocker.option.general.betterAuctionHouse": "Улучшенный аукцион",
     "text.autoconfig.skyblocker.option.general.betterAuctionHouse.enabled": "Включить",
-    "text.autoconfig.skyblocker.option.general.betterAuctionHouse.highlightUnderAvgPrice": "Подсвечивать BIN-аукционы по цене ниже средней"
+    "text.autoconfig.skyblocker.option.general.betterAuctionHouse.highlightUnderAvgPrice": "Подсвечивать BIN-аукционы по цене ниже средней",
+    "text.autoconfig.skyblocker.option.locations.garden.farmingHud.enableHud": "Включить фермерский HUD",
+    "text.autoconfig.skyblocker.option.locations.garden.farmingHud.config": "Конфигурация фермерского HUD..."
 }
