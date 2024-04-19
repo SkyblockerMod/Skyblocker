@@ -236,5 +236,9 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
             replacement.render(context, mouseX, mouseY, tickDelta);
             context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, 0xFFFFFF);
         }
+
+        public void removeFromMap() {
+            category.shortcutsMap.remove(target.getText(), replacement.getText());
+        }
     }
 }

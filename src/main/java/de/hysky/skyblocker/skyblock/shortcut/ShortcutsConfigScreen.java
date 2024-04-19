@@ -72,6 +72,7 @@ public class ShortcutsConfigScreen extends Screen {
         if (client != null) {
             if (confirmedAction && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
                 shortcutsConfigListWidget.removeEntry(shortcutEntry);
+                shortcutEntry.removeFromMap();
             }
             client.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
             shortcutsConfigListWidget.setScrollAmount(scrollAmount);
