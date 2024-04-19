@@ -635,5 +635,6 @@
     "skyblocker.tips.quickNav": "Вы можете переназначить кнопки быстрой навигации в настройках мода.",
     "skyblocker.tips.fairySoulsEnigmaSoulsRelics": "Не знаете как и где начать искать Fairy Souls, Enigma Souls, и Relics? Включите в настройках помощников, они за вас запомнят, что вы уже нашли.",
     "skyblocker.partyFinder.tabs.partyFinder": "Поиск Коммпании",
-    "skyblocker.tips.protectItem": "Предотвратите случайное выбрасывание вещей при помощи /skyblocker protectItem."
+    "skyblocker.tips.protectItem": "Предотвратите случайное выбрасывание вещей при помощи /skyblocker protectItem.",
+    "text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "После достижения врат сообщит, если найдено менее 5 крипт."
 }
