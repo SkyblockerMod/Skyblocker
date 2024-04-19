@@ -289,7 +289,7 @@
   "text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker": "Player Secrets Tracker",
   "text.autoconfig.skyblocker.option.locations.dungeons.playerSecretsTracker.@Tooltip": "Tracks the amount of secrets people in your dungeon run are doing.",
   "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow": "Starred Mob Glow",
-  "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\n§lWARNING: This feature is experimental and you may encounter issues by using it.",
+  "text.autoconfig.skyblocker.option.locations.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nWARNING: This feature is experimental and you may encounter issues with it.",
   "text.autoconfig.skyblocker.option.locations.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "text.autoconfig.skyblocker.option.locations.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
   "text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos": "Solve Three Weirdos Puzzle",

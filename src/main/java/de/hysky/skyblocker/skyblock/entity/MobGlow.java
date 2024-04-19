@@ -45,7 +45,7 @@ public class MobGlow {
 
 					// Regular Mobs
 					if (!(entity instanceof ArmorStandEntity)) {
-						List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
+						List<ArmorStandEntity> armorStands = getArmorStands(entity);
 
 						if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
 							return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
