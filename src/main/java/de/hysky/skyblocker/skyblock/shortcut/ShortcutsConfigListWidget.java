@@ -70,6 +70,12 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         getCategory().ifPresent(category -> children().add(children().indexOf(getSelectedOrNull()) + 1, new ShortcutEntry(category)));
     }
 
+    protected void updatePositions() {
+        for (AbstractShortcutEntry child : children()) {
+            child.updatePositions();
+        }
+    }
+
     @Override
     protected boolean removeEntry(AbstractShortcutEntry entry) {
         return super.removeEntry(entry);
@@ -90,10 +96,11 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         return children().stream().filter(ShortcutEntry.class::isInstance).map(ShortcutEntry.class::cast).filter(ShortcutEntry::isNotEmpty);
     }
 
-    protected static abstract class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
+    public static abstract class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
+        protected void updatePositions() {}
     }
 
-    private class ShortcutCategoryEntry extends AbstractShortcutEntry {
+    protected class ShortcutCategoryEntry extends AbstractShortcutEntry {
         private final Map<String, String> shortcutsMap;
         private final Text targetName;
         private final Text replacementName;
@@ -235,6 +242,13 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
             target.render(context, mouseX, mouseY, tickDelta);
             replacement.render(context, mouseX, mouseY, tickDelta);
             context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, 0xFFFFFF);
+        }
+
+        @Override
+        protected void updatePositions() {
+            super.updatePositions();
+            target.setX(width / 2 - 160);
+            replacement.setX(width / 2 + 10);
         }
     }
 }
