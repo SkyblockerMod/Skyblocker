@@ -3,15 +3,12 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
-import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -26,12 +23,8 @@ import net.minecraft.util.collection.DefaultedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
 
 public class DungeonScore {
 	private static final SkyblockerConfig.DungeonScore SCORE_CONFIG = SkyblockerConfigManager.get().locations.dungeons.dungeonScore;
@@ -68,11 +61,9 @@ public class DungeonScore {
 	private static int puzzleCount;
 	private static int deathCount;
 	private static int score;
-	private static final Map<String, Boolean> SpiritPetCache = new HashMap<>();
 
-	public static void init() {
+    public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
-		SkyblockEvents.LEAVE.register(SpiritPetCache::clear);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 			if (overlay || !Utils.isInDungeons()) return;
@@ -288,36 +279,18 @@ public class DungeonScore {
 		return matcher != null ? Integer.parseInt(matcher.group("crypts")) : 0;
 	}
 
-	public static boolean hasSpiritPet(String name) {
-		return SpiritPetCache.computeIfAbsent(name, k -> {
-			String playeruuid = ApiUtils.name2Uuid(name);
-			try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + playeruuid)) {
-				if (!response.ok()) throw new IllegalStateException("Failed to get profile uuid for player " + name + "! Response: " + response.content());
-				JsonObject responseJson = JsonParser.parseString(response.content()).getAsJsonObject();
+	public static boolean hasSpiritPet(JsonObject player, String name) {
+		try {
+			for (JsonElement pet : player.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
+				if (!pet.getAsJsonObject().get("type").getAsString().equals("SPIRIT")) continue;
+				if (!pet.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) continue;
 
-				JsonObject player = StreamSupport.stream(responseJson.getAsJsonArray("profiles").spliterator(), false)
-						.map(JsonElement::getAsJsonObject)
-						.filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
-						.findFirst()
-						.orElseThrow(() -> new IllegalStateException("No selected profile found!?"))
-						.getAsJsonObject("members").entrySet().stream()
-						.filter(entry -> entry.getKey().equals(playeruuid))
-						.map(Map.Entry::getValue)
-						.map(JsonElement::getAsJsonObject)
-						.findFirst()
-						.orElseThrow(() -> new IllegalStateException("Player somehow not found inside their own profile!"));
-
-				for (JsonElement element : player.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
-					if (!element.getAsJsonObject().get("type").getAsString().equals("SPIRIT")) continue;
-					if (!element.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) continue;
-
-					return true;
-				}
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! Name: {}", name, e);
+				return true;
 			}
-			return false;
-		});
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! Name: {}", name, e);
+		}
+		return false;
 	}
 
 	private static void checkMessageForDeaths(String message) {
@@ -327,11 +300,10 @@ public class DungeonScore {
 		deathCount++;
 		if (deathCount > 1) return;
 		final String whoDied = matcher.group("whodied").transform(s -> {
-			if (s.equals("You")) return MinecraftClient.getInstance().player.getName().getString(); //This will be wrong if the dead player is called 'You' but that's unlikely
+			if (s.equals("You")) return MinecraftClient.getInstance().getSession().getUsername(); //This will be wrong if the dead player is called 'You' but that's unlikely
 			else return s;
 		});
-		CompletableFuture.supplyAsync(() -> hasSpiritPet(whoDied))
-				.thenAccept(hasSpiritPet -> firstDeathHasSpiritPet = hasSpiritPet);
+		ProfileUtils.updateProfile(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
 	}
 
 	private static void checkMessageForWatcher(String message) {
