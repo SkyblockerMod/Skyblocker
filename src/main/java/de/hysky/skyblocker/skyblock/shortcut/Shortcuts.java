@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.CommandNode;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -156,9 +157,21 @@ public class Shortcuts {
                 dispatcher.register(literal(key.substring(1)));
             }
         }
-        for (String key : commandArgs.keySet()) {
-            if (key.startsWith("/")) {
-                dispatcher.register(literal(key.substring(1)).then(argument("args", StringArgumentType.greedyString())));
+        for (Map.Entry<String, String> set : commandArgs.entrySet()) {
+            if (set.getKey().startsWith("/")) {
+                CommandNode<FabricClientCommandSource> redirectLocation = dispatcher.getRoot();
+                for (String word : set.getValue().substring(1).split(" ")) {
+                    redirectLocation = redirectLocation.getChild(word);
+                    if (redirectLocation == null) {
+                        break;
+                    }
+                }
+                if (redirectLocation == null) {
+                    dispatcher.register(literal(set.getKey().substring(1)).then(argument("args", StringArgumentType.greedyString())));
+                }
+                else {
+                    dispatcher.register(literal(set.getKey().substring(1)).redirect(redirectLocation));
+                }
             }
         }
         dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("help").executes(context -> {
