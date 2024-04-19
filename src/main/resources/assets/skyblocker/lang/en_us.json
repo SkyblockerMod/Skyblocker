@@ -347,6 +347,8 @@
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.enableDrillFuel": "Enable Drill Fuel",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solveFetchur": "Solve Fetchur",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.metalDetectorHelper": "Metal Detector Helper",
+  "text.autoconfig.skyblocker.option.locations.dwarvenMines.metalDetectorHelper.@Tooltip": "Helper for the metal detector puzzle in the Mines of Divan.",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud": "Dwarven HUD",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabledCommissions": "Enable Commissions",
   "text.autoconfig.skyblocker.option.locations.dwarvenMines.dwarvenHud.enabledPowder": "Enable Powder",
@@ -520,6 +522,14 @@
   "skyblocker.exotic.spook": "SPOOK",
   "skyblocker.exotic.glitched": "GLITCHED",
   "skyblocker.exotic.exotic": "EXOTIC",
+
+  "skyblocker.dwarvenMines.metalDetectorHelper.startTip": "Stand still in multiple places until the solver has narrowed down possible locations to one",
+  "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the center of mines, now working faster",
+  "skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage": "Found treasure",
+  "skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage": "Possible treasure locations: ",
+  "skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage": "Something went wrong with the metal detector. Trying again",
+  "skyblocker.dwarvenMines.metalDetectorHelper.treasure": "Treasure",
+  "skyblocker.dwarvenMines.metalDetectorHelper.possible": "Possible",
 
   "skyblocker.end.hud.zealotsSinceLastEye": "Since last eye: %d",
   "skyblocker.end.hud.zealotsTotalKills": "Total kills: %d",

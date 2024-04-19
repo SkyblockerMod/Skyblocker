@@ -17,7 +17,7 @@ public class SortWidget extends SliderWidget<SortWidget.Option> {
         super(x, y, 36, 9, Text.literal("Sort Widget"), clickSlot, Option.HIGH);
     }
 
-    public enum Option implements OptionInfo {
+    public enum Option implements SliderWidget.OptionInfo {
         HIGH("high.png"),
         LOW("low.png"),
         SOON("soon.png"),
