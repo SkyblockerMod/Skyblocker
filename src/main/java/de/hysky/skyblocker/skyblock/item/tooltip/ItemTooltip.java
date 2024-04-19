@@ -234,7 +234,7 @@ public class ItemTooltip {
                     case IS_GREATER_TIER -> Text.literal("✦ Upgrade ").withColor(0x218bff).append(Text.literal(report.right()).withColor(0xf8f8ff));
                     case HAS_GREATER_TIER -> Text.literal("↑ Upgradable ").withColor(0xf8d048).append(Text.literal(report.right()).withColor(0xf8f8ff));
                     case OWNS_BETTER_TIER -> Text.literal("↓ Downgrade ").formatted(Formatting.GRAY).append(Text.literal(report.right()).withColor(0xf8f8ff));
-                    case MISSING -> Text.literal("✖ Missing").formatted(Formatting.RED);
+                    case MISSING -> Text.literal("✖ Missing ").formatted(Formatting.RED).append(Text.literal(report.right()).withColor(0xf8f8ff));
 
                     //Should never be the case
                     default -> Text.literal("? Unknown").formatted(Formatting.GRAY);
