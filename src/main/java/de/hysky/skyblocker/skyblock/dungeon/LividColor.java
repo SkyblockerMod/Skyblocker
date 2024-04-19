@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -11,7 +12,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
@@ -89,6 +89,10 @@ public class LividColor {
             client.inGameHud.setTitle(message);
         }
         tenTicks = 0;
+    }
+
+    public static boolean allowGlow() {
+        return !SkyblockerConfigManager.get().locations.dungeons.lividColor.enableLividColorGlow || !DungeonManager.getBoss().isFloor(5);
     }
 
     public static boolean shouldGlow(String name) {

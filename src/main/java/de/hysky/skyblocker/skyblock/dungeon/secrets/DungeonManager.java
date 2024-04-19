@@ -15,6 +15,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
@@ -148,7 +149,8 @@ public class DungeonManager {
     @Nullable
     private static Vector2ic physicalEntrancePos;
     private static Room currentRoom;
-    private static boolean inBoss;
+    @NotNull
+    private static DungeonBoss boss = DungeonBoss.NONE;
 
     public static boolean isRoomsLoaded() {
         return roomsLoaded != null && roomsLoaded.isDone();
@@ -201,12 +203,20 @@ public class DungeonManager {
         return customWaypoints.remove(room, pos);
     }
 
+    /**
+     * not null if {@link #isCurrentRoomMatched()}
+     */
     public static Room getCurrentRoom() {
         return currentRoom;
     }
 
+    @NotNull
+    public static DungeonBoss getBoss() {
+        return boss;
+    }
+
     public static boolean isInBoss() {
-        return inBoss;
+        return boss.isInBoss();
     }
 
     /**
@@ -643,12 +653,10 @@ public class DungeonManager {
             }
         }
 
-        if (message.equals("[BOSS] Bonzo: Gratz for making it this far, but I'm basically unbeatable.") || message.equals("[BOSS] Scarf: This is where the journey ends for you, Adventurers.")
-                || message.equals("[BOSS] The Professor: I was burdened with terrible news recently...") || message.equals("[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!")
-                || message.equals("[BOSS] Livid: Welcome, you've arrived right on time. I am Livid, the Master of Shadows.") || message.equals("[BOSS] Sadan: So you made it all the way here... Now you wish to defy me? Sadan?!")
-                || message.equals("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")) {
+        var newBoss = DungeonBoss.fromMessage(message);
+        if (!isInBoss() && newBoss.isInBoss()) {
             reset();
-            inBoss = true;
+            boss = newBoss;
         }
     }
 
@@ -762,6 +770,6 @@ public class DungeonManager {
         physicalEntrancePos = null;
         rooms.clear();
         currentRoom = null;
-        inBoss = false;
+        boss = DungeonBoss.NONE;
     }
 }
