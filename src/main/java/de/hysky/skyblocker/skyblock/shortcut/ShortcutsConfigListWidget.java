@@ -238,7 +238,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         }
 
         public void removeFromMap() {
-            category.shortcutsMap.remove(target.getText(), replacement.getText());
+            category.shortcutsMap.remove(target.getText());
         }
     }
 }
