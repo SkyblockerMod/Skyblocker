@@ -865,6 +865,15 @@ public class SkyblockerConfig {
 		public String dungeonScore300Message = "300 Score Reached!";
 
 		@SerialEntry
+		public boolean enableDungeonCryptsMessage = true;
+
+		@SerialEntry
+		public int dungeonCryptsMessageThreshold = 250;
+
+		@SerialEntry
+		public String dungeonCryptsMessage = "We only have [crypts] crypts out of 5, we need more!";
+
+		@SerialEntry
 		public boolean enableScoreHUD = true;
 
 		@SerialEntry

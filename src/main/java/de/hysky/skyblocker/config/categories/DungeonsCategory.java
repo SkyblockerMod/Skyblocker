@@ -231,6 +231,30 @@ public class DungeonsCategory {
 								.controller(StringControllerBuilder::create)
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonCryptsMessage"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip")))
+								.binding(defaults.locations.dungeons.dungeonScore.enableDungeonCryptsMessage,
+										() -> config.locations.dungeons.dungeonScore.enableDungeonCryptsMessage,
+										newValue -> config.locations.dungeons.dungeonScore.enableDungeonCryptsMessage = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip")))
+								.binding(defaults.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold,
+										() -> config.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold,
+										newValue -> config.locations.dungeons.dungeonScore.dungeonCryptsMessageThreshold = newValue)
+								.controller(IntegerFieldControllerBuilder::create)
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonCryptsMessage"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip")))
+								.binding(defaults.locations.dungeons.dungeonScore.dungeonCryptsMessage,
+										() -> config.locations.dungeons.dungeonScore.dungeonCryptsMessage,
+										newValue -> config.locations.dungeons.dungeonScore.dungeonCryptsMessage = newValue)
+								.controller(StringControllerBuilder::create)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD"))
 								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote")))
 								.binding(defaults.locations.dungeons.dungeonScore.enableScoreHUD,
