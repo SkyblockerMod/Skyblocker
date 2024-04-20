@@ -177,6 +177,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Kuudra.init();
         RenderHelper.init();
         FancyStatusBars.init();
+        EventNotifications.init();
         containerSolverManager.init();
         statusBarTracker.init();
         BeaconHighlighter.init();
