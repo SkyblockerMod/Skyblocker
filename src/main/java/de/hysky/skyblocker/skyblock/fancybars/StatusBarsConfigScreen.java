@@ -196,6 +196,8 @@ public class StatusBarsConfigScreen extends Screen {
                             if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
                                 break;
                             }
+                            if (!barLocation.barAnchor().getSizeRule().isTargetSize() && barLocation.x() == 0 && barLocation.barAnchor().isRight() != right)
+                                break;
                             resizeHover.first(barLocation);
                             resizeHover.right(right);
                             GLFW.glfwSetCursor(window.getHandle(), RESIZE_CURSOR);
