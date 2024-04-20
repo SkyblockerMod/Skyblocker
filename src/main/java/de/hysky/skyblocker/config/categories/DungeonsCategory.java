@@ -395,6 +395,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobBoundingBoxes"))
+						.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.starredMobBoundingBoxes.@Tooltip")))
+						.binding(defaults.locations.dungeons.starredMobBoundingBoxes,
+								() -> config.locations.dungeons.starredMobBoundingBoxes,
+								newValue -> config.locations.dungeons.starredMobBoundingBoxes = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.dungeons.solveThreeWeirdos"))
 						.binding(defaults.locations.dungeons.solveThreeWeirdos,
 								() -> config.locations.dungeons.solveThreeWeirdos,
