@@ -304,6 +304,43 @@ public class SkyblockerConfig {
 	public static class Bars {
 		@SerialEntry
 		public boolean enableBars = true;
+
+		// Kept in for backwards compatibility, remove if needed
+		@SerialEntry
+		public OldBarPositions barPositions = new OldBarPositions();
+	}
+
+	public static class OldBarPositions {
+		@SerialEntry
+		public OldBarPosition healthBarPosition = OldBarPosition.LAYER1;
+
+		@SerialEntry
+		public OldBarPosition manaBarPosition = OldBarPosition.LAYER1;
+
+		@SerialEntry
+		public OldBarPosition defenceBarPosition = OldBarPosition.LAYER1;
+
+		@SerialEntry
+		public OldBarPosition experienceBarPosition = OldBarPosition.LAYER1;
+
+	}
+
+	public enum OldBarPosition {
+		LAYER1, LAYER2, RIGHT, NONE;
+
+		@Override
+		public String toString() {
+			return I18n.translate("text.autoconfig.skyblocker.option.general.bars.barpositions." + name());
+		}
+
+		public int toInt() {
+			return switch (this) {
+				case LAYER1 -> 0;
+				case LAYER2 -> 1;
+				case RIGHT -> 2;
+				case NONE -> -1;
+			};
+		}
 	}
 
 	public static class Experiments {

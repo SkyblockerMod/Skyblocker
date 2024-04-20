@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.fancybars;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
@@ -54,23 +55,17 @@ public class FancyStatusBars {
                 new Color[]{new Color(100, 230, 70)},
                 false, new Color(128, 255, 32), Text.translatable("skyblocker.bars.config.experience")));
 
-        // Default positions
+        // Fetch from old status bar config
+        int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
         StatusBar health = statusBars.get("health");
-        health.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
-        health.gridX = 0;
-        health.gridY = 0;
+        SkyblockerConfig.OldBarPositions barPositions = SkyblockerConfigManager.get().general.bars.barPositions;
+        updateBarPosition(health, counts, barPositions.healthBarPosition);
         StatusBar intelligence = statusBars.get("intelligence");
-        intelligence.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
-        intelligence.gridX = 1;
-        intelligence.gridY = 0;
+        updateBarPosition(intelligence, counts, barPositions.manaBarPosition);
         StatusBar defense = statusBars.get("defense");
-        defense.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
-        defense.gridX = 0;
-        defense.gridY = 0;
+        updateBarPosition(defense, counts, barPositions.defenceBarPosition);
         StatusBar experience = statusBars.get("experience");
-        experience.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
-        experience.gridX = 0;
-        experience.gridY = 1;
+        updateBarPosition(experience, counts, barPositions.experienceBarPosition);
 
         CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
             if (object != null) {
@@ -108,6 +103,26 @@ public class FancyStatusBars {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
                 ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
                         .then(ClientCommandManager.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
+    }
+
+    private static void updateBarPosition(StatusBar bar, int[] counts, SkyblockerConfig.OldBarPosition position) {
+        switch (position) {
+            case RIGHT:
+                bar.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
+                bar.gridY = 0;
+                bar.gridX = counts[position.ordinal()]++;
+                break;
+            case LAYER1:
+                bar.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
+                bar.gridY = 0;
+                bar.gridX = counts[position.ordinal()]++;
+                break;
+            case LAYER2:
+                bar.anchor = BarPositioner.BarAnchor.HOTBAR_TOP;
+                bar.gridY = 1;
+                bar.gridX = counts[position.ordinal()]++;
+                break;
+        }
     }
 
     private static boolean configLoaded = false;
