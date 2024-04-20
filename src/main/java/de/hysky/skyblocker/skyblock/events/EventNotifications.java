@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.events;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -51,7 +51,7 @@ public class EventNotifications {
 
             for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : events.entrySet()) {
                 entry.getValue().sort(Comparator.comparingLong(SkyblockEvent::start)); // Sort just in case it's not in order for some reason in API
-                LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
+                //LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
             }
         });
     }
@@ -60,7 +60,6 @@ public class EventNotifications {
 
     private static void timeUpdate() {
         long newTime = System.currentTimeMillis() / 1000;
-        LOGGER.info(String.valueOf(newTime));
         for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : events.entrySet()) {
             LinkedList<SkyblockEvent> nextEvents = entry.getValue();
             SkyblockEvent skyblockEvent = nextEvents.peekFirst();
