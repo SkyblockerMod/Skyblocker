@@ -168,7 +168,7 @@ public class DungeonMapUtils {
      * @param x the x position of the coordinate to calculate
      * @param z the z position of the coordinate to calculate
      * @return the physical position of the northwest corner of the room the player is in
-     * @implNote {@code physicalPos} is shifted by 0.5 so room borders are evenly targetSize.
+     * @implNote {@code physicalPos} is shifted by 0.5 so room borders are evenly split.
      * {@code physicalPos} is further shifted by 8 because Hypixel offset dungeons by 8 blocks in Skyblock 0.12.3.
      * Subtracting the modulo gives the northwest corner of the room shifted by 8. Finally, {@code physicalPos} is shifted back by 8 to its intended position.
      */
