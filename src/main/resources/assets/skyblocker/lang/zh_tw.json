@@ -415,7 +415,7 @@
     "text.autoconfig.skyblocker.option.general.teleportOverlay": "傳送類型技能目標位置顯示",
     "text.autoconfig.skyblocker.option.richPresence.info": "Skyblock訊息",
     "text.autoconfig.skyblocker.option.richPresence.cycleMode": "循環Skyblock訊息",
-    "skyblocker.updaterepository.failed": "§c更新本機資料儲存庫失敗，請手動刪除檔案並重新啟動遊戲。",
+    "skyblocker.updateRepository.error": "§c更新本機資料儲存庫失敗，請手動刪除檔案並重新啟動遊戲。",
     "skyblocker.dungeons.secrets.markSecretFoundUnable": "§c無法將秘密 #%d 標記為已找到。",
     "skyblocker.dungeons.secrets.markSecretMissingUnable": "§c無法將秘密 #%d 標記為已忽略。",
     "skyblocker.dungeons.dungeonScore.scoreText": "分數：%s",

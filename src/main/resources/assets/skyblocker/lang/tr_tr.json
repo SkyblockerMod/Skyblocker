@@ -55,7 +55,7 @@
     "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "Defans barı konumu",
     "text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition": "Tecrübe barı konumu",
     "key.categories.skyblocker": "Skyblocker",
-    "skyblocker.updaterepository.failed": "§cYerel depo güncellenemedi. Dosyaları manuel olarak silip oyunu tekrar başlatın.",
+    "skyblocker.updateRepository.error": "§cYerel depo güncellenemedi. Dosyaları manuel olarak silip oyunu tekrar başlatın.",
     "text.autoconfig.skyblocker.option.general.fishing": "Balık Tutma Yardımcısı",
     "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "Balık tutma yardımcısını aktifleştir",
     "text.autoconfig.skyblocker.category.messages": "Mesajlar",

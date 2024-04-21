@@ -71,7 +71,7 @@
     "text.autoconfig.skyblocker.option.messages.hideAOTE": "Ocultar Mensajes de la AOTE",
     "text.autoconfig.skyblocker.option.messages.hideMana": "Ocultar los Mensajes del Consumo de Maná de la Barra de Acción",
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "Da una mejor experiencia con FancyBar",
-    "skyblocker.updaterepository.failed": "§cLa actualización del repositorio local fallo. Elimina los archivos manualmente y reinicia el juego.",
+    "skyblocker.updateRepository.error": "§cLa actualización del repositorio local fallo. Elimina los archivos manualmente y reinicia el juego.",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts": "Habilitar atajos",
     "text.autoconfig.skyblocker.option.general.shortcuts.enableShortcuts.@Tooltip": "Solo funciona en Hypixel. Edita atajos ejecutando \"/skyblocker shortcuts\". Al menos una de las siguientes opciones debe ser activada para surgir efecto.",
     "text.autoconfig.skyblocker.option.general.shortcuts": "Atajos",

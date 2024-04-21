@@ -1,12 +1,16 @@
 package de.hysky.skyblocker.utils;
 
+import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.NEURepository;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.function.Consumers;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
@@ -28,7 +32,7 @@ public class NEURepoManager {
      * Use {@link #NEU_REPO}.
      */
     private static final Path LOCAL_REPO_DIR = SkyblockerMod.CONFIG_DIR.resolve("item-repo"); // TODO rename to NotEnoughUpdates-REPO
-    private static final CompletableFuture<Void> REPO_INITIALIZED = loadRepository();
+    private static CompletableFuture<Void> REPO_LOADING = loadRepository().thenAccept(Consumers.nop());
     public static final NEURepository NEU_REPO = NEURepository.of(LOCAL_REPO_DIR);
 
     /**
@@ -39,14 +43,16 @@ public class NEURepoManager {
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-                        .then(ClientCommandManager.literal("updaterepository").executes(context -> {
-                            deleteAndDownloadRepository();
-                            return 1;
-                        }))));
+                        .then(ClientCommandManager.literal("updateRepository").executes(context -> {
+                            deleteAndDownloadRepository(context.getSource().getPlayer());
+                            return Command.SINGLE_SUCCESS;
+                        }))
+                )
+        );
     }
 
-    private static CompletableFuture<Void> loadRepository() {
-        return CompletableFuture.runAsync(() -> {
+    private static CompletableFuture<Boolean> loadRepository() {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
                     try (Git localRepo = Git.open(NEURepoManager.LOCAL_REPO_DIR.toFile())) {
@@ -58,28 +64,36 @@ public class NEURepoManager {
                     LOGGER.info("[Skyblocker] NEU Repository Downloaded");
                 }
                 NEU_REPO.reload();
-            } catch (TransportException e){
+                return true;
+            } catch (TransportException e) {
                 LOGGER.error("[Skyblocker] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
             } catch (RepositoryNotFoundException e) {
                 LOGGER.warn("[Skyblocker] Local NEU Repository not found or corrupted, downloading new one", e);
-                deleteAndDownloadRepository();
+                Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepository(MinecraftClient.getInstance().player), 1);
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Encountered unknown exception while initializing NEU Repository", e);
             }
+            return false;
         });
     }
 
-    private static void deleteAndDownloadRepository() {
-        CompletableFuture.runAsync(() -> {
+    private static void deleteAndDownloadRepository(PlayerEntity player) {
+        if (REPO_LOADING != null && !REPO_LOADING.isDone()) {
+            player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.loading")), false);
+            return;
+        }
+        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.start")), false);
+
+        REPO_LOADING = CompletableFuture.runAsync(() -> {
             try {
                 ItemRepository.setFilesImported(false);
                 FileUtils.recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
-            } catch (Exception ex) {
-                if (MinecraftClient.getInstance().player != null)
-                    MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updaterepository.failed")), false);
-                return;
+                player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.deleted")), false);
+                player.sendMessage(Constants.PREFIX.get().append(Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed")), false);
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker] Encountered unknown exception while deleting the NEU repo", e);
+                player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.error")), false);
             }
-            loadRepository();
         });
     }
 
@@ -89,6 +103,6 @@ public class NEURepoManager {
      * @return a completable future of the given runnable
      */
     public static CompletableFuture<Void> runAsyncAfterLoad(Runnable runnable) {
-        return REPO_INITIALIZED.thenRunAsync(runnable);
+        return REPO_LOADING.thenRunAsync(runnable);
     }
 }
