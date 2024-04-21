@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -158,33 +159,10 @@ public class GeneralCategory {
 										newValue -> config.general.bars.enableBars = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.healthBarPosition"))
-								.binding(defaults.general.bars.barPositions.healthBarPosition,
-										() -> config.general.bars.barPositions.healthBarPosition,
-										newValue -> config.general.bars.barPositions.healthBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.manaBarPosition"))
-								.binding(defaults.general.bars.barPositions.manaBarPosition,
-										() -> config.general.bars.barPositions.manaBarPosition,
-										newValue -> config.general.bars.barPositions.manaBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition"))
-								.binding(defaults.general.bars.barPositions.defenceBarPosition,
-										() -> config.general.bars.barPositions.defenceBarPosition,
-										newValue -> config.general.bars.barPositions.defenceBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
-								.build())
-						.option(Option.<SkyblockerConfig.BarPosition>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.general.bars.barpositions.experienceBarPosition"))
-								.binding(defaults.general.bars.barPositions.experienceBarPosition,
-										() -> config.general.bars.barPositions.experienceBarPosition,
-										newValue -> config.general.bars.barPositions.experienceBarPosition = newValue)
-								.controller(ConfigUtils::createEnumCyclingListController)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.bars.config.openScreen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
 								.build())
 						.build())
 

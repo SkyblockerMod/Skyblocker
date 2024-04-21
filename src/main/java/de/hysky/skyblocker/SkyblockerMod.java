@@ -25,6 +25,7 @@ import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.garden.FarmingHud;
 import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
@@ -172,6 +173,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Debug.init();
         Kuudra.init();
         RenderHelper.init();
+        FancyStatusBars.init();
         containerSolverManager.init();
         statusBarTracker.init();
         BeaconHighlighter.init();

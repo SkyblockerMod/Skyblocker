@@ -34,6 +34,7 @@
     "RenderFishMixin",
     "ScoreboardMixin",
     "SocialInteractionsPlayerListWidgetMixin",
+    "WindowMixin",
     "WorldRendererMixin",
     "YggdrasilMinecraftSessionServiceMixin",
     "YggdrasilServicesKeyInfoMixin",
