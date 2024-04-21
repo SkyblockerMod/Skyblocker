@@ -59,13 +59,13 @@ public class FancyStatusBars {
         int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
         StatusBar health = statusBars.get("health");
         SkyblockerConfig.OldBarPositions barPositions = SkyblockerConfigManager.get().general.bars.barPositions;
-        updateBarPosition(health, counts, barPositions.healthBarPosition);
+        loadOldBarPosition(health, counts, barPositions.healthBarPosition);
         StatusBar intelligence = statusBars.get("intelligence");
-        updateBarPosition(intelligence, counts, barPositions.manaBarPosition);
+        loadOldBarPosition(intelligence, counts, barPositions.manaBarPosition);
         StatusBar defense = statusBars.get("defense");
-        updateBarPosition(defense, counts, barPositions.defenceBarPosition);
+        loadOldBarPosition(defense, counts, barPositions.defenceBarPosition);
         StatusBar experience = statusBars.get("experience");
-        updateBarPosition(experience, counts, barPositions.experienceBarPosition);
+        loadOldBarPosition(experience, counts, barPositions.experienceBarPosition);
 
         CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
             if (object != null) {
@@ -91,21 +91,19 @@ public class FancyStatusBars {
             saveBarConfig();
             GLFW.glfwDestroyCursor(StatusBarsConfigScreen.RESIZE_CURSOR);
         });
-        /*barGrid.addRow(1, false);
-        barGrid.add(1, 1, statusBars.get("health"));
-        barGrid.add(2, 1, statusBars.get("intelligence"));
-        barGrid.addRow(2, false);
-        barGrid.add(1, 2, statusBars.get("experience"));
-        barGrid.addRow(-1, true);
-        barGrid.add(1, -1, statusBars.get("defense"));*/
-        //placeBarsInGrid();
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
                 ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
                         .then(ClientCommandManager.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
     }
 
-    private static void updateBarPosition(StatusBar bar, int[] counts, SkyblockerConfig.OldBarPosition position) {
+    /**
+     * Loads the bar position from the old config
+     * @param bar the bar to load the position for
+     * @param counts the counts for each bar position (LAYER1, LAYER2, RIGHT)
+     * @param position the position to load
+     */
+    private static void loadOldBarPosition(StatusBar bar, int[] counts, SkyblockerConfig.OldBarPosition position) {
         switch (position) {
             case RIGHT:
                 bar.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
