@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.events;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.ToastManager;
