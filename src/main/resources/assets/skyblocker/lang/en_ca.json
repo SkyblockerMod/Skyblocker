@@ -7,7 +7,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Livid Colour Text",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid colour.",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Coloured",
-    "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "Defence Bar Position",
     "skyblocker.customDyeColors.notDyeable": "§cThis item isn't a dyeable armour piece!",
     "skyblocker.customDyeColors.added": "§fSet a custom dye colour for your currently held item!",
     "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid in order to set a custom dye colour!",
