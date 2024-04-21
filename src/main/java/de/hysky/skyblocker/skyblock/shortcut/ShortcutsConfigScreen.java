@@ -16,11 +16,12 @@ public class ShortcutsConfigScreen extends Screen {
     private ButtonWidget buttonDelete;
     private ButtonWidget buttonNew;
     private ButtonWidget buttonDone;
+    private boolean initialized;
     private double scrollAmount;
     private final Screen parent;
 
     public ShortcutsConfigScreen() {
-    	this(null);
+        this(null);
     }
 
     public ShortcutsConfigScreen(Screen parent) {
@@ -36,7 +37,13 @@ public class ShortcutsConfigScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32, 25);
+        if (initialized) {
+            shortcutsConfigListWidget.setDimensions(width, height - 96);
+            shortcutsConfigListWidget.updatePositions();
+        } else {
+            shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32, 25);
+            initialized = true;
+        }
         addDrawableChild(shortcutsConfigListWidget);
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().marginX(5).marginY(2);
@@ -44,7 +51,7 @@ public class ShortcutsConfigScreen extends Screen {
         buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.delete"), button -> {
             if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
                 scrollAmount = shortcutsConfigListWidget.getScrollAmount();
-                client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+                client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
             }
         }).build();
         adder.add(buttonDelete);
@@ -86,16 +93,18 @@ public class ShortcutsConfigScreen extends Screen {
 
     @Override
     public void close() {
-        if (client != null && shortcutsConfigListWidget.hasChanges()) {
-            client.setScreen(new ConfirmScreen(confirmedAction -> {
-                if (confirmedAction) {
-                    this.client.setScreen(parent);
-                } else {
-                    client.setScreen(this);
-                }
-            }, Text.translatable("text.skyblocker.quit_config"), Text.translatable("text.skyblocker.quit_config_sure"), Text.translatable("text.skyblocker.quit_discard"), ScreenTexts.CANCEL));
-        } else {
-            this.client.setScreen(parent);
+        if (client != null) {
+            if (shortcutsConfigListWidget.hasChanges()) {
+                client.setScreen(new ConfirmScreen(confirmedAction -> {
+                    if (confirmedAction) {
+                        this.client.setScreen(parent);
+                    } else {
+                        client.setScreen(this);
+                    }
+                }, Text.translatable("text.skyblocker.quit_config"), Text.translatable("text.skyblocker.quit_config_sure"), Text.translatable("text.skyblocker.quit_discard"), ScreenTexts.CANCEL));
+            } else {
+                this.client.setScreen(parent);
+            }
         }
     }
 
