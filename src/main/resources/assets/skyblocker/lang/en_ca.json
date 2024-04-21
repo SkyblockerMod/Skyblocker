@@ -37,5 +37,9 @@
     "skyblocker.tips.customAnimatedDyes": "You can apply a custom animated dye to your leather armour with /skyblocker custom animatedDye!",
     "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX colour code was supplied!",
     "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armour piece!",
-    "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the centre of mines, now working faster"
+    "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the centre of mines, now working faster",
+    "skyblocker.bars.config.defense": "Defence",
+    "skyblocker.bars.config.mainColor": "Main Colour",
+    "skyblocker.bars.config.overflowColor": "Overflow Colour",
+    "skyblocker.bars.config.textColor": "Text Colour"
 }
