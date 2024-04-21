@@ -22,6 +22,10 @@ public class FileUtils {
 			});
 		}
 
+		if (!Files.isWritable(dir)) {
+			dir.toFile().setWritable(true);
+		}
+
 		Files.delete(dir);
 	}
 
