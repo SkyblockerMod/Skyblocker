@@ -1,3 +1,65 @@
+# Release 1.20.0
+
+## Highlight
+* Glacite Mining Updates 
+* Fancy Crafting Table
+* Fancy Auctions Browser
+* Fancier Fancy Bars
+* Ordered Waypoints 
+* Accessories Helper 
+* Metal Detector Helper
+* Share crystal waypoint locations 
+* Info Screen /skyblocker
+* Custom Animated Dyes 
+* Warp Command Auto-complete 
+* Ender Nodes Helper
+* Dungeon Crypts Message
+* Fishing rod timer
+* Hide other rods
+* Prevent teammates glow during Livid
+
+## What's Changed
+* Make the crafting UI look like the vanilla crafting table by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/599
+* Accessories Helper by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/613
+* Ordered Waypoints by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/625
+* Instanced Utils by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/632
+* fix translate workflow by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/639
+* Warp command auto-complete by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/630
+* Custom Animated Dyes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/634
+* add ability to share crystal waypoint locations by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/642
+* Add Ender Nodes Helper by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/629
+* Info Screen by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/638
+* Glacite Mining Updates & Fixes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/645
+* Fancy Auctions Browser: The Sequel by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/614
+* Allow drop in dungeon option for locked slots by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/624
+* Add fishing fetures by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/646
+* Fix highlighting empty slot by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/648
+* Dungeon Crypts Message by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/640
+* Add color interpolation for Dwarven Hud by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/649
+* Fix has highest tier by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/650
+* Metal detector helper by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/653
+* Update ItemCooldowns.java by @VeritasDL in https://github.com/SkyblockerMod/Skyblocker/pull/636
+* Prevent teammates glow during Livid by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/652
+* Starred Mob Boxes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/647
+* Java 21 CI by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/661
+* Fix item repository update by @TheDearbear in https://github.com/SkyblockerMod/Skyblocker/pull/662
+* Fancier bars by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/654
+* Fix delete shortcut by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/660
+* Fix update repository by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/663
+
+## New Contributors
+* @VeritasDL made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/636
+* @TheDearbear made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/662
+
+## New Translators
+* @Vricken (Italian)
+* @MrBiscuit921 (Turkish)
+* @Kolobok125040 (Russian)
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.19.1...v1.20.0
+
+___
+
 # Release 1.19.1
 
 ## Highlight
