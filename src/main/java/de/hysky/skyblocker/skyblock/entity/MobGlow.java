@@ -30,55 +30,48 @@ public class MobGlow {
 		Box box = entity.getBoundingBox();
 
 		if (OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
+			if (entity.isInvisible()) return false;
+
 			String name = entity.getName().getString();
 
-			if (!entity.isInvisible()) {
-
-				// Dungeons
-				if (Utils.isInDungeons()) {
-
+			// Dungeons
+			if (Utils.isInDungeons()) {
+				return switch (entity) {
 					// Minibosses
-					if (entity instanceof PlayerEntity) {
-						switch (name) {
-							case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
-							case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
-									"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid": return LividColor.shouldGlow(name);
+					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
+					case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
+
+					//Bats
+					case BatEntity b -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow || SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+
+					default -> {
+						// Regular Mobs
+						if (!(entity instanceof ArmorStandEntity)) {
+							List<ArmorStandEntity> armorStands = getArmorStands(entity);
+
+							if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
+								yield SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 						}
+
+						yield false;
 					}
-
-					// Regular Mobs
-					if (!(entity instanceof ArmorStandEntity)) {
-						List<ArmorStandEntity> armorStands = getArmorStands(entity);
-
-						if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-							return SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
-					}
-
-					// Bats
-					return (SkyblockerConfigManager.get().locations.dungeons.starredMobGlow || SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes) && entity instanceof BatEntity;
-				}
-
-				// Rift
-				if (Utils.isInTheRift()) {
-					if (entity instanceof PlayerEntity) {
-						switch (name) {
-							// They have a space in their name for some reason...
-							case "Blobbercyst ": return SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
-						}
-					}
-				}
+				};
 			}
 
-			// Enderman Slayer
-			// Highlights Nukekubi Heads
-			return SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads
-					&& SlayerUtils.isInSlayer()
-					&& entity instanceof ArmorStandEntity armorStandEntity
-					&& isNukekubiHead(armorStandEntity);
-		}
+			return switch (entity) {
+				// Rift
+				case PlayerEntity p when Utils.isInTheRift() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
 
-		// Special Zelot
-		if (entity instanceof EndermanEntity enderman && TheEnd.isSpecialZealot(enderman)) return true;
+				// Enderman Slayer
+				// Highlights Nukekubi Heads
+				case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads;
+
+				// Special Zelot
+				case EndermanEntity enderman when Utils.isInTheEnd() -> TheEnd.isSpecialZealot(enderman);
+
+				default -> false;
+			};
+		}
 
 		return false;
 	}
@@ -94,23 +87,18 @@ public class MobGlow {
 	public static int getGlowColor(Entity entity) {
 		String name = entity.getName().getString();
 
-		if (entity instanceof PlayerEntity) {
-			return switch (name) {
-				case "Lost Adventurer" -> 0xfee15c;
-				case "Shadow Assassin" -> 0x5b2cb2;
-				case "Diamond Guy" -> 0x57c2f7;
-				case "Arcade Livid", "Crossed Livid", "Doctor Livid", "Frog Livid", "Hockey Livid",
-						"Purple Livid", "Scream Livid", "Smile Livid", "Vendetta Livid" -> LividColor.getGlowColor(name);
-				case "Blobbercyst " -> Formatting.GREEN.getColorValue();
-				default -> 0xf57738;
-			};
-		}
-		if (entity instanceof EndermanEntity enderman && TheEnd.isSpecialZealot(enderman)) return Formatting.RED.getColorValue();
+		return switch (entity) {
+			case PlayerEntity p when name.equals("Lost Adventurer") -> 0xfee15c;
+			case PlayerEntity p when name.equals("Shadow Assassin") -> 0x5b2cb2;
+			case PlayerEntity p when name.equals("Diamond Guy") -> 0x57c2f7;
+			case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.getGlowColor(name);
+			case PlayerEntity p when name.equals("Blobbercyst ") -> Formatting.GREEN.getColorValue();
 
-		// copypaste nukekebi head logic
-		if (entity instanceof ArmorStandEntity armorStandEntity && isNukekubiHead(armorStandEntity)) return 0x990099;
+			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
+			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
 
-		return 0xf57738;
+			default -> 0xf57738;
+		};
 	}
 
 	private static boolean isNukekubiHead(ArmorStandEntity entity) {

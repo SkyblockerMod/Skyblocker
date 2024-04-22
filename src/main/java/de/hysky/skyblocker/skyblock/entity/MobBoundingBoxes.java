@@ -31,20 +31,21 @@ public class MobBoundingBoxes {
 		if (Utils.isInDungeons() && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
 			String name = entity.getName().getString();
 
-			// Minibosses
-			if (entity instanceof PlayerEntity) {
-				switch (name) {
-					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+			return switch (entity) {
+				case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+
+				default -> {
+					// Regular Mobs
+					if (!(entity instanceof ArmorStandEntity)) {
+						List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
+
+						if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
+							yield SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+					}
+
+					yield false;
 				}
-			}
-
-			// Regular Mobs
-			if (!(entity instanceof ArmorStandEntity)) {
-				List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
-
-				if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-					return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
-			}
+			};
 		}
 
 		return false;
