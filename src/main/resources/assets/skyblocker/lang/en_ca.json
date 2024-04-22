@@ -7,7 +7,6 @@
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText": "Livid Colour Text",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid colour.",
     "text.autoconfig.skyblocker.option.locations.dungeons.terminals.solveColor": "Solve Select Coloured",
-    "text.autoconfig.skyblocker.option.general.bars.barpositions.defenceBarPosition": "Defence Bar Position",
     "skyblocker.customDyeColors.notDyeable": "§cThis item isn't a dyeable armour piece!",
     "skyblocker.customDyeColors.added": "§fSet a custom dye colour for your currently held item!",
     "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid in order to set a custom dye colour!",
@@ -32,5 +31,15 @@
     "skyblocker.tips.customArmorTrims": "You can set custom armour trims on your armour using /skyblocker custom armorTrim.",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle": "Enable Livid Colour Title",
     "text.autoconfig.skyblocker.option.locations.dungeons.lividColor.enableLividColorTitle.@Tooltip": "Display the livid colour in the title during the Livid boss fight.",
-    "skyblocker.end.hud.protectorLocations.center": "Centre"
+    "skyblocker.end.hud.protectorLocations.center": "Centre",
+    "skyblocker.waypoints.ordered.add.invalidHexColor": "§cInvalid HEX colour code!",
+    "text.autoconfig.skyblocker.option.messages.chatRules.screen.ruleScreen.replace.@Tooltip": "Input a new message to output (can be formatted using minecraft colour codes).",
+    "skyblocker.tips.customAnimatedDyes": "You can apply a custom animated dye to your leather armour with /skyblocker custom animatedDye!",
+    "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX colour code was supplied!",
+    "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armour piece!",
+    "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the centre of mines, now working faster",
+    "skyblocker.bars.config.defense": "Defence",
+    "skyblocker.bars.config.mainColor": "Main Colour",
+    "skyblocker.bars.config.overflowColor": "Overflow Colour",
+    "skyblocker.bars.config.textColor": "Text Colour"
 }
