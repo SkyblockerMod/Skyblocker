@@ -4,8 +4,8 @@
 - **Minimap & Score**
 - **Starred Mob Glow**
 - **Croesus Helper**
-  - highlight not opened chests
-  - profit calculator
+  - Highlight not opened chests
+  - Profit calculator
 - **Puzzle Solver:**
   - *Three Weirdos*
   - *Blaze*
@@ -29,8 +29,9 @@
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
-- **resourcepack recoloring textures in dungeons**
+- **Resourcepack recoloring textures in dungeons**
 - **score title and sound**
+- **Prevent teammates glow during Livid**
 
 ### Kuudra Features
 - **Kuudra waypoints**
@@ -46,6 +47,7 @@
 - *Item Renaming*
 - *Custom Armor Dye Colors*
 - *Custom Armor Trims*
+- *Custom Animated Dyes*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -54,7 +56,7 @@
   - *Defense*
   - *XP*
 
-### Dwarven Mines / Crystal Hollows:
+### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines Solver:**
   - Fetchur
   - Puzzler
@@ -65,9 +67,12 @@
   - Crystal Hollows Waypoints
     - *Shows waypoints for special locations*
     - *Find locations in chat messages*
+    - *Share waypoints*
+  - Metal detector helper
 - **Commission HUD**
-  - *Provides information on Dwarven Mines quests*
+  - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
+- **Ordered Waypoints**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -91,7 +96,7 @@
 ### Garden Features:
 - **Farming HUD**
 - **Visitor Helper**
-  - buy items that visitors require from bazaar by clicking the text
+  - Buy items that visitors require from bazaar by clicking the text
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
 - **Basic garden mouse locking feature (set mouse sensitivity to 0)**
 
@@ -113,6 +118,7 @@
   - Endstone Protector
     - *stage*
     - *Location*
+- **Ender Nodes Helper**
 
 ### User Interface Enhancements:
 - **Search overlays for bz and ah**
@@ -122,16 +128,19 @@
 - **Item Tooltip:** (Provides information on)
   - *NPC Sell Prices*
   - *Motes Prices*
-  - *bazaar (average, lowest bin)*
+  - *Bazaar (average, lowest bin)*
   - *Auction House*
   - *Museum*
   - *Exotic Armor Identifier*
   - *Item Quality* 
-  - **
+  - *Accessories Helper*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
 - **New Year Cakes Helper**
+- **Fancy Crafting Table**
+- **Info Screen**
+- **Fancy Auctions Browser**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -140,6 +149,7 @@
 
 ### Chat Features:
 - **Custom Chat Rules**
+- **Warp command auto-complete**
 - **Hide Messages:**
   - *Ability Cooldown*
   - *Heal*
@@ -152,7 +162,10 @@
 
 ### Miscellaneous Solvers:
 - **Experiments Solvers**
-- **Fishing Helper:** Includes sound notifications.
+- **Fishing:** 
+  - Helper (Includes sound notifications)
+  - Fishing rod timer (change color after 20 seconds)
+  - Hide other rods
 - **Mythological Ritual Helper**
 
 ### Miscellaneous Features:
@@ -164,7 +177,7 @@
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **ChestValue**
-- **add useful tips in chat**
+- **Add useful tips in chat**
 - **Suppress badlion packet warnings**
-- **remove screens when switching island**
-- **skin transparency correction**
+- **Remove screens when switching island**
+- **Skin transparency correction**

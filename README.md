@@ -10,7 +10,7 @@
 [![Ko-fi](https://img.shields.io/badge/buy%20me%20coffee-skyblocker?color=434B57&logo=kofi)](https://ko-fi.com/wohlhabend)
 [![Translated](https://translate.hysky.de/widgets/Skyblocker/-/skyblocker/svg-badge.svg)](https://translate.hysky.de/projects/Skyblocker/skyblocker/)
 
-Hypixel Skyblock Mod for Minecraft 1.20.x
+Hypixel Skyblock Mod for Minecraft 1.20.4
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features
@@ -24,8 +24,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Minimap & Score**
 - **Starred Mob Glow**
 - **Croesus Helper**
-  - highlight not opened chests
-  - profit calculator
+  - Highlight not opened chests
+  - Profit calculator
 - **Puzzle Solver:**
   - *Three Weirdos*
   - *Blaze*
@@ -49,8 +49,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
-- **resourcepack recoloring textures in dungeons**
+- **Resourcepack recoloring textures in dungeons**
 - **score title and sound**
+- **Prevent teammates glow during Livid**
 
 ### Kuudra Features
 - **Kuudra waypoints**
@@ -66,6 +67,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - *Item Renaming*
 - *Custom Armor Dye Colors*
 - *Custom Armor Trims*
+- *Custom Animated Dyes*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -74,7 +76,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Defense*
   - *XP*
 
-### Dwarven Mines / Crystal Hollows:
+### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines Solver:**
   - Fetchur
   - Puzzler
@@ -85,9 +87,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Crystal Hollows Waypoints
     - *Shows waypoints for special locations*
     - *Find locations in chat messages*
+    - *Share waypoints*
+  - Metal detector helper
 - **Commission HUD**
-  - *Provides information on Dwarven Mines quests*
+  - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
+- **Ordered Waypoints**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -111,7 +116,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Garden Features:
 - **Farming HUD**
 - **Visitor Helper**
-  - buy items that visitors require from bazaar by clicking the text
+  - Buy items that visitors require from bazaar by clicking the text
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
 - **Basic garden mouse locking feature (set mouse sensitivity to 0)**
 
@@ -133,6 +138,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Endstone Protector
     - *stage*
     - *Location*
+- **Ender Nodes Helper**
 
 ### User Interface Enhancements:
 - **Search overlays for bz and ah**
@@ -142,16 +148,19 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Item Tooltip:** (Provides information on)
   - *NPC Sell Prices*
   - *Motes Prices*
-  - *bazaar (average, lowest bin)*
+  - *Bazaar (average, lowest bin)*
   - *Auction House*
   - *Museum*
   - *Exotic Armor Identifier*
   - *Item Quality*
-  - **
+  - *Accessories Helper*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
 - **New Year Cakes Helper**
+- **Fancy Crafting Table**
+- **Info Screen**
+- **Fancy Auctions Browser**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -160,6 +169,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### Chat Features:
 - **Custom Chat Rules**
+- **Warp command auto-complete**
 - **Hide Messages:**
   - *Ability Cooldown*
   - *Heal*
@@ -172,7 +182,10 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### Miscellaneous Solvers:
 - **Experiments Solvers**
-- **Fishing Helper:** Includes sound notifications.
+- **Fishing:**
+  - Helper (Includes sound notifications)
+  - Fishing rod timer (change color after 20 seconds)
+  - Hide other rods
 - **Mythological Ritual Helper**
 
 ### Miscellaneous Features:
@@ -184,10 +197,10 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **ChestValue**
-- **add useful tips in chat**
+- **Add useful tips in chat**
 - **Suppress badlion packet warnings**
-- **remove screens when switching island**
-- **skin transparency correction**
+- **Remove screens when switching island**
+- **Skin transparency correction**
 
 </details>
 
@@ -195,16 +208,18 @@ ___
 
 ## Commands
 
-|            command             |                                   option                                   | comment                                                                                                                                                                                                                                                                                   |
-|:------------------------------:|:--------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|       /skyblocker config       |                                                                            | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
-|      /skyblocker options       |                                                                            | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
-|        /skyblocker hud         |                   dwarven / dungeonmap / titleContainer                    | move dwarven, dungeonmap or titleContainer                                                                                                                                                                                                                                                |
-|     /skyblocker shortcuts      |                                                                            | add/edit shortcuts                                                                                                                                                                                                                                                                        |
-|       /skyblocker custom       |                     renameItem /  armorTrim / dyeColor                     | Item and Armour customisation                                                                                                                                                                                                                                                             |
-|    /skyblocker protectItem     |                                                                            | When an item is protected it's safe from: <br /> - Being dropped while holding it, regardless of the slot being locked <br /> - Being dropped from picking it up in your inventory then clicking outside the screen <br /> - Being dropped via hovering over it and pressing the drop key |
-| /skyblocker   dungeons secrets | addWaypoint \| addWaypointRelatively [pos] [secretIndex] [category] [name] |                                                                                                                                                                                                                                                                                           |
-| /skyblocker   dungeons secrets |              removeWaypoint \| removeWaypointRelatively [pos]              |                                                                                                                                                                                                                                                                                           |
+|            command             |                                       option                                       | comment                                                                                                                                                                                                                                                                                   |
+|:------------------------------:|:----------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|          /skyblocker           |                                                                                    | opens info screen                                                                                                                                                                                                                                                                         |
+|       /skyblocker config       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
+|      /skyblocker options       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
+|        /skyblocker hud         |                       dwarven / dungeonmap / titleContainer                        | move dwarven, dungeonmap or titleContainer                                                                                                                                                                                                                                                |
+|     /skyblocker shortcuts      |                                                                                    | add/edit shortcuts                                                                                                                                                                                                                                                                        |
+|       /skyblocker custom       |                         renameItem /  armorTrim / dyeColor                         | Item and Armour customisation                                                                                                                                                                                                                                                             |
+|    /skyblocker protectItem     |                                                                                    | When an item is protected it's safe from: <br /> - Being dropped while holding it, regardless of the slot being locked <br /> - Being dropped from picking it up in your inventory then clicking outside the screen <br /> - Being dropped via hovering over it and pressing the drop key |
+| /skyblocker   dungeons secrets | addWaypoint \| addWaypointRelatively \[pos\] \[secretIndex\] \[category\] \[name\] |                                                                                                                                                                                                                                                                                           |
+| /skyblocker   dungeons secrets |                 removeWaypoint \| removeWaypointRelatively \[pos\]                 |                                                                                                                                                                                                                                                                                           |
+| /skyblocker custom animatedDye |         \[\<hex1\>\] \<hex2\> \<samples\> \<cycleBack\> \[\<tickDelay\>\]          | apply a custom animated dye to your armour <br/>  Ex: /skyblocker custom animatedDye 0061ff 60efff 10 true 4                                                                                                                                                                              |
 ---
 
 ## Images
@@ -212,15 +227,15 @@ ___
 <details open>
 <summary>open</summary>
 
-<img padding="10px,0px"  src="https://user-images.githubusercontent.com/27798256/170806938-f858f0ae-4d8b-4767-9b53-8fe5a65edf56.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/minimap.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/tooltip1.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/tooltip2.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/drill.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/richpresencesmall.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/recipe.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/backpack-preview.png" />
-<img padding="10px,0px" height="150" src="https://hysky.de/armour_trim.png" />
+<img padding="10px,0px"  src="https://user-images.githubusercontent.com/27798256/170806938-f858f0ae-4d8b-4767-9b53-8fe5a65edf56.png"  alt=""/>
+<img padding="10px,0px" height="150" src="https://hysky.de/minimap.png"  alt=""/>
+<img padding="10px,0px" height="150" src="https://hysky.de/tooltip1.png"  alt=""/>
+<img padding="10px,0px" height="150" src="https://hysky.de/tooltip2.png" alt="" />
+<img padding="10px,0px" height="150" src="https://hysky.de/drill.png"  alt=""/>
+<img padding="10px,0px" height="150" src="https://hysky.de/richpresencesmall.png"  alt=""/>
+<img padding="10px,0px" height="150" src="https://hysky.de/recipe.png" alt="" />
+<img padding="10px,0px" height="150" src="https://hysky.de/backpack-preview.png" alt="" />
+<img padding="10px,0px" height="150" src="https://hysky.de/armour_trim.png" alt="" />
 </details>
 
 ## Contribute
@@ -265,16 +280,19 @@ information.
 |----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | [Kaluub](https://github.com/Kaluub)                                                                | [Emirlol](https://github.com/Emirlol)                                                                | [LegendaryLilac](https://github.com/LegendaryLilac)                                                                | [olim88](https://github.com/olim88)                                                                |
 
-| [<img alt="Ghost-3" src="https://github.com/Ghost-3.png" width="100">](https://github.com/Ghost-3) | [<img alt="esteban4567890" src="https://github.com/esteban4567890.png" width="100">](https://github.com/esteban4567890) | [<img alt="Fluboxer" src="https://github.com/Fluboxer.png" width="100">](https://github.com/Fluboxer) |
-|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| [Ghost-3](https://github.com/Ghost-3)                                                              | [esteban4567890](https://github.com/esteban4567890)                                                                     | [Fluboxer](https://github.com/Fluboxer)                                                               |
+| [<img alt="Ghost-3" src="https://github.com/Ghost-3.png" width="100">](https://github.com/Ghost-3) | [<img alt="esteban4567890" src="https://github.com/esteban4567890.png" width="100">](https://github.com/esteban4567890) | [<img alt="Fluboxer" src="https://github.com/Fluboxer.png" width="100">](https://github.com/Fluboxer) | [<img alt="VeritasDL" src="https://github.com/VeritasDL.png" width="100">](https://github.com/VeritasDL) |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [Ghost-3](https://github.com/Ghost-3)                                                              | [esteban4567890](https://github.com/esteban4567890)                                                                     | [Fluboxer](https://github.com/Fluboxer)                                                               | [VeritasDL](https://github.com/VeritasDL)                                                                |
      
+| [<img alt="TheDearbear" src="https://github.com/TheDearbear.png" width="100">](https://github.com/TheDearbear) |
+|----------------------------------------------------------------------------------------------------------------|
+| [TheDearbear](https://github.com/TheDearbear)                                                                  |
 
 ### Translators
 
 German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](https://github.com/msg-programs)) \
 Indonesian ([null2264](https://github.com/null2264)) \
-Russian ([HyperSoop](https://github.com/HyperSoop) & [CrimsonIsle](https://github.com/CrimsonIsle) & [Ghost-3](https://github.com/Ghost-3) & [wilson-wtf](https://github.com/wilson-wtf) & [R2kip](https://github.com/R2kip))\
+Russian ([HyperSoop](https://github.com/HyperSoop) & [CrimsonIsle](https://github.com/CrimsonIsle) & [Ghost-3](https://github.com/Ghost-3) & [wilson-wtf](https://github.com/wilson-wtf) & [R2kip](https://github.com/R2kip) & [Kolobok125040](https://github.com/Kolobok125040))\
 French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat) & [Kiverty](https://github.com/Kiverty) & [maDU59](https://github.com/maDU59)) \
 Japanese ([hirochisan](https://github.com/hirochisan)) \
 Chinese ([catandA](https://github.com/catandA)) \
@@ -283,7 +301,8 @@ Korean ([lantice3720](https://github.com/lantice3720)) \
 Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
 Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
 Norwegian Nynorsk ([KdGaming0](https://github.com/KdGaming0)) \
-Turkish ([Fix3dll](https://github.com/Fix3dll) & [Emirlol](https://github.com/Emirlol)) \
+Turkish ([Fix3dll](https://github.com/Fix3dll) & [Emirlol](https://github.com/Emirlol) & [MrBiscuit921](https://github.com/MrBiscuit921)) \
 Canadian English ([AzureAaron](https://github.com/AzureAaron)) \
 Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro) & [AurinVPK](https://github.com/AurinVPK) & [yFelipeMC](https://github.com/yFelipeMC)) \
-Dutch ([mitch030504](https://github.com/mitch030504))
+Dutch ([mitch030504](https://github.com/mitch030504)) \
+Italian ([Vricken](https://github.com/Vricken))
