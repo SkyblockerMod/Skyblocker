@@ -91,7 +91,7 @@
     "text.autoconfig.skyblocker.option.richPresence.info.LOCATION": "LIEU",
     "text.autoconfig.skyblocker.category.quickNav": "Navigation rapide",
     "text.autoconfig.skyblocker.option.quickNav.enableQuickNav": "Activer la navigation rapide",
-    "skyblocker.updaterepository.failed": "§cLa mise à jour de la repository a échoué. Supprimez les fichiers manuellement et relancez le jeu.",
+    "skyblocker.updateRepository.error": "§cLa mise à jour de la repository a échoué. Supprimez les fichiers manuellement et relancez le jeu.",
     "skyblocker.fishing.reelNow": "Enroulez la ligne !",
     "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "Activer l'assistant de pêche",
     "text.autoconfig.skyblocker.option.general.fishing": "Assistant de pêche",

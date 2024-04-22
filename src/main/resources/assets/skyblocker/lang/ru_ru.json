@@ -96,7 +96,7 @@
     "text.autoconfig.skyblocker.option.locations.barn.solveTreasureHunter": "Показывать Решение Treasure Hunter",
     "text.autoconfig.skyblocker.option.messages.chatFilterResult.FILTER": "Скрыть",
     "text.autoconfig.skyblocker.option.messages.chatFilterResult.PASS": "Не скрывать",
-    "skyblocker.updaterepository.failed": "§cОшибка в обновлении местного репозитория. Перезапустите игру, удалив файлы вручную.",
+    "skyblocker.updateRepository.error": "§cОшибка в обновлении местного репозитория. Перезапустите игру, удалив файлы вручную.",
     "text.autoconfig.skyblocker.option.richPresence.info.BITS": "BITS",
     "text.autoconfig.skyblocker.option.locations.dungeons.croesusHelper": "Помощь в меню Croesus",
     "text.autoconfig.skyblocker.option.general.experiments": "Помощь в Экспериментах",

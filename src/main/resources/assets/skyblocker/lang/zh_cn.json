@@ -81,7 +81,7 @@
     "text.autoconfig.skyblocker.option.messages.hideMana.@Tooltip": "已被更好的属性条代替",
     "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "隐藏菜单中分隔符的物品信息",
     "text.autoconfig.skyblocker.option.locations.dungeons.mapScaling": "地图界面大小",
-    "skyblocker.updaterepository.failed": "§c更新本地数据存储库失败，请手动删除文件并重启游戏。",
+    "skyblocker.updateRepository.error": "§c更新本地数据存储库失败，请手动删除文件并重启游戏。",
     "text.autoconfig.skyblocker.option.general.fishing": "钓鱼助手",
     "text.autoconfig.skyblocker.option.general.fishing.enableFishingHelper": "启用钓鱼助手",
     "skyblocker.fishing.reelNow": "收竿！",

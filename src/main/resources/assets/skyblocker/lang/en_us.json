@@ -501,7 +501,12 @@
   "skyblocker.bars.config.explanationTitle": "What is this?",
   "skyblocker.bars.config.explanation": "Welcome to the status bars config screen!\n\nDrag and drop the bars to snap them to an anchor (white squares) or existing bars.\nYou can right click them to edit a bunch of properties.\nBy hovering your mouse between 2 bars (your cursor should change), you can resize them.\n\nEverything is saved when you leave",
 
-  "skyblocker.updaterepository.failed":  "§cUpdating local repository failed. Remove files manually and restart game.",
+  "skyblocker.updateRepository.start": "§bUpdating the local repository...",
+  "skyblocker.updateRepository.loading": "§cThe local repository is currently being updated by another process, please try again in a moment.",
+  "skyblocker.updateRepository.deleted": "§bDeleted the local repository successfully, downloading new files... This will take a minute!",
+  "skyblocker.updateRepository.success": "§aUpdated the local repository successfully.",
+  "skyblocker.updateRepository.failed": "§cUpdating the local repository failed. See logs for details.",
+  "skyblocker.updateRepository.error":  "§cEncountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
 
   "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
   "skyblocker.dungeons.secrets.markSecretFound": "§rMarked secret #%d as found.",

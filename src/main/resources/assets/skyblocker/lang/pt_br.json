@@ -148,7 +148,7 @@
     "text.autoconfig.skyblocker.option.general.itemTooltip.enableMotesPrice.@Tooltip": "Mostrar os preços de venda dos Motes de um item enquanto está no The Rift.",
     "text.autoconfig.skyblocker.option.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Mostra o nível do atributo como uma contagem de stack e os iniciais do nome do atributo.",
     "text.autoconfig.skyblocker.category.slayer": "Slayers",
-    "skyblocker.updaterepository.failed": "§cAtualização do repositório local falhou. Remova os arquivos manualmente e reinicie o jogo.",
+    "skyblocker.updateRepository.error": "§cAtualização do repositório local falhou. Remova os arquivos manualmente e reinicie o jogo.",
     "text.autoconfig.skyblocker.option.general.hideStatusEffectOverlay": "Esconder Overlay de Status de Efeitos",
     "text.autoconfig.skyblocker.option.general.itemList.enableItemList": "Ativar Lista de Itens",
     "text.autoconfig.skyblocker.option.general.itemList": "Lista de Itens",
