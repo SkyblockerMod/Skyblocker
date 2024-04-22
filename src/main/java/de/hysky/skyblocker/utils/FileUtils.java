@@ -28,9 +28,9 @@ public class FileUtils {
 			}
 		}
 
-        if (!Files.isWritable(dir) && !dir.toFile().setWritable(true)) {
-            LOGGER.error("[Skyblocker] Failed to make file writable. Path: {}", dir.toAbsolutePath());
-        }
+		if (!Files.isWritable(dir) && !dir.toFile().setWritable(true)) {
+			LOGGER.error("[Skyblocker] Failed to make file writable. Path: {}", dir.toAbsolutePath());
+		}
 
 		Files.delete(dir);
 	}
