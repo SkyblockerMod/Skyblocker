@@ -21,6 +21,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -125,18 +126,18 @@ public class ItemTooltip {
             }
         }
 
-        final Map<Integer, String> itemTierFloors = new HashMap<>() {{
-            put(1, "F1");
-            put(2, "F2");
-            put(3, "F3");
-            put(4, "F4/M1");
-            put(5, "F5/M2");
-            put(6, "F6/M3");
-            put(7, "F7/M4");
-            put(8, "M5");
-            put(9, "M6");
-            put(10, "M7");
-        }};
+        final Map<Integer, String> itemTierFloors = Util.make(new HashMap<>(), map -> {
+        	map.put(1, "F1");
+        	map.put(2, "F2");
+        	map.put(3, "F3");
+        	map.put(4, "F4/M1");
+        	map.put(5, "F5/M2");
+        	map.put(6, "F6/M3");
+        	map.put(7, "F7/M4");
+        	map.put(8, "M5");
+        	map.put(9, "M6");
+        	map.put(10, "M7");
+        });
 
         if (SkyblockerConfigManager.get().general.dungeonQuality) {
             NbtCompound ea = ItemUtils.getExtraAttributes(stack);
