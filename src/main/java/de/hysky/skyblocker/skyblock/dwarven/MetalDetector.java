@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -90,6 +91,7 @@ public class MetalDetector {
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(MetalDetector::getDistanceMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MetalDetector::render);
+        ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
     /**
@@ -221,6 +223,11 @@ public class MetalDetector {
                 return;
             }
         }
+    }
+
+    private static void reset() {
+        minesCenter = null;
+        possibleBlocks = new ArrayList<>();
     }
 
     /**
