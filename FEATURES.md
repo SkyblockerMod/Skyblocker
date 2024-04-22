@@ -72,6 +72,7 @@
 - **Commission HUD**
   - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
+- **Ordered Waypoints**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -117,7 +118,6 @@
   - Endstone Protector
     - *stage*
     - *Location*
-- **Ordered Waypoints**
 - **Ender Nodes Helper**
 
 ### User Interface Enhancements:

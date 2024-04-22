@@ -92,6 +92,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Commission HUD**
   - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
+- **Ordered Waypoints**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -137,7 +138,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Endstone Protector
     - *stage*
     - *Location*
-- **Ordered Waypoints**
 - **Ender Nodes Helper**
 
 ### User Interface Enhancements:
