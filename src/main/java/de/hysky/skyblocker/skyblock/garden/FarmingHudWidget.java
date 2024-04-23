@@ -37,7 +37,11 @@ public class FarmingHudWidget extends Widget {
             Map.entry("FUNGI_CUTTER", Ico.MUSHROOM),
             Map.entry("CACTUS_KNIFE", Ico.CACTUS),
             Map.entry("MELON_DICER", Ico.MELON),
+            Map.entry("MELON_DICER_2", Ico.MELON),
+            Map.entry("MELON_DICER_3", Ico.MELON),
             Map.entry("PUMPKIN_DICER", Ico.PUMPKIN),
+            Map.entry("PUMPKIN_DICER_2", Ico.PUMPKIN),
+            Map.entry("PUMPKIN_DICER_3", Ico.PUMPKIN),
             Map.entry("COCO_CHOPPER", Ico.COCOA_BEANS)
     );
     public static final FarmingHudWidget INSTANCE = new FarmingHudWidget();
