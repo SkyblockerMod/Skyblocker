@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import com.google.gson.JsonParser;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
@@ -20,6 +19,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.nbt.visitor.StringNbtWriter;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BackpackPreview {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
@@ -81,12 +84,12 @@ public class BackpackPreview {
     private static void loadStorages() {
         for (int index = 0; index < STORAGE_SIZE; ++index) {
             storages[index] = null;
-            Path storageFile = saveDir.resolve(index + ".json");
+            Path storageFile = saveDir.resolve(index + ".nbt");
             if (Files.isRegularFile(storageFile)) {
                 try (BufferedReader reader = Files.newBufferedReader(storageFile)) {
-                    storages[index] = Storage.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
+                    storages[index] = Storage.CODEC.parse(NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining()))).getOrThrow();
                 } catch (Exception e) {
-                    LOGGER.error("Failed to load backpack preview file: " + storageFile.getFileName().toString(), e);
+                    LOGGER.error("Failed to load backpack preview file: {}", storageFile.getFileName().toString(), e);
                 }
             }
         }
@@ -101,12 +104,12 @@ public class BackpackPreview {
     }
 
     private static void saveStorage(int index) {
-        Path storageFile = saveDir.resolve(index + ".json");
+        Path storageFile = saveDir.resolve(index + ".nbt");
         try (BufferedWriter writer = Files.newBufferedWriter(storageFile)) {
-            SkyblockerMod.GSON.toJson(Storage.CODEC.encodeStart(JsonOps.INSTANCE, storages[index]).result().orElseThrow(), writer);
+            writer.write(new StringNbtWriter().apply(Storage.CODEC.encodeStart(NbtOps.INSTANCE, storages[index]).getOrThrow()));
             storages[index].markClean();
         } catch (Exception e) {
-            LOGGER.error("Failed to save backpack preview file: " + index + ".json", e);
+            LOGGER.error("Failed to save backpack preview file: {}", storageFile.getFileName().toString(), e);
         }
     }
 
@@ -170,7 +173,7 @@ public class BackpackPreview {
     static class Storage {
         private static final Codec<Storage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("name").forGetter(Storage::name),
-                ItemStack.CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList))
+                ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList))
                 .apply(instance, (name, items) -> Storage.create(name, items)));
         private final Inventory inventory;
         private final String name;
