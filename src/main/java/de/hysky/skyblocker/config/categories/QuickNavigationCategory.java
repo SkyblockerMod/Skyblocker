@@ -55,6 +55,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button1.item.nbt,
 										newValue -> config.quickNav.button1.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -103,6 +104,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button2.item.nbt,
 										newValue -> config.quickNav.button2.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -151,6 +153,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button3.item.nbt,
 										newValue -> config.quickNav.button3.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -199,6 +202,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button4.item.nbt,
 										newValue -> config.quickNav.button4.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -247,6 +251,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button5.item.nbt,
 										newValue -> config.quickNav.button5.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -295,6 +300,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button6.item.nbt,
 										newValue -> config.quickNav.button6.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -343,6 +349,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button7.item.nbt,
 										newValue -> config.quickNav.button7.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -391,6 +398,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button8.item.nbt,
 										newValue -> config.quickNav.button8.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -439,6 +447,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button9.item.nbt,
 										newValue -> config.quickNav.button9.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -487,6 +496,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button10.item.nbt,
 										newValue -> config.quickNav.button10.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -535,6 +545,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button11.item.nbt,
 										newValue -> config.quickNav.button11.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
@@ -583,6 +594,7 @@ public class QuickNavigationCategory {
 										() -> config.quickNav.button12.item.nbt,
 										newValue -> config.quickNav.button12.item.nbt = newValue)
 								.controller(StringControllerBuilder::create)
+								.available(false)
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.uiTitle"))
