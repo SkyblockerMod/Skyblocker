@@ -28,13 +28,15 @@ public class EventNotifications {
 
     private static long currentTime = System.currentTimeMillis() / 1000;
 
+    public static final String JACOBS = "Jacob's Farming Contest";
+
     public static final Map<String, ItemStack> eventIcons = new Object2ObjectOpenHashMap<>();
 
     static {
         eventIcons.put("Dark Auction", new ItemStack(Items.NETHER_BRICK));
         eventIcons.put("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD));
         eventIcons.put("Bonus Mining Fiesta", new ItemStack(Items.IRON_PICKAXE));
-        eventIcons.put("Jacob's Farming Contest", new ItemStack(Items.IRON_HOE));
+        eventIcons.put(JACOBS, new ItemStack(Items.IRON_HOE));
         eventIcons.put("New Year Celebration", new ItemStack(Items.CAKE));
         eventIcons.put("Election Over!", new ItemStack(Items.JUKEBOX));
         eventIcons.put("Election Booth Opens", new ItemStack(Items.JUKEBOX));
@@ -67,6 +69,10 @@ public class EventNotifications {
     }
 
     private static final Map<String, LinkedList<SkyblockEvent>> events = new Object2ObjectOpenHashMap<>();
+
+    public static Map<String, LinkedList<SkyblockEvent>> getEvents() {
+        return events;
+    }
 
     public static void refreshEvents() {
         CompletableFuture.supplyAsync(() -> {

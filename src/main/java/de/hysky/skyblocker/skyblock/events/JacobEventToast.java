@@ -15,7 +15,7 @@ public class JacobEventToast extends EventToast{
 
     private final String[] crops;
 
-    private static final Map<String, ItemStack> cropItems = new HashMap<>();
+    public static final Map<String, ItemStack> cropItems = new HashMap<>();
 
     static {
         cropItems.put("Wheat", new ItemStack(Items.WHEAT));
