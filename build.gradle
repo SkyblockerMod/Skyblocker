@@ -48,7 +48,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// YACL
-	include modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}")
+	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
 	// Mod Menu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
