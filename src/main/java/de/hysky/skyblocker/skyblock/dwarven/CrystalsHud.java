@@ -35,7 +35,7 @@ public class CrystalsHud {
                         .then(ClientCommandManager.literal("crystals")
                                 .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
 
-        HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
+        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
             if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled
                     || CLIENT.player == null
                     || !visible) {
