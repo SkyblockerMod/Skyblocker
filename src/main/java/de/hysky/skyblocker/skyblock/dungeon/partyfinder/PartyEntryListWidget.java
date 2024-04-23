@@ -97,4 +97,12 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
             context.drawTextWrapped(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF);
         } else super.renderWidget(context, mouseX, mouseY, delta);
     }
+
+    @Override
+    protected void drawHeaderAndFooterSeparators(DrawContext context) {
+    }
+
+    @Override
+    protected void drawMenuListBackground(DrawContext context) {
+    }
 }

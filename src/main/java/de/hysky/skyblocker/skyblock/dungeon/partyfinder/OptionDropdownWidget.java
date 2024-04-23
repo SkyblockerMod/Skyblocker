@@ -119,6 +119,14 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
             matrices.pop();
         }
     }
+    
+    @Override
+    protected void drawHeaderAndFooterSeparators(DrawContext context) {
+    }
+
+    @Override
+    protected void drawMenuListBackground(DrawContext context) {
+    }
 
     public void open(List<Option> entries, int backButtonId) {
         isOpen = true;
