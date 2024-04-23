@@ -146,7 +146,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (matcher.find()) classLevel = Integer.parseInt(matcher.group(1));
                 Player player = new Player(playerName, className, classLevel);
 
-                SkullBlockEntityAccessor.invokeFetchProfileByName(playerNameTrim, Utils.getApiServices()).thenAccept(
+                SkullBlockEntityAccessor.invokeFetchProfileByName(playerNameTrim).thenAccept(
                         gameProfile -> gameProfile.ifPresent(profile -> player.skinTexture = (client.getSkinProvider().getSkinTextures(profile).texture())));
 
                 if (playerNameTrim.equals(partyHost)) {
@@ -171,7 +171,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             partyLeader = new Player(Text.literal("Error"), "Error", -1);
         }
 
-        SkullBlockEntityAccessor.invokeFetchProfileByName(partyLeader.name.getString(), Utils.getApiServices()).thenAccept(
+        SkullBlockEntityAccessor.invokeFetchProfileByName(partyLeader.name.getString()).thenAccept(
                 gameProfile -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
     }
 
