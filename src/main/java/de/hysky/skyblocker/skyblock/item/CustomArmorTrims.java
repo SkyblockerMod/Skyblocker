@@ -26,9 +26,12 @@ import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.item.trim.ArmorTrimMaterial;
+import net.minecraft.item.trim.ArmorTrimPattern;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -57,18 +60,11 @@ public class CustomArmorTrims {
 		try {
 			TRIMS_CACHE.clear();
 			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, player); 
-			for (Identifier material : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().map(r -> new Identifier(r.value().assetName())).collect(Collectors.toSet())) {
-				for (Identifier pattern : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().map(r -> r.value().assetId()).collect(Collectors.toSet())) {
-					NbtCompound compound = new NbtCompound();
-					compound.putString("material", material.toString());
-					compound.putString("pattern", pattern.toString());
+			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
+				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
+					ArmorTrim trim = new ArmorTrim(material, pattern);
 
-					ArmorTrim trim = ArmorTrim.CODEC.parse(RegistryOps.of(NbtOps.INSTANCE, wrapperLookup), compound).resultOrPartial(LOGGER::error).orElse(null);
-
-					// Something went terribly wrong
-					if (trim == null) throw new IllegalStateException("Trim shouldn't be null! [" + "\"" + material + "\",\"" + pattern + "\"]");
-
-					TRIMS_CACHE.put(new ArmorTrimId(material, pattern), trim);
+					TRIMS_CACHE.put(new ArmorTrimId(material.registryKey().getValue(), pattern.registryKey().getValue()), trim);
 				}
 			}
 
