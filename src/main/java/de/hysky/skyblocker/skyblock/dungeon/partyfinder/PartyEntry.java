@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixin.accessor.SkullBlockEntityAccessor;
-import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -25,6 +25,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     private static final Identifier PARTY_CARD_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
     private static final Identifier PARTY_CARD_TEXTURE_HOVER = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
     public static final Text JOIN_TEXT = Text.translatable("skyblocker.partyFinder.join");
+    private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
     protected final PartyFinderScreen screen;
     protected final int slotID;
     Player partyLeader;
@@ -69,7 +71,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         String partyHost = title.getString().split("'s")[0];
 
         int membersIndex = -1;
-        for (int i = 1; i < tooltips.size(); i++) {
+        for (int i = 0; i < tooltips.size(); i++) {
             Text text = tooltips.get(i);
             String tooltipText = Formatting.strip(text.getString());
             assert tooltipText != null;
@@ -229,7 +231,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             }
         }
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerCustomPFSkull" + floor), Optional.of(UUID.randomUUID()), floorSkullProperties));
+        stack.set(DataComponentTypes.PROFILE, SKULL_CACHE.computeIfAbsent("SkyblockerCustomPFSkull" + dungeon + floor, name -> new ProfileComponent(Optional.of(name), Optional.of(UUID.randomUUID()), floorSkullProperties)));
         context.drawItem(stack, 317, 3);
 
         int textWidth = textRenderer.getWidth(floor);
