@@ -169,7 +169,7 @@ public class ItemFixerUpper {
 
     private final static String[] TALLGRASS_VARIANTS = {
             "minecraft:dead_bush",
-            "minecraft:grass",
+            "minecraft:short_grass",
             "minecraft:fern"
     };
 
