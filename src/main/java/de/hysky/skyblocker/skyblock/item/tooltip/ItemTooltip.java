@@ -140,17 +140,17 @@ public class ItemTooltip {
         });
 
         if (SkyblockerConfigManager.get().general.dungeonQuality) {
-            NbtCompound ea = ItemUtils.getExtraAttributes(stack);
-            if (ea != null && ea.contains("baseStatBoostPercentage")) {
-                int baseStatBoostPercentage = ea.getInt("baseStatBoostPercentage");
+            NbtCompound customData = ItemUtils.getCustomData(stack);
+            if (customData != null && customData.contains("baseStatBoostPercentage")) {
+                int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
                 boolean maxQuality = baseStatBoostPercentage == 50;
                 if (maxQuality) {
                     lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
                 } else {
                     lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
                 }
-                if (ea.contains("item_tier")) {     // sometimes it just isn't here?
-                    int itemTier = ea.getInt("item_tier");
+                if (customData.contains("item_tier")) {     // sometimes it just isn't here?
+                    int itemTier = customData.getInt("item_tier");
                     if (maxQuality) {
                         lines.add(Text.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + itemTierFloors.get(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
                     } else {
@@ -189,8 +189,8 @@ public class ItemTooltip {
                 lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
                         .formatted(Formatting.LIGHT_PURPLE));
             } else {
-                NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
-                boolean isInMuseum = (extraAttributes.contains("donated_museum") && extraAttributes.getBoolean("donated_museum")) || MuseumItemCache.hasItemInMuseum(internalID);
+                NbtCompound customData = ItemUtils.getCustomData(stack);
+                boolean isInMuseum = (customData.contains("donated_museum") && customData.getBoolean("donated_museum")) || MuseumItemCache.hasItemInMuseum(internalID);
 
                 Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
 
@@ -216,13 +216,13 @@ public class ItemTooltip {
                     if (existingTooltip.startsWith("Color: ")) {
                         correctLine = true;
 
-                        addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack).copyNbt(), colorHex, expectedHex, existingTooltip);
+                        addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, existingTooltip);
                         break;
                     }
                 }
 
                 if (!correctLine) {
-                    addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack).copyNbt(), colorHex, expectedHex, "");
+                    addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, "");
                 }
             }
         }
@@ -291,57 +291,57 @@ public class ItemTooltip {
 
     // TODO What in the world is this?
     public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
-        NbtCompound ea = ItemUtils.getExtraAttributes(stack);
+        NbtCompound customData = ItemUtils.getCustomData(stack);
 
-        if (ea == null || !ea.contains(ItemUtils.ID, NbtElement.STRING_TYPE)) {
+        if (customData == null || !customData.contains(ItemUtils.ID, NbtElement.STRING_TYPE)) {
             return null;
         }
-        String internalName = ea.getString(ItemUtils.ID);
+        String internalName = customData.getString(ItemUtils.ID);
 
         if (internalIDOnly) {
             return internalName;
         }
 
         // Transformation to API format.
-        if (ea.contains("is_shiny")) {
+        if (customData.contains("is_shiny")) {
             return "ISSHINY_" + internalName;
         }
 
         switch (internalName) {
             case "ENCHANTED_BOOK" -> {
-                if (ea.contains("enchantments")) {
-                    NbtCompound enchants = ea.getCompound("enchantments");
+                if (customData.contains("enchantments")) {
+                    NbtCompound enchants = customData.getCompound("enchantments");
                     Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
                     String enchant = firstEnchant.orElse("");
                     return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
                 }
             }
             case "PET" -> {
-                if (ea.contains("petInfo")) {
-                    JsonObject petInfo = SkyblockerMod.GSON.fromJson(ea.getString("petInfo"), JsonObject.class);
+                if (customData.contains("petInfo")) {
+                    JsonObject petInfo = SkyblockerMod.GSON.fromJson(customData.getString("petInfo"), JsonObject.class);
                     return "LVL_1_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
                 }
             }
             case "POTION" -> {
-                String enhanced = ea.contains("enhanced") ? "_ENHANCED" : "";
-                String extended = ea.contains("extended") ? "_EXTENDED" : "";
-                String splash = ea.contains("splash") ? "_SPLASH" : "";
-                if (ea.contains("potion") && ea.contains("potion_level")) {
-                    return (ea.getString("potion") + "_" + internalName + "_" + ea.getInt("potion_level")
+                String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
+                String extended = customData.contains("extended") ? "_EXTENDED" : "";
+                String splash = customData.contains("splash") ? "_SPLASH" : "";
+                if (customData.contains("potion") && customData.contains("potion_level")) {
+                    return (customData.getString("potion") + "_" + internalName + "_" + customData.getInt("potion_level")
                             + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
                 }
             }
             case "RUNE" -> {
-                if (ea.contains("runes")) {
-                    NbtCompound runes = ea.getCompound("runes");
+                if (customData.contains("runes")) {
+                    NbtCompound runes = customData.getCompound("runes");
                     Optional<String> firstRunes = runes.getKeys().stream().findFirst();
                     String rune = firstRunes.orElse("");
                     return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
                 }
             }
             case "ATTRIBUTE_SHARD" -> {
-                if (ea.contains("attributes")) {
-                    NbtCompound shards = ea.getCompound("attributes");
+                if (customData.contains("attributes")) {
+                    NbtCompound shards = customData.getCompound("attributes");
                     Optional<String> firstShards = shards.getKeys().stream().findFirst();
                     String shard = firstShards.orElse("");
                     return internalName + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);

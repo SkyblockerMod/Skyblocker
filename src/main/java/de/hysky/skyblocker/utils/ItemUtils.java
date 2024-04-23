@@ -40,7 +40,6 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class ItemUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
-    public static final String EXTRA_ATTRIBUTES = "ExtraAttributes";
     public static final String ID = "id";
     public static final String UUID = "uuid";
     private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
@@ -55,74 +54,54 @@ public class ItemUtils {
             return Command.SINGLE_SUCCESS;
         });
     }
-    
-    public static NbtComponent getCustomData(@NotNull ItemStack stack) {
-        return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+
+    @SuppressWarnings("deprecation")
+	public static NbtCompound getCustomData(@NotNull ItemStack stack) {
+        return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
     }
 
     /**
-     * Gets the {@code ExtraAttributes} NBT tag from the item stack.
-     *
-     * @param stack the item stack to get the {@code ExtraAttributes} NBT tag from
-     * @return an optional containing the {@code ExtraAttributes} NBT tag of the item stack
-     */
-    public static Optional<NbtCompound> getExtraAttributesOptional(@NotNull ItemStack stack) {
-        return Optional.ofNullable(getExtraAttributes(stack));
-    }
-
-    /**
-     * Gets the {@code ExtraAttributes} NBT tag from the item stack.
-     *
-     * @param stack the item stack to get the {@code ExtraAttributes} NBT tag from
-     * @return the {@code ExtraAttributes} NBT tag of the item stack, or null if the item stack is null or does not have an {@code ExtraAttributes} NBT tag
-     */
-    @Nullable
-    public static NbtCompound getExtraAttributes(@NotNull ItemStack stack) {
-    	NbtComponent customData = getCustomData(stack);
-        NbtCompound customNbt = customData.copyNbt();
-        return customNbt.contains(EXTRA_ATTRIBUTES) ? customNbt.getCompound(EXTRA_ATTRIBUTES) : null;
-    }
-
-    /**
-     * Gets the internal name of the item stack from the {@code ExtraAttributes} NBT tag.
+     * Gets the Skyblock item id of the item stack.
      *
      * @param stack the item stack to get the internal name from
      * @return an optional containing the internal name of the item stack
      */
-    public static Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
-        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString(ID));
+	public static Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
+        NbtCompound customData = getCustomData(stack);
+        return customData.contains(ID) ? Optional.of(customData.getString(ID)) : Optional.empty();
     }
 
     /**
-     * Gets the internal name of the item stack from the {@code ExtraAttributes} NBT tag.
+     * Gets the Skyblock item id of the item stack.
      *
      * @param stack the item stack to get the internal name from
      * @return the internal name of the item stack, or an empty string if the item stack is null or does not have an internal name
      */
-    public static String getItemId(@NotNull ItemStack stack) {
-        NbtCompound extraAttributes = getExtraAttributes(stack);
-        return extraAttributes != null ? extraAttributes.getString(ID) : "";
+	public static String getItemId(@NotNull ItemStack stack) {
+        NbtCompound customData = getCustomData(stack);
+        return customData.contains(ID) ? customData.getString(ID) : "";
     }
 
     /**
-     * Gets the UUID of the item stack from the {@code ExtraAttributes} NBT tag.
+     * Gets the UUID of the item stack.
      *
      * @param stack the item stack to get the UUID from
      * @return an optional containing the UUID of the item stack
      */
-    public static Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
-        return getExtraAttributesOptional(stack).map(extraAttributes -> extraAttributes.getString(UUID));
+	public static Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
+        NbtCompound customData = getCustomData(stack);
+        return customData.contains(UUID) ? Optional.of(customData.getString(UUID)) : Optional.empty();
     }
 
     /**
-     * Gets the UUID of the item stack from the {@code ExtraAttributes} NBT tag.
+     * Gets the UUID of the item stack.
      *
      * @param stack the item stack to get the UUID from
      * @return the UUID of the item stack, or an empty string if the item stack is null or does not have a UUID
      */
-    public static String getItemUuid(@NotNull ItemStack stack) {
-        NbtCompound extraAttributes = getExtraAttributes(stack);
-        return extraAttributes != null ? extraAttributes.getString(UUID) : "";
+	public static String getItemUuid(@NotNull ItemStack stack) {
+        NbtCompound customData = getCustomData(stack);
+        return customData.contains(UUID) ? customData.getString(UUID) : "";
     }
 
     /**
@@ -141,8 +120,8 @@ public class ItemUtils {
      * @param stack the item under the pointer
      * @return if the item have a "Timestamp" it will be shown formated on the tooltip
      */
-    public static String getTimestamp(ItemStack stack) {
-        NbtCompound ea = getExtraAttributes(stack);
+	public static String getTimestamp(ItemStack stack) {
+        NbtCompound ea = getCustomData(stack);
 
         if (ea != null && ea.contains("timestamp", NbtElement.LONG_TYPE)) {
             Instant date = Instant.ofEpochMilli(ea.getLong("timestamp"));
@@ -164,13 +143,13 @@ public class ItemUtils {
     }
 
     public static boolean hasCustomDurability(@NotNull ItemStack stack) {
-        NbtCompound extraAttributes = getExtraAttributes(stack);
+        NbtCompound extraAttributes = getCustomData(stack);
         return extraAttributes != null && (extraAttributes.contains("drill_fuel") || extraAttributes.getString(ID).equals("PICKONIMBUS"));
     }
 
     @Nullable
     public static IntIntPair getDurability(@NotNull ItemStack stack) {
-        NbtCompound extraAttributes = getExtraAttributes(stack);
+        NbtCompound extraAttributes = getCustomData(stack);
         if (extraAttributes == null) return null;
 
         // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level

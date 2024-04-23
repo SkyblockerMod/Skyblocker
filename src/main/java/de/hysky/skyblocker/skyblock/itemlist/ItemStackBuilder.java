@@ -48,11 +48,9 @@ public class ItemStackBuilder {
 
         // Create & Attach ExtraAttributes tag
         NbtCompound customData = new NbtCompound();
-        NbtCompound extraAttributes = new NbtCompound();
-        customData.put(ItemUtils.EXTRA_ATTRIBUTES, extraAttributes);
 
         // Add Skyblock Item Id
-        extraAttributes.put(ItemUtils.ID, NbtString.of(internalName));
+        customData.put(ItemUtils.ID, NbtString.of(internalName));
 
         // Item Name
         String name = injectData(item.getDisplayName(), injectors);

@@ -28,7 +28,7 @@ public class TeleportOverlay {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
             String itemId = ItemTooltip.getInternalNameFromNBT(heldItem, true);
-            NbtCompound extraAttributes = ItemUtils.getExtraAttributes(heldItem);
+            NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
             if (itemId != null) {
                 switch (itemId) {
@@ -43,20 +43,20 @@ public class TeleportOverlay {
                         }
                     }
                     case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && extraAttributes != null && extraAttributes.getInt("ethermerge") == 1) {
-                            render(wrc, extraAttributes, 57);
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && customData != null && customData.getInt("ethermerge") == 1) {
+                            render(wrc, customData, 57);
                         } else if (SkyblockerConfigManager.get().general.teleportOverlay.enableInstantTransmission) {
-                            render(wrc, extraAttributes, 8);
+                            render(wrc, customData, 8);
                         }
                     }
                     case "ETHERWARP_CONDUIT" -> {
                         if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission) {
-                            render(wrc, extraAttributes, 57);
+                            render(wrc, customData, 57);
                         }
                     }
                     case "SINSEEKER_SCYTHE" -> {
                         if (SkyblockerConfigManager.get().general.teleportOverlay.enableSinrecallTransmission) {
-                            render(wrc, extraAttributes, 4);
+                            render(wrc, customData, 4);
                         }
                     }
                     case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {

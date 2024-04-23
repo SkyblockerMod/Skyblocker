@@ -36,10 +36,10 @@ public abstract class DrawContextMixin {
         if (!SkyblockerConfigManager.get().general.itemInfoDisplay.attributeShardInfo) return;
 
         if (Utils.isOnSkyblock()) {
-            NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
+            NbtCompound customData = ItemUtils.getCustomData(stack);
 
-            if (extraAttributes != null && extraAttributes.getString(ItemUtils.ID).equals("ATTRIBUTE_SHARD")) {
-                NbtCompound attributesTag = extraAttributes.getCompound("attributes");
+            if (ItemUtils.getItemId(stack).equals("ATTRIBUTE_SHARD")) {
+                NbtCompound attributesTag = customData.getCompound("attributes");
                 String[] attributes = attributesTag.getKeys().toArray(String[]::new);
 
                 if (attributes.length != 0) {
