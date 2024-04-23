@@ -7,7 +7,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.events.HudRenderEvents;
-import de.hysky.skyblocker.mixin.accessor.LayeredDrawerAccessor;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -24,17 +23,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
@@ -122,32 +121,20 @@ public abstract class InGameHudMixin {
         }
     }
 
-    /**
-     * Hopefully other mods don't add stages into these two drawers...
-     * 
-     * @implNote Check this every update to see if the indexes of each layer have changed.
-     */
-    @Inject(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/hud/InGameHud;layeredDrawer:Lnet/minecraft/client/gui/LayeredDrawer;", opcode = Opcodes.GETFIELD))
-    private void skyblocker$beforeDrawersInitialized(CallbackInfo ci, @Local(ordinal = 0) LayeredDrawer persistentDrawer, @Local(ordinal = 1) LayeredDrawer intermittentDrawer) {
-        List<LayeredDrawer.Layer> persistentLayers = ((LayeredDrawerAccessor) persistentDrawer).getLayers();
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2))
+    private LayeredDrawer.Layer skyblocker$afterMainHud(LayeredDrawer.Layer mainHudLayer) {
+        return (context, tickDelta) -> {
+        	mainHudLayer.render(context, tickDelta);
+        	HudRenderEvents.AFTER_MAIN_HUD.invoker().onRender(context, tickDelta);
+        };
+    }
 
-        //After Main HUD - stage index is 2
-        LayeredDrawer.Layer mainHudLayer = persistentLayers.get(2);
-
-        persistentLayers.set(2, (context, tickDelta) -> {
-            mainHudLayer.render(context, tickDelta);
-            HudRenderEvents.AFTER_MAIN_HUD.invoker().onRender(context, tickDelta);
-        });
-
-        List<LayeredDrawer.Layer> intermittentLayers = ((LayeredDrawerAccessor) intermittentDrawer).getLayers();
-
-        //Before Chat - stage index is 5
-        LayeredDrawer.Layer chatLayer = intermittentLayers.get(5);
-
-        intermittentLayers.set(5, (context, tickDelta) -> {
-            HudRenderEvents.BEFORE_CHAT.invoker().onRender(context, tickDelta);
-            chatLayer.render(context, tickDelta);
-        });
+    @ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 1)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
+    private LayeredDrawer.Layer skyblocker$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
+        return (context, tickDelta) -> {
+        	HudRenderEvents.BEFORE_CHAT.invoker().onRender(context, tickDelta);
+        	beforeChatLayer.render(context, tickDelta);
+        };
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))

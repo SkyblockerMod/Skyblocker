@@ -42,7 +42,6 @@
     "accessor.EndermanEntityAccessor",
     "accessor.FrustumInvoker",
     "accessor.HandledScreenAccessor",
-    "accessor.LayeredDrawerAccessor",
     "accessor.MessageHandlerAccessor",
     "accessor.PlayerListHudAccessor",
     "accessor.RecipeBookWidgetAccessor",
