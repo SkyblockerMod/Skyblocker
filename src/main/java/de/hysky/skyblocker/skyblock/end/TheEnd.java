@@ -87,8 +87,8 @@ public class TheEnd {
                 //
                 Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX() + 1, 1, pos.getEndZ() + 1);
                 for (ProtectorLocation protectorLocation : protectorLocations) {
-                    if (box.contains(protectorLocation.x, 0.5, protectorLocation.z)) {
-                        MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
+                    if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
+                        // MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
                         if (isProtectorHere(world, protectorLocation)) break;
                     }
                 }
@@ -129,7 +129,7 @@ public class TheEnd {
         ClientWorld world = MinecraftClient.getInstance().world;
         if (world == null) return;
         for (ProtectorLocation protectorLocation : protectorLocations) {
-            if (!world.isChunkLoaded(protectorLocation.x() >> 4, protectorLocation.z >> 4)) continue;
+            if (!world.isChunkLoaded(protectorLocation.x() >> 4, protectorLocation.z() >> 4)) continue;
             if (isProtectorHere(world, protectorLocation)) break;
         }
     }
