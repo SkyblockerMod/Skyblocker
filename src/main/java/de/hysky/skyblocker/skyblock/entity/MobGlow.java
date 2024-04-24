@@ -30,12 +30,10 @@ public class MobGlow {
 		Box box = entity.getBoundingBox();
 
 		if (OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
-			if (entity.isInvisible()) return false;
-
 			String name = entity.getName().getString();
 
 			// Dungeons
-			if (Utils.isInDungeons()) {
+			if (Utils.isInDungeons() && !entity.isInvisible()) {
 				return switch (entity) {
 					// Minibosses
 					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
@@ -60,14 +58,14 @@ public class MobGlow {
 
 			return switch (entity) {
 				// Rift
-				case PlayerEntity p when Utils.isInTheRift() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
+				case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
 
 				// Enderman Slayer
 				// Highlights Nukekubi Heads
 				case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayer.endermanSlayer.highlightNukekubiHeads;
 
 				// Special Zelot
-				case EndermanEntity enderman when Utils.isInTheEnd() -> TheEnd.isSpecialZealot(enderman);
+				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() -> TheEnd.isSpecialZealot(enderman);
 
 				default -> false;
 			};
