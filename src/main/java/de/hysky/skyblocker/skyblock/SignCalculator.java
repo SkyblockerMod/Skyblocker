@@ -60,11 +60,16 @@ public class SignCalculator {
         lastInput = input;
     }
 
-    public static String getNewValue() {
+    public static String getNewValue(Boolean isPrice) {
         if (output == null) {
             return "";
         }
-        return Double.toString(output);
+        //price can except decimals and exponents
+        if (isPrice) {
+            return output.toString();
+        }
+        //amounts want an integer number so round
+        return Long.toString(Math.round(output));
     }
 
     private static List<Token> lex(String input) {

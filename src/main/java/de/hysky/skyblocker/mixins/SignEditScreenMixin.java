@@ -32,7 +32,12 @@ public abstract class SignEditScreenMixin{
     private void skyblocker$finishEditing(CallbackInfo ci) {
         //if the sign is being used to enter number get number from calculator for if maths has been done
         if (Objects.equals(messages[1], "^^^^^^^^^^^^^^^")) {
-            messages[0] = SignCalculator.getNewValue();
+            boolean isPrice = messages[2].contains("price");
+            String value = SignCalculator.getNewValue(isPrice);
+            if (value.length() >= 15) {
+                value = value.substring(0,15);
+            }
+            messages[0] = value;
         }
 
     }
