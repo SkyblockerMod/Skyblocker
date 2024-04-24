@@ -762,6 +762,10 @@
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.events.startsSoon": "%s starts soon!",
+  "skyblocker.events.tab.clickToWarp": "Click to warp!",
+  "skyblocker.events.tab.noMore": "No more this year!",
+  "skyblocker.events.tab.startsIn": "Starts in %s",
+  "skyblocker.events.tab.endsIn": "Ends in %s",
 
   "skyblocker.tips.enabled": "§aEnabled Tips.",
   "skyblocker.tips.disabled": "§cDisabled Tips.",

@@ -103,12 +103,12 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             context.drawText(textRenderer, Text.literal(eventName).fillStyle(Style.EMPTY.withUnderline(isMouseOver(mouseX, mouseY, x, y))), x, y, -1, true);
             if (events.isEmpty()) {
-                context.drawText(textRenderer, " No more this year!", x, y + textRenderer.fontHeight, Colors.GRAY, false);
+                context.drawText(textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.fontHeight, Colors.GRAY, false);
             } else if (events.peekFirst().start() > time) {
-                MutableText formatted = Text.literal(" Starts in ").append(Utils.getDurationText((int) (events.peekFirst().start() - time))).formatted(Formatting.YELLOW);
+                MutableText formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.startsIn", Utils.getDurationText((int) (events.peekFirst().start() - time)))).formatted(Formatting.YELLOW);
                 context.drawText(textRenderer, formatted, x, y + textRenderer.fontHeight, -1, true);
             } else {
-                MutableText formatted = Text.literal(" Ends in ").append(Utils.getDurationText((int) (events.peekFirst().start() + events.peekFirst().duration() - time))).formatted(Formatting.GREEN);
+                MutableText formatted = Text.literal(" ").append(Text.translatable( "skyblocker.events.tab.endsIn", Utils.getDurationText((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
                 context.drawText(textRenderer, formatted, x, y + textRenderer.fontHeight, -1, true);
             }
 
@@ -130,7 +130,7 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
             }
             //noinspection DataFlowIssue
             if (events.peekFirst().warpCommand() != null) {
-                components.add(TooltipComponent.of(Text.literal("Click to warp!").formatted(Formatting.ITALIC).asOrderedText()));
+                components.add(TooltipComponent.of(Text.translatable("skyblocker.events.tab.clickToWarp").formatted(Formatting.ITALIC).asOrderedText()));
             }
 
             return components;
