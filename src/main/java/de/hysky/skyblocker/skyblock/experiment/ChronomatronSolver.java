@@ -64,7 +64,7 @@ public class ChronomatronSolver extends ExperimentSolver {
                     Inventory inventory = genericContainerScreen.getScreenHandler().getInventory();
                     if (chronomatronCurrentSlot == 0) {
                         for (int index = 10; index < 43; index++) {
-                            if (inventory.getStack(index).hasEnchantments()) {
+                            if (inventory.getStack(index).hasGlint()) {
                                 if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
                                     chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(inventory.getStack(index).getItem()));
                                     setState(State.WAIT);
@@ -75,7 +75,7 @@ public class ChronomatronSolver extends ExperimentSolver {
                                 return;
                             }
                         }
-                    } else if (!inventory.getStack(chronomatronCurrentSlot).hasEnchantments()) {
+                    } else if (!inventory.getStack(chronomatronCurrentSlot).hasGlint()) {
                         chronomatronCurrentSlot = 0;
                     }
                 }

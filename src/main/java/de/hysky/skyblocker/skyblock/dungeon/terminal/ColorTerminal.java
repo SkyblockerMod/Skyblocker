@@ -45,7 +45,7 @@ public class ColorTerminal extends ContainerSolver {
         }
         for (Map.Entry<Integer, ItemStack> slot : slots.entrySet()) {
             ItemStack itemStack = slot.getValue();
-            if (!itemStack.hasEnchantments() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
+            if (!itemStack.hasGlint() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
                 highlights.add(ColorHighlight.green(slot.getKey()));
             }
         }

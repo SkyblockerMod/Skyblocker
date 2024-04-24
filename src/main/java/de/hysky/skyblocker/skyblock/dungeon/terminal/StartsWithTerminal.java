@@ -26,7 +26,7 @@ public class StartsWithTerminal extends ContainerSolver {
         List<ColorHighlight> highlights = new ArrayList<>();
         for (Map.Entry<Integer, ItemStack> slot : slots.entrySet()) {
             ItemStack stack = slot.getValue();
-            if (!stack.hasEnchantments() && stack.getName().getString().startsWith(prefix)) {
+            if (!stack.hasGlint() && stack.getName().getString().startsWith(prefix)) {
                 highlights.add(ColorHighlight.green(slot.getKey()));
             }
         }
