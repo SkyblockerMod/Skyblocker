@@ -65,7 +65,7 @@ public class Calculator {
                     token.type = TokenType.NUMBER;
                     Matcher numberMatcher = NUMBER_PATTERN.matcher(input.substring(i));
                     if (!numberMatcher.find()) {//invalid value to lex
-                        throw new UnsupportedOperationException();
+                        throw new UnsupportedOperationException("invalid character");
                     }
                     int end =  numberMatcher.end();
                     token.value = input.substring(i,i + end);
@@ -80,10 +80,13 @@ public class Calculator {
         return tokens;
     }
 
-    private static List<Token> shunt(List<Token> tokens) {
-        // This is an implementation of the shunting yard algorithm
-        // Converts equation to use reverse polish notation
+    /**
+     *  This is an implementation of the shunting yard algorithm to convert the equation to reverse polish notation
+     * @param tokens equation in infix notation order
+     * @return equation in RPN order
+     */
 
+    private static List<Token> shunt(List<Token> tokens) {
         Deque<Token> operatorStack = new ArrayDeque<>();
         List<Token> outputQueue = new ArrayList<>();
 
@@ -99,7 +102,7 @@ public class Calculator {
                         if (leftToken.type == TokenType.L_PARENTHESIS) {
                             break;
                         }
-                        assert (leftToken.type == TokenType.OPERATOR); //todo why is this here
+                        assert (leftToken.type == TokenType.OPERATOR);
                         int leftPrecedence = getPrecedence(leftToken.value);
                         if (leftPrecedence >= precedence) {
                             outputQueue.add(operatorStack.pop());
@@ -145,7 +148,7 @@ public class Calculator {
                 return 1;
             }
             default -> {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("invalid operator");
             }
         }
     }
@@ -173,6 +176,9 @@ public class Calculator {
                             values.push(left - right);
                         }
                         case "/" -> {
+                            if (right == 0) {
+                                throw new UnsupportedOperationException("Can not divide by 0");
+                            }
                             values.push(left / right);
                         }
                         case "*" -> {
@@ -191,14 +197,14 @@ public class Calculator {
     private static double calculateValue(String value) {
         Matcher numberMatcher = NUMBER_PATTERN.matcher(value.toLowerCase());
         if (!numberMatcher.matches()) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("invalid number");
         }
         double number = Double.parseDouble(numberMatcher.group(1));
         String magnitude = numberMatcher.group(2);
 
         if (!magnitude.isEmpty()) {
             if (!magnitudeValues.containsKey(magnitude)) {//its invalid if its another letter
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("invalid magnitude");
             }
             number *= magnitudeValues.get(magnitude);
         }

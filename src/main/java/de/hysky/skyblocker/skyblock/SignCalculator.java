@@ -32,7 +32,7 @@ public class SignCalculator {
             try {
                 output = Calculator.calculate(input);
             } catch (Exception e){
-                output = null; //todo log
+                output = null;
             }
         }
 
