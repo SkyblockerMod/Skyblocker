@@ -1,3 +1,19 @@
+# Release 1.20.1
+
+## Highlight
+* vic (the cat) made two fixes
+  * fix end hud
+  * added missing farming tool for detection in garden hud
+
+## What's Changed
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/666
+* fix garden icons and clamp the progress bar by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/668
+* fix and things for end hud by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/667
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.20.0...v1.20.1
+
+___
 # Release 1.20.0
 
 ## Highlight

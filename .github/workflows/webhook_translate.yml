@@ -34,19 +34,16 @@ jobs:
         shell: bash
         run: |
           OUTPUT=$(go run github.com/josephburnett/jd@latest <(git show HEAD^:src/main/resources/assets/skyblocker/lang/en_us.json) <(git show HEAD:src/main/resources/assets/skyblocker/lang/en_us.json) || true)
-          OUTPUT=$(echo "$OUTPUT" | sed 's/"/\\"/g')
-          OUTPUT=$(echo "$OUTPUT" | sed 's/\\n/\\\\n/g')
           OUTPUT="\`\`\`diff
           $OUTPUT
           \`\`\`"
-          OUTPUT=$(jq -Rn --arg str "$OUTPUT" '$str' | sed -E "s|^(['\"])(.*)\1$|\2|g")
           
           JSON_PAYLOAD='{
           "content": "<@&1134566053138145330>",
           "embeds": [
             {
               "title": "Something Changed (Click me)",
-              "description": "'"${OUTPUT}"'",
+              "description": '"$(echo "$OUTPUT" | jq -Rsa .)"',
               "url": "https://translate.hysky.de/projects/Skyblocker/skyblocker",
               "color": 5808639,
               "image": {
