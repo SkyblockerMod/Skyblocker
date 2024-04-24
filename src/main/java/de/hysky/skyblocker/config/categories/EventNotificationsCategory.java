@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.config.categories;
 
+import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.config.DurationController;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.ListOption;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.*;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -15,9 +15,27 @@ import java.util.Map;
 
 public class EventNotificationsCategory {
 
-    public static ConfigCategory create(SkyblockerConfig config) {
+    private static boolean shouldPlaySound = false;
+
+    public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
+        shouldPlaySound = false;
         return ConfigCategory.createBuilder()
                 .name(Text.literal("Event Notifications"))
+                .option(Option.<SkyblockerConfig.EventNotifications.Sound>createBuilder()
+                        .binding(defaults.eventNotifications.reminderSound,
+                                () -> config.eventNotifications.reminderSound,
+                                sound -> config.eventNotifications.reminderSound = sound)
+                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .name(Text.literal("Notification Sound"))
+                        .listener((soundOption, sound) -> {
+                            if (!shouldPlaySound) {
+                                shouldPlaySound = true;
+                                return;
+                            }
+                            if (sound.getSoundEvent() != null)
+                                MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(sound.getSoundEvent(), 1f, 1f));
+                        })
+                        .build())
                 .groups(createGroups(config))
                 .build();
 

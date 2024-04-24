@@ -14,8 +14,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundEvent;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -129,16 +131,19 @@ public class EventNotifications {
 
             for (Integer reminderTime : reminderTimes) {
                 if (currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
+                    MinecraftClient instance = MinecraftClient.getInstance();
                     if (eventName.equals("Jacob's Farming Contest")) {
-                        MinecraftClient.getInstance().getToastManager().add(
+                        instance.getToastManager().add(
                                 new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras())
                         );
                     }
                     else {
-                        MinecraftClient.getInstance().getToastManager().add(
+                        instance.getToastManager().add(
                                 new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER)))
                         );
                     }
+                    SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
+                    if (soundEvent != null) instance.getSoundManager().play(PositionedSoundInstance.master(soundEvent, 1f, 1f));
                     break;
                 }
             }
