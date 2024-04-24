@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
  */
 public class ItemStackComponentizationFixer {
 	private static final int ITEM_NBT_DATA_VERSION = 3817;
-	private static final int ITEM_COMPONENTS_DATA_VERSION = 3820;
+	private static final int ITEM_COMPONENTS_DATA_VERSION = 3825;
 	private static final DynamicRegistryManager REGISTRY_MANAGER = new DynamicRegistryManager.ImmutableImpl(List.of(Registries.ITEM, Registries.DATA_COMPONENT_TYPE));
 
 	public static ItemStack fixUpItem(NbtCompound nbt) {
