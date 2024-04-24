@@ -46,7 +46,7 @@ public class MuseumItemCache {
 	private static void load(MinecraftClient client) {
 		loaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = Files.newBufferedReader(CACHE_FILE)) {
-				Map<String, Map<String, ProfileMuseumData>> cachedData = ProfileMuseumData.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
+				Map<String, Map<String, ProfileMuseumData>> cachedData = ProfileMuseumData.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 
 				MUSEUM_ITEM_CACHE.putAll(cachedData);
 				LOGGER.info("[Skyblocker] Loaded museum items cache");
@@ -60,7 +60,7 @@ public class MuseumItemCache {
 	private static void save() {
 		CompletableFuture.runAsync(() -> {
 			try (BufferedWriter writer = Files.newBufferedWriter(CACHE_FILE)) {
-				SkyblockerMod.GSON.toJson(ProfileMuseumData.SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, MUSEUM_ITEM_CACHE).result().orElseThrow(), writer);
+				SkyblockerMod.GSON.toJson(ProfileMuseumData.SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, MUSEUM_ITEM_CACHE).getOrThrow(), writer);
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to save cached museum items!", e);
 			}

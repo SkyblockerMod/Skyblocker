@@ -97,7 +97,7 @@ public class ImageRepoLoader {
 
 		if (Files.exists(file)) {
 			try (BufferedReader reader = Files.newBufferedReader(file)) {
-				CommitData commitData = CommitData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
+				CommitData commitData = CommitData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 
 				return commitData.commit();
 			}
@@ -116,7 +116,7 @@ public class ImageRepoLoader {
 		CommitData commitData = new CommitData(newHash, System.currentTimeMillis());
 
 		try (BufferedWriter writer = Files.newBufferedWriter(file)) {
-			SkyblockerMod.GSON.toJson(CommitData.CODEC.encodeStart(JsonOps.INSTANCE, commitData).result().orElseThrow(), writer);
+			SkyblockerMod.GSON.toJson(CommitData.CODEC.encodeStart(JsonOps.INSTANCE, commitData).getOrThrow(), writer);
 		}
 	}
 

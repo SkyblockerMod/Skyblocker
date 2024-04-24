@@ -258,7 +258,7 @@ public class OrderedWaypoints {
 	private static void load() {
 		loaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = Files.newBufferedReader(PATH)) {
-				WAYPOINTS.putAll(SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow());
+				WAYPOINTS.putAll(SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow());
 			} catch (NoSuchFileException ignored) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Ordered Waypoints] Failed to load the waypoints! :(", e);
@@ -268,7 +268,7 @@ public class OrderedWaypoints {
 
 	private static void save() {
 		try (BufferedWriter writer = Files.newBufferedWriter(PATH)) {
-			SkyblockerMod.GSON.toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).result().orElseThrow(), writer);
+			SkyblockerMod.GSON.toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).getOrThrow(), writer);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Ordered Waypoints] Failed to save the waypoints! :(", e);
 		}
@@ -276,7 +276,7 @@ public class OrderedWaypoints {
 
 	private static int export(FabricClientCommandSource source) {
 		try {
-			String json = new Gson().toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).result().orElseThrow());
+			String json = new Gson().toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).getOrThrow());
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			GZIPOutputStream gzip = new GZIPOutputStream(out);
 
@@ -306,7 +306,7 @@ public class OrderedWaypoints {
 				byte[] decoded = Base64.getDecoder().decode(encoded);
 
 				String json = new String(new GZIPInputStream(new ByteArrayInputStream(decoded)).readAllBytes());
-				Map<String, OrderedWaypointGroup> importedWaypoints = SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).result().orElseThrow();
+				Map<String, OrderedWaypointGroup> importedWaypoints = SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).getOrThrow();
 
 				SEMAPHORE.acquireUninterruptibly();
 				WAYPOINTS.putAll(importedWaypoints);
@@ -332,7 +332,7 @@ public class OrderedWaypoints {
 			}
 
 			String json = MinecraftClient.getInstance().keyboard.getClipboard();
-			List<ColeWeightWaypoint> coleWeightWaypoints = ColeWeightWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).result().orElseThrow();
+			List<ColeWeightWaypoint> coleWeightWaypoints = ColeWeightWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).getOrThrow();
 			ObjectArrayList<OrderedWaypoint> convertedWaypoints = new ObjectArrayList<>();
 
 			for (ColeWeightWaypoint waypoint : coleWeightWaypoints) {

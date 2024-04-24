@@ -52,7 +52,7 @@ public class ChatRulesHandler {
 
     private static void loadChatRules() {
         try (BufferedReader reader = Files.newBufferedReader(CHAT_RULE_FILE)) {
-            Map<String, List<ChatRule>> chatRules = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
+            Map<String, List<ChatRule>> chatRules = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
             LOGGER.info("[Skyblocker Chat Rules]: {}", chatRules);
 
             chatRuleList.addAll(chatRules.get("rules"));
@@ -98,7 +98,7 @@ public class ChatRulesHandler {
 
     protected static void saveChatRules() {
         JsonObject chatRuleJson = new JsonObject();
-        chatRuleJson.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, chatRuleList).result().orElseThrow());
+        chatRuleJson.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, chatRuleList).getOrThrow());
         try (BufferedWriter writer = Files.newBufferedWriter(CHAT_RULE_FILE)) {
             SkyblockerMod.GSON.toJson(chatRuleJson, writer);
             LOGGER.info("[Skyblocker Chat Rules] Saved chat rules file");

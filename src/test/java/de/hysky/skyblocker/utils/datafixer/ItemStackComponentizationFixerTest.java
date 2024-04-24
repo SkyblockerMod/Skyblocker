@@ -43,7 +43,7 @@ public class ItemStackComponentizationFixerTest {
 	@Test
 	void testDataFixer() {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
-		JsonElement stackJson = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, fixedStack).result().orElseThrow();
+		JsonElement stackJson = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, fixedStack).getOrThrow();
 
 		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}
