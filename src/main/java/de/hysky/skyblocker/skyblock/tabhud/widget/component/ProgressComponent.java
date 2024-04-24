@@ -5,7 +5,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
 
 
 /**
@@ -37,7 +36,7 @@ public class ProgressComponent extends Component {
             this.ico = (ico == null) ? Ico.BARRIER : ico;
             this.desc = d;
             this.bar = b;
-            this.pcnt = MathHelper.clamp(pcnt, 0f, 100f);
+            this.pcnt = Math.clamp(pcnt, 0f, 100f);
             this.color = 0xff000000 | color;
         }
 

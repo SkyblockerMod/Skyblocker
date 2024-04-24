@@ -58,7 +58,6 @@ import net.minecraft.command.argument.PosArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class OrderedWaypoints {
@@ -144,7 +143,7 @@ public class OrderedWaypoints {
 		OrderedWaypoint waypoint = new OrderedWaypoint(pos, colorComponents);
 
 		if (index != Integer.MIN_VALUE) {
-			int indexToAddAt = MathHelper.clamp(index, 0, group.waypoints().size());
+			int indexToAddAt = Math.clamp(index, 0, group.waypoints().size());
 
 			group.waypoints().add(indexToAddAt, waypoint);
 			INDEX_STORE.removeInt(group.name());
@@ -188,7 +187,7 @@ public class OrderedWaypoints {
 			}
 
 			if (index != Integer.MIN_VALUE) {
-				int indexToRemove = MathHelper.clamp(index, 0, group.waypoints().size() - 1);
+				int indexToRemove = Math.clamp(index, 0, group.waypoints().size() - 1);
 
 				group.waypoints().remove(indexToRemove);
 				INDEX_STORE.removeInt(group.name());

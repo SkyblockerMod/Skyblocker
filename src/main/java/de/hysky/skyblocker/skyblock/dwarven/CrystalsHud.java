@@ -11,7 +11,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -127,8 +126,8 @@ public class CrystalsHud {
         //converts an x and z to a location on the map
         int transformedX = (int) ((x - 202) / 621 * 62);
         int transformedY = (int) ((z - 202) / 621 * 62);
-        transformedX = MathHelper.clamp(transformedX, 0, 62);
-        transformedY = MathHelper.clamp(transformedY, 0, 62);
+        transformedX = Math.clamp(transformedX, 0, 62);
+        transformedY = Math.clamp(transformedY, 0, 62);
 
         return new Vector2i(transformedX, transformedY);
     }
