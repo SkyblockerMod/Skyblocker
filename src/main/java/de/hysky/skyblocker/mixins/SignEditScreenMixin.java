@@ -26,6 +26,14 @@ public abstract class SignEditScreenMixin{
         if (Objects.equals(messages[1], "^^^^^^^^^^^^^^^")) {
             SignCalculator.renderSign(context, messages);
         }
+    }
+
+    @Inject(method = "finishEditing", at = @At("HEAD"))
+    private void skyblocker$finishEditing(CallbackInfo ci) {
+        //if the sign is being used to enter number get number from calculator for if maths has been done
+        if (Objects.equals(messages[1], "^^^^^^^^^^^^^^^")) {
+            messages[0] = SignCalculator.getNewValue();
+        }
 
     }
 
