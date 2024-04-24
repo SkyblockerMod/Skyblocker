@@ -67,7 +67,7 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
         hovered = null;
         for (EventRenderer eventRenderer : events) {
             eventRenderer.render(context, x + 1, eventsY, mouseX, mouseY);
-            if (eventRenderer.isMouseOver(mouseX, mouseY, x+1, eventsY)) hovered = eventRenderer;
+            if (isMouseOver(mouseX, mouseY) && eventRenderer.isMouseOver(mouseX, mouseY, x+1, eventsY)) hovered = eventRenderer;
             eventsY += eventRenderer.getHeight();
 
         }

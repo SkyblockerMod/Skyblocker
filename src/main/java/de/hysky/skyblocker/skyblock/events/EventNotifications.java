@@ -139,6 +139,7 @@ public class EventNotifications {
                                 new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER)))
                         );
                     }
+                    break;
                 }
             }
         }

@@ -19,8 +19,6 @@ public class EventNotificationsCategory {
         return ConfigCategory.createBuilder()
                 .name(Text.literal("Event Notifications"))
                 .groups(createGroups(config))
-                .tooltip(Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[0]"),
-                        Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[1]"))
                 .build();
 
     }
@@ -33,6 +31,11 @@ public class EventNotificationsCategory {
                     .name(Text.literal(entry.getKey()))
                     .binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, entry::setValue)
                     .controller(option -> () -> new DurationController(option)) // yea
+                            .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[0]"),
+                                    Text.empty(),
+                                    Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[1]"),
+                                    Text.empty(),
+                                    Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[2]", entry.getKey())))
                     .initial(60)
                     .collapsed(true)
                     .build()

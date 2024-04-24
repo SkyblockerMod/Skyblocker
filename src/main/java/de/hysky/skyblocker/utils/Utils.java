@@ -359,7 +359,7 @@ public class Utils {
     public static Text getDurationText(int timeInSeconds) {
         int seconds = timeInSeconds % 60;
         int minutes = (timeInSeconds/60) % 60;
-        int hours = (timeInSeconds/3600) % 24;
+        int hours = (timeInSeconds/3600);
 
         MutableText time = Text.empty();
         if (hours > 0) {
