@@ -46,7 +46,7 @@ public class ItemStackBuilder {
         
         ItemStack stack = new ItemStack(Registries.ITEM.get(itemId));
 
-        // Create & Attach ExtraAttributes tag
+        // Custom Data
         NbtCompound customData = new NbtCompound();
 
         // Add Skyblock Item Id

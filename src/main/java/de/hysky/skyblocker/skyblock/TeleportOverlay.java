@@ -72,8 +72,8 @@ public class TeleportOverlay {
     /**
      * Renders the teleport overlay with a given base range and the tuned transmission stat.
      */
-    private static void render(WorldRenderContext wrc, NbtCompound extraAttributes, int baseRange) {
-        render(wrc, extraAttributes != null && extraAttributes.contains("tuned_transmission") ? baseRange + extraAttributes.getInt("tuned_transmission") : baseRange);
+    private static void render(WorldRenderContext wrc, NbtCompound customData, int baseRange) {
+        render(wrc, customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission") : baseRange);
     }
 
     /**

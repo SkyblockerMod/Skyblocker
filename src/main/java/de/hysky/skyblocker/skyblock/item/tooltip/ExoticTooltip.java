@@ -65,8 +65,8 @@ public class ExoticTooltip {
         return DyeType.EXOTIC;
     }
 
-    public static boolean intendedDyed(NbtCompound ItemData) {
-        return ItemData.getCompound("ExtraAttributes").contains("dye_item");
+    public static boolean intendedDyed(NbtCompound customData) {
+        return customData.contains("dye_item");
     }
 
     public enum DyeType implements StringIdentifiable {

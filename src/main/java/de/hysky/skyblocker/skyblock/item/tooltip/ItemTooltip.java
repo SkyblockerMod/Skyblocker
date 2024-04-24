@@ -275,8 +275,8 @@ public class ItemTooltip {
         return neuName;
     }
 
-    private static void addExoticTooltip(List<Text> lines, String internalID, NbtCompound nbt, String colorHex, String expectedHex, String existingTooltip) {
-        if (expectedHex != null && !colorHex.equalsIgnoreCase(expectedHex) && !ExoticTooltip.isException(internalID, colorHex) && !ExoticTooltip.intendedDyed(nbt)) {
+    private static void addExoticTooltip(List<Text> lines, String internalID, NbtCompound customData, String colorHex, String expectedHex, String existingTooltip) {
+        if (expectedHex != null && !colorHex.equalsIgnoreCase(expectedHex) && !ExoticTooltip.isException(internalID, colorHex) && !ExoticTooltip.intendedDyed(customData)) {
             final ExoticTooltip.DyeType type = ExoticTooltip.checkDyeType(colorHex);
             lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + "(").append(type.getTranslatedText()).append(Formatting.DARK_GRAY + ")"));
         }

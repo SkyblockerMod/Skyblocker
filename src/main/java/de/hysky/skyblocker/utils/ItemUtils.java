@@ -133,21 +133,21 @@ public class ItemUtils {
      * @return if the item have a "Timestamp" it will be shown formated on the tooltip
      */
 	public static String getTimestamp(ItemStack stack) {
-        NbtCompound ea = getCustomData(stack);
+        NbtCompound customData = getCustomData(stack);
 
-        if (ea != null && ea.contains("timestamp", NbtElement.LONG_TYPE)) {
-            Instant date = Instant.ofEpochMilli(ea.getLong("timestamp"));
+        if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
+            Instant date = Instant.ofEpochMilli(customData.getLong("timestamp"));
 
             return OBTAINED_DATE_FORMATTER.format(date);
         }
 
-        if (ea != null && ea.contains("timestamp", NbtElement.STRING_TYPE)) {
+        if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
             try {
-                Instant date = OLD_OBTAINED_DATE_FORMAT.parse(ea.getString("timestamp")).toInstant();
+                Instant date = OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp")).toInstant();
 
                 return OBTAINED_DATE_FORMATTER.format(date);
             } catch (ParseException e) {
-                LOGGER.warn("[Skyblocker Item Utils] Encountered an unknown exception while parsing time stamp of item {} with extra attributes {}", stack, ea, e);
+                LOGGER.warn("[Skyblocker Item Utils] Encountered an unknown exception while parsing time stamp of item {} with extra attributes {}", stack, customData, e);
             }
         }
 
@@ -155,19 +155,19 @@ public class ItemUtils {
     }
 
     public static boolean hasCustomDurability(@NotNull ItemStack stack) {
-        NbtCompound extraAttributes = getCustomData(stack);
-        return extraAttributes != null && (extraAttributes.contains("drill_fuel") || extraAttributes.getString(ID).equals("PICKONIMBUS"));
+        NbtCompound customData = getCustomData(stack);
+        return customData != null && (customData.contains("drill_fuel") || customData.getString(ID).equals("PICKONIMBUS"));
     }
 
     @Nullable
     public static IntIntPair getDurability(@NotNull ItemStack stack) {
-        NbtCompound extraAttributes = getCustomData(stack);
-        if (extraAttributes == null) return null;
+        NbtCompound customData = getCustomData(stack);
+        if (customData == null) return null;
 
         // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
         // TODO Cache the max durability and only update the current durability on inventory tick
 
-        int pickonimbusDurability = extraAttributes.getInt("pickonimbus_durability");
+        int pickonimbusDurability = customData.getInt("pickonimbus_durability");
         if (pickonimbusDurability > 0) {
             return IntIntPair.of(pickonimbusDurability, 5000);
         }
