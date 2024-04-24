@@ -30,6 +30,8 @@ public class ItemListWidget extends RecipeBookWidget {
     private final List<Pair<SideTabButtonWidget, TabContainerWidget>> tabs = new ArrayList<>(2);
     private ItemListTab itemListTab;
 
+    private static int currentTab = 0;
+
     public ItemListWidget() {
         super();
     }
@@ -46,19 +48,24 @@ public class ItemListWidget extends RecipeBookWidget {
 
         // Init all the tabs, content and the tab button on the left
         tabs.clear();
-        itemListTab = new ItemListTab(x + 9, y + 9, this.client, searchField);
 
-        SideTabButtonWidget itemListTabButton = new SideTabButtonWidget(x - 30, y + 3, true, new ItemStack(Items.CRAFTING_TABLE));
+        // Item List
+        itemListTab = new ItemListTab(x + 9, y + 9, this.client, searchField);
+        SideTabButtonWidget itemListTabButton = new SideTabButtonWidget(x - 30, y + 3, currentTab == 0, new ItemStack(Items.CRAFTING_TABLE));
         itemListTabButton.setTooltip(Tooltip.of(Text.literal("Item List")));
+        if (currentTab == 0) currentTabContent = itemListTab;
         tabs.add(new ObjectObjectImmutablePair<>(
                 itemListTabButton,
-                this.currentTabContent = this.itemListTab));
+                this.itemListTab));
 
-        SideTabButtonWidget eventsTabButtonWidget = new SideTabButtonWidget(x - 30, y + 3 + 27, false, new ItemStack(Items.CLOCK));
+        // Upcoming Events
+        UpcomingEventsTab upcomingEventsTab = new UpcomingEventsTab(x + 9, y + 9, this.client);
+        SideTabButtonWidget eventsTabButtonWidget = new SideTabButtonWidget(x - 30, y + 3 + 27, currentTab == 1, new ItemStack(Items.CLOCK));
         eventsTabButtonWidget.setTooltip(Tooltip.of(Text.literal("Upcoming Events")));
+        if (currentTab == 1) currentTabContent = upcomingEventsTab;
         tabs.add(new ObjectObjectImmutablePair<>(
                 eventsTabButtonWidget,
-                new UpcomingEventsTab(x + 9, y + 9, this.client)
+                upcomingEventsTab
         ));
 
     }
@@ -104,6 +111,7 @@ public class ItemListWidget extends RecipeBookWidget {
                     }
                     tab.first().setToggled(true);
                     currentTabContent = tab.right();
+                    currentTab = tabs.indexOf(tab);
                     return true;
                 }
             }
