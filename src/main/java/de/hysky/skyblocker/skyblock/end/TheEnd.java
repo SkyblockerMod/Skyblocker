@@ -109,7 +109,7 @@ public class TheEnd {
         ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> save());
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            if (!Utils.isInTheEnd()) return;
+            if (!Utils.isInTheEnd() || overlay) return;
             String lowerCase = message.getString().toLowerCase();
             if (lowerCase.contains("tremor")) {
                 if (stage == 0) checkAllProtectorLocations();
