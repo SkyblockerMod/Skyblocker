@@ -56,7 +56,7 @@ public class SignCalculator {
     private static void render(DrawContext context) {
         Text text;
         if (output == null) {
-            text = Text.literal("Invalid Equation").formatted(Formatting.RED);
+            text = Text.translatable("text.autoconfig.skyblocker.option.general.enableSignCalculator.invalidEquation").formatted(Formatting.RED);
         }
         else {
             text = Text.literal(input +" = " + FORMATTER.format(output)).formatted(Formatting.GREEN);
