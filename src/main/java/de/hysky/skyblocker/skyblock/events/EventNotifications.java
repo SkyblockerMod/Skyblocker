@@ -30,6 +30,8 @@ public class EventNotifications {
 
     public static final String JACOBS = "Jacob's Farming Contest";
 
+    public static final List<Integer> DEFAULT_REMINDERS = List.of(60, 60*5);
+
     public static final Map<String, ItemStack> eventIcons = new Object2ObjectOpenHashMap<>();
 
     static {
@@ -80,7 +82,7 @@ public class EventNotifications {
                 JsonArray jsonElements = SkyblockerMod.GSON.fromJson(Http.sendGetRequest("https://hysky.de/api/calendar"), JsonArray.class);
                 return jsonElements.asList().stream().map(JsonElement::getAsJsonObject).toList();
             } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to download warps list", e);
+                LOGGER.error("[Skyblocker] Failed to download events list", e);
             }
             return List.<JsonObject>of();
         }).thenAccept(eventsList -> {
@@ -95,14 +97,21 @@ public class EventNotifications {
                 entry.getValue().sort(Comparator.comparingLong(SkyblockEvent::start)); // Sort just in case it's not in order for some reason in API
                 //LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
             }
-        });
+
+            for (String s : events.keySet()) {
+                SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
+            }
+        }).exceptionally(EventNotifications::itBorked);
+    }
+
+    private static Void itBorked(Throwable throwable) {
+        LOGGER.error("[Skyblocker] Event loading borked, sowwy :(", throwable);
+        return null;
     }
 
 
 
     private static void timeUpdate() {
-        List<Integer> reminderTimes = SkyblockerConfigManager.get().general.eventNotifications.reminderTimes;
-        if (reminderTimes.isEmpty()) return;
 
         long newTime = System.currentTimeMillis() / 1000;
         for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : events.entrySet()) {
@@ -115,6 +124,8 @@ public class EventNotifications {
                 if (skyblockEvent == null) continue;
             }
             String eventName = entry.getKey();
+            List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, DEFAULT_REMINDERS);
+            if (reminderTimes.isEmpty()) return;
 
             for (Integer reminderTime : reminderTimes) {
                 if (currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
