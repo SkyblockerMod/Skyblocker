@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.end.EndHudConfigScreen;
+import de.hysky.skyblocker.skyblock.end.EndHudWidget;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.garden.FarmingHudConfigScreen;
 import dev.isxander.yacl3.api.*;
@@ -96,6 +97,26 @@ public class LocationsCategory {
 								.binding(defaults.locations.end.hudEnabled,
 										() -> config.locations.end.hudEnabled,
 										newValue -> config.locations.end.hudEnabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.zealotKillsEnabled"))
+								.binding(defaults.locations.end.zealotKillsEnabled,
+										() -> config.locations.end.zealotKillsEnabled,
+										newValue -> {
+											config.locations.end.zealotKillsEnabled = newValue;
+											EndHudWidget.INSTANCE.update();
+										})
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.protectorLocationEnable"))
+								.binding(defaults.locations.end.protectorLocationEnabled,
+										() -> config.locations.end.protectorLocationEnabled,
+										newValue -> {
+											config.locations.end.protectorLocationEnabled = newValue;
+											EndHudWidget.INSTANCE.update();
+										})
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()

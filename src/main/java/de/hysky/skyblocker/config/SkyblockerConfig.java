@@ -1095,6 +1095,12 @@ public class SkyblockerConfig {
 		public boolean hudEnabled = true;
 
 		@SerialEntry
+		public boolean zealotKillsEnabled = true;
+
+		@SerialEntry
+		public boolean protectorLocationEnabled = true;
+
+		@SerialEntry
 		public boolean waypoint = true;
 
 		@SerialEntry

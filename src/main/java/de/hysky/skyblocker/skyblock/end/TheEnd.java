@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.EndermanEntity;
@@ -84,18 +85,11 @@ public class TheEnd {
             if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
                 ChunkPos pos = chunk.getPos();
                 //
-                Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX(), 1, pos.getEndZ());
-                locationsLoop: for (ProtectorLocation protectorLocation : protectorLocations) {
-                    if (box.contains(protectorLocation.x, 0.5, protectorLocation.z)) {
-                        //MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
-                        for (int i = 0; i < 5; i++) {
-                            if (world.getBlockState(new BlockPos(protectorLocation.x, i+5, protectorLocation.z)).isOf(Blocks.PLAYER_HEAD)) {
-                                stage = i + 1;
-                                currentProtectorLocation = protectorLocation;
-                                EndHudWidget.INSTANCE.update();
-                                break locationsLoop;
-                            }
-                        }
+                Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX() + 1, 1, pos.getEndZ() + 1);
+                for (ProtectorLocation protectorLocation : protectorLocations) {
+                    if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
+                        // MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
+                        if (isProtectorHere(world, protectorLocation)) break;
                     }
                 }
                 if (currentProfile.isEmpty()) load(); // Wacky fix for when you join skyblock, and you are directly in the end (profile id isn't parsed yet most of the time)
@@ -109,14 +103,18 @@ public class TheEnd {
             resetLocation();
             save();
             load();
+            EndHudWidget.INSTANCE.update();
         });
         // Save when leaving as well
         ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> save());
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            if (Utils.isInTheEnd()) return;
+            if (!Utils.isInTheEnd() || overlay) return;
             String lowerCase = message.getString().toLowerCase();
-            if (lowerCase.contains("tremor") && stage != 0) stage += 1; // TODO: If stage is 0 re-scan.
+            if (lowerCase.contains("tremor")) {
+                if (stage == 0) checkAllProtectorLocations();
+                else stage += 1;
+            }
             else if (lowerCase.contains("rises from below")) stage = 5;
             else if (lowerCase.contains("protector down") || lowerCase.contains("has risen")) resetLocation();
             else return;
@@ -125,6 +123,33 @@ public class TheEnd {
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
         ClientLifecycleEvents.CLIENT_STARTED.register((client -> loadFile()));
+    }
+
+    private static void checkAllProtectorLocations() {
+        ClientWorld world = MinecraftClient.getInstance().world;
+        if (world == null) return;
+        for (ProtectorLocation protectorLocation : protectorLocations) {
+            if (!world.isChunkLoaded(protectorLocation.x() >> 4, protectorLocation.z() >> 4)) continue;
+            if (isProtectorHere(world, protectorLocation)) break;
+        }
+    }
+
+    /**
+     * Checks a bunch of Ys to see if a player head is there, if it's there it returns true and updates the hud accordingly
+     * @param world le world to check
+     * @param protectorLocation protectorLocation to check
+     * @return if found
+     */
+    private static boolean isProtectorHere(ClientWorld world, ProtectorLocation protectorLocation) {
+        for (int i = 0; i < 5; i++) {
+            if (world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z)).isOf(Blocks.PLAYER_HEAD)) {
+                stage = i + 1;
+                currentProtectorLocation = protectorLocation;
+                EndHudWidget.INSTANCE.update();
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void resetLocation() {
