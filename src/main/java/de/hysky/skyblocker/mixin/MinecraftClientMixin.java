@@ -42,7 +42,7 @@ public abstract class MinecraftClientMixin {
     //Remove Downloading Terrain Screen and Reconfiguring Screen
     @ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
     public Screen modifySetScreen(Screen screen) {
-        if (Utils.isOnSkyblock()) {
+        if (Utils.isOnHypixel()) {
             return switch (screen) {
                 case DownloadingTerrainScreen _s -> null;
                 case ReconfiguringScreen _s when this.getNetworkHandler() != null -> new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
