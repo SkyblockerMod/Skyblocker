@@ -132,7 +132,8 @@ public class Calculator {
         while (!operatorStack.isEmpty()) {
             Token leftToken = operatorStack.pop();
             if (leftToken.type == TokenType.L_PARENTHESIS) {
-                throw new UnsupportedOperationException("Unbalanced left parenthesis");
+                //technically unbalanced left parenthesis error but just assume they are close after the equation and ignore them from here
+                continue;
             }
             outputQueue.add(leftToken);
         }
