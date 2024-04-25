@@ -400,7 +400,7 @@ public class PartyFinderScreen extends Screen {
                 deListSlotId = slot.id;
             } else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                 assert this.client != null;
-                tooltips = ItemUtils.getLore(slot.getStack());
+                tooltips = new ArrayList<>(ItemUtils.getLore(slot.getStack()));
             }
         }
         if (tooltips != null) {
