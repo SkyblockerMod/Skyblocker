@@ -216,7 +216,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         }
 
         if (currentSolver != null) {
-            SkyblockerMod.getInstance().containerSolverManager.onSlotClick(slotId, stack, this.handler.getCursorStack());
+            SkyblockerMod.getInstance().containerSolverManager.onSlotClick(slotId, stack);
         }
 
         // Experiment Solvers

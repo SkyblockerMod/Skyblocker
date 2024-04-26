@@ -36,6 +36,10 @@ public class ContainerSolverManager {
     private ContainerSolver currentSolver = null;
     private String[] groups;
     private List<ColorHighlight> highlights;
+    /**
+     * Useful for keeping track of a solver's state in a Screen instance, such as if Hypixel closes & reopens a screen after every click (as they do with terminals).
+     */
+    private int screenId = 0;
 
     public ContainerSolverManager() {
         solvers = new ContainerSolver[]{
@@ -82,6 +86,7 @@ public class ContainerSolverManager {
                 matcher.usePattern(solver.getName());
                 matcher.reset();
                 if (matcher.matches()) {
+                    ++screenId;
                     currentSolver = solver;
                     groups = new String[matcher.groupCount()];
                     for (int i = 0; i < groups.length; i++) {
@@ -89,6 +94,7 @@ public class ContainerSolverManager {
                     }
                     currentSolver.start(screen);
                     markDirty();
+
                     return;
                 }
             }
@@ -107,9 +113,9 @@ public class ContainerSolverManager {
         highlights = null;
     }
 
-    public void onSlotClick(int slot, ItemStack stack, ItemStack cursorStack) {
+    public void onSlotClick(int slot, ItemStack stack) {
         if (currentSolver != null) {
-            currentSolver.onClickSlot(slot, stack, cursorStack, groups);
+            currentSolver.onClickSlot(slot, stack, screenId, groups);
         }
     }
 

@@ -34,7 +34,7 @@ public abstract class ContainerSolver {
         SkyblockerMod.getInstance().containerSolverManager.markDirty();
     }
 
-    protected void onClickSlot(int slot, ItemStack stack, ItemStack cursorStack, String[] groups) {
+    protected void onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
     }
 
     protected abstract List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots);

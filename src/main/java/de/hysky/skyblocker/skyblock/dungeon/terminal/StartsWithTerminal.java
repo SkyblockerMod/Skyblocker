@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 
 public class StartsWithTerminal extends ContainerSolver {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
+	private int lastKnownScreenId = Integer.MIN_VALUE;
 
 	public StartsWithTerminal() {
 		super("^What starts with: '([A-Z])'\\?$");
@@ -49,7 +50,7 @@ public class StartsWithTerminal extends ContainerSolver {
 	}
 
 	@Override
-	protected void onClickSlot(int slot, ItemStack stack, ItemStack cursorStack, String[] groups) {
+	protected void onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
 		//Some random glass pane was clicked or something
 		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return;
 
@@ -57,10 +58,15 @@ public class StartsWithTerminal extends ContainerSolver {
 		String prefix = groups[0];
 
 		//If the item stack's name starts with the correct letter
-		//Also, since Hypixel closes & reopens the GUI after every click we check if the cursor stack is empty to avoid marking item's as clicked if the server lags and
-		//you can click multiple things before the GUI closes - in this event only the first click item click is counted
-		if (stack.getName().getString().startsWith(prefix) && (cursorStack == null || cursorStack.isEmpty()) && !state.clicked()) {
+		//Also, since Hypixel closes & reopens the GUI after every click we check if the last known screen id is the same that way in case the server lags and
+		//either a player tries to click a second item or if the player puts the clicked item back and tries to click another that we don't mark multiple items
+		//as clicked when only the first one will count.
+		
+		//While Hypixel does use a different syncId each time they open the screen we opt to use our own so as to avoid them potentially changing that
+		//and in turn breaking this logic
+		if (stack.getName().getString().startsWith(prefix) && !state.clicked() && lastKnownScreenId != screenId) {
 			trackedItemStates.put(slot, state.click());
+			lastKnownScreenId = screenId;
 		}
 		//In the future we could add an else branch and return a boolean to cancel the click since it would be wrong
 
@@ -91,6 +97,7 @@ public class StartsWithTerminal extends ContainerSolver {
 
 	private void clearState() {
 		trackedItemStates.clear();
+		lastKnownScreenId = Integer.MIN_VALUE;
 	}
 
 	private static boolean allEntriesMatch(ObjectSet<Int2ObjectMap.Entry<ItemStack>> entries, Predicate<Int2ObjectMap.Entry<ItemStack>> predicate) {
