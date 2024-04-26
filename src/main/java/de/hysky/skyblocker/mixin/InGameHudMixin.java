@@ -69,7 +69,7 @@ public abstract class InGameHudMixin {
                 RenderSystem.disableBlend();
             }
             //item protection
-            if (ItemProtection.isItemProtected(player.getInventory().main.get(index))){
+            if (ItemProtection.isItemProtected(player.getInventory().main.get(index))) {
                 RenderSystem.enableBlend();
                 context.drawTexture(ITEM_PROTECTION, x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();

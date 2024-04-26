@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 
 public class BackpackPreview {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
+    private static final Identifier ITEM_PROTECTION = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
     private static final Identifier TEXTURE = new Identifier("textures/gui/container/generic_54.png");
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
     private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
@@ -151,6 +153,12 @@ public class BackpackPreview {
 
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
                 ItemRarityBackgrounds.tryDraw(currentStack, context, itemX, itemY);
+            }
+
+            if (ItemProtection.isItemProtected(currentStack)) {
+                RenderSystem.enableBlend();
+                context.drawTexture(ITEM_PROTECTION, itemX, itemY, 0, 0, 16, 16, 16, 16);
+                RenderSystem.disableBlend();
             }
 
             context.drawItem(currentStack, itemX, itemY);
