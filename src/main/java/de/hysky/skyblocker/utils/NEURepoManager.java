@@ -79,20 +79,20 @@ public class NEURepoManager {
 
     private static void deleteAndDownloadRepository(PlayerEntity player) {
         if (REPO_LOADING != null && !REPO_LOADING.isDone()) {
-            player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.loading")), false);
+            sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.loading")));
             return;
         }
-        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.start")), false);
+        sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.start")));
 
         REPO_LOADING = CompletableFuture.runAsync(() -> {
             try {
                 ItemRepository.setFilesImported(false);
                 FileUtils.recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
-                player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.deleted")), false);
-                player.sendMessage(Constants.PREFIX.get().append(Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed")), false);
+                sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.deleted")));
+                sendMessage(player, Constants.PREFIX.get().append(Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed")));
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Encountered unknown exception while deleting the NEU repo", e);
-                player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.error")), false);
+                sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.error")));
             }
         });
     }
@@ -104,5 +104,11 @@ public class NEURepoManager {
      */
     public static CompletableFuture<Void> runAsyncAfterLoad(Runnable runnable) {
         return REPO_LOADING.thenRunAsync(runnable);
+    }
+
+    private static void sendMessage(PlayerEntity player, Text text) {
+        if (player != null) {
+            player.sendMessage(text, false);
+        }
     }
 }
