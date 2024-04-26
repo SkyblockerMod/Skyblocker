@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -32,13 +33,13 @@ public class CroesusProfit extends ContainerSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         ItemStack bestChest = null, secondBestChest = null;
         long bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
         long dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2; // lesser ones don't worth the hassle
 
-        for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
+        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
             if (stack != null && stack.contains(DataComponentTypes.LORE) && ItemUtils.getLoreLineIf(stack, s -> s.contains("Chest")) != null) {
                 long value = valueChest(stack);
@@ -54,13 +55,13 @@ public class CroesusProfit extends ContainerSolver {
             }
         }
 
-        for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
+        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
             if (stack != null && stack.contains(DataComponentTypes.LORE)) {
                 if (stack.equals(bestChest)) {
-                    highlights.add(ColorHighlight.green(entry.getKey()));
+                    highlights.add(ColorHighlight.green(entry.getIntKey()));
                 } else if (stack.equals(secondBestChest) && secondBestValue > dungeonKeyPriceData) {
-                    highlights.add(ColorHighlight.yellow(entry.getKey()));
+                    highlights.add(ColorHighlight.yellow(entry.getIntKey()));
                 }
             }
         }

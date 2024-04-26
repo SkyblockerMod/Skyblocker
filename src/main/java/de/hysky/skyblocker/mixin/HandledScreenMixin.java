@@ -165,6 +165,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     /**
      * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks)
      * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item
+     * 
+     * @implNote This runs before {@link ScreenHandler#onSlotClick(int, int, SlotActionType, net.minecraft.entity.player.PlayerEntity)}
      */
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
     private void skyblocker$onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
@@ -211,6 +213,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
                     return;
                 }
             }
+        }
+
+        if (currentSolver != null) {
+            SkyblockerMod.getInstance().containerSolverManager.onSlotClick(slotId, stack, this.handler.getCursorStack());
         }
 
         // Experiment Solvers

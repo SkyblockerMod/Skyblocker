@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -64,14 +65,14 @@ public class NewYearCakesHelper extends ContainerSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         String profile = Utils.getProfile();
         if (cakes.isEmpty() || !cakes.containsKey(profile) || cakes.containsKey(profile) && cakes.get(profile).isEmpty()) return List.of();
         List<ColorHighlight> highlights = new ArrayList<>();
-        for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
+        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             int year = getCakeYear(entry.getValue());
             if (year >= 0 && cakes.containsKey(profile)) {
-                highlights.add(cakes.get(profile).contains(year) ? ColorHighlight.red(entry.getKey()) : ColorHighlight.green(entry.getKey()));
+                highlights.add(cakes.get(profile).contains(year) ? ColorHighlight.red(entry.getIntKey()) : ColorHighlight.green(entry.getIntKey()));
             }
         }
         return highlights;

@@ -13,6 +13,8 @@ import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -22,8 +24,6 @@ import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,6 +107,12 @@ public class ContainerSolverManager {
         highlights = null;
     }
 
+    public void onSlotClick(int slot, ItemStack stack, ItemStack cursorStack) {
+        if (currentSolver != null) {
+            currentSolver.onClickSlot(slot, stack, cursorStack, groups);
+        }
+    }
+
     public void onDraw(DrawContext context, List<Slot> slots) {
         if (currentSolver == null)
             return;
@@ -122,8 +128,8 @@ public class ContainerSolverManager {
         RenderSystem.colorMask(true, true, true, true);
     }
 
-    private Map<Integer, ItemStack> slotMap(List<Slot> slots) {
-        Map<Integer, ItemStack> slotMap = new TreeMap<>();
+    private Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
+    	Int2ObjectMap<ItemStack> slotMap = new Int2ObjectRBTreeMap<>();
         for (int i = 0; i < slots.size(); i++) {
             slotMap.put(i, slots.get(i).getStack());
         }
