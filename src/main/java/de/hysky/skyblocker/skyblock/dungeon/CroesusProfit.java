@@ -7,7 +7,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -41,7 +40,7 @@ public class CroesusProfit extends ContainerSolver {
 
         for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.contains(DataComponentTypes.LORE) && ItemUtils.getLoreLineIf(stack, s -> s.contains("Chest")) != null) {
+            if (stack.getName().getString().contains("Chest")) {
                 long value = valueChest(stack);
                 if (value > bestValue) {
                     secondBestChest = bestChest;
@@ -57,7 +56,7 @@ public class CroesusProfit extends ContainerSolver {
 
         for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.contains(DataComponentTypes.LORE)) {
+            if (stack != null) {
                 if (stack.equals(bestChest)) {
                     highlights.add(ColorHighlight.green(entry.getIntKey()));
                 } else if (stack.equals(secondBestChest) && secondBestValue > dungeonKeyPriceData) {
