@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import de.hysky.skyblocker.skyblock.SignCalculator;
 import net.minecraft.util.Util;
 
 import java.util.*;
@@ -148,9 +147,7 @@ public class Calculator {
             case "*","/" -> {
                 return 1;
             }
-            default -> {
-                throw new UnsupportedOperationException("invalid operator");
-            }
+            default -> throw new UnsupportedOperationException("Invalid operator");
         }
     }
 
@@ -188,9 +185,12 @@ public class Calculator {
                     }
                 }
                 case L_PARENTHESIS, R_PARENTHESIS -> {
-                    throw new UnsupportedOperationException("equation is not in RPN");
+                    throw new UnsupportedOperationException("Equation is not in RPN");
                 }
             }
+        }
+        if (values.isEmpty()) {
+            throw new UnsupportedOperationException("Equation is empty");
         }
         return values.pop();
     }
@@ -198,14 +198,14 @@ public class Calculator {
     private static double calculateValue(String value) {
         Matcher numberMatcher = NUMBER_PATTERN.matcher(value.toLowerCase());
         if (!numberMatcher.matches()) {
-            throw new UnsupportedOperationException("invalid number");
+            throw new UnsupportedOperationException("Invalid number");
         }
         double number = Double.parseDouble(numberMatcher.group(1));
         String magnitude = numberMatcher.group(2);
 
         if (!magnitude.isEmpty()) {
             if (!magnitudeValues.containsKey(magnitude)) {//its invalid if its another letter
-                throw new UnsupportedOperationException("invalid magnitude");
+                throw new UnsupportedOperationException("Invalid magnitude");
             }
             number *= magnitudeValues.get(magnitude);
         }

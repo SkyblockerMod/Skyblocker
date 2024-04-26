@@ -1,17 +1,12 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.calculators;
 
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Switch;
 import de.hysky.skyblocker.utils.Calculator;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
 
 import java.text.DecimalFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SignCalculator {
 

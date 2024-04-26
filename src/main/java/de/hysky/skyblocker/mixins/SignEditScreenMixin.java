@@ -2,10 +2,8 @@ package de.hysky.skyblocker.mixin;
 
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.SignCalculator;
+import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
 import org.spongepowered.asm.mixin.Final;

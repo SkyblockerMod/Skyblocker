@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.ImageRepoLoader;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
+import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;
 import de.hysky.skyblocker.skyblock.chat.ChatRuleAnnouncementScreen;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
@@ -132,6 +133,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Shortcuts.init();
         ChatRulesHandler.init();
         ChatRuleAnnouncementScreen.init();
+        CalculatorCommand.init();
         DiscordRPCManager.init();
         LividColor.init();
         FishingHelper.init();
