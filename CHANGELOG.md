@@ -1,3 +1,13 @@
+# Release 1.20.2
+
+## Highlight
+* fix item repo
+
+## What's Changed
+* Fix item repo NPE by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/673
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.20.1...v1.20.2
+___
 # Release 1.20.1
 
 ## Highlight
