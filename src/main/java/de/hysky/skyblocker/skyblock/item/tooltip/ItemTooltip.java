@@ -13,6 +13,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -201,10 +202,11 @@ public class ItemTooltip {
             }
         }
 
-        if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+        if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
             String uuid = ItemUtils.getItemUuid(stack);
             boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
-            int dyeColor = DyedColorComponent.getColor(stack, -1);
+            //DyedColorComponent#getColor returns ARGB so we mask out the alpha bits
+            int dyeColor = DyedColorComponent.getColor(stack, -1) & 0x00FFFFFF; 
 
             if (!hasCustomDye && dyeColor != -1) {
                 String colorHex = String.format("%06X", dyeColor);
