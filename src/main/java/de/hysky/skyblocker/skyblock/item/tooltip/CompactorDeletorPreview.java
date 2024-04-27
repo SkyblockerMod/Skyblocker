@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
+import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;

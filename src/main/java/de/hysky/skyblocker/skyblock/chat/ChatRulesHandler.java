@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixin.accessor.MessageHandlerAccessor;
+import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;

@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.mixin.accessor.RecipeBookWidgetAccessor;
+
+import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;

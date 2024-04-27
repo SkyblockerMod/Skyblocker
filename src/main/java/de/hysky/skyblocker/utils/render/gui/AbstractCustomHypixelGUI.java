@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;

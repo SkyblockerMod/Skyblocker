@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixin.accessor.SkullBlockEntityAccessor;
+import de.hysky.skyblocker.mixins.accessors.SkullBlockEntityAccessor;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

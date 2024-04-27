@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.quicknav;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
