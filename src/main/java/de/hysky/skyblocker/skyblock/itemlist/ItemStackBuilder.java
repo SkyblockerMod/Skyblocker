@@ -19,7 +19,6 @@ import net.minecraft.util.Pair;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ItemStackBuilder {
     private static Map<String, Map<Rarity, PetNumbers>> petNums;
@@ -53,7 +52,7 @@ public class ItemStackBuilder {
         stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(name));
 
         // Lore
-        stack.set(DataComponentTypes.LORE, new LoreComponent(item.getLore().stream().map(line -> Text.of(injectData(line, injectors))).collect(Collectors.toCollection(ArrayList::new))));
+        stack.set(DataComponentTypes.LORE, new LoreComponent(item.getLore().stream().map(line -> Text.of(injectData(line, injectors))).toList()));
 
         String nbttag = item.getNbttag();
         // add skull texture

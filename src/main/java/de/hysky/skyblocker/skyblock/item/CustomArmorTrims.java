@@ -5,8 +5,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -28,15 +28,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
 import net.minecraft.item.trim.ArmorTrimMaterial;
 import net.minecraft.item.trim.ArmorTrimPattern;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.util.stream.Collectors;
-
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +49,7 @@ public class CustomArmorTrims {
 	private static void initializeTrimCache() {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		FabricLoader loader = FabricLoader.getInstance();
-		if (trimsInitialized || (player == null && !loader.isDevelopmentEnvironment())) {
+		if (trimsInitialized || (player == null && !Debug.debugEnabled())) {
 			return;
 		}
 		try {
@@ -76,7 +71,7 @@ public class CustomArmorTrims {
 	}
 
 	private static RegistryWrapper.WrapperLookup getWrapperLookup(FabricLoader loader, ClientPlayerEntity player) {
-		return !loader.isDevelopmentEnvironment() ? player.networkHandler.getRegistryManager() : BuiltinRegistries.createWrapperLookup();
+		return !Debug.debugEnabled() ? player.networkHandler.getRegistryManager() : BuiltinRegistries.createWrapperLookup();
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {

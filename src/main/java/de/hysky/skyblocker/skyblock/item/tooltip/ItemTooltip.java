@@ -205,9 +205,11 @@ public class ItemTooltip {
             String uuid = ItemUtils.getItemUuid(stack);
             boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
             //DyedColorComponent#getColor returns ARGB so we mask out the alpha bits
-            int dyeColor = DyedColorComponent.getColor(stack, -1) & 0x00FFFFFF; 
+            int dyeColor = DyedColorComponent.getColor(stack, 0);
 
-            if (!hasCustomDye && dyeColor != -1) {
+            // dyeColor will have alpha = 255 if it's dyed, and alpha = 0 if it's not dyed,
+            if (!hasCustomDye && dyeColor != 0) {
+                dyeColor = dyeColor & 0x00FFFFFF;
                 String colorHex = String.format("%06X", dyeColor);
                 String expectedHex = ExoticTooltip.getExpectedHex(internalID);
 

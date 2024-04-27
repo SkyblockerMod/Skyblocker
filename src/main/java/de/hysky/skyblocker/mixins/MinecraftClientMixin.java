@@ -42,15 +42,12 @@ public abstract class MinecraftClientMixin {
     //Remove Downloading Terrain Screen and Reconfiguring Screen
     @ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
     public Screen modifySetScreen(Screen screen) {
-        if (Utils.isOnHypixel()) {
-            return switch (screen) {
-                case DownloadingTerrainScreen _s -> null;
-                case ReconfiguringScreen _s when this.getNetworkHandler() != null -> new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
+        return switch (screen) {
+            case DownloadingTerrainScreen _s when Utils.isOnHypixel() -> null;
+            case ReconfiguringScreen _s when Utils.isOnHypixel() && this.getNetworkHandler() != null -> new ReconfiguringPlaceholderScreen(this.getNetworkHandler().getConnection());
 
-                case null, default -> screen;
-            };
-        }
-        return screen;
+            case null, default -> screen;
+        };
     }
 
     @ModifyArg(method = "joinWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;reset(Lnet/minecraft/client/gui/screen/Screen;)V"), index = 0)
