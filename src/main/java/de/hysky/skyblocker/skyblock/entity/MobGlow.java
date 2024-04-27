@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.entity;
 
+import com.mojang.authlib.properties.Property;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
@@ -22,8 +23,6 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-import com.mojang.authlib.properties.Property;
-
 public class MobGlow {
 
 	public static boolean shouldMobGlow(Entity entity) {
@@ -39,20 +38,14 @@ public class MobGlow {
 					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
 					case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
 
-					//Bats
+					// Bats
 					case BatEntity b -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow || SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
 
-					default -> {
-						// Regular Mobs
-						if (!(entity instanceof ArmorStandEntity)) {
-							List<ArmorStandEntity> armorStands = getArmorStands(entity);
+					// Armor Stands
+					case ArmorStandEntity _armorStand -> false;
 
-							if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-								yield SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
-						}
-
-						yield false;
-					}
+					// Regular Mobs
+					default -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow && isStarred(entity);
 				};
 			}
 
@@ -72,6 +65,16 @@ public class MobGlow {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if an entity is starred by checking if its armor stand contains a star in its name.
+	 * @param entity the entity to check.
+	 * @return true if the entity is starred, false otherwise
+	 */
+	public static boolean isStarred(Entity entity) {
+		List<ArmorStandEntity> armorStands = getArmorStands(entity);
+		return !armorStands.isEmpty() && armorStands.getFirst().getName().getString().contains("✯");
 	}
 
 	public static List<ArmorStandEntity> getArmorStands(Entity entity) {

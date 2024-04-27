@@ -7,14 +7,10 @@ import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.DyedColorComponent;
-import net.minecraft.component.type.FireworkExplosionComponent;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -43,7 +39,7 @@ public class ItemStackBuilder {
 
         String legacyId = item.getMinecraftItemId();
         Identifier itemId = new Identifier(ItemFixerUpper.convertItemId(legacyId, item.getDamage()));
-        
+
         ItemStack stack = new ItemStack(Registries.ITEM.get(itemId));
 
         // Custom Data
@@ -57,7 +53,7 @@ public class ItemStackBuilder {
         stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(name));
 
         // Lore
-        stack.set(DataComponentTypes.LORE, new LoreComponent(item.getLore().stream().map(line -> Text.of(injectData(line, injectors))).collect(Collectors.toCollection(() -> new ArrayList<>()))));
+        stack.set(DataComponentTypes.LORE, new LoreComponent(item.getLore().stream().map(line -> Text.of(injectData(line, injectors))).collect(Collectors.toCollection(ArrayList::new))));
 
         String nbttag = item.getNbttag();
         // add skull texture
@@ -80,7 +76,7 @@ public class ItemStackBuilder {
         if (nbttag.contains("ench:")) {
             stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
         }
-        
+
         //Hide weapon damage and other useless info
         stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, new AttributeModifiersComponent(List.of(), false));
 
@@ -90,7 +86,7 @@ public class ItemStackBuilder {
             //Forget about the actual ball type because it probably doesn't matter
             stack.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.SMALL_BALL, new IntArrayList(Integer.parseInt(explosionColorMatcher.group("color"))), new IntArrayList(), false, false));
         }
-        
+
         // Attach custom nbt data
         stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customData));
 

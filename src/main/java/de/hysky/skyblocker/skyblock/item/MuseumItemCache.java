@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
-	private static final Map<String, Map<String, ProfileMuseumData>> MUSEUM_ITEM_CACHE = new Object2ObjectOpenHashMap<>();
+	private static final Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>> MUSEUM_ITEM_CACHE = new Object2ObjectOpenHashMap<>();
 	private static final String ERROR_LOG_TEMPLATE = "[Skyblocker] Failed to refresh museum item data for profile {}";
 
 	private static CompletableFuture<Void> loaded;
@@ -46,7 +46,7 @@ public class MuseumItemCache {
 	private static void load(MinecraftClient client) {
 		loaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = Files.newBufferedReader(CACHE_FILE)) {
-				Map<String, Map<String, ProfileMuseumData>> cachedData = ProfileMuseumData.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
+				Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>> cachedData = ProfileMuseumData.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 
 				MUSEUM_ITEM_CACHE.putAll(cachedData);
 				LOGGER.info("[Skyblocker] Loaded museum items cache");
@@ -69,7 +69,7 @@ public class MuseumItemCache {
 
 	private static void updateData4ProfileMember(String uuid, String profileId) {
 		CompletableFuture.runAsync(() -> {
-			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {				
+			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {
 				//The request was successful
 				if (response.ok()) {
 					JsonObject profileData = JsonParser.parseString(response.content()).getAsJsonObject();
@@ -158,13 +158,12 @@ public class MuseumItemCache {
 				Codec.STRING.listOf()
 						.xmap(ObjectOpenHashSet::new, ObjectArrayList::new)
 						.fieldOf("collectedItemIds")
-						.forGetter(i -> new ObjectOpenHashSet<String>(i.collectedItemIds())))
-				.apply(instance, ProfileMuseumData::new));
+						.forGetter(i -> new ObjectOpenHashSet<>(i.collectedItemIds()))
+		).apply(instance, ProfileMuseumData::new));
 		//Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		private static final Codec<Map<String, Map<String, ProfileMuseumData>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, CODEC)
-				.xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new))
-		.xmap(Object2ObjectOpenHashMap::new, m -> (Map) new Object2ObjectOpenHashMap(m));
+		private static final Codec<Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, CODEC)
+				.xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new)
+		).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
 
 		private boolean stale() {
 			return System.currentTimeMillis() > lastUpdated + MAX_AGE;

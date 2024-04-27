@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.entity;
 
-import java.util.List;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
@@ -32,19 +30,11 @@ public class MobBoundingBoxes {
 			String name = entity.getName().getString();
 
 			return switch (entity) {
-				case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+				case ArmorStandEntity _armorStand -> false;
 
-				default -> {
-					// Regular Mobs
-					if (!(entity instanceof ArmorStandEntity)) {
-						List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
-
-						if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-							yield SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
-					}
-
-					yield false;
-				}
+				// Regular Mobs
+				default -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes && MobGlow.isStarred(entity);
 			};
 		}
 

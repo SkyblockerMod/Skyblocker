@@ -55,10 +55,10 @@ public class ItemUtils {
     private static final Gson GSON = new Gson(); //GSON Instance with no config
     private static final Codec<RegistryEntry<Item>> EMPTY_ALLOWING_ITEM_CODEC = Registries.ITEM.getEntryCodec();
     public static final Codec<ItemStack> EMPTY_ALLOWING_ITEMSTACK_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-    		EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getRegistryEntry),
-    		Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
-    		ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemStack::getComponentChanges)
-    		).apply(instance, ItemStack::new)));
+            EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getRegistryEntry),
+            Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
+            ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemStack::getComponentChanges)
+    ).apply(instance, ItemStack::new)));
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
@@ -90,8 +90,7 @@ public class ItemUtils {
      * @return the internal name of the item stack, or an empty string if the item stack is null or does not have an internal name
      */
 	public static String getItemId(@NotNull ItemStack stack) {
-        NbtCompound customData = getCustomData(stack);
-        return customData.contains(ID) ? customData.getString(ID) : "";
+        return getCustomData(stack).getString(ID);
     }
 
     /**
@@ -112,8 +111,7 @@ public class ItemUtils {
      * @return the UUID of the item stack, or an empty string if the item stack is null or does not have a UUID
      */
 	public static String getItemUuid(@NotNull ItemStack stack) {
-        NbtCompound customData = getCustomData(stack);
-        return customData.contains(UUID) ? customData.getString(UUID) : "";
+        return getCustomData(stack).getString(UUID);
     }
 
     /**
@@ -207,9 +205,7 @@ public class ItemUtils {
     }
 
     public static List<Text> getLore(ItemStack item) {
-        LoreComponent lore = item.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT);
-
-        return lore.styledLines();
+        return item.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
     }
     
     public static PropertyMap propertyMapWithTexture(String textureValue) {
@@ -220,9 +216,7 @@ public class ItemUtils {
         try {
             ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
             stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerStack"), Optional.of(java.util.UUID.randomUUID()), propertyMapWithTexture("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=")));
-
             return stack;
-            //return ItemStack.parseOptional(MinecraftClient.getInstance().player.getRegistryManager(), StringNbtReader.parse("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:{Id:[I;-300151517,-631415889,-1193921967,-1821784279],Properties:{textures:[{Value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}}}}"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

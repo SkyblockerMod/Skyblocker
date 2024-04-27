@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -119,7 +118,7 @@ public class BackpackPreview {
         String title = handledScreen.getTitle().getString();
         int index = getStorageIndexFromTitle(title);
         if (index != -1) {
-            storages[index] = new Storage(handledScreen.getScreenHandler().slots.get(0).inventory, title, true);
+            storages[index] = new Storage(handledScreen.getScreenHandler().slots.getFirst().inventory, title, true);
         }
     }
 
@@ -181,8 +180,8 @@ public class BackpackPreview {
     static class Storage {
         private static final Codec<Storage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("name").forGetter(Storage::name),
-                ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList))
-                .apply(instance, (name, items) -> Storage.create(name, items)));
+                ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList)
+        ).apply(instance, Storage::create));
         private final Inventory inventory;
         private final String name;
         private boolean dirty;
@@ -192,7 +191,7 @@ public class BackpackPreview {
             this.name = name;
             this.dirty = dirty;
         }
-        
+
         private String name() {
             return name;
         }
