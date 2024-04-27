@@ -195,6 +195,7 @@
   "text.autoconfig.skyblocker.option.quickNav.button.item.itemName": "Item ID",
   "text.autoconfig.skyblocker.option.quickNav.button.item.count": "Item Count",
   "text.autoconfig.skyblocker.option.quickNav.button.item.nbt": "NBT",
+  "text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip": "§c§lWARNING: THIS MUST BE CONFIGURED WITH ITEM NBT NOT ITEM COMPONENTS! \n\n§fIn the future we will automatically migrate your config to use item components!",
   "text.autoconfig.skyblocker.option.quickNav.button.uiTitle": "UI Title",
   "text.autoconfig.skyblocker.option.quickNav.button.clickEvent": "Click event",
 
