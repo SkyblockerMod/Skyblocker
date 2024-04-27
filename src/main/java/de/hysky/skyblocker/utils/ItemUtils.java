@@ -8,7 +8,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
@@ -26,18 +25,16 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.dynamic.Codecs;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,11 +42,10 @@ import java.util.regex.Pattern;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class ItemUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     public static final String ID = "id";
     public static final String UUID = "uuid";
     private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
-    private static final SimpleDateFormat OLD_OBTAINED_DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
+    private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yy h:mm a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
     private static final Gson GSON = new Gson(); //GSON Instance with no config
@@ -135,18 +131,12 @@ public class ItemUtils {
 
         if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
             Instant date = Instant.ofEpochMilli(customData.getLong("timestamp"));
-
             return OBTAINED_DATE_FORMATTER.format(date);
         }
 
         if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
-            try {
-                Instant date = OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp")).toInstant();
-
-                return OBTAINED_DATE_FORMATTER.format(date);
-            } catch (ParseException e) {
-                LOGGER.warn("[Skyblocker Item Utils] Encountered an unknown exception while parsing time stamp of item {} with extra attributes {}", stack, customData, e);
-            }
+            TemporalAccessor date = OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp"));
+            return OBTAINED_DATE_FORMATTER.format(date);
         }
 
         return "";
