@@ -21,6 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemStackBuilder {
+    private static final Pattern SKULL_UUID_PATTERN = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"");
+    private static final Pattern SKULL_TEXTURE_PATTERN = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"");
+    private static final Pattern COLOR_PATTERN = Pattern.compile("color:(\\d+)");
+    private static final Pattern EXPLOSION_COLOR_PATTERN = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)]\\}");
     private static Map<String, Map<Rarity, PetNumbers>> petNums;
 
     public static void loadPetNums() {
@@ -56,8 +60,8 @@ public class ItemStackBuilder {
 
         String nbttag = item.getNbttag();
         // add skull texture
-        Matcher skullUuid = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"").matcher(nbttag);
-        Matcher skullTexture = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"").matcher(nbttag);
+        Matcher skullUuid = SKULL_UUID_PATTERN.matcher(nbttag);
+        Matcher skullTexture = SKULL_TEXTURE_PATTERN.matcher(nbttag);
         if (skullUuid.find() && skullTexture.find()) {
             UUID uuid = UUID.fromString(skullUuid.group(1));
             String textureValue = skullTexture.group(1);
@@ -66,7 +70,7 @@ public class ItemStackBuilder {
         }
 
         // add leather armor dye color
-        Matcher colorMatcher = Pattern.compile("color:(\\d+)").matcher(nbttag);
+        Matcher colorMatcher = COLOR_PATTERN.matcher(nbttag);
         if (colorMatcher.find()) {
             int color = Integer.parseInt(colorMatcher.group(1));
             stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
@@ -80,7 +84,7 @@ public class ItemStackBuilder {
         stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, new AttributeModifiersComponent(List.of(), false));
 
         // Add firework star color
-        Matcher explosionColorMatcher = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)]\\}").matcher(nbttag);
+        Matcher explosionColorMatcher = EXPLOSION_COLOR_PATTERN.matcher(nbttag);
         if (explosionColorMatcher.find()) {
             //Forget about the actual ball type because it probably doesn't matter
             stack.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.SMALL_BALL, new IntArrayList(Integer.parseInt(explosionColorMatcher.group("color"))), new IntArrayList(), false, false));
