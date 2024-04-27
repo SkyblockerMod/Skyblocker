@@ -203,7 +203,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
             return;
         }
         if (this.handler instanceof GenericContainerScreenHandler genericContainerScreenHandler && genericContainerScreenHandler.getRows() == 6) {
-            VisitorHelper.onSlotClick(slot, slotId, title);
+            VisitorHelper.onSlotClick(genericContainerScreenHandler.getSlot(13), slotId, title);
 
             // Prevent selling to NPC shops
             ItemStack sellStack = this.handler.slots.get(49).getStack();
