@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.utils.datafixer;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
@@ -24,8 +24,8 @@ import net.minecraft.util.Identifier;
 
 /**
  * Contains a data fixer to convert legacy item NBT to the new components system, among other fixers related to the item components system.
- * 
- * @see {@link net.minecraft.datafixer.fix.ItemStackComponentizationFix}
+ *
+ * @see net.minecraft.datafixer.fix.ItemStackComponentizationFix
  */
 public class ItemStackComponentizationFixer {
 	private static final int ITEM_NBT_DATA_VERSION = 3817;
@@ -33,7 +33,7 @@ public class ItemStackComponentizationFixer {
 	private static final DynamicRegistryManager REGISTRY_MANAGER = new DynamicRegistryManager.ImmutableImpl(List.of(Registries.ITEM, Registries.DATA_COMPONENT_TYPE));
 
 	public static ItemStack fixUpItem(NbtCompound nbt) {
-		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<NbtElement>(NbtOps.INSTANCE, nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
+		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
 
 		return ItemStack.CODEC.parse(dynamic).getOrThrow();
 	}
@@ -46,25 +46,23 @@ public class ItemStackComponentizationFixer {
 	public static String componentsAsString(ItemStack stack) {
 		RegistryOps<NbtElement> nbtRegistryOps = REGISTRY_MANAGER.getOps(NbtOps.INSTANCE);
 
-		String componentsString = stack.getComponentChanges().entrySet().stream().flatMap(entry -> {
+		return Arrays.toString(stack.getComponentChanges().entrySet().stream().map(entry -> {
 			@SuppressWarnings("unchecked")
 			DataComponentType<Object> dataComponentType = (DataComponentType<Object>) entry.getKey();
 			Identifier componentId = Registries.DATA_COMPONENT_TYPE.getId(dataComponentType);
 			Optional<NbtElement> encodedComponent = dataComponentType.getCodec().encodeStart(nbtRegistryOps, entry.getValue().orElseThrow()).result();
 
 			if (componentId == null || encodedComponent.isEmpty()) {
-				return Stream.empty();
+				return null;
 			}
 
-			return Stream.of(componentId.toString() + "=" + encodedComponent.orElseThrow());
-		}).collect(Collectors.joining(String.valueOf(',')));
-
-		return "[" + componentsString + "]";
+			return componentId + "=" + encodedComponent.orElseThrow();
+		}).filter(Objects::nonNull).toArray());
 	}
 
 	/**
 	 * Constructs an {@link ItemStack} from an {@code itemId}, with item components in string format as returned by {@link #componentsAsString(ItemStack)}, and with a specified stack count.
-	 * 
+	 *
 	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
 	 */
 	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
