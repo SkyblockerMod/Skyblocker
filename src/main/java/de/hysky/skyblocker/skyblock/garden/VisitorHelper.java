@@ -81,9 +81,9 @@ public class VisitorHelper {
         }
     }
 
-    public static void onSlotClick(Slot visitorSlot, int slotId, String title) {
+    public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if (slotId == 29 || slotId == 13 || slotId == 33) {
-            itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorSlot.getStack())));
+            itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
         }
     }
 
@@ -105,14 +105,14 @@ public class VisitorHelper {
 
     private static void processLore(String visitorName, @Nullable String visitorTexture, List<Text> loreList) {
         boolean saveRequiredItems = false;
-        for (int i = 0; i < loreList.size(); i++) {
-            String lore = loreList.get(i).getString();
+        for (Text text : loreList) {
+            String lore = text.getString();
             if (lore.contains("Items Required"))
                 saveRequiredItems = true;
             else if (lore.contains("Rewards"))
                 break;
             else if (saveRequiredItems)
-                updateItemMap(visitorName, visitorTexture, loreList.get(i));
+                updateItemMap(visitorName, visitorTexture, text);
         }
     }
 
@@ -122,12 +122,12 @@ public class VisitorHelper {
         if (itemName.isEmpty()) return;
         try {
             int amount = splitItemText.length == 2 ? NumberFormat.getInstance(Locale.US).parse(splitItemText[1].trim()).intValue() : 1;
-            ObjectObjectImmutablePair<String, String> key = new ObjectObjectImmutablePair<>(visitorName, visitorTexture);
+            Pair<String, String> key = Pair.of(visitorName, visitorTexture);
             Object2IntMap<String> visitorMap = itemMap.getOrDefault(key, new Object2IntOpenHashMap<>());
             visitorMap.putIfAbsent(itemName, amount);
             itemMap.putIfAbsent(key, visitorMap);
         } catch (Exception e) {
-            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: " + lore.getString(), e);
+            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
         }
     }
 
