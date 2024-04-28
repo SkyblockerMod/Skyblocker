@@ -45,7 +45,7 @@ public class ItemUtils {
     public static final String ID = "id";
     public static final String UUID = "uuid";
     private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
-    private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yy h:mm a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
+    private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
     private static final Gson GSON = new Gson(); //GSON Instance with no config
