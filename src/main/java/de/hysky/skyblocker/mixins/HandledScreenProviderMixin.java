@@ -32,16 +32,11 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 		T screenHandler = type.create(id, player.getInventory());
 		String nameLowercase = name.getString().toLowerCase();
 
-		if (screenHandler instanceof GenericContainerScreenHandler) {
-			if (nameLowercase.contains("select tier")) {
-				PartyFinderScreen.isInKuudraPartyFinder = true;
-			} else if (nameLowercase.contains("catacombs")) {
-				PartyFinderScreen.isInKuudraPartyFinder = false;
-			}
-		}
-
 		switch (screenHandler) {
 			// Better party finder
+			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().general.betterPartyFinder && nameLowercase.contains("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
+			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().general.betterPartyFinder && nameLowercase.contains("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
+
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().general.betterPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
 				if (client.currentScreen != null) {
 					String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
