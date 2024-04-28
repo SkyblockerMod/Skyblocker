@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import com.mojang.authlib.properties.Property;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -7,14 +8,17 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -33,7 +37,8 @@ import java.util.Map;
 public class VisitorHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Visitor Helper");
 
-    private static final Map<String, Object2IntMap<String>> itemMap = new HashMap<>();
+    // The pair contains the name of the visitor and the texture if the icon is a player head
+    private static final Map<Pair<String, String>, Object2IntMap<String>> itemMap = new HashMap<>();
     private static final Map<String, ItemStack> itemCache = new HashMap<>();
     private static final int TEXT_START_X = 4;
     private static final int TEXT_START_Y = 4;
@@ -57,7 +62,7 @@ public class VisitorHelper {
     public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
         int yPosition = TEXT_START_Y;
 
-        for (Map.Entry<String, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
             int textWidth;
             int textHeight = textRenderer.fontHeight;
 
@@ -76,9 +81,9 @@ public class VisitorHelper {
         }
     }
 
-    public static void onSlotClick(Slot slot, int slotId, String title) {
+    public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if (slotId == 29 || slotId == 13 || slotId == 33) {
-            itemMap.remove(title);
+            itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
         }
     }
 
@@ -87,33 +92,42 @@ public class VisitorHelper {
         if (visitorItem == null || !visitorItem.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorItem, t -> t.contains("Times Visited")) == null) return;
         ItemStack acceptButton = handler.getSlot(29).getStack();
         if (acceptButton == null) return;
-        processLore(visitorName, ItemUtils.getLore(acceptButton));
+        processLore(visitorName, getTextureOrNull(visitorItem), ItemUtils.getLore(acceptButton));
     }
 
-    private static void processLore(String visitorName, List<Text> loreList) {
+    private static @Nullable String getTextureOrNull(ItemStack stack) {
+        if (!stack.isOf(Items.PLAYER_HEAD) || stack.get(DataComponentTypes.PROFILE) == null) return null;
+        return stack.get(DataComponentTypes.PROFILE).properties().get("textures").stream()
+                .map(Property::value)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static void processLore(String visitorName, @Nullable String visitorTexture, List<Text> loreList) {
         boolean saveRequiredItems = false;
-        for (int i = 0; i < loreList.size(); i++) {
-            String lore = loreList.get(i).getString();
+        for (Text text : loreList) {
+            String lore = text.getString();
             if (lore.contains("Items Required"))
                 saveRequiredItems = true;
             else if (lore.contains("Rewards"))
                 break;
             else if (saveRequiredItems)
-                updateItemMap(visitorName, loreList.get(i));
+                updateItemMap(visitorName, visitorTexture, text);
         }
     }
 
-    private static void updateItemMap(String visitorName, Text lore) {
+    private static void updateItemMap(String visitorName, @Nullable String visitorTexture,  Text lore) {
         String[] splitItemText = lore.getString().split(" x");
         String itemName = splitItemText[0].trim();
         if (itemName.isEmpty()) return;
         try {
             int amount = splitItemText.length == 2 ? NumberFormat.getInstance(Locale.US).parse(splitItemText[1].trim()).intValue() : 1;
-            Object2IntMap<String> visitorMap = itemMap.getOrDefault(visitorName, new Object2IntOpenHashMap<>());
+            Pair<String, String> key = Pair.of(visitorName, visitorTexture);
+            Object2IntMap<String> visitorMap = itemMap.getOrDefault(key, new Object2IntOpenHashMap<>());
             visitorMap.putIfAbsent(itemName, amount);
-            itemMap.putIfAbsent(visitorName, visitorMap);
+            itemMap.putIfAbsent(key, visitorMap);
         } catch (Exception e) {
-            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: " + lore.getString(), e);
+            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
         }
     }
 
@@ -121,9 +135,9 @@ public class VisitorHelper {
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, 200);
         int index = 0;
-        for (Map.Entry<String, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            String visitorName = visitorEntry.getKey();
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+            Pair<String, String> visitorName = visitorEntry.getKey();
+            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
             index++;
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {

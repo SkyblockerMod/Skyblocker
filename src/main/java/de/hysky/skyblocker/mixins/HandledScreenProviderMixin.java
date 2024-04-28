@@ -34,15 +34,13 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 
 		switch (screenHandler) {
 			// Better party finder
+			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().general.betterPartyFinder && nameLowercase.contains("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
+			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().general.betterPartyFinder && nameLowercase.contains("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
+
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().general.betterPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
 				if (client.currentScreen != null) {
 					String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
 					if (lowerCase.contains("group builder")) return;
-					if (lowerCase.contains("select tier")) {
-						PartyFinderScreen.isInKuudraPartyFinder = true;
-					} else if (lowerCase.contains("catacombs")) {
-						PartyFinderScreen.isInKuudraPartyFinder = false;
-					}
 				}
 
 				if (PartyFinderScreen.isInKuudraPartyFinder) return;
