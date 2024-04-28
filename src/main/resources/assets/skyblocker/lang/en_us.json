@@ -491,6 +491,8 @@
   "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues": "Correct Transparent Skin Pixels",
   "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues.@Tooltip": "When enabled, the alpha values of pixels in skin textures are no longer stripped while in Skyblock.\n\nThis results in the \"filler\" pixels on items using Player Heads to now be completely transparent, although this may have some side effects in odd cases.",
 
+  "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
+
   "skyblocker.bars.config.health": "Health",
   "skyblocker.bars.config.defense": "Defense",
   "skyblocker.bars.config.intelligence": "Intelligence",

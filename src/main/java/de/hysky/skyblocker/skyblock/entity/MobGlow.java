@@ -4,6 +4,7 @@ import com.mojang.authlib.properties.Property;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
@@ -104,23 +105,12 @@ public class MobGlow {
 
 	private static boolean isNukekubiHead(ArmorStandEntity entity) {
 		for (ItemStack armorItem : entity.getArmorItems()) {
-			// hacky way to check if an item is a player head w/o
-			// some shenanigans
-			if (!armorItem.isOf(Items.PLAYER_HEAD))
-				continue;
-
 			// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id for the nukekubi head,
 			// compare against it to exclusively find armorstands that are nukekubi heads
-			ProfileComponent profile = armorItem.get(DataComponentTypes.PROFILE);
-			if (profile != null) {
-				// get the texture of the nukekubi head item itself and compare it
-				String texture = profile.properties().get("textures").stream()
-						.map(Property::value)
-						.findFirst()
-						.orElse("None");
+			// get the texture of the nukekubi head item itself and compare it
+			String texture = ItemUtils.getHeadTexture(armorItem);
 
-				return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
-			}
+			return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
 		}
 		return false;
 	}

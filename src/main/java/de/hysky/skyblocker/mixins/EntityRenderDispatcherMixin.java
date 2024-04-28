@@ -13,6 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 public class EntityRenderDispatcherMixin {
     @ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isInvisible()Z", ordinal = 1))
     private <E extends Entity> boolean skyblocker$armorStandHitboxVisible(boolean invisible, E entity) {
-        return (!(entity instanceof ArmorStandEntity) || !Utils.isOnHypixel() || !Debug.debugEnabled()) && invisible;
+        return (!(entity instanceof ArmorStandEntity) || !Utils.isOnHypixel() || !Debug.debugEnabled() || !Debug.shouldShowInvisibleArmorStands()) && invisible;
     }
 }

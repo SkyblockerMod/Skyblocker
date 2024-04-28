@@ -96,11 +96,9 @@ public class VisitorHelper {
     }
 
     private static @Nullable String getTextureOrNull(ItemStack stack) {
-        if (!stack.isOf(Items.PLAYER_HEAD) || stack.get(DataComponentTypes.PROFILE) == null) return null;
-        return stack.get(DataComponentTypes.PROFILE).properties().get("textures").stream()
-                .map(Property::value)
-                .findFirst()
-                .orElse(null);
+        String texture = ItemUtils.getHeadTexture(stack);
+
+        return texture.isEmpty() ? null : texture;
     }
 
     private static void processLore(String visitorName, @Nullable String visitorTexture, List<Text> loreList) {

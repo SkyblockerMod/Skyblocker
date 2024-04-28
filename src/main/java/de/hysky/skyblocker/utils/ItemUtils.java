@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -199,7 +200,19 @@ public class ItemUtils {
     }
     
     public static PropertyMap propertyMapWithTexture(String textureValue) {
-    	return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
+        return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
+    }
+
+    public static String getHeadTexture(ItemStack stack) {
+        if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
+
+        ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
+        String texture = profile.properties().get("textures").stream()
+                .map(Property::value)
+                .findFirst()
+                .orElse("");
+
+        return texture;
     }
 
     public static ItemStack getSkyblockerStack() {
