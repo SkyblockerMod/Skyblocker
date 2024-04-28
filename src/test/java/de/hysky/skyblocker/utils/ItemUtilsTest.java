@@ -26,6 +26,13 @@ public class ItemUtilsTest {
 	}
 
 	@Test
+	void testGetCustomData() {
+		Assertions.assertEquals("{art_of_war_count:1b,champion_combat_xp:4.8087379696333125E7d,enchantments:{PROSECUTE:6b,champion:10b,cleave:6b,critical:7b,cubism:6b,divine_gift:3b,dragon_hunter:5b,ender_slayer:7b,experience:5b,fire_aspect:3b,first_strike:5b,impaling:3b,lethality:6b,looting:5b,luck:7b,scavenger:5b,sharpness:7b,smoldering:5b,syphon:5b,tabasco:3b,thunderlord:7b,titan_killer:7b,ultimate_chimera:5b,vampirism:6b,venomous:6b,vicious:5b},gems:{JASPER_0:{quality:\"PERFECT\",uuid:\"e9881031-1b36-4c41-8d13-739685b700aa\"},JASPER_1:{quality:\"PERFECT\",uuid:\"afb95bac-0269-4978-a3ed-f5a3e4e57338\"},unlocked_slots:[\"JASPER_0\",\"JASPER_1\"]},hot_potato_count:15b,id:\"DARK_CLAYMORE\",modifier:\"withered\",rarity_upgrades:1b,timestamp:1671157200000L,upgrade_level:10b,uuid:\"098f4ac1-bf99-4829-a183-70e3a6bc8b2a\"}", ItemUtils.getCustomData(DARK_CLAYMORE).toString());
+		Assertions.assertEquals("{compact_blocks:4481s,drill_fuel:5395s,drill_part_fuel_tank:\"mithril_fuel_tank\",drill_part_upgrade_module:\"goblin_omelette_sunny_side\",enchantments:{compact:4b,efficiency:5b,experience:4b,fortune:4b,pristine:5b,smelting_touch:1b},gems:{AMBER_0:\"PERFECT\",JADE_0:\"PERFECT\",MINING_0:\"PERFECT\",MINING_0_gem:\"TOPAZ\",unlocked_slots:[\"JADE_0\",\"MINING_0\"]},id:\"TITANIUM_DRILL_4\",modifier:\"auspicious\",polarvoid:5b,rarity_upgrades:1b,timestamp:1712894721557L,uuid:\"24404cec-7249-4612-b43e-0bc897384dd2\"}", ItemUtils.getCustomData(TITANIUM_DRILL_DR_X655).toString());
+		Assertions.assertEquals("{ability_scroll:[\"WITHER_SHIELD_SCROLL\",\"SHADOW_WARP_SCROLL\",\"IMPLOSION_SCROLL\"],art_of_war_count:1b,champion_combat_xp:1.381000444237401E8d,dungeon_item_level:5b,enchantments:{champion:10b,cleave:6b,critical:6b,cubism:5b,dragon_hunter:5b,ender_slayer:6b,execute:5b,experience:5b,fire_aspect:3b,first_strike:4b,giant_killer:6b,impaling:3b,lethality:6b,life_steal:5b,looting:4b,luck:7b,scavenger:5b,smite:7b,tabasco:3b,telekinesis:1b,thunderlord:7b,ultimate_wise:5b,vampirism:6b,venomous:5b},gems:{COMBAT_0:{quality:\"PERFECT\",uuid:\"77d8ef8f-2142-4a01-a6ec-1fa6352d62e4\"},COMBAT_0_gem:\"SAPPHIRE\",DEFENSIVE_0:{quality:\"PERFECT\",uuid:\"1ed969b4-372e-4692-a994-4026ec480668\"},DEFENSIVE_0_gem:\"AMETHYST\"},hot_potato_count:15b,id:\"ASTRAEA\",modifier:\"heroic\",originTag:\"ASTRAEA_UPGRADE\",rarity_upgrades:1b,timestamp:1614631200000L,upgrade_level:10b,uuid:\"38d58369-401c-4cda-945d-759cb652c718\"}", ItemUtils.getCustomData(ASTRAEA).toString());
+	}
+
+	@Test
 	void testGetItemId() {
 		Assertions.assertEquals("DARK_CLAYMORE", ItemUtils.getItemId(DARK_CLAYMORE));
 		Assertions.assertEquals("TITANIUM_DRILL_4", ItemUtils.getItemId(TITANIUM_DRILL_DR_X655));
