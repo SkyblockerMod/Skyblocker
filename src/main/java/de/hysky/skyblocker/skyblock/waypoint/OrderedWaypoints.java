@@ -220,6 +220,7 @@ public class OrderedWaypoints {
 			for (OrderedWaypointGroup group : WAYPOINTS.values()) {
 				if (group.enabled()) {
 					List<OrderedWaypoint> waypoints = group.waypoints();
+					if (waypoints.isEmpty()) continue;
 					ClientPlayerEntity player = MinecraftClient.getInstance().player;
 					int centreIndex = INDEX_STORE.computeIfAbsent(group.name(), name -> 0);
 
