@@ -157,6 +157,7 @@ public class VisitorHelper {
         String strippedName = Formatting.strip(displayName);
         ItemStack cachedStack = itemCache.get(strippedName);
         if (cachedStack != null) return cachedStack;
+        if (!ItemRepository.filesImported()) return null; // Item repo might be taking its sweet time doing things and cause concurrent modification error
         Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
         if (items == null) return null;
         ItemStack stack = items.values().stream()
