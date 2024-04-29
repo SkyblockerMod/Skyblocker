@@ -95,7 +95,7 @@ public class Utils {
     }
 
     public static boolean isInDungeons() {
-        return location == Location.DUNGEON || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DUNGEON ; // || FabricLoader.getInstance().isDevelopmentEnvironment()
     }
 
     public static boolean isInCrystalHollows() {
