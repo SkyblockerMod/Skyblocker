@@ -42,7 +42,6 @@ public abstract class DataTrackerMixin {
         }
     }
 
-    @SuppressWarnings({"MixinAnnotationTarget", "UnresolvedMixinReference"})
     @Inject(method = "copyToFrom", at = @At(value = "NEW", target = "Ljava/lang/IllegalStateException;"), cancellable = true)
     public void skyblocker$ignoreInvalidDataExceptions(CallbackInfo ci) {
         //These exceptions cause annoying small lag spikes for some reason

@@ -22,6 +22,7 @@ public class StatusBarTracker {
 
     public void init() {
         ClientReceiveMessageEvents.MODIFY_GAME.register(this::onOverlayMessage);
+        ClientReceiveMessageEvents.GAME_CANCELED.register(this::onOverlayMessage);
     }
 
     public Resource getHealth() {
