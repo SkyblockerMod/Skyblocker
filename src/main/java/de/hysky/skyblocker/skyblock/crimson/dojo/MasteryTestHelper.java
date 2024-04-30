@@ -16,12 +16,12 @@ public class MasteryTestHelper {
     private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
     private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
 
-    private static List<BlockPos> blockOrder = new ArrayList<>();
-    private static Map<BlockPos, Long> endTimes =new HashMap<>();
+    private static final List<BlockPos> blockOrder = new ArrayList<>();
+    private static final Map<BlockPos, Long> endTimes =new HashMap<>();
 
     protected static void reset() {
-        blockOrder = new ArrayList<>();
-        endTimes =new HashMap<>();
+        blockOrder.clear();
+        endTimes.clear();
     }
 
 
@@ -33,6 +33,7 @@ public class MasteryTestHelper {
         }
         if (packet.getState().isAir()) {
             blockOrder.remove(pos);
+            endTimes.remove(pos);
         }
     }
 
