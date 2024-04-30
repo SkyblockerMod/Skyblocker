@@ -5,13 +5,14 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
-import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
+import de.hysky.skyblocker.skyblock.crimson.dojo.SwiftnessTestHelper;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.Blocks;
@@ -48,6 +49,9 @@ public abstract class ClientPlayNetworkHandlerMixin {
             if (packet.getState().isOf(Blocks.BEACON)) {
                 BeaconHighlighter.beaconPositions.add(packet.getPos());
             }
+        }
+        if (Utils.getLocation() == Location.CRIMSON_ISLE) {
+            SwiftnessTestHelper.blockUpdate(packet);
         }
     }
 
