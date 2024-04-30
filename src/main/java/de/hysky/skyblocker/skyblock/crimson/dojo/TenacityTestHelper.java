@@ -17,8 +17,7 @@ public class TenacityTestHelper {
 
 
     private static final Map<ArmorStandEntity, List<Vec3d>> fireBallsWithStartPos = new HashMap<>();
-
-    private static int floorY = 98; //todo is there multiple y levels
+    
 
     protected static void reset() {
         fireBallsWithStartPos.clear();
@@ -34,9 +33,7 @@ public class TenacityTestHelper {
             }
             if (linePositions.size() < 2) {
                 //calculate line for fireball and add it to its line values
-                double changeY = linePositions.getFirst().y - fireballPos.y;
-                double multipleToGround = (linePositions.getFirst().y - floorY) / changeY;
-                Vec3d distance = fireballPos.subtract(linePositions.getFirst()).multiply(multipleToGround);
+                Vec3d distance = fireballPos.subtract(linePositions.getFirst()).multiply(100);
                 Vec3d lineEnd = linePositions.getFirst().add(distance);
                 linePositions.add(lineEnd);
             }
