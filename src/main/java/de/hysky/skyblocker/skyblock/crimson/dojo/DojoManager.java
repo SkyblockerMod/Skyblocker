@@ -1,16 +1,16 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.text.Text;
-import net.minecraft.world.updater.WorldUpdater;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -46,20 +46,18 @@ public class DojoManager {
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);
-        Scheduler.INSTANCE.scheduleCyclic(DojoManager::update, 5);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-
+        ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
+        ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
     }
-
-
 
     private static void reset() {
         inAreana = false;
         currentChallenge = DojoChallenges.NONE;
         SwiftnessTestHelper.reset();
         MasteryTestHelper.reset();
+        TenacityTestHelper.reset();
     }
-
 
     private static void onMessage(Text text, Boolean overlay) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || overlay) {
@@ -88,15 +86,29 @@ public class DojoManager {
     }
 
     public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+            return;
+        }
         switch (currentChallenge) {
             case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(packet);
             case MASTERY -> MasteryTestHelper.onBlockUpdate(packet);
         }
     }
-
-    private static void update() {
+    private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
             return;
+        }
+        switch (currentChallenge) {
+            case TENACITY -> TenacityTestHelper.onEntitySpawn(entity);
+        }
+    }
+
+    private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+            return;
+        }
+        switch (currentChallenge) {
+            case TENACITY -> TenacityTestHelper.onEntityDespawn(entity);
         }
     }
 
