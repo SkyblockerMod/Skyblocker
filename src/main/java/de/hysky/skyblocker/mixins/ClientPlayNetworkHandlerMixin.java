@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.dojo.SwiftnessTestHelper;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -51,7 +52,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
             }
         }
         if (Utils.getLocation() == Location.CRIMSON_ISLE) {
-            SwiftnessTestHelper.blockUpdate(packet);
+            DojoManager.onBlockUpdate(packet);
         }
     }
 

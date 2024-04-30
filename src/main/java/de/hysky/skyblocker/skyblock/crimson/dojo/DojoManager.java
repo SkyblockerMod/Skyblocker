@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.world.updater.WorldUpdater;
 
@@ -23,6 +24,7 @@ public class DojoManager {
 
     protected enum DojoChallenges {
         NONE("none"),
+        MASTERY("Mastery"),
         DISCIPLINE("Discipline"),
         SWIFTNESS("Swiftness"),
         TENACITY("Tenacity");
@@ -55,11 +57,11 @@ public class DojoManager {
         inAreana = false;
         currentChallenge = DojoChallenges.NONE;
         SwiftnessTestHelper.reset();
+        MasteryTestHelper.reset();
     }
 
 
     private static void onMessage(Text text, Boolean overlay) {
-
         if (Utils.getLocation() != Location.CRIMSON_ISLE || overlay) {
             return;
         }
@@ -85,6 +87,13 @@ public class DojoManager {
         }
     }
 
+    public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
+        switch (currentChallenge) {
+            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(packet);
+            case MASTERY -> MasteryTestHelper.onBlockUpdate(packet);
+        }
+    }
+
     private static void update() {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
             return;
@@ -98,6 +107,7 @@ public class DojoManager {
         switch (currentChallenge) {
             case SWIFTNESS -> SwiftnessTestHelper.render(context);
             case TENACITY -> TenacityTestHelper.render(context);
+            case MASTERY -> MasteryTestHelper.render(context);
         }
     }
 

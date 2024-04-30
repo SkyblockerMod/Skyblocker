@@ -22,16 +22,14 @@ public class SwiftnessTestHelper {
     //-189 99 -580
     //-223 99  -614
 
-    public static void blockUpdate(BlockUpdateS2CPacket packet) {
-        if (DojoManager.currentChallenge == DojoManager.DojoChallenges.SWIFTNESS) {
-            if (packet.getState().isOf(Blocks.LIME_WOOL)) {
-                lastBlock = packet.getPos();
-            }
+    public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
+        if (packet.getState().isOf(Blocks.LIME_WOOL)) {
+            lastBlock = packet.getPos();
         }
     }
 
     protected static void render(WorldRenderContext context) {
-        if (DojoManager.currentChallenge != DojoManager.DojoChallenges.SWIFTNESS || lastBlock == null) {
+        if (lastBlock == null) {
             return;
         }
         RenderHelper.renderOutline(context,new Box(lastBlock),new float[]{0f,1f,0f},3,true);
