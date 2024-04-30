@@ -10,6 +10,6 @@ class AutopetFilterTest extends ChatPatternListenerTest<AutopetFilter> {
 
     @Test
     void testAutopet() {
-        assertMatches("§cAutopet §eequipped your §7[Lvl 85] §6Tiger§e! §a§lVIEW RULE");
+        assertMatches("Autopet equipped your [Lvl 85] Tiger! VIEW RULE");
     }
 }

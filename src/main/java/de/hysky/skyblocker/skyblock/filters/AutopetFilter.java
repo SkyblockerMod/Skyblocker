@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 
 public class AutopetFilter extends ChatPatternListener {
     public AutopetFilter() {
-        super("^§cAutopet §eequipped your §7.*§e! §a§lVIEW RULE$");
+        super("^Autopet equipped your .*! VIEW RULE$");
     }
 
     @Override
@@ -19,7 +19,7 @@ public class AutopetFilter extends ChatPatternListener {
         if (SkyblockerConfigManager.get().messages.hideAutopet == ChatFilterResult.ACTION_BAR) {
             Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(
                     Text.literal(
-                            _message.getString().replace("§a§lVIEW RULE", "")
+                            _message.getString().replace("VIEW RULE", "")
                     ), true);
         }
         return true;

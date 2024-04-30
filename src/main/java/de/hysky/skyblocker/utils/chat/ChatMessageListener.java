@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.chat;
 
+import java.util.Objects;
+
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
@@ -15,6 +17,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 @FunctionalInterface
 public interface ChatMessageListener {
@@ -68,7 +71,7 @@ public interface ChatMessageListener {
             if (!Utils.isOnSkyblock()) {
                 return true;
             }
-            ChatFilterResult result = EVENT.invoker().onMessage(message, message.getString());
+            ChatFilterResult result = EVENT.invoker().onMessage(message, Formatting.strip(message.getString()));
             switch (result) {
                 case ACTION_BAR -> {
                     if (overlay) {
