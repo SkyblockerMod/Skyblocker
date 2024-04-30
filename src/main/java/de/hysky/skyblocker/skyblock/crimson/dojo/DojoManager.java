@@ -1,12 +1,15 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.text.Text;
+import net.minecraft.world.updater.WorldUpdater;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -16,7 +19,7 @@ public class DojoManager {
 
     private static final String START_MESSAGE = "§e[NPC] §eMaster Tao§f: Ahhh, here we go! Let's get you into the Arena.";
     private static final Pattern TEST_OF_PATTERN = Pattern.compile("\\s+Test of (\\w+) OBJECTIVES");
-    private static final String CHALLENGE_FINISHED_REGEX = "\\s+CHALLENGE ((COMPLEATED)|(FAILED))";
+    private static final String CHALLENGE_FINISHED_REGEX = "\\s+CHALLENGE ((COMPLETED)|(FAILED))";
 
     protected enum DojoChallenges {
         NONE("none"),
@@ -41,13 +44,17 @@ public class DojoManager {
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);
+        Scheduler.INSTANCE.scheduleCyclic(DojoManager::update, 5);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 
     }
 
+
+
     private static void reset() {
         inAreana = false;
         currentChallenge = DojoChallenges.NONE;
+        SwiftnessTestHelper.reset();
     }
 
 
@@ -78,6 +85,12 @@ public class DojoManager {
         }
     }
 
+    private static void update() {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+            return;
+        }
+    }
+
     private static void render(WorldRenderContext context) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
             return;
@@ -86,7 +99,6 @@ public class DojoManager {
             case SWIFTNESS -> SwiftnessTestHelper.render(context);
             case TENACITY -> TenacityTestHelper.render(context);
         }
-        //System.out.println(currentChallenge);
     }
 
 
