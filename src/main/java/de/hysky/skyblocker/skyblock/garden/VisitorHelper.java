@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.garden;
 
-import com.mojang.authlib.properties.Property;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -18,7 +17,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -121,9 +119,8 @@ public class VisitorHelper {
         try {
             int amount = splitItemText.length == 2 ? NumberFormat.getInstance(Locale.US).parse(splitItemText[1].trim()).intValue() : 1;
             Pair<String, String> key = Pair.of(visitorName, visitorTexture);
-            Object2IntMap<String> visitorMap = itemMap.getOrDefault(key, new Object2IntOpenHashMap<>());
-            visitorMap.putIfAbsent(itemName, amount);
-            itemMap.putIfAbsent(key, visitorMap);
+            Object2IntMap<String> visitorMap = itemMap.computeIfAbsent(key, _key -> new Object2IntOpenHashMap<>());
+            visitorMap.put(itemName, amount);
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
         }
@@ -157,7 +154,7 @@ public class VisitorHelper {
         String strippedName = Formatting.strip(displayName);
         ItemStack cachedStack = itemCache.get(strippedName);
         if (cachedStack != null) return cachedStack;
-        if (!ItemRepository.filesImported()) return null; // Item repo might be taking its sweet time doing things and cause concurrent modification error
+        if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return null; // Item repo might be taking its sweet time doing things and cause concurrent modification error
         Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
         if (items == null) return null;
         ItemStack stack = items.values().stream()
