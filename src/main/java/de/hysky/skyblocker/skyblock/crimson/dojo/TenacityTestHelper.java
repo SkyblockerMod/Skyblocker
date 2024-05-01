@@ -2,65 +2,101 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 
 import java.util.*;
 
 public class TenacityTestHelper {
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 
-    private static final Map<ArmorStandEntity, List<Vec3d>> fireBallsWithStartPos = new HashMap<>();
-    
+    private static final Map<ArmorStandEntity, Vec3d> fireBallsWithStartPos = new HashMap<>();
+
+    private static final Map<ArmorStandEntity, Vec3d> particleOffsets = new HashMap<>();
 
     protected static void reset() {
         fireBallsWithStartPos.clear();
+        particleOffsets.clear();
     }
 
 
     protected static void render(WorldRenderContext context) {
         for (ArmorStandEntity fireball : fireBallsWithStartPos.keySet()) {
-            List<Vec3d> linePositions = fireBallsWithStartPos.get(fireball);
-            Vec3d fireballPos = getCoalOffset(fireball.getPos());
-            if (linePositions.getFirst().distanceTo(fireballPos) < 0.5 ) { //just spawned can not find line yet
-                continue;
-            }
-            if (linePositions.size() < 2) {
-                //calculate line for fireball and add it to its line values
-                Vec3d distance = fireballPos.subtract(linePositions.getFirst()).multiply(100);
-                Vec3d lineEnd = linePositions.getFirst().add(distance);
-                linePositions.add(lineEnd);
-            }
-            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{linePositions.get(0), linePositions.get(1)},new float[]{1f, 0f, 0f}, 1, 3, false);
-            //could outline block to be broken but seems to have some random pattern so not usefull
-        }
+            Vec3d lineStart = fireBallsWithStartPos.get(fireball).add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
+            Vec3d fireballPos = fireball.getPos().add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
 
+            Vec3d distance = fireballPos.subtract(lineStart);
+            if (distance.length() > 0.02) { //if big enough gap try from start calculate and show trajectory
+                distance = distance.multiply(100);
+                Vec3d lineEnd = lineStart.add(distance);
+
+                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{lineStart, lineEnd},new float[]{1f, 0f, 0f}, 1, 3, false);
+
+                //get highlighted block
+                HitResult hitResult = raycast(lineStart, lineEnd, fireball);
+                if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult blockHitResult) {
+                    RenderHelper.renderFilled(context, blockHitResult.getBlockPos(),new float[]{1f, 0f, 0f}, 0.5f, false);
+                }
+            }
+        }
+    }
+
+    public static HitResult raycast(Vec3d start, Vec3d end, ArmorStandEntity fireball) {
+        if (CLIENT == null || CLIENT.world == null) {
+            return null;
+        }
+        return CLIENT.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, fireball));
     }
 
     public static void onEntitySpawn(Entity entity) {
-        if (entity instanceof ArmorStandEntity armorStand) {
-            //todo they should be holding coal block but are not holding anything
-            List<Vec3d> lineBlocks = new ArrayList<>();
-            lineBlocks.add(getCoalOffset(armorStand.getPos()));
-            fireBallsWithStartPos.put(armorStand,lineBlocks);
+        if (CLIENT == null || CLIENT.player == null) {
+            return;
         }
-
+        if (entity instanceof ArmorStandEntity armorStand) {
+            Vec3d fireballPos = armorStand.getPos();
+            Vec3d playerPos = armorStand.getPos();
+            // they should be holding coal block but are not holding anything idk just check they are close enough to the player
+            if (fireballPos.distanceTo(playerPos) < 50 && Math.abs(fireballPos.y - playerPos.y) < 5){
+                fireBallsWithStartPos.put(armorStand,armorStand.getPos());
+            }
+        }
     }
 
     public static void onEntityDespawn(Entity entity) {
         if (entity instanceof ArmorStandEntity armorStand) {
-            fireBallsWithStartPos.remove(entity);
+            fireBallsWithStartPos.remove(armorStand);
         }
     }
 
-    private static Vec3d getCoalOffset(Vec3d pos) {
-        return pos.add(0,1,0);
+    public static void onParticle(ParticleS2CPacket packet) {
+        if (!ParticleTypes.FLAME.equals(packet.getParameters().getType())) {
+            return;
+        }
+        //get nearest fireball to particle
+        Vec3d particlePos = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
+        ArmorStandEntity neareastFireball = null;
+        double clostestDistance = 50;
+        for (ArmorStandEntity fireball : fireBallsWithStartPos.keySet()) {
+            double distance = fireball.getPos().distanceTo(particlePos);
+            if (distance < clostestDistance) {
+                neareastFireball = fireball;
+                clostestDistance = distance;
+            }
+        }
+        if (neareastFireball == null) { //can not find fireball near particle
+            return;
+        }
+        //adjust fireball offset with particle pos
+        Vec3d delta = particlePos.subtract(neareastFireball.getPos());
+        //update values
+        particleOffsets.put(neareastFireball, delta);
     }
-
 }
