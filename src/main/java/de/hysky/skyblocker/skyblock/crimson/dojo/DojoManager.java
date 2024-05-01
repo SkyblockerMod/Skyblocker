@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.text.Text;
 
 import java.util.Arrays;
@@ -21,6 +22,7 @@ public class DojoManager {
     private static final String START_MESSAGE = "§e[NPC] §eMaster Tao§f: Ahhh, here we go! Let's get you into the Arena.";
     private static final Pattern TEST_OF_PATTERN = Pattern.compile("\\s+Test of (\\w+) OBJECTIVES");
     private static final String CHALLENGE_FINISHED_REGEX = "\\s+CHALLENGE ((COMPLETED)|(FAILED))";
+
 
     protected enum DojoChallenges {
         NONE("none"),
@@ -49,6 +51,7 @@ public class DojoManager {
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
         ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
+
     }
 
     private static void reset() {
@@ -109,6 +112,15 @@ public class DojoManager {
         }
         switch (currentChallenge) {
             case TENACITY -> TenacityTestHelper.onEntityDespawn(entity);
+        }
+    }
+
+    public static void onParticle(ParticleS2CPacket packet) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+            return;
+        }
+        switch (currentChallenge) {
+            case TENACITY -> TenacityTestHelper.onParticle(packet);
         }
     }
 
