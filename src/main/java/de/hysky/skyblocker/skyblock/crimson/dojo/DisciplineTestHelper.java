@@ -1,17 +1,23 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.Util;
 
-import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DisciplineTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static final DecimalFormat FORMATTER = new DecimalFormat("0.0");
+
+    private static final Map<ZombieEntity, Long> zombies = new HashMap<>();
+
+    protected static void reset() {
+        zombies.clear();
+    }
 
     private static final HashMap<String, String> SWORD_TO_NAME_LOOKUP = Util.make(new HashMap<>(), map -> {
         map.put("WOOD_SWORD","Wood");
@@ -26,8 +32,8 @@ public class DisciplineTestHelper {
         map.put("DIAMOND_SWORD",0x00ffff);
     });
 
-    public static boolean isCorrect(String name) {
-        if (DojoManager.currentChallenge != DojoManager.DojoChallenges.DISCIPLINE || CLIENT == null || CLIENT.player == null) {
+    protected static boolean shouldGlow(String name) {
+        if (CLIENT == null || CLIENT.player == null) {
             return false;
         }
         String heldId = ItemTooltip.getInternalNameFromNBT(CLIENT.player.getMainHandStack(), true);
@@ -38,7 +44,7 @@ public class DisciplineTestHelper {
         return false;
     }
 
-    public static int getColor() {
+    protected static int getColor() {
         if (DojoManager.currentChallenge != DojoManager.DojoChallenges.DISCIPLINE || CLIENT == null || CLIENT.player == null) {
             return 0;
         }
@@ -48,4 +54,6 @@ public class DisciplineTestHelper {
         }
         return 0;
     }
+
+
 }
