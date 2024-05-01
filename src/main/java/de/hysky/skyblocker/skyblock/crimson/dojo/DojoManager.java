@@ -7,11 +7,18 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -19,6 +26,7 @@ import java.util.regex.Pattern;
 
 public class DojoManager {
 
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final String START_MESSAGE = "§e[NPC] §eMaster Tao§f: Ahhh, here we go! Let's get you into the Arena.";
     private static final Pattern TEST_OF_PATTERN = Pattern.compile("\\s+Test of (\\w+) OBJECTIVES");
     private static final String CHALLENGE_FINISHED_REGEX = "\\s+CHALLENGE ((COMPLETED)|(FAILED))";
@@ -52,6 +60,7 @@ public class DojoManager {
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
         ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
+        AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);
 
     }
 
@@ -122,7 +131,11 @@ public class DojoManager {
         }
     }
     private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena || CLIENT == null || CLIENT.player == null) {
+            return;
+        }
+        //check close by
+        if (entity.distanceTo(CLIENT.player) > 50 || Math.abs(entity.getBlockY() - CLIENT.player.getBlockY()) > 5){
             return;
         }
         switch (currentChallenge) {
@@ -139,6 +152,16 @@ public class DojoManager {
             case TENACITY -> TenacityTestHelper.onEntityDespawn(entity);
             case FORCE -> ForceTestHelper.onEntityDespawn(entity);
         }
+    }
+
+    private static ActionResult onEntityAttacked(PlayerEntity playerEntity, World world, Hand hand, Entity entity, EntityHitResult entityHitResult) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+            return null;
+        }
+        switch (currentChallenge) {
+            case FORCE -> ForceTestHelper.onEntityAttacked(entity);
+        }
+        return ActionResult.PASS;
     }
 
     public static void onParticle(ParticleS2CPacket packet) {
