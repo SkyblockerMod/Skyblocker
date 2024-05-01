@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.crimson.dojo.DisciplineTestHelper;
+import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -63,7 +63,7 @@ public class MobGlow {
 				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() -> TheEnd.isSpecialZealot(enderman);
 
 				//dojo
-				case ZombieEntity zombie when Utils.getLocation() == Location.CRIMSON_ISLE -> DisciplineTestHelper.isCorrect(getArmourStandName(zombie));
+				case ZombieEntity zombie when Utils.getLocation() == Location.CRIMSON_ISLE && DojoManager.inArena -> DojoManager.shouldGlow(getArmourStandName(zombie));
 
 				default -> false;
 			};
@@ -109,7 +109,7 @@ public class MobGlow {
 
 			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
 			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
-			case ZombieEntity zombie when Utils.getLocation() == Location.CRIMSON_ISLE -> DisciplineTestHelper.getColor();
+			case ZombieEntity zombie when Utils.getLocation() == Location.CRIMSON_ISLE && DojoManager.inArena -> DojoManager.getColor();
 
 			default -> 0xf57738;
 		};

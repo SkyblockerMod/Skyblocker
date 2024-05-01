@@ -26,6 +26,7 @@ public class DojoManager {
 
     protected enum DojoChallenges {
         NONE("none"),
+        FORCE("Force"),
         MASTERY("Mastery"),
         DISCIPLINE("Discipline"),
         SWIFTNESS("Swiftness"),
@@ -43,7 +44,7 @@ public class DojoManager {
     }
 
     protected static DojoChallenges currentChallenge = DojoChallenges.NONE;
-    private static boolean inAreana = false;
+    public static boolean inArena = false;
 
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
@@ -55,11 +56,12 @@ public class DojoManager {
     }
 
     private static void reset() {
-        inAreana = false;
+        inArena = false;
         currentChallenge = DojoChallenges.NONE;
         SwiftnessTestHelper.reset();
         MasteryTestHelper.reset();
         TenacityTestHelper.reset();
+        ForceTestHelper.reset();
     }
 
     private static void onMessage(Text text, Boolean overlay) {
@@ -67,10 +69,10 @@ public class DojoManager {
             return;
         }
         if (text.getString().equals(START_MESSAGE)) {
-            inAreana = true;
+            inArena = true;
             return;
         }
-        if (!inAreana) {
+        if (!inArena) {
             return;
         }
         if (text.getString().matches(CHALLENGE_FINISHED_REGEX)) {
@@ -88,8 +90,30 @@ public class DojoManager {
         }
     }
 
+    public static boolean shouldGlow(String name) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+            return false;
+        }
+        return switch (currentChallenge) {
+            case DISCIPLINE -> DisciplineTestHelper.shouldGlow(name);
+            case FORCE -> ForceTestHelper.shouldGlow(name);
+            default -> false;
+        };
+    }
+
+    public static int getColor() {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+            return 0xf57738;
+        }
+        return switch (currentChallenge) {
+            case DISCIPLINE -> DisciplineTestHelper.getColor();
+            case FORCE -> ForceTestHelper.getColor();
+            default -> 0xf57738;
+        };
+    }
+
     public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
         }
         switch (currentChallenge) {
@@ -98,37 +122,40 @@ public class DojoManager {
         }
     }
     private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
         }
         switch (currentChallenge) {
             case TENACITY -> TenacityTestHelper.onEntitySpawn(entity);
+            case FORCE -> ForceTestHelper.onEntitySpawn(entity);
         }
     }
 
     private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
         }
         switch (currentChallenge) {
             case TENACITY -> TenacityTestHelper.onEntityDespawn(entity);
+            case FORCE -> ForceTestHelper.onEntityDespawn(entity);
         }
     }
 
     public static void onParticle(ParticleS2CPacket packet) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
         }
-        switch (currentChallenge) {
-            case TENACITY -> TenacityTestHelper.onParticle(packet);
+        if (currentChallenge == DojoChallenges.TENACITY) {
+            TenacityTestHelper.onParticle(packet);
         }
     }
 
     private static void render(WorldRenderContext context) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inAreana) {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
         }
         switch (currentChallenge) {
+            case FORCE -> ForceTestHelper.render(context);
             case SWIFTNESS -> SwiftnessTestHelper.render(context);
             case TENACITY -> TenacityTestHelper.render(context);
             case MASTERY -> MasteryTestHelper.render(context);
