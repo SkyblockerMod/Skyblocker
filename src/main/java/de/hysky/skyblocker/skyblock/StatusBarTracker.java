@@ -21,8 +21,8 @@ public class StatusBarTracker {
     private int defense = 0;
 
     public void init() {
+        ClientReceiveMessageEvents.ALLOW_GAME.register(this::allowOverlayMessage);
         ClientReceiveMessageEvents.MODIFY_GAME.register(this::onOverlayMessage);
-        ClientReceiveMessageEvents.GAME_CANCELED.register(this::onOverlayMessage);
     }
 
     public Resource getHealth() {
@@ -64,6 +64,11 @@ public class StatusBarTracker {
         str = str.substring(m.end());
         m.reset(str);
         return str;
+    }
+
+    private boolean allowOverlayMessage(Text text, boolean overlay) {
+        onOverlayMessage(text, overlay);
+        return true;
     }
 
     private Text onOverlayMessage(Text text, boolean overlay) {
