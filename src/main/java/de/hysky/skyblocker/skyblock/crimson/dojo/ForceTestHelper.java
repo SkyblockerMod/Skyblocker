@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.text.Text;
@@ -42,7 +41,7 @@ public class ForceTestHelper {
     protected static void onEntityAttacked(Entity entity) {
         if (entity instanceof ZombieEntity zombie) {
             if (zombies.containsKey(zombie)) {
-                zombies.put(zombie,System.currentTimeMillis() + 10100); //timer is reset when they are hit
+                zombies.put(zombie, System.currentTimeMillis() + 10100); //timer is reset when they are hit
             }
         }
     }
@@ -50,7 +49,6 @@ public class ForceTestHelper {
     protected static void onEntityDespawn(Entity entity) {
         if (entity instanceof ZombieEntity zombie) {
             zombies.remove(zombie);
-
         }
     }
 
@@ -59,21 +57,18 @@ public class ForceTestHelper {
         long currentTime = System.currentTimeMillis();
         for (Map.Entry<ZombieEntity, Long> zombie : zombies.entrySet()) {
             float secondsTime = Math.max((zombie.getValue() - currentTime) / 1000f, 0);
-            
+
             Text text;
             if (secondsTime > 1) {
                 text = Text.literal(FORMATTER.format(secondsTime)).formatted(Formatting.GREEN);
-            }
-            else if (secondsTime > 0) {
+            } else if (secondsTime > 0) {
                 text = Text.literal(FORMATTER.format(secondsTime)).formatted(Formatting.YELLOW);
-            }
-            else {
+            } else {
                 text = Text.literal("Soon").formatted(Formatting.RED); //todo translate
             }
 
             Vec3d lablePos = zombie.getKey().getEyePos();
             RenderHelper.renderText(context, text, lablePos, 1.5f, true);
-
         }
     }
 }

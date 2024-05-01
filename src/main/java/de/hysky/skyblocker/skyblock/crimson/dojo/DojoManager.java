@@ -8,12 +8,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.session.telemetry.WorldLoadedEvent;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.server.world.BlockEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -61,7 +64,6 @@ public class DojoManager {
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
         ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
         AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);
-
     }
 
     private static void reset() {
@@ -73,6 +75,11 @@ public class DojoManager {
         ForceTestHelper.reset();
     }
 
+    /**
+     * works out if the player is in dojo and if so what challenge based on chat messages
+     * @param text message
+     * @param overlay is overlay
+     */
     private static void onMessage(Text text, Boolean overlay) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || overlay) {
             return;
@@ -99,6 +106,11 @@ public class DojoManager {
         }
     }
 
+    /**
+     * called from the {@link de.hysky.skyblocker.skyblock.entity.MobGlow} class and checks the current challenge to see if zombies should be glowing
+     * @param name name of the zombie
+     * @return if the zombie should glow
+     */
     public static boolean shouldGlow(String name) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return false;
@@ -110,6 +122,10 @@ public class DojoManager {
         };
     }
 
+    /**
+     * called from the {@link de.hysky.skyblocker.skyblock.entity.MobGlow} class and checks the current challenge to see zombie outline color
+     * @return if the zombie should glow
+     */
     public static int getColor() {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return 0xf57738;
@@ -121,6 +137,10 @@ public class DojoManager {
         };
     }
 
+    /**
+     * when a block is updated check the current challenge and send the packet to correct helper
+     * @param packet block update packet
+     */
     public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
@@ -130,12 +150,13 @@ public class DojoManager {
             case MASTERY -> MasteryTestHelper.onBlockUpdate(packet);
         }
     }
+
     private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena || CLIENT == null || CLIENT.player == null) {
             return;
         }
         //check close by
-        if (entity.distanceTo(CLIENT.player) > 50 || Math.abs(entity.getBlockY() - CLIENT.player.getBlockY()) > 5){
+        if (entity.distanceTo(CLIENT.player) > 50 || Math.abs(entity.getBlockY() - CLIENT.player.getBlockY()) > 5) {
             return;
         }
         switch (currentChallenge) {
@@ -158,8 +179,8 @@ public class DojoManager {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return null;
         }
-        switch (currentChallenge) {
-            case FORCE -> ForceTestHelper.onEntityAttacked(entity);
+        if (currentChallenge == DojoChallenges.FORCE) {
+            ForceTestHelper.onEntityAttacked(entity);
         }
         return ActionResult.PASS;
     }
@@ -184,6 +205,4 @@ public class DojoManager {
             case MASTERY -> MasteryTestHelper.render(context);
         }
     }
-
-
 }
