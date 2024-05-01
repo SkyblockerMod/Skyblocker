@@ -26,7 +26,6 @@ public class TenacityTestHelper {
         particleOffsets.clear();
     }
 
-
     protected static void render(WorldRenderContext context) {
         for (ArmorStandEntity fireball : fireBallsWithStartPos.keySet()) {
             Vec3d lineStart = fireBallsWithStartPos.get(fireball).add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
@@ -37,12 +36,12 @@ public class TenacityTestHelper {
                 distance = distance.multiply(100);
                 Vec3d lineEnd = lineStart.add(distance);
 
-                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{lineStart, lineEnd},new float[]{1f, 0f, 0f}, 1, 3, false);
+                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{lineStart, lineEnd}, new float[]{1f, 0f, 0f}, 1, 3, false);
 
                 //get highlighted block
                 HitResult hitResult = raycast(lineStart, lineEnd, fireball);
                 if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult blockHitResult) {
-                    RenderHelper.renderFilled(context, blockHitResult.getBlockPos(),new float[]{1f, 0f, 0f}, 0.5f, false);
+                    RenderHelper.renderFilled(context, blockHitResult.getBlockPos(), new float[]{1f, 0f, 0f}, 0.5f, false);
                 }
             }
         }
@@ -58,7 +57,7 @@ public class TenacityTestHelper {
     public static void onEntitySpawn(Entity entity) {
         if (entity instanceof ArmorStandEntity armorStand) {
             // they should be holding coal block but are not holding anything idk
-            fireBallsWithStartPos.put(armorStand,armorStand.getPos());
+            fireBallsWithStartPos.put(armorStand, armorStand.getPos());
 
         }
     }

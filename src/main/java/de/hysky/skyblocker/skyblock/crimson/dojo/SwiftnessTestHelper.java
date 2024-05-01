@@ -18,10 +18,6 @@ public class SwiftnessTestHelper {
         lastBlock = null;
     }
 
-    //dojo cwords:
-    //-189 99 -580
-    //-223 99  -614
-
     public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
         if (packet.getState().isOf(Blocks.LIME_WOOL)) {
             lastBlock = packet.getPos();
@@ -32,7 +28,6 @@ public class SwiftnessTestHelper {
         if (lastBlock == null) {
             return;
         }
-        RenderHelper.renderOutline(context,new Box(lastBlock),new float[]{0f,1f,0f},3,true);
-
+        RenderHelper.renderOutline(context, new Box(lastBlock), new float[]{0f, 1f, 0f}, 3, true);
     }
 }
