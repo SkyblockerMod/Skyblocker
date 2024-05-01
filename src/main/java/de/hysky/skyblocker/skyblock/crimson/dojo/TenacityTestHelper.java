@@ -17,7 +17,6 @@ import java.util.*;
 public class TenacityTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
-
     private static final Map<ArmorStandEntity, Vec3d> fireBallsWithStartPos = new HashMap<>();
 
     private static final Map<ArmorStandEntity, Vec3d> particleOffsets = new HashMap<>();
@@ -57,16 +56,10 @@ public class TenacityTestHelper {
     }
 
     public static void onEntitySpawn(Entity entity) {
-        if (CLIENT == null || CLIENT.player == null) {
-            return;
-        }
         if (entity instanceof ArmorStandEntity armorStand) {
-            Vec3d fireballPos = armorStand.getPos();
-            Vec3d playerPos = armorStand.getPos();
-            // they should be holding coal block but are not holding anything idk just check they are close enough to the player
-            if (fireballPos.distanceTo(playerPos) < 50 && Math.abs(fireballPos.y - playerPos.y) < 5){
-                fireBallsWithStartPos.put(armorStand,armorStand.getPos());
-            }
+            // they should be holding coal block but are not holding anything idk
+            fireBallsWithStartPos.put(armorStand,armorStand.getPos());
+
         }
     }
 
