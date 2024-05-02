@@ -4,6 +4,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
@@ -58,13 +59,13 @@ public class ForceTestHelper {
         for (Map.Entry<ZombieEntity, Long> zombie : zombies.entrySet()) {
             float secondsTime = Math.max((zombie.getValue() - currentTime) / 1000f, 0);
 
-            Text text;
+            MutableText text = Text.literal(FORMATTER.format(secondsTime));
             if (secondsTime > 1) {
-                text = Text.literal(FORMATTER.format(secondsTime)).formatted(Formatting.GREEN);
+                text = text.formatted(Formatting.GREEN);
             } else if (secondsTime > 0) {
-                text = Text.literal(FORMATTER.format(secondsTime)).formatted(Formatting.YELLOW);
+                text = text.formatted(Formatting.YELLOW);
             } else {
-                text = Text.literal("Soon").formatted(Formatting.RED); //todo translate
+                text = text.formatted(Formatting.RED);
             }
 
             Vec3d lablePos = zombie.getKey().getEyePos();

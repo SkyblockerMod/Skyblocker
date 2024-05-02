@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.telemetry.WorldLoadedEvent;
 import net.minecraft.client.world.ClientWorld;
@@ -21,6 +23,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
@@ -139,15 +142,16 @@ public class DojoManager {
 
     /**
      * when a block is updated check the current challenge and send the packet to correct helper
-     * @param packet block update packet
+     * @param pos the location of the updated block
+     * @param state the state of the new block
      */
-    public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
+    public static void onBlockUpdate(BlockPos pos, BlockState state) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
         }
         switch (currentChallenge) {
-            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(packet);
-            case MASTERY -> MasteryTestHelper.onBlockUpdate(packet);
+            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos, state);
+            case MASTERY -> MasteryTestHelper.onBlockUpdate(pos, state);
         }
     }
 

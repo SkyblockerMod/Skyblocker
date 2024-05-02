@@ -8,6 +8,7 @@
     "BatEntityMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
+    "ClientWorldMixin",
     "CommandTreeS2CPacketMixin",
     "ComponentHolderMixin",
     "DataTrackerMixin",
