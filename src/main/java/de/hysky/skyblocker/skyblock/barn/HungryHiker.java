@@ -14,7 +14,7 @@ public class HungryHiker extends ChatPatternListener {
 
     private static final Map<String, String> foods;
 
-    public HungryHiker() { super("^§e\\[NPC] Hungry Hiker§f: (The food I want is|(I asked for) food that is) ([a-zA-Z, '\\-]*\\.)$"); }
+    public HungryHiker() { super("^\\[NPC] Hungry Hiker: (The food I want is|(I asked for) food that is) ([a-zA-Z, '\\-]*\\.)$"); }
 
     @Override
     public ChatFilterResult state() {

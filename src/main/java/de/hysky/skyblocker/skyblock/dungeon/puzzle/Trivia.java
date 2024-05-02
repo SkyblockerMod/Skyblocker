@@ -23,7 +23,7 @@ public class Trivia extends ChatPatternListener {
     private List<String> solutions = Collections.emptyList();
 
     public Trivia() {
-        super("^ +(?:([A-Za-z,' ]*\\?)|§6 ([ⓐⓑⓒ]) §a([a-zA-Z0-9 ]+))$");
+        super("^ +(?:([A-Za-z,' ]*\\?)| ([ⓐⓑⓒ]) ([a-zA-Z0-9 ]+))$");
     }
 
     @Override

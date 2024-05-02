@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 
 public class Puzzler extends ChatPatternListener {
     public Puzzler() {
-        super("^§e\\[NPC] §dPuzzler§f: ((?:§d▲|§5▶|§b◀|§a▼){10})$");
+        super("^\\[NPC] Puzzler: ((?:▲|▶|◀|▼){10})$");
     }
 
     @Override

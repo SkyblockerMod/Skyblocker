@@ -10,6 +10,6 @@ class PuzzlerTest extends ChatPatternListenerTest<Puzzler> {
 
     @Test
     void puzzler() {
-        assertGroup("§e[NPC] §dPuzzler§f: §b◀§d▲§b◀§d▲§d▲§5▶§5▶§b◀§d▲§a▼", 1, "§b◀§d▲§b◀§d▲§d▲§5▶§5▶§b◀§d▲§a▼");
+        assertGroup("[NPC] Puzzler: ◀▲◀▲▲▶▶◀▲▼", 1, "◀▲◀▲▲▶▶◀▲▼");
     }
 }
