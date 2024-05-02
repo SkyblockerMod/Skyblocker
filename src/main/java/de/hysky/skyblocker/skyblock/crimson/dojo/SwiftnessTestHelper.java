@@ -18,9 +18,9 @@ public class SwiftnessTestHelper {
         lastBlock = null;
     }
 
-    public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
-        if (packet.getState().isOf(Blocks.LIME_WOOL)) {
-            lastBlock = packet.getPos();
+    public static void onBlockUpdate(BlockPos pos, BlockState state) {
+        if (state.isOf(Blocks.LIME_WOOL)) {
+            lastBlock = pos.toImmutable();
         }
     }
 
@@ -28,6 +28,7 @@ public class SwiftnessTestHelper {
         if (lastBlock == null) {
             return;
         }
-        RenderHelper.renderOutline(context, new Box(lastBlock), new float[]{0f, 1f, 0f}, 3, true);
+        System.out.println("render" + lastBlock);
+        RenderHelper.renderFilled(context,lastBlock, new float[]{0f, 1f, 0f}, 0.5f, true);
     }
 }

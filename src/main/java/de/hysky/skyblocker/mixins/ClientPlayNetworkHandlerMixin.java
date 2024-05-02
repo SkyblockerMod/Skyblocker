@@ -50,9 +50,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
                 BeaconHighlighter.beaconPositions.add(packet.getPos());
             }
         }
-        if (Utils.getLocation() == Location.CRIMSON_ISLE) {
-            DojoManager.onBlockUpdate(packet);
-        }
     }
 
     @Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))

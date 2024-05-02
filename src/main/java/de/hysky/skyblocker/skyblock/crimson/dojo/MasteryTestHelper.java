@@ -2,7 +2,9 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -12,6 +14,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public class MasteryTestHelper {
+
 
     private static final float[] LIGHT_GRAY = {192 / 255f, 192 / 255f, 192 / 255f};
     private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
@@ -24,13 +27,12 @@ public class MasteryTestHelper {
         endTimes.clear();
     }
 
-    public static void onBlockUpdate(BlockUpdateS2CPacket packet) {
-        BlockPos pos = packet.getPos();
-        if (packet.getState().isOf(Blocks.LIME_WOOL)) {
+    public static void onBlockUpdate(BlockPos pos, BlockState state) {
+        if (state.isOf(Blocks.LIME_WOOL)) {
             blockOrder.add(pos);
             endTimes.put(pos, System.currentTimeMillis() + 6850);
         }
-        if (packet.getState().isAir()) {
+        if (state.isAir()) {
             blockOrder.remove(pos);
             endTimes.remove(pos);
         }
