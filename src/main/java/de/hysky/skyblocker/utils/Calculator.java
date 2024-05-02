@@ -11,11 +11,13 @@ public class Calculator {
     public enum TokenType {
         NUMBER, OPERATOR, L_PARENTHESIS, R_PARENTHESIS
     }
+
     public static class Token {
         public TokenType type;
         String value;
         int tokenLength;
     }
+
     private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([kmbs]?)");
     private static final HashMap<String, Integer> magnitudeValues = Util.make(new HashMap<>(), map -> {
         map.put("s", 64);
@@ -24,15 +26,14 @@ public class Calculator {
         map.put("b", 1000000000);
     });
 
-
     private static List<Token> lex(String input) {
         List<Token> tokens = new ArrayList<>();
-        input = input.replace(" ", "").toLowerCase().replace("x","*");
+        input = input.replace(" ", "").toLowerCase().replace("x", "*");
         int i = 0;
         while (i < input.length()) {
             Token token = new Token();
             switch (input.charAt(i)) {
-                case '+','-','*','/' -> {
+                case '+', '-', '*', '/' -> {
                     token.type = TokenType.OPERATOR;
                     token.value = String.valueOf(input.charAt(i));
                     token.tokenLength = 1;
@@ -43,8 +44,8 @@ public class Calculator {
                     token.value = String.valueOf(input.charAt(i));
                     token.tokenLength = 1;
                     //add implicit multiplication when there is a number before brackets
-                    if (!tokens.isEmpty() ) {
-                        TokenType lastType = tokens.get(tokens.size()-1).type;
+                    if (!tokens.isEmpty()) {
+                        TokenType lastType = tokens.get(tokens.size() - 1).type;
                         if (lastType == TokenType.R_PARENTHESIS || lastType == TokenType.NUMBER) {
                             Token mutliplyToken = new Token();
                             mutliplyToken.type = TokenType.OPERATOR;
@@ -66,8 +67,8 @@ public class Calculator {
                     if (!numberMatcher.find()) {//invalid value to lex
                         throw new UnsupportedOperationException("invalid character");
                     }
-                    int end =  numberMatcher.end();
-                    token.value = input.substring(i,i + end);
+                    int end = numberMatcher.end();
+                    token.value = input.substring(i, i + end);
                     token.tokenLength = end;
                 }
             }
@@ -80,7 +81,8 @@ public class Calculator {
     }
 
     /**
-     *  This is an implementation of the shunting yard algorithm to convert the equation to reverse polish notation
+     * This is an implementation of the shunting yard algorithm to convert the equation to reverse polish notation
+     *
      * @param tokens equation in infix notation order
      * @return equation in RPN order
      */
@@ -114,7 +116,7 @@ public class Calculator {
                 case L_PARENTHESIS -> {
                     operatorStack.push(shuntingToken);
                 }
-                case  R_PARENTHESIS -> {
+                case R_PARENTHESIS -> {
                     while (true) {
                         if (operatorStack.isEmpty()) {
                             throw new UnsupportedOperationException("Unbalanced left parenthesis");
@@ -139,12 +141,13 @@ public class Calculator {
 
         return outputQueue.stream().toList();
     }
+
     private static int getPrecedence(String operator) {
         switch (operator) {
-            case "+","-" -> {
+            case "+", "-" -> {
                 return 0;
             }
-            case "*","/" -> {
+            case "*", "/" -> {
                 return 1;
             }
             default -> throw new UnsupportedOperationException("Invalid operator");
@@ -152,7 +155,6 @@ public class Calculator {
     }
 
     /**
-     *
      * @param tokens list of Tokens in reverse polish notation
      * @return answer to equation
      */
@@ -216,5 +218,4 @@ public class Calculator {
     public static double calculate(String equation) {
         return evaluate(shunt(lex(equation)));
     }
-
 }

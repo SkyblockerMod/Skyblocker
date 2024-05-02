@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.mixin;
+package de.hysky.skyblocker.mixins;
 
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Mixin(AbstractSignEditScreen.class)
-public abstract class SignEditScreenMixin{
+public abstract class SignEditScreenMixin {
     @Shadow
     @Final
     private String[] messages;
@@ -32,15 +32,13 @@ public abstract class SignEditScreenMixin{
     @Inject(method = "finishEditing", at = @At("HEAD"))
     private void skyblocker$finishEditing(CallbackInfo ci) {
         //if the sign is being used to enter number get number from calculator for if maths has been done
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.enableSignCalculator &&  Objects.equals(messages[1], "^^^^^^^^^^^^^^^")) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.enableSignCalculator && Objects.equals(messages[1], "^^^^^^^^^^^^^^^")) {
             boolean isPrice = messages[2].contains("price");
             String value = SignCalculator.getNewValue(isPrice);
             if (value.length() >= 15) {
-                value = value.substring(0,15);
+                value = value.substring(0, 15);
             }
             messages[0] = value;
         }
-
     }
-
 }

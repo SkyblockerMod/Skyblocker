@@ -33,7 +33,7 @@ public class CalculatorCommand {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
                 .then(literal("calculate")
                         .then(argument("equation", StringArgumentType.greedyString())
-                                .executes(context -> doCalculation(getString(context, "equation")) )
+                                .executes(context -> doCalculation(getString(context, "equation")))
                         )
                 )
         );
