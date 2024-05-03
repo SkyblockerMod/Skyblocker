@@ -2,21 +2,12 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.Util;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DisciplineTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-
-    private static final Map<ZombieEntity, Long> zombies = new HashMap<>();
-
-    protected static void reset() {
-        zombies.clear();
-    }
 
     private static final HashMap<String, String> SWORD_TO_NAME_LOOKUP = Util.make(new HashMap<>(), map -> {
         map.put("WOOD_SWORD", "Wood");

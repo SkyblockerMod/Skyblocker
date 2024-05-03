@@ -8,17 +8,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.session.telemetry.WorldLoadedEvent;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.server.world.BlockEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -44,6 +39,7 @@ public class DojoManager {
         MASTERY("Mastery"),
         DISCIPLINE("Discipline"),
         SWIFTNESS("Swiftness"),
+        CONTROL("Control"),
         TENACITY("Tenacity");
 
         private final String name;
@@ -76,6 +72,7 @@ public class DojoManager {
         MasteryTestHelper.reset();
         TenacityTestHelper.reset();
         ForceTestHelper.reset();
+        ControlTestHelper.reset();
     }
 
     /**
@@ -166,6 +163,7 @@ public class DojoManager {
         switch (currentChallenge) {
             case TENACITY -> TenacityTestHelper.onEntitySpawn(entity);
             case FORCE -> ForceTestHelper.onEntitySpawn(entity);
+            case CONTROL -> ControlTestHelper.onEntitySpawn(entity);
         }
     }
 
@@ -207,6 +205,7 @@ public class DojoManager {
             case SWIFTNESS -> SwiftnessTestHelper.render(context);
             case TENACITY -> TenacityTestHelper.render(context);
             case MASTERY -> MasteryTestHelper.render(context);
+            case CONTROL -> ControlTestHelper.render(context);
         }
     }
 }
