@@ -18,7 +18,6 @@ public class TenacityTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     private static final Map<ArmorStandEntity, Vec3d> fireBallsWithStartPos = new HashMap<>();
-
     private static final Map<ArmorStandEntity, Vec3d> particleOffsets = new HashMap<>();
 
     protected static void reset() {
@@ -47,14 +46,14 @@ public class TenacityTestHelper {
         }
     }
 
-    public static HitResult raycast(Vec3d start, Vec3d end, ArmorStandEntity fireball) {
+    protected static HitResult raycast(Vec3d start, Vec3d end, ArmorStandEntity fireball) {
         if (CLIENT == null || CLIENT.world == null) {
             return null;
         }
         return CLIENT.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, fireball));
     }
 
-    public static void onEntitySpawn(Entity entity) {
+    protected static void onEntitySpawn(Entity entity) {
         if (entity instanceof ArmorStandEntity armorStand) {
             // they should be holding coal block but are not holding anything idk
             fireBallsWithStartPos.put(armorStand, armorStand.getPos());
@@ -62,13 +61,13 @@ public class TenacityTestHelper {
         }
     }
 
-    public static void onEntityDespawn(Entity entity) {
+    protected static void onEntityDespawn(Entity entity) {
         if (entity instanceof ArmorStandEntity armorStand) {
             fireBallsWithStartPos.remove(armorStand);
         }
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    protected static void onParticle(ParticleS2CPacket packet) {
         if (!ParticleTypes.FLAME.equals(packet.getParameters().getType())) {
             return;
         }

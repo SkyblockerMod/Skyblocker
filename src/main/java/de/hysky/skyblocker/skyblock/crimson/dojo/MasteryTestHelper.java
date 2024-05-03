@@ -10,13 +10,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 
 public class MasteryTestHelper {
 
 
-    private static final float[] LIGHT_GRAY = {192 / 255f, 192 / 255f, 192 / 255f};
     private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
 
     private static final List<BlockPos> blockOrder = new ArrayList<>();
@@ -27,7 +28,7 @@ public class MasteryTestHelper {
         endTimes.clear();
     }
 
-    public static void onBlockUpdate(BlockPos pos, BlockState state) {
+    protected static void onBlockUpdate(BlockPos pos, BlockState state) {
         if (state.isOf(Blocks.LIME_WOOL)) {
             blockOrder.add(pos);
             endTimes.put(pos, System.currentTimeMillis() + 6850);
@@ -41,7 +42,7 @@ public class MasteryTestHelper {
     protected static void render(WorldRenderContext context) {
         //render connecting lines
         if (!blockOrder.isEmpty()) {
-            RenderHelper.renderLineFromCursor(context, blockOrder.getFirst().toCenterPos(), LIGHT_GRAY, 1f, 2);
+            RenderHelper.renderLineFromCursor(context, blockOrder.getFirst().toCenterPos(), Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1f, 2);
         }
         if (blockOrder.size() >= 2) {
             RenderHelper.renderLinesFromPoints(context, new Vec3d[]{blockOrder.get(0).toCenterPos(), blockOrder.get(1).toCenterPos()}, new float[]{0f, 1f, 0f}, 1, 2, false);
