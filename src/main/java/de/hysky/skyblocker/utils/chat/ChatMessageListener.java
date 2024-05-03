@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils.chat;
 
-import java.util.Objects;
-
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;

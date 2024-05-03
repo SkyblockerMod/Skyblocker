@@ -139,9 +139,7 @@ public class ChatRulesHandler {
                 //show replacement message in chat
                 //bypass MessageHandler#onGameMessage to avoid activating chat rules again
                 if (!rule.getHideMessage() && CLIENT.player != null) {
-                    CLIENT.inGameHud.getChatHud().addMessage(newMessage);
-                    ((MessageHandlerAccessor) CLIENT.getMessageHandler()).invokeAddToChatLog(newMessage, Instant.now());
-                    CLIENT.getNarratorManager().narrateSystemMessage(newMessage);
+                    Utils.sendMessageToBypassEvents(newMessage);
                 }
 
                 //play sound
