@@ -484,6 +484,9 @@
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableManiaIndicator": "Enable Mania Block Indicator",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency": "Mania Indicator Update Frequency (Ticks)",
   "text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
+  "text.autoconfig.skyblocker.option.slayer.blazeSlayer": "Blaze Slayer",
+  "text.autoconfig.skyblocker.option.slayer.blazeSlayer.enableFirePillarAnnouncer" : "Enable Fire Pillar notification",
+  "text.autoconfig.skyblocker.option.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Enable Fire Pillar Notifications (Note: The Pillar may be spawned by another player's slayer)",
 
   "text.autoconfig.skyblocker.option.general.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "text.autoconfig.skyblocker.option.general.hideStatusEffectOverlay": "Hide Status Effect Overlay",

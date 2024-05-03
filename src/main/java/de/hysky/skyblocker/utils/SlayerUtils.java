@@ -21,8 +21,9 @@ public class SlayerUtils {
     public static Entity getSlayerEntity() {
         if (MinecraftClient.getInstance().world != null) {
             for (Entity entity : MinecraftClient.getInstance().world.getEntities()) {
-                //Check if entity is Bloodfiend
-                if (entity.hasCustomName() && entity.getCustomName().getString().contains("Bloodfiend")) {
+                //Check if entity is Bloodfiend or Demonlord
+                if ((entity.hasCustomName() && entity.getCustomName().getString().contains("Bloodfiend"))
+                || (entity.hasCustomName() && entity.getCustomName().getString().contains("Demonlord"))) {
                     //Grab the players username
                     String username = MinecraftClient.getInstance().getSession().getUsername();
                     //Check all armor stands around the boss

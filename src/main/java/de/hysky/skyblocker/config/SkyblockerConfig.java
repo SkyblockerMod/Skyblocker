@@ -1157,6 +1157,9 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public VampireSlayer vampireSlayer = new VampireSlayer();
+
+		@SerialEntry
+		public BlazeSlayer blazeSlayer = new BlazeSlayer();
 	}
 
 	public static class EndermanSlayer {
@@ -1206,6 +1209,11 @@ public class SkyblockerConfig {
 
 		@SerialEntry
 		public int maniaUpdateFrequency = 5;
+	}
+
+	public static class BlazeSlayer {
+		@SerialEntry
+		public boolean enableFirePillarAnnouncer = true;
 	}
 
 	public static class Messages {
