@@ -192,7 +192,7 @@ public class DojoManager {
 
     private static ActionResult onEntityAttacked(PlayerEntity playerEntity, World world, Hand hand, Entity entity, EntityHitResult entityHitResult) {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
-            return null;
+            return ActionResult.PASS;
         }
         if (currentChallenge == DojoChallenges.FORCE) {
             ForceTestHelper.onEntityAttacked(entity);
