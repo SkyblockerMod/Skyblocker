@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudPowderWidget;
@@ -169,7 +170,7 @@ public class DwarvenHud {
 
         commissionList = new ArrayList<>();
 
-        for (PlayerListEntry playerListEntry : CLIENT.getNetworkHandler().getPlayerList()) {
+        for (PlayerListEntry playerListEntry : CLIENT.getNetworkHandler().getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList()) {
             if (playerListEntry.getDisplayName() == null) {
                 continue;
             }
