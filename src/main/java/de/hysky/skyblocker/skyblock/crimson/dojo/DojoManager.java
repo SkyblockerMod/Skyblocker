@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
@@ -22,6 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,23 +37,26 @@ public class DojoManager {
 
 
     protected enum DojoChallenges {
-        NONE("none"),
-        FORCE("Force"),
-        MASTERY("Mastery"),
-        DISCIPLINE("Discipline"),
-        SWIFTNESS("Swiftness"),
-        CONTROL("Control"),
-        TENACITY("Tenacity");
+        NONE("none", enabled -> false),
+        FORCE("Force",enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableForceHelper),
+        MASTERY("Mastery", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableMasteryHelper),
+        DISCIPLINE("Discipline", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableDisciplineHelper),
+        SWIFTNESS("Swiftness", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableSwiftnessHelper),
+        CONTROL("Control", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableControlHelper),
+        TENACITY("Tenacity", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableTenacityHelper);
 
         private final String name;
+        private final Predicate<Boolean> enabled;
 
-        DojoChallenges(String name) {
+        DojoChallenges(String name, Predicate<Boolean> enabled) {
             this.name = name;
+            this.enabled = enabled;
         }
 
         public static DojoChallenges from(String name) {
             return Arrays.stream(DojoChallenges.values()).filter(n -> name.equals(n.name)).findFirst().orElse(NONE);
         }
+
     }
 
     protected static DojoChallenges currentChallenge = DojoChallenges.NONE;
@@ -77,7 +83,8 @@ public class DojoManager {
 
     /**
      * works out if the player is in dojo and if so what challenge based on chat messages
-     * @param text message
+     *
+     * @param text    message
      * @param overlay is overlay
      */
     private static void onMessage(Text text, Boolean overlay) {
@@ -103,11 +110,15 @@ public class DojoManager {
         Matcher nextChallenge = TEST_OF_PATTERN.matcher(text.getString());
         if (nextChallenge.matches()) {
             currentChallenge = DojoChallenges.from(nextChallenge.group(1));
+            if (!currentChallenge.enabled.test(true)) {
+                currentChallenge = DojoChallenges.NONE;
+            }
         }
     }
 
     /**
      * called from the {@link de.hysky.skyblocker.skyblock.entity.MobGlow} class and checks the current challenge to see if zombies should be glowing
+     *
      * @param name name of the zombie
      * @return if the zombie should glow
      */
@@ -124,6 +135,7 @@ public class DojoManager {
 
     /**
      * called from the {@link de.hysky.skyblocker.skyblock.entity.MobGlow} class and checks the current challenge to see zombie outline color
+     *
      * @return if the zombie should glow
      */
     public static int getColor() {
@@ -139,7 +151,8 @@ public class DojoManager {
 
     /**
      * when a block is updated check the current challenge and send the packet to correct helper
-     * @param pos the location of the updated block
+     *
+     * @param pos   the location of the updated block
      * @param state the state of the new block
      */
     public static void onBlockUpdate(BlockPos pos, BlockState state) {
