@@ -34,7 +34,7 @@ public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final Pattern COUNTER = Pattern.compile("Counter: (?<count>[\\d,]+) .+");
-    private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>\\d+.?\\d*)%\\)");
+    private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
     private static final Deque<IntLongPair> counter = new ArrayDeque<>();
     private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
     private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
@@ -118,6 +118,6 @@ public class FarmingHud {
     }
 
     public static double farmingXpPerHour() {
-        return farmingXp.stream().mapToDouble(FloatLongPair::leftFloat).sum() * 3600;
+        return farmingXp.stream().mapToDouble(FloatLongPair::leftFloat).sum() * blockBreaks() * 1800; // Hypixel only sends xp updates around every half a second
     }
 }
