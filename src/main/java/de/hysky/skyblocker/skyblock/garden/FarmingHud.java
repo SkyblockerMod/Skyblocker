@@ -118,6 +118,6 @@ public class FarmingHud {
     }
 
     public static double farmingXpPerHour() {
-        return farmingXp.stream().mapToDouble(FloatLongPair::leftFloat).sum() * (blockBreaks()/2) * 3600;
+        return farmingXp.stream().mapToDouble(FloatLongPair::leftFloat).sum() * blockBreaks() * 1800; // Hypixel only sends xp updates around every half a second
     }
 }
