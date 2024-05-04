@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -32,19 +33,25 @@ public class WikiLookup {
 
     public static void getSkyblockId(Slot slot) {
         //Grabbing the skyblock NBT data
-        ItemUtils.getItemIdOptional(slot.getStack()).ifPresent(newId -> id = newId);
+    	//Setting to null prevents a bug where using wiki lookup on an empty slot would bring up the last looked up page
+        id = ItemUtils.getItemIdOptional(slot.getStack()).orElse(null);
     }
 
     public static void openWiki(Slot slot, PlayerEntity player) {
-        if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
             getSkyblockId(slot);
-            try {
-                String wikiLink = ItemRepository.getWikiLink(id, player);
-                if (wikiLink != null) CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink));
-            } catch (IndexOutOfBoundsException | IllegalStateException e) {
-                LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
-                if (player != null) {
-                    player.sendMessage(Text.of("[Skyblocker] Error while retrieving wiki article, see logs..."), false);
+
+            //Fixes a crash where using wiki lookup for the first time on an item that doesn't have an id (because id is initialized to null)
+            //and now also because we set it to null above for said reason
+            if (id != null) {
+                try {
+                    String wikiLink = ItemRepository.getWikiLink(id, player);
+                    if (wikiLink != null) CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink));
+                } catch (IndexOutOfBoundsException | IllegalStateException e) {
+                    LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
+                    if (player != null) {
+                        player.sendMessage(Text.of("[Skyblocker] Error while retrieving wiki article, see logs..."), false);
+                    }
                 }
             }
         }
