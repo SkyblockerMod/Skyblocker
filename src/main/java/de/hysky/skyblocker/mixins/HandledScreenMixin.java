@@ -97,7 +97,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         if (this.client != null && this.focusedSlot != null && keyCode != 256) {
             //wiki lookup
-            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
+            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode) && client.player != null) {
                 WikiLookup.openWiki(this.focusedSlot, client.player);
             }
             //item protection

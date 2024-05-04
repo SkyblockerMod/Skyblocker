@@ -1,16 +1,13 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,10 +64,9 @@ public class ItemRepository {
         }
     }
 
-    public static String getWikiLink(String internalName, PlayerEntity player) {
+    public static String getWikiLink(String internalName) {
         NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(internalName);
         if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
-            warnNoWikiLink(player);
             return null;
         }
 
@@ -83,14 +79,7 @@ public class ItemRepository {
         } else if (wikiLink1.startsWith(wikiDomain)) {
             return wikiLink1;
         }
-        warnNoWikiLink(player);
         return null;
-    }
-
-    private static void warnNoWikiLink(PlayerEntity player) {
-        if (player != null) {
-            player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.wikiLookup.noArticleFound")), false);
-        }
     }
 
     public static List<SkyblockCraftingRecipe> getRecipes(String internalName) {

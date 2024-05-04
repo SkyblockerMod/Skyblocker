@@ -10,7 +10,9 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,19 +32,15 @@ public class WikiLookup {
         ));
     }
 
-    public static void openWiki(Slot slot, PlayerEntity player) {
+    public static void openWiki(@NotNull Slot slot, @NotNull PlayerEntity player) {
         if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) return;
 
-        ItemUtils.getItemIdOptional(slot.getStack()).map(id -> ItemRepository.getWikiLink(id, player)).ifPresent(wikiLink -> {
-            try {
-                CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink));
-            } catch (IndexOutOfBoundsException | IllegalStateException e) {
-                LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
-                if (player != null) {
+        ItemUtils.getItemIdOptional(slot.getStack())
+                .map(ItemRepository::getWikiLink)
+                .ifPresentOrElse(wikiLink -> CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
+                    LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
                     player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
-                }
-            }
-        });
+                    return null;
+                }), () -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.wikiLookup.noArticleFound")), false));
     }
-
 }
