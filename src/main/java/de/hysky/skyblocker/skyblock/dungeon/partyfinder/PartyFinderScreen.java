@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.google.gson.JsonObject;
+import com.mojang.authlib.properties.PropertyMap;
+
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +13,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.entity.player.PlayerInventory;
@@ -99,8 +101,8 @@ public class PartyFinderScreen extends Screen {
 
     private boolean waitingForServer = false;
 
-    public static Map<String, String> floorIconsNormal = null;
-    public static Map<String, String> floorIconsMaster = null;
+    public static Map<String, PropertyMap> floorIconsNormal = null;
+    public static Map<String, PropertyMap> floorIconsMaster = null;
 
     public static void initClass() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
@@ -110,8 +112,8 @@ public class PartyFinderScreen extends Screen {
                 floorIconsMaster = new HashMap<>();
                 try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/catacombs/floorskulls.json"))) {
                     JsonObject json = SkyblockerMod.GSON.fromJson(skullTextureReader, JsonObject.class);
-                    json.getAsJsonObject("normal").asMap().forEach((s, jsonElement) -> floorIconsNormal.put(s, jsonElement.getAsString()));
-                    json.getAsJsonObject("master").asMap().forEach((s, jsonElement) -> floorIconsMaster.put(s, jsonElement.getAsString()));
+                    json.getAsJsonObject("normal").asMap().forEach((s, tex) -> floorIconsNormal.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));
+                    json.getAsJsonObject("master").asMap().forEach((s, tex) -> floorIconsMaster.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));
                     LOGGER.debug("[Skyblocker] Dungeons floor skull textures json loaded");
                 } catch (Exception e) {
                     LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
@@ -136,7 +138,6 @@ public class PartyFinderScreen extends Screen {
         int widget_height = (int) (this.height * 0.8);
         int entryListTopY = Math.max(43, (int) (height * 0.1));
         this.partyEntryListWidget = new PartyEntryListWidget(client, width, widget_height, entryListTopY, 68);
-        partyEntryListWidget.setRenderBackground(false);
 
         // Search field
         this.searchField = new TextFieldWidget(textRenderer, partyEntryListWidget.getRowLeft() + 12, entryListTopY - 12, partyEntryListWidget.getRowWidth() - 12 * 3 - 6, 12, Text.literal("Search..."));
@@ -370,7 +371,7 @@ public class PartyFinderScreen extends Screen {
                 if (slot.id > (handler.getRows() - 1) * 9 - 1 || !slot.hasStack()) continue;
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                     assert this.client != null;
-                    parties.add(new PartyEntry(slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC), this, slot.id));
+                    parties.add(new PartyEntry(ItemUtils.getLore(slot.getStack()), this, slot.id));
                 } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase().contains("previous")) {
                     prevPageSlotId = slot.id;
                     previousPageButton.active = true;
@@ -399,7 +400,7 @@ public class PartyFinderScreen extends Screen {
                 deListSlotId = slot.id;
             } else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                 assert this.client != null;
-                tooltips = slot.getStack().getTooltip(this.client.player, TooltipContext.BASIC);
+                tooltips = new ArrayList<>(ItemUtils.getLore(slot.getStack()));
             }
         }
         if (tooltips != null) {

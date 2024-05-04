@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.experiment;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.inventory.Inventory;
@@ -9,7 +10,6 @@ import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UltrasequencerSolver extends ExperimentSolver {
     public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
@@ -76,7 +76,7 @@ public class UltrasequencerSolver extends ExperimentSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         return getState() == State.SHOW && ultrasequencerNextSlot != 0 ? List.of(ColorHighlight.green(ultrasequencerNextSlot)) : new ArrayList<>();
     }
 }

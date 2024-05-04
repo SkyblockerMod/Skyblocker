@@ -51,6 +51,10 @@ public class NEURepoManager {
         );
     }
 
+    public static boolean isLoading() {
+        return REPO_LOADING != null && !REPO_LOADING.isDone();
+    }
+
     private static CompletableFuture<Boolean> loadRepository() {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -78,7 +82,7 @@ public class NEURepoManager {
     }
 
     private static void deleteAndDownloadRepository(PlayerEntity player) {
-        if (REPO_LOADING != null && !REPO_LOADING.isDone()) {
+        if (isLoading()) {
             sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.loading")));
             return;
         }

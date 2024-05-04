@@ -75,7 +75,7 @@ public class AccessoriesHelper {
 	private static void load() {
 		loaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-				COLLECTED_ACCESSORIES.putAll(ProfileAccessoryData.SERIALIZATION_CODEC.parse(JsonOps.COMPRESSED, JsonParser.parseReader(reader)).result().orElseThrow());
+				COLLECTED_ACCESSORIES.putAll(ProfileAccessoryData.SERIALIZATION_CODEC.parse(JsonOps.COMPRESSED, JsonParser.parseReader(reader)).getOrThrow());
 			} catch (NoSuchFileException ignored) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Accessory Helper] Failed to load accessory file!", e);
@@ -85,7 +85,7 @@ public class AccessoriesHelper {
 
 	private static void save() {
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			SkyblockerMod.GSON.toJson(ProfileAccessoryData.SERIALIZATION_CODEC.encodeStart(JsonOps.COMPRESSED, COLLECTED_ACCESSORIES).result().orElseThrow(), writer);
+			SkyblockerMod.GSON.toJson(ProfileAccessoryData.SERIALIZATION_CODEC.encodeStart(JsonOps.COMPRESSED, COLLECTED_ACCESSORIES).getOrThrow(), writer);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Accessory Helper] Failed to save accessory file!", e);
 		}
@@ -166,7 +166,7 @@ public class AccessoriesHelper {
 
 	static void refreshData(JsonObject data) {
 		try {
-			ACCESSORY_DATA = Accessory.MAP_CODEC.parse(JsonOps.INSTANCE, data).result().orElseThrow();
+			ACCESSORY_DATA = Accessory.MAP_CODEC.parse(JsonOps.INSTANCE, data).getOrThrow();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Accessory Helper] Failed to parse data!", e);
 		}

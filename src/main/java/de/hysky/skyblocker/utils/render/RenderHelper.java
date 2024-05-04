@@ -3,8 +3,8 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixin.accessor.BeaconBlockEntityRendererInvoker;
-import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
+import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
+import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -26,6 +26,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -243,15 +244,13 @@ public class RenderHelper {
     }
 
     public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {
+        Matrix4f positionMatrix = new Matrix4f();
         Vec3d camera = context.camera().getPos();
-        MatrixStack matrices = context.matrixStack();
 
-        matrices.push();
-        matrices.translate(-camera.x, -camera.y, -camera.z);
+        positionMatrix.translate((float) -camera.x, (float) -camera.y, (float) -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
         BufferBuilder buffer = tessellator.getBuffer();
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -268,8 +267,6 @@ public class RenderHelper {
 
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
-
-        matrices.pop();
     }
 
     public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean throughWalls) {
@@ -290,19 +287,18 @@ public class RenderHelper {
      * @param throughWalls whether the text should be able to be seen through walls or not.
      */
     public static void renderText(WorldRenderContext context, OrderedText text, Vec3d pos, float scale, float yOffset, boolean throughWalls) {
-        MatrixStack matrices = context.matrixStack();
-        Vec3d camera = context.camera().getPos();
+        Matrix4f positionMatrix = new Matrix4f();
+        Camera camera = context.camera();
+        Vec3d cameraPos = camera.getPos();
         TextRenderer textRenderer = client.textRenderer;
 
         scale *= 0.025f;
 
-        matrices.push();
-        matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
-        matrices.peek().getPositionMatrix().mul(RenderSystem.getModelViewMatrix());
-        matrices.multiply(context.camera().getRotation());
-        matrices.scale(-scale, -scale, scale);
+        positionMatrix
+        .translate((float) (pos.getX() - cameraPos.getX()), (float) (pos.getY() - cameraPos.getY()), (float) (pos.getZ() - cameraPos.getZ()))
+        .rotate(camera.getRotation())
+        .scale(-scale, -scale, scale);
 
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
         float xOffset = -textRenderer.getWidth(text) / 2f;
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
@@ -315,7 +311,6 @@ public class RenderHelper {
         consumers.draw();
 
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        matrices.pop();
     }
 
     /**

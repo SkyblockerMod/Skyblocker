@@ -2,24 +2,24 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.text.Text.Serialization;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,7 +35,8 @@ import java.util.Map;
 public class VisitorHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Visitor Helper");
 
-    private static final Map<String, Object2IntMap<String>> itemMap = new HashMap<>();
+    // The pair contains the name of the visitor and the texture if the icon is a player head
+    private static final Map<Pair<String, String>, Object2IntMap<String>> itemMap = new HashMap<>();
     private static final Map<String, ItemStack> itemCache = new HashMap<>();
     private static final int TEXT_START_X = 4;
     private static final int TEXT_START_Y = 4;
@@ -58,7 +60,7 @@ public class VisitorHelper {
     public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
         int yPosition = TEXT_START_Y;
 
-        for (Map.Entry<String, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
             int textWidth;
             int textHeight = textRenderer.fontHeight;
 
@@ -77,47 +79,50 @@ public class VisitorHelper {
         }
     }
 
-    public static void onSlotClick(Slot slot, int slotId, String title) {
+    public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if (slotId == 29 || slotId == 13 || slotId == 33) {
-            itemMap.remove(title);
+            itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
         }
     }
 
     private static void processVisitorItem(String visitorName, ScreenHandler handler) {
         ItemStack visitorItem = handler.getSlot(13).getStack();
-        if (visitorItem == null || !visitorItem.hasNbt() || !visitorItem.getNbt().asString().contains("Times Visited")) return;
+        if (visitorItem == null || !visitorItem.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorItem, t -> t.contains("Times Visited")) == null) return;
         ItemStack acceptButton = handler.getSlot(29).getStack();
         if (acceptButton == null) return;
-        NbtCompound acceptButtonNbt = acceptButton.getSubNbt("display");
-        if (acceptButtonNbt == null || !acceptButtonNbt.contains("Lore", NbtElement.LIST_TYPE)) return;
-        processLore(visitorName, acceptButtonNbt.getList("Lore", NbtElement.STRING_TYPE));
+        processLore(visitorName, getTextureOrNull(visitorItem), ItemUtils.getLore(acceptButton));
     }
 
-    private static void processLore(String visitorName, NbtList loreList) {
+    private static @Nullable String getTextureOrNull(ItemStack stack) {
+        String texture = ItemUtils.getHeadTexture(stack);
+
+        return texture.isEmpty() ? null : texture;
+    }
+
+    private static void processLore(String visitorName, @Nullable String visitorTexture, List<Text> loreList) {
         boolean saveRequiredItems = false;
-        for (int i = 0; i < loreList.size(); i++) {
-            String lore = loreList.getString(i);
+        for (Text text : loreList) {
+            String lore = text.getString();
             if (lore.contains("Items Required"))
                 saveRequiredItems = true;
             else if (lore.contains("Rewards"))
                 break;
             else if (saveRequiredItems)
-                updateItemMap(visitorName, lore);
+                updateItemMap(visitorName, visitorTexture, text);
         }
     }
 
-    private static void updateItemMap(String visitorName, String lore) {
-        Text itemText = Serialization.fromJson(lore);
-        String[] splitItemText = itemText.getString().split(" x");
+    private static void updateItemMap(String visitorName, @Nullable String visitorTexture,  Text lore) {
+        String[] splitItemText = lore.getString().split(" x");
         String itemName = splitItemText[0].trim();
         if (itemName.isEmpty()) return;
         try {
             int amount = splitItemText.length == 2 ? NumberFormat.getInstance(Locale.US).parse(splitItemText[1].trim()).intValue() : 1;
-            Object2IntMap<String> visitorMap = itemMap.getOrDefault(visitorName, new Object2IntOpenHashMap<>());
-            visitorMap.putIfAbsent(itemName, amount);
-            itemMap.putIfAbsent(visitorName, visitorMap);
+            Pair<String, String> key = Pair.of(visitorName, visitorTexture);
+            Object2IntMap<String> visitorMap = itemMap.computeIfAbsent(key, _key -> new Object2IntOpenHashMap<>());
+            visitorMap.put(itemName, amount);
         } catch (Exception e) {
-            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: " + itemText.getString(), e);
+            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
         }
     }
 
@@ -125,9 +130,9 @@ public class VisitorHelper {
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, 200);
         int index = 0;
-        for (Map.Entry<String, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            String visitorName = visitorEntry.getKey();
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+            Pair<String, String> visitorName = visitorEntry.getKey();
+            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
             index++;
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
@@ -149,6 +154,7 @@ public class VisitorHelper {
         String strippedName = Formatting.strip(displayName);
         ItemStack cachedStack = itemCache.get(strippedName);
         if (cachedStack != null) return cachedStack;
+        if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return null; // Item repo might be taking its sweet time doing things and cause concurrent modification error
         Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
         if (items == null) return null;
         ItemStack stack = items.values().stream()
@@ -163,7 +169,7 @@ public class VisitorHelper {
     }
 
     private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mousseY) {
-        Text text = stack != null ? Serialization.fromJson(stack.getSubNbt("display").getString("Name")).append(" x" + amount) : Text.literal(itemName + " x" + amount);
+    	Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
         drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + TEXT_INDENT, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
         // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
         if (stack != null) {

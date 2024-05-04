@@ -16,6 +16,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Map;
+import java.util.Set;
 
 public class LividColor {
     private static final Map<Block, Formatting> WOOL_TO_FORMATTING = Map.of(
@@ -40,6 +41,7 @@ public class LividColor {
             "Doctor Livid", Formatting.GRAY,
             "Vendetta Livid", Formatting.WHITE
     );
+    public static final Set<String> LIVID_NAMES = Set.copyOf(LIVID_TO_FORMATTING.keySet());
     public static final SkyblockerConfig.LividColor CONFIG = SkyblockerConfigManager.get().locations.dungeons.lividColor;
     private static int tenTicks = 0;
     private static Formatting color;

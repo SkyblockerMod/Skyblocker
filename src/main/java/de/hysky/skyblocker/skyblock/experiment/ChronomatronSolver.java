@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.inventory.Inventory;
@@ -14,7 +15,6 @@ import net.minecraft.item.Items;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ChronomatronSolver extends ExperimentSolver {
     public static final ImmutableMap<Item, Item> TERRACOTTA_TO_GLASS = ImmutableMap.ofEntries(
@@ -64,7 +64,7 @@ public class ChronomatronSolver extends ExperimentSolver {
                     Inventory inventory = genericContainerScreen.getScreenHandler().getInventory();
                     if (chronomatronCurrentSlot == 0) {
                         for (int index = 10; index < 43; index++) {
-                            if (inventory.getStack(index).hasEnchantments()) {
+                            if (inventory.getStack(index).hasGlint()) {
                                 if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
                                     chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(inventory.getStack(index).getItem()));
                                     setState(State.WAIT);
@@ -75,7 +75,7 @@ public class ChronomatronSolver extends ExperimentSolver {
                                 return;
                             }
                         }
-                    } else if (!inventory.getStack(chronomatronCurrentSlot).hasEnchantments()) {
+                    } else if (!inventory.getStack(chronomatronCurrentSlot).hasGlint()) {
                         chronomatronCurrentSlot = 0;
                     }
                 }
@@ -103,11 +103,11 @@ public class ChronomatronSolver extends ExperimentSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         if (getState() == State.SHOW && chronomatronSlots.size() > chronomatronCurrentOrdinal) {
-            for (Map.Entry<Integer, ItemStack> indexStack : slots.entrySet()) {
-                int index = indexStack.getKey();
+            for (Int2ObjectMap.Entry<ItemStack> indexStack : slots.int2ObjectEntrySet()) {
+                int index = indexStack.getIntKey();
                 ItemStack stack = indexStack.getValue();
                 Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
                 if (stack.isOf(item) || TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) {

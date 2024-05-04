@@ -4,11 +4,11 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.tictactoe.BoardIndex;
 import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -50,11 +50,12 @@ public class TicTacToe extends DungeonPuzzle {
 
 		try {
 			//Only attempt to solve if the puzzle wasn't just completed and if its the player's turn
-			if (itemFramesThatHoldMaps.size() != 9 && itemFramesThatHoldMaps.size() % 2 == 1) {
+			//The low bit will always be set to 1 on odd numbers
+			if (itemFramesThatHoldMaps.size() != 9 && (itemFramesThatHoldMaps.size() & 1) == 1) {
 				char[][] board = new char[3][3];
 
 				for (ItemFrameEntity itemFrame : itemFramesThatHoldMaps) {
-					MapState mapState = client.world.getMapState(FilledMapItem.getMapName(itemFrame.getMapId().getAsInt()));
+					MapState mapState = client.world.getMapState(itemFrame.getMapId());
 
 					if (mapState == null) continue;
 
@@ -84,7 +85,7 @@ public class TicTacToe extends DungeonPuzzle {
 					if (row == -1 || column == -1) continue;
 
 					//Get the color of the middle pixel of the map which determines whether its X or O
-					int middleColor = mapState.colors[8256] & 255;
+					int middleColor = mapState.colors[8256] & 0xFF;
 
 					if (middleColor == 114) {
 						board[row][column] = 'X';
@@ -93,11 +94,11 @@ public class TicTacToe extends DungeonPuzzle {
 					}
 				}
 
-				int bestMove = TicTacToeUtils.getBestMove(board) - 1;
+				BoardIndex bestMove = TicTacToeUtils.getBestMove(board);
 
 				double nextX = 8;
-				double nextY = 72 - (double) (bestMove / 3);
-				double nextZ = 17 - (bestMove % 3);
+				double nextY = 72 - bestMove.row();
+				double nextZ = 17 - bestMove.column();
 
 				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.ofFloored(nextX, nextY, nextZ));
 				nextBestMoveToMake = new Box(nextPos);

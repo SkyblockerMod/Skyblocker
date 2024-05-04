@@ -8,10 +8,13 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -74,11 +77,8 @@ public class SearchResultsWidget implements Drawable {
             this.searchResults.clear();
             for (ItemStack entry : ItemRepository.getItems()) {
                 String name = entry.getName().toString().toLowerCase(Locale.ENGLISH);
-                if (entry.getNbt() == null) {
-                    continue;
-                }
-                String disp = entry.getNbt().getCompound("display").toString().toLowerCase(Locale.ENGLISH);
-                if (name.contains(this.searchText) || disp.contains(this.searchText))
+                LoreComponent lore = entry.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT);
+                if (name.contains(this.searchText) || lore.lines().stream().map(Text::getString).anyMatch(s -> s.contains(this.searchText)))
                     this.searchResults.add(entry);
             }
             this.currentPage = 0;

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.barn;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import net.minecraft.client.MinecraftClient;
@@ -14,7 +15,7 @@ public class HungryHiker extends ChatPatternListener {
 
     private static final Map<String, String> foods;
 
-    public HungryHiker() { super("^§e\\[NPC] Hungry Hiker§f: (The food I want is|(I asked for) food that is) ([a-zA-Z, '\\-]*\\.)$"); }
+    public HungryHiker() { super("^\\[NPC] Hungry Hiker: (The food I want is|(I asked for) food that is) ([a-zA-Z, '\\-]*\\.)$"); }
 
     @Override
     public ChatFilterResult state() {
@@ -29,7 +30,7 @@ public class HungryHiker extends ChatPatternListener {
         String food = foods.get(foodDescription);
         if (food == null) return false;
         String middlePartOfTheMessageToSend = matcher.group(2) != null ? matcher.group(2) : matcher.group(1);
-        client.player.sendMessage(Text.of("§e[NPC] Hungry Hiker§f: " + middlePartOfTheMessageToSend + " " + food + "."), false);
+        Utils.sendMessageToBypassEvents(Text.of("§e[NPC] Hungry Hiker§f: " + middlePartOfTheMessageToSend + " " + food + "."));
         return true;
     }
 

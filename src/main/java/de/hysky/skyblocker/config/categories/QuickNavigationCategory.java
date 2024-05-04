@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
@@ -51,6 +52,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button1.item.nbt,
 										() -> config.quickNav.button1.item.nbt,
 										newValue -> config.quickNav.button1.item.nbt = newValue)
@@ -99,6 +101,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button2.item.nbt,
 										() -> config.quickNav.button2.item.nbt,
 										newValue -> config.quickNav.button2.item.nbt = newValue)
@@ -147,6 +150,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button3.item.nbt,
 										() -> config.quickNav.button3.item.nbt,
 										newValue -> config.quickNav.button3.item.nbt = newValue)
@@ -195,6 +199,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button4.item.nbt,
 										() -> config.quickNav.button4.item.nbt,
 										newValue -> config.quickNav.button4.item.nbt = newValue)
@@ -243,6 +248,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button5.item.nbt,
 										() -> config.quickNav.button5.item.nbt,
 										newValue -> config.quickNav.button5.item.nbt = newValue)
@@ -291,6 +297,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button6.item.nbt,
 										() -> config.quickNav.button6.item.nbt,
 										newValue -> config.quickNav.button6.item.nbt = newValue)
@@ -339,6 +346,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button7.item.nbt,
 										() -> config.quickNav.button7.item.nbt,
 										newValue -> config.quickNav.button7.item.nbt = newValue)
@@ -387,6 +395,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button8.item.nbt,
 										() -> config.quickNav.button8.item.nbt,
 										newValue -> config.quickNav.button8.item.nbt = newValue)
@@ -435,6 +444,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button9.item.nbt,
 										() -> config.quickNav.button9.item.nbt,
 										newValue -> config.quickNav.button9.item.nbt = newValue)
@@ -483,6 +493,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button10.item.nbt,
 										() -> config.quickNav.button10.item.nbt,
 										newValue -> config.quickNav.button10.item.nbt = newValue)
@@ -531,6 +542,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button11.item.nbt,
 										() -> config.quickNav.button11.item.nbt,
 										newValue -> config.quickNav.button11.item.nbt = newValue)
@@ -579,6 +591,7 @@ public class QuickNavigationCategory {
 								.build())
 						.option(Option.<String>createBuilder()
 								.name(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt"))
+								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip")))
 								.binding(defaults.quickNav.button12.item.nbt,
 										() -> config.quickNav.button12.item.nbt,
 										newValue -> config.quickNav.button12.item.nbt = newValue)

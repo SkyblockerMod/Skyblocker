@@ -58,7 +58,6 @@ import net.minecraft.command.argument.PosArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class OrderedWaypoints {
@@ -144,7 +143,7 @@ public class OrderedWaypoints {
 		OrderedWaypoint waypoint = new OrderedWaypoint(pos, colorComponents);
 
 		if (index != Integer.MIN_VALUE) {
-			int indexToAddAt = MathHelper.clamp(index, 0, group.waypoints().size());
+			int indexToAddAt = Math.clamp(index, 0, group.waypoints().size());
 
 			group.waypoints().add(indexToAddAt, waypoint);
 			INDEX_STORE.removeInt(group.name());
@@ -188,7 +187,7 @@ public class OrderedWaypoints {
 			}
 
 			if (index != Integer.MIN_VALUE) {
-				int indexToRemove = MathHelper.clamp(index, 0, group.waypoints().size() - 1);
+				int indexToRemove = Math.clamp(index, 0, group.waypoints().size() - 1);
 
 				group.waypoints().remove(indexToRemove);
 				INDEX_STORE.removeInt(group.name());
@@ -221,6 +220,7 @@ public class OrderedWaypoints {
 			for (OrderedWaypointGroup group : WAYPOINTS.values()) {
 				if (group.enabled()) {
 					List<OrderedWaypoint> waypoints = group.waypoints();
+					if (waypoints.isEmpty()) continue;
 					ClientPlayerEntity player = MinecraftClient.getInstance().player;
 					int centreIndex = INDEX_STORE.computeIfAbsent(group.name(), name -> 0);
 
@@ -258,7 +258,7 @@ public class OrderedWaypoints {
 	private static void load() {
 		loaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = Files.newBufferedReader(PATH)) {
-				WAYPOINTS.putAll(SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow());
+				WAYPOINTS.putAll(SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow());
 			} catch (NoSuchFileException ignored) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Ordered Waypoints] Failed to load the waypoints! :(", e);
@@ -268,7 +268,7 @@ public class OrderedWaypoints {
 
 	private static void save() {
 		try (BufferedWriter writer = Files.newBufferedWriter(PATH)) {
-			SkyblockerMod.GSON.toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).result().orElseThrow(), writer);
+			SkyblockerMod.GSON.toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).getOrThrow(), writer);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Ordered Waypoints] Failed to save the waypoints! :(", e);
 		}
@@ -276,7 +276,7 @@ public class OrderedWaypoints {
 
 	private static int export(FabricClientCommandSource source) {
 		try {
-			String json = new Gson().toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).result().orElseThrow());
+			String json = new Gson().toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, WAYPOINTS).getOrThrow());
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			GZIPOutputStream gzip = new GZIPOutputStream(out);
 
@@ -306,7 +306,7 @@ public class OrderedWaypoints {
 				byte[] decoded = Base64.getDecoder().decode(encoded);
 
 				String json = new String(new GZIPInputStream(new ByteArrayInputStream(decoded)).readAllBytes());
-				Map<String, OrderedWaypointGroup> importedWaypoints = SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).result().orElseThrow();
+				Map<String, OrderedWaypointGroup> importedWaypoints = SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).getOrThrow();
 
 				SEMAPHORE.acquireUninterruptibly();
 				WAYPOINTS.putAll(importedWaypoints);
@@ -332,7 +332,7 @@ public class OrderedWaypoints {
 			}
 
 			String json = MinecraftClient.getInstance().keyboard.getClipboard();
-			List<ColeWeightWaypoint> coleWeightWaypoints = ColeWeightWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).result().orElseThrow();
+			List<ColeWeightWaypoint> coleWeightWaypoints = ColeWeightWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).getOrThrow();
 			ObjectArrayList<OrderedWaypoint> convertedWaypoints = new ObjectArrayList<>();
 
 			for (ColeWeightWaypoint waypoint : coleWeightWaypoints) {

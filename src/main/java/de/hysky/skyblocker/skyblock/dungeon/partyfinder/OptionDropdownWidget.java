@@ -29,7 +29,6 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         this.screen = screen;
         this.slotId = slotId;
         setX(x);
-        setRenderBackground(false);
         setRenderHeader(true, 25);
         this.name = name;
         this.selectedOption = selectedOption;
@@ -55,7 +54,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     }
 
     @Override
-    protected int getScrollbarPositionX() {
+    protected int getScrollbarX() {
         return getRowLeft() + getRowWidth();
     }
 
@@ -119,6 +118,14 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         if (isOpen) {
             matrices.pop();
         }
+    }
+    
+    @Override
+    protected void drawHeaderAndFooterSeparators(DrawContext context) {
+    }
+
+    @Override
+    protected void drawMenuListBackground(DrawContext context) {
     }
 
     public void open(List<Option> entries, int backButtonId) {

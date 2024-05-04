@@ -10,7 +10,7 @@
 [![Ko-fi](https://img.shields.io/badge/buy%20me%20coffee-skyblocker?color=434B57&logo=kofi)](https://ko-fi.com/wohlhabend)
 [![Translated](https://translate.hysky.de/widgets/Skyblocker/-/skyblocker/svg-badge.svg)](https://translate.hysky.de/projects/Skyblocker/skyblocker/)
 
-Hypixel Skyblock Mod for Minecraft 1.20.4
+Hypixel Skyblock Mod for Minecraft 1.20.6
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features

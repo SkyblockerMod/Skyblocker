@@ -198,18 +198,18 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         if (priceParsed) return;
         if (stack.isOf(Items.POISONOUS_POTATO)) {
             changeState(BuyState.CANT_AFFORD);
-            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
+            getPriceFromTooltip(ItemUtils.getLore(stack));
             buySlotID = slotId;
         } else if (stack.isOf(Items.GOLD_NUGGET)) {
             changeState(BuyState.AFFORD);
-            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
+            getPriceFromTooltip(ItemUtils.getLore(stack));
             buySlotID = slotId;
         } else if (stack.isOf(Items.GOLD_BLOCK)) {
             changeState(BuyState.TOP_BID);
-            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
+            getPriceFromTooltip(ItemUtils.getLore(stack));
             buySlotID = slotId;
         } else if (stack.isOf(Items.NAME_TAG)) {
-            getPriceFromTooltip(ItemUtils.getNbtTooltips(stack));
+            getPriceFromTooltip(ItemUtils.getLore(stack));
             changeProfile = true;
             buySlotID = slotId;
         }

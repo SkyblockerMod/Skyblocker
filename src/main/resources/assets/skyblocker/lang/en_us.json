@@ -195,6 +195,7 @@
   "text.autoconfig.skyblocker.option.quickNav.button.item.itemName": "Item ID",
   "text.autoconfig.skyblocker.option.quickNav.button.item.count": "Item Count",
   "text.autoconfig.skyblocker.option.quickNav.button.item.nbt": "NBT",
+  "text.autoconfig.skyblocker.option.quickNav.button.item.nbt.@Tooltip": "§c§lWARNING: THIS MUST BE CONFIGURED WITH ITEM NBT NOT ITEM COMPONENTS! \n\n§fIn the future we will automatically migrate your config to use item components!",
   "text.autoconfig.skyblocker.option.quickNav.button.uiTitle": "UI Title",
   "text.autoconfig.skyblocker.option.quickNav.button.clickEvent": "Click event",
 
@@ -489,6 +490,8 @@
   "text.autoconfig.skyblocker.option.general.hideStatusEffectOverlay": "Hide Status Effect Overlay",
   "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues": "Correct Transparent Skin Pixels",
   "text.autoconfig.skyblocker.option.general.dontStripSkinAlphaValues.@Tooltip": "When enabled, the alpha values of pixels in skin textures are no longer stripped while in Skyblock.\n\nThis results in the \"filler\" pixels on items using Player Heads to now be completely transparent, although this may have some side effects in odd cases.",
+
+  "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
 
   "skyblocker.bars.config.health": "Health",
   "skyblocker.bars.config.defense": "Defense",

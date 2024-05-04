@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.entity;
 
-import java.util.List;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
@@ -31,20 +29,13 @@ public class MobBoundingBoxes {
 		if (Utils.isInDungeons() && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
 			String name = entity.getName().getString();
 
-			// Minibosses
-			if (entity instanceof PlayerEntity) {
-				switch (name) {
-					case "Lost Adventurer", "Shadow Assassin", "Diamond Guy": return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
-				}
-			}
+			return switch (entity) {
+				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+				case ArmorStandEntity _armorStand -> false;
 
-			// Regular Mobs
-			if (!(entity instanceof ArmorStandEntity)) {
-				List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
-
-				if (!armorStands.isEmpty() && armorStands.get(0).getName().getString().contains("✯"))
-					return SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
-			}
+				// Regular Mobs
+				default -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes && MobGlow.isStarred(entity);
+			};
 		}
 
 		return false;

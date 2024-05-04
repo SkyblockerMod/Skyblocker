@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CroesusHelper extends ContainerSolver {
 
@@ -21,15 +23,15 @@ public class CroesusHelper extends ContainerSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
-        for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
+        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null) {
-                if (stack.getNbt().toString().contains("Opened Chest:")) {
-                    highlights.add(ColorHighlight.gray(entry.getKey()));
-                } else if (stack.getNbt().toString().contains("No more Chests to open!")) {
-                    highlights.add(ColorHighlight.red(entry.getKey()));
+            if (stack != null && stack.contains(DataComponentTypes.LORE)) {
+                if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Opened Chest:")) != null) {
+                    highlights.add(ColorHighlight.gray(entry.getIntKey()));
+                } else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("No more Chests to open!")) != null) {
+                    highlights.add(ColorHighlight.red(entry.getIntKey()));
                 }
             }
         }

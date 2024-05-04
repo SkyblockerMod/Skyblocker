@@ -41,5 +41,6 @@
     "skyblocker.bars.config.defense": "Defence",
     "skyblocker.bars.config.mainColor": "Main Colour",
     "skyblocker.bars.config.overflowColor": "Overflow Colour",
-    "skyblocker.bars.config.textColor": "Text Colour"
+    "skyblocker.bars.config.textColor": "Text Colour",
+    "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armour stands to %s"
 }

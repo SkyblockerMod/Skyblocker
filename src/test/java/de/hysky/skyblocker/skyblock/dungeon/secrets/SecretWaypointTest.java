@@ -25,7 +25,7 @@ public class SecretWaypointTest {
     @Test
     void testCodecSerialize() {
         SecretWaypoint waypoint = new SecretWaypoint(0, SecretWaypoint.Category.DEFAULT, "name", new BlockPos(-1, 0, 1));
-        JsonElement json = SecretWaypoint.CODEC.encodeStart(JsonOps.INSTANCE, waypoint).result().orElseThrow();
+        JsonElement json = SecretWaypoint.CODEC.encodeStart(JsonOps.INSTANCE, waypoint).getOrThrow();
         String expectedJson = "{\"secretIndex\":0,\"category\":\"default\",\"name\":\"name\",\"pos\":[-1,0,1]}";
 
         Assertions.assertEquals(expectedJson, json.toString());
@@ -34,7 +34,7 @@ public class SecretWaypointTest {
     @Test
     void testCodecDeserialize() {
         String json = "{\"secretIndex\":0,\"category\":\"default\",\"name\":\"name\",\"pos\":[-1,0,1]}";
-        SecretWaypoint waypoint = SecretWaypoint.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(json, JsonElement.class)).result().orElseThrow();
+        SecretWaypoint waypoint = SecretWaypoint.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(json, JsonElement.class)).getOrThrow();
         SecretWaypoint expectedWaypoint = new SecretWaypoint(0, SecretWaypoint.Category.DEFAULT, "name", new BlockPos(-1, 0, 1));
 
         Assertions.assertEquals(expectedWaypoint, waypoint);
@@ -43,7 +43,7 @@ public class SecretWaypointTest {
     @Test
     void testListCodecSerialize() {
         List<SecretWaypoint> waypoints = List.of(new SecretWaypoint(0, SecretWaypoint.Category.DEFAULT, "name", new BlockPos(-1, 0, 1)), new SecretWaypoint(1, SecretWaypoint.Category.CHEST, "name", new BlockPos(2, 0, -2)));
-        JsonElement json = SecretWaypoint.LIST_CODEC.encodeStart(JsonOps.INSTANCE, waypoints).result().orElseThrow();
+        JsonElement json = SecretWaypoint.LIST_CODEC.encodeStart(JsonOps.INSTANCE, waypoints).getOrThrow();
         String expectedJson = "[{\"secretIndex\":0,\"category\":\"default\",\"name\":\"name\",\"pos\":[-1,0,1]},{\"secretIndex\":1,\"category\":\"chest\",\"name\":\"name\",\"pos\":[2,0,-2]}]";
 
         Assertions.assertEquals(expectedJson, json.toString());
@@ -52,7 +52,7 @@ public class SecretWaypointTest {
     @Test
     void testListCodecDeserialize() {
         String json = "[{\"secretIndex\":0,\"category\":\"default\",\"name\":\"name\",\"pos\":[-1,0,1]},{\"secretIndex\":1,\"category\":\"chest\",\"name\":\"name\",\"pos\":[2,0,-2]}]";
-        List<SecretWaypoint> waypoints = SecretWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, gson.fromJson(json, JsonElement.class)).result().orElseThrow();
+        List<SecretWaypoint> waypoints = SecretWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, gson.fromJson(json, JsonElement.class)).getOrThrow();
         List<SecretWaypoint> expectedWaypoints = List.of(new SecretWaypoint(0, SecretWaypoint.Category.DEFAULT, "name", new BlockPos(-1, 0, 1)), new SecretWaypoint(1, SecretWaypoint.Category.CHEST, "name", new BlockPos(2, 0, -2)));
 
         Assertions.assertEquals(expectedWaypoints.size(), waypoints.size());

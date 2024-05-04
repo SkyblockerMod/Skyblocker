@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -34,9 +34,12 @@ public abstract class ContainerSolver {
         SkyblockerMod.getInstance().containerSolverManager.markDirty();
     }
 
-    protected abstract List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots);
+    protected void onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+    }
 
-    protected void trimEdges(Map<Integer, ItemStack> slots, int rows) {
+    protected abstract List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots);
+
+    protected void trimEdges(Int2ObjectMap<ItemStack> slots, int rows) {
         for (int i = 0; i < rows; i++) {
             slots.remove(9 * i);
             slots.remove(9 * i + 8);

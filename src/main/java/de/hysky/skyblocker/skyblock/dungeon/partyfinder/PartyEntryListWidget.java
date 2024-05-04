@@ -68,7 +68,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
     }
 
     @Override
-    protected int getScrollbarPositionX() {
+    protected int getScrollbarX() {
         return this.width / 2 + getRowWidth() / 2 + 2;
     }
 
@@ -96,5 +96,13 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             context.drawTextWrapped(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF);
         } else super.renderWidget(context, mouseX, mouseY, delta);
+    }
+
+    @Override
+    protected void drawHeaderAndFooterSeparators(DrawContext context) {
+    }
+
+    @Override
+    protected void drawMenuListBackground(DrawContext context) {
     }
 }

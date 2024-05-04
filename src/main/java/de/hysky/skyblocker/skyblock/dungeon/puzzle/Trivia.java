@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import net.minecraft.client.MinecraftClient;
@@ -23,7 +24,7 @@ public class Trivia extends ChatPatternListener {
     private List<String> solutions = Collections.emptyList();
 
     public Trivia() {
-        super("^ +(?:([A-Za-z,' ]*\\?)|§6 ([ⓐⓑⓒ]) §a([a-zA-Z0-9 ]+))$");
+        super("^ +(?:([A-Za-z,' ]*\\?)| ([ⓐⓑⓒ]) ([a-zA-Z0-9 ]+))$");
     }
 
     @Override
@@ -38,7 +39,7 @@ public class Trivia extends ChatPatternListener {
             if (!solutions.contains(riddle)) {
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
                 if (player != null)
-                    MinecraftClient.getInstance().player.sendMessage(Text.of("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle), false);
+                    Utils.sendMessageToBypassEvents(Text.of("     " + Formatting.GOLD + matcher.group(2) + Formatting.RED + " " + riddle));
                 return player != null;
             }
         } else updateSolutions(matcher.group(0));

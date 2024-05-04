@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -217,7 +219,6 @@ public class Utils {
         }
 
         if (sidebar.isEmpty() && !fabricLoader.isDevelopmentEnvironment()) return;
-        String string = sidebar.toString();
 
         if (fabricLoader.isDevelopmentEnvironment() || isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
@@ -465,5 +466,18 @@ public class Utils {
             if (!s.isEmpty()) mayor = s;
         });
 
+    }
+
+    /**
+     * Used to avoid triggering things like chat rules or chat listeners infinitely, do not use otherwise.
+     * 
+     * Bypasses MessageHandler#onGameMessage
+     */
+    public static void sendMessageToBypassEvents(Text message) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        client.inGameHud.getChatHud().addMessage(message);
+        ((MessageHandlerAccessor) client.getMessageHandler()).invokeAddToChatLog(message, Instant.now());
+        client.getNarratorManager().narrateSystemMessage(message);
     }
 }

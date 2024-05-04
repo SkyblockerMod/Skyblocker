@@ -39,8 +39,8 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
     }
 
     @Override
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 50;
+    protected int getScrollbarX() {
+        return super.getScrollbarX() + 50;
     }
 
     protected void addRuleAfterSelected() {

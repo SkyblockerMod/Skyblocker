@@ -18,7 +18,7 @@ public class Fetchur extends ChatPatternListener {
     private static final Map<String, String> answers;
 
     public Fetchur() {
-        super("^§e\\[NPC] Fetchur§f: (?:its|theyre) ([a-zA-Z, \\-]*)$");
+        super("^\\[NPC] Fetchur: (?:its|theyre) ([a-zA-Z, \\-]*)$");
     }
 
     @Override

@@ -3,13 +3,13 @@ package de.hysky.skyblocker.skyblock.dungeon.terminal;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class OrderTerminal extends ContainerSolver {
     private final int PANES_NUM = 14;
@@ -28,7 +28,7 @@ public class OrderTerminal extends ContainerSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         if(orderedSlots == null && !orderSlots(slots))
             return Collections.emptyList();
         while(currentNum < PANES_NUM && Items.LIME_STAINED_GLASS_PANE.equals(slots.get(orderedSlots[currentNum]).getItem()))
@@ -41,16 +41,16 @@ public class OrderTerminal extends ContainerSolver {
         return highlights;
     }
 
-    public boolean orderSlots(Map<Integer, ItemStack> slots) {
+    public boolean orderSlots(Int2ObjectMap<ItemStack> slots) {
         trimEdges(slots, 4);
         orderedSlots = new int[PANES_NUM];
-        for(Map.Entry<Integer, ItemStack> slot : slots.entrySet()) {
+        for(Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
             if(Items.AIR.equals(slot.getValue().getItem())) {
                 orderedSlots = null;
                 return false;
             }
             else
-                orderedSlots[slot.getValue().getCount() - 1] = slot.getKey();
+                orderedSlots[slot.getValue().getCount() - 1] = slot.getIntKey();
         }
         currentNum = 0;
         return true;

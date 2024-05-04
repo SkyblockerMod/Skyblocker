@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 
 public class SortWidget extends SliderWidget<SortWidget.Option> {
 
@@ -39,7 +38,7 @@ public class SortWidget extends SliderWidget<SortWidget.Option> {
         private static final Option[] values = values();
 
         public static Option get(int ordinal) {
-            return values[MathHelper.clamp(ordinal, 0, values.length - 1)];
+            return values[Math.clamp(ordinal, 0, values.length - 1)];
         }
 
         @Override

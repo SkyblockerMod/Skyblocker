@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.time.Duration;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemListWidget;
 import net.minecraft.client.gui.DrawContext;
@@ -21,6 +23,7 @@ import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -54,11 +57,13 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
             button.setPosition(this.x + 5, this.height / 2 - 49);
             if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174, this.y + 62);
         }));
-        moreCraftsButton = new TexturedButtonWidget(this.x + 174, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
-                button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
-        moreCraftsButton.setTooltipDelay(250);
-        moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More Crafts")));
-        this.addDrawableChild(moreCraftsButton);
+        if (!handler.mirrorverse) {
+            moreCraftsButton = new TexturedButtonWidget(this.x + 174, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
+                    button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
+            moreCraftsButton.setTooltipDelay(Duration.ofMillis(250L));
+            moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More Crafts")));
+            this.addDrawableChild(moreCraftsButton);
+        }
         assert (client != null ? client.player : null) != null;
         client.player.currentScreenHandler = handler; // recipe book replaces it with the Dummy one fucking DUMBASS
         this.addSelectableChild(this.recipeBook);
@@ -101,7 +106,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
         context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
-        context.drawGuiTexture(QUICK_CRAFT, i + 173, j, 0, 25, 84);
+        if (!handler.mirrorverse) context.drawGuiTexture(QUICK_CRAFT, i + 173, j, 0, 25, 84);
     }
 
     @Override

@@ -47,17 +47,17 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
     }
 
     @Override
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 50;
+    protected int getScrollbarX() {
+        return super.getScrollbarX();
     }
 
     protected Optional<ShortcutCategoryEntry> getCategory() {
-        if (getSelectedOrNull() instanceof ShortcutCategoryEntry category) {
-            return Optional.of(category);
-        } else if (getSelectedOrNull() instanceof ShortcutEntry shortcutEntry) {
-            return Optional.of(shortcutEntry.category);
-        }
-        return Optional.empty();
+        return switch (getSelectedOrNull()) {
+            case ShortcutCategoryEntry category -> Optional.of(category);
+            case ShortcutEntry shortcutEntry -> Optional.of(shortcutEntry.category);
+
+            case null, default -> Optional.empty();
+        };
     }
 
     @Override

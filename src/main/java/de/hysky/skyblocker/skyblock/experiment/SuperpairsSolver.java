@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.experiment;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
@@ -62,11 +63,11 @@ public class SuperpairsSolver extends ExperimentSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> displaySlots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> displaySlots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         if (getState() == State.SHOW) {
-            for (Map.Entry<Integer, ItemStack> indexStack : displaySlots.entrySet()) {
-                int index = indexStack.getKey();
+            for (Int2ObjectMap.Entry<ItemStack> indexStack : displaySlots.int2ObjectEntrySet()) {
+                int index = indexStack.getIntKey();
                 ItemStack displayStack = indexStack.getValue();
                 ItemStack stack = getSlots().get(index);
                 if (stack != null && !ItemStack.areEqual(stack, displayStack)) {

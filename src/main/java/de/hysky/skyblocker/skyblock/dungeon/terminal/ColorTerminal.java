@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.terminal;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -32,7 +33,7 @@ public class ColorTerminal extends ContainerSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         trimEdges(slots, 6);
         List<ColorHighlight> highlights = new ArrayList<>();
         String colorString = groups[0];
@@ -43,10 +44,10 @@ public class ColorTerminal extends ContainerSolver {
                 return Collections.emptyList();
             }
         }
-        for (Map.Entry<Integer, ItemStack> slot : slots.entrySet()) {
+        for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
             ItemStack itemStack = slot.getValue();
-            if (!itemStack.hasEnchantments() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
-                highlights.add(ColorHighlight.green(slot.getKey()));
+            if (!itemStack.hasGlint() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
+                highlights.add(ColorHighlight.green(slot.getIntKey()));
             }
         }
         return highlights;

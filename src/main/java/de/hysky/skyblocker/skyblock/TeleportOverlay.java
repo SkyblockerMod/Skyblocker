@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,7 +28,7 @@ public class TeleportOverlay {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
             String itemId = ItemTooltip.getInternalNameFromNBT(heldItem, true);
-            NbtCompound extraAttributes = ItemUtils.getExtraAttributes(heldItem);
+            NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
             if (itemId != null) {
                 switch (itemId) {
@@ -42,20 +43,20 @@ public class TeleportOverlay {
                         }
                     }
                     case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && extraAttributes != null && extraAttributes.getInt("ethermerge") == 1) {
-                            render(wrc, extraAttributes, 57);
+                        if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && customData != null && customData.getInt("ethermerge") == 1) {
+                            render(wrc, customData, 57);
                         } else if (SkyblockerConfigManager.get().general.teleportOverlay.enableInstantTransmission) {
-                            render(wrc, extraAttributes, 8);
+                            render(wrc, customData, 8);
                         }
                     }
                     case "ETHERWARP_CONDUIT" -> {
                         if (SkyblockerConfigManager.get().general.teleportOverlay.enableEtherTransmission) {
-                            render(wrc, extraAttributes, 57);
+                            render(wrc, customData, 57);
                         }
                     }
                     case "SINSEEKER_SCYTHE" -> {
                         if (SkyblockerConfigManager.get().general.teleportOverlay.enableSinrecallTransmission) {
-                            render(wrc, extraAttributes, 4);
+                            render(wrc, customData, 4);
                         }
                     }
                     case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
@@ -71,8 +72,8 @@ public class TeleportOverlay {
     /**
      * Renders the teleport overlay with a given base range and the tuned transmission stat.
      */
-    private static void render(WorldRenderContext wrc, NbtCompound extraAttributes, int baseRange) {
-        render(wrc, extraAttributes != null && extraAttributes.contains("tuned_transmission") ? baseRange + extraAttributes.getInt("tuned_transmission") : baseRange);
+    private static void render(WorldRenderContext wrc, NbtCompound customData, int baseRange) {
+        render(wrc, customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission") : baseRange);
     }
 
     /**
@@ -83,7 +84,7 @@ public class TeleportOverlay {
     private static void render(WorldRenderContext wrc, int range) {
         if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.squaredDistanceTo(client.player) < range * range) {
             render(wrc, blockHitResult);
-        } else if (client.interactionManager != null && range > client.interactionManager.getReachDistance()) {
+        } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE).getValue()) {
             @SuppressWarnings("DataFlowIssue")
             HitResult result = client.player.raycast(range, wrc.tickDelta(), false);
             if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {

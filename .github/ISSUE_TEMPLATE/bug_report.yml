@@ -35,7 +35,7 @@ body:
       label: Minecraft Version
       description: What version of Minecraft are you running? If you do not know what version you are using, look in the bottom left corner of the main menu in game.
       options:
-        - "1.20.4"
+        - "1.20.6"
     validations:
       required: true
   - type: input
@@ -43,7 +43,7 @@ body:
     attributes:
       label: Skyblocker Version
       description: What version of Skyblocker are you running? Every part is important! If you do not know what version you are using, look at the file name in your "mods" folder.
-      placeholder: ex. skyblocker-1.19.0+1.20.4.jar
+      placeholder: ex. skyblocker-1.20.3+1.20.6.jar
     validations:
       required: true
   - type: textarea

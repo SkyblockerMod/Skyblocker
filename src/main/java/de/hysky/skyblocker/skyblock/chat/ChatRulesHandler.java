@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixin.accessor.MessageHandlerAccessor;
+import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -52,7 +52,7 @@ public class ChatRulesHandler {
 
     private static void loadChatRules() {
         try (BufferedReader reader = Files.newBufferedReader(CHAT_RULE_FILE)) {
-            Map<String, List<ChatRule>> chatRules = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
+            Map<String, List<ChatRule>> chatRules = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
             LOGGER.info("[Skyblocker Chat Rules]: {}", chatRules);
 
             chatRuleList.addAll(chatRules.get("rules"));
@@ -98,7 +98,7 @@ public class ChatRulesHandler {
 
     protected static void saveChatRules() {
         JsonObject chatRuleJson = new JsonObject();
-        chatRuleJson.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, chatRuleList).result().orElseThrow());
+        chatRuleJson.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, chatRuleList).getOrThrow());
         try (BufferedWriter writer = Files.newBufferedWriter(CHAT_RULE_FILE)) {
             SkyblockerMod.GSON.toJson(chatRuleJson, writer);
             LOGGER.info("[Skyblocker Chat Rules] Saved chat rules file");
@@ -139,9 +139,7 @@ public class ChatRulesHandler {
                 //show replacement message in chat
                 //bypass MessageHandler#onGameMessage to avoid activating chat rules again
                 if (!rule.getHideMessage() && CLIENT.player != null) {
-                    CLIENT.inGameHud.getChatHud().addMessage(newMessage);
-                    ((MessageHandlerAccessor) CLIENT.getMessageHandler()).invokeAddToChatLog(newMessage, Instant.now());
-                    CLIENT.getNarratorManager().narrateSystemMessage(newMessage);
+                    Utils.sendMessageToBypassEvents(newMessage);
                 }
 
                 //play sound

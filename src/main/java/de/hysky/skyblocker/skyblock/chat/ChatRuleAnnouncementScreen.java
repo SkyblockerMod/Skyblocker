@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import de.hysky.skyblocker.events.HudRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -13,7 +13,7 @@ public class ChatRuleAnnouncementScreen {
     private static Text text = null;
 
     public static void init() {
-        HudRenderCallback.EVENT.register((context, tickDelta) -> {
+        HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
             if (timer <= 0 || text == null) {
                 return;
             }

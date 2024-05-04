@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
 import java.util.List;
@@ -70,8 +69,8 @@ public abstract class HudConfigScreen extends Screen {
     @Override
     public final boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (button == 0 && draggingWidget != null) {
-            draggingWidget.setX((int) MathHelper.clamp(mouseX - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()));
-            draggingWidget.setY((int) MathHelper.clamp(mouseY - mouseClickRelativeY, 0, this.height - draggingWidget.getHeight()));
+            draggingWidget.setX((int) Math.clamp(mouseX - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()));
+            draggingWidget.setY((int) Math.clamp(mouseY - mouseClickRelativeY, 0, this.height - draggingWidget.getHeight()));
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }

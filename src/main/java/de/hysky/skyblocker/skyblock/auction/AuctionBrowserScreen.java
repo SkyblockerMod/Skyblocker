@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -93,7 +94,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         resetFiltersButton = new ScaledTextButtonWidget(x + 10, y + 77, 12, 12, Text.literal("↻"), this::onResetPressed);
         addDrawableChild(resetFiltersButton);
         resetFiltersButton.setTooltip(Tooltip.of(Text.literal("Reset Filters")));
-        resetFiltersButton.setTooltipDelay(500);
+        resetFiltersButton.setTooltipDelay(Duration.ofMillis(500));
 
         addDrawableChild(new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
                 .position(x + 98, y + 4)
@@ -240,11 +241,11 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                 }
             }
             case SORT_BUTTON_SLOT ->
-                    sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(ItemUtils.getNbtTooltips(stack))));
+                    sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(ItemUtils.getLore(stack))));
             case AUCTION_TYPE_BUTTON_SLOT ->
-                    auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(ItemUtils.getNbtTooltips(stack))));
+                    auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(ItemUtils.getLore(stack))));
             case RARITY_BUTTON_SLOT -> {
-                List<Text> tooltip = ItemUtils.getNbtTooltips(stack);
+                List<Text> tooltip = ItemUtils.getLore(stack);
                 int ordinal = getOrdinal(tooltip);
                 String split = tooltip.get(ordinal + 1).getString().substring(2);
                 rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
@@ -254,7 +255,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
             }
             case SEARCH_BUTTON_SLOT -> {
-                List<Text> tooltipSearch = ItemUtils.getNbtTooltips(stack);
+                List<Text> tooltipSearch = ItemUtils.getLore(stack);
                 for (Text text : tooltipSearch) {
                     String string = text.getString();
                     if (string.contains("Filtered:")) {
@@ -271,7 +272,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
                     categoryTabWidget.setSlotId(slotId);
                     categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
-                    List<Text> tooltipDefault = ItemUtils.getNbtTooltips(handler.getSlot(slotId).getStack());
+                    List<Text> tooltipDefault = ItemUtils.getLore(handler.getSlot(slotId).getStack());
                     for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
                         String lowerCase = tooltipDefault.get(j).getString().toLowerCase();
                         if (lowerCase.contains("currently")) {
@@ -284,7 +285,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     }
                 } else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
                     if (!SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN) return;
-                    List<Text> tooltip = ItemUtils.getNbtTooltips(stack);
+                    List<Text> tooltip = ItemUtils.getLore(stack);
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
                         String string = text.getString();
@@ -349,7 +350,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     private void parsePage(ItemStack stack) {
         assert client != null;
         try {
-            List<Text> tooltip = ItemUtils.getNbtTooltips(stack);
+            List<Text> tooltip = ItemUtils.getLore(stack);
             String str = tooltip.get(0).getString().trim();
             str = str.substring(1, str.length() - 1); // remove parentheses
             String[] parts = str.split("/"); // split the string

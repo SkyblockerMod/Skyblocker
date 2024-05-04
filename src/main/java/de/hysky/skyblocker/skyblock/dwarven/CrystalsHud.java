@@ -2,16 +2,15 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -23,8 +22,9 @@ import java.util.Map;
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
-    private static final Identifier MAP_ICON = new Identifier("textures/map/map_icons.png");
+    private static final Identifier MAP_ICON = new Identifier("textures/map/decorations/player.png");
     private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian");
+
 
     public static boolean visible = false;
 
@@ -34,7 +34,7 @@ public class CrystalsHud {
                         .then(ClientCommandManager.literal("crystals")
                                 .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
 
-        HudRenderCallback.EVENT.register((context, tickDelta) -> {
+        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
             if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled
                     || CLIENT.player == null
                     || !visible) {
@@ -65,7 +65,7 @@ public class CrystalsHud {
         //and set position and scale
         MatrixStack matrices = context.getMatrices();
         matrices.push();
-        matrices.translate(hudX, hudY, 200f);
+        matrices.translate(hudX, hudY, 0f);
         matrices.scale(scale, scale, 0f);
 
         //draw map texture
@@ -109,7 +109,7 @@ public class CrystalsHud {
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw2Cardinal(playerRotation)), 2.5f, 3.5f, 0);
 
         //draw marker on map
-        context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 128, 128);
+        context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
 
         //todo add direction (can not work out how to rotate)
         matrices.pop();
@@ -126,8 +126,8 @@ public class CrystalsHud {
         //converts an x and z to a location on the map
         int transformedX = (int) ((x - 202) / 621 * 62);
         int transformedY = (int) ((z - 202) / 621 * 62);
-        transformedX = MathHelper.clamp(transformedX, 0, 62);
-        transformedY = MathHelper.clamp(transformedY, 0, 62);
+        transformedX = Math.clamp(transformedX, 0, 62);
+        transformedY = Math.clamp(transformedY, 0, 62);
 
         return new Vector2i(transformedX, transformedY);
     }

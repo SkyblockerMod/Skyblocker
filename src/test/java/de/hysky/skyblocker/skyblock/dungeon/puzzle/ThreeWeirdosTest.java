@@ -10,10 +10,10 @@ class ThreeWeirdosTest extends ChatPatternListenerTest<ThreeWeirdos> {
 
     @Test
     void test1() {
-        assertGroup("§e[NPC] §cBaxter§f: My chest doesn't have the reward. We are all telling the truth.", 1, "Baxter");
+        assertGroup("[NPC] Baxter: My chest doesn't have the reward. We are all telling the truth.", 1, "Baxter");
     }
     @Test
     void test2() {
-        assertGroup("§e[NPC] §cHope§f: The reward isn't in any of our chests.", 1, "Hope");
+        assertGroup("[NPC] Hope: The reward isn't in any of our chests.", 1, "Hope");
     }
 }

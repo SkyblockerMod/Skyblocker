@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 
 public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 
@@ -34,7 +33,7 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
         private static final AuctionTypeWidget.Option[] values = values();
 
         public static AuctionTypeWidget.Option get(int ordinal) {
-            return values[MathHelper.clamp(ordinal, 0, values.length - 1)];
+            return values[Math.clamp(ordinal, 0, values.length - 1)];
         }
 
         @Override

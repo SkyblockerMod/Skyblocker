@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
+
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
@@ -13,6 +14,8 @@ import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -22,8 +25,6 @@ import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +37,10 @@ public class ContainerSolverManager {
     private ContainerSolver currentSolver = null;
     private String[] groups;
     private List<ColorHighlight> highlights;
+    /**
+     * Useful for keeping track of a solver's state in a Screen instance, such as if Hypixel closes & reopens a screen after every click (as they do with terminals).
+     */
+    private int screenId = 0;
 
     public ContainerSolverManager() {
         solvers = new ContainerSolver[]{
@@ -82,6 +87,7 @@ public class ContainerSolverManager {
                 matcher.usePattern(solver.getName());
                 matcher.reset();
                 if (matcher.matches()) {
+                    ++screenId;
                     currentSolver = solver;
                     groups = new String[matcher.groupCount()];
                     for (int i = 0; i < groups.length; i++) {
@@ -89,6 +95,7 @@ public class ContainerSolverManager {
                     }
                     currentSolver.start(screen);
                     markDirty();
+
                     return;
                 }
             }
@@ -107,6 +114,12 @@ public class ContainerSolverManager {
         highlights = null;
     }
 
+    public void onSlotClick(int slot, ItemStack stack) {
+        if (currentSolver != null) {
+            currentSolver.onClickSlot(slot, stack, screenId, groups);
+        }
+    }
+
     public void onDraw(DrawContext context, List<Slot> slots) {
         if (currentSolver == null)
             return;
@@ -122,8 +135,8 @@ public class ContainerSolverManager {
         RenderSystem.colorMask(true, true, true, true);
     }
 
-    private Map<Integer, ItemStack> slotMap(List<Slot> slots) {
-        Map<Integer, ItemStack> slotMap = new TreeMap<>();
+    private Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
+    	Int2ObjectMap<ItemStack> slotMap = new Int2ObjectRBTreeMap<>();
         for (int i = 0; i < slots.size(); i++) {
             slotMap.put(i, slots.get(i).getStack());
         }

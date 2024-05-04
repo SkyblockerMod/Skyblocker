@@ -4,6 +4,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -12,6 +14,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.text.NumberFormat;
+import java.util.Optional;
+
+import com.mojang.authlib.properties.PropertyMap;
 
 public class EndHudWidget extends Widget {
     private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
@@ -29,7 +34,7 @@ public class EndHudWidget extends Widget {
     private static final ItemStack POPPY = new ItemStack(Items.POPPY);
 
     static {
-        ENDERMAN_HEAD.getOrCreateNbt().putString("SkullOwner", "MHF_Enderman");
+        ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
         POPPY.addEnchantment(Enchantments.INFINITY, 1);
 
         INSTANCE.setX(SkyblockerConfigManager.get().locations.end.x);

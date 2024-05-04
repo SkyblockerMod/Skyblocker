@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
-import de.hysky.skyblocker.mixin.accessor.FrustumInvoker;
-import de.hysky.skyblocker.mixin.accessor.WorldRendererAccessor;
+import de.hysky.skyblocker.mixins.accessors.FrustumInvoker;
+import de.hysky.skyblocker.mixins.accessors.WorldRendererAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.util.math.Box;

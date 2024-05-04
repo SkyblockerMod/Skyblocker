@@ -5,10 +5,15 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
-import net.minecraft.item.FireworkRocketItem;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
 import java.util.*;
@@ -16,6 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemStackBuilder {
+    private static final Pattern SKULL_UUID_PATTERN = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"");
+    private static final Pattern SKULL_TEXTURE_PATTERN = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"");
+    private static final Pattern COLOR_PATTERN = Pattern.compile("color:(\\d+)");
+    private static final Pattern EXPLOSION_COLOR_PATTERN = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)]\\}");
     private static Map<String, Map<Rarity, PetNumbers>> petNums;
 
     public static void loadPetNums() {
@@ -31,73 +40,60 @@ public class ItemStackBuilder {
 
         List<Pair<String, String>> injectors = new ArrayList<>(petData(internalName));
 
-        NbtCompound root = new NbtCompound();
-        root.put("Count", NbtByte.of((byte) 1));
+        String legacyId = item.getMinecraftItemId();
+        Identifier itemId = new Identifier(ItemFixerUpper.convertItemId(legacyId, item.getDamage()));
 
-        String id = item.getMinecraftItemId();
-        int damage = item.getDamage();
-        root.put("id", NbtString.of(ItemFixerUpper.convertItemId(id, damage)));
+        ItemStack stack = new ItemStack(Registries.ITEM.get(itemId));
 
-        NbtCompound tag = new NbtCompound();
-        root.put("tag", tag);
+        // Custom Data
+        NbtCompound customData = new NbtCompound();
 
-        NbtCompound extra = new NbtCompound();
-        tag.put(ItemUtils.EXTRA_ATTRIBUTES, extra);
-        extra.put(ItemUtils.ID, NbtString.of(internalName));
+        // Add Skyblock Item Id
+        customData.put(ItemUtils.ID, NbtString.of(internalName));
 
-        NbtCompound display = new NbtCompound();
-        tag.put("display", display);
-
+        // Item Name
         String name = injectData(item.getDisplayName(), injectors);
-        display.put("Name", NbtString.of(Text.Serialization.toJsonString(Text.of(name))));
+        stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(name));
 
-        NbtList lore = new NbtList();
-        display.put("Lore", lore);
-        item.getLore().forEach(el -> lore.add(NbtString.of(Text.Serialization.toJsonString(Text.of(injectData(el, injectors))))));
+        // Lore
+        stack.set(DataComponentTypes.LORE, new LoreComponent(item.getLore().stream().map(line -> Text.of(injectData(line, injectors))).toList()));
 
         String nbttag = item.getNbttag();
         // add skull texture
-        Matcher skullUuid = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"").matcher(nbttag);
-        Matcher skullTexture = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"").matcher(nbttag);
+        Matcher skullUuid = SKULL_UUID_PATTERN.matcher(nbttag);
+        Matcher skullTexture = SKULL_TEXTURE_PATTERN.matcher(nbttag);
         if (skullUuid.find() && skullTexture.find()) {
-            NbtCompound skullOwner = new NbtCompound();
-            tag.put("SkullOwner", skullOwner);
             UUID uuid = UUID.fromString(skullUuid.group(1));
-            skullOwner.put("Id", NbtHelper.fromUuid(uuid));
-            skullOwner.put("Name", NbtString.of(internalName));
+            String textureValue = skullTexture.group(1);
 
-            NbtCompound properties = new NbtCompound();
-            skullOwner.put("Properties", properties);
-            NbtList textures = new NbtList();
-            properties.put("textures", textures);
-            NbtCompound texture = new NbtCompound();
-            textures.add(texture);
-            texture.put("Value", NbtString.of(skullTexture.group(1)));
+            stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of(internalName), Optional.of(uuid), ItemUtils.propertyMapWithTexture(textureValue)));
         }
+
         // add leather armor dye color
-        Matcher colorMatcher = Pattern.compile("color:(\\d+)").matcher(nbttag);
+        Matcher colorMatcher = COLOR_PATTERN.matcher(nbttag);
         if (colorMatcher.find()) {
-            NbtInt color = NbtInt.of(Integer.parseInt(colorMatcher.group(1)));
-            display.put("color", color);
+            int color = Integer.parseInt(colorMatcher.group(1));
+            stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
         }
         // add enchantment glint
         if (nbttag.contains("ench:")) {
-            NbtList enchantments = new NbtList();
-            enchantments.add(new NbtCompound());
-            tag.put("Enchantments", enchantments);
+            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
         }
+
+        //Hide weapon damage and other useless info
+        stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, new AttributeModifiersComponent(List.of(), false));
 
         // Add firework star color
-        Matcher explosionColorMatcher = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)]\\}").matcher(nbttag);
+        Matcher explosionColorMatcher = EXPLOSION_COLOR_PATTERN.matcher(nbttag);
         if (explosionColorMatcher.find()) {
-            NbtCompound explosion = new NbtCompound();
-
-            explosion.putInt("Type", FireworkRocketItem.Type.SMALL_BALL.getId()); //Forget about the actual ball type because it probably doesn't matter
-            explosion.putIntArray("Colors", new int[]{Integer.parseInt(explosionColorMatcher.group("color"))});
-            tag.put("Explosion", explosion);
+            //Forget about the actual ball type because it probably doesn't matter
+            stack.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.SMALL_BALL, new IntArrayList(Integer.parseInt(explosionColorMatcher.group("color"))), new IntArrayList(), false, false));
         }
 
-        return ItemStack.fromNbt(root);
+        // Attach custom nbt data
+        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customData));
+
+        return stack;
     }
 
     private static List<Pair<String, String>> petData(String internalName) {

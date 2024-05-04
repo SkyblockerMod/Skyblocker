@@ -2,10 +2,10 @@ package de.hysky.skyblocker.utils.render.title;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -26,7 +26,7 @@ public class TitleContainer {
     private static final Set<Title> titles = new LinkedHashSet<>();
 
     public static void init() {
-        HudRenderCallback.EVENT.register(TitleContainer::render);
+        HudRenderEvents.BEFORE_CHAT.register(TitleContainer::render);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("titleContainer")
@@ -148,7 +148,7 @@ public class TitleContainer {
 
             //Translate the matrix to the texts position and scale
             context.getMatrices().push();
-            context.getMatrices().translate(title.x, title.y, 200);
+            context.getMatrices().translate(title.x, title.y, 0);
             context.getMatrices().scale(scale, scale, scale);
 
             //Draw text

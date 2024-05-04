@@ -119,13 +119,12 @@ public class Waterboard extends DungeonPuzzle {
         for (Cell[] row : cells) {
             sb.append("\n");
             for (Cell cell : row) {
-                if (cell == null) {
-                    sb.append('?');
-                } else if (cell instanceof SwitchCell switchCell) {
-                    sb.append(switchCell.id);
-                } else switch (cell.type) {
-                    case BLOCK -> sb.append('#');
-                    case EMPTY -> sb.append('.');
+                switch (cell) {
+                    case SwitchCell switchCell -> sb.append(switchCell.id);
+                    case Cell c when c.type == Cell.Type.BLOCK -> sb.append('#');
+                    case Cell c when c.type == Cell.Type.EMPTY -> sb.append('.');
+
+                    case null, default -> sb.append('?');
                 }
             }
         }

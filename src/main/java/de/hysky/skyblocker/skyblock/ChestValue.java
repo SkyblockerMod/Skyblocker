@@ -3,10 +3,11 @@ package de.hysky.skyblocker.skyblock;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixin.accessor.HandledScreenAccessor;
-import de.hysky.skyblocker.mixin.accessor.ScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -15,7 +16,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -206,7 +206,7 @@ public class ChestValue {
 	 * Searches for a specific string of characters in the name and lore of an item
 	 */
 	private static String searchLoreFor(ItemStack stack, MinecraftClient client, String searchString) {
-		return stack.getTooltip(client.player, TooltipContext.BASIC).stream().map(Text::getString).filter(line -> line.contains(searchString)).findAny().orElse(null);
+		return ItemUtils.getLoreLineIf(stack, line -> line.contains(searchString));
 	}
 
 	static Text getProfitText(long profit, boolean hasIncompleteData) {

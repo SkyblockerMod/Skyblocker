@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import de.hysky.skyblocker.mixin.accessor.DrawContextInvoker;
+import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -40,10 +40,9 @@ public class CompactorDeletorPreview {
         if (targetIndex == -1) return false;
 
         // Get items in compactor or deletor
-        NbtCompound extraAttributes = ItemUtils.getExtraAttributes(stack);
-        if (extraAttributes == null) return false;
+        NbtCompound customData = ItemUtils.getCustomData(stack);
         // Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
-        List<IntObjectPair<ItemStack>> slots = extraAttributes.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRepository.getItemStack(extraAttributes.getString(slot)))).toList();
+        List<IntObjectPair<ItemStack>> slots = customData.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRepository.getItemStack(customData.getString(slot)))).toList();
 
         List<TooltipComponent> components = tooltips.stream().map(Text::asOrderedText).map(TooltipComponent::of).collect(Collectors.toList());
         IntIntPair dimensions = DIMENSIONS.getOrDefault(size, DEFAULT_DIMENSION);
@@ -60,9 +59,9 @@ public class CompactorDeletorPreview {
         // Add the preview tooltip component
         components.add(targetIndex, new CompactorPreviewTooltipComponent(slots, dimensions));
 
-        if (extraAttributes.contains("PERSONAL_DELETOR_ACTIVE")) {
+        if (customData.contains("PERSONAL_DELETOR_ACTIVE")) {
             components.add(targetIndex, TooltipComponent.of(Text.literal("Active: ")
-                    .append(extraAttributes.getBoolean("PERSONAL_DELETOR_ACTIVE") ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
+                    .append(customData.getBoolean("PERSONAL_DELETOR_ACTIVE") ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
         }
         ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
         return true;

@@ -60,7 +60,7 @@ public class KuudraWaypoints {
 	private static CompletableFuture<Void> loadWaypoints(MinecraftClient client, Identifier file, ObjectArrayList<Waypoint> list, float[] colorComponents) {
 		return CompletableFuture.supplyAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(file)) {
-				return CODEC.apply(colorComponents).parse(JsonOps.INSTANCE, getWaypoints(reader)).result().orElseThrow();
+				return CODEC.apply(colorComponents).parse(JsonOps.INSTANCE, getWaypoints(reader)).getOrThrow();
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Kuudra Waypoints] Failed to load kuudra waypoints from: {}", file, e);
 

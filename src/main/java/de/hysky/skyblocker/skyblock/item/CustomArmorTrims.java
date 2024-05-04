@@ -5,8 +5,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
@@ -25,20 +26,19 @@ import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.item.trim.ArmorTrimMaterial;
+import net.minecraft.item.trim.ArmorTrimPattern;
 import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 public class CustomArmorTrims {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomArmorTrims.class);
-	public static final Object2ObjectOpenHashMap<ArmorTrimId, Optional<ArmorTrim>> TRIMS_CACHE = new Object2ObjectOpenHashMap<>();
+	public static final Object2ObjectOpenHashMap<ArmorTrimId, ArmorTrim> TRIMS_CACHE = new Object2ObjectOpenHashMap<>();
 	private static boolean trimsInitialized = false;
 
 	public static void init() {
@@ -48,24 +48,18 @@ public class CustomArmorTrims {
 
 	private static void initializeTrimCache() {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		if (trimsInitialized || player == null) {
+		FabricLoader loader = FabricLoader.getInstance();
+		if (trimsInitialized || (player == null && !Debug.debugEnabled())) {
 			return;
 		}
 		try {
 			TRIMS_CACHE.clear();
-			DynamicRegistryManager registryManager = player.networkHandler.getRegistryManager();
-			for (Identifier material : registryManager.get(RegistryKeys.TRIM_MATERIAL).getIds()) {
-				for (Identifier pattern : registryManager.get(RegistryKeys.TRIM_PATTERN).getIds()) {
-					NbtCompound compound = new NbtCompound();
-					compound.putString("material", material.toString());
-					compound.putString("pattern", pattern.toString());
+			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, player); 
+			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
+				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
+					ArmorTrim trim = new ArmorTrim(material, pattern);
 
-					ArmorTrim trim = ArmorTrim.CODEC.parse(RegistryOps.of(NbtOps.INSTANCE, registryManager), compound).resultOrPartial(LOGGER::error).orElse(null);
-
-					// Something went terribly wrong
-					if (trim == null) throw new IllegalStateException("Trim shouldn't be null! [" + "\"" + material + "\",\"" + pattern + "\"]");
-
-					TRIMS_CACHE.put(new ArmorTrimId(material, pattern), Optional.of(trim));
+					TRIMS_CACHE.put(new ArmorTrimId(material.registryKey().getValue(), pattern.registryKey().getValue()), trim);
 				}
 			}
 
@@ -74,6 +68,10 @@ public class CustomArmorTrims {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Encountered an exception while caching armor trims", e);
 		}
+	}
+
+	private static RegistryWrapper.WrapperLookup getWrapperLookup(FabricLoader loader, ClientPlayerEntity player) {
+		return !Debug.debugEnabled() ? player.networkHandler.getRegistryManager() : BuiltinRegistries.createWrapperLookup();
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {

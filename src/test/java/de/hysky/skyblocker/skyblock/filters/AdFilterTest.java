@@ -15,47 +15,47 @@ class AdFilterTest extends ChatPatternListenerTest<AdFilter> {
 
     @Test
     void noRank() {
-        assertMatches("§8[§a86§8] §7Advertiser§7: advertisement");
+        assertMatches("[86] Advertiser: advertisement");
     }
 
     @Test
     void vip() {
-        assertMatches("§8[§b280§8] §a[VIP] Advertiser§f: advertisement");
+        assertMatches("[280] [VIP] Advertiser: advertisement");
     }
 
     @Test
     void mvp() {
-        assertMatches("§8[§d256§8] §6§l⚡ §b[MVP§c+§b] Advertiser§f: advertisement");
+        assertMatches("[256] ⚡ [MVP+] Advertiser: advertisement");
     }
 
     @Test
     void plusPlus() {
-        assertMatches("§8[§6222§8] §6[MVP§c++§6] Advertiser§f: advertisement");
+        assertMatches("[222] [MVP++] Advertiser: advertisement");
     }
 
     @Test
     void capturesMessage() {
-        assertGroup("§8[§c325§8] §b[MVP§c+§b] b2dderr§f: buying prismapump", 2, "buying prismapump");
+        assertGroup("[325] [MVP+] b2dderr: buying prismapump", 2, "buying prismapump");
     }
 
     @Test
     void simpleAd() {
-        assertFilters("§8[§e320§8] §b[MVP§c+§b] b2dderr§f: buying prismapump");
+        assertFilters("[320] [MVP+] b2dderr: buying prismapump");
     }
 
     @Test
     void uppercaseAd() {
-        assertFilters("§8[§f70§8] §a[VIP] Tecnoisnoob§f: SELLING REJUVENATE 5 Book on ah!");
+        assertFilters("[70] [VIP] Tecnoisnoob: SELLING REJUVENATE 5 Book on ah!");
     }
 
     @Test
     void characterSpam() {
-        assertFilters("§8[§9144§8] §a[VIP] Benyyy_§f: Hey, Visit my Island, i spent lots of time to build it! I also made donate room! <<<<<<<<<<<<<<<<<<<");
+        assertFilters("[144] [VIP] Benyyy_: Hey, Visit my Island, i spent lots of time to build it! I also made donate room! <<<<<<<<<<<<<<<<<<<");
     }
 
     @Test
     void notAd() {
-        Matcher matcher = listener.pattern.matcher("§8[§6200§8] §a[VIP] NotMatching§f: This message shouldn't match!");
+        Matcher matcher = listener.pattern.matcher("[200] [VIP] NotMatching: This message shouldn't match!");
         assertTrue(matcher.matches());
         assertFalse(listener.onMatch(null, matcher));
     }

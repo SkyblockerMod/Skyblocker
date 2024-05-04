@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 
 public class ThreeWeirdos extends ChatPatternListener {
     public ThreeWeirdos() {
-        super("^§e\\[NPC] §c([A-Z][a-z]+)§f: (?:The reward is(?: not in my chest!|n't in any of our chests\\.)|My chest (?:doesn't have the reward\\. We are all telling the truth\\.|has the reward and I'm telling the truth!)|At least one of them is lying, and the reward is not in §c§c[A-Z][a-z]+'s §rchest\\!|Both of them are telling the truth\\. Also, §c§c[A-Z][a-z]+ §rhas the reward in their chest\\!)$");
+        super("^\\[NPC] ([A-Z][a-z]+): (?:The reward is(?: not in my chest!|n't in any of our chests\\.)|My chest (?:doesn't have the reward\\. We are all telling the truth\\.|has the reward and I'm telling the truth!)|At least one of them is lying, and the reward is not in [A-Z][a-z]+'s chest\\!|Both of them are telling the truth\\. Also, [A-Z][a-z]+ has the reward in their chest\\!)$");
     }
 
     @Override

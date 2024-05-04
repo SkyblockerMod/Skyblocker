@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -85,7 +86,7 @@ public class ImageRepoLoader {
 					update(retries + 1);
 				}
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	/**
@@ -96,7 +97,7 @@ public class ImageRepoLoader {
 
 		if (Files.exists(file)) {
 			try (BufferedReader reader = Files.newBufferedReader(file)) {
-				CommitData commitData = CommitData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
+				CommitData commitData = CommitData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 
 				return commitData.commit();
 			}
@@ -115,7 +116,7 @@ public class ImageRepoLoader {
 		CommitData commitData = new CommitData(newHash, System.currentTimeMillis());
 
 		try (BufferedWriter writer = Files.newBufferedWriter(file)) {
-			SkyblockerMod.GSON.toJson(CommitData.CODEC.encodeStart(JsonOps.INSTANCE, commitData).result().orElseThrow(), writer);
+			SkyblockerMod.GSON.toJson(CommitData.CODEC.encodeStart(JsonOps.INSTANCE, commitData).getOrThrow(), writer);
 		}
 	}
 

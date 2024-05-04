@@ -6,8 +6,11 @@ import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,15 +32,15 @@ public class CroesusProfit extends ContainerSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         ItemStack bestChest = null, secondBestChest = null;
         long bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
         long dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2; // lesser ones don't worth the hassle
 
-        for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
+        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null && stack.getName().toString().contains("Chest")) {
+            if (stack.getName().getString().contains("Chest")) {
                 long value = valueChest(stack);
                 if (value > bestValue) {
                     secondBestChest = bestChest;
@@ -51,13 +54,13 @@ public class CroesusProfit extends ContainerSolver {
             }
         }
 
-        for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
+        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack != null && stack.getNbt() != null) {
+            if (stack != null) {
                 if (stack.equals(bestChest)) {
-                    highlights.add(ColorHighlight.green(entry.getKey()));
+                    highlights.add(ColorHighlight.green(entry.getIntKey()));
                 } else if (stack.equals(secondBestChest) && secondBestValue > dungeonKeyPriceData) {
-                    highlights.add(ColorHighlight.yellow(entry.getKey()));
+                    highlights.add(ColorHighlight.yellow(entry.getIntKey()));
                 }
             }
         }
@@ -71,7 +74,7 @@ public class CroesusProfit extends ContainerSolver {
         List<String> chestItems = new ArrayList<>();
 
         boolean processingContents = false;
-        for (Text line : ItemUtils.getNbtTooltips(chest)) {
+        for (Text line : ItemUtils.getLore(chest)) {
             String lineString = line.getString();
             if (lineString.contains("Contents")) {
                 processingContents = true;
@@ -124,144 +127,144 @@ public class CroesusProfit extends ContainerSolver {
 
 
     // I did a thing :(
-    final Map<String, String> dungeonDropsNameToId = new HashMap<>() {{
-        put("Enchanted Book (Ultimate Jerry I)", "ENCHANTMENT_ULTIMATE_JERRY_1");    // ultimate books start
-        put("Enchanted Book (Ultimate Jerry II)", "ENCHANTMENT_ULTIMATE_JERRY_2");
-        put("Enchanted Book (Ultimate Jerry III)", "ENCHANTMENT_ULTIMATE_JERRY_3");
-        put("Enchanted Book (Bank I)", "ENCHANTMENT_ULTIMATE_BANK_1");
-        put("Enchanted Book (Bank II)", "ENCHANTMENT_ULTIMATE_BANK_2");
-        put("Enchanted Book (Bank III)", "ENCHANTMENT_ULTIMATE_BANK_3");
-        put("Enchanted Book (Combo I)", "ENCHANTMENT_ULTIMATE_COMBO_1");
-        put("Enchanted Book (Combo II)", "ENCHANTMENT_ULTIMATE_COMBO_2");
-        put("Enchanted Book (No Pain No Gain I)", "ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_1");
-        put("Enchanted Book (No Pain No Gain II)", "ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_2");
-        put("Enchanted Book (Ultimate Wise I)", "ENCHANTMENT_ULTIMATE_WISE_1");
-        put("Enchanted Book (Ultimate Wise II)", "ENCHANTMENT_ULTIMATE_WISE_2");
-        put("Enchanted Book (Wisdom I)", "ENCHANTMENT_ULTIMATE_WISDOM_1");
-        put("Enchanted Book (Wisdom II)", "ENCHANTMENT_ULTIMATE_WISDOM_2");
-        put("Enchanted Book (Last Stand I)", "ENCHANTMENT_ULTIMATE_LAST_STAND_1");
-        put("Enchanted Book (Last Stand II)", "ENCHANTMENT_ULTIMATE_LAST_STAND_2");
-        put("Enchanted Book (Rend I)", "ENCHANTMENT_ULTIMATE_REND_1");
-        put("Enchanted Book (Rend II)", "ENCHANTMENT_ULTIMATE_REND_2");
-        put("Enchanted Book (Legion I)", "ENCHANTMENT_ULTIMATE_LEGION_1");
-        put("Enchanted Book (Swarm I)", "ENCHANTMENT_ULTIMATE_SWARM_1");
-        put("Enchanted Book (One For All I)", "ENCHANTMENT_ULTIMATE_ONE_FOR_ALL_1");
-        put("Enchanted Book (Soul Eater I)", "ENCHANTMENT_ULTIMATE_SOUL_EATER_1");  // ultimate books end
-        put("Enchanted Book (Infinite Quiver VI)", "ENCHANTMENT_INFINITE_QUIVER_6");  // enchanted books start
-        put("Enchanted Book (Infinite Quiver VII)", "ENCHANTMENT_INFINITE_QUIVER_7");
-        put("Enchanted Book (Feather Falling VI)", "ENCHANTMENT_FEATHER_FALLING_6");
-        put("Enchanted Book (Feather Falling VII)", "ENCHANTMENT_FEATHER_FALLING_7");
-        put("Enchanted Book (Rejuvenate I)", "ENCHANTMENT_REJUVENATE_1");
-        put("Enchanted Book (Rejuvenate II)", "ENCHANTMENT_REJUVENATE_2");
-        put("Enchanted Book (Rejuvenate III)", "ENCHANTMENT_REJUVENATE_3");
-        put("Enchanted Book (Overload)", "ENCHANTMENT_OVERLOAD_1");
-        put("Enchanted Book (Lethality VI)", "ENCHANTMENT_LETHALITY_6");
-        put("Enchanted Book (Thunderlord VII)", "ENCHANTMENT_THUNDERLORD_7");  // enchanted books end
+    private final Map<String, String> dungeonDropsNameToId = Util.make(new HashMap<>(), map -> {
+    	map.put("Enchanted Book (Ultimate Jerry I)", "ENCHANTMENT_ULTIMATE_JERRY_1");    // ultimate books start
+    	map.put("Enchanted Book (Ultimate Jerry II)", "ENCHANTMENT_ULTIMATE_JERRY_2");
+    	map.put("Enchanted Book (Ultimate Jerry III)", "ENCHANTMENT_ULTIMATE_JERRY_3");
+    	map.put("Enchanted Book (Bank I)", "ENCHANTMENT_ULTIMATE_BANK_1");
+    	map.put("Enchanted Book (Bank II)", "ENCHANTMENT_ULTIMATE_BANK_2");
+    	map.put("Enchanted Book (Bank III)", "ENCHANTMENT_ULTIMATE_BANK_3");
+    	map.put("Enchanted Book (Combo I)", "ENCHANTMENT_ULTIMATE_COMBO_1");
+    	map.put("Enchanted Book (Combo II)", "ENCHANTMENT_ULTIMATE_COMBO_2");
+    	map.put("Enchanted Book (No Pain No Gain I)", "ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_1");
+    	map.put("Enchanted Book (No Pain No Gain II)", "ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_2");
+    	map.put("Enchanted Book (Ultimate Wise I)", "ENCHANTMENT_ULTIMATE_WISE_1");
+    	map.put("Enchanted Book (Ultimate Wise II)", "ENCHANTMENT_ULTIMATE_WISE_2");
+    	map.put("Enchanted Book (Wisdom I)", "ENCHANTMENT_ULTIMATE_WISDOM_1");
+        map.put("Enchanted Book (Wisdom II)", "ENCHANTMENT_ULTIMATE_WISDOM_2");
+        map.put("Enchanted Book (Last Stand I)", "ENCHANTMENT_ULTIMATE_LAST_STAND_1");
+        map.put("Enchanted Book (Last Stand II)", "ENCHANTMENT_ULTIMATE_LAST_STAND_2");
+        map.put("Enchanted Book (Rend I)", "ENCHANTMENT_ULTIMATE_REND_1");
+        map.put("Enchanted Book (Rend II)", "ENCHANTMENT_ULTIMATE_REND_2");
+        map.put("Enchanted Book (Legion I)", "ENCHANTMENT_ULTIMATE_LEGION_1");
+        map.put("Enchanted Book (Swarm I)", "ENCHANTMENT_ULTIMATE_SWARM_1");
+        map.put("Enchanted Book (One For All I)", "ENCHANTMENT_ULTIMATE_ONE_FOR_ALL_1");
+        map.put("Enchanted Book (Soul Eater I)", "ENCHANTMENT_ULTIMATE_SOUL_EATER_1");  // ultimate books end
+        map.put("Enchanted Book (Infinite Quiver VI)", "ENCHANTMENT_INFINITE_QUIVER_6");  // enchanted books start
+        map.put("Enchanted Book (Infinite Quiver VII)", "ENCHANTMENT_INFINITE_QUIVER_7");
+        map.put("Enchanted Book (Feather Falling VI)", "ENCHANTMENT_FEATHER_FALLING_6");
+        map.put("Enchanted Book (Feather Falling VII)", "ENCHANTMENT_FEATHER_FALLING_7");
+        map.put("Enchanted Book (Rejuvenate I)", "ENCHANTMENT_REJUVENATE_1");
+        map.put("Enchanted Book (Rejuvenate II)", "ENCHANTMENT_REJUVENATE_2");
+        map.put("Enchanted Book (Rejuvenate III)", "ENCHANTMENT_REJUVENATE_3");
+        map.put("Enchanted Book (Overload)", "ENCHANTMENT_OVERLOAD_1");
+        map.put("Enchanted Book (Lethality VI)", "ENCHANTMENT_LETHALITY_6");
+        map.put("Enchanted Book (Thunderlord VII)", "ENCHANTMENT_THUNDERLORD_7");  // enchanted books end
 
-        put("Hot Potato Book", "HOT_POTATO_BOOK");  // HPB, FPB, Recomb (universal drops)
-        put("Fuming Potato Book", "FUMING_POTATO_BOOK");
-        put("Recombobulator 3000", "RECOMBOBULATOR_3000");
-        put("Necromancer's Brooch", "NECROMANCER_BROOCH");
-        put("ESSENCE_WITHER","ESSENCE_WITHER");     // Essences. Really stupid way of doing this
-        put("ESSENCE_UNDEAD", "ESSENCE_UNDEAD");
-        put("ESSENCE_DRAGON", "ESSENCE_DRAGON");
-        put("ESSENCE_SPIDER", "ESSENCE_SPIDER");
-        put("ESSENCE_ICE", "ESSENCE_ICE");
-        put("ESSENCE_DIAMOND", "ESSENCE_DIAMOND");
-        put("ESSENCE_GOLD", "ESSENCE_GOLD");
-        put("ESSENCE_CRIMSON", "ESSENCE_CRIMSON");
-        put("DUNGEON_CHEST_KEY", "DUNGEON_CHEST_KEY");
+        map.put("Hot Potato Book", "HOT_POTATO_BOOK");  // HPB, FPB, Recomb (universal drops)
+        map.put("Fuming Potato Book", "FUMING_POTATO_BOOK");
+        map.put("Recombobulator 3000", "RECOMBOBULATOR_3000");
+        map.put("Necromancer's Brooch", "NECROMANCER_BROOCH");
+        map.put("ESSENCE_WITHER","ESSENCE_WITHER");     // Essences. Really stupid way of doing this
+        map.put("ESSENCE_UNDEAD", "ESSENCE_UNDEAD");
+        map.put("ESSENCE_DRAGON", "ESSENCE_DRAGON");
+        map.put("ESSENCE_SPIDER", "ESSENCE_SPIDER");
+        map.put("ESSENCE_ICE", "ESSENCE_ICE");
+        map.put("ESSENCE_DIAMOND", "ESSENCE_DIAMOND");
+        map.put("ESSENCE_GOLD", "ESSENCE_GOLD");
+        map.put("ESSENCE_CRIMSON", "ESSENCE_CRIMSON");
+        map.put("DUNGEON_CHEST_KEY", "DUNGEON_CHEST_KEY");
 
-        put("Bonzo's Staff", "BONZO_STAFF");    // F1 M1
-        put("Master Skull - Tier 1", "MASTER_SKULL_TIER_1");
-        put("Bonzo's Mask", "BONZO_MASK");
-        put("Balloon Snake", "BALLOON_SNAKE");
-        put("Red Nose", "RED_NOSE");
+        map.put("Bonzo's Staff", "BONZO_STAFF");    // F1 M1
+        map.put("Master Skull - Tier 1", "MASTER_SKULL_TIER_1");
+        map.put("Bonzo's Mask", "BONZO_MASK");
+        map.put("Balloon Snake", "BALLOON_SNAKE");
+        map.put("Red Nose", "RED_NOSE");
 
-        put("Red Scarf", "RED_SCARF");  // F2 M2
-        put("Adaptive Blade", "STONE_BLADE");
-        put("Master Skull - Tier 2", "MASTER_SKULL_TIER_2");
-        put("Adaptive Belt", "ADAPTIVE_BELT");
-        put("Scarf's Studies", "SCARF_STUDIES");
+        map.put("Red Scarf", "RED_SCARF");  // F2 M2
+        map.put("Adaptive Blade", "STONE_BLADE");
+        map.put("Master Skull - Tier 2", "MASTER_SKULL_TIER_2");
+        map.put("Adaptive Belt", "ADAPTIVE_BELT");
+        map.put("Scarf's Studies", "SCARF_STUDIES");
 
-        put("First Master Star", "FIRST_MASTER_STAR");  // F3 M3
-        put("Adaptive Helmet", "ADAPTIVE_HELMET");
-        put("Adaptive Chestplate", "ADAPTIVE_CHESTPLATE");
-        put("Adaptive Leggings", "ADAPTIVE_LEGGINGS");
-        put("Adaptive Boots", "ADAPTIVE_BOOTS");
-        put("Master Skull - Tier 3", "MASTER_SKULL_TIER_3");
-        put("Suspicious Vial", "SUSPICIOUS_VIAL");
+        map.put("First Master Star", "FIRST_MASTER_STAR");  // F3 M3
+        map.put("Adaptive Helmet", "ADAPTIVE_HELMET");
+        map.put("Adaptive Chestplate", "ADAPTIVE_CHESTPLATE");
+        map.put("Adaptive Leggings", "ADAPTIVE_LEGGINGS");
+        map.put("Adaptive Boots", "ADAPTIVE_BOOTS");
+        map.put("Master Skull - Tier 3", "MASTER_SKULL_TIER_3");
+        map.put("Suspicious Vial", "SUSPICIOUS_VIAL");
 
-        put("Spirit Sword", "SPIRIT_SWORD");    // F4 M4
-        put("Spirit Shortbow", "ITEM_SPIRIT_BOW");
-        put("Spirit Boots", "THORNS_BOOTS");
-        put("Spirit", "LVL_1_LEGENDARY_SPIRIT");    // Spirit pet (Legendary)
-        put("Spirit Epic", "LVL_1_EPIC_SPIRIT");
+        map.put("Spirit Sword", "SPIRIT_SWORD");    // F4 M4
+        map.put("Spirit Shortbow", "ITEM_SPIRIT_BOW");
+        map.put("Spirit Boots", "THORNS_BOOTS");
+        map.put("Spirit", "LVL_1_LEGENDARY_SPIRIT");    // Spirit pet (Legendary)
+        map.put("Spirit Epic", "LVL_1_EPIC_SPIRIT");
 
-        put("Second Master Star", "SECOND_MASTER_STAR");
-        put("Spirit Wing", "SPIRIT_WING");
-        put("Spirit Bone", "SPIRIT_BONE");
-        put("Spirit Stone", "SPIRIT_DECOY");
+        map.put("Second Master Star", "SECOND_MASTER_STAR");
+        map.put("Spirit Wing", "SPIRIT_WING");
+        map.put("Spirit Bone", "SPIRIT_BONE");
+        map.put("Spirit Stone", "SPIRIT_DECOY");
 
-        put("Shadow Fury", "SHADOW_FURY");  // F5 M5
-        put("Last Breath", "LAST_BREATH");
-        put("Third Master Star", "THIRD_MASTER_STAR");
-        put("Warped Stone", "AOTE_STONE");
-        put("Livid Dagger", "LIVID_DAGGER");
-        put("Shadow Assassin Helmet", "SHADOW_ASSASSIN_HELMET");
-        put("Shadow Assassin Chestplate", "SHADOW_ASSASSIN_CHESTPLATE");
-        put("Shadow Assassin Leggings", "SHADOW_ASSASSIN_LEGGINGS");
-        put("Shadow Assassin Boots", "SHADOW_ASSASSIN_BOOTS");
-        put("Shadow Assassin Cloak", "SHADOW_ASSASSIN_CLOAK");
-        put("Master Skull - Tier 4", "MASTER_SKULL_TIER_4");
-        put("Dark Orb", "DARK_ORB");
+        map.put("Shadow Fury", "SHADOW_FURY");  // F5 M5
+        map.put("Last Breath", "LAST_BREATH");
+        map.put("Third Master Star", "THIRD_MASTER_STAR");
+        map.put("Warped Stone", "AOTE_STONE");
+        map.put("Livid Dagger", "LIVID_DAGGER");
+        map.put("Shadow Assassin Helmet", "SHADOW_ASSASSIN_HELMET");
+        map.put("Shadow Assassin Chestplate", "SHADOW_ASSASSIN_CHESTPLATE");
+        map.put("Shadow Assassin Leggings", "SHADOW_ASSASSIN_LEGGINGS");
+        map.put("Shadow Assassin Boots", "SHADOW_ASSASSIN_BOOTS");
+        map.put("Shadow Assassin Cloak", "SHADOW_ASSASSIN_CLOAK");
+        map.put("Master Skull - Tier 4", "MASTER_SKULL_TIER_4");
+        map.put("Dark Orb", "DARK_ORB");
 
-        put("Precursor Eye", "PRECURSOR_EYE");  // F6 M6
-        put("Giant's Sword", "GIANTS_SWORD");
-        put("Necromancer Lord Helmet", "NECROMANCER_LORD_HELMET");
-        put("Necromancer Lord Chestplate", "NECROMANCER_LORD_CHESTPLATE");
-        put("Necromancer Lord Leggings", "NECROMANCER_LORD_LEGGINGS");
-        put("Necromancer Lord Boots", "NECROMANCER_LORD_BOOTS");
-        put("Fourth Master Star", "FOURTH_MASTER_STAR");
-        put("Summoning Ring", "SUMMONING_RING");
-        put("Fel Skull", "FEL_SKULL");
-        put("Necromancer Sword", "NECROMANCER_SWORD");
-        put("Soulweaver Gloves", "SOULWEAVER_GLOVES");
-        put("Sadan's Brooch", "SADAN_BROOCH");
-        put("Giant Tooth", "GIANT_TOOTH");
+        map.put("Precursor Eye", "PRECURSOR_EYE");  // F6 M6
+        map.put("Giant's Sword", "GIANTS_SWORD");
+        map.put("Necromancer Lord Helmet", "NECROMANCER_LORD_HELMET");
+        map.put("Necromancer Lord Chestplate", "NECROMANCER_LORD_CHESTPLATE");
+        map.put("Necromancer Lord Leggings", "NECROMANCER_LORD_LEGGINGS");
+        map.put("Necromancer Lord Boots", "NECROMANCER_LORD_BOOTS");
+        map.put("Fourth Master Star", "FOURTH_MASTER_STAR");
+        map.put("Summoning Ring", "SUMMONING_RING");
+        map.put("Fel Skull", "FEL_SKULL");
+        map.put("Necromancer Sword", "NECROMANCER_SWORD");
+        map.put("Soulweaver Gloves", "SOULWEAVER_GLOVES");
+        map.put("Sadan's Brooch", "SADAN_BROOCH");
+        map.put("Giant Tooth", "GIANT_TOOTH");
 
-        put("Precursor Gear", "PRECURSOR_GEAR");    // F7 M7
-        put("Necron Dye", "DYE_NECRON");
-        put("Storm the Fish", "STORM_THE_FISH");
-        put("Maxor the Fish", "MAXOR_THE_FISH");
-        put("Goldor the Fish", "GOLDOR_THE_FISH");
-        put("Dark Claymore", "DARK_CLAYMORE");
-        put("Necron's Handle", "NECRON_HANDLE");
-        put("Master Skull - Tier 5", "MASTER_SKULL_TIER_5");
-        put("Shadow Warp", "SHADOW_WARP_SCROLL");
-        put("Wither Shield", "WITHER_SHIELD_SCROLL");
-        put("Implosion", "IMPLOSION_SCROLL");
-        put("Fifth Master Star", "FIFTH_MASTER_STAR");
-        put("Auto Recombobulator", "AUTO_RECOMBOBULATOR");
-        put("Wither Helmet", "WITHER_HELMET");
-        put("Wither Chestplate", "WITHER_CHESTPLATE");
-        put("Wither Leggings", "WITHER_LEGGINGS");
-        put("Wither Boots", "WITHER_BOOTS");
-        put("Wither Catalyst", "WITHER_CATALYST");
-        put("Wither Cloak Sword", "WITHER_CLOAK");
-        put("Wither Blood", "WITHER_BLOOD");
+        map.put("Precursor Gear", "PRECURSOR_GEAR");    // F7 M7
+        map.put("Necron Dye", "DYE_NECRON");
+        map.put("Storm the Fish", "STORM_THE_FISH");
+        map.put("Maxor the Fish", "MAXOR_THE_FISH");
+        map.put("Goldor the Fish", "GOLDOR_THE_FISH");
+        map.put("Dark Claymore", "DARK_CLAYMORE");
+        map.put("Necron's Handle", "NECRON_HANDLE");
+        map.put("Master Skull - Tier 5", "MASTER_SKULL_TIER_5");
+        map.put("Shadow Warp", "SHADOW_WARP_SCROLL");
+        map.put("Wither Shield", "WITHER_SHIELD_SCROLL");
+        map.put("Implosion", "IMPLOSION_SCROLL");
+        map.put("Fifth Master Star", "FIFTH_MASTER_STAR");
+        map.put("Auto Recombobulator", "AUTO_RECOMBOBULATOR");
+        map.put("Wither Helmet", "WITHER_HELMET");
+        map.put("Wither Chestplate", "WITHER_CHESTPLATE");
+        map.put("Wither Leggings", "WITHER_LEGGINGS");
+        map.put("Wither Boots", "WITHER_BOOTS");
+        map.put("Wither Catalyst", "WITHER_CATALYST");
+        map.put("Wither Cloak Sword", "WITHER_CLOAK");
+        map.put("Wither Blood", "WITHER_BLOOD");
 
-        put("Shiny Wither Helmet", "SHINY_WITHER_HELMET");  // M7 shiny drops
-        put("Shiny Wither Chestplate", "SHINY_WITHER_CHESTPLATE");
-        put("Shiny Wither Leggings", "SHINY_WITHER_LEGGINGS");
-        put("Shiny Wither Boots", "SHINY_WITHER_BOOTS");
-        put("Shiny Necron's Handle", "SHINY_NECRON_HANDLE");    // cool thing
+        map.put("Shiny Wither Helmet", "SHINY_WITHER_HELMET");  // M7 shiny drops
+        map.put("Shiny Wither Chestplate", "SHINY_WITHER_CHESTPLATE");
+        map.put("Shiny Wither Leggings", "SHINY_WITHER_LEGGINGS");
+        map.put("Shiny Wither Boots", "SHINY_WITHER_BOOTS");
+        map.put("Shiny Necron's Handle", "SHINY_NECRON_HANDLE");    // cool thing
 
-        put("Dungeon Disc", "DUNGEON_DISC_1");
-        put("Clown Disc", "DUNGEON_DISC_2");
-        put("Watcher Disc", "DUNGEON_DISC_3");
-        put("Old Disc", "DUNGEON_DISC_4");
-        put("Necron Disc", "DUNGEON_DISC_5");
-    }};
+        map.put("Dungeon Disc", "DUNGEON_DISC_1");
+        map.put("Clown Disc", "DUNGEON_DISC_2");
+        map.put("Watcher Disc", "DUNGEON_DISC_3");
+        map.put("Old Disc", "DUNGEON_DISC_4");
+        map.put("Necron Disc", "DUNGEON_DISC_5");
+    });
 }
 

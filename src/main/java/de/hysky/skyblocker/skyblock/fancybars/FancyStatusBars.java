@@ -185,7 +185,7 @@ public class FancyStatusBars {
                     // FIX SIZES
                     int totalSize = 0;
                     for (StatusBar statusBar : barRow)
-                        totalSize += (statusBar.size = MathHelper.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize()));
+                        totalSize += (statusBar.size = Math.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize()));
 
                     whileLoop:
                     while (totalSize != sizeRule.targetSize()) {
@@ -240,7 +240,7 @@ public class FancyStatusBars {
                         }
                     }
                     StatusBar statusBar = barRow.get(i);
-                    statusBar.size = MathHelper.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
+                    statusBar.size = Math.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
 
                     float x = barAnchor.isRight() ?
                             anchorPosition.x() + currSize * widthPerSize :
