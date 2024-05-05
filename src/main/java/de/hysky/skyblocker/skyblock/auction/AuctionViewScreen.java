@@ -22,6 +22,7 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
 import java.util.List;
@@ -59,7 +60,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 256) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             clickSlot(BACK_BUTTON_SLOT);
             return true;
         }
@@ -203,7 +204,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     @Override
     public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
-        if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13 || slotId >= handler.getRows()*9) return;
+        if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13 || slotId >= handler.getRows() * 9) return;
         assert client != null;
         if (stack.isOf(Items.RED_TERRACOTTA)) { // Red terracotta shows up when you can cancel it
             changeState(BuyState.CANCELLABLE_AUCTION);
