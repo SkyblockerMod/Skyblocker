@@ -6,6 +6,9 @@ import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.*;
 import net.fabricmc.loader.impl.lib.sat4j.minisat.core.Solver;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -34,18 +37,26 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Map<Integer, ItemStack> slots) {
+	protected void start(GenericContainerScreen screen) {
+		markHighlightsDirty(); //Recalculate highlights when the screen is opened, which happens when upgrading rabbits
+	}
+
+
+	//Todo: Handle unemployed rabbits as well. They have a different lore format.
+	@Override
+	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
 		Int2DoubleMap cpsIncreaseFactors = new Int2DoubleLinkedOpenHashMap(5); //There are only 5 rabbits on the screen.
-		for (Map.Entry<Integer, ItemStack> entry : slots.entrySet()) {
+		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
+			if (entry.getIntKey() < 29 || entry.getIntKey() > 33) continue; //Only check the rabbit slots (29,30,31,32,33)
 			ItemStack item = entry.getValue();
-			if (item.getItem() != Items.PLAYER_HEAD || !item.hasNbt() || item.isEmpty()) continue;
+			if (item.getItem() != Items.PLAYER_HEAD || item.isEmpty()) continue;
 
 			String lore = getLore(item);
 			if (lore.isBlank()) continue;
 
 			OptionalDouble cpsIncreaseFactor = getCPSIncreaseFactor(lore);
 			if (cpsIncreaseFactor.isEmpty()) continue; //Something went wrong, skip this item
-			cpsIncreaseFactors.put(entry.getKey().intValue(), cpsIncreaseFactor.getAsDouble());
+			cpsIncreaseFactors.put(entry.getIntKey(), cpsIncreaseFactor.getAsDouble());
 		}
 		Optional<Int2DoubleMap.Entry> bestSlot = cpsIncreaseFactors.int2DoubleEntrySet().stream().max(Map.Entry.comparingByValue());
 		if (bestSlot.isEmpty()) return List.of(); //No valid slots found, somehow. This means something went wrong, despite all the checks thus far.
@@ -53,13 +64,10 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private String getLore(ItemStack item) {
-		NbtCompound display = item.getSubNbt(ItemStack.DISPLAY_KEY);
-		if (display == null || display.isEmpty() || !display.contains(ItemStack.LORE_KEY, NbtElement.LIST_TYPE)) return "";
-		NbtList lore = display.getList(ItemStack.LORE_KEY, NbtElement.STRING_TYPE);
-		return lore.stream()
-		           .map(NbtElement::asString)
-		           .map(Text.Serialization::fromJson) //Serialize the nbt string into a text to get the content string
-		           .filter(Objects::nonNull)
+		LoreComponent lore = item.get(DataComponentTypes.LORE);
+		if (lore == null || lore.lines().isEmpty()) return "";
+		return lore.lines()
+		           .stream()
 		           .map(Text::getString)
 		           .collect(Collectors.joining(" ")); //Join all lore lines into one string for ease of regexing
 					//The space is so that the regex pattern still matches even if the word is split into 2 lines,
@@ -84,10 +92,5 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		if (!costMatcher.find(cpsMatcher.end())) return OptionalDouble.empty(); //Cost is always at the end of the string, so we can start check from the end of the last match
 		int cost = Integer.parseInt(costMatcher.group(1).replace(",", ""));
 		return OptionalDouble.of((nextCps - currentCps) / (double) cost);
-	}
-
-	//Publicize this method so that the HandledScreenMixin can call it, as the values change on upgrade (when clicked) and there is a need for recalculation
-	public void markDirty() {
-		super.markHighlightsDirty();
 	}
 }

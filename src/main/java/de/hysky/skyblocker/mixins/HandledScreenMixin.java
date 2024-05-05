@@ -4,7 +4,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -284,9 +283,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
                 default -> { /*Do Nothing*/ }
             }
-        }
-        if (currentSolver instanceof ChocolateFactorySolver chocolateFactorySolver) {
-            chocolateFactorySolver.markDirty();
         }
     }
 
