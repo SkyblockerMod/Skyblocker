@@ -11,7 +11,7 @@ import net.minecraft.util.Formatting;
 // a server is "generic", when only name, server ID and gems are shown
 // in the third column of the tab HUD
 
-public class ServerWidget extends Widget {
+public class ServerWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);

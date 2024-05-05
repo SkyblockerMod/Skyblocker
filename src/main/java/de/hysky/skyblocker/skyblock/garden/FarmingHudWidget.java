@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 
-public class FarmingHudWidget extends Widget {
+public class FarmingHudWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
     public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
             Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),

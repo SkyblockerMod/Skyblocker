@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about all puzzeles in the dungeon (name and status)
 
-public class DungeonPuzzleWidget extends Widget {
+public class DungeonPuzzleWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Puzzles").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);

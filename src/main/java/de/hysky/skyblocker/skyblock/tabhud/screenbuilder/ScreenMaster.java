@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import com.google.common.reflect.ClassPath;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
+import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -77,6 +79,8 @@ public class ScreenMaster {
     }
 
     public static void init() {
+
+        //ClassPath.from(TabHudWidget.class.getClassLoader()).getTopLevelClasses("de.hysky.skyblocker.skyblock.tabhud.widget").iterator().forEachRemaining();
 
         // WHY MUST IT ALWAYS BE SUCH NESTED GARBAGE MINECRAFT KEEP THAT IN DFU FFS
 

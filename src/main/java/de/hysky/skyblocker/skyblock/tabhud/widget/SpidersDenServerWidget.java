@@ -11,7 +11,7 @@ import java.util.Arrays;
 /**
  * This widget shows info about the Spider's Den server
  */
-public class SpidersDenServerWidget extends Widget {
+public class SpidersDenServerWidget extends HudWidget {
 
     private static final MutableText TITLE =
             Text.literal("Server Info").formatted(Formatting.DARK_AQUA, Formatting.BOLD);

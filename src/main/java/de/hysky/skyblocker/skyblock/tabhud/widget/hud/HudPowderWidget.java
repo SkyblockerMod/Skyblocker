@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.hud;
 
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -15,7 +15,7 @@ import java.util.Locale;
 // (dwarven mines and crystal hollows)
 // USE ONLY WITH THE DWARVEN HUD!
 
-public class HudPowderWidget extends Widget {
+public class HudPowderWidget extends HudWidget {
 
     /**
      * American number format instance
