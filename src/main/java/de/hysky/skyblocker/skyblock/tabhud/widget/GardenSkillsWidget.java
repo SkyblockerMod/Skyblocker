@@ -15,7 +15,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about your skills while in the garden
 
-public class GardenSkillsWidget extends Widget {
+public class GardenSkillsWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Skill Info").formatted(Formatting.YELLOW,
             Formatting.BOLD);
@@ -79,9 +79,9 @@ public class GardenSkillsWidget extends Widget {
 
         this.addComponent(glpc);
 
-        Text speed = Widget.simpleEntryText(67, "SPD", Formatting.WHITE);
+        Text speed = HudWidget.simpleEntryText(67, "SPD", Formatting.WHITE);
         IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
-        Text farmfort = Widget.simpleEntryText(68, "FFO", Formatting.GOLD);
+        Text farmfort = HudWidget.simpleEntryText(68, "FFO", Formatting.GOLD);
         IcoTextComponent ffo = new IcoTextComponent(Ico.IRON_HOE, farmfort);
 
         TableComponent tc = new TableComponent(2, 1, Formatting.YELLOW.getColorValue());

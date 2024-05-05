@@ -15,7 +15,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows the status or results of the current election
 
-public class ElectionWidget extends Widget {
+public class ElectionWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Election Info").formatted(Formatting.YELLOW,
             Formatting.BOLD);
@@ -71,7 +71,7 @@ public class ElectionWidget extends Widget {
                 this.addComponent(new IcoTextComponent());
             } else {
                 String winnername = win.split(": ")[1];
-                Text winnertext = Widget.simpleEntryText(winnername, "Winner: ", Formatting.GREEN);
+                Text winnertext = HudWidget.simpleEntryText(winnername, "Winner: ", Formatting.GREEN);
                 IcoTextComponent winner = new IcoTextComponent(MAYOR_DATA.get(winnername), winnertext);
                 this.addComponent(winner);
             }

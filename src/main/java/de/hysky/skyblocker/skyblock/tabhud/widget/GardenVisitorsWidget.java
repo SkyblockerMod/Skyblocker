@@ -6,7 +6,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class GardenVisitorsWidget extends Widget {
+public class GardenVisitorsWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("Visitors").formatted(Formatting.DARK_GREEN, Formatting.BOLD);
 
     public GardenVisitorsWidget() {

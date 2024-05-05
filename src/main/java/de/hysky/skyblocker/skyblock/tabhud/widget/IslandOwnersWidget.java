@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows a list of the owners of a home island while guesting
 
-public class IslandOwnersWidget extends Widget {
+public class IslandOwnersWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Owners").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);

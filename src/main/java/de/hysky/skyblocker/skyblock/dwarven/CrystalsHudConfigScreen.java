@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.widget.EmptyWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -31,14 +31,14 @@ public class CrystalsHudConfigScreen extends HudConfigScreen {
     }
 
     @Override
-    protected void renderWidget(DrawContext context, List<Widget> widgets) {
+    protected void renderWidget(DrawContext context, List<HudWidget> widgets) {
         int size = CrystalsHud.getDimensionsForConfig();
         WIDGET.setDimensions(size);
         context.drawTexture(RenderLayer::getGuiTextured, CrystalsHud.MAP_TEXTURE, WIDGET.getX(), WIDGET.getY(), 0, 0, size, size, size, size);
     }
 
     @Override
-    protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
+    protected void savePos(SkyblockerConfig configManager, List<HudWidget> widgets) {
         configManager.mining.crystalsHud.x = widgets.getFirst().getX();
         configManager.mining.crystalsHud.y = widgets.getFirst().getY();
     }

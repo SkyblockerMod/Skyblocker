@@ -15,7 +15,7 @@ import net.minecraft.util.Formatting;
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
 
-public class CommsWidget extends Widget {
+public class CommsWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Commissions").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
