@@ -67,6 +67,14 @@ public class DungeonsCategory {
                                 newValue -> config.dungeons.allowDroppingProtectedItems = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.dungeons.hideSoulweaverSkulls"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip")))
+                        .binding(defaults.dungeons.hideSoulweaverSkulls,
+                                () -> config.dungeons.hideSoulweaverSkulls,
+                                newValue -> config.dungeons.hideSoulweaverSkulls = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 // Map
                 .group(OptionGroup.createBuilder()

@@ -89,9 +89,10 @@
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
   "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
 
-  "skyblocker.config.dungeons.map.enableMap": "Enable Map",
-
   "skyblocker.config.dungeons.fancyPartyFinder": "Fancy Party Finder",
+
+  "skyblocker.config.dungeons.hideSoulweaverSkulls": "Hide Soulweaver Skulls",
+  "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Hides the Haunted Skulls spawned that are spawned as a result of using Soulweaver Gloves.",
 
   "skyblocker.config.dungeons.livid": "Livid (F5/M5)",
   "skyblocker.config.dungeons.livid.enableLividColorGlow": "Enable Livid Color Glow",
@@ -104,6 +105,7 @@
   "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid color.",
 
   "skyblocker.config.dungeons.map": "Map",
+  "skyblocker.config.dungeons.map.enableMap": "Enable Map",
   "skyblocker.config.dungeons.map.mapScaling": "Map Scaling",
   "skyblocker.config.dungeons.map.mapScreen": "Dungeon Map & Score Placement Config...",
 
