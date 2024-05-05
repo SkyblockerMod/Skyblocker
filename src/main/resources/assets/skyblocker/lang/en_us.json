@@ -692,6 +692,7 @@
   "skyblocker.waypoints.ordered.remove.success": "Successfully removed the waypoint at %s from group %s.",
   "skyblocker.waypoints.ordered.removeAt.success": "Successfully removed the waypoint at index %d from group %s.",
   "skyblocker.waypoints.ordered.toggle.success": "Toggled the waypoint group %s.",
+  "skyblocker.waypoints.ordered.showAll": "Toggled showing all waypoints from enabled groups.",
   "skyblocker.waypoints.ordered.export.success": "Successfully copied your waypoints to your clipboard!",
   "skyblocker.waypoints.ordered.export.fail": "§cFailed to export your waypoints, check the latest.log for more information.",
   "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
