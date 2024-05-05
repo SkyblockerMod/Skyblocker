@@ -8,7 +8,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about ongoing events (e.g. election)
 
-public class EventWidget extends Widget {
+public class EventWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
 
     private final boolean isInGarden;
@@ -27,7 +27,7 @@ public class EventWidget extends Widget {
         this.addSimpleIcoText(Ico.NTAG, "Name:", Formatting.YELLOW, 73 + offset);
 
         // this could look better
-        Text time = Widget.plainEntryText(74 + offset);
+        Text time = HudWidget.plainEntryText(74 + offset);
         IcoTextComponent t = new IcoTextComponent(Ico.CLOCK, time);
         this.addComponent(t);
     }

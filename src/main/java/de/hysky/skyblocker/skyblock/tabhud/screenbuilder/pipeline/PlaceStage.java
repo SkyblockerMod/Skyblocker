@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 
 public class PlaceStage extends PipelineStage {
@@ -51,7 +51,7 @@ public class PlaceStage extends PipelineStage {
     }
 
     public void run(int screenW, int screenH) {
-        Widget wid = primary.getFirst();
+        HudWidget wid = primary.getFirst();
         switch (where) {
             case CENTER -> {
                 wid.setX((screenW - wid.getWidth()) / 2);

@@ -13,7 +13,7 @@ import net.minecraft.util.Formatting;
 // or not, if there aren't any
 // TODO: not very pretty atm
 
-public class UpgradeWidget extends Widget {
+public class UpgradeWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Upgrade Info").formatted(Formatting.GOLD,
             Formatting.BOLD);

@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 // it also shows one of those in detail.
 // the parsing is super suspect and should be replaced by some regexes sometime later
 
-public class EffectWidget extends Widget {
+public class EffectWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Effect Info").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);

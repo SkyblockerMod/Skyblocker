@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.hud;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
@@ -17,7 +17,7 @@ import java.util.List;
 // (dwarven mines and crystal hollows)
 // USE ONLY WITH THE DWARVEN HUD!
 
-public class HudCommsWidget extends Widget {
+public class HudCommsWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Commissions").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
 

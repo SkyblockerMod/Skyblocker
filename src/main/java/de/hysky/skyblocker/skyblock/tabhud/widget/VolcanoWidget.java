@@ -13,7 +13,7 @@ import net.minecraft.util.Pair;
 
 // shows the volcano status (crimson isle)
 
-public class VolcanoWidget extends Widget {
+public class VolcanoWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Volcano Status").formatted(Formatting.AQUA,
             Formatting.BOLD);

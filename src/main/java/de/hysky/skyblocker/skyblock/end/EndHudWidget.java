@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.end;
 
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.component.DataComponentTypes;
@@ -17,7 +17,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
 
-public class EndHudWidget extends Widget {
+public class EndHudWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
     public static final EndHudWidget INSTANCE = new EndHudWidget(TITLE, Formatting.DARK_PURPLE.getColorValue());

@@ -8,7 +8,7 @@ import net.minecraft.util.Formatting;
 
 // empty widget for when nothing can be shown
 
-public class ErrorWidget extends Widget {
+public class ErrorWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("Error").formatted(Formatting.RED,
             Formatting.BOLD);
 

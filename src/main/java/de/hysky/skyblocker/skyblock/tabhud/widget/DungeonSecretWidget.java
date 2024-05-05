@@ -11,7 +11,8 @@ import java.util.regex.Pattern;
 
 // this widget shows info about the secrets of the dungeon
 
-public class DungeonSecretWidget extends Widget {
+public class DungeonSecretWidget extends HudWidget {
+
     private static final MutableText TITLE = Text.literal("Discoveries").formatted(Formatting.DARK_PURPLE, Formatting.BOLD);
     private static final Pattern DISCOVERIES = Pattern.compile("Discoveries: (\\d+)");
 

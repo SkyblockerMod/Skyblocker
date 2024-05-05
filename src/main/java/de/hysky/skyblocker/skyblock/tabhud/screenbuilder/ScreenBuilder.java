@@ -12,7 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.AlignStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CollideStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
@@ -31,9 +31,9 @@ public class ScreenBuilder {
     private final ArrayList<PipelineStage> layoutPipeline = new ArrayList<>();
 
     // all widget instances this builder knows
-    private final ArrayList<Widget> instances = new ArrayList<>();
+    private final ArrayList<HudWidget> instances = new ArrayList<>();
     // maps alias -> widget instance
-    private final HashMap<String, Widget> objectMap = new HashMap<>();
+    private final HashMap<String, HudWidget> objectMap = new HashMap<>();
 
     private final String builderName;
 
@@ -55,7 +55,7 @@ public class ScreenBuilder {
                 String name = widget.get("name").getAsString();
                 String alias = widget.get("alias").getAsString();
 
-                Widget wid = instanceFrom(name, widget);
+                HudWidget wid = instanceFrom(name, widget);
                 objectMap.put(alias, wid);
                 instances.add(wid);
             }
@@ -74,7 +74,7 @@ public class ScreenBuilder {
      * Try to find a class in the widget package that has the supplied name and
      * call it's constructor. Manual work is required if the class has arguments.
      */
-    public Widget instanceFrom(String name, JsonObject widget) {
+    public HudWidget instanceFrom(String name, JsonObject widget) {
 
         // do widgets that require args the normal way
         JsonElement arg;
@@ -127,7 +127,7 @@ public class ScreenBuilder {
         // return instance of that class.
         try {
             Constructor<?> ctor = clazz.getConstructor();
-            return (Widget) ctor.newInstance();
+            return (HudWidget) ctor.newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
             throw new IllegalStateException(builderName + "/" + name + ": Internal error...");
@@ -153,7 +153,7 @@ public class ScreenBuilder {
     /**
      * Lookup Widget instance from alias name
      */
-    public Widget getInstance(String name) {
+    public HudWidget getInstance(String name) {
         if (!this.objectMap.containsKey(name)) {
             throw new NoSuchElementException("No widget with alias " + name + " in screen " + builderName);
         }
@@ -165,13 +165,13 @@ public class ScreenBuilder {
      */
     public void run(DrawContext context, int screenW, int screenH) {
 
-        for (Widget w : instances) {
+        for (HudWidget w : instances) {
             w.update();
         }
         for (PipelineStage ps : layoutPipeline) {
             ps.run(screenW, screenH);
         }
-        for (Widget w : instances) {
+        for (HudWidget w : instances) {
             w.render(context);
         }
     }

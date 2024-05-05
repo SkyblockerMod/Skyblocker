@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows your dungeon essences (dungeon hub only)
 
-public class EssenceWidget extends Widget {
+public class EssenceWidget extends HudWidget {
 
     private Text undead, wither, diamond, gold, dragon, spider, ice, crimson;
 
@@ -23,14 +23,14 @@ public class EssenceWidget extends Widget {
 
     @Override
     public void updateContent() {
-        wither = Widget.simpleEntryText(46, "Wither:", Formatting.DARK_PURPLE);
-        spider = Widget.simpleEntryText(47, "Spider:", Formatting.DARK_PURPLE);
-        undead = Widget.simpleEntryText(48, "Undead:", Formatting.DARK_PURPLE);
-        dragon = Widget.simpleEntryText(49, "Dragon:", Formatting.DARK_PURPLE);
-        gold = Widget.simpleEntryText(50, "Gold:", Formatting.DARK_PURPLE);
-        diamond = Widget.simpleEntryText(51, "Diamond:", Formatting.DARK_PURPLE);
-        ice = Widget.simpleEntryText(52, "Ice:", Formatting.DARK_PURPLE);
-        crimson = Widget.simpleEntryText(53, "Crimson:", Formatting.DARK_PURPLE);
+        wither = HudWidget.simpleEntryText(46, "Wither:", Formatting.DARK_PURPLE);
+        spider = HudWidget.simpleEntryText(47, "Spider:", Formatting.DARK_PURPLE);
+        undead = HudWidget.simpleEntryText(48, "Undead:", Formatting.DARK_PURPLE);
+        dragon = HudWidget.simpleEntryText(49, "Dragon:", Formatting.DARK_PURPLE);
+        gold = HudWidget.simpleEntryText(50, "Gold:", Formatting.DARK_PURPLE);
+        diamond = HudWidget.simpleEntryText(51, "Diamond:", Formatting.DARK_PURPLE);
+        ice = HudWidget.simpleEntryText(52, "Ice:", Formatting.DARK_PURPLE);
+        crimson = HudWidget.simpleEntryText(53, "Crimson:", Formatting.DARK_PURPLE);
 
         TableComponent tc = new TableComponent(2, 4, Formatting.DARK_AQUA.getColorValue());
 

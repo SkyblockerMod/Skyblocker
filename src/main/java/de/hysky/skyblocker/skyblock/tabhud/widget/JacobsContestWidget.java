@@ -18,7 +18,7 @@ import static java.util.Map.entry;
 
 // this widget shows info about the current jacob's contest (garden only)
 
-public class JacobsContestWidget extends Widget {
+public class JacobsContestWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Jacob's Contest").formatted(Formatting.YELLOW,
             Formatting.BOLD);

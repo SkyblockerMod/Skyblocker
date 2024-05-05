@@ -13,7 +13,7 @@ import net.minecraft.util.Formatting;
 // this widget shows info about active super cookies
 // or not, if you're unwilling to buy one
 
-public class CookieWidget extends Widget {
+public class CookieWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Cookie Info").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);

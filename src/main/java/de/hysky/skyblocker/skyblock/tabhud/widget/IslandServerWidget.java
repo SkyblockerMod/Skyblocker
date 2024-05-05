@@ -9,7 +9,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about your home island
 
-public class IslandServerWidget extends Widget {
+public class IslandServerWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Island Info").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);

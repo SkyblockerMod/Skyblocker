@@ -6,14 +6,14 @@ import java.util.regex.Pattern;
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class RiftProgressWidget extends Widget {
+public class RiftProgressWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Rift Progress").formatted(Formatting.BLUE, Formatting.BOLD);
 

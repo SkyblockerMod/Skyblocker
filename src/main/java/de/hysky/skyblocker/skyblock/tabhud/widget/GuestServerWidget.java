@@ -9,7 +9,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about the private island you're visiting
 
-public class GuestServerWidget extends Widget {
+public class GuestServerWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Island Info").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);

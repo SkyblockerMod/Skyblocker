@@ -13,7 +13,7 @@ import net.minecraft.util.Formatting;
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
 
-public class ForgeWidget extends Widget {
+public class ForgeWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Forge Status").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);

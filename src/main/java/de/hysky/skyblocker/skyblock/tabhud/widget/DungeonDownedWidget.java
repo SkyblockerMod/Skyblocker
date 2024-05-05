@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 // this widget shows info about... something?
 // related to downed people in dungeons, not sure what this is supposed to show
 
-public class DungeonDownedWidget extends Widget {
+public class DungeonDownedWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Downed").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
@@ -32,7 +32,7 @@ public class DungeonDownedWidget extends Widget {
             }
             int idx = down.indexOf(": ");
             Text downed = (idx == -1) ? null
-                    : Widget.simpleEntryText(down.substring(idx + 2), "Downed: ", format);
+                    : HudWidget.simpleEntryText(down.substring(idx + 2), "Downed: ", format);
             IcoTextComponent d = new IcoTextComponent(Ico.SKULL, downed);
             this.addComponent(d);
         }

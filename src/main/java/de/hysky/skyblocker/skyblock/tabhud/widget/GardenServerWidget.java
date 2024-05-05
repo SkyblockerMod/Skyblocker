@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about the garden server
 
-public class GardenServerWidget extends Widget {
+public class GardenServerWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
     //From the armor trim tooltip
@@ -32,7 +32,7 @@ public class GardenServerWidget extends Widget {
         this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, 42);
         this.addSimpleIcoText(Ico.EMERALD, "Gems:", Formatting.GREEN, 43);
 
-        Text copperText = Widget.simpleEntryText(44, "Copper:", Formatting.WHITE);
+        Text copperText = HudWidget.simpleEntryText(44, "Copper:", Formatting.WHITE);
         ((MutableText) copperText.getSiblings().getFirst()).withColor(COPPER_COLOR);
 
         this.addComponent(new IcoTextComponent(Ico.COPPER, copperText));
@@ -58,7 +58,7 @@ public class GardenServerWidget extends Widget {
         } else {
             col = Formatting.GREEN;
         }
-        Text visitor = Widget.simpleEntryText(vis, "Next Visitor: ", col);
+        Text visitor = HudWidget.simpleEntryText(vis, "Next Visitor: ", col);
         IcoTextComponent v = new IcoTextComponent(Ico.PLAYER, visitor);
         this.addComponent(v);
     }

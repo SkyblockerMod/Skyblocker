@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -11,6 +12,10 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -23,7 +28,7 @@ import net.minecraft.util.Formatting;
  * Their size is dependent on the components inside,
  * the position may be changed after construction.
  */
-public abstract class Widget {
+public abstract class HudWidget implements Element, Widget {
 
     private final ArrayList<Component> components = new ArrayList<>();
     protected int w = 0, h = 0;
@@ -39,12 +44,12 @@ public abstract class Widget {
     static final int BORDER_SZE_E = 4;
     static final int COL_BG_BOX = 0xc00c0c0c;
 
-    public Widget(MutableText title, Integer colorValue) {
+    public HudWidget(MutableText title, Integer colorValue) {
         this.title = title;
         this.color = 0xff000000 | colorValue;
     }
 
-    public final void addComponent(Component c) {
+    public void addComponent(Component c) {
         this.components.add(c);
     }
 
@@ -63,12 +68,12 @@ public abstract class Widget {
      * [ico] [string] [textB.formatted(fmt)]
      */
     public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, int idx) {
-        Text txt = Widget.simpleEntryText(idx, string, fmt);
+        Text txt = HudWidget.simpleEntryText(idx, string, fmt);
         this.addComponent(new IcoTextComponent(ico, txt));
     }
 
     public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, String content) {
-        Text txt = Widget.simpleEntryText(content, string, fmt);
+        Text txt = HudWidget.simpleEntryText(content, string, fmt);
         this.addComponent(new IcoTextComponent(ico, txt));
     }
 
@@ -90,7 +95,7 @@ public abstract class Widget {
         w += BORDER_SZE_E + BORDER_SZE_W;
 
         // min width is dependent on title
-        w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + Widget.txtRend.getWidth(title) + 4 + 4 + 1);
+        w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + HudWidget.txtRend.getWidth(title) + 4 + 4 + 1);
     }
 
     public final int getX() {
@@ -119,6 +124,11 @@ public abstract class Widget {
 
     public final int getHeight() {
         return this.h;
+    }
+
+    @Override
+    public void forEachChild(Consumer<ClickableWidget> consumer) {
+
     }
 
     public void setHeight(int height) {
@@ -165,8 +175,8 @@ public abstract class Widget {
         // move above background (if exists)
         ms.translate(0, 0, 100);
 
-        int strHeightHalf = Widget.txtRend.fontHeight / 2;
-        int strAreaWidth = Widget.txtRend.getWidth(title) + 4;
+        int strHeightHalf = HudWidget.txtRend.fontHeight / 2;
+        int strAreaWidth = HudWidget.txtRend.getWidth(title) + 4;
 
         context.drawText(txtRend, title, x + 8, y + 2, this.color, false);
 
@@ -215,7 +225,7 @@ public abstract class Widget {
         }
 
         src = src.substring(src.indexOf(':') + 1);
-        return Widget.simpleEntryText(src, entryName, contentFmt);
+        return HudWidget.simpleEntryText(src, entryName, contentFmt);
     }
 
     /**
@@ -234,5 +244,22 @@ public abstract class Widget {
             return null;
         }
         return Text.of(str);
+    }
+
+    private boolean focused = false;
+
+    @Override
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return focused;
+    }
+
+    @Override
+    public ScreenRect getNavigationFocus() {
+        return Element.super.getNavigationFocus();
     }
 }

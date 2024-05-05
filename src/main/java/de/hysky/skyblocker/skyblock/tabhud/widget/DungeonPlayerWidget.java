@@ -16,7 +16,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about a player in the current dungeon group
 
-public class DungeonPlayerWidget extends Widget {
+public class DungeonPlayerWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Player").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);

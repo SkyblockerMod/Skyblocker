@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.end;
 
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -21,7 +21,7 @@ public class EndHudConfigScreen extends HudConfigScreen {
     }
 
     @Override
-    protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
+    protected void savePos(SkyblockerConfig configManager, List<HudWidget> widgets) {
         configManager.otherLocations.end.x = widgets.getFirst().getX();
         configManager.otherLocations.end.y = widgets.getFirst().getY();
     }

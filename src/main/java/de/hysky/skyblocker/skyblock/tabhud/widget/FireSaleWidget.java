@@ -16,7 +16,7 @@ import net.minecraft.util.Formatting;
 // this widget shows info about fire sales when in the hub.
 // or not, if there isn't one going on
 
-public class FireSaleWidget extends Widget {
+public class FireSaleWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Fire Sales").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);

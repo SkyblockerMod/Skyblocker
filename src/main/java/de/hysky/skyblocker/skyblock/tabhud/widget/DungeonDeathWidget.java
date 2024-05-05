@@ -13,7 +13,7 @@ import net.minecraft.util.Formatting;
 // this widget shows various dungeon info
 // deaths, healing, dmg taken, milestones
 
-public class DungeonDeathWidget extends Widget {
+public class DungeonDeathWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Death").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
@@ -33,7 +33,7 @@ public class DungeonDeathWidget extends Widget {
             this.addComponent(new IcoTextComponent());
         } else {
             Formatting f = (m.group("deathnum").equals("0")) ? Formatting.GREEN : Formatting.RED;
-            Text d = Widget.simpleEntryText(m.group("deathnum"), "Deaths: ", f);
+            Text d = HudWidget.simpleEntryText(m.group("deathnum"), "Deaths: ", f);
             IcoTextComponent deaths = new IcoTextComponent(Ico.SKULL, d);
             this.addComponent(deaths);
         }
