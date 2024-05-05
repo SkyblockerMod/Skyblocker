@@ -9,28 +9,23 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
 public class LowerSensitivity {
-
     private static boolean sensitivityLowered = false;
 
     public static void init() {
         ClientTickEvents.END_WORLD_TICK.register(world -> {
-            if (!Utils.isOnSkyblock() || Utils.getLocation() != Location.GARDEN || MinecraftClient.getInstance().player == null) {
+            if (Utils.getLocation() != Location.GARDEN || MinecraftClient.getInstance().player == null || !SkyblockerConfigManager.get().farming.garden.lockMouseTool) {
                 if (sensitivityLowered) lowerSensitivity(false);
                 return;
             }
-            if (SkyblockerConfigManager.get().farming.garden.lockMouseTool) {
-                ItemStack mainHandStack = MinecraftClient.getInstance().player.getMainHandStack();
-                String itemId = ItemUtils.getItemId(mainHandStack);
-                boolean shouldLockMouse = FarmingHudWidget.FARMING_TOOLS.containsKey(itemId) && (!SkyblockerConfigManager.get().farming.garden.lockMouseGroundOnly || MinecraftClient.getInstance().player.isOnGround());
-                if (shouldLockMouse && !sensitivityLowered) lowerSensitivity(true);
-                else if (!shouldLockMouse && sensitivityLowered) lowerSensitivity(false);
-
-            }
+            ItemStack mainHandStack = MinecraftClient.getInstance().player.getMainHandStack();
+            String itemId = ItemUtils.getItemId(mainHandStack);
+            boolean shouldLockMouse = FarmingHudWidget.FARMING_TOOLS.containsKey(itemId) && (!SkyblockerConfigManager.get().farming.garden.lockMouseGroundOnly || MinecraftClient.getInstance().player.isOnGround());
+            if (shouldLockMouse && !sensitivityLowered) lowerSensitivity(true);
+            else if (!shouldLockMouse && sensitivityLowered) lowerSensitivity(false);
         });
     }
 
     public static void lowerSensitivity(boolean lowerSensitivity) {
-        if (sensitivityLowered == lowerSensitivity) return;
         sensitivityLowered = lowerSensitivity;
     }
 

@@ -72,10 +72,10 @@ public class FarmingHudWidget extends Widget {
         addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.farmingXpPerHour()));
 
         Entity cameraEntity = client.getCameraEntity();
-        String yaw = cameraEntity == null ? "No Camera Entity" : String.format("%.3f", MathHelper.wrapDegrees(cameraEntity.getYaw()));
-        String pitch = cameraEntity == null ? "No Camera Entity" : String.format("%.3f", MathHelper.wrapDegrees(cameraEntity.getPitch()));
-        addComponent(new PlainTextComponent(Text.literal("Yaw: " + yaw).formatted(Formatting.YELLOW)));
-        addComponent(new PlainTextComponent(Text.literal("Pitch: " + pitch).formatted(Formatting.YELLOW)));
+        String yaw = cameraEntity == null ? "No Camera Entity" : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getYaw()));
+        String pitch = cameraEntity == null ? "No Camera Entity" : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getPitch()));
+        addComponent(new PlainTextComponent(Text.literal("Yaw: " + yaw).formatted(Formatting.GOLD)));
+        addComponent(new PlainTextComponent(Text.literal("Pitch: " + pitch).formatted(Formatting.GOLD)));
         if (LowerSensitivity.isSensitivityLowered()) {
             addComponent(new PlainTextComponent(Text.translatable("skyblocker.garden.hud.mouseLocked").formatted(Formatting.ITALIC)));
         }
