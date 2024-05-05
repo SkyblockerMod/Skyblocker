@@ -13,7 +13,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows your faction status (crimson isle)
 
-public class ReputationWidget extends Widget {
+public class ReputationWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Faction Status").formatted(Formatting.AQUA,
             Formatting.BOLD);
@@ -49,7 +49,7 @@ public class ReputationWidget extends Widget {
         }
         this.addComponent(faction);
 
-        Text rep = Widget.plainEntryText(46);
+        Text rep = HudWidget.plainEntryText(46);
         Matcher prog = PlayerListMgr.regexAt(47, PROGRESS_PATTERN);
         Matcher state = PlayerListMgr.regexAt(48, STATE_PATTERN);
 

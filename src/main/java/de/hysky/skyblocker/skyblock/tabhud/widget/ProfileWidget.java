@@ -7,7 +7,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about your profile and bank
 
-public class ProfileWidget extends Widget {
+public class ProfileWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Profile").formatted(Formatting.YELLOW, Formatting.BOLD);
 

@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows your crimson isle faction quests
 
-public class QuestWidget extends Widget {
+public class QuestWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Faction Quests").formatted(Formatting.AQUA,
             Formatting.BOLD);

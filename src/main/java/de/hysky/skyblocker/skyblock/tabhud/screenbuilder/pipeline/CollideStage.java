@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 
 public class CollideStage extends PipelineStage {
@@ -58,13 +58,13 @@ public class CollideStage extends PipelineStage {
         }
     }
 
-    public void collideAgainstL(int screenW, Widget w) {
+    public void collideAgainstL(int screenW, HudWidget w) {
         int yMin = w.getY();
         int yMax = w.getY() + w.getHeight();
 
         int xCor = screenW;
 
-        for (Widget other : secondary) {
+        for (HudWidget other : secondary) {
             if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
                 // too high, next one
                 continue;
@@ -81,13 +81,13 @@ public class CollideStage extends PipelineStage {
         w.setX(xCor);
     }
 
-    public void collideAgainstR(int screenW, Widget w) {
+    public void collideAgainstR(int screenW, HudWidget w) {
         int yMin = w.getY();
         int yMax = w.getY() + w.getHeight();
 
         int xCor = 0;
 
-        for (Widget other : secondary) {
+        for (HudWidget other : secondary) {
             if (other.getY() + other.getHeight() + ScreenConst.WIDGET_PAD < yMin) {
                 // too high, next one
                 continue;
@@ -104,13 +104,13 @@ public class CollideStage extends PipelineStage {
         w.setX(xCor);
     }
 
-    public void collideAgainstT(int screenH, Widget w) {
+    public void collideAgainstT(int screenH, HudWidget w) {
         int xMin = w.getX();
         int xMax = w.getX() + w.getWidth();
 
         int yCor = screenH;
 
-        for (Widget other : secondary) {
+        for (HudWidget other : secondary) {
             if (other.getX() + other.getWidth() + ScreenConst.WIDGET_PAD < xMin) {
                 // too far left, next one
                 continue;
@@ -127,13 +127,13 @@ public class CollideStage extends PipelineStage {
         w.setY(yCor);
     }
 
-    public void collideAgainstB(int screenH, Widget w) {
+    public void collideAgainstB(int screenH, HudWidget w) {
         int xMin = w.getX();
         int xMax = w.getX() + w.getWidth();
 
         int yCor = 0;
 
-        for (Widget other : secondary) {
+        for (HudWidget other : secondary) {
             if (other.getX() + other.getWidth() + ScreenConst.WIDGET_PAD < xMin) {
                 // too far left, next one
                 continue;

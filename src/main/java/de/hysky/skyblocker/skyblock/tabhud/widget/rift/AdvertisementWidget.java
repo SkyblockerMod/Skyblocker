@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.rift;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class AdvertisementWidget extends Widget {
+public class AdvertisementWidget extends HudWidget {
 
 	private static final MutableText TITLE = Text.literal("Advertisement").formatted(Formatting.DARK_AQUA,
 			Formatting.BOLD);

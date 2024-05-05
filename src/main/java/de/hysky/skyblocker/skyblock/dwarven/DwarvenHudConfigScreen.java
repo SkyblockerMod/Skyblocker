@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudPowderWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
@@ -42,12 +42,12 @@ public class DwarvenHudConfigScreen extends HudConfigScreen {
     }
 
     @Override
-    protected void renderWidget(DrawContext context, List<Widget> widgets) {
+    protected void renderWidget(DrawContext context, List<HudWidget> widgets) {
         DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG, context, widgets.getFirst().getX(), widgets.getFirst().getY(), widgets.get(1).getX(), widgets.get(1).getY(), CFG_COMMS);
     }
 
     @Override
-    protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
+    protected void savePos(SkyblockerConfig configManager, List<HudWidget> widgets) {
         configManager.mining.dwarvenHud.commissionsX = widgets.getFirst().getX();
         configManager.mining.dwarvenHud.commissionsY = widgets.getFirst().getY();
         configManager.mining.dwarvenHud.powderX = widgets.get(1).getX();

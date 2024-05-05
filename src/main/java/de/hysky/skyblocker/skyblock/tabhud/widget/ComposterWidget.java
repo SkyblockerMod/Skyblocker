@@ -9,7 +9,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about the garden's composter
 
-public class ComposterWidget extends Widget {
+public class ComposterWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Composter").formatted(Formatting.GREEN,
             Formatting.BOLD);
