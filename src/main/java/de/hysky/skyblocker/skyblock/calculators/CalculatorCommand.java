@@ -44,7 +44,7 @@ public class CalculatorCommand {
         try {
             text.append(Text.literal(FORMATTER.format(Calculator.calculate(calculation))).formatted(Formatting.GREEN));
         } catch (UnsupportedOperationException e) {
-            text.append(Text.literal("text.autoconfig.skyblocker.option.general.enableSignCalculator.invalidEquation").formatted(Formatting.RED));
+            text.append(Text.literal("text.autoconfig.skyblocker.option.general.inputCalculator.invalidEquation").formatted(Formatting.RED));
         }
 
         if (CLIENT == null || CLIENT.player == null) {

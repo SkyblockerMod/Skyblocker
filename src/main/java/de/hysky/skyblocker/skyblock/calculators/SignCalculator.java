@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.calculators;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Calculator;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -18,6 +19,16 @@ public class SignCalculator {
     private static Double output;
 
     public static void renderCalculator(DrawContext context, String message, int renderX, int renderY) {
+        if (SkyblockerConfigManager.get().general.inputCalculator.requiresEquals) {
+            if (message.startsWith("=")) {
+                message = message.substring(1);
+            }
+            else {
+                output = null;
+                lastInput = message;
+                return;
+            }
+        }
         //only update output if new input
         if (!message.equals(lastInput)) { //
             try {
@@ -34,8 +45,10 @@ public class SignCalculator {
 
     public static String getNewValue(Boolean isPrice) {
         if (output == null) {
-            return "";
+            //if mode is not activated or just invalid equation return what the user typed in
+            return lastInput;
         }
+
         //price can except decimals and exponents
         if (isPrice) {
             return output.toString();
@@ -47,7 +60,7 @@ public class SignCalculator {
     private static void render(DrawContext context, String input, int renderX, int renderY) {
         Text text;
         if (output == null) {
-            text = Text.translatable("text.autoconfig.skyblocker.option.general.enableSignCalculator.invalidEquation").formatted(Formatting.RED);
+            text = Text.translatable("text.autoconfig.skyblocker.option.general.inputCalculator.invalidEquation").formatted(Formatting.RED);
         } else {
             text = Text.literal(input + " = " + FORMATTER.format(output)).formatted(Formatting.GREEN);
         }

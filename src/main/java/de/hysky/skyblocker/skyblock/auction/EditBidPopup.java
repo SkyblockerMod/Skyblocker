@@ -56,7 +56,7 @@ public class EditBidPopup extends AbstractPopupScreen {
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderBackground(context, mouseX, mouseY, delta);
         drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
-        if (SkyblockerConfigManager.get().general.enableSignCalculator) {
+        if (SkyblockerConfigManager.get().general.inputCalculator.enabled) {
             SignCalculator.renderCalculator(context, textFieldWidget.getText(), context.getScaledWindowWidth() / 2, textFieldWidget.getY() - 8);
         }
     }
@@ -73,7 +73,7 @@ public class EditBidPopup extends AbstractPopupScreen {
     }
 
     private void done(ButtonWidget widget) {
-        if (SkyblockerConfigManager.get().general.enableSignCalculator) {
+        if (SkyblockerConfigManager.get().general.inputCalculator.enabled) {
             if (!isStringGood(SignCalculator.getNewValue(false))) return;
             sendPacket(SignCalculator.getNewValue(false));
         }
