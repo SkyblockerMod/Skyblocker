@@ -35,13 +35,13 @@ public class CroesusProfit extends ContainerSolver {
     protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         ItemStack bestChest = null, secondBestChest = null;
-        long bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
-        long dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2; // lesser ones don't worth the hassle
+        double bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
+        double dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2; // lesser ones don't worth the hassle
 
         for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
             if (stack.getName().getString().contains("Chest")) {
-                long value = valueChest(stack);
+                double value = valueChest(stack);
                 if (value > bestValue) {
                     secondBestChest = bestChest;
                     secondBestValue = bestValue;
@@ -68,8 +68,8 @@ public class CroesusProfit extends ContainerSolver {
     }
 
 
-    private long valueChest(@NotNull ItemStack chest) {
-        long chestValue = 0;
+    private double valueChest(@NotNull ItemStack chest) {
+        double chestValue = 0;
         int chestPrice = 0;
         List<String> chestItems = new ArrayList<>();
 
@@ -107,22 +107,8 @@ public class CroesusProfit extends ContainerSolver {
     }
 
 
-    private long getItemPrice(String itemDisplayName) {
-        JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
-        JsonObject lbinPrices = TooltipInfoType.LOWEST_BINS.getData();
-        long itemValue = 0;
-        String id = dungeonDropsNameToId.get(itemDisplayName);
-
-        if (bazaarPrices == null || lbinPrices == null) return 0;
-
-        if (bazaarPrices.has(id)) {
-            JsonObject item = bazaarPrices.get(id).getAsJsonObject();
-            boolean isPriceNull = item.get("sellPrice").isJsonNull();
-            return (isPriceNull ? 0L : item.get("sellPrice").getAsLong());
-        } else if (lbinPrices.has(id)) {
-            return lbinPrices.get(id).getAsLong();
-        }
-        return itemValue;
+    private double getItemPrice(String itemDisplayName) {
+        return ItemUtils.getItemPrice(dungeonDropsNameToId.get(itemDisplayName)).leftDouble();
     }
 
 
