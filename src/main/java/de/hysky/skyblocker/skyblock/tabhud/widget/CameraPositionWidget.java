@@ -7,7 +7,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
-public class CameraPositionWidget extends Widget {
+public class CameraPositionWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("Camera Pos").formatted(Formatting.DARK_PURPLE, Formatting.BOLD);
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 

@@ -13,7 +13,7 @@ import net.minecraft.util.Formatting;
 // this widget shows broad info about the current dungeon
 // opened/completed rooms, % of secrets found and time taken
 
-public class DungeonServerWidget extends Widget {
+public class DungeonServerWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Dungeon Info").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);

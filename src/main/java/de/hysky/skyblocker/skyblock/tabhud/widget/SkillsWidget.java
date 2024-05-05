@@ -17,7 +17,7 @@ import net.minecraft.util.Formatting;
 // this widget shows info about a skill and some stats,
 // as seen in the rightmost column of the default HUD
 
-public class SkillsWidget extends Widget {
+public class SkillsWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Skill Info").formatted(Formatting.YELLOW,
             Formatting.BOLD);
@@ -55,15 +55,15 @@ public class SkillsWidget extends Widget {
 
         this.addComponent(progress);
 
-        Text speed = Widget.simpleEntryText(67, "SPD", Formatting.WHITE);
+        Text speed = HudWidget.simpleEntryText(67, "SPD", Formatting.WHITE);
         IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
-        Text strength = Widget.simpleEntryText(68, "STR", Formatting.RED);
+        Text strength = HudWidget.simpleEntryText(68, "STR", Formatting.RED);
         IcoTextComponent str = new IcoTextComponent(Ico.IRON_SWORD, strength);
-        Text critDmg = Widget.simpleEntryText(69, "CCH", Formatting.BLUE);
+        Text critDmg = HudWidget.simpleEntryText(69, "CCH", Formatting.BLUE);
         IcoTextComponent cdg = new IcoTextComponent(Ico.IRON_SWORD, critDmg);
-        Text critCh = Widget.simpleEntryText(70, "CDG", Formatting.BLUE);
+        Text critCh = HudWidget.simpleEntryText(70, "CDG", Formatting.BLUE);
         IcoTextComponent cch = new IcoTextComponent(Ico.IRON_SWORD, critCh);
-        Text aSpeed = Widget.simpleEntryText(71, "ASP", Formatting.YELLOW);
+        Text aSpeed = HudWidget.simpleEntryText(71, "ASP", Formatting.YELLOW);
         IcoTextComponent asp = new IcoTextComponent(Ico.IRON_HOE, aSpeed);
 
         TableComponent tc = new TableComponent(2, 3, Formatting.YELLOW.getColorValue());

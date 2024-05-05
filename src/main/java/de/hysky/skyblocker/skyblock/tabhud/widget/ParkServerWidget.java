@@ -9,7 +9,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about the park server
 
-public class ParkServerWidget extends Widget {
+public class ParkServerWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);

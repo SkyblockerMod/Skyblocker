@@ -17,7 +17,7 @@ import java.util.Comparator;
 // this widget shows a list of players with their skins.
 // responsible for non-private-island areas
 
-public class PlayerListWidget extends Widget {
+public class PlayerListWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Players").formatted(Formatting.GREEN,
             Formatting.BOLD);

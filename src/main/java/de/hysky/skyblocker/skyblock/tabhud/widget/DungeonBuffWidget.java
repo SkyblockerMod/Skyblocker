@@ -11,7 +11,7 @@ import java.util.Comparator;
 
 // this widget shows a list of obtained dungeon buffs
 
-public class DungeonBuffWidget extends Widget {
+public class DungeonBuffWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Dungeon Buffs").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
