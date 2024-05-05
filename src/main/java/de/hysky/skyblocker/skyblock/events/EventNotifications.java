@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.events;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -32,7 +33,7 @@ public class EventNotifications {
 
     public static final String JACOBS = "Jacob's Farming Contest";
 
-    public static final List<Integer> DEFAULT_REMINDERS = List.of(60, 60*5);
+    public static final List<Integer> DEFAULT_REMINDERS = List.of(60, 60 * 5);
 
     public static final Map<String, ItemStack> eventIcons = new Object2ObjectOpenHashMap<>();
 
@@ -56,18 +57,26 @@ public class EventNotifications {
         SkyblockEvents.JOIN.register(EventNotifications::refreshEvents);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
                 ClientCommandManager.literal("skyblocker").then(
-                        ClientCommandManager.literal("ye").then(
-                                ClientCommandManager.argument("time", IntegerArgumentType.integer(6)).executes(context -> {
-                                    MinecraftClient.getInstance().getToastManager().add(
-                                            new EventToast(System.currentTimeMillis() / 1000 + context.getArgument("time", int.class), "Jacob's or something idk", new ItemStack(Items.PAPER))
-                                    );
-                                    return 0;
-                                })
-                        ).executes(context -> {
-                            MinecraftClient.getInstance().getToastManager().add(
-                                    new JacobEventToast(System.currentTimeMillis() / 1000 + 60, "Jacob's farming contest", new String[]{"Cactus","Cocoa Beans","Pumpkin"})
-                            );
-                            return 0;})
+                        ClientCommandManager.literal("debug").then(
+                                ClientCommandManager.literal("toasts").then(
+                                        ClientCommandManager.argument("time", IntegerArgumentType.integer(0))
+                                                .then(ClientCommandManager.argument("jacob", BoolArgumentType.bool()).executes(context -> {
+                                                                    long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
+                                                                    if (context.getArgument("jacob", Boolean.class)) {
+                                                                        MinecraftClient.getInstance().getToastManager().add(
+                                                                                new JacobEventToast(time, "Jacob's farming contest", new String[]{"Cactus", "Cocoa Beans", "Pumpkin"})
+                                                                        );
+                                                                    } else {
+                                                                        MinecraftClient.getInstance().getToastManager().add(
+                                                                                new EventToast(time, "Jacob's or something idk", new ItemStack(Items.PAPER))
+                                                                        );
+                                                                    }
+                                                                    return 0;
+                                                                }
+                                                        )
+                                                )
+                                )
+                        )
                 )
         ));
     }
@@ -112,7 +121,6 @@ public class EventNotifications {
     }
 
 
-
     private static void timeUpdate() {
 
         long newTime = System.currentTimeMillis() / 1000;
@@ -136,14 +144,14 @@ public class EventNotifications {
                         instance.getToastManager().add(
                                 new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras())
                         );
-                    }
-                    else {
+                    } else {
                         instance.getToastManager().add(
                                 new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER)))
                         );
                     }
                     SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
-                    if (soundEvent != null) instance.getSoundManager().play(PositionedSoundInstance.master(soundEvent, 1f, 1f));
+                    if (soundEvent != null)
+                        instance.getSoundManager().play(PositionedSoundInstance.master(soundEvent, 1f, 1f));
                     break;
                 }
             }
@@ -154,7 +162,7 @@ public class EventNotifications {
     public record SkyblockEvent(long start, int duration, String[] extras, @Nullable String warpCommand) {
         public static SkyblockEvent of(JsonObject jsonObject) {
             String location = jsonObject.get("location").getAsString();
-            location = location.isBlank() ? null: location;
+            location = location.isBlank() ? null : location;
             return new SkyblockEvent(jsonObject.get("timestamp").getAsLong(),
                     jsonObject.get("duration").getAsInt(),
                     jsonObject.get("extras").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toArray(String[]::new),

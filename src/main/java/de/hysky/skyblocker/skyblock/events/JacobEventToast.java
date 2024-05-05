@@ -39,7 +39,7 @@ public class JacobEventToast extends EventToast{
     public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
         context.drawGuiTexture(TEXTURE, 0, 0, getWidth(), getHeight());
 
-        int y = 7;
+        int y = (getHeight() - getInnerContentsHeight())/2;
         TextRenderer textRenderer = manager.getClient().textRenderer;
         if (startTime < 3_000){
             int k = MathHelper.floor(MathHelper.clamp((3_000 - startTime) / 200.0f, 0.0f, 1.0f) * 255.0f) << 24 | 0x4000000;
@@ -61,10 +61,5 @@ public class JacobEventToast extends EventToast{
 
         context.drawItemWithoutEntity(icon, 8, getHeight()/2 - 8);
         return startTime > 5_000 ? Visibility.HIDE: Visibility.SHOW;
-    }
-
-    @Override
-    public int getHeight() {
-        return Math.max(super.getHeight(), 32);
     }
 }

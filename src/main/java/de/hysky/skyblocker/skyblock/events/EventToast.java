@@ -23,8 +23,12 @@ public class EventToast implements Toast {
     private final long eventStartTime;
 
     protected final List<OrderedText> message;
+    protected final List<OrderedText> messageNow;
     protected final int messageWidth;
+    protected final int messageNowWidth;
     protected final ItemStack icon;
+
+    protected boolean started;
 
     public EventToast(long eventStartTime, String name, ItemStack icon) {
         this.eventStartTime = eventStartTime;
@@ -32,14 +36,19 @@ public class EventToast implements Toast {
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
         message = renderer.wrapLines(formatted, 150);
         messageWidth = message.stream().mapToInt(renderer::getWidth).max().orElse(150);
+
+        MutableText formattedNow = Text.translatable("skyblocker.events.startsNow", Text.literal(name).formatted(Formatting.YELLOW)).formatted(Formatting.WHITE);
+        messageNow = renderer.wrapLines(formattedNow, 150);
+        messageNowWidth = messageNow.stream().mapToInt(renderer::getWidth).max().orElse(150);
         this.icon = icon;
+        this.started = eventStartTime - System.currentTimeMillis() / 1000 < 0;
 
     }
     @Override
     public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
         context.drawGuiTexture(TEXTURE, 0, 0, getWidth(), getHeight());
 
-        int y = 7;
+        int y = (getHeight() - getInnerContentsHeight())/2;
         y = 2 + drawMessage(context, 30, y, Colors.WHITE);
         drawTimer(context, 30, y);
 
@@ -49,7 +58,7 @@ public class EventToast implements Toast {
 
     protected int drawMessage(DrawContext context, int x, int y, int color) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        for (OrderedText orderedText : message) {
+        for (OrderedText orderedText : started ? messageNow: message) {
             context.drawText(textRenderer, orderedText, x, y, color, false);
             y += textRenderer.fontHeight;
         }
@@ -59,8 +68,10 @@ public class EventToast implements Toast {
     protected void drawTimer(DrawContext context, int x, int y) {
         long currentTime = System.currentTimeMillis() / 1000;
         int timeTillEvent = (int) (eventStartTime - currentTime);
+        started = timeTillEvent < 0;
+        if (started) return;
 
-        Text time = timeTillEvent < 0 ? Text.literal("Starts now!"): Utils.getDurationText(timeTillEvent);
+        Text time = Utils.getDurationText(timeTillEvent);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawText(textRenderer, time, x, y, Colors.LIGHT_YELLOW, false);
@@ -68,11 +79,15 @@ public class EventToast implements Toast {
 
     @Override
     public int getWidth() {
-        return messageWidth + 30 + 6;
+        return (started ? messageNowWidth: messageWidth) + 30 + 6;
+    }
+
+    protected int getInnerContentsHeight() {
+        return message.size() * 9 + (started ? 0 : 9);
     }
 
     @Override
     public int getHeight() {
-        return 12 + 2 + (message.size()+1)*9;
+        return Math.max(getInnerContentsHeight() + 12 + 2, 32);
     }
 }

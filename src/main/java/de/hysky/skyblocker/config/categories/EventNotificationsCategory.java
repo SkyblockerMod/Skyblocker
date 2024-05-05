@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class EventNotificationsCategory {
 
@@ -20,7 +21,7 @@ public class EventNotificationsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         shouldPlaySound = false;
         return ConfigCategory.createBuilder()
-                .name(Text.literal("Event Notifications"))
+                .name(Text.translatable("text.autoconfig.skyblocker.option.eventNotifications"))
                 .option(Option.<SkyblockerConfig.EventNotifications.Sound>createBuilder()
                         .binding(defaults.eventNotifications.reminderSound,
                                 () -> config.eventNotifications.reminderSound,
@@ -44,16 +45,17 @@ public class EventNotificationsCategory {
     private static List<OptionGroup> createGroups(SkyblockerConfig config) {
         Map<String, List<Integer>> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;
         List<OptionGroup> groups = new ArrayList<>(eventsReminderTimes.size());
+        if (eventsReminderTimes.isEmpty()) return List.of(OptionGroup.createBuilder().option(LabelOption.create(Text.translatable("text.autoconfig.skyblocker.option.eventNotifications.monologue"))).build());
         for (Map.Entry<String, List<Integer>> entry : eventsReminderTimes.entrySet()) {
             groups.add(ListOption.<Integer>createBuilder()
                     .name(Text.literal(entry.getKey()))
                     .binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, entry::setValue)
                     .controller(option -> () -> new DurationController(option)) // yea
-                            .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[0]"),
+                            .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.eventNotifications.@Tooltip[0]"),
                                     Text.empty(),
-                                    Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[1]"),
+                                    Text.translatable("text.autoconfig.skyblocker.option.eventNotifications.@Tooltip[1]"),
                                     Text.empty(),
-                                    Text.translatable("text.autoconfig.skyblocker.option.general.eventNotifications.@Tooltip[2]", entry.getKey())))
+                                    Text.translatable("text.autoconfig.skyblocker.option.eventNotifications.@Tooltip[2]", entry.getKey())))
                     .initial(60)
                     .collapsed(true)
                     .build()
