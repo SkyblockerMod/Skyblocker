@@ -75,8 +75,8 @@ public class CrystalsHud {
         if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
             Map<String,CrystalsWaypoint> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
 
-            for (CrystalsWaypoint waypoint : ActiveWaypoints.values()) {
-                Color waypointColor = waypoint.category.color;
+            for (MiningWaypoints waypoint : ActiveWaypoints.values()) {
+                Color waypointColor = waypoint.category.getColor();
                 Vector2ic renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
                 int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 

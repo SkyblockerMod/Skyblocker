@@ -249,7 +249,7 @@ public class MetalDetector {
         }
 
         for (Vec3i block : possibleBlocks) {
-            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), new BlockPos(block.getX(), block.getY(), block.getZ()));
+            MiningWaypoints waypoint = new MiningWaypoints(MiningWaypoints.crystalCategory.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), new BlockPos(block.getX(), block.getY(), block.getZ()));
             waypoint.render(context);
         }
     }

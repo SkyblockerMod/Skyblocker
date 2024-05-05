@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public class DwarvenHud {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static List<Commission> commissionList = new ArrayList<>();
+    protected static List<Commission> commissionList = new ArrayList<>();
 
     public static String mithrilPowder = "0";
     public static String gemStonePowder = "0";
@@ -169,6 +169,7 @@ public class DwarvenHud {
             return;
         }
 
+        List<Commission> oldCommissionList =  commissionList;
         commissionList = new ArrayList<>();
 
         for (PlayerListEntry playerListEntry : CLIENT.getNetworkHandler().getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList()) {
@@ -196,6 +197,9 @@ public class DwarvenHud {
             if (glaciteMatcher.matches()) {
                 glacitePowder = glaciteMatcher.group(0).split(": ")[1];
             }
+        }
+        if (!oldCommissionList.equals(commissionList)) {
+            CommissionWaypoints.update(commissionList);
         }
     }
 

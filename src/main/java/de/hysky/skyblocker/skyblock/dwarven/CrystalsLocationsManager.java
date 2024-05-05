@@ -47,12 +47,12 @@ public class CrystalsLocationsManager {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     /**
-     * A look-up table to convert between location names and waypoint in the {@link CrystalsWaypoint.Category} values.
+     * A look-up table to convert between location names and waypoint in the {@link MiningWaypoints.crystalCategory} values.
      */
-    private static final Map<String, CrystalsWaypoint.Category> WAYPOINT_LOCATIONS = Arrays.stream(CrystalsWaypoint.Category.values()).collect(Collectors.toMap(CrystalsWaypoint.Category::toString, Function.identity()));
+    private static final Map<String, MiningWaypoints.crystalCategory> WAYPOINT_LOCATIONS = Arrays.stream(MiningWaypoints.crystalCategory.values()).collect(Collectors.toMap(MiningWaypoints.crystalCategory::toString, Function.identity()));
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 
-    protected static Map<String, CrystalsWaypoint> activeWaypoints = new HashMap<>();
+    protected static Map<String, MiningWaypoints> activeWaypoints = new HashMap<>();
 
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
@@ -185,8 +185,8 @@ public class CrystalsLocationsManager {
 
 
     private static void addCustomWaypoint(String waypointName, BlockPos pos) {
-        CrystalsWaypoint.Category category = WAYPOINT_LOCATIONS.get(waypointName);
-        CrystalsWaypoint waypoint = new CrystalsWaypoint(category, Text.literal(waypointName), pos);
+        MiningWaypoints.crystalCategory category = WAYPOINT_LOCATIONS.get(waypointName);
+        MiningWaypoints waypoint = new MiningWaypoints(category, Text.literal(waypointName), pos);
         activeWaypoints.put(waypointName, waypoint);
     }
 
