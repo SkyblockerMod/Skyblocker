@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows a list of all people visiting the same private island as you
 
-public class IslandGuestsWidget extends Widget {
+public class IslandGuestsWidget extends HudWidget {
 
     private static final MutableText TITLE = Text.literal("Guests").formatted(Formatting.AQUA,
             Formatting.BOLD);

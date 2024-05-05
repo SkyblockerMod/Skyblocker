@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.rift;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -8,7 +8,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class GoodToKnowWidget extends Widget {
+public class GoodToKnowWidget extends HudWidget {
 
 	private static final MutableText TITLE = Text.literal("Good To Know").formatted(Formatting.BLUE, Formatting.BOLD);
 

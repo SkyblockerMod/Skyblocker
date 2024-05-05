@@ -16,7 +16,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about minions placed on the home island
 
-public class MinionWidget extends Widget {
+public class MinionWidget extends HudWidget {
     private static final MutableText TITLE = Text.literal("Minions").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
 
