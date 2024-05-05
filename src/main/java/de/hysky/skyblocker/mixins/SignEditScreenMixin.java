@@ -25,7 +25,7 @@ public abstract class SignEditScreenMixin {
     private void skyblocker$render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         //if the sign is being used to enter number send it to the sign calculator
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.enableSignCalculator && Objects.equals(messages[1], "^^^^^^^^^^^^^^^")) {
-            SignCalculator.renderSign(context, messages);
+            SignCalculator.renderCalculator(context, messages[0], context.getScaledWindowWidth() / 2, 55);
         }
     }
 

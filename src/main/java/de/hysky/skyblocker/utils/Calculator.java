@@ -18,9 +18,10 @@ public class Calculator {
         int tokenLength;
     }
 
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([kmbs]?)");
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([kmbse]?)");
     private static final HashMap<String, Integer> magnitudeValues = Util.make(new HashMap<>(), map -> {
         map.put("s", 64);
+        map.put("e", 160);
         map.put("k", 1000);
         map.put("m", 1000000);
         map.put("b", 1000000000);

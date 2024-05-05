@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -9,7 +11,6 @@ import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 public class EditBidPopup extends AbstractPopupScreen {
     private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
@@ -55,6 +56,9 @@ public class EditBidPopup extends AbstractPopupScreen {
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderBackground(context, mouseX, mouseY, delta);
         drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+        if (SkyblockerConfigManager.get().general.enableSignCalculator) {
+            SignCalculator.renderCalculator(context, textFieldWidget.getText(), context.getScaledWindowWidth() / 2, textFieldWidget.getY() - 8);
+        }
     }
 
     private boolean isStringGood(String s) {
@@ -69,8 +73,14 @@ public class EditBidPopup extends AbstractPopupScreen {
     }
 
     private void done(ButtonWidget widget) {
-        if (!isStringGood(textFieldWidget.getText().trim())) return;
-        sendPacket(textFieldWidget.getText().trim());
+        if (SkyblockerConfigManager.get().general.enableSignCalculator) {
+            if (!isStringGood(SignCalculator.getNewValue(false))) return;
+            sendPacket(SignCalculator.getNewValue(false));
+        }
+        else {
+            if (!isStringGood(textFieldWidget.getText().trim())) return;
+            sendPacket(textFieldWidget.getText().trim());
+        }
         this.close();
     }
 

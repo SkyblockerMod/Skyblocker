@@ -15,23 +15,21 @@ public class SignCalculator {
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###.##");
 
     private static String lastInput;
-    private static String input;
     private static Double output;
 
-    public static void renderSign(DrawContext context, String[] messages) {
-        input = messages[0];
+    public static void renderCalculator(DrawContext context, String message, int renderX, int renderY) {
         //only update output if new input
-        if (!input.equals(lastInput)) { //
+        if (!message.equals(lastInput)) { //
             try {
-                output = Calculator.calculate(input);
+                output = Calculator.calculate(message);
             } catch (Exception e) {
                 output = null;
             }
         }
 
-        render(context);
+        render(context, message, renderX, renderY);
 
-        lastInput = input;
+        lastInput = message;
     }
 
     public static String getNewValue(Boolean isPrice) {
@@ -46,7 +44,7 @@ public class SignCalculator {
         return Long.toString(Math.round(output));
     }
 
-    private static void render(DrawContext context) {
+    private static void render(DrawContext context, String input, int renderX, int renderY) {
         Text text;
         if (output == null) {
             text = Text.translatable("text.autoconfig.skyblocker.option.general.enableSignCalculator.invalidEquation").formatted(Formatting.RED);
@@ -54,6 +52,6 @@ public class SignCalculator {
             text = Text.literal(input + " = " + FORMATTER.format(output)).formatted(Formatting.GREEN);
         }
 
-        context.drawCenteredTextWithShadow(CLIENT.textRenderer, text, context.getScaledWindowWidth() / 2, 55, 0xFFFFFFFF);
+        context.drawCenteredTextWithShadow(CLIENT.textRenderer, text, renderX, renderY, 0xFFFFFFFF);
     }
 }
