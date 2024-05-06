@@ -27,7 +27,7 @@ public class EventNotificationsCategory {
                                 () -> config.eventNotifications.reminderSound,
                                 sound -> config.eventNotifications.reminderSound = sound)
                         .controller(ConfigUtils::createEnumCyclingListController)
-                        .name(Text.literal("Notification Sound"))
+                        .name(Text.translatable("text.autoconfig.skyblocker.option.eventNotifications.notificationSound"))
                         .listener((soundOption, sound) -> {
                             if (!shouldPlaySound) {
                                 shouldPlaySound = true;
