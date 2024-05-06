@@ -168,10 +168,9 @@ public class DwarvenHud {
                 || !Utils.isInCrystalHollows() && !Utils.isInDwarvenMines()) {
             return;
         }
-
         List<String> oldCommissionNames =  commissionList.stream().map(Commission::commission).toList();
+        boolean oldCompleted = commissionList.stream().anyMatch(commission -> commission.progression.equals("DONE"));
         commissionList = new ArrayList<>();
-
         for (PlayerListEntry playerListEntry : CLIENT.getNetworkHandler().getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList()) {
             if (playerListEntry.getDisplayName() == null) {
                 continue;
@@ -199,8 +198,9 @@ public class DwarvenHud {
             }
         }
         List<String> newCommissionNames = commissionList.stream().map(Commission::commission).toList();
-        if (!oldCommissionNames.equals(newCommissionNames)) {
-            CommissionLabels.update(newCommissionNames);
+        boolean newCompleted = commissionList.stream().anyMatch(commission -> commission.progression.equals("DONE"));
+        if (!oldCommissionNames.equals(newCommissionNames) || oldCompleted != newCompleted) {
+            CommissionLabels.update(newCommissionNames, newCompleted);
         }
     }
 

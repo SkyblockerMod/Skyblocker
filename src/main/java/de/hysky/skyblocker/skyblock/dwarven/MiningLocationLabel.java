@@ -84,6 +84,42 @@ public class MiningLocationLabel {
         }
     }
 
+    enum dwarvenEmissaries implements Category {
+        LAVA_SPRINGS(new BlockPos(58, 198, -8)),
+        CLIFFSIDE_VEINS(new BlockPos(42, 134, 22)),
+        RAMPARTS_QUARRY(new BlockPos(-72, 153, -10)),
+        UPPER_MINES(new BlockPos(-132, 174, -50)),
+        ROYAL_MINES(new BlockPos(171, 150, 31)),
+        DWARVEN_VILLAGE( new BlockPos(-37, 200, -92)),
+        DWARVEN_MINES( new BlockPos(89, 198, -92));
+
+        private final BlockPos location;
+
+        dwarvenEmissaries( BlockPos location) {
+
+            this.location = location;
+        }
+
+        public BlockPos getLocation() {
+            return location;
+        }
+
+        @Override
+        public String toString() {
+            return "Emissary";
+        }
+
+        @Override
+        public String getName() {
+            return "Emissary";
+        }
+
+        @Override
+        public int getColor() {
+            return 0xffffff;
+        }
+    }
+
     enum glaciteCategory implements Category {
         AQUAMARINE("Aquamarine", 0x334cb1, new BlockPos[]{new BlockPos(-1, 139, 437), new BlockPos(90, 151, 229), new BlockPos(56, 151, 400), new BlockPos(51, 117, 303)}),
         ONYX("Onyx", 0x191919, new BlockPos[]{new BlockPos(79, 119, 411), new BlockPos(-14, 132, 386), new BlockPos(18, 136, 370), new BlockPos(16, 138, 411), new BlockPos(-68, 130, 408)}),

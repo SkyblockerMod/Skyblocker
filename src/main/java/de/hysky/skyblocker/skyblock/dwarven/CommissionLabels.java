@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class CommissionLabels {
 
     private static final Map<String, MiningLocationLabel.dwarvenCategory> DWARVEN_LOCATIONS = Arrays.stream(MiningLocationLabel.dwarvenCategory.values()).collect(Collectors.toMap(MiningLocationLabel.dwarvenCategory::toString, Function.identity()));
+    private static final List<MiningLocationLabel.dwarvenEmissaries> DWARVEN_EMISSARYS = Arrays.stream(MiningLocationLabel.dwarvenEmissaries.values()).toList();
     private static final Map<String, MiningLocationLabel.glaciteCategory> GLACITE_LOCATIONS = Arrays.stream(MiningLocationLabel.glaciteCategory.values()).collect(Collectors.toMap(MiningLocationLabel.glaciteCategory::toString, Function.identity()));
 
     protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
@@ -24,8 +25,9 @@ public class CommissionLabels {
     /**
      * update the activeWaypoints when there is a change in commissions
      * @param newCommissions the new commissions to get the waypoints from
+     * @param completed if there is a commission completed
      */
-    protected static void update(List<String> newCommissions) {
+    protected static void update(List<String> newCommissions, boolean completed) {
         if (!SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.enabled) {
             return;
         }
@@ -57,6 +59,12 @@ public class CommissionLabels {
                     category.isTitanium = commission.contains("Titanium");
                     activeWaypoints.add(new MiningLocationLabel(category, category.getLocation()));
                 }
+            }
+        }
+        //if there is a commission completed and enabled show emissary
+        if (SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.showEmissary && completed) {
+            for (MiningLocationLabel.dwarvenEmissaries emissaries : DWARVEN_EMISSARYS) {
+                activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
             }
         }
     }
