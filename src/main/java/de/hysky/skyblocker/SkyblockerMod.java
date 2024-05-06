@@ -120,7 +120,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemCooldowns.init();
         TabHud.init();
         DwarvenHud.init();
-        CommissionWaypoints.init();
+        CommissionLabels.init();
         CrystalsHud.init();
         FarmingHud.init();
         LowerSensitivity.init();

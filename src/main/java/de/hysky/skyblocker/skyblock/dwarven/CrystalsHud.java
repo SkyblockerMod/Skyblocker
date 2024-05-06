@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png"); 
+    protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
     private static final Identifier MAP_ICON = new Identifier("textures/map/decorations/player.png");
     private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian");
 
@@ -75,8 +75,8 @@ public class CrystalsHud {
         if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
             Map<String,CrystalsWaypoint> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
 
-            for (MiningWaypoints waypoint : ActiveWaypoints.values()) {
-                Color waypointColor = waypoint.category.getColor();
+            for (CrystalsWaypoint waypoint : ActiveWaypoints.values()) {
+                Color waypointColor = waypoint.category.color;
                 Vector2ic renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
                 int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 

@@ -169,7 +169,7 @@ public class DwarvenHud {
             return;
         }
 
-        List<Commission> oldCommissionList =  commissionList;
+        List<String> oldCommissionNames =  commissionList.stream().map(Commission::commission).toList();
         commissionList = new ArrayList<>();
 
         for (PlayerListEntry playerListEntry : CLIENT.getNetworkHandler().getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList()) {
@@ -198,8 +198,9 @@ public class DwarvenHud {
                 glacitePowder = glaciteMatcher.group(0).split(": ")[1];
             }
         }
-        if (!oldCommissionList.equals(commissionList)) {
-            CommissionWaypoints.update(commissionList);
+        List<String> newCommissionNames = commissionList.stream().map(Commission::commission).toList();
+        if (!oldCommissionNames.equals(newCommissionNames)) {
+            CommissionLabels.update(newCommissionNames);
         }
     }
 
