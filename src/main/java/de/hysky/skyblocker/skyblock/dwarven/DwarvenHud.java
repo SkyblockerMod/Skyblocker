@@ -95,6 +95,7 @@ public class DwarvenHud {
      * @param powderHudY Y coordinate of the powder hud
      * @param commissions the commissions to render to the commissions hud
      */
+    @Deprecated(since = "1.20.3+1.20.6", forRemoval = true)
     private static void renderClassic(DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().general.tabHud.enableHudBackground) {
             context.fill(comHudX, comHudY, comHudX + 200, comHudY + (20 * commissions.size()), 0x64000000);
