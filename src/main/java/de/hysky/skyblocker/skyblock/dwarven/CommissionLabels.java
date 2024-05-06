@@ -28,11 +28,11 @@ public class CommissionLabels {
      * @param completed if there is a commission completed
      */
     protected static void update(List<String> newCommissions, boolean completed) {
-        if (!SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.enabled) {
+        String location = Utils.getIslandArea().substring(2);
+        if (!SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.enabled || location.equals("Glacite Mineshafts")) {
             return;
         }
         activeWaypoints.clear();
-        String location = Utils.getIslandArea().substring(2);
         //find commission locations in glacite
         if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels")) {
             for (String commission : newCommissions) {
