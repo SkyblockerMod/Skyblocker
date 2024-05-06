@@ -34,7 +34,7 @@ public class CommissionLabels {
         }
         activeWaypoints.clear();
         //find commission locations in glacite
-        if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels")) {
+        if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels")|| location.equals("Glacite Lake")) {
             for (String commission : newCommissions) {
                 for (Map.Entry<String, MiningLocationLabel.glaciteCategory> glaciteLocation : GLACITE_LOCATIONS.entrySet()) {
                     if (commission.contains(glaciteLocation.getKey())) {
