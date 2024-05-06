@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public class AccessoriesHelper {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("collected_accessories.json");
-	private static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag \\((?<page>\\d+)/\\d+\\)");
+	private static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)\\/\\d+\\))?");
 	//UUID -> Profile Id & Data
 	private static final Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, ProfileAccessoryData>> COLLECTED_ACCESSORIES = new Object2ObjectOpenHashMap<>();
 	private static final Predicate<String> NON_EMPTY = s -> !s.isEmpty();
@@ -63,8 +63,9 @@ public class AccessoriesHelper {
 				if (matcher.matches()) {
 					ScreenEvents.afterTick(screen).register(_screen -> {
 						GenericContainerScreenHandler handler = genericContainerScreen.getScreenHandler();
+						int page = matcher.group("page") != null ? Integer.parseInt(matcher.group("page")) : 1;
 
-						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), Integer.parseInt(matcher.group("page")));
+						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), page);
 					});
 				}
 			}
