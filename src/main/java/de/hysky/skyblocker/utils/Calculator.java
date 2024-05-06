@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.util.Util;
 
 import java.util.*;
@@ -217,6 +218,8 @@ public class Calculator {
     }
 
     public static double calculate(String equation) {
+        //custom bit for replacing purse with its value
+        equation = equation.replace("purse",String.valueOf((int)Utils.getPurse()));
         return evaluate(shunt(lex(equation)));
     }
 }
