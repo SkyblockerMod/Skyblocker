@@ -42,7 +42,7 @@ public class CrystalsWaypoint extends Waypoint {
 
     @Override
     public boolean shouldRender() {
-        return super.shouldRender() ;
+        return super.shouldRender();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class CrystalsWaypoint extends Waypoint {
         private final String name;
         private final float[] colorComponents;
 
-        Category(String name,Color color) {
+        Category(String name, Color color) {
             this.name = name;
             this.color = color;
             this.colorComponents = color.getColorComponents(null);

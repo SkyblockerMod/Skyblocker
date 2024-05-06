@@ -16,12 +16,10 @@ public class CommissionLabels {
     private static final Map<String, MiningLocationLabels.dwarvenCategory> DWARVEN_LOCATIONS = Arrays.stream(MiningLocationLabels.dwarvenCategory.values()).collect(Collectors.toMap(MiningLocationLabels.dwarvenCategory::toString, Function.identity()));
     private static final Map<String, MiningLocationLabels.glaciteCategory> GLACITE_LOCATIONS = Arrays.stream(MiningLocationLabels.glaciteCategory.values()).collect(Collectors.toMap(MiningLocationLabels.glaciteCategory::toString, Function.identity()));
 
-
     protected static List<MiningLocationLabels> activeWaypoints = new ArrayList<>();
 
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
-        ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
     protected static void update(List<String> newCommissions) {
@@ -35,7 +33,7 @@ public class CommissionLabels {
                     if (commission.contains(glaciteLocation.getKey())) {
                         MiningLocationLabels.glaciteCategory category = glaciteLocation.getValue();
                         for (BlockPos gemstoneLocation : category.getLocations()) {
-                            activeWaypoints.add(new MiningLocationLabels(category, Text.of(category.getName()), gemstoneLocation));
+                            activeWaypoints.add(new MiningLocationLabels(category, gemstoneLocation));
                         }
                     }
                 }
@@ -47,7 +45,8 @@ public class CommissionLabels {
             for (Map.Entry<String, MiningLocationLabels.dwarvenCategory> dwarvenLocation : DWARVEN_LOCATIONS.entrySet()) {
                 if (commission.contains(dwarvenLocation.getKey())) {
                     MiningLocationLabels.dwarvenCategory category = dwarvenLocation.getValue();
-                    activeWaypoints.add(new MiningLocationLabels(category, Text.of(category.getName()), category.getLocation()));
+                    category.isTitanium = commission.contains("Titanium");
+                    activeWaypoints.add(new MiningLocationLabels(category, category.getLocation()));
                 }
             }
         }
@@ -60,10 +59,5 @@ public class CommissionLabels {
         for (MiningLocationLabels MiningLocationLabels : activeWaypoints) {
             MiningLocationLabels.render(context);
         }
-        
-    }
-
-    private static void reset() {
-
     }
 }

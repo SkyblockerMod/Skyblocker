@@ -15,8 +15,8 @@ public class MiningLocationLabels {
     final Category category;
     private final Vec3d centerPos;
 
-    MiningLocationLabels(Category category, Text name, BlockPos pos) {
-        this.name = name;
+    MiningLocationLabels(Category category, BlockPos pos) {
+        this.name = Text.literal(category.getName()).withColor(category.getColor());
         this.category = category;
         this.centerPos = pos.toCenterPos();
     }
@@ -27,37 +27,30 @@ public class MiningLocationLabels {
         float scale = (float) (1 * (distance / 10));
         RenderHelper.renderText(context, name, posUp, scale, true);
         RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
-
     }
-
 
     interface Category {
         String getName();
 
-        float[] getColorComponents();
-
+        int getColor(); //all the color codes are the color of the block the waypoint is for
     }
 
     enum dwarvenCategory implements Category {
-        LAVA_SPRINGS("Lava Springs", Color.CYAN, new BlockPos(60, 197, -15)),
-        CLIFFSIDE_VEINS("Cliffside Veins", Color.CYAN, new BlockPos(40, 128, 40)),
-        RAMPARTS_QUARRY("Rampart's Quarry", Color.CYAN, new BlockPos(-100, 150, -20)),
-        UPPER_MINES("Upper Mines", Color.CYAN, new BlockPos(-130, 174, -50)),
-        ROYAL_MINES("Royal Mines", Color.CYAN, new BlockPos(130, 154, 30)),
-        GLACITE_WALKER("Glacite Walker", Color.CYAN, new BlockPos(0, 128, 150));
+        LAVA_SPRINGS("Lava Springs", new BlockPos(60, 197, -15)),
+        CLIFFSIDE_VEINS("Cliffside Veins", new BlockPos(40, 128, 40)),
+        RAMPARTS_QUARRY("Rampart's Quarry", new BlockPos(-100, 150, -20)),
+        UPPER_MINES("Upper Mines", new BlockPos(-130, 174, -50)),
+        ROYAL_MINES("Royal Mines", new BlockPos(130, 154, 30)),
+        GLACITE_WALKER("Glacite Walker", new BlockPos(0, 128, 150));
 
 
-        public final Color color;
+        boolean isTitanium;
         private final String name;
-        private final float[] colorComponents;
         private final BlockPos location;
 
-        dwarvenCategory(String name, Color color, BlockPos location) {
+        dwarvenCategory(String name, BlockPos location) {
             this.name = name;
-            this.color = color;
-            this.colorComponents = color.getColorComponents(null);
             this.location = location;
-
         }
 
         public BlockPos getLocation() {
@@ -69,37 +62,37 @@ public class MiningLocationLabels {
             return name;
         }
 
-
         @Override
         public String getName() {
             return name;
         }
 
         @Override
-        public float[] getColorComponents() {
-            return colorComponents;
+        public int getColor() {
+            if (isTitanium) {
+                return 0xd8d6d8;
+            }
+            return 0x45bde0;
         }
-
     }
 
     enum glaciteCategory implements Category {
-        AQUAMARINE("Aquamarine", Color.BLUE, new BlockPos[]{new BlockPos(-1, 139, 437), new BlockPos(90, 151, 229), new BlockPos(56, 151, 400), new BlockPos(51, 117, 303)}),
-        ONYX("Onyx", Color.BLACK, new BlockPos[]{new BlockPos(79, 119, 411), new BlockPos(-14, 132, 386), new BlockPos(18, 136, 370), new BlockPos(16, 138, 411), new BlockPos(-68, 130, 408)}),
-        PERIDOT("Peridot", Color.GREEN, new BlockPos[]{new BlockPos(-61, 147, 302), new BlockPos(91, 122, 397),new BlockPos(-73, 122, 458), new BlockPos(-77, 120, 282)}),
-        CITRINE("Citrine", Color.YELLOW, new BlockPos[]{new BlockPos(-104, 144, 244), new BlockPos(39, 119, 386), new BlockPos(-57, 144, 421), new BlockPos(-47, 126, 418) });
+        AQUAMARINE("Aquamarine", 0x334cb1, new BlockPos[]{new BlockPos(-1, 139, 437), new BlockPos(90, 151, 229), new BlockPos(56, 151, 400), new BlockPos(51, 117, 303)}),
+        ONYX("Onyx", 0x191919, new BlockPos[]{new BlockPos(79, 119, 411), new BlockPos(-14, 132, 386), new BlockPos(18, 136, 370), new BlockPos(16, 138, 411), new BlockPos(-68, 130, 408)}),
+        PERIDOT("Peridot", 0x667f33, new BlockPos[]{new BlockPos(-61, 147, 302), new BlockPos(91, 122, 397), new BlockPos(-73, 122, 458), new BlockPos(-77, 120, 282)}),
+        CITRINE("Citrine", 0x664c33, new BlockPos[]{new BlockPos(-104, 144, 244), new BlockPos(39, 119, 386), new BlockPos(-57, 144, 421), new BlockPos(-47, 126, 418)});
 
-        public final Color color;
         private final String name;
-        private final float[] colorComponents;
+        private final int color;
         private final BlockPos[] location;
 
-        glaciteCategory(String name, Color color, BlockPos[] location) {
+        glaciteCategory(String name, int color, BlockPos[] location) {
             this.name = name;
             this.color = color;
-            this.colorComponents = color.getColorComponents(null);
             this.location = location;
-
         }
+
+
 
         public BlockPos[] getLocations() {
             return location;
@@ -116,9 +109,8 @@ public class MiningLocationLabels {
         }
 
         @Override
-        public float[] getColorComponents() {
-            return colorComponents;
+        public int getColor() {
+            return color;
         }
-
     }
 }
