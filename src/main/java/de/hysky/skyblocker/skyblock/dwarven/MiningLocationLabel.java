@@ -25,6 +25,10 @@ public class MiningLocationLabel {
         this.centerPos = pos.toCenterPos();
     }
 
+    /**
+     * render the name and distance to the label scaled so can be seen at a distance
+     * @param context render context
+     */
     public void render(WorldRenderContext context) {
         Vec3d posUp = centerPos.add(0, 1, 0);
         double distance = context.camera().getPos().distanceTo(centerPos);

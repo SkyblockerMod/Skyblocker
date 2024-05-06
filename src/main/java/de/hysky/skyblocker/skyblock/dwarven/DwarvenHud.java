@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public class DwarvenHud {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    protected static List<Commission> commissionList = new ArrayList<>();
+    private static List<Commission> commissionList = new ArrayList<>();
 
     public static String mithrilPowder = "0";
     public static String gemStonePowder = "0";

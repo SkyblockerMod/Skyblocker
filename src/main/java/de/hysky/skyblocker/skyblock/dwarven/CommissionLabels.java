@@ -21,6 +21,10 @@ public class CommissionLabels {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
     }
 
+    /**
+     * update the activeWaypoints when there is a change in commissions
+     * @param newCommissions the new commissions to get the waypoints from
+     */
     protected static void update(List<String> newCommissions) {
         if (!SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.enabled) {
             return;
@@ -57,6 +61,10 @@ public class CommissionLabels {
         }
     }
 
+    /**
+     * render all the active waypoints
+     * @param context render context
+     */
     private static void render(WorldRenderContext context) {
         if (!Utils.isInDwarvenMines() || !SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.enabled) {
             return;
