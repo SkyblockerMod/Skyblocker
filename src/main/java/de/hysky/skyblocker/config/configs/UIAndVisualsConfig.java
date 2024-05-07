@@ -7,7 +7,7 @@ import net.minecraft.util.Formatting;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UiAndVisualsConfig {
+public class UIAndVisualsConfig {
     @SerialEntry
     public boolean compactorDeletorPreview = true;
 

@@ -2,7 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
-public class SlayerConfig {
+public class SlayersConfig {
     @SerialEntry
     public EndermanSlayer endermanSlayer = new EndermanSlayer();
 

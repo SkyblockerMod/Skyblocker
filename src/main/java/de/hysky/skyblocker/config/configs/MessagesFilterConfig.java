@@ -3,7 +3,7 @@ package de.hysky.skyblocker.config.configs;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
-public class MessagesConfig {
+public class MessagesFilterConfig {
     @SerialEntry
     public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 

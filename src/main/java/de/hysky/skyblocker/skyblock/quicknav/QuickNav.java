@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.quicknav;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.QuickNavConfig;
+import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -37,7 +37,7 @@ public class QuickNav {
 
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
-        QuickNavConfig data = SkyblockerConfigManager.get().quickNav;
+        QuickNavigationConfig data = SkyblockerConfigManager.get().quickNav;
         try {
             if (data.button1.render) buttons.add(parseButton(data.button1, screenTitle, 0));
             if (data.button2.render) buttons.add(parseButton(data.button2, screenTitle, 1));
@@ -57,8 +57,8 @@ public class QuickNav {
         return buttons;
     }
 
-    private static QuickNavButton parseButton(QuickNavConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
-        QuickNavConfig.ItemData itemData = buttonInfo.item;
+    private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
+        QuickNavigationConfig.ItemData itemData = buttonInfo.item;
         String nbtString = "{id:\"minecraft:" + itemData.itemName.toLowerCase(Locale.ROOT) + "\",Count:1";
         if (itemData.nbt.length() > 2) nbtString += "," + itemData.nbt;
         nbtString += "}";

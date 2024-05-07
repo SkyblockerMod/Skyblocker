@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock;
 
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.config.configs.UiAndVisualsConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -217,7 +216,7 @@ public class ChestValue {
 	}
 
 	static Text getValueText(long value, boolean hasIncompleteData) {
-		UiAndVisualsConfig.ChestValue config = SkyblockerConfigManager.get().uiAndVisuals.chestValue;
+		UIAndVisualsConfig.ChestValue config = SkyblockerConfigManager.get().uiAndVisuals.chestValue;
 		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : config.color);
 	}
 }
