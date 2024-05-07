@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,8 @@ import net.minecraft.util.Formatting;
 // this widget shows info about active super cookies
 // or not, if you're unwilling to buy one
 
-public class CookieWidget extends HudWidget {
+// TODO change maybe at some point
+public class CookieWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Cookie Info").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
@@ -21,11 +23,11 @@ public class CookieWidget extends HudWidget {
     private static final Pattern COOKIE_PATTERN = Pattern.compile(".*\\nCookie Buff\\n(?<buff>.*)\\n");
 
     public CookieWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Cookies", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignored) {
         String footertext = PlayerListMgr.getFooter();
         if (footertext == null || !footertext.contains("Cookie Buff")) {
             this.addComponent(new IcoTextComponent());

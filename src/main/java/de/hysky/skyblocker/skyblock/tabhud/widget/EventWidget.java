@@ -6,30 +6,22 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
+
 // this widget shows info about ongoing events (e.g. election)
 
-public class EventWidget extends HudWidget {
+public class EventWidget extends TabHudWidget {
     private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
 
-    private final boolean isInGarden;
 
-    public EventWidget(boolean isInGarden) {
-        super(TITLE, Formatting.YELLOW.getColorValue());
-        this.isInGarden = isInGarden;
+    public EventWidget() {
+        super("Event", TITLE, Formatting.YELLOW.getColorValue());
     }
 
     @Override
-    public void updateContent() {
-        // hypixel devs carefully inserting the most random edge cases #317:
-        // the event info is placed a bit differently when in the garden.
-        int offset = (isInGarden) ? -1 : 0;
-
-        this.addSimpleIcoText(Ico.NTAG, "Name:", Formatting.YELLOW, 73 + offset);
-
-        // this could look better
-        Text time = HudWidget.plainEntryText(74 + offset);
-        IcoTextComponent t = new IcoTextComponent(Ico.CLOCK, time);
-        this.addComponent(t);
+    public void updateContent(List<Text> lines) {
+        this.addComponent(new IcoTextComponent(Ico.NTAG, lines.getFirst()));
+        this.addComponent(new IcoTextComponent(Ico.CLOCK, lines.get(1)));
     }
 
 }
