@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Utils;
@@ -35,7 +36,7 @@ import net.minecraft.text.Text;
 public class PlayerListMgr {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
-	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s)Players \\((\\d+)\\)(\\s|$)");
+	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s)(Players \\(\\d+\\)|Island)(\\s|$)");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("(^|\\s)Info(\\s|$)");
 
 	private static List<PlayerListEntry> playerList;
@@ -64,6 +65,7 @@ public class PlayerListMgr {
 		boolean playersDone = false;
 		String hypixelWidgetName = "";
 		List<Text> contents = new ArrayList<>();
+		// TODO DUNGEONS CHECK
 
 		for (PlayerListEntry playerListEntry : playerList) {
 			Text displayName = playerListEntry.getDisplayName();
@@ -96,12 +98,13 @@ public class PlayerListMgr {
 					contents.clear();
 					Pair<String, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
-					contents.add(nameAndInfo.right());
+					if (!nameAndInfo.right().getString().isBlank()) contents.add(nameAndInfo.right());
 					continue;
 				}
 				contents.add(displayName);
 			}
 		}
+		ScreenBuilder.positionsNeedsUpdating = true;
 	}
 
 	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Text> lines) {

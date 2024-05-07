@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,7 @@ import net.minecraft.util.Formatting;
 // this widget shows various dungeon info
 // deaths, healing, dmg taken, milestones
 
-public class DungeonDeathWidget extends HudWidget {
+public class DungeonDeathWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Death").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
@@ -23,11 +24,11 @@ public class DungeonDeathWidget extends HudWidget {
     private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
     public DungeonDeathWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignored) {
         Matcher m = PlayerListMgr.regexAt(25, DEATH_PATTERN);
         if (m == null) {
             this.addComponent(new IcoTextComponent());
