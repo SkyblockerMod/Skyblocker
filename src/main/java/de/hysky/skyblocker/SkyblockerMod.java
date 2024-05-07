@@ -122,6 +122,7 @@ public class SkyblockerMod implements ClientModInitializer {
         BackpackPreview.init();
         ItemCooldowns.init();
         TabHud.init();
+        GlaciteColdOverlay.init();
         DwarvenHud.init();
         CommissionLabels.init();
         CrystalsHud.init();
@@ -129,7 +130,6 @@ public class SkyblockerMod implements ClientModInitializer {
         LowerSensitivity.init();
         CrystalsLocationsManager.init();
         MetalDetector.init();
-        GlaciteColdOverlay.init();
         ChatMessageListener.init();
         Shortcuts.init();
         ChatRulesHandler.init();

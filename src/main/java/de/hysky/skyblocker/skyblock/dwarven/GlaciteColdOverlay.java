@@ -27,6 +27,9 @@ public class GlaciteColdOverlay {
     }
 
     private static void coldReset(Text text, boolean b) {
+        if (Utils.isInDwarvenMines() || b) {
+            return;
+        }
         String message = text.getString();
         if (message.equals("The warmth of the campfire reduced your ❄ Cold to 0!")) {
             cold = 0;
