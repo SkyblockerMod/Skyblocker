@@ -27,7 +27,7 @@ public class GlaciteColdOverlay {
     }
 
     private static void coldReset(Text text, boolean b) {
-        if (Utils.isInDwarvenMines() || b) {
+        if (!Utils.isInDwarvenMines() || b) {
             return;
         }
         String message = text.getString();
