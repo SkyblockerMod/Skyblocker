@@ -24,17 +24,18 @@ public class CommissionLabels {
 
     /**
      * update the activeWaypoints when there is a change in commissions
+     *
      * @param newCommissions the new commissions to get the waypoints from
-     * @param completed if there is a commission completed
+     * @param completed      if there is a commission completed
      */
     protected static void update(List<String> newCommissions, boolean completed) {
-        String location = Utils.getIslandArea().substring(2);
-        if (!SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.enabled || location.equals("Glacite Mineshafts")) {
+        if (!SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.enabled) {
             return;
         }
         activeWaypoints.clear();
+        String location = Utils.getIslandArea().substring(2);
         //find commission locations in glacite
-        if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels")|| location.equals("Glacite Lake")) {
+        if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Mineshafts") || location.equals("Glacite Lake")) {
             for (String commission : newCommissions) {
                 for (Map.Entry<String, MiningLocationLabel.glaciteCategory> glaciteLocation : GLACITE_LOCATIONS.entrySet()) {
                     if (commission.contains(glaciteLocation.getKey())) {
@@ -71,6 +72,7 @@ public class CommissionLabels {
 
     /**
      * render all the active waypoints
+     *
      * @param context render context
      */
     private static void render(WorldRenderContext context) {
