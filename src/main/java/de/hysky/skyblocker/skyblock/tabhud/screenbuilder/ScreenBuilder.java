@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import com.google.gson.JsonArray;
@@ -12,20 +13,23 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
+import de.hysky.skyblocker.skyblock.tabhud.widget.*;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.AlignStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CollideStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PlaceStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.StackStage;
-import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ErrorWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.EventWidget;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class ScreenBuilder {
+
+    public static boolean positionsNeedsUpdating = true;
 
     // layout pipeline
     private final ArrayList<PipelineStage> layoutPipeline = new ArrayList<>();
@@ -36,6 +40,8 @@ public class ScreenBuilder {
     private final HashMap<String, HudWidget> objectMap = new HashMap<>();
 
     private final String builderName;
+
+    private final Map<String, Boolean> positioning = new Object2ObjectOpenHashMap<>();
 
     /**
      * Create a ScreenBuilder from a json.
@@ -160,20 +166,44 @@ public class ScreenBuilder {
         return this.objectMap.get(name);
     }
 
+    private static int totalWidth = 0;
+
     /**
      * Run the pipeline to build a Screen
      */
     public void run(DrawContext context, int screenW, int screenH) {
 
-        for (HudWidget w : instances) {
-            w.update();
+        if (positionsNeedsUpdating) {
+
+            positionsNeedsUpdating = false;
+            final int maxY = 200;
+            final int startY = 20;
+
+            totalWidth = 0;
+
+            int currentWidth = 0;
+            int currentY = startY;
+            for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
+                if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) continue;
+                if (currentY + tabHudWidget.getHeight() > maxY) {
+                    totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
+                    currentY = startY;
+                    currentWidth = 0;
+                }
+                tabHudWidget.setPosition(totalWidth, currentY);
+                currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
+                currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
+            }
+            totalWidth += currentWidth;
         }
-        for (PipelineStage ps : layoutPipeline) {
-            ps.run(screenW, screenH);
-        }
+
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.translate((float) (screenW - totalWidth)/2, 0, 0);
         for (HudWidget w : instances) {
             w.render(context);
         }
+        matrices.pop();
     }
 
 }

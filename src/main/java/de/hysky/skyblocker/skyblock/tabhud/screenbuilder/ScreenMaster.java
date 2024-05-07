@@ -6,7 +6,9 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -21,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +86,21 @@ public class ScreenMaster {
     @Init
     public static void init() {
 
-        //ClassPath.from(TabHudWidget.class.getClassLoader()).getTopLevelClasses("de.hysky.skyblocker.skyblock.tabhud.widget").iterator().forEachRemaining();
+        try {
+            ClassPath.from(TabHudWidget.class.getClassLoader()).getTopLevelClasses("de.hysky.skyblocker.skyblock.tabhud.widget").iterator().forEachRemaining(classInfo -> {
+                Class<?> load = classInfo.load();
+                if (!load.getSuperclass().equals(TabHudWidget.class)) return;
+                try {
+                    TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
+                    PlayerListMgr.widgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
+                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                    LOGGER.error("[Skyblocker] Failed to load {} hud widget", classInfo.getName(), e);
+                }
+
+            });
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
+        }
 
         // WHY MUST IT ALWAYS BE SUCH NESTED GARBAGE MINECRAFT KEEP THAT IN DFU FFS
 
