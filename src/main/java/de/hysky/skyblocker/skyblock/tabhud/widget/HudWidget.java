@@ -9,6 +9,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -30,7 +31,10 @@ import net.minecraft.util.Formatting;
  */
 public abstract class HudWidget implements Element, Widget {
 
+    public static final Object2ObjectOpenHashMap<String, HudWidget> HUDS = new Object2ObjectOpenHashMap<>();
+
     private final ArrayList<Component> components = new ArrayList<>();
+    private final String internalID;
     protected int w = 0, h = 0;
     private int x = 0, y = 0;
     private final int color;
@@ -44,9 +48,17 @@ public abstract class HudWidget implements Element, Widget {
     static final int BORDER_SZE_E = 4;
     static final int COL_BG_BOX = 0xc00c0c0c;
 
-    public HudWidget(MutableText title, Integer colorValue) {
+    /**
+     * Most often than not this should be instantiated only once.
+     * @param title title
+     * @param colorValue the colour
+     * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
+     */
+    public HudWidget(MutableText title, Integer colorValue, String internalID) {
         this.title = title;
         this.color = 0xff000000 | colorValue;
+        HUDS.put(internalID, this);
+        this.internalID = internalID;
     }
 
     public void addComponent(Component c) {
@@ -261,5 +273,9 @@ public abstract class HudWidget implements Element, Widget {
     @Override
     public ScreenRect getNavigationFocus() {
         return Element.super.getNavigationFocus();
+    }
+
+    public String getInternalID() {
+        return internalID;
     }
 }
