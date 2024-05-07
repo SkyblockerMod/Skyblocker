@@ -50,7 +50,7 @@ public class NewYearCakesHelper extends ContainerSolver {
 
     @Override
     protected boolean isEnabled() {
-        return SkyblockerConfigManager.get().general.enableNewYearCakesHelper;
+        return SkyblockerConfigManager.get().helper.enableNewYearCakesHelper;
     }
 
     public boolean addCake(int year) {

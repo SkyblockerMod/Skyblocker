@@ -46,7 +46,7 @@ public class VisitorHelper {
     public static void init() {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             String title = screen.getTitle().getString();
-            if (SkyblockerConfigManager.get().locations.garden.visitorHelper && screen instanceof HandledScreen<?> handledScreen && (Utils.getLocationRaw().equals("garden") && !title.contains("Logbook") || title.startsWith("Bazaar"))) {
+            if (SkyblockerConfigManager.get().farming.garden.visitorHelper && screen instanceof HandledScreen<?> handledScreen && (Utils.getLocationRaw().equals("garden") && !title.contains("Logbook") || title.startsWith("Bazaar"))) {
                 ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) -> renderScreen(title, context, client.textRenderer, handledScreen.getScreenHandler(), mouseX, mouseY));
             }
         });

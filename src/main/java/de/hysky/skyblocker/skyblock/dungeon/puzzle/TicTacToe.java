@@ -111,7 +111,7 @@ public class TicTacToe extends DungeonPuzzle {
 	@Override
 	public void render(WorldRenderContext context) {
 		try {
-			if (SkyblockerConfigManager.get().locations.dungeons.solveTicTacToe && nextBestMoveToMake != null) {
+			if (SkyblockerConfigManager.get().dungeons.puzzleSolver.solveTicTacToe && nextBestMoveToMake != null) {
 				RenderHelper.renderOutline(context, nextBestMoveToMake, RED_COLOR_COMPONENTS, 5, false);
 			}
 		} catch (Exception e) {

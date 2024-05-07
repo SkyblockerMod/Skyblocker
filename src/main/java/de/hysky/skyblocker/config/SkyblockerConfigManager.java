@@ -57,7 +57,7 @@ public class SkyblockerConfigManager {
 				Screens.getButtons(screen).add(ButtonWidget
 						.builder(Text.literal("\uD83D\uDD27"), buttonWidget -> client.setScreen(createGUI(screen)))
 						.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
-						.tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.title")))
+						.tooltip(Tooltip.of(Text.translatable("skyblocker.title")))
 						.build());
 			}
 		});
@@ -69,7 +69,7 @@ public class SkyblockerConfigManager {
 
 	public static Screen createGUI(Screen parent) {
 		return YetAnotherConfigLib.create(HANDLER, (defaults, config, builder) -> builder
-				.title(Text.translatable("text.autoconfig.skyblocker.title"))
+				.title(Text.translatable("skyblocker.title"))
 				.category(GeneralCategory.create(defaults, config))
 				.category(DungeonsCategory.create(defaults, config))
 				.category(DwarvenMinesCategory.create(defaults, config))

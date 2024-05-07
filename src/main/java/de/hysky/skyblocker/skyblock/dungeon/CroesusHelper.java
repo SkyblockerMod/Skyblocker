@@ -19,7 +19,7 @@ public class CroesusHelper extends ContainerSolver {
 
     @Override
     protected boolean isEnabled() {
-        return SkyblockerConfigManager.get().locations.dungeons.croesusHelper;
+        return SkyblockerConfigManager.get().dungeons.croesusHelper;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Trivia extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().locations.dungeons.solveTrivia ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().dungeons.puzzleSolver.solveTrivia ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

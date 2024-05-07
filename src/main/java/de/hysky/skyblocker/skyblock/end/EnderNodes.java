@@ -98,7 +98,7 @@ public class EnderNodes {
     }
 
     private static boolean shouldProcess() {
-        return SkyblockerConfigManager.get().locations.end.enableEnderNodeHelper && Utils.isInTheEnd();
+        return SkyblockerConfigManager.get().otherLocations.end.enableEnderNodeHelper && Utils.isInTheEnd();
     }
 
     private static void reset() {
@@ -117,7 +117,7 @@ public class EnderNodes {
         private long lastConfirmed;
 
         private EnderNode(BlockPos pos) {
-            super(pos, () -> SkyblockerConfigManager.get().general.waypoints.waypointType, DyeColor.CYAN.getColorComponents(), false);
+            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, DyeColor.CYAN.getColorComponents(), false);
         }
 
         private void updateParticles() {

@@ -87,7 +87,7 @@ public abstract class ItemStackMixin {
 
 	@Unique
 	private boolean skyblocker$shouldProcess() {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().locations.dwarvenMines.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique

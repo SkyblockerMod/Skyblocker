@@ -10,6 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -23,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 public class ItemRarityBackgrounds {
-	private static final SkyblockerConfig.ItemInfoDisplay CONFIG = SkyblockerConfigManager.get().general.itemInfoDisplay;
+	private static final GeneralConfig.ItemInfoDisplay CONFIG = SkyblockerConfigManager.get().general.itemInfoDisplay;
 	private static final Supplier<Sprite> SPRITE = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(CONFIG.itemRarityBackgroundStyle.tex);
 	public static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
 			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),

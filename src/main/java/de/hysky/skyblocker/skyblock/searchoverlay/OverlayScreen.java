@@ -35,7 +35,7 @@ public class OverlayScreen extends Screen {
         super.init();
         int rowWidth = (int) (this.width * 0.4);
         int startX = (int) (this.width * 0.5) - rowWidth / 2;
-        int startY = (int) ((int) (this.height * 0.5) - (rowHeight * (1 + SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().general.searchOverlay.historyLength)) / 2);
+        int startY = (int) ((int) (this.height * 0.5) - (rowHeight * (1 + SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength)) / 2);
 
         // Search field
         this.searchField = new TextFieldWidget(textRenderer, startX, startY, rowWidth - rowHeight, rowHeight, Text.translatable("gui.recipebook.search_hint"));
@@ -50,7 +50,7 @@ public class OverlayScreen extends Screen {
 
         // suggested item buttons
         int rowOffset = rowHeight;
-        int totalSuggestions = SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions;
+        int totalSuggestions = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions;
         this.suggestionButtons = new ButtonWidget[totalSuggestions];
         for (int i = 0; i < totalSuggestions; i++) {
             suggestionButtons[i] = ButtonWidget.builder(Text.literal(SearchOverManager.getSuggestion(i)).setStyle(Style.EMPTY), a -> {
@@ -64,7 +64,7 @@ public class OverlayScreen extends Screen {
         }
         // history item buttons
         rowOffset += (int) (rowHeight * 0.75);
-        int historyLength = SkyblockerConfigManager.get().general.searchOverlay.historyLength;
+        int historyLength = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength;
         this.historyButtons = new ButtonWidget[historyLength];
         for (int i = 0; i < historyLength; i++) {
             String text = SearchOverManager.getHistory(i);
@@ -106,7 +106,7 @@ public class OverlayScreen extends Screen {
         int renderOffset = (rowHeight - 16) / 2;
         context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
         if (historyButtons.length > 0 && historyButtons[0] != null) {
-            context.drawText(textRenderer, Text.translatable("text.autoconfig.skyblocker.option.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, Text.translatable("skyblocker.option.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
         }
 
         //draw item stacks and tooltip to buttons
@@ -140,7 +140,7 @@ public class OverlayScreen extends Screen {
     public final void tick() {
         super.tick();
         //update suggestion buttons text
-        for (int i = 0; i < SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions; i++) {
+        for (int i = 0; i < SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions; i++) {
             String text = SearchOverManager.getSuggestion(i);
             if (!text.isEmpty()) {
                 suggestionButtons[i].visible = true;

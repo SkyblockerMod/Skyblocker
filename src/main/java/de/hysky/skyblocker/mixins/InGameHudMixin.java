@@ -79,7 +79,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = { "renderExperienceBar", "renderExperienceLevel" }, at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderExperienceBar(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.bars.enableBars && !Utils.isInTheRift())
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
 
@@ -93,13 +93,13 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderMountHealth(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.bars.enableBars && !Utils.isInTheRift())
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift())
             ci.cancel();
     }
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
     private void skyblocker$dontRenderStatusEffects(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hideStatusEffectOverlay) ci.cancel();
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().misc.hideStatusEffectOverlay) ci.cancel();
     }
 
     @ModifyExpressionValue(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAttackCooldownProgress(F)F"))
@@ -116,7 +116,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "setTitle", at = @At("HEAD"), cancellable = true)
     private void skyblocker$dicerTitlePrevent(Text title, CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().locations.garden.dicerTitlePrevent && title != null && DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().farming.garden.dicerTitlePrevent && title != null && DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
             ci.cancel();
         }
     }

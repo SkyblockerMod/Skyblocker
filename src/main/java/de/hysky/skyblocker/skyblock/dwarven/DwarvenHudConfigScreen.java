@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.hud.HudCommsWidget;
@@ -23,7 +24,7 @@ public class DwarvenHudConfigScreen extends HudConfigScreen {
 
     public DwarvenHudConfigScreen(Screen parent) {
     	super(Text.literal("Dwarven HUD Config"), parent, List.of(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG));
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style == SkyblockerConfig.DwarvenHudStyle.CLASSIC) {
+        if (SkyblockerConfigManager.get().mining.dwarvenHud.style == MiningConfig.DwarvenHudStyle.CLASSIC) {
             HudCommsWidget.INSTANCE_CFG.setWidth(200);
             HudCommsWidget.INSTANCE_CFG.setHeight(20 * CFG_COMMS.size());
             HudPowderWidget.INSTANCE_CFG.setWidth(200);
@@ -35,8 +36,8 @@ public class DwarvenHudConfigScreen extends HudConfigScreen {
     @Override
     protected List<IntIntMutablePair> getConfigPos(SkyblockerConfig config) {
         return List.of(
-                IntIntMutablePair.of(config.locations.dwarvenMines.dwarvenHud.x, config.locations.dwarvenMines.dwarvenHud.y),
-                IntIntMutablePair.of(config.locations.dwarvenMines.dwarvenHud.powderX, config.locations.dwarvenMines.dwarvenHud.powderY)
+                IntIntMutablePair.of(config.mining.dwarvenHud.x, config.mining.dwarvenHud.y),
+                IntIntMutablePair.of(config.mining.dwarvenHud.powderX, config.mining.dwarvenHud.powderY)
         );
     }
 
@@ -47,9 +48,9 @@ public class DwarvenHudConfigScreen extends HudConfigScreen {
 
     @Override
     protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
-        configManager.locations.dwarvenMines.dwarvenHud.x = widgets.get(0).getX();
-        configManager.locations.dwarvenMines.dwarvenHud.y = widgets.get(0).getY();
-        configManager.locations.dwarvenMines.dwarvenHud.powderX = widgets.get(1).getX();
-        configManager.locations.dwarvenMines.dwarvenHud.powderY = widgets.get(1).getY();
+        configManager.mining.dwarvenHud.x = widgets.get(0).getX();
+        configManager.mining.dwarvenHud.y = widgets.get(0).getY();
+        configManager.mining.dwarvenHud.powderX = widgets.get(1).getX();
+        configManager.mining.dwarvenHud.powderY = widgets.get(1).getY();
     }
 }

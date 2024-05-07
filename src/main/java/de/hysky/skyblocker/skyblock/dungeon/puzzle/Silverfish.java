@@ -65,7 +65,7 @@ public class Silverfish extends DungeonPuzzle {
 
     @Override
     public void tick(MinecraftClient client) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveSilverfish || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolver.solveSilverfish || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();
@@ -158,7 +158,7 @@ public class Silverfish extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveSilverfish || !DungeonManager.isCurrentRoomMatched() || silverfishPath.isEmpty()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolver.solveSilverfish || !DungeonManager.isCurrentRoomMatched() || silverfishPath.isEmpty()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();

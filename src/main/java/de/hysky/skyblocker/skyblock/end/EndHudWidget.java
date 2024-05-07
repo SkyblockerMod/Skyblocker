@@ -37,15 +37,15 @@ public class EndHudWidget extends Widget {
         ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
         POPPY.addEnchantment(Enchantments.INFINITY, 1);
 
-        INSTANCE.setX(SkyblockerConfigManager.get().locations.end.x);
-        INSTANCE.setY(SkyblockerConfigManager.get().locations.end.y);
+        INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
+        INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);
     }
 
 
     @Override
     public void updateContent() {
         // Zealots
-        if (SkyblockerConfigManager.get().locations.end.zealotKillsEnabled) {
+        if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
             addComponent(new IcoTextComponent(ENDERMAN_HEAD, Text.literal("Zealots").formatted(Formatting.BOLD)));
             addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsSinceLastEye", TheEnd.zealotsSinceLastEye)));
             addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsTotalKills", TheEnd.zealotsKilled)));
@@ -57,7 +57,7 @@ public class EndHudWidget extends Widget {
         }
 
         // Endstone protector
-        if (SkyblockerConfigManager.get().locations.end.protectorLocationEnabled) {
+        if (SkyblockerConfigManager.get().otherLocations.end.protectorLocationEnabled) {
             addComponent(new IcoTextComponent(POPPY, Text.literal("Endstone Protector").formatted(Formatting.BOLD)));
             if (TheEnd.stage == 5) {
                 addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.stage", "IMMINENT")));

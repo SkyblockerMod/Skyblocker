@@ -32,7 +32,7 @@ public class GuardianHealth {
     }
 
     private static void onWorldRender(WorldRenderContext context) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.floor3GuardianHealthDisplay) return;
+        if (!SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay) return;
 
         MinecraftClient client = MinecraftClient.getInstance();
 
@@ -78,7 +78,7 @@ public class GuardianHealth {
     }
 
     private static void onChatMessage(Text text, boolean overlay) {
-        if (Utils.isInDungeons() && SkyblockerConfigManager.get().locations.dungeons.floor3GuardianHealthDisplay && !inBoss) {
+        if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay && !inBoss) {
             String unformatted = Formatting.strip(text.getString());
 
             inBoss = unformatted.equals("[BOSS] The Professor: I was burdened with terrible news recently...");

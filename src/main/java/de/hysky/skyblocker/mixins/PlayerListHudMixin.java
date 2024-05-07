@@ -28,7 +28,7 @@ public class PlayerListHudMixin {
 
     @Inject(at = @At("HEAD"), method = "render", cancellable = true)
     public void skyblocker$renderTabHud(CallbackInfo info, @Local(argsOnly = true) DrawContext context, @Local(argsOnly = true) int w) {
-        if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().general.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
+        if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
             return;
         }
 
@@ -38,7 +38,7 @@ public class PlayerListHudMixin {
         }
 
         int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
-        float scale = SkyblockerConfigManager.get().general.tabHud.tabHudScale / 100f;
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
         w = (int) (w / scale);
         h = (int) (h / scale);
 

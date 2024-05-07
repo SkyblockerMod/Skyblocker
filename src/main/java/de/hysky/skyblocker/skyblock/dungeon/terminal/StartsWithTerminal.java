@@ -23,7 +23,7 @@ public class StartsWithTerminal extends ContainerSolver {
 
 	@Override
 	protected boolean isEnabled() {
-		return SkyblockerConfigManager.get().locations.dungeons.terminals.solveStartsWith;
+		return SkyblockerConfigManager.get().dungeons.terminals.solveStartsWith;
 	}
 
 	@Override

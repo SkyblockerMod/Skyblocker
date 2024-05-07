@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.entity;
 
-import com.mojang.authlib.properties.Property;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
@@ -8,15 +7,12 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
@@ -36,23 +32,23 @@ public class MobGlow {
 			if (Utils.isInDungeons() && !entity.isInvisible()) {
 				return switch (entity) {
 					// Minibosses
-					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow;
+					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
 					case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
 
 					// Bats
-					case BatEntity b -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow || SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+					case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
 
 					// Armor Stands
 					case ArmorStandEntity _armorStand -> false;
 
 					// Regular Mobs
-					default -> SkyblockerConfigManager.get().locations.dungeons.starredMobGlow && isStarred(entity);
+					default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
 				};
 			}
 
 			return switch (entity) {
 				// Rift
-				case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().locations.rift.blobbercystGlow;
+				case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
 
 				// Enderman Slayer
 				// Highlights Nukekubi Heads

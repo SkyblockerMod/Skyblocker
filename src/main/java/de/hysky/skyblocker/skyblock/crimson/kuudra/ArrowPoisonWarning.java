@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra.KuudraPhase;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -17,7 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class ArrowPoisonWarning {
-	private static final Supplier<SkyblockerConfig.Kuudra> CONFIG = () -> SkyblockerConfigManager.get().locations.crimsonIsle.kuudra;
+	private static final Supplier<CrimsonIsleConfig.Kuudra> CONFIG = () -> SkyblockerConfigManager.get().crimsonIsle.kuudra;
 	private static final int THREE_SECONDS = 20 * 3;
 	private static final Title NONE_TITLE = new Title(Text.translatable("skyblocker.crimson.kuudra.noArrowPoison").formatted(Formatting.GREEN));
 	private static final Title LOW_TITLE = new Title(Text.translatable("skyblocker.crimson.kuudra.lowArrowPoison").formatted(Formatting.GREEN));

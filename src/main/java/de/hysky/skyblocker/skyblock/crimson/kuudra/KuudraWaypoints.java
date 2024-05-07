@@ -2,10 +2,12 @@ package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
 import java.io.BufferedReader;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonElement;
@@ -36,7 +38,7 @@ public class KuudraWaypoints {
 	private static final float[] SUPPLIES_COLOR = { 255f / 255f, 0f, 0f };
 	private static final float[] PEARL_COLOR = { 57f / 255f, 117f / 255f, 125f / 255f };
 	private static final float[] SAFE_SPOT_COLOR = { 255f / 255f, 85f / 255f, 255f / 255f };
-	private static final Supplier<Type> SUPPLIES_AND_FUEL_TYPE = () -> SkyblockerConfigManager.get().locations.crimsonIsle.kuudra.suppliesAndFuelWaypointType;
+	private static final Supplier<Type> SUPPLIES_AND_FUEL_TYPE = () -> SkyblockerConfigManager.get().crimsonIsle.kuudra.suppliesAndFuelWaypointType;
 	private static final ObjectArrayList<Waypoint> SAFE_SPOT_WAYPOINTS = new ObjectArrayList<>();
 	private static final ObjectArrayList<Waypoint> PEARL_WAYPOINTS = new ObjectArrayList<>();
 	private static final Function<float[], Codec<List<Waypoint>>> CODEC = cc -> PosUtils.ALT_BLOCK_POS_CODEC.xmap(
@@ -75,14 +77,14 @@ public class KuudraWaypoints {
 
 	static void tick() {
 		MinecraftClient client = MinecraftClient.getInstance();
-		SkyblockerConfig.Kuudra config = SkyblockerConfigManager.get().locations.crimsonIsle.kuudra;
+		CrimsonIsleConfig.Kuudra config = SkyblockerConfigManager.get().crimsonIsle.kuudra;
 
-		if (Utils.isInKuudra() && (config.supplyWaypoints || config.fuelWaypoints || config.ballistaBuildWaypoints)) {
+		if (Utils.isInKuudra() && (config.supplyWaypoints || config.fuelWaypoints || config.ballistaBuildWaypoints) && client.player != null) {
 			Box searchBox = client.player.getBoundingBox().expand(500d);
 			ObjectArrayList<Waypoint> supplies = new ObjectArrayList<>();
 			ObjectArrayList<Waypoint> fuelCells = new ObjectArrayList<>();
 
-			if (config.supplyWaypoints || config.fuelWaypoints) {
+			if ((config.supplyWaypoints || config.fuelWaypoints) && client.world != null) {
 				List<GiantEntity> giants = client.world.getEntitiesByClass(GiantEntity.class, searchBox, giant -> giant.getY() < 67);
 
 				for (GiantEntity giant : giants) {
@@ -94,17 +96,17 @@ public class KuudraWaypoints {
 
 					Waypoint waypoint = new Waypoint(BlockPos.ofFloored(x, y, z), SUPPLIES_AND_FUEL_TYPE, SUPPLIES_COLOR, false);
 
-					switch (Kuudra.phase) {
-						case RETRIEVE_SUPPLIES -> supplies.add(waypoint);
-						case DPS -> fuelCells.add(waypoint);
-						default -> supplies.add(waypoint);
-					}
+                    if (Objects.requireNonNull(Kuudra.phase) == Kuudra.KuudraPhase.DPS) {
+                        fuelCells.add(waypoint);
+                    } else {
+                        supplies.add(waypoint);
+                    }
 				}
 			}
 
 			ObjectArrayList<Waypoint> ballistaBuildSpots = new ObjectArrayList<>();
 
-			if (config.ballistaBuildWaypoints) {
+			if (config.ballistaBuildWaypoints && client.world != null) {
 				List<ArmorStandEntity> armorStands = client.world.getEntitiesByClass(ArmorStandEntity.class, searchBox, ArmorStandEntity::hasCustomName);
 
 				for (ArmorStandEntity armorStand : armorStands) {
@@ -123,7 +125,7 @@ public class KuudraWaypoints {
 	}
 
 	static void render(WorldRenderContext context) {
-		SkyblockerConfig.Kuudra config = SkyblockerConfigManager.get().locations.crimsonIsle.kuudra;
+		CrimsonIsleConfig.Kuudra config = SkyblockerConfigManager.get().crimsonIsle.kuudra;
 
 		if (Utils.isInKuudra() && loaded) {
 			if (config.supplyWaypoints) {

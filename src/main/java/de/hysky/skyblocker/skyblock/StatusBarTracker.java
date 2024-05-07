@@ -72,7 +72,7 @@ public class StatusBarTracker {
     }
 
     private Text onOverlayMessage(Text text, boolean overlay) {
-        if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.bars.enableBars || Utils.isInTheRift()) {
+        if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || Utils.isInTheRift()) {
             return text;
         }
         return Text.of(update(text.getString(), SkyblockerConfigManager.get().messages.hideMana));

@@ -26,7 +26,7 @@ public class CrystalsHudConfigScreen extends HudConfigScreen {
     @SuppressWarnings("SuspiciousNameCombination")
     @Override
     protected List<IntIntMutablePair> getConfigPos(SkyblockerConfig config) {
-        return List.of(IntIntMutablePair.of(config.locations.dwarvenMines.crystalsHud.x, config.locations.dwarvenMines.crystalsHud.y));
+        return List.of(IntIntMutablePair.of(config.mining.crystalsHud.x, config.mining.crystalsHud.y));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CrystalsHudConfigScreen extends HudConfigScreen {
 
     @Override
     protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
-        configManager.locations.dwarvenMines.crystalsHud.x = widgets.get(0).getX();
-        configManager.locations.dwarvenMines.crystalsHud.y = widgets.get(0).getY();
+        configManager.mining.crystalsHud.x = widgets.getFirst().getX();
+        configManager.mining.crystalsHud.y = widgets.getFirst().getY();
     }
 }

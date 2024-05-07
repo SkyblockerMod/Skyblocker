@@ -63,7 +63,7 @@ public class CrystalsLocationsManager {
     }
 
     private static void extractLocationFromMessage(Text message, Boolean overlay) {
-        if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows()) {
+        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows()) {
             return;
         }
 
@@ -177,7 +177,7 @@ public class CrystalsLocationsManager {
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
                 return 0;
             }
-            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("text.autoconfig.skyblocker.option.locations.dwarvenMines.crystalsWaypoints.shareFail").formatted(Formatting.RED)), false);
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.option.locations.dwarvenMines.crystalsWaypoints.shareFail").formatted(Formatting.RED)), false);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -191,7 +191,7 @@ public class CrystalsLocationsManager {
     }
 
     public static void render(WorldRenderContext context) {
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled) {
+        if (SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
             for (CrystalsWaypoint crystalsWaypoint : activeWaypoints.values()) {
                 if (crystalsWaypoint.shouldRender()) {
                     crystalsWaypoint.render(context);
@@ -205,7 +205,7 @@ public class CrystalsLocationsManager {
     }
 
     public static void update() {
-        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsWaypoints.enabled || !Utils.isInCrystalHollows()) {
+        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled || !Utils.isInCrystalHollows()) {
             return;
         }
 

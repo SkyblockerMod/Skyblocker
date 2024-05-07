@@ -19,7 +19,7 @@ public abstract class RenderFishMixin {
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void skyblocker$render(FishingBobberEntity fishingBobberEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
         //if rendered bobber is not the players and option to hide  others is enabled do not render the bobber
-        if (Utils.isOnSkyblock() && fishingBobberEntity.getPlayerOwner() != MinecraftClient.getInstance().player && SkyblockerConfigManager.get().general.fishing.hideOtherPlayersRods) {
+        if (Utils.isOnSkyblock() && fishingBobberEntity.getPlayerOwner() != MinecraftClient.getInstance().player && SkyblockerConfigManager.get().helper.fishing.hideOtherPlayersRods) {
             ci.cancel();
         }
     }

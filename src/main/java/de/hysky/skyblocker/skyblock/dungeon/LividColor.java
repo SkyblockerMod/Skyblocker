@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -42,13 +43,13 @@ public class LividColor {
             "Vendetta Livid", Formatting.WHITE
     );
     public static final Set<String> LIVID_NAMES = Set.copyOf(LIVID_TO_FORMATTING.keySet());
-    public static final SkyblockerConfig.LividColor CONFIG = SkyblockerConfigManager.get().locations.dungeons.lividColor;
+    public static final DungeonsConfig.Livid CONFIG = SkyblockerConfigManager.get().dungeons.livid;
     private static int tenTicks = 0;
     private static Formatting color;
 
     public static void init() {
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            SkyblockerConfig.LividColor config = SkyblockerConfigManager.get().locations.dungeons.lividColor;
+            DungeonsConfig.Livid config = SkyblockerConfigManager.get().dungeons.livid;
             if ((config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow) && message.getString().equals("[BOSS] Livid: I respect you for making it to here, but I'll be your undoing.")) {
                 tenTicks = 8;
             }
@@ -58,7 +59,7 @@ public class LividColor {
     public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (tenTicks != 0) {
-            SkyblockerConfig.LividColor config = SkyblockerConfigManager.get().locations.dungeons.lividColor;
+            DungeonsConfig.Livid config = SkyblockerConfigManager.get().dungeons.livid;
             if ((config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow) && Utils.isInDungeons() && client.world != null) {
                 if (tenTicks == 1) {
                     onLividColorFound(client, Blocks.RED_WOOL);
@@ -94,11 +95,11 @@ public class LividColor {
     }
 
     public static boolean allowGlow() {
-        return !SkyblockerConfigManager.get().locations.dungeons.lividColor.enableLividColorGlow || !DungeonManager.getBoss().isFloor(5);
+        return !SkyblockerConfigManager.get().dungeons.livid.enableLividColorGlow || !DungeonManager.getBoss().isFloor(5);
     }
 
     public static boolean shouldGlow(String name) {
-        return SkyblockerConfigManager.get().locations.dungeons.lividColor.enableLividColorGlow && color == LIVID_TO_FORMATTING.get(name);
+        return SkyblockerConfigManager.get().dungeons.livid.enableLividColorGlow && color == LIVID_TO_FORMATTING.get(name);
     }
 
     @SuppressWarnings("DataFlowIssue")

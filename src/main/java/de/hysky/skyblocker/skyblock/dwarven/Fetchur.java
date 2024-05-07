@@ -23,7 +23,7 @@ public class Fetchur extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().locations.dwarvenMines.solveFetchur ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().mining.dwarvenMines.solveFetchur ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

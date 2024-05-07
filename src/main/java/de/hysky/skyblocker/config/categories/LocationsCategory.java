@@ -15,125 +15,125 @@ public class LocationsCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.name(Text.translatable("text.autoconfig.skyblocker.category.locations"))
+				.name(Text.translatable("skyblocker.category.locations"))
 
 				//Barn
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.barn"))
+						.name(Text.translatable("skyblocker.option.locations.barn"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.barn.solveHungryHiker"))
-								.binding(defaults.locations.barn.solveHungryHiker,
-										() -> config.locations.barn.solveHungryHiker,
-										newValue -> config.locations.barn.solveHungryHiker = newValue)
+								.name(Text.translatable("skyblocker.option.locations.barn.solveHungryHiker"))
+								.binding(defaults.otherLocations.barn.solveHungryHiker,
+										() -> config.otherLocations.barn.solveHungryHiker,
+										newValue -> config.otherLocations.barn.solveHungryHiker = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.barn.solveTreasureHunter"))
-								.binding(defaults.locations.barn.solveTreasureHunter,
-										() -> config.locations.barn.solveTreasureHunter,
-										newValue -> config.locations.barn.solveTreasureHunter = newValue)
+								.name(Text.translatable("skyblocker.option.locations.barn.solveTreasureHunter"))
+								.binding(defaults.otherLocations.barn.solveTreasureHunter,
+										() -> config.otherLocations.barn.solveTreasureHunter,
+										newValue -> config.otherLocations.barn.solveTreasureHunter = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 
 				//The Rift
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift"))
+						.name(Text.translatable("skyblocker.option.locations.rift"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.mirrorverseWaypoints"))
-								.binding(defaults.locations.rift.mirrorverseWaypoints,
-										() -> config.locations.rift.mirrorverseWaypoints,
-										newValue -> config.locations.rift.mirrorverseWaypoints = newValue)
+								.name(Text.translatable("skyblocker.option.locations.rift.mirrorverseWaypoints"))
+								.binding(defaults.otherLocations.rift.mirrorverseWaypoints,
+										() -> config.otherLocations.rift.mirrorverseWaypoints,
+										newValue -> config.otherLocations.rift.mirrorverseWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.blobbercystGlow"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.blobbercystGlow.@Tooltip")))
-								.binding(defaults.locations.rift.blobbercystGlow,
-										() -> config.locations.rift.blobbercystGlow,
-										newValue -> config.locations.rift.blobbercystGlow = newValue)
+								.name(Text.translatable("skyblocker.option.locations.rift.blobbercystGlow"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.option.locations.rift.blobbercystGlow.@Tooltip")))
+								.binding(defaults.otherLocations.rift.blobbercystGlow,
+										() -> config.otherLocations.rift.blobbercystGlow,
+										newValue -> config.otherLocations.rift.blobbercystGlow = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.enigmaSoulWaypoints.@Tooltip")))
-								.binding(defaults.locations.rift.enigmaSoulWaypoints,
-										() -> config.locations.rift.enigmaSoulWaypoints,
-										newValue -> config.locations.rift.enigmaSoulWaypoints = newValue)
+								.name(Text.translatable("skyblocker.option.locations.rift.enigmaSoulWaypoints"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.option.locations.rift.enigmaSoulWaypoints.@Tooltip")))
+								.binding(defaults.otherLocations.rift.enigmaSoulWaypoints,
+										() -> config.otherLocations.rift.enigmaSoulWaypoints,
+										newValue -> config.otherLocations.rift.enigmaSoulWaypoints = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.highlightFoundEnigmaSouls"))
-								.binding(defaults.locations.rift.highlightFoundEnigmaSouls,
-										() -> config.locations.rift.highlightFoundEnigmaSouls,
-										newValue -> config.locations.rift.highlightFoundEnigmaSouls = newValue)
+								.name(Text.translatable("skyblocker.option.locations.rift.highlightFoundEnigmaSouls"))
+								.binding(defaults.otherLocations.rift.highlightFoundEnigmaSouls,
+										() -> config.otherLocations.rift.highlightFoundEnigmaSouls,
+										newValue -> config.otherLocations.rift.highlightFoundEnigmaSouls = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip")))
-								.binding(defaults.locations.rift.mcGrubberStacks,
-										() -> config.locations.rift.mcGrubberStacks,
-										newValue -> config.locations.rift.mcGrubberStacks = newValue)
+								.name(Text.translatable("skyblocker.option.locations.rift.mcGrubberStacks"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.option.locations.rift.mcGrubberStacks.@Tooltip")))
+								.binding(defaults.otherLocations.rift.mcGrubberStacks,
+										() -> config.otherLocations.rift.mcGrubberStacks,
+										newValue -> config.otherLocations.rift.mcGrubberStacks = newValue)
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 5).step(1))
 								.build())
 						.build())
 
 				// The end
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end"))
+						.name(Text.translatable("skyblocker.option.locations.end"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.enableEnderNodeHelper"))
-								.binding(defaults.locations.end.enableEnderNodeHelper,
-										() -> config.locations.end.enableEnderNodeHelper,
-										newValue -> config.locations.end.enableEnderNodeHelper = newValue)
+								.name(Text.translatable("skyblocker.option.locations.end.enableEnderNodeHelper"))
+								.binding(defaults.otherLocations.end.enableEnderNodeHelper,
+										() -> config.otherLocations.end.enableEnderNodeHelper,
+										newValue -> config.otherLocations.end.enableEnderNodeHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.hudEnabled"))
-								.binding(defaults.locations.end.hudEnabled,
-										() -> config.locations.end.hudEnabled,
-										newValue -> config.locations.end.hudEnabled = newValue)
+								.name(Text.translatable("skyblocker.option.locations.end.hudEnabled"))
+								.binding(defaults.otherLocations.end.hudEnabled,
+										() -> config.otherLocations.end.hudEnabled,
+										newValue -> config.otherLocations.end.hudEnabled = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.zealotKillsEnabled"))
-								.binding(defaults.locations.end.zealotKillsEnabled,
-										() -> config.locations.end.zealotKillsEnabled,
+								.name(Text.translatable("skyblocker.option.locations.end.zealotKillsEnabled"))
+								.binding(defaults.otherLocations.end.zealotKillsEnabled,
+										() -> config.otherLocations.end.zealotKillsEnabled,
 										newValue -> {
-											config.locations.end.zealotKillsEnabled = newValue;
+											config.otherLocations.end.zealotKillsEnabled = newValue;
 											EndHudWidget.INSTANCE.update();
 										})
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.protectorLocationEnable"))
-								.binding(defaults.locations.end.protectorLocationEnabled,
-										() -> config.locations.end.protectorLocationEnabled,
+								.name(Text.translatable("skyblocker.option.locations.end.protectorLocationEnable"))
+								.binding(defaults.otherLocations.end.protectorLocationEnabled,
+										() -> config.otherLocations.end.protectorLocationEnabled,
 										newValue -> {
-											config.locations.end.protectorLocationEnabled = newValue;
+											config.otherLocations.end.protectorLocationEnabled = newValue;
 											EndHudWidget.INSTANCE.update();
 										})
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.waypoint"))
-								.binding(defaults.locations.end.waypoint,
-										() -> config.locations.end.waypoint,
-										newValue -> config.locations.end.waypoint = newValue)
+								.name(Text.translatable("skyblocker.option.locations.end.waypoint"))
+								.binding(defaults.otherLocations.end.waypoint,
+										() -> config.otherLocations.end.waypoint,
+										newValue -> config.otherLocations.end.waypoint = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(ButtonOption.createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.screen"))
+								.name(Text.translatable("skyblocker.option.locations.end.screen"))
 								.text(Text.translatable("text.skyblocker.open")) // Reusing again lol
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new EndHudConfigScreen(screen)))
 								.build())
 						.option(ButtonOption.createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.end.resetName"))
-								.text(Text.translatable("text.autoconfig.skyblocker.option.locations.end.resetText"))
+								.name(Text.translatable("skyblocker.option.locations.end.resetName"))
+								.text(Text.translatable("skyblocker.option.locations.end.resetText"))
 								.action((screen, opt) -> {
 									TheEnd.zealotsKilled = 0;
 									TheEnd.zealotsSinceLastEye = 0;
@@ -146,66 +146,66 @@ public class LocationsCategory {
 
 				//Spider's Den
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.spidersDen"))
+						.name(Text.translatable("skyblocker.option.locations.spidersDen"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.spidersDen.relics.enableRelicsHelper"))
-								.binding(defaults.locations.spidersDen.relics.enableRelicsHelper,
-										() -> config.locations.spidersDen.relics.enableRelicsHelper,
-										newValue -> config.locations.spidersDen.relics.enableRelicsHelper = newValue)
+								.name(Text.translatable("skyblocker.option.locations.spidersDen.relics.enableRelicsHelper"))
+								.binding(defaults.otherLocations.spidersDen.relics.enableRelicsHelper,
+										() -> config.otherLocations.spidersDen.relics.enableRelicsHelper,
+										newValue -> config.otherLocations.spidersDen.relics.enableRelicsHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.spidersDen.relics.highlightFoundRelics"))
-								.binding(defaults.locations.spidersDen.relics.highlightFoundRelics,
-										() -> config.locations.spidersDen.relics.highlightFoundRelics,
-										newValue -> config.locations.spidersDen.relics.highlightFoundRelics = newValue)
+								.name(Text.translatable("skyblocker.option.locations.spidersDen.relics.highlightFoundRelics"))
+								.binding(defaults.otherLocations.spidersDen.relics.highlightFoundRelics,
+										() -> config.otherLocations.spidersDen.relics.highlightFoundRelics,
+										newValue -> config.otherLocations.spidersDen.relics.highlightFoundRelics = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
 
 				//Garden
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden"))
+						.name(Text.translatable("skyblocker.option.locations.garden"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.farmingHud.enableHud"))
-								.binding(defaults.locations.garden.farmingHud.enableHud,
-										() -> config.locations.garden.farmingHud.enableHud,
-										newValue -> config.locations.garden.farmingHud.enableHud = newValue)
+								.name(Text.translatable("skyblocker.option.locations.garden.farmingHud.enableHud"))
+								.binding(defaults.farming.garden.farmingHud.enableHud,
+										() -> config.farming.garden.farmingHud.enableHud,
+										newValue -> config.farming.garden.farmingHud.enableHud = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(ButtonOption.createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.farmingHud.config"))
+								.name(Text.translatable("skyblocker.option.locations.garden.farmingHud.config"))
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new FarmingHudConfigScreen(screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.dicerTitlePrevent"))
-								.binding(defaults.locations.garden.dicerTitlePrevent,
-										() -> config.locations.garden.dicerTitlePrevent,
-										newValue -> config.locations.garden.dicerTitlePrevent = newValue)
+								.name(Text.translatable("skyblocker.option.locations.garden.dicerTitlePrevent"))
+								.binding(defaults.farming.garden.dicerTitlePrevent,
+										() -> config.farming.garden.dicerTitlePrevent,
+										newValue -> config.farming.garden.dicerTitlePrevent = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.visitorHelper"))
-								.binding(defaults.locations.garden.visitorHelper,
-										() -> config.locations.garden.visitorHelper,
-										newValue -> config.locations.garden.visitorHelper = newValue)
+								.name(Text.translatable("skyblocker.option.locations.garden.visitorHelper"))
+								.binding(defaults.farming.garden.visitorHelper,
+										() -> config.farming.garden.visitorHelper,
+										newValue -> config.farming.garden.visitorHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.lockMouseTool"))
-								.binding(defaults.locations.garden.lockMouseTool,
-										() -> config.locations.garden.lockMouseTool,
-										newValue -> config.locations.garden.lockMouseTool = newValue)
+								.name(Text.translatable("skyblocker.option.locations.garden.lockMouseTool"))
+								.binding(defaults.farming.garden.lockMouseTool,
+										() -> config.farming.garden.lockMouseTool,
+										newValue -> config.farming.garden.lockMouseTool = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.locations.garden.lockMouseGround"))
-								.binding(defaults.locations.garden.lockMouseGroundOnly,
-										() -> config.locations.garden.lockMouseGroundOnly,
-										newValue -> config.locations.garden.lockMouseGroundOnly = newValue)
+								.name(Text.translatable("skyblocker.option.locations.garden.lockMouseGround"))
+								.binding(defaults.farming.garden.lockMouseGroundOnly,
+										() -> config.farming.garden.lockMouseGroundOnly,
+										newValue -> config.farming.garden.lockMouseGroundOnly = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())

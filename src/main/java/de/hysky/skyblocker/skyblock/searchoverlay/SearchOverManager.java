@@ -2,13 +2,12 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UiAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
-import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -75,7 +74,7 @@ public class SearchOverManager {
     }
 
     private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        if (SkyblockerConfigManager.get().general.searchOverlay.enableCommands) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
             dispatcher.register(literal("ahs").executes(context -> startCommand(true)));
             dispatcher.register(literal("bzs").executes(context -> startCommand(false)));
         }
@@ -199,7 +198,7 @@ public class SearchOverManager {
         SearchOverManager.sign = sign;
         isCommand = false;
         SearchOverManager.isAuction = isAuction;
-        if (SkyblockerConfigManager.get().general.searchOverlay.keepPreviousSearches) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.keepPreviousSearches) {
             Text[] messages = SearchOverManager.sign.getText(signFront).getMessages(CLIENT.shouldFilterText());
             search = messages[0].getString();
             if (!messages[1].getString().isEmpty()) {
@@ -221,7 +220,7 @@ public class SearchOverManager {
     protected static void updateSearch(String newValue) {
         search = newValue;
         //update the suggestion values
-        int totalSuggestions = SkyblockerConfigManager.get().general.searchOverlay.maxSuggestions;
+        int totalSuggestions = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions;
         if (newValue.isBlank() || totalSuggestions == 0) return; //do not search for empty value
         suggestionsArray = (isAuction ? auctionItems : bazaarItems).stream().filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toArray(String[]::new);
     }
@@ -248,12 +247,12 @@ public class SearchOverManager {
      */
     protected static String getHistory(int index) {
         if (isAuction) {
-            if (SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.size() > index) {
-                return SkyblockerConfigManager.get().general.searchOverlay.auctionHistory.get(index);
+            if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.auctionHistory.size() > index) {
+                return SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.auctionHistory.get(index);
             }
         } else {
-            if (SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.size() > index) {
-                return SkyblockerConfigManager.get().general.searchOverlay.bazaarHistory.get(index);
+            if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.bazaarHistory.size() > index) {
+                return SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.bazaarHistory.get(index);
             }
         }
         return null;
@@ -268,9 +267,9 @@ public class SearchOverManager {
      */
     private static void saveHistory() {
         //save to history
-        SkyblockerConfig.SearchOverlay config = SkyblockerConfigManager.get().general.searchOverlay;
+        UiAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
         if (isAuction) {
-            if (config.auctionHistory.isEmpty() || !config.auctionHistory.get(0).equals(search)) {
+            if (config.auctionHistory.isEmpty() || !config.auctionHistory.getFirst().equals(search)) {
                 config.auctionHistory.add(0, search);
                 if (config.auctionHistory.size() > config.historyLength) {
                     config.auctionHistory = config.auctionHistory.subList(0, config.historyLength);

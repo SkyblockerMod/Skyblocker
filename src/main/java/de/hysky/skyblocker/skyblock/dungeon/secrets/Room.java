@@ -310,7 +310,7 @@ public class Room implements Tickable, Renderable {
         }
 
         // Wither and blood door
-        if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight && doorPos == null) {
+        if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight && doorPos == null) {
             doorPos = DungeonMapUtils.getWitherBloodDoorPos(client.world, segments);
             if (doorPos != null) {
                 doorBox = new Box(doorPos.getX(), doorPos.getY(), doorPos.getZ(), doorPos.getX() + DOOR_SIZE.getX(), doorPos.getY() + DOOR_SIZE.getY(), doorPos.getZ() + DOOR_SIZE.getZ());
@@ -420,7 +420,7 @@ public class Room implements Tickable, Renderable {
             if (matchState == MatchState.MATCHING) {
                 // If one room matches, load the secrets for that room and set state to double-checking.
                 Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.stream().filter(directionRooms -> directionRooms.getRight().size() == 1).findAny().orElseThrow();
-                name = directionRoom.getRight().get(0);
+                name = directionRoom.getRight().getFirst();
                 direction = directionRoom.getLeft();
                 physicalCornerPos = directionRoom.getMiddle();
                 DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
@@ -526,7 +526,7 @@ public class Room implements Tickable, Renderable {
         }
 
         synchronized (this) {
-            if (SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
+            if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
                 for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
                     if (secretWaypoint.shouldRender()) {
                         secretWaypoint.render(context);
@@ -535,11 +535,11 @@ public class Room implements Tickable, Renderable {
             }
         }
 
-        if (!SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight || doorPos == null) {
+        if (!SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight || doorPos == null) {
             return;
         }
         float[] colorComponents = keyFound ? GREEN_COLOR_COMPONENTS : RED_COLOR_COMPONENTS;
-        switch (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.doorHighlightType) {
+        switch (SkyblockerConfigManager.get().dungeons.doorHighlight.doorHighlightType) {
             case HIGHLIGHT -> RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);
             case OUTLINED_HIGHLIGHT -> {
                 RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);

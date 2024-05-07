@@ -80,7 +80,7 @@ public class IceFill extends DungeonPuzzle {
 
     @Override
     public void tick(MinecraftClient client) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveIceFill || client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolver.solveIceFill || client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();
@@ -150,7 +150,7 @@ public class IceFill extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveIceFill || !DungeonManager.isCurrentRoomMatched()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolver.solveIceFill || !DungeonManager.isCurrentRoomMatched()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();

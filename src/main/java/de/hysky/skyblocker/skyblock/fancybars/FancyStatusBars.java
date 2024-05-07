@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UiAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -58,7 +59,7 @@ public class FancyStatusBars {
         // Fetch from old status bar config
         int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
         StatusBar health = statusBars.get("health");
-        SkyblockerConfig.OldBarPositions barPositions = SkyblockerConfigManager.get().general.bars.barPositions;
+        UiAndVisualsConfig.OldBarPositions barPositions = SkyblockerConfigManager.get().uiAndVisuals.bars.barPositions;
         loadOldBarPosition(health, counts, barPositions.healthBarPosition);
         StatusBar intelligence = statusBars.get("intelligence");
         loadOldBarPosition(intelligence, counts, barPositions.manaBarPosition);
@@ -103,7 +104,7 @@ public class FancyStatusBars {
      * @param counts the counts for each bar position (LAYER1, LAYER2, RIGHT)
      * @param position the position to load
      */
-    private static void loadOldBarPosition(StatusBar bar, int[] counts, SkyblockerConfig.OldBarPosition position) {
+    private static void loadOldBarPosition(StatusBar bar, int[] counts, UiAndVisualsConfig.OldBarPosition position) {
         switch (position) {
             case RIGHT:
                 bar.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
@@ -265,7 +266,7 @@ public class FancyStatusBars {
 
     public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
-        if (!SkyblockerConfigManager.get().general.bars.enableBars || player == null || Utils.isInTheRift())
+        if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || player == null || Utils.isInTheRift())
             return false;
 
         Collection<StatusBar> barCollection = statusBars.values();

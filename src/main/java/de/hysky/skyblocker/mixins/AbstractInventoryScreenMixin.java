@@ -14,6 +14,6 @@ public class AbstractInventoryScreenMixin {
 
 	@Inject(method = "drawStatusEffects", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$dontDrawStatusEffects(CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hideStatusEffectOverlay) ci.cancel();
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().misc.hideStatusEffectOverlay) ci.cancel();
 	}
 }
