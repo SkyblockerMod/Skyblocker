@@ -12,7 +12,7 @@ public class CameraPositionWidget extends HudWidget {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     public CameraPositionWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "position");
     }
 
     @Override

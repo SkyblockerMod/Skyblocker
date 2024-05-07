@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +17,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about a player in the current dungeon group
 
-public class DungeonPlayerWidget extends HudWidget {
+public class DungeonPlayerWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Player").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
@@ -49,12 +50,12 @@ public class DungeonPlayerWidget extends HudWidget {
 
     // title needs to be changeable here
     public DungeonPlayerWidget(int player) {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Players", TITLE, Formatting.DARK_PURPLE.getColorValue());
         this.player = player;
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignored) {
         int start = 1 + (player - 1) * 4;
 
         if (PlayerListMgr.strAt(start) == null) {

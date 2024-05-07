@@ -7,20 +7,22 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
+
 // this widget shows info about... something?
 // related to downed people in dungeons, not sure what this is supposed to show
 
-public class DungeonDownedWidget extends HudWidget {
+public class DungeonDownedWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Downed").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
 
     public DungeonDownedWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Downed", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignored) {
         String down = PlayerListMgr.strAt(21);
         if (down == null) {
             this.addComponent(new IcoTextComponent());

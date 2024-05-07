@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +17,7 @@ import net.minecraft.util.Formatting;
 // this widget shows info about fire sales when in the hub.
 // or not, if there isn't one going on
 
-public class FireSaleWidget extends HudWidget {
+public class FireSaleWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Fire Sales").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
@@ -28,11 +29,12 @@ public class FireSaleWidget extends HudWidget {
     private static final Pattern FIRE_PATTERN = Pattern.compile("(?<item>.*): (?<avail>\\d*)/(?<total>[0-9.]*)k");
 
     public FireSaleWidget() {
-        super(TITLE, Formatting.DARK_AQUA.getColorValue());
+        super("Fire Sales", TITLE, Formatting.DARK_AQUA.getColorValue());
     }
 
+    // TODO make it work (waiting for a fire sale to see the widget)
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignore) {
         Text event = PlayerListMgr.textAt(46);
 
         if (event == null) {

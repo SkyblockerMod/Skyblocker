@@ -8,20 +8,21 @@ import net.minecraft.util.Formatting;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 // this widget shows a list of obtained dungeon buffs
 
-public class DungeonBuffWidget extends HudWidget {
+public class DungeonBuffWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Dungeon Buffs").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
 
     public DungeonBuffWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignored) {
 
         String footertext = PlayerListMgr.getFooter();
 

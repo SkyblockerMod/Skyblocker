@@ -15,11 +15,11 @@ public class ErrorWidget extends HudWidget {
     Text error = Text.of("No info available!");
 
     public ErrorWidget() {
-        super(TITLE, Formatting.RED.getColorValue());
+        super(TITLE, Formatting.RED.getColorValue(), "error");
     }
 
     public ErrorWidget(String error) {
-        super(TITLE, Formatting.RED.getColorValue());
+        super(TITLE, Formatting.RED.getColorValue(), "error");
         this.error = Text.of(error);
     }
 

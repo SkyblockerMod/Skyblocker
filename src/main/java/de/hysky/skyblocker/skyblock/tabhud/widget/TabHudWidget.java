@@ -13,7 +13,7 @@ public abstract class TabHudWidget extends HudWidget {
 
 
     public TabHudWidget(String hypixelWidgetName, MutableText title, Integer colorValue) {
-        super(title, colorValue);
+        super(title, colorValue, hypixelWidgetName.toLowerCase().replace(' ', '_'));
         this.hypixelWidgetName = hypixelWidgetName;
     }
 

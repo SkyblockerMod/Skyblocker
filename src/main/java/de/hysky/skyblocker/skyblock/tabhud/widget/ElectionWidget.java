@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows the status or results of the current election
 
-public class ElectionWidget extends HudWidget {
+public class ElectionWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Election Info").formatted(Formatting.YELLOW,
             Formatting.BOLD);
@@ -47,11 +48,11 @@ public class ElectionWidget extends HudWidget {
     private static final Formatting[] COLS = { Formatting.GOLD, Formatting.RED, Formatting.LIGHT_PURPLE };
 
     public ElectionWidget() {
-        super(TITLE, Formatting.YELLOW.getColorValue());
+        super("Election", TITLE, Formatting.YELLOW.getColorValue());
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> lines) {
         String status = PlayerListMgr.strAt(76);
         if (status == null) {
             this.addComponent(new IcoTextComponent());
