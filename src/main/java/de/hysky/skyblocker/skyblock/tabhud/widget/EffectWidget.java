@@ -8,21 +8,23 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
+
 // this widgte shows, how many active effects you have.
 // it also shows one of those in detail.
 // the parsing is super suspect and should be replaced by some regexes sometime later
 
-public class EffectWidget extends HudWidget {
+public class EffectWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Effect Info").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
 
     public EffectWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Effect Info", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignored) {
 
         String footertext = PlayerListMgr.getFooter();
 
