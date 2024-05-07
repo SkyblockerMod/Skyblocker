@@ -3,6 +3,8 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -17,11 +19,10 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
-import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -102,5 +103,15 @@ public abstract class ClientPlayNetworkHandlerMixin {
             TheEnd.onEntityDeath(entity);
         }
         return entity;
+    }
+
+    @Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
+    private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+        if (!SkyblockerConfigManager.get().general.compactDamage.enabled || entity == null || entity.getType() != EntityType.ARMOR_STAND) return;
+        try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
+            CompactDamage.compactDamage((ArmorStandEntity) entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

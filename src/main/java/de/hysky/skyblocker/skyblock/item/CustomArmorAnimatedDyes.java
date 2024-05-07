@@ -109,7 +109,7 @@ public class CustomArmorAnimatedDyes {
 	}
 
 	//Credit to https://codepen.io/OliverBalfour/post/programmatically-making-gradients
-	private static int interpolate(int firstColor, int secondColor, double percentage) {
+	public static int interpolate(int firstColor, int secondColor, double percentage) {
 		int r1 = MathHelper.square((firstColor >> 16) & 0xFF);
 		int g1 = MathHelper.square((firstColor >> 8) & 0xFF);
 		int b1 = MathHelper.square(firstColor & 0xFF);
