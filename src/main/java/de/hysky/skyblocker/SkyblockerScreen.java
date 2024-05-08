@@ -1,5 +1,7 @@
 package de.hysky.skyblocker;
 
+import java.time.LocalDate;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -26,7 +28,7 @@ public class SkyblockerScreen extends Screen {
 	private static final int BUTTON_WIDTH = 210;
 	private static final int HALF_BUTTON_WIDTH = 101; //Same as (210 - 8) / 2
 	private static final Text TITLE = Text.literal("Skyblocker " + SkyblockerMod.VERSION);
-	private static final Identifier ICON = new Identifier(SkyblockerMod.NAMESPACE, "icon.png");
+	private static final Identifier ICON;
 	private static final Text CONFIGURATION_TEXT = Text.translatable("text.skyblocker.config");
 	private static final Text SOURCE_TEXT = Text.translatable("text.skyblocker.source");
 	private static final Text REPORT_BUGS_TEXT = Text.translatable("menu.reportBugs");
@@ -35,6 +37,12 @@ public class SkyblockerScreen extends Screen {
 	private static final Text MODRINTH_TEXT = Text.translatable("text.skyblocker.modrinth");
 	private static final Text DISCORD_TEXT = Text.translatable("text.skyblocker.discord");
 	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
+
+	static {
+		LocalDate date = LocalDate.now();
+
+		ICON = date.getMonthValue() == 4 && date.getDayOfMonth() == 1 ? new Identifier(SkyblockerMod.NAMESPACE, "icons.png") : new Identifier(SkyblockerMod.NAMESPACE, "icon.png");
+	}
 
 	private SkyblockerScreen() {
 		super(TITLE);
