@@ -9,7 +9,7 @@
     "skyblocker.config.userInterfaceAndVisuals.tabHud.tabHudScale": "Skalierungsfaktor für schöners Tab-HUD",
     "skyblocker.config.userInterfaceAndVisuals.tabHud.tabHudScale.@Tooltip": "Wert in %, relativ zur Skalierung des Vanilla-GUIs",
     "skyblocker.config.userInterfaceAndVisuals.bars.enableBars": "Balken aktivieren",
-    "skyblocker.config.general.hideEmptyTooltips": "Leere Item-Tooltips in Menüs verstecken",
+    "skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips": "Leere Item-Tooltips in Menüs verstecken",
     "skyblocker.config.otherLocations": "Standorte",
     "skyblocker.config.dungeons": "Dungeons",
     "skyblocker.config.dungeons.map.enableMap": "Karte aktivieren",

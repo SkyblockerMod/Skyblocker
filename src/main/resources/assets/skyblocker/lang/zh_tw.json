@@ -9,7 +9,7 @@
     "skyblocker.config.chat.filter.hideTeleportPad": "隱藏傳送點訊息",
     "skyblocker.config.chat.filter.hideCombo": "隱藏連殺訊息",
     "skyblocker.config.chat.filter.hideAutopet": "隱藏自動寵物訊息",
-    "skyblocker.config.general.hideEmptyTooltips": "隱藏選單玻璃物品資訊",
+    "skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips": "隱藏選單玻璃物品資訊",
     "skyblocker.config.chat.filter.hideAbility": "隱藏技能冷卻",
     "skyblocker.config.chat.filter.hideHeal": "隱藏治療訊息",
     "skyblocker.config.chat.filter.hideMana": "在動作欄中隱藏魔力消耗的提示訊息",

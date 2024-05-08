@@ -120,7 +120,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         if (!Utils.isOnSkyblock()) return;
 
         // Hide Empty Tooltips
-        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
             ci.cancel();
         }
 
@@ -185,7 +185,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
 
         // Prevent clicks on filler items
-        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+        if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
                 // Allow clicks in Ultrasequencer and Superpairs
                 (!UltrasequencerSolver.INSTANCE.getName().matcher(title).matches() || SkyblockerConfigManager.get().helper.experiments.enableUltrasequencerSolver)) {
             ci.cancel();

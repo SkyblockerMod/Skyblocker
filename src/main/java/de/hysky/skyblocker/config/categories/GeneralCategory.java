@@ -31,13 +31,6 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.general.hideEmptyTooltips"))
-                        .binding(defaults.general.hideEmptyTooltips,
-                                () -> config.general.hideEmptyTooltips,
-                                newValue -> config.general.hideEmptyTooltips = newValue)
-                        .controller(ConfigUtils::createBooleanController)
-                        .build())
 
                 //Shortcuts
                 .group(OptionGroup.createBuilder()

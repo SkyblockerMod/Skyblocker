@@ -52,7 +52,7 @@
     "skyblocker.fishing.reelNow": "Тяни!",
     "skyblocker.config.chat.filter.hideAutopet": "Скрывать сообщения Autopet",
     "skyblocker.config.chat.filter.hideMana": "Скрывать сообщения о расходе маны из Action Bar",
-    "skyblocker.config.general.hideEmptyTooltips": "Скрывать описания предметов в меню",
+    "skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips": "Скрывать описания предметов в меню",
     "skyblocker.config.helper.fishing": "Помощь в рыбалке",
     "skyblocker.config.helper.fishing.enableFishingHelper": "Включить помощь в рыбалке",
     "skyblocker.config.general.itemTooltip.avg.BOTH": "Обе",

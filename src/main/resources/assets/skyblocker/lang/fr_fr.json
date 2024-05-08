@@ -74,7 +74,7 @@
     "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Résoudre Chasseur de trésor",
     "skyblocker.config.otherLocations.barn.solveHungryHiker": "Résoudre Randonneur affamé",
     "skyblocker.config.chat.filter.chatFilterResult.PASS": "Désactivé",
-    "skyblocker.config.general.hideEmptyTooltips": "Cacher les tooltips des items vides dans les menus",
+    "skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips": "Cacher les tooltips des items vides dans les menus",
     "skyblocker.config.userInterfaceAndVisuals.tabHud.tabHudScale.@Tooltip": "Valeur en %, relative à la taille de l'interface vanilla",
     "key.skyblocker.defaultTgl": "Passer le HUD Tab à la vue par défaut",
     "skyblocker.config.userInterfaceAndVisuals.tabHud": "HUD Tab joli (temporairement désactivé en dehors des donjons)",

@@ -104,7 +104,7 @@
     "skyblocker.config.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip": "Quanto menor o valor, maior será a frequência de atualizações, o que irá talvez causa lag.",
     "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "Quanto menor o valor, maior será a frequência de atualizações, o que irá talvez causa lag.",
     "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "Quanto menor o valor, maior será a frequência de atualizações, o que irá talvez causa lag.",
-    "skyblocker.config.general.hideEmptyTooltips": "Esconder tooltips vazio de itens nos menus",
+    "skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips": "Esconder tooltips vazio de itens nos menus",
     "skyblocker.config.general.shortcuts.enableCommandArgShortcuts": "Ativar Atalhos de Argumentos de Comando",
     "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "Ativar Aviso de Aljava em Dungeons",
     "skyblocker.config.general.quiverWarning.enableQuiverWarningAfterDungeon": "Ativar Aviso de Aljava Após uma Dungeon",

@@ -18,6 +18,9 @@ public class UIAndVisualsConfig {
     public boolean backpackPreviewWithoutShift = false;
 
     @SerialEntry
+    public boolean hideEmptyTooltips = true;
+
+    @SerialEntry
     public boolean fancyCraftingTable = true;
 
     @SerialEntry

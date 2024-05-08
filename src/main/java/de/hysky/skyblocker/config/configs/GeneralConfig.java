@@ -22,9 +22,6 @@ public class GeneralConfig {
     public boolean acceptReparty = true;
 
     @SerialEntry
-    public boolean hideEmptyTooltips = true;
-
-    @SerialEntry
     public Shortcuts shortcuts = new Shortcuts();
 
     @SerialEntry

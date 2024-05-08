@@ -37,7 +37,7 @@
     "skyblocker.config.chat.filter.hideAutopet": "Autopet mesajlarını filtrele",
     "skyblocker.config.chat.filter.hideMana": "Aksiyon barındaki mana tüketimlerini gizle",
     "skyblocker.config.chat.filter.hideMana.@Tooltip": "FancyBar ile daha iyi bir deneyim sunar",
-    "skyblocker.config.general.hideEmptyTooltips": "Menülerdeki boş eşya açıklamalarını gizle",
+    "skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips": "Menülerdeki boş eşya açıklamalarını gizle",
     "skyblocker.config.general.itemTooltip.avg.@Tooltip": "Kaç günlük ortalamanın gösterileceğini seçebilirsiniz",
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "En düşük BIN fiyatını göster",
     "skyblocker.config.misc.richPresence.enableRichPresence": "Aktif",

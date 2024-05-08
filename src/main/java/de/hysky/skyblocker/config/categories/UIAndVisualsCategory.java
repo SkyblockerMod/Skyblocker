@@ -44,6 +44,13 @@ public class UIAndVisualsCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
                 .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips"))
+                        .binding(defaults.uiAndVisuals.hideEmptyTooltips,
+                                () -> config.uiAndVisuals.hideEmptyTooltips,
+                                newValue -> config.uiAndVisuals.hideEmptyTooltips = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.userInterfaceAndVisuals.fancyCraftingTable"))
                         .binding(defaults.uiAndVisuals.fancyCraftingTable,
                                 () -> config.uiAndVisuals.fancyCraftingTable,

@@ -190,7 +190,7 @@
 
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
-  "skyblocker.config.general.hideEmptyTooltips": "Hide empty item tooltips in menus",
+  "skyblocker.config.userInterfaceAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
 
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
