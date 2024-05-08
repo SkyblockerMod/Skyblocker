@@ -187,7 +187,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         // Prevent clicks on filler items
         if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
                 // Allow clicks in Ultrasequencer and Superpairs
-                (!UltrasequencerSolver.INSTANCE.getName().matcher(title).matches() || SkyblockerConfigManager.get().helper.experiments.enableUltrasequencerSolver)) {
+                (!UltrasequencerSolver.INSTANCE.getName().matcher(title).matches() || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
             ci.cancel();
             return;
         }

@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.Constants;
@@ -143,7 +142,7 @@ public class FairySouls {
     }
 
     private static void render(WorldRenderContext context) {
-        HelperConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().helper.fairySouls;
+        HelperConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().helpers.fairySouls;
 
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
             for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {

@@ -189,7 +189,7 @@ public class MythologicalRitual {
     }
 
     private static boolean isActive() {
-        return SkyblockerConfigManager.get().helper.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocationRaw().equals("hub");
+        return SkyblockerConfigManager.get().helpers.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocationRaw().equals("hub");
     }
     
     private static void reset() {

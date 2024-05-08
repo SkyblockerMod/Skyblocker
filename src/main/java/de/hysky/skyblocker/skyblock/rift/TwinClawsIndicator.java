@@ -15,7 +15,7 @@ public class TwinClawsIndicator {
     private static boolean scheduled = false;
 
     protected static void updateIce() {
-        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
+        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
             TitleContainer.removeTitle(title);
             return;
         }
@@ -32,7 +32,7 @@ public class TwinClawsIndicator {
                     Scheduler.INSTANCE.schedule(() -> {
                         RenderHelper.displayInTitleContainerAndPlaySound(title);
                         scheduled = false;
-                    }, SkyblockerConfigManager.get().slayer.vampireSlayer.holyIceIndicatorTickDelay);
+                    }, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceIndicatorTickDelay);
                 }
             }
         }

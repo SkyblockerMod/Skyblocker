@@ -17,9 +17,9 @@ public class TheRift {
         ClientLifecycleEvents.CLIENT_STOPPING.register(EnigmaSouls::save);
         ClientReceiveMessageEvents.GAME.register(EnigmaSouls::onMessage);
         ClientCommandRegistrationCallback.EVENT.register(EnigmaSouls::registerCommands);
-        Scheduler.INSTANCE.scheduleCyclic(EffigyWaypoints::updateEffigies, SkyblockerConfigManager.get().slayer.vampireSlayer.effigyUpdateFrequency);
-        Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayer.vampireSlayer.holyIceUpdateFrequency);
-        Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayer.vampireSlayer.maniaUpdateFrequency);
-        Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayer.vampireSlayer.steakStakeUpdateFrequency);
+        Scheduler.INSTANCE.scheduleCyclic(EffigyWaypoints::updateEffigies, SkyblockerConfigManager.get().slayers.vampireSlayer.effigyUpdateFrequency);
+        Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
+        Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
+        Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
     }
 }

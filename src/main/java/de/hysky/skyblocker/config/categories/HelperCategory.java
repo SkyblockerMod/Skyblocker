@@ -18,9 +18,9 @@ public class HelperCategory {
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.helper.enableNewYearCakesHelper"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.helper.enableNewYearCakesHelper.@Tooltip")))
-                        .binding(defaults.helper.enableNewYearCakesHelper,
-                                () -> config.helper.enableNewYearCakesHelper,
-                                newValue -> config.helper.enableNewYearCakesHelper = newValue)
+                        .binding(defaults.helpers.enableNewYearCakesHelper,
+                                () -> config.helpers.enableNewYearCakesHelper,
+                                newValue -> config.helpers.enableNewYearCakesHelper = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
@@ -30,9 +30,9 @@ public class HelperCategory {
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.mythologicalRitual.enableMythologicalRitualHelper"))
-                                .binding(defaults.helper.mythologicalRitual.enableMythologicalRitualHelper,
-                                        () -> config.helper.mythologicalRitual.enableMythologicalRitualHelper,
-                                        newValue -> config.helper.mythologicalRitual.enableMythologicalRitualHelper = newValue)
+                                .binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+                                        () -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+                                        newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
@@ -43,23 +43,23 @@ public class HelperCategory {
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.experiments.enableChronomatronSolver"))
-                                .binding(defaults.helper.experiments.enableChronomatronSolver,
-                                        () -> config.helper.experiments.enableChronomatronSolver,
-                                        newValue -> config.helper.experiments.enableChronomatronSolver = newValue)
+                                .binding(defaults.helpers.experiments.enableChronomatronSolver,
+                                        () -> config.helpers.experiments.enableChronomatronSolver,
+                                        newValue -> config.helpers.experiments.enableChronomatronSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.experiments.enableSuperpairsSolver"))
-                                .binding(defaults.helper.experiments.enableSuperpairsSolver,
-                                        () -> config.helper.experiments.enableSuperpairsSolver,
-                                        newValue -> config.helper.experiments.enableSuperpairsSolver = newValue)
+                                .binding(defaults.helpers.experiments.enableSuperpairsSolver,
+                                        () -> config.helpers.experiments.enableSuperpairsSolver,
+                                        newValue -> config.helpers.experiments.enableSuperpairsSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.experiments.enableUltrasequencerSolver"))
-                                .binding(defaults.helper.experiments.enableUltrasequencerSolver,
-                                        () -> config.helper.experiments.enableUltrasequencerSolver,
-                                        newValue -> config.helper.experiments.enableUltrasequencerSolver = newValue)
+                                .binding(defaults.helpers.experiments.enableUltrasequencerSolver,
+                                        () -> config.helpers.experiments.enableUltrasequencerSolver,
+                                        newValue -> config.helpers.experiments.enableUltrasequencerSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
@@ -70,41 +70,41 @@ public class HelperCategory {
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fishing.enableFishingHelper"))
-                                .binding(defaults.helper.fishing.enableFishingHelper,
-                                        () -> config.helper.fishing.enableFishingHelper,
-                                        newValue -> config.helper.fishing.enableFishingHelper = newValue)
+                                .binding(defaults.helpers.fishing.enableFishingHelper,
+                                        () -> config.helpers.fishing.enableFishingHelper,
+                                        newValue -> config.helpers.fishing.enableFishingHelper = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fishing.enableFishingTimer"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helper.fishing.enableFishingTimer.@Tooltip")))
-                                .binding(defaults.helper.fishing.enableFishingTimer,
-                                        () -> config.helper.fishing.enableFishingTimer,
-                                        newValue -> config.helper.fishing.enableFishingTimer = newValue)
+                                .binding(defaults.helpers.fishing.enableFishingTimer,
+                                        () -> config.helpers.fishing.enableFishingTimer,
+                                        newValue -> config.helpers.fishing.enableFishingTimer = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fishing.changeTimerColor"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helper.fishing.changeTimerColor.@Tooltip")))
-                                .binding(defaults.helper.fishing.changeTimerColor,
-                                        () -> config.helper.fishing.changeTimerColor,
-                                        newValue -> config.helper.fishing.changeTimerColor = newValue)
+                                .binding(defaults.helpers.fishing.changeTimerColor,
+                                        () -> config.helpers.fishing.changeTimerColor,
+                                        newValue -> config.helpers.fishing.changeTimerColor = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Float>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fishing.fishingTimerScale"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helper.fishing.fishingTimerScale.@Tooltip")))
-                                .binding(defaults.helper.fishing.fishingTimerScale,
-                                        () -> config.helper.fishing.fishingTimerScale,
-                                        newValue -> config.helper.fishing.fishingTimerScale = newValue)
+                                .binding(defaults.helpers.fishing.fishingTimerScale,
+                                        () -> config.helpers.fishing.fishingTimerScale,
+                                        newValue -> config.helpers.fishing.fishingTimerScale = newValue)
                                 .controller(FloatFieldControllerBuilder::create)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fishing.hideOtherPlayers"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helper.fishing.hideOtherPlayers.@Tooltip")))
-                                .binding(defaults.helper.fishing.hideOtherPlayersRods,
-                                        () -> config.helper.fishing.hideOtherPlayersRods,
-                                        newValue -> config.helper.fishing.hideOtherPlayersRods = newValue)
+                                .binding(defaults.helpers.fishing.hideOtherPlayersRods,
+                                        () -> config.helpers.fishing.hideOtherPlayersRods,
+                                        newValue -> config.helpers.fishing.hideOtherPlayersRods = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
@@ -115,24 +115,24 @@ public class HelperCategory {
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fairySouls.enableFairySoulsHelper"))
-                                .binding(defaults.helper.fairySouls.enableFairySoulsHelper,
-                                        () -> config.helper.fairySouls.enableFairySoulsHelper,
-                                        newValue -> config.helper.fairySouls.enableFairySoulsHelper = newValue)
+                                .binding(defaults.helpers.fairySouls.enableFairySoulsHelper,
+                                        () -> config.helpers.fairySouls.enableFairySoulsHelper,
+                                        newValue -> config.helpers.fairySouls.enableFairySoulsHelper = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fairySouls.highlightFoundSouls"))
-                                .binding(defaults.helper.fairySouls.highlightFoundSouls,
-                                        () -> config.helper.fairySouls.highlightFoundSouls,
-                                        newValue -> config.helper.fairySouls.highlightFoundSouls = newValue)
+                                .binding(defaults.helpers.fairySouls.highlightFoundSouls,
+                                        () -> config.helpers.fairySouls.highlightFoundSouls,
+                                        newValue -> config.helpers.fairySouls.highlightFoundSouls = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helper.fairySouls.highlightOnlyNearbySouls"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helper.fairySouls.highlightOnlyNearbySouls.@Tooltip")))
-                                .binding(defaults.helper.fairySouls.highlightOnlyNearbySouls,
-                                        () -> config.helper.fairySouls.highlightOnlyNearbySouls,
-                                        newValue -> config.helper.fairySouls.highlightOnlyNearbySouls = newValue)
+                                .binding(defaults.helpers.fairySouls.highlightOnlyNearbySouls,
+                                        () -> config.helpers.fairySouls.highlightOnlyNearbySouls,
+                                        newValue -> config.helpers.fairySouls.highlightOnlyNearbySouls = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())

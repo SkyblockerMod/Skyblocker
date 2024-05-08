@@ -27,7 +27,7 @@ public class DungeonsConfig {
     public DungeonMap dungeonMap = new DungeonMap();
 
     @SerialEntry
-    public PuzzleSolver puzzleSolver = new PuzzleSolver();
+    public PuzzleSolvers puzzleSolvers = new PuzzleSolvers();
 
     @SerialEntry
     public TheProfessor theProfessor = new TheProfessor();
@@ -67,7 +67,7 @@ public class DungeonsConfig {
         public int mapY = 2;
     }
 
-    public static class PuzzleSolver {
+    public static class PuzzleSolvers {
         @SerialEntry
         public boolean solveTicTacToe = true;
 

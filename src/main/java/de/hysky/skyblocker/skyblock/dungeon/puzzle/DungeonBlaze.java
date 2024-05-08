@@ -111,7 +111,7 @@ public class DungeonBlaze extends DungeonPuzzle {
     @Override
     public void render(WorldRenderContext wrc) {
         try {
-            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfigManager.get().dungeons.puzzleSolver.blazeSolver) {
+            if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfigManager.get().dungeons.puzzleSolvers.blazeSolver) {
                 if (highestBlaze.getY() < 69) {
                     renderBlazeOutline(highestBlaze, nextHighestBlaze, wrc);
                 }

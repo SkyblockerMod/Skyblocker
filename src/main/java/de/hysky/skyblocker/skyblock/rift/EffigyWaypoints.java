@@ -28,7 +28,7 @@ public class EffigyWaypoints {
     private static final List<BlockPos> UNBROKEN_EFFIGIES = new ArrayList<>();
 
     protected static void updateEffigies() {
-        if (!SkyblockerConfigManager.get().slayer.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château")) return;
+        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château")) return;
 
         UNBROKEN_EFFIGIES.clear();
 
@@ -55,10 +55,10 @@ public class EffigyWaypoints {
     }
 
     protected static void render(WorldRenderContext context) {
-        if (SkyblockerConfigManager.get().slayer.vampireSlayer.enableEffigyWaypoints && Utils.getIslandArea().contains("Stillgore Château")) {
+        if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getIslandArea().contains("Stillgore Château")) {
             for (BlockPos effigy : UNBROKEN_EFFIGIES) {
                 float[] colorComponents = DyeColor.RED.getColorComponents();
-                if (SkyblockerConfigManager.get().slayer.vampireSlayer.compactEffigyWaypoints) {
+                if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
                     RenderHelper.renderFilledWithBeaconBeam(context, effigy.down(6), colorComponents, 0.5F, true);
                 } else {
                     RenderHelper.renderFilledWithBeaconBeam(context, effigy, colorComponents, 0.5F, true);

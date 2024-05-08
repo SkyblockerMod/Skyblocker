@@ -100,69 +100,69 @@ public class DungeonsCategory {
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveTicTacToe"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.puzzle.solveTicTacToe.@Tooltip")))
-                                .binding(defaults.dungeons.puzzleSolver.solveTicTacToe,
-                                        () -> config.dungeons.puzzleSolver.solveTicTacToe,
-                                        newValue -> config.dungeons.puzzleSolver.solveTicTacToe = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.solveTicTacToe,
+                                        () -> config.dungeons.puzzleSolvers.solveTicTacToe,
+                                        newValue -> config.dungeons.puzzleSolvers.solveTicTacToe = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveThreeWeirdos"))
-                                .binding(defaults.dungeons.puzzleSolver.solveThreeWeirdos,
-                                        () -> config.dungeons.puzzleSolver.solveThreeWeirdos,
-                                        newValue -> config.dungeons.puzzleSolver.solveThreeWeirdos = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.solveThreeWeirdos,
+                                        () -> config.dungeons.puzzleSolvers.solveThreeWeirdos,
+                                        newValue -> config.dungeons.puzzleSolvers.solveThreeWeirdos = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.creeperSolver"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.puzzle.creeperSolver.@Tooltip")))
-                                .binding(defaults.dungeons.puzzleSolver.creeperSolver,
-                                        () -> config.dungeons.puzzleSolver.creeperSolver,
-                                        newValue -> config.dungeons.puzzleSolver.creeperSolver = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.creeperSolver,
+                                        () -> config.dungeons.puzzleSolvers.creeperSolver,
+                                        newValue -> config.dungeons.puzzleSolvers.creeperSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveWaterboard"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip")))
-                                .binding(defaults.dungeons.puzzleSolver.solveWaterboard,
-                                        () -> config.dungeons.puzzleSolver.solveWaterboard,
-                                        newValue -> config.dungeons.puzzleSolver.solveWaterboard = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.solveWaterboard,
+                                        () -> config.dungeons.puzzleSolvers.solveWaterboard,
+                                        newValue -> config.dungeons.puzzleSolvers.solveWaterboard = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.blazeSolver"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.puzzle.blazeSolver.@Tooltip")))
-                                .binding(defaults.dungeons.puzzleSolver.blazeSolver,
-                                        () -> config.dungeons.puzzleSolver.blazeSolver,
-                                        newValue -> config.dungeons.puzzleSolver.blazeSolver = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.blazeSolver,
+                                        () -> config.dungeons.puzzleSolvers.blazeSolver,
+                                        newValue -> config.dungeons.puzzleSolvers.blazeSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveBoulder"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.puzzle.solveBoulder.@Tooltip")))
-                                .binding(defaults.dungeons.puzzleSolver.solveBoulder,
-                                        () -> config.dungeons.puzzleSolver.solveBoulder,
-                                        newValue -> config.dungeons.puzzleSolver.solveBoulder = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.solveBoulder,
+                                        () -> config.dungeons.puzzleSolvers.solveBoulder,
+                                        newValue -> config.dungeons.puzzleSolvers.solveBoulder = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveIceFill"))
-                                .binding(defaults.dungeons.puzzleSolver.solveIceFill,
-                                        () -> config.dungeons.puzzleSolver.solveIceFill,
-                                        newValue -> config.dungeons.puzzleSolver.solveIceFill = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.solveIceFill,
+                                        () -> config.dungeons.puzzleSolvers.solveIceFill,
+                                        newValue -> config.dungeons.puzzleSolvers.solveIceFill = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveSilverfish"))
-                                .binding(defaults.dungeons.puzzleSolver.solveSilverfish,
-                                        () -> config.dungeons.puzzleSolver.solveSilverfish,
-                                        newValue -> config.dungeons.puzzleSolver.solveSilverfish = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.solveSilverfish,
+                                        () -> config.dungeons.puzzleSolvers.solveSilverfish,
+                                        newValue -> config.dungeons.puzzleSolvers.solveSilverfish = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveTrivia"))
-                                .binding(defaults.dungeons.puzzleSolver.solveTrivia,
-                                        () -> config.dungeons.puzzleSolver.solveTrivia,
-                                        newValue -> config.dungeons.puzzleSolver.solveTrivia = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.solveTrivia,
+                                        () -> config.dungeons.puzzleSolvers.solveTrivia,
+                                        newValue -> config.dungeons.puzzleSolvers.solveTrivia = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())

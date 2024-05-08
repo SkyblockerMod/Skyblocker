@@ -177,7 +177,7 @@ public class CreeperBeams extends DungeonPuzzle {
     public void render(WorldRenderContext wrc) {
 
         // don't render if solved or disabled
-        if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolver.creeperSolver) {
+        if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperSolver) {
             return;
         }
 

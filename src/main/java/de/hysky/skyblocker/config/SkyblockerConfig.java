@@ -14,7 +14,7 @@ public class SkyblockerConfig {
     public UIAndVisualsConfig uiAndVisuals = new UIAndVisualsConfig();
 
     @SerialEntry
-    public HelperConfig helper = new HelperConfig();
+    public HelperConfig helpers = new HelperConfig();
 
     @SerialEntry
     public DungeonsConfig dungeons = new DungeonsConfig();
@@ -32,7 +32,7 @@ public class SkyblockerConfig {
     public OtherLocationsConfig otherLocations = new OtherLocationsConfig();
 
     @SerialEntry
-    public SlayersConfig slayer = new SlayersConfig();
+    public SlayersConfig slayers = new SlayersConfig();
 
     @SerialEntry
     public ChatConfig chats = new ChatConfig();

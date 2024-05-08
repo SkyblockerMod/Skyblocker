@@ -17,7 +17,7 @@ public class ThreeWeirdos extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().dungeons.puzzleSolver.solveThreeWeirdos ? null : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveThreeWeirdos ? null : ChatFilterResult.PASS;
     }
 
     @Override
