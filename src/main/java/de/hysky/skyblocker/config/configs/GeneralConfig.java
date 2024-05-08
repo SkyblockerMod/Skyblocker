@@ -135,7 +135,7 @@ public class GeneralConfig {
 
         @Override
         public String toString() {
-            return I18n.translate("skyblocker.option.general.itemTooltip.avg." + name());
+            return I18n.translate("skyblocker.config.general.itemTooltip.avg." + name());
         }
     }
 

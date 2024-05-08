@@ -106,7 +106,7 @@ public class OverlayScreen extends Screen {
         int renderOffset = (rowHeight - 16) / 2;
         context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
         if (historyButtons.length > 0 && historyButtons[0] != null) {
-            context.drawText(textRenderer, Text.translatable("skyblocker.option.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
         }
 
         //draw item stacks and tooltip to buttons

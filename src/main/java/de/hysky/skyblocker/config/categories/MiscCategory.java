@@ -14,11 +14,11 @@ public class MiscCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-                .name(Text.translatable("skyblocker.category.misc"))
+                .name(Text.translatable("skyblocker.config.misc"))
 
                 //Uncategorized Options
                 .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.option.general.hideStatusEffectOverlay"))
+                        .name(Text.translatable("skyblocker.config.misc.hideStatusEffectOverlay"))
                         .binding(defaults.misc.hideStatusEffectOverlay,
                                 () -> config.misc.hideStatusEffectOverlay,
                                 newValue -> config.misc.hideStatusEffectOverlay = newValue)
@@ -27,31 +27,31 @@ public class MiscCategory {
 
                 //Discord RPC
                 .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.option.misc.richPresence"))
+                        .name(Text.translatable("skyblocker.config.misc.richPresence"))
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.misc.richPresence.enableRichPresence"))
+                                .name(Text.translatable("skyblocker.config.misc.richPresence.enableRichPresence"))
                                 .binding(defaults.misc.richPresence.enableRichPresence,
                                         () -> config.misc.richPresence.enableRichPresence,
                                         newValue -> config.misc.richPresence.enableRichPresence = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<MiscConfig.Info>createBuilder()
-                                .name(Text.translatable("skyblocker.option.misc.richPresence.info"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.option.misc.richPresence.info.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.misc.richPresence.info"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.misc.richPresence.info.@Tooltip")))
                                 .binding(defaults.misc.richPresence.info,
                                         () -> config.misc.richPresence.info,
                                         newValue -> config.misc.richPresence.info = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.misc.richPresence.cycleMode"))
+                                .name(Text.translatable("skyblocker.config.misc.richPresence.cycleMode"))
                                 .binding(defaults.misc.richPresence.cycleMode,
                                         () -> config.misc.richPresence.cycleMode,
                                         newValue -> config.misc.richPresence.cycleMode = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.option.misc.richPresence.customMessage"))
+                                .name(Text.translatable("skyblocker.config.misc.richPresence.customMessage"))
                                 .binding(defaults.misc.richPresence.customMessage,
                                         () -> config.misc.richPresence.customMessage,
                                         newValue -> config.misc.richPresence.customMessage = newValue)

@@ -82,9 +82,9 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.option.messages.chatRules.screen.ruleName"), width / 2 - 125, y + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.option.messages.chatRules.screen.ruleEnabled"), width / 2, y + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.option.messages.chatRules.screen.modify"), width / 2 + 100, y + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.messages.chatRules.screen.ruleName"), width / 2 - 125, y + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.messages.chatRules.screen.ruleEnabled"), width / 2, y + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.messages.chatRules.screen.modify"), width / 2 + 100, y + 5, 0xFFFFFFFF);
         }
     }
 
@@ -115,17 +115,17 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
                     .position(width / 2 - 25, 5)
                     .build();
 
-            openConfigButton = ButtonWidget.builder(Text.translatable("skyblocker.option.messages.chatRules.screen.editRule"), a -> {
+            openConfigButton = ButtonWidget.builder(Text.translatable("skyblocker.config.messages.chatRules.screen.editRule"), a -> {
                         client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex));
                     })
                     .size(50, 20)
                     .position(width / 2 + 45, 5)
-                    .tooltip(Tooltip.of(Text.translatable("skyblocker.option.messages.chatRules.screen.editRule.@Tooltip")))
+                    .tooltip(Tooltip.of(Text.translatable("skyblocker.config.messages.chatRules.screen.editRule.@Tooltip")))
                     .build();
 
             deleteButton = ButtonWidget.builder(Text.translatable("selectServer.delete"), a -> {
                         oldScrollAmount = getScrollAmount();
-                        client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.option.messages.chatRules.screen.deleteQuestion"), Text.translatable("skyblocker.option.messages.chatRules.screen.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+                        client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.config.messages.chatRules.screen.deleteQuestion"), Text.translatable("skyblocker.config.messages.chatRules.screen.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
                     })
                     .size(50, 20)
                     .position(width / 2 + 105, 5)
@@ -136,9 +136,9 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
         private Text enabledButtonText() {
             if (chatRule.getEnabled()) {
-                return Text.translatable("skyblocker.option.messages.chatRules.screen.ruleScreen.true").withColor(Color.GREEN.getRGB());
+                return Text.translatable("skyblocker.config.messages.chatRules.screen.ruleScreen.true").withColor(Color.GREEN.getRGB());
             } else {
-                return Text.translatable("skyblocker.option.messages.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
+                return Text.translatable("skyblocker.config.messages.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
             }
         }
         private void toggleEnabled() {

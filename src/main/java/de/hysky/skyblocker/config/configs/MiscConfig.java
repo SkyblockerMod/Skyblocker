@@ -29,7 +29,7 @@ public class MiscConfig {
 
         @Override
         public String toString() {
-            return I18n.translate("skyblocker.option.richPresence.info." + name());
+            return I18n.translate("skyblocker.config.misc.richPresence.info." + name());
         }
     }
 }

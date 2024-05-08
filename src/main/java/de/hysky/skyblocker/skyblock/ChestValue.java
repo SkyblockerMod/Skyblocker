@@ -57,7 +57,7 @@ public class ChestValue {
 								);
 							})
 							.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
-							.tooltip(Tooltip.of(Text.translatable("skyblocker.option.general.chestValue.@Tooltip")))
+							.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.chestValue.@Tooltip")))
 							.build()
 					);
 				}

@@ -14,66 +14,67 @@ public class CrimsonIsleCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-                .name(Text.translatable("skyblocker.category.crimsonIsle"))
+                .name(Text.translatable("skyblocker.config.crimsonIsle"))
 
                 //Kuudra
                 .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra"))
+                        .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra"))
                         .collapsed(false)
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.supplyWaypoints"))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.supplyWaypoints"))
                                 .binding(defaults.crimsonIsle.kuudra.supplyWaypoints,
                                         () -> config.crimsonIsle.kuudra.supplyWaypoints,
                                         newValue -> config.crimsonIsle.kuudra.supplyWaypoints = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.fuelWaypoints"))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.fuelWaypoints"))
                                 .binding(defaults.crimsonIsle.kuudra.fuelWaypoints,
                                         () -> config.crimsonIsle.kuudra.fuelWaypoints,
                                         newValue -> config.crimsonIsle.kuudra.fuelWaypoints = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Waypoint.Type>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.suppliesAndFuelWaypointType"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.option.general.waypoints.waypointType.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip"),
+                                        Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.generalNote")))
                                 .binding(defaults.crimsonIsle.kuudra.suppliesAndFuelWaypointType,
                                         () -> config.crimsonIsle.kuudra.suppliesAndFuelWaypointType,
                                         newValue -> config.crimsonIsle.kuudra.suppliesAndFuelWaypointType = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.ballistaBuildWaypoints"))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints"))
                                 .binding(defaults.crimsonIsle.kuudra.ballistaBuildWaypoints,
                                         () -> config.crimsonIsle.kuudra.ballistaBuildWaypoints,
                                         newValue -> config.crimsonIsle.kuudra.ballistaBuildWaypoints = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.safeSpotWaypoints"))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints"))
                                 .binding(defaults.crimsonIsle.kuudra.safeSpotWaypoints,
                                         () -> config.crimsonIsle.kuudra.safeSpotWaypoints,
                                         newValue -> config.crimsonIsle.kuudra.safeSpotWaypoints = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.pearlWaypoints"))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.pearlWaypoints"))
                                 .binding(defaults.crimsonIsle.kuudra.pearlWaypoints,
                                         () -> config.crimsonIsle.kuudra.pearlWaypoints,
                                         newValue -> config.crimsonIsle.kuudra.pearlWaypoints = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip")))
                                 .binding(defaults.crimsonIsle.kuudra.noArrowPoisonWarning,
                                         () -> config.crimsonIsle.kuudra.noArrowPoisonWarning,
                                         newValue -> config.crimsonIsle.kuudra.noArrowPoisonWarning = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.option.locations.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip")))
                                 .binding(defaults.crimsonIsle.kuudra.arrowPoisonThreshold,
                                         () -> config.crimsonIsle.kuudra.arrowPoisonThreshold,
                                         newValue -> config.crimsonIsle.kuudra.arrowPoisonThreshold = newValue)

@@ -177,7 +177,7 @@ public class CrystalsLocationsManager {
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
                 return 0;
             }
-            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.option.locations.dwarvenMines.crystalsWaypoints.shareFail").formatted(Formatting.RED)), false);
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.shareFail").formatted(Formatting.RED)), false);
         }
 
         return Command.SINGLE_SUCCESS;
