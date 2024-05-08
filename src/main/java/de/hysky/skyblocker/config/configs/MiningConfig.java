@@ -40,10 +40,10 @@ public class MiningConfig {
         public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
 
         @SerialEntry
-        public int x = 10;
+        public int commissionsX = 10;
 
         @SerialEntry
-        public int y = 10;
+        public int commissionsY = 10;
 
         @SerialEntry
         public int powderX = 10;

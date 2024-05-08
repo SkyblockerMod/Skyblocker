@@ -70,8 +70,8 @@ public class DwarvenHud {
             }
 
             render(HudCommsWidget.INSTANCE, HudPowderWidget.INSTANCE, context,
-                    SkyblockerConfigManager.get().mining.dwarvenHud.x,
-                    SkyblockerConfigManager.get().mining.dwarvenHud.y,
+                    SkyblockerConfigManager.get().mining.dwarvenHud.commissionsX,
+                    SkyblockerConfigManager.get().mining.dwarvenHud.commissionsY,
                     SkyblockerConfigManager.get().mining.dwarvenHud.powderX,
                     SkyblockerConfigManager.get().mining.dwarvenHud.powderY,
                     commissionList);
