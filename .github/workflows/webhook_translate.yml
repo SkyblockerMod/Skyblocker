@@ -34,6 +34,37 @@ jobs:
         shell: bash
         run: |
           OUTPUT=$(go run github.com/josephburnett/jd@latest <(git show HEAD^:src/main/resources/assets/skyblocker/lang/en_us.json) <(git show HEAD:src/main/resources/assets/skyblocker/lang/en_us.json) || true)
+          
+          MAX_LENGTH=4070
+          
+          if [ "${#OUTPUT}" -gt "$MAX_LENGTH" ]; then
+          
+              OUTPUT="${OUTPUT:0:$MAX_LENGTH}"
+          
+              LAST_INDEX=-1
+              for (( i=${#OUTPUT}-1; i>=0; i-- )); do
+                  if [[ "${OUTPUT:$i:1}" =~ [-+@] ]]; then
+                      LAST_INDEX=$i
+                      break
+                  fi
+              done
+              
+              if [[ $LAST_INDEX -ne -1 && "${OUTPUT:$LAST_INDEX:1}" =~ [-+] ]]; then
+
+                  for (( i=LAST_INDEX-1; i>=0; i-- )); do
+                      if [[ "${OUTPUT:$i:1}" == "@" ]]; then
+                          OUTPUT="${OUTPUT:0:i}"
+                          break
+                      fi
+                  done
+              else
+              
+                  OUTPUT="${OUTPUT:0:LAST_INDEX}"
+              fi
+          fi
+          
+          OUTPUT+="..."
+          
           OUTPUT="\`\`\`diff
           $OUTPUT
           \`\`\`"
