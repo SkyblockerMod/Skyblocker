@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +17,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about minions placed on the home island
 
-public class MinionWidget extends HudWidget {
+public class MinionWidget extends TabHudWidget {
     private static final MutableText TITLE = Text.literal("Minions").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
 
@@ -89,47 +90,31 @@ public class MinionWidget extends HudWidget {
     // group 1: name
     // group 2: level
     // group 3: status
-    public static final Pattern MINION_PATTERN = Pattern.compile("(?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)\\]");
+    public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
     public MinionWidget() {
-        super(TITLE, Formatting.DARK_AQUA.getColorValue());
+        super("Minions" ,TITLE, Formatting.DARK_AQUA.getColorValue());
     }
 
     @Override
-    public void updateContent() {
-
-        // this looks a bit weird because if we used regex mismatch as a stop condition,
-        //   it'd spam the chat.
-        // not sure if not having that debug output is worth the cleaner solution here...
-
-        for (int i = 48; i < 59; i++) {
-            if (!this.addMinionComponent(i)) {
-                break;
-            }
-        }
-
-        // if more minions are placed than the tab menu can display,
-        // a "And X more..." text is shown
-        // look for that and add it to the widget
-        String more = PlayerListMgr.strAt(59);
-        if (more == null) {
-            return;
-        } else if (more.startsWith("And ")) {
-            this.addComponent(new PlainTextComponent(Text.of(more)));
-        } else {
-            this.addMinionComponent(59);
+    public void updateContent(List<Text> lines) {
+        for (int i = 1; i < lines.size(); i++) {
+            String string = lines.get(i).getString();
+            if (string.toLowerCase().contains("... and")) this.addComponent(new PlainTextComponent(lines.get(i)));
+            else addMinionComponent(string);
         }
     }
 
-    public boolean addMinionComponent(int i) {
-        Matcher m = PlayerListMgr.regexAt(i, MINION_PATTERN);
-        if (m != null) {
+    public void addMinionComponent(String line) {
+        Matcher m = MINION_PATTERN.matcher(line);
+        if (m.matches()) {
 
             String min = m.group("name");
+            String amount = m.group("amount");
             String lvl = m.group("level");
             String stat = m.group("status");
 
-            MutableText mt = Text.literal(min + " " + lvl).append(Text.literal(": "));
+            MutableText mt = Text.literal(amount +"x " + min + " " + lvl).append(Text.literal(": "));
 
             Formatting format = Formatting.RED;
             if (stat.equals("ACTIVE")) {
@@ -142,9 +127,6 @@ public class MinionWidget extends HudWidget {
 
             IcoTextComponent itc = new IcoTextComponent(MIN_ICOS.get(min), mt);
             this.addComponent(itc);
-            return true;
-        } else {
-            return false;
         }
     }
 
