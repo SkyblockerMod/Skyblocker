@@ -1,5 +1,5 @@
 {
-    "skyblocker.config.userInterfaceAndVisuals.bars": "Health, Mana, Defence & XP Bars",
+    "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence & XP Bars",
     "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Grey out chests that have already been opened.",
     "skyblocker.config.dungeons.livid": "Livid Colour",
     "skyblocker.config.dungeons.livid.enableLividColorText": "Enable Livid Colour Text",

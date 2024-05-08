@@ -4,10 +4,10 @@
     "key.wikiLookup": "Búsqueda en la Wiki",
     "skyblocker.config.title": "Ajustes de Skyblocker",
     "skyblocker.config.general": "General",
-    "skyblocker.config.userInterfaceAndVisuals.bars": "Salud, Mana, Defensa & Barra de XP",
-    "skyblocker.config.userInterfaceAndVisuals.bars.enableBars": "Habilitar Barras",
+    "skyblocker.config.uiAndVisuals.bars": "Salud, Mana, Defensa & Barra de XP",
+    "skyblocker.config.uiAndVisuals.bars.enableBars": "Habilitar Barras",
     "skyblocker.option.general.bars.barpositions": "Configurar Posición de Barras",
-    "skyblocker.config.userInterfaceAndVisuals.backpackPreviewWithoutShift": "Ver la previsualización de la mochila sin sostener Shift",
+    "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Ver la previsualización de la mochila sin sostener Shift",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "Habilitar Precios de NPC",
     "skyblocker.config.general.itemTooltip.enableAvgBIN": "Habilitar Precios Promedio de BIN",
     "skyblocker.config.general.itemTooltip.avg": "Tipo Promedio",
@@ -67,5 +67,5 @@
     "skyblocker.config.general.shortcuts.enableShortcuts": "Habilitar atajos",
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Solo funciona en Hypixel. Edita atajos ejecutando \"/skyblocker shortcuts\". Al menos una de las siguientes opciones debe ser activada para surgir efecto.",
     "skyblocker.config.general.shortcuts": "Atajos",
-    "skyblocker.config.userInterfaceAndVisuals.compactorDeletorPreview": "Habilitar la previsualización del compactador/eliminador"
+    "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Habilitar la previsualización del compactador/eliminador"
 }

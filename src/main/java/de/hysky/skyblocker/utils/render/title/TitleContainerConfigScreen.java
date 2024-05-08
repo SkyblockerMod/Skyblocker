@@ -176,8 +176,8 @@ public class TitleContainerConfigScreen extends Screen {
 
         //TODO Come up with a better, less hacky solution for this in the future (:
         if (parent instanceof YACLScreen yaclScreen) {
-            ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getString().equals(I18n.translate("skyblocker.config.userInterfaceAndVisuals"))).findFirst().orElseThrow();
-            OptionGroup group = category.groups().stream().filter(grp -> grp.name().getString().equals(I18n.translate("skyblocker.config.userInterfaceAndVisuals.titleContainer"))).findFirst().orElseThrow();
+            ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getString().equals(I18n.translate("skyblocker.config.uiAndVisuals"))).findFirst().orElseThrow();
+            OptionGroup group = category.groups().stream().filter(grp -> grp.name().getString().equals(I18n.translate("skyblocker.config.uiAndVisuals.titleContainer"))).findFirst().orElseThrow();
 
             Option<?> scaleOpt = group.options().getFirst();
 
