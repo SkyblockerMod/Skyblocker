@@ -15,7 +15,7 @@ public class ChatRulesConfigScreen extends Screen {
     private final Screen parent;
 
     public ChatRulesConfigScreen(Screen parent) {
-        super(Text.translatable("skyblocker.config.messages.chatRules.screen.ruleScreen"));
+        super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
         this.parent = parent;
     }
 
@@ -37,7 +37,7 @@ public class ChatRulesConfigScreen extends Screen {
                 close();
             }
         }).build());
-        ButtonWidget buttonNew1 = ButtonWidget.builder(Text.translatable("skyblocker.config.messages.chatRules.screen.new"), buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()).build();
+        ButtonWidget buttonNew1 = ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.new"), buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()).build();
         adder.add(buttonNew1);
         ButtonWidget buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
             chatRulesConfigListWidget.saveRules();

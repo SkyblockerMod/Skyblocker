@@ -10,6 +10,6 @@ public class ImplosionFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().messages.hideImplosion;
+        return SkyblockerConfigManager.get().chats.hideImplosion;
     }
 }

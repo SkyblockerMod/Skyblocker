@@ -10,6 +10,6 @@ public class DicerFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().messages.hideDicer;
+        return SkyblockerConfigManager.get().chats.hideDicer;
     }
 }

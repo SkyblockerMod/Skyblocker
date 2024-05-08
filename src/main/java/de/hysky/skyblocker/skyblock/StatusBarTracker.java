@@ -75,7 +75,7 @@ public class StatusBarTracker {
         if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || Utils.isInTheRift()) {
             return text;
         }
-        return Text.of(update(text.getString(), SkyblockerConfigManager.get().messages.hideMana));
+        return Text.of(update(text.getString(), SkyblockerConfigManager.get().chats.hideMana));
     }
 
     public String update(String actionBar, boolean filterManaUse) {

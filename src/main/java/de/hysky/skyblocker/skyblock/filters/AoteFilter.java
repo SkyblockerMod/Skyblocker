@@ -10,6 +10,6 @@ public class AoteFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().messages.hideAOTE;
+        return SkyblockerConfigManager.get().chats.hideAOTE;
     }
 }

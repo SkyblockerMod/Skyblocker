@@ -79,7 +79,7 @@ public class SkyblockerConfigManager {
                 .category(FarmingCategory.create(defaults, config))
                 .category(OtherLocationsCategory.create(defaults, config))
                 .category(SlayersCategory.create(defaults, config))
-                .category(MessageFilterCategory.create(defaults, config))
+                .category(ChatCategory.create(defaults, config))
                 .category(QuickNavigationCategory.create(defaults, config))
                 .category(MiscCategory.create(defaults, config))).generateScreen(parent);
     }
