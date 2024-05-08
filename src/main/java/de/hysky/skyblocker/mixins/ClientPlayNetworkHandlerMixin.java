@@ -107,9 +107,9 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-        if (!SkyblockerConfigManager.get().general.compactDamage.enabled || entity == null || entity.getType() != EntityType.ARMOR_STAND) return;
+        if (!SkyblockerConfigManager.get().general.compactDamage.enabled || !(entity instanceof ArmorStandEntity armorStandEntity)) return;
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
-            CompactDamage.compactDamage((ArmorStandEntity) entity);
+            CompactDamage.compactDamage(armorStandEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
