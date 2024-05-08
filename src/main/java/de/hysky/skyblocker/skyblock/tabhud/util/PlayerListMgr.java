@@ -89,7 +89,7 @@ public class PlayerListMgr {
 					continue;
 				}
 				// add player to contents
-				contents.add(displayName);
+				contents.add(displayName); // Players don't have the silly space
             } else {
 				if (string.isBlank()) continue;
 				if (infoColumnPredicate.test(string)) continue;
@@ -101,10 +101,23 @@ public class PlayerListMgr {
 					if (!nameAndInfo.right().getString().isBlank()) contents.add(nameAndInfo.right());
 					continue;
 				}
-				contents.add(displayName);
+				contents.add(removeSpace(displayName)); // remove the silly space
 			}
 		}
 		ScreenBuilder.positionsNeedsUpdating = true;
+	}
+
+	private static Text removeSpace(Text text) {
+		AtomicBoolean removed = new AtomicBoolean(false);
+		MutableText out = Text.empty();
+		text.visit((style, asString) -> {
+			if (!removed.get()) {
+				out.append(Text.literal(asString.substring(1)).fillStyle(style));
+				removed.set(true);
+			} else out.append(Text.literal(asString).fillStyle(style));
+			return Optional.empty();
+		}, Style.EMPTY);
+		return out;
 	}
 
 	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Text> lines) {
