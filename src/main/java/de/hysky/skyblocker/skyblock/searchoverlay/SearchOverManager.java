@@ -269,14 +269,14 @@ public class SearchOverManager {
         UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
         if (isAuction) {
             if (config.auctionHistory.isEmpty() || !config.auctionHistory.getFirst().equals(search)) {
-                config.auctionHistory.add(0, search);
+                config.auctionHistory.addFirst(search);
                 if (config.auctionHistory.size() > config.historyLength) {
                     config.auctionHistory = config.auctionHistory.subList(0, config.historyLength);
                 }
             }
         } else {
-            if (config.bazaarHistory.isEmpty() || !config.bazaarHistory.get(0).equals(search)) {
-                config.bazaarHistory.add(0, search);
+            if (config.bazaarHistory.isEmpty() || !config.bazaarHistory.getFirst().equals(search)) {
+                config.bazaarHistory.addFirst(search);
                 if (config.bazaarHistory.size() > config.historyLength) {
                     config.bazaarHistory = config.bazaarHistory.subList(0, config.historyLength);
                 }

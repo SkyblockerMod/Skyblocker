@@ -54,7 +54,7 @@ public class IceFill extends DungeonPuzzle {
                         context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoards[2])));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printPath1").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.get(0).toString()));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.getFirst().toString()));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printPath2").executes(context -> {
                         context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.get(1).toString()));

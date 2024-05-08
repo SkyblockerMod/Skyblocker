@@ -18,7 +18,7 @@ public class MetalDetectorTest {
         Assertions.assertEquals(MetalDetector.possibleBlocks.size(), 2);
 
         MetalDetector.updatePossibleBlocks(10.0, new Vec3d(10, 0, 10));
-        Assertions.assertEquals(MetalDetector.possibleBlocks.get(0), new Vec3i(0, 0, 10));
+        Assertions.assertEquals(MetalDetector.possibleBlocks.getFirst(), new Vec3i(0, 0, 10));
 
         //test while knowing the middle location
         MetalDetector.possibleBlocks = new ArrayList<>();
@@ -27,6 +27,6 @@ public class MetalDetectorTest {
 
         MetalDetector.updatePossibleBlocks(24.9, new Vec3d(10, 1, 10));
         Assertions.assertEquals(MetalDetector.possibleBlocks.size(), 1);
-        Assertions.assertEquals(MetalDetector.possibleBlocks.get(0), new Vec3i(1, -20, 20));
+        Assertions.assertEquals(MetalDetector.possibleBlocks.getFirst(), new Vec3i(1, -20, 20));
     }
 }

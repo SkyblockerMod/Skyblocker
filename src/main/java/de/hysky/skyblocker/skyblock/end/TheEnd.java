@@ -183,7 +183,7 @@ public class TheEnd {
         if (entities.isEmpty()) {
             return false;
         }
-        return entities.get(0).getName().getString().toLowerCase().contains("zealot");
+        return entities.getFirst().getName().getString().toLowerCase().contains("zealot");
     }
 
     public static boolean isSpecialZealot(EndermanEntity enderman) {

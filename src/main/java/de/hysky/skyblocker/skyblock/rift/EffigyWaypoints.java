@@ -41,7 +41,7 @@ public class EffigyWaypoints {
                     List<Text> prefixAndSuffix = Utils.TEXT_SCOREBOARD.get(i).getSiblings();
 
                     //Add contents of prefix and suffix to list
-                    effigiesText.addAll(prefixAndSuffix.get(0).getSiblings());
+                    effigiesText.addAll(prefixAndSuffix.getFirst().getSiblings());
                     effigiesText.addAll(prefixAndSuffix.get(1).getSiblings());
 
                     for (int i2 = 1; i2 < effigiesText.size(); i2++) {

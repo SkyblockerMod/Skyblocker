@@ -351,7 +351,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         assert client != null;
         try {
             List<Text> tooltip = ItemUtils.getLore(stack);
-            String str = tooltip.get(0).getString().trim();
+            String str = tooltip.getFirst().getString().trim();
             str = str.substring(1, str.length() - 1); // remove parentheses
             String[] parts = str.split("/"); // split the string
             currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page

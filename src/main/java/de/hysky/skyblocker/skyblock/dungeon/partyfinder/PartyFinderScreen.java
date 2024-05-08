@@ -276,7 +276,7 @@ public class PartyFinderScreen extends Screen {
             ClientPlayNetworkHandler networkHandler = this.client.getNetworkHandler();
             if (networkHandler != null && sign != null) {
                 List<String> originalText = Arrays.stream(sign.getText(signFront).getMessages(true)).map(Text::getString).toList();
-                networkHandler.sendPacket(new UpdateSignC2SPacket(sign.getPos(), signFront, originalText.get(0), originalText.get(1), originalText.get(2), originalText.get(3)));
+                networkHandler.sendPacket(new UpdateSignC2SPacket(sign.getPos(), signFront, originalText.getFirst(), originalText.get(1), originalText.get(2), originalText.get(3)));
             }
         }
         super.close();

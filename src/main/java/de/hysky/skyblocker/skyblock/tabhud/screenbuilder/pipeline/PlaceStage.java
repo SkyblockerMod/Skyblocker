@@ -51,7 +51,7 @@ public class PlaceStage extends PipelineStage {
     }
 
     public void run(int screenW, int screenH) {
-        Widget wid = primary.get(0);
+        Widget wid = primary.getFirst();
         switch (where) {
             case CENTER -> {
                 wid.setX((screenW - wid.getWidth()) / 2);

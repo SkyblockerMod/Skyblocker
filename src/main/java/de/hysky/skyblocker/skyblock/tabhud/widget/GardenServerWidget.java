@@ -33,7 +33,7 @@ public class GardenServerWidget extends Widget {
         this.addSimpleIcoText(Ico.EMERALD, "Gems:", Formatting.GREEN, 43);
 
         Text copperText = Widget.simpleEntryText(44, "Copper:", Formatting.WHITE);
-        ((MutableText) copperText.getSiblings().get(0)).withColor(COPPER_COLOR);
+        ((MutableText) copperText.getSiblings().getFirst()).withColor(COPPER_COLOR);
 
         this.addComponent(new IcoTextComponent(Ico.COPPER, copperText));
 

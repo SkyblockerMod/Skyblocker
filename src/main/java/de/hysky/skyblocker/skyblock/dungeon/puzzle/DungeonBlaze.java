@@ -93,7 +93,7 @@ public class DungeonBlaze extends DungeonPuzzle {
      */
     private static void updateBlazeEntities(List<ObjectIntPair<ArmorStandEntity>> blazes) {
         if (!blazes.isEmpty()) {
-            lowestBlaze = blazes.get(0).left();
+            lowestBlaze = blazes.getFirst().left();
             int highestIndex = blazes.size() - 1;
             highestBlaze = blazes.get(highestIndex).left();
             if (blazes.size() > 1) {

@@ -43,13 +43,13 @@ public class DwarvenHudConfigScreen extends HudConfigScreen {
 
     @Override
     protected void renderWidget(DrawContext context, List<Widget> widgets) {
-        DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG, context, widgets.get(0).getX(), widgets.get(0).getY(), widgets.get(1).getX(), widgets.get(1).getY(), CFG_COMMS);
+        DwarvenHud.render(HudCommsWidget.INSTANCE_CFG, HudPowderWidget.INSTANCE_CFG, context, widgets.getFirst().getX(), widgets.getFirst().getY(), widgets.get(1).getX(), widgets.get(1).getY(), CFG_COMMS);
     }
 
     @Override
     protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
-        configManager.mining.dwarvenHud.x = widgets.get(0).getX();
-        configManager.mining.dwarvenHud.y = widgets.get(0).getY();
+        configManager.mining.dwarvenHud.x = widgets.getFirst().getX();
+        configManager.mining.dwarvenHud.y = widgets.getFirst().getY();
         configManager.mining.dwarvenHud.powderX = widgets.get(1).getX();
         configManager.mining.dwarvenHud.powderY = widgets.get(1).getY();
     }

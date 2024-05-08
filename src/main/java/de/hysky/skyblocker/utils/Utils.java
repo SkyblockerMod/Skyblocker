@@ -224,7 +224,7 @@ public class Utils {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
-            if (fabricLoader.isDevelopmentEnvironment() || sidebar.get(0).contains("SKYBLOCK") || sidebar.get(0).contains("SKIBLOCK")) {
+            if (fabricLoader.isDevelopmentEnvironment() || sidebar.getFirst().contains("SKYBLOCK") || sidebar.getFirst().contains("SKIBLOCK")) {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;

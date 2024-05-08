@@ -86,7 +86,7 @@ public class Silverfish extends DungeonPuzzle {
         if (entities.isEmpty()) {
             return;
         }
-        BlockPos newSilverfishBlockPos = room.actualToRelative(entities.get(0).getBlockPos());
+        BlockPos newSilverfishBlockPos = room.actualToRelative(entities.getFirst().getBlockPos());
         Vector2ic newSilverfishPos = new Vector2i(24 - newSilverfishBlockPos.getZ(), 23 - newSilverfishBlockPos.getX());
         if (newSilverfishPos.x() < 0 || newSilverfishPos.x() >= 17 || newSilverfishPos.y() < 0 || newSilverfishPos.y() >= 17) {
             return;
