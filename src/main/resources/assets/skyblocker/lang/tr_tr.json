@@ -63,7 +63,7 @@
     "skyblocker.config.helper.fairySouls.highlightOnlyNearbySouls": "Sadece yakındaki peri ruhlarını göster",
     "skyblocker.config.helper.fairySouls.highlightOnlyNearbySouls.@Tooltip": "Etkinleştirildiğinde sadece 50 blokluk mesafedeki peri ruhları gösterilir",
     "skyblocker.config.general.shortcuts.config": "Kısayol Ayarları...",
-    "skyblocker.config.dungeons.acceptReparty": "Tekrar parti davetini otomatik kabul et",
+    "skyblocker.config.general.acceptReparty": "Tekrar parti davetini otomatik kabul et",
     "skyblocker.config.helper.experiments.enableUltrasequencerSolver": "Ultrasekans Çözücüsünü Etkinleştir",
     "skyblocker.config.helper.experiments.enableSuperpairsSolver": "Süperçiftler Çözücüsünü Etkinleştir",
     "skyblocker.config.helper.experiments": "Deney Çözücü",

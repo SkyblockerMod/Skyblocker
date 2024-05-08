@@ -43,7 +43,7 @@ public class Reparty extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return (SkyblockerConfigManager.get().dungeons.acceptReparty || this.repartying) ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return (SkyblockerConfigManager.get().general.acceptReparty || this.repartying) ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

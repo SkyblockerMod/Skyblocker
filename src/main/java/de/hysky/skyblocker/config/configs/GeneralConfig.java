@@ -19,6 +19,9 @@ public class GeneralConfig {
     public boolean enableTips = true;
 
     @SerialEntry
+    public boolean acceptReparty = true;
+
+    @SerialEntry
     public boolean hideEmptyTooltips = true;
 
     @SerialEntry

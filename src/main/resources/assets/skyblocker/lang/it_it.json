@@ -17,7 +17,7 @@
     "skyblocker.config.helper.experiments": "Risolutore di Esperimenti",
     "skyblocker.config.helper.experiments.enableSuperpairsSolver": "Attiva Risolutore per le Superpairs",
     "skyblocker.config.helper.experiments.enableUltrasequencerSolver": "Attiva Risolutore per Ultrasequencer",
-    "skyblocker.config.dungeons.acceptReparty": "Accetta automaticamente Reparty",
+    "skyblocker.config.general.acceptReparty": "Accetta automaticamente Reparty",
     "skyblocker.option.general.etherwarpOverlay": "Overlay per Etherwarp",
     "skyblocker.config.helper.fishing": "Aiutante per la Pesca",
     "skyblocker.config.helper.fairySouls": "Aiutante per le Fairy Souls",

@@ -67,13 +67,6 @@ public class DungeonsCategory {
                                 newValue -> config.dungeons.allowDroppingProtectedItems = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.dungeons.acceptReparty"))
-                        .binding(defaults.dungeons.acceptReparty,
-                                () -> config.dungeons.acceptReparty,
-                                newValue -> config.dungeons.acceptReparty = newValue)
-                        .controller(ConfigUtils::createBooleanController)
-                        .build())
 
                 // Map
                 .group(OptionGroup.createBuilder()

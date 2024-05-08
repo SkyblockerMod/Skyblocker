@@ -96,5 +96,5 @@
     "skyblocker.config.general.quiverWarning.enableQuiverWarning": "화살통 경고 활성화",
     "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "던전에서 화살통 경고 활성화",
     "skyblocker.config.general.quiverWarning.enableQuiverWarningAfterDungeon": "던전 후 화살통 경고 활성화",
-    "skyblocker.config.dungeons.acceptReparty": "Reparty 자동 수락"
+    "skyblocker.config.general.acceptReparty": "Reparty 자동 수락"
 }

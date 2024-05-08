@@ -51,7 +51,7 @@
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "顯示最低BIN（立即購買）價格",
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "顯示集市購買/賣出價格",
     "skyblocker.tips.clickNextTip": "§a[點擊看下一則提示]",
-    "skyblocker.config.dungeons.acceptReparty": "自動接受重新組隊",
+    "skyblocker.config.general.acceptReparty": "自動接受重新組隊",
     "skyblocker.config.helper.fairySouls": "仙女之魂助手",
     "skyblocker.config.userInterfaceAndVisuals.tabHud.tabHudScale.@Tooltip": "相對於原版GUI的百分比大小",
     "skyblocker.config.general.shortcuts.enableShortcuts": "啟用快捷指令",

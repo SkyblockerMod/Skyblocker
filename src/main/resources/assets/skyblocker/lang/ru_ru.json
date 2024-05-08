@@ -114,7 +114,7 @@
     "skyblocker.rift.iceNow": "Лед!",
     "skyblocker.rift.stakeNow": "Стейк!",
     "skyblocker.rift.healNow": "Арбуз!",
-    "skyblocker.config.dungeons.acceptReparty": "Автоматически принимать Reparty",
+    "skyblocker.config.general.acceptReparty": "Автоматически принимать Reparty",
     "skyblocker.config.otherLocations.rift.mcGrubberStacks": "Стаков McGrubber",
     "skyblocker.config.slayer": "Slayеrs",
     "skyblocker.config.slayer.vampireSlayer": "Вампир-Slayer",

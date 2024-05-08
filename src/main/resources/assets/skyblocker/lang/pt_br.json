@@ -34,7 +34,7 @@
     "skyblocker.config.title": "Configurações do Skyblocker",
     "skyblocker.option.general.bars.barpositions": "Configurar Posições das Barras",
     "skyblocker.config.helper.experiments.enableChronomatronSolver": "Ativar Solucionador de Chronomatron",
-    "skyblocker.config.dungeons.acceptReparty": "Aceitar Automaticamente Reparty",
+    "skyblocker.config.general.acceptReparty": "Aceitar Automaticamente Reparty",
     "skyblocker.config.general.shortcuts": "Atalhos",
     "skyblocker.config.general.shortcuts.enableShortcuts": "Ativar Atalhos",
     "skyblocker.config.userInterfaceAndVisuals.tabHud.plainPlayerNames": "Nomes de Player Simples",

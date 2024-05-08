@@ -105,7 +105,7 @@
     "skyblocker.config.general.shortcuts.enableShortcuts": "ショートカットを有効にする",
     "skyblocker.config.userInterfaceAndVisuals.tabHud.nameSorting": "プレイヤー名の並び替えの方式",
     "skyblocker.config.general.itemTooltip.avg.THREE_DAY": "この3日間での平均の値段",
-    "skyblocker.config.dungeons.acceptReparty": "リパーティーの自動受諾",
+    "skyblocker.config.general.acceptReparty": "リパーティーの自動受諾",
     "skyblocker.config.general.specialEffects": "特別なエフェクト",
     "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "レアなダンジョンドロップのエフェクト",
     "skyblocker.config.userInterfaceAndVisuals.compactorDeletorPreview": "CompatorとDeletorのプレビューを有効にする",

@@ -95,7 +95,7 @@
     "skyblocker.config.helper.experiments.enableChronomatronSolver": "Activer l'aide au Chronomatron",
     "skyblocker.config.helper.experiments.enableSuperpairsSolver": "Activer l'aide aux Superpairs",
     "skyblocker.config.helper.experiments.enableUltrasequencerSolver": "Activer l'aide à l'Ultrasequencer",
-    "skyblocker.config.dungeons.acceptReparty": "Accepter automatiquement les reparty (/rp)",
+    "skyblocker.config.general.acceptReparty": "Accepter automatiquement les reparty (/rp)",
     "skyblocker.config.helper.fairySouls.enableFairySoulsHelper": "Activer l'aide au Fairy Souls",
     "skyblocker.config.helper.fairySouls": "Aide aux Fairy Souls",
     "skyblocker.config.general.shortcuts": "Raccourcis",

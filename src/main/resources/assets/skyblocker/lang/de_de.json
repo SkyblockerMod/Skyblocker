@@ -40,7 +40,7 @@
     "skyblocker.config.helper.experiments.enableSuperpairsSolver": "Superpairs Solver aktivieren",
     "skyblocker.config.helper.experiments.enableUltrasequencerSolver": "Ultrasequencer Solver aktivieren",
     "skyblocker.option.general.bars.barpositions": "Balkenposition Bearbeiten",
-    "skyblocker.config.dungeons.acceptReparty": "Automatische Annahme von Reparty",
+    "skyblocker.config.general.acceptReparty": "Automatische Annahme von Reparty",
     "skyblocker.config.quickNav.enableQuickNav": "Schnellnavigation aktivieren",
     "key.itemProtection": "Artikel schützen",
     "text.skyblocker.confirm": "Bestätigen",

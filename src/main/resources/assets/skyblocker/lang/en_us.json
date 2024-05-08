@@ -38,8 +38,6 @@
 
   "skyblocker.config.dungeons": "Dungeons",
 
-  "skyblocker.config.dungeons.acceptReparty": "Auto accept Reparty",
-
   "skyblocker.config.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items & on Locked Slots",
   "skyblocker.config.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons on a locked slot or while holding an item which has been protected using /skyblocker protectItem.",
 
@@ -189,6 +187,8 @@
   "skyblocker.config.general.chestValue.@Tooltip": "Calculate the value of this container.",
 
   "skyblocker.config.general.enableTips": "Enable Tips",
+
+  "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
   "skyblocker.config.general.hideEmptyTooltips": "Hide empty item tooltips in menus",
 

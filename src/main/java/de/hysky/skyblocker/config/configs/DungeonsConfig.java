@@ -24,9 +24,6 @@ public class DungeonsConfig {
     public boolean allowDroppingProtectedItems = false;
 
     @SerialEntry
-    public boolean acceptReparty = true;
-
-    @SerialEntry
     public DungeonMap dungeonMap = new DungeonMap();
 
     @SerialEntry
