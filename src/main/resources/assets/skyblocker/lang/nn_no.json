@@ -5,6 +5,5 @@
     "skyblocker.config.general": "Generelt",
     "key.categories.skyblocker": "SkyBlocker",
     "skyblocker.config.uiAndVisuals.bars": "Liv, mana, forsvar og XP-bar",
-    "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver bar",
-    "skyblocker.option.general.bars.barpositions": "Konfigurer barposisjoner"
+    "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver bar"
 }
