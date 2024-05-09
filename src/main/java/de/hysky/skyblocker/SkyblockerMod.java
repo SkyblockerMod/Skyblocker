@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;
 import de.hysky.skyblocker.skyblock.chat.ChatRuleAnnouncementScreen;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
+import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
@@ -183,6 +184,7 @@ public class SkyblockerMod implements ClientModInitializer {
         BeaconHighlighter.init();
         WarpAutocomplete.init();
         MobBoundingBoxes.init();
+        EggFinder.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

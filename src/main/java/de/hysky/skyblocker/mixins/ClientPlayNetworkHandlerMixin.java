@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
@@ -117,5 +118,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
         }
+    }
+
+    @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
+    private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+        EggFinder.checkIfEgg(entity);
     }
 }
