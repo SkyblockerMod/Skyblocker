@@ -45,4 +45,7 @@ public class SkyblockerConfig {
 
     @SerialEntry
     public MiscConfig misc = new MiscConfig();
+
+    @SerialEntry
+    public EventNotificationsConfig eventNotifications = new EventNotificationsConfig();
 }

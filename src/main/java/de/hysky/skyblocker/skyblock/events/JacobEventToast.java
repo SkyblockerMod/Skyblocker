@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.events;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.ToastManager;
@@ -54,12 +57,19 @@ public class JacobEventToast extends EventToast{
             for (int i = 0; i < crops.length; i++) {
                 context.drawItem(cropItems.get(crops[i]), x + i * (16 + 8), 7);
             }
-            context.fill(30, 6, 30 + messageWidth, 22, 400, 0x212121 | k);
+            // IDK how to make the items transparent, so I just redraw the texture on top
+            context.getMatrices().push();
+            context.getMatrices().translate(0, 0, 400f);
+            RenderHelper.renderNineSliceColored(context, TEXTURE, 0, 0, getWidth(), getHeight(), 1f, 1f, 1f, (k >> 24)/ 255f);
+            context.getMatrices().pop();
             y += textRenderer.fontHeight * message.size();
         }
+        context.getMatrices().push();
+        context.getMatrices().translate(0, 0, 400f);
         drawTimer(context, 30, y);
 
         context.drawItemWithoutEntity(icon, 8, getHeight()/2 - 8);
+        context.getMatrices().pop();
         return startTime > 5_000 ? Visibility.HIDE: Visibility.SHOW;
     }
 }
