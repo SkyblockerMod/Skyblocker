@@ -67,7 +67,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         //System.out.println(tooltips);
 
         MinecraftClient client = MinecraftClient.getInstance();
-        Text title = tooltips.get(0);
+        Text title = tooltips.getFirst();
         String partyHost = title.getString().split("'s")[0];
 
         int membersIndex = -1;
@@ -106,7 +106,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
             } else if (lowerCase.contains("dungeon:")) {
                 dungeon = tooltipText.split(":")[1].trim();
-            } else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().get(0).getStyle().getColor(), TextColor.fromRgb(Formatting.RED.getColorValue())) && !lowerCase.startsWith(" ")) {
+            } else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.fromRgb(Formatting.RED.getColorValue())) && !lowerCase.startsWith(" ")) {
                 isLocked = true;
                 lockReason = text;
             } else if (lowerCase.contains("note:")) {

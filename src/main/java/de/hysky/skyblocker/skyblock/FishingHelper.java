@@ -61,7 +61,7 @@ public class FishingHelper {
 
     public static void onSound(PlaySoundS2CPacket packet) {
         String path = packet.getSound().value().getId().getPath();
-        if (SkyblockerConfigManager.get().general.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && ("entity.generic.splash".equals(path) || "entity.player.splash".equals(path))) {
+        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && ("entity.generic.splash".equals(path) || "entity.player.splash".equals(path))) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.fishHook != null) {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
@@ -76,15 +76,15 @@ public class FishingHelper {
     }
 
     public static void render(WorldRenderContext context) {
-        if (SkyblockerConfigManager.get().general.fishing.enableFishingTimer && startTime != 0) {
+        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingTimer && startTime != 0) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.fishHook != null) {
                 float time = (int) ((System.currentTimeMillis() - startTime) / 100f) / 10f; //leave 1dp in seconds
-                float scale = SkyblockerConfigManager.get().general.fishing.fishingTimerScale;
+                float scale = SkyblockerConfigManager.get().helpers.fishing.fishingTimerScale;
                 Vec3d pos = player.fishHook.getPos().add(0, 0.4 + scale / 10, 0);
 
                 Text text;
-                if (time >= 20 && SkyblockerConfigManager.get().general.fishing.changeTimerColor) {
+                if (time >= 20 && SkyblockerConfigManager.get().helpers.fishing.changeTimerColor) {
                     text = Text.literal(String.valueOf(time)).formatted(Formatting.GREEN);
                 } else {
                     text = Text.literal(String.valueOf(time));

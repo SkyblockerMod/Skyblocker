@@ -27,7 +27,7 @@ public class ChatRuleAnnouncementScreen {
      * @param tickDelta difference from last render to remove from timer
      */
     private static void render(DrawContext context, float tickDelta) {
-        int scale = SkyblockerConfigManager.get().messages.chatRuleConfig.announcementScale;
+        int scale = SkyblockerConfigManager.get().chat.chatRuleConfig.announcementScale;
         //decrement timer
         timer -= tickDelta;
         //scale text up and center
@@ -43,6 +43,6 @@ public class ChatRuleAnnouncementScreen {
 
     protected static void setText(Text newText) {
         text = newText;
-        timer =  SkyblockerConfigManager.get().messages.chatRuleConfig.announcementLength;
+        timer =  SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength;
     }
 }

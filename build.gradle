@@ -127,7 +127,7 @@ publishMods {
 		accessToken = System.getenv("MODRINTH_TOKEN")
 		projectId = modrinth_id
 		minecraftVersions.add(minecraft_version)
-		announcementTitle = "<:modrinth:900697862206287882> Download from Modrinth"
+		announcementTitle = "<:modrinth:1237114573354438696> Download from Modrinth"
 		requires("fabric-api")
 		optional("modmenu", "rei", "emi")
 	}

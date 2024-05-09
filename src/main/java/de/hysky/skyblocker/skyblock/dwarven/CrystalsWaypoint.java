@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 public class CrystalsWaypoint extends Waypoint {
-    private static final Supplier<SkyblockerConfig.Waypoints> CONFIG = () -> SkyblockerConfigManager.get().general.waypoints;
+    private static final Supplier<UIAndVisualsConfig.Waypoints> CONFIG = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints;
     private static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final Category category;
     final Text name;

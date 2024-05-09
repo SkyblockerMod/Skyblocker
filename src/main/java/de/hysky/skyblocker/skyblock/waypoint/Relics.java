@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -42,7 +42,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class Relics {
     private static final Logger LOGGER = LoggerFactory.getLogger(Relics.class);
-    private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().general.waypoints.waypointType;
+    private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType;
     private static CompletableFuture<Void> relicsLoaded;
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private static int totalRelics = 0;
@@ -130,7 +130,7 @@ public class Relics {
     }
 
     private static void render(WorldRenderContext context) {
-        SkyblockerConfig.Relics config = SkyblockerConfigManager.get().locations.spidersDen.relics;
+        OtherLocationsConfig.Relics config = SkyblockerConfigManager.get().otherLocations.spidersDen.relics;
 
         if (config.enableRelicsHelper && relicsLoaded.isDone() && Utils.getLocationRaw().equals("combat_1")) {
             for (ProfileAwareWaypoint relic : relics.values()) {

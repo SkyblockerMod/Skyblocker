@@ -75,7 +75,7 @@ public class ItemCooldowns {
     }
 
     public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
-        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns) return;
+        if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns) return;
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
@@ -89,7 +89,7 @@ public class ItemCooldowns {
     }
 
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity player, World world, Hand hand) {
-        if (!SkyblockerConfigManager.get().general.itemCooldown.enableItemCooldowns)
+        if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns)
             return TypedActionResult.pass(ItemStack.EMPTY);
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {

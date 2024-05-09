@@ -10,6 +10,6 @@ public class AbilityFilter extends SimpleChatFilter {
 
     @Override
     protected ChatFilterResult state() {
-        return SkyblockerConfigManager.get().messages.hideAbility;
+        return SkyblockerConfigManager.get().chat.hideAbility;
     }
 }

@@ -46,7 +46,7 @@ public class BeaconHighlighter {
      * @param context An instance of WorldRenderContext for the RenderHelper to use
      */
     private static void render(WorldRenderContext context) {
-        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.highlightBeacons) {
+        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) {
             for (BlockPos pos : beaconPositions) {
                 RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, true);
             }

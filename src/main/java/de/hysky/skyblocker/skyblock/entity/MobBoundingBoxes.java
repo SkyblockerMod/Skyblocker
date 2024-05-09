@@ -30,11 +30,11 @@ public class MobBoundingBoxes {
 			String name = entity.getName().getString();
 
 			return switch (entity) {
-				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes;
+				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
 				case ArmorStandEntity _armorStand -> false;
 
 				// Regular Mobs
-				default -> SkyblockerConfigManager.get().locations.dungeons.starredMobBoundingBoxes && MobGlow.isStarred(entity);
+				default -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes && MobGlow.isStarred(entity);
 			};
 		}
 

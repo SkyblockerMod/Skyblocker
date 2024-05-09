@@ -65,7 +65,7 @@ public class Silverfish extends DungeonPuzzle {
 
     @Override
     public void tick(MinecraftClient client) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveSilverfish || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveSilverfish || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();
@@ -86,7 +86,7 @@ public class Silverfish extends DungeonPuzzle {
         if (entities.isEmpty()) {
             return;
         }
-        BlockPos newSilverfishBlockPos = room.actualToRelative(entities.get(0).getBlockPos());
+        BlockPos newSilverfishBlockPos = room.actualToRelative(entities.getFirst().getBlockPos());
         Vector2ic newSilverfishPos = new Vector2i(24 - newSilverfishBlockPos.getZ(), 23 - newSilverfishBlockPos.getX());
         if (newSilverfishPos.x() < 0 || newSilverfishPos.x() >= 17 || newSilverfishPos.y() < 0 || newSilverfishPos.y() >= 17) {
             return;
@@ -158,7 +158,7 @@ public class Silverfish extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveSilverfish || !DungeonManager.isCurrentRoomMatched() || silverfishPath.isEmpty()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveSilverfish || !DungeonManager.isCurrentRoomMatched() || silverfishPath.isEmpty()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();

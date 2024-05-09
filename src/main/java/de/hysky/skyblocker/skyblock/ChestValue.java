@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock;
 
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -42,12 +43,12 @@ public class ChestValue {
 				Text title = screen.getTitle();
 				String titleString = title.getString();
 				if (DUNGEON_CHESTS.contains(titleString)) {
-					if (SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator) {
+					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
 						ScreenEvents.afterTick(screen).register(screen_ ->
 								((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString, client))
 						);
 					}
-				} else if (SkyblockerConfigManager.get().general.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
+				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
 					Screens.getButtons(screen).add(ButtonWidget
 							.builder(Text.literal("$"), buttonWidget -> {
 								Screens.getButtons(screen).remove(buttonWidget);
@@ -56,7 +57,7 @@ public class ChestValue {
 								);
 							})
 							.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
-							.tooltip(Tooltip.of(Text.translatable("text.autoconfig.skyblocker.option.general.chestValue.@Tooltip")))
+							.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.chestValue.@Tooltip")))
 							.build()
 					);
 				}
@@ -95,7 +96,7 @@ public class ChestValue {
 				}
 
 				//Essence price
-				if (name.contains("Essence") && SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.includeEssence) {
+				if (name.contains("Essence") && SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeEssence) {
 					Matcher matcher = ESSENCE_PATTERN.matcher(name);
 
 					if (matcher.matches()) {
@@ -131,7 +132,7 @@ public class ChestValue {
 				}
 			}
 
-			if (SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.includeKismet && usedKismet) {
+			if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeKismet && usedKismet) {
 				LongBooleanPair kismetPriceData = getItemPrice("KISMET_FEATHER");
 
 				if (!kismetPriceData.rightBoolean()) hasIncompleteData = true;
@@ -210,12 +211,12 @@ public class ChestValue {
 	}
 
 	static Text getProfitText(long profit, boolean hasIncompleteData) {
-		SkyblockerConfig.DungeonChestProfit config = SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit;
+		DungeonsConfig.DungeonChestProfit config = SkyblockerConfigManager.get().dungeons.dungeonChestProfit;
 		return Text.literal((profit > 0 ? " +" : ' ') + FORMATTER.format(profit) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : (Math.abs(profit) < config.neutralThreshold) ? config.neutralColor : (profit > 0) ? config.profitColor : config.lossColor);
 	}
 
 	static Text getValueText(long value, boolean hasIncompleteData) {
-		SkyblockerConfig.ChestValue config = SkyblockerConfigManager.get().general.chestValue;
+		UIAndVisualsConfig.ChestValue config = SkyblockerConfigManager.get().uiAndVisuals.chestValue;
 		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : config.color);
 	}
 }

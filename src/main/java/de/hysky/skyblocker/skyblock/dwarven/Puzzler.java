@@ -18,7 +18,7 @@ public class Puzzler extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().locations.dwarvenMines.solvePuzzler ? null : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().mining.dwarvenMines.solvePuzzler ? null : ChatFilterResult.PASS;
     }
 
     @Override

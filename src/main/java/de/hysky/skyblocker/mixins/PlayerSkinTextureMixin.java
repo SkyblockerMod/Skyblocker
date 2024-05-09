@@ -35,6 +35,6 @@ public class PlayerSkinTextureMixin {
 
 	@WrapWithCondition(method = "remapTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/PlayerSkinTexture;stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V"))
 	private boolean skyblocker$dontStripAlphaValues(NativeImage image, int x1, int y1, int x2, int y2) {
-		return !(SkyblockerConfigManager.get().general.dontStripSkinAlphaValues && this.isSkyblockSkinTexture);
+		return !(SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && this.isSkyblockSkinTexture);
 	}
 }

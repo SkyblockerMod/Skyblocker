@@ -152,7 +152,7 @@ public abstract class Widget {
         RenderSystem.enableDepthTest();
         ms.push();
 
-        float scale = SkyblockerConfigManager.get().general.tabHud.tabHudScale / 100f;
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
         ms.scale(scale, scale, 1);
 
         // move above other UI elements

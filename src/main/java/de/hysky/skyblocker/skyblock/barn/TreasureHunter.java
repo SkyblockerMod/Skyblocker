@@ -18,7 +18,7 @@ public class TreasureHunter extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().locations.barn.solveTreasureHunter ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+        return SkyblockerConfigManager.get().otherLocations.barn.solveTreasureHunter ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
     }
 
     @Override

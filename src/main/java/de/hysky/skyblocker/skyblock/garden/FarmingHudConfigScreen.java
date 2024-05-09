@@ -18,13 +18,13 @@ public class FarmingHudConfigScreen extends HudConfigScreen {
     @Override
     protected List<IntIntMutablePair> getConfigPos(SkyblockerConfig config) {
         return List.of(
-                IntIntMutablePair.of(config.locations.garden.farmingHud.x, config.locations.garden.farmingHud.y)
+                IntIntMutablePair.of(config.farming.garden.farmingHud.x, config.farming.garden.farmingHud.y)
         );
     }
 
     @Override
     protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
-        configManager.locations.garden.farmingHud.x = widgets.get(0).getX();
-        configManager.locations.garden.farmingHud.y = widgets.get(0).getY();
+        configManager.farming.garden.farmingHud.x = widgets.getFirst().getX();
+        configManager.farming.garden.farmingHud.y = widgets.getFirst().getY();
     }
 }

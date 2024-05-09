@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.PosUtils;
@@ -44,7 +44,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class FairySouls {
     private static final Logger LOGGER = LoggerFactory.getLogger(FairySouls.class);
-    private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().general.waypoints.waypointType;
+    private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType;
     private static CompletableFuture<Void> fairySoulsLoaded;
     private static int maxSouls = 0;
     private static final Map<String, Map<BlockPos, ProfileAwareWaypoint>> fairySouls = new HashMap<>();
@@ -52,7 +52,7 @@ public class FairySouls {
     @SuppressWarnings("UnusedReturnValue")
     public static CompletableFuture<Void> runAsyncAfterFairySoulsLoad(Runnable runnable) {
         if (fairySoulsLoaded == null) {
-            LOGGER.error("[Skyblocker] Fairy Souls have not being initialized yet! Please ensure the Fairy Souls module is initialized before modules calling this method in SkyblockerMod#onInitializeClient. This error can be safely ignore in a test environment.");
+            LOGGER.error("[Skyblocker] Fairy Souls have not being initialized yet! Please ensure the Fairy Souls configs is initialized before modules calling this method in SkyblockerMod#onInitializeClient. This error can be safely ignore in a test environment.");
             return CompletableFuture.completedFuture(null);
         }
         return fairySoulsLoaded.thenRunAsync(runnable);
@@ -142,7 +142,7 @@ public class FairySouls {
     }
 
     private static void render(WorldRenderContext context) {
-        SkyblockerConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().general.fairySouls;
+        HelperConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().helpers.fairySouls;
 
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
             for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {

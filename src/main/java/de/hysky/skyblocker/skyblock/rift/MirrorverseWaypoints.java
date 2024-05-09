@@ -64,7 +64,7 @@ public class MirrorverseWaypoints {
 
 	protected static void render(WorldRenderContext wrc) {
 		//I would also check for the mirrorverse location but the scoreboard stuff is not performant at all...
-		if (Utils.isInTheRift() && SkyblockerConfigManager.get().locations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
+		if (Utils.isInTheRift() && SkyblockerConfigManager.get().otherLocations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
 			for (Waypoint waypoint : LAVA_PATH_WAYPOINTS) {
 				waypoint.render(wrc);
 			}

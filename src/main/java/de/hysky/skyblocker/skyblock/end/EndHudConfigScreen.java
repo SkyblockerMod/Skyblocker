@@ -17,12 +17,12 @@ public class EndHudConfigScreen extends HudConfigScreen {
     @SuppressWarnings("SuspiciousNameCombination")
     @Override
     protected List<IntIntMutablePair> getConfigPos(SkyblockerConfig config) {
-        return List.of(IntIntMutablePair.of(config.locations.end.x, config.locations.end.y));
+        return List.of(IntIntMutablePair.of(config.otherLocations.end.x, config.otherLocations.end.y));
     }
 
     @Override
     protected void savePos(SkyblockerConfig configManager, List<Widget> widgets) {
-        configManager.locations.end.x = widgets.get(0).getX();
-        configManager.locations.end.y = widgets.get(0).getY();
+        configManager.otherLocations.end.x = widgets.getFirst().getX();
+        configManager.otherLocations.end.y = widgets.getFirst().getY();
     }
 }

@@ -43,7 +43,7 @@ public class Boulder extends DungeonPuzzle {
     @Override
     public void tick(MinecraftClient client) {
 
-        if (!shouldSolve() || !SkyblockerConfigManager.get().locations.dungeons.solveBoulder || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
+        if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveBoulder || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
             return;
         }
 
@@ -195,7 +195,7 @@ public class Boulder extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (!shouldSolve() || !SkyblockerConfigManager.get().locations.dungeons.solveBoulder || !DungeonManager.isCurrentRoomMatched())
+        if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveBoulder || !DungeonManager.isCurrentRoomMatched())
             return;
         float alpha = 1.0f;
         float lineWidth = 5.0f;

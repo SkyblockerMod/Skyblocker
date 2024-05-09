@@ -157,12 +157,12 @@ public class CreeperBeams extends DungeonPuzzle {
         allLines.sort(Comparator.comparingDouble(ObjectDoublePair::rightDouble));
 
         while (result.size() < 5 && !allLines.isEmpty()) {
-            Beam solution = allLines.get(0).left();
+            Beam solution = allLines.getFirst().left();
             result.add(solution);
 
             // remove the line we just added and other lines that use blocks we're using for
             // that line
-            allLines.remove(0);
+            allLines.removeFirst();
             allLines.removeIf(beam -> solution.containsComponentOf(beam.left()));
         }
 
@@ -177,7 +177,7 @@ public class CreeperBeams extends DungeonPuzzle {
     public void render(WorldRenderContext wrc) {
 
         // don't render if solved or disabled
-        if (!shouldSolve() || !SkyblockerConfigManager.get().locations.dungeons.creeperSolver) {
+        if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperSolver) {
             return;
         }
 

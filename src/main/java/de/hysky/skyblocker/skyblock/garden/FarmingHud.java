@@ -67,7 +67,7 @@ public class FarmingHud {
                 }
 
                 FarmingHudWidget.INSTANCE.update();
-                FarmingHudWidget.INSTANCE.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
+                FarmingHudWidget.INSTANCE.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
             }
         });
         ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {
@@ -93,7 +93,7 @@ public class FarmingHud {
     }
 
     private static boolean shouldRender() {
-        return SkyblockerConfigManager.get().locations.garden.farmingHud.enableHud && Utils.getLocation() == Location.GARDEN;
+        return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && Utils.getLocation() == Location.GARDEN;
     }
 
     public static int counter() {

@@ -62,7 +62,7 @@ public class DwarvenHud {
         ));
 
         HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
-            if (!SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder
+            if (!SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder
                     || CLIENT.options.playerListKey.isPressed()
                     || CLIENT.player == null
                     || (!Utils.isInDwarvenMines() && !Utils.isInCrystalHollows())) {
@@ -70,16 +70,16 @@ public class DwarvenHud {
             }
 
             render(HudCommsWidget.INSTANCE, HudPowderWidget.INSTANCE, context,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.x,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.y,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderX,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.powderY,
+                    SkyblockerConfigManager.get().mining.dwarvenHud.commissionsX,
+                    SkyblockerConfigManager.get().mining.dwarvenHud.commissionsY,
+                    SkyblockerConfigManager.get().mining.dwarvenHud.powderX,
+                    SkyblockerConfigManager.get().mining.dwarvenHud.powderY,
                     commissionList);
         });
     }
 
     protected static void render(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-        switch (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.style) {
+        switch (SkyblockerConfigManager.get().mining.dwarvenHud.style) {
             case SIMPLE -> renderSimple(hcw, hpw, context, comHudX, comHudY, powderHudX, powderHudY, commissions);
             case FANCY -> renderFancy(hcw, hpw, context, comHudX, comHudY, powderHudX, powderHudY, commissions);
             case CLASSIC -> renderClassic(context, comHudX, comHudY, powderHudX, powderHudY, commissions);
@@ -96,11 +96,11 @@ public class DwarvenHud {
      * @param commissions the commissions to render to the commissions hud
      */
     private static void renderClassic(DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-        if (SkyblockerConfigManager.get().general.tabHud.enableHudBackground) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
             context.fill(comHudX, comHudY, comHudX + 200, comHudY + (20 * commissions.size()), 0x64000000);
             context.fill(powderHudX, powderHudY, powderHudX + 200, powderHudY + 40, 0x64000000);
         }
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
+        if (SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions) {
             int y = 0;
             for (Commission commission : commissions) {
                 float percentage;
@@ -118,7 +118,7 @@ public class DwarvenHud {
                 y += 20;
             }
         }
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) {
+        if (SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder) {
             //render mithril powder then gemstone
             context.drawTextWithShadow(CLIENT.textRenderer,
                     Text.literal("Mithril: " + mithrilPowder).formatted(Formatting.AQUA),
@@ -130,40 +130,40 @@ public class DwarvenHud {
     }
 
     private static void renderSimple(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
+        if (SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions) {
             hcw.updateData(commissions, false);
             hcw.update();
             hcw.setX(comHudX);
             hcw.setY(comHudY);
-            hcw.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
+            hcw.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
         }
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) {
+        if (SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder) {
             hpw.update();
             hpw.setX(powderHudX);
             hpw.setY(powderHudY);
-            hpw.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
+            hpw.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
         }
     }
 
     private static void renderFancy(HudCommsWidget hcw, HudPowderWidget hpw, DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions) {
+        if (SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions) {
             hcw.updateData(commissions, true);
             hcw.update();
             hcw.setX(comHudX);
             hcw.setY(comHudY);
-            hcw.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
+            hcw.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
         }
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder) {
+        if (SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder) {
             hpw.update();
             hpw.setX(powderHudX);
             hpw.setY(powderHudY);
-            hpw.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
+            hpw.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
         }
     }
 
     public static void update() {
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null
-                || !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().locations.dwarvenMines.dwarvenHud.enabledPowder
+                || !SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder
                 || !Utils.isInCrystalHollows() && !Utils.isInDwarvenMines()) {
             return;
         }

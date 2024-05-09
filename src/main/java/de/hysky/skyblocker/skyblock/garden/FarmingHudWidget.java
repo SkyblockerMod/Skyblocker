@@ -49,8 +49,8 @@ public class FarmingHudWidget extends Widget {
 
     public FarmingHudWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue());
-        setX(SkyblockerConfigManager.get().locations.garden.farmingHud.x);
-        setY(SkyblockerConfigManager.get().locations.garden.farmingHud.y);
+        setX(SkyblockerConfigManager.get().farming.garden.farmingHud.x);
+        setY(SkyblockerConfigManager.get().farming.garden.farmingHud.y);
         update();
     }
 

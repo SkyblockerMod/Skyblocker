@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper.AccessoryReport;
 import de.hysky.skyblocker.utils.Constants;
@@ -33,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 public class ItemTooltip {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    protected static final SkyblockerConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
+    protected static final GeneralConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
 
     public static void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
@@ -99,10 +100,10 @@ public class ItemTooltip {
                 neuName = getNeuName(internalID, neuName);
 
                 if (!neuName.isEmpty() && lbinExist) {
-                    SkyblockerConfig.Average type = config.avg;
+                    GeneralConfig.Average type = config.avg;
 
                     // "No data" line because of API not keeping old data, it causes NullPointerException
-                    if (type == SkyblockerConfig.Average.ONE_DAY || type == SkyblockerConfig.Average.BOTH) {
+                    if (type == GeneralConfig.Average.ONE_DAY || type == GeneralConfig.Average.BOTH) {
                         lines.add(
                                 Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
@@ -112,7 +113,7 @@ public class ItemTooltip {
                                         )
                         );
                     }
-                    if (type == SkyblockerConfig.Average.THREE_DAY || type == SkyblockerConfig.Average.BOTH) {
+                    if (type == GeneralConfig.Average.THREE_DAY || type == GeneralConfig.Average.BOTH) {
                         lines.add(
                                 Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
                                         .formatted(Formatting.GOLD)
@@ -139,7 +140,7 @@ public class ItemTooltip {
         	10, "M7"
         );
 
-        if (SkyblockerConfigManager.get().general.dungeonQuality) {
+        if (SkyblockerConfigManager.get().general.itemTooltip.dungeonQuality) {
             NbtCompound customData = ItemUtils.getCustomData(stack);
             if (customData != null && customData.contains("baseStatBoostPercentage")) {
                 int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
@@ -372,7 +373,7 @@ public class ItemTooltip {
     }
 
     private static Text getMotesMessage(int price, int count) {
-        float motesMultiplier = SkyblockerConfigManager.get().locations.rift.mcGrubberStacks * 0.05f + 1;
+        float motesMultiplier = SkyblockerConfigManager.get().otherLocations.rift.mcGrubberStacks * 0.05f + 1;
 
         // Calculate the total price
         int totalPrice = price * count;
@@ -413,14 +414,14 @@ public class ItemTooltip {
             TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
 
             if (config.enableAvgBIN) {
-                SkyblockerConfig.Average type = config.avg;
+                GeneralConfig.Average type = config.avg;
 
-                if (type == SkyblockerConfig.Average.BOTH || TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null || minute % 5 == 0) {
+                if (type == GeneralConfig.Average.BOTH || TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null || minute % 5 == 0) {
                     TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
                     TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
-                } else if (type == SkyblockerConfig.Average.ONE_DAY) {
+                } else if (type == GeneralConfig.Average.ONE_DAY) {
                     TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
-                } else if (type == SkyblockerConfig.Average.THREE_DAY) {
+                } else if (type == GeneralConfig.Average.THREE_DAY) {
                     TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
                 }
             }

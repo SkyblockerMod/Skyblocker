@@ -116,7 +116,7 @@ public class SecretsTracker {
 	}
 
 	private static void onMessage(Text text, boolean overlay) {
-		if (Utils.isInDungeons() && SkyblockerConfigManager.get().locations.dungeons.playerSecretsTracker && !overlay) {
+		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.playerSecretsTracker && !overlay) {
 			String message = Formatting.strip(text.getString());
 
 			try {

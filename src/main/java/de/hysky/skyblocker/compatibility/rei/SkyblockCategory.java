@@ -74,7 +74,7 @@ public class SkyblockCategory implements DisplayCategory<SkyblockCraftingDisplay
             slots.get(i).entries(input.get(i)).markInput();
         }
         out.addAll(slots);
-        out.add(Widgets.createSlot(resultPoint).entries(display.getOutputEntries().get(0)).disableBackground().markOutput());
+        out.add(Widgets.createSlot(resultPoint).entries(display.getOutputEntries().getFirst()).disableBackground().markOutput());
 
         // Add craftingText Label
         Label craftTextLabel = Widgets.createLabel(new Point(bounds.getCenterX(), startPoint.y + 55), Text.of(display.getCraftText()));

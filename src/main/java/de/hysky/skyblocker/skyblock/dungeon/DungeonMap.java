@@ -46,9 +46,9 @@ public class DungeonMap {
         MapState state = FilledMapItem.getMapState(mapId, client.world);
         if (state == null) return;
 
-        int x = SkyblockerConfigManager.get().locations.dungeons.mapX;
-        int y = SkyblockerConfigManager.get().locations.dungeons.mapY;
-        float scaling = SkyblockerConfigManager.get().locations.dungeons.mapScaling;
+        int x = SkyblockerConfigManager.get().dungeons.dungeonMap.mapX;
+        int y = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
+        float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
         VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
         MapRenderer mapRenderer = client.gameRenderer.getMapRenderer();
 
@@ -69,7 +69,7 @@ public class DungeonMap {
     }
 
     private static void render(DrawContext context) {
-        if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().locations.dungeons.enableMap) {
+        if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.enableMap) {
             render(context.getMatrices());
         }
     }

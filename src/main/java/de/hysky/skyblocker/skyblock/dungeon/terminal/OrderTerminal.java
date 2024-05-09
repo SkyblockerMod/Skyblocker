@@ -24,7 +24,7 @@ public class OrderTerminal extends ContainerSolver {
     protected boolean isEnabled() {
         orderedSlots = null;
         currentNum = 0;
-        return SkyblockerConfigManager.get().locations.dungeons.terminals.solveOrder;
+        return SkyblockerConfigManager.get().dungeons.terminals.solveOrder;
     }
 
     @Override

@@ -62,7 +62,7 @@ public abstract class HudConfigScreen extends Screen {
      */
     protected void renderWidget(DrawContext context, List<Widget> widgets) {
         for (Widget widget : widgets) {
-            widget.render(context, SkyblockerConfigManager.get().general.tabHud.enableHudBackground);
+            widget.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
         }
     }
 

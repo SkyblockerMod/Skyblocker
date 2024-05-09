@@ -10,6 +10,6 @@ public class MoltenWaveFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().messages.hideMoltenWave;
+        return SkyblockerConfigManager.get().chat.hideMoltenWave;
     }
 }

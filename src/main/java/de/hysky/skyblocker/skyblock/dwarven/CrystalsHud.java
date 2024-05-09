@@ -35,18 +35,18 @@ public class CrystalsHud {
                                 .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
 
         HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
-            if (!SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled
+            if (!SkyblockerConfigManager.get().mining.crystalsHud.enabled
                     || CLIENT.player == null
                     || !visible) {
                 return;
             }
-            render(context, tickDelta, SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.x,
-                    SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.y);
+            render(context, tickDelta, SkyblockerConfigManager.get().mining.crystalsHud.x,
+                    SkyblockerConfigManager.get().mining.crystalsHud.y);
         });
     }
 
     protected static int getDimensionsForConfig() {
-        return (int) (62 * SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling);
+        return (int) (62 * SkyblockerConfigManager.get().mining.crystalsHud.mapScaling);
     }
 
 
@@ -59,7 +59,7 @@ public class CrystalsHud {
      * @param hudY Top left Y coordinate of the map
      */
     private static void render(DrawContext context, float tickDelta, int hudX, int hudY) {
-        float scale = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.mapScaling;
+        float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
         //make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
         //and set position and scale
@@ -72,13 +72,13 @@ public class CrystalsHud {
         context.drawTexture(MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
 
         //if enabled add waypoint locations to map
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.showLocations) {
+        if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
             Map<String,CrystalsWaypoint> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
 
             for (CrystalsWaypoint waypoint : ActiveWaypoints.values()) {
                 Color waypointColor = waypoint.category.color;
                 Vector2ic renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
-                int locationSize = SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.locationSize;
+                int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 
                 if (SMALL_LOCATIONS.contains(waypoint.name.getString())) {//if small location half the location size
                     locationSize /= 2;
@@ -150,7 +150,7 @@ public class CrystalsHud {
      *
      */
     public static void update() {
-        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().locations.dwarvenMines.crystalsHud.enabled) {
+        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) {
             visible = false;
             return;
         }

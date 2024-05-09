@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Constants;
@@ -27,8 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DungeonScore {
-	private static final SkyblockerConfig.DungeonScore SCORE_CONFIG = SkyblockerConfigManager.get().locations.dungeons.dungeonScore;
-	private static final SkyblockerConfig.MimicMessage MIMIC_MESSAGE_CONFIG = SkyblockerConfigManager.get().locations.dungeons.mimicMessage;
+	private static final DungeonsConfig.DungeonScore SCORE_CONFIG = SkyblockerConfigManager.get().dungeons.dungeonScore;
+	private static final DungeonsConfig.MimicMessage MIMIC_MESSAGE_CONFIG = SkyblockerConfigManager.get().dungeons.mimicMessage;
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
 	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");

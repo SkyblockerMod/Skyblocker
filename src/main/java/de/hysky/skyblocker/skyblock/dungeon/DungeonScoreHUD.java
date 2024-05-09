@@ -21,15 +21,15 @@ public class DungeonScoreHUD {
 	private static final Text extraSpace = Text.literal(" ").append(Text.literal(" ").formatted(Formatting.BOLD));
 
 	private static void render(DrawContext context) {
-		if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && SkyblockerConfigManager.get().locations.dungeons.dungeonScore.enableScoreHUD) {
-			int x = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreX;
-			int y = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreY;
+		if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && SkyblockerConfigManager.get().dungeons.dungeonScore.enableScoreHUD) {
+			int x = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
+			int y = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
 			render(context, x, y);
 		}
 	}
 
 	public static void render(DrawContext context, int x, int y) {
-		float scale = SkyblockerConfigManager.get().locations.dungeons.dungeonScore.scoreScaling;
+		float scale = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
 		MatrixStack matrixStack = context.getMatrices();
 		matrixStack.push();
 		matrixStack.scale(scale, scale, 0);

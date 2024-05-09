@@ -28,7 +28,7 @@ public class CroesusProfit extends ContainerSolver {
 
     @Override
     protected boolean isEnabled() {
-        return SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.croesusProfit;
+        return SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit;
     }
 
     @Override

@@ -10,6 +10,6 @@ public class HealFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().messages.hideHeal;
+        return SkyblockerConfigManager.get().chat.hideHeal;
     }
 }

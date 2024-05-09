@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 
@@ -17,10 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 public enum TooltipInfoType implements Runnable {
     NPC("https://hysky.de/api/npcprice", itemTooltip -> itemTooltip.enableNPCPrice, true),
-    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().general.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false),
-    LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().locations.dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().general.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableLowestBIN, false),
+    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false),
+    LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableLowestBIN, false),
     ONE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/1day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
-    THREE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/3day.json", itemTooltip -> itemTooltip.enableAvgBIN || SkyblockerConfigManager.get().general.searchOverlay.enableAuctionHouse, itemTooltip -> itemTooltip.enableAvgBIN, false),
+    THREE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/3day.json", itemTooltip -> itemTooltip.enableAvgBIN || SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableAuctionHouse, itemTooltip -> itemTooltip.enableAvgBIN, false),
     MOTES("https://hysky.de/api/motesprice", itemTooltip -> itemTooltip.enableMotesPrice, itemTooltip -> itemTooltip.enableMotesPrice && Utils.isInTheRift(), true),
     OBTAINED(itemTooltip -> itemTooltip.enableObtainedDate),
     MUSEUM("https://hysky.de/api/museum", itemTooltip -> itemTooltip.enableMuseumInfo, true),
@@ -28,8 +29,8 @@ public enum TooltipInfoType implements Runnable {
     ACCESSORIES("https://hysky.de/api/accessories", itemTooltip -> itemTooltip.enableAccessoriesHelper, true, AccessoriesHelper::refreshData);
 
     private final String address;
-    private final Predicate<SkyblockerConfig.ItemTooltip> dataEnabled;
-    private final Predicate<SkyblockerConfig.ItemTooltip> tooltipEnabled;
+    private final Predicate<GeneralConfig.ItemTooltip> dataEnabled;
+    private final Predicate<GeneralConfig.ItemTooltip> tooltipEnabled;
     private JsonObject data;
     private final boolean cacheable;
     private long hash;
@@ -38,7 +39,7 @@ public enum TooltipInfoType implements Runnable {
     /**
      * Use this for when you're adding tooltip info that has no data associated with it
      */
-    TooltipInfoType(Predicate<SkyblockerConfig.ItemTooltip> enabled) {
+    TooltipInfoType(Predicate<GeneralConfig.ItemTooltip> enabled) {
         this(null, itemTooltip -> false, enabled, false, null);
     }
 
@@ -48,7 +49,7 @@ public enum TooltipInfoType implements Runnable {
      * @param cacheable whether the data should be cached
      * @param callback  called when the {@code data} is refreshed
      */
-    TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> enabled, boolean cacheable, Consumer<JsonObject> callback) {
+    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> enabled, boolean cacheable, Consumer<JsonObject> callback) {
         this(address, enabled, enabled, cacheable, callback);
     }
 
@@ -57,7 +58,7 @@ public enum TooltipInfoType implements Runnable {
      * @param enabled   the predicate to check if the data should be downloaded and the tooltip should be shown
      * @param cacheable whether the data should be cached
      */
-    TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> enabled, boolean cacheable) {
+    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> enabled, boolean cacheable) {
         this(address, enabled, enabled, cacheable, null);
     }
 
@@ -67,7 +68,7 @@ public enum TooltipInfoType implements Runnable {
      * @param tooltipEnabled the predicate to check if the tooltip should be shown
      * @param cacheable      whether the data should be cached
      */
-    TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> dataEnabled, Predicate<SkyblockerConfig.ItemTooltip> tooltipEnabled, boolean cacheable) {
+    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> dataEnabled, Predicate<GeneralConfig.ItemTooltip> tooltipEnabled, boolean cacheable) {
         this(address, dataEnabled, tooltipEnabled, cacheable, null);
     }
 
@@ -75,10 +76,9 @@ public enum TooltipInfoType implements Runnable {
      * @param address        the address to download the data from
      * @param dataEnabled    the predicate to check if data should be downloaded
      * @param tooltipEnabled the predicate to check if the tooltip should be shown
-     * @param data           the data
      * @param cacheable      whether the data should be cached
      */
-    TooltipInfoType(String address, Predicate<SkyblockerConfig.ItemTooltip> dataEnabled, Predicate<SkyblockerConfig.ItemTooltip> tooltipEnabled, boolean cacheable, @Nullable Consumer<JsonObject> callback) {
+    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> dataEnabled, Predicate<GeneralConfig.ItemTooltip> tooltipEnabled, boolean cacheable, @Nullable Consumer<JsonObject> callback) {
         this.address = address;
         this.dataEnabled = dataEnabled;
         this.tooltipEnabled = tooltipEnabled;

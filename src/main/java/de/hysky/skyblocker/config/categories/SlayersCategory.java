@@ -13,131 +13,131 @@ import net.minecraft.text.Text;
 
 public class SlayersCategory {
 
-	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
-		return ConfigCategory.createBuilder()
-				.name(Text.translatable("text.autoconfig.skyblocker.category.slayer"))
+    public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
+        return ConfigCategory.createBuilder()
+                .name(Text.translatable("skyblocker.config.slayer"))
 
-				//Enderman Slayer
-				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer"))
-						.collapsed(true)
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.enableYangGlyphsNotification"))
-								.binding(defaults.slayer.endermanSlayer.enableYangGlyphsNotification,
-										() -> config.slayer.endermanSlayer.enableYangGlyphsNotification,
-										newValue -> config.slayer.endermanSlayer.enableYangGlyphsNotification = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightBeacons"))
-								.binding(defaults.slayer.endermanSlayer.highlightBeacons,
-										() -> config.slayer.endermanSlayer.highlightBeacons,
-										newValue -> config.slayer.endermanSlayer.highlightBeacons = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.endermanSlayer.highlightNukekubiHeads"))
-								.binding(defaults.slayer.endermanSlayer.highlightNukekubiHeads,
-										() -> config.slayer.endermanSlayer.highlightNukekubiHeads,
-										newValue -> config.slayer.endermanSlayer.highlightNukekubiHeads = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.build())
+                //Enderman Slayer
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.endermanSlayer"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification"))
+                                .binding(defaults.slayers.endermanSlayer.enableYangGlyphsNotification,
+                                        () -> config.slayers.endermanSlayer.enableYangGlyphsNotification,
+                                        newValue -> config.slayers.endermanSlayer.enableYangGlyphsNotification = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.endermanSlayer.highlightBeacons"))
+                                .binding(defaults.slayers.endermanSlayer.highlightBeacons,
+                                        () -> config.slayers.endermanSlayer.highlightBeacons,
+                                        newValue -> config.slayers.endermanSlayer.highlightBeacons = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads"))
+                                .binding(defaults.slayers.endermanSlayer.highlightNukekubiHeads,
+                                        () -> config.slayers.endermanSlayer.highlightNukekubiHeads,
+                                        newValue -> config.slayers.endermanSlayer.highlightNukekubiHeads = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
 
-				//Vampire Slayer
-				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer"))
-						.collapsed(true)
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableEffigyWaypoints"))
-								.binding(defaults.slayer.vampireSlayer.enableEffigyWaypoints,
-										() -> config.slayer.vampireSlayer.enableEffigyWaypoints,
-										newValue -> config.slayer.vampireSlayer.enableEffigyWaypoints = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.compactEffigyWaypoints"))
-								.binding(defaults.slayer.vampireSlayer.compactEffigyWaypoints,
-										() -> config.slayer.vampireSlayer.compactEffigyWaypoints,
-										newValue -> config.slayer.vampireSlayer.compactEffigyWaypoints = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.effigyUpdateFrequency"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.effigyUpdateFrequency.@Tooltip")))
-								.binding(defaults.slayer.vampireSlayer.effigyUpdateFrequency,
-										() -> config.slayer.vampireSlayer.effigyUpdateFrequency,
-										newValue -> config.slayer.vampireSlayer.effigyUpdateFrequency = newValue)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableHolyIceIndicator"))
-								.binding(defaults.slayer.vampireSlayer.enableHolyIceIndicator,
-										() -> config.slayer.vampireSlayer.enableHolyIceIndicator,
-										newValue -> config.slayer.vampireSlayer.enableHolyIceIndicator = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceIndicatorTickDelay"))
-								.binding(defaults.slayer.vampireSlayer.holyIceIndicatorTickDelay,
-										() -> config.slayer.vampireSlayer.holyIceIndicatorTickDelay,
-										newValue -> config.slayer.vampireSlayer.holyIceIndicatorTickDelay = newValue)
-								.controller(IntegerFieldControllerBuilder::create)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip")))
-								.binding(defaults.slayer.vampireSlayer.holyIceUpdateFrequency,
-										() -> config.slayer.vampireSlayer.holyIceUpdateFrequency,
-										newValue -> config.slayer.vampireSlayer.holyIceUpdateFrequency = newValue)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableHealingMelonIndicator"))
-								.binding(defaults.slayer.vampireSlayer.enableHealingMelonIndicator,
-										() -> config.slayer.vampireSlayer.enableHealingMelonIndicator,
-										newValue -> config.slayer.vampireSlayer.enableHealingMelonIndicator = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Float>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.healingMelonHealthThreshold"))
-								.binding(defaults.slayer.vampireSlayer.healingMelonHealthThreshold,
-										() -> config.slayer.vampireSlayer.healingMelonHealthThreshold,
-										newValue -> config.slayer.vampireSlayer.healingMelonHealthThreshold = newValue)
-								.controller(FloatFieldControllerBuilder::create)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableSteakStakeIndicator"))
-								.binding(defaults.slayer.vampireSlayer.enableSteakStakeIndicator,
-										() -> config.slayer.vampireSlayer.enableSteakStakeIndicator,
-										newValue -> config.slayer.vampireSlayer.enableSteakStakeIndicator = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip")))
-								.binding(defaults.slayer.vampireSlayer.steakStakeUpdateFrequency,
-										() -> config.slayer.vampireSlayer.steakStakeUpdateFrequency,
-										newValue -> config.slayer.vampireSlayer.steakStakeUpdateFrequency = newValue)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.enableManiaIndicator"))
-								.binding(defaults.slayer.vampireSlayer.enableManiaIndicator,
-										() -> config.slayer.vampireSlayer.enableManiaIndicator,
-										newValue -> config.slayer.vampireSlayer.enableManiaIndicator = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency"))
-								.description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip")))
-								.binding(defaults.slayer.vampireSlayer.maniaUpdateFrequency,
-										() -> config.slayer.vampireSlayer.maniaUpdateFrequency,
-										newValue -> config.slayer.vampireSlayer.maniaUpdateFrequency = newValue)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
-								.build())
-						.build())
+                //Vampire Slayer
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.vampireSlayer"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.enableEffigyWaypoints"))
+                                .binding(defaults.slayers.vampireSlayer.enableEffigyWaypoints,
+                                        () -> config.slayers.vampireSlayer.enableEffigyWaypoints,
+                                        newValue -> config.slayers.vampireSlayer.enableEffigyWaypoints = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints"))
+                                .binding(defaults.slayers.vampireSlayer.compactEffigyWaypoints,
+                                        () -> config.slayers.vampireSlayer.compactEffigyWaypoints,
+                                        newValue -> config.slayers.vampireSlayer.compactEffigyWaypoints = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.effigyUpdateFrequency"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.vampireSlayer.effigyUpdateFrequency.@Tooltip")))
+                                .binding(defaults.slayers.vampireSlayer.effigyUpdateFrequency,
+                                        () -> config.slayers.vampireSlayer.effigyUpdateFrequency,
+                                        newValue -> config.slayers.vampireSlayer.effigyUpdateFrequency = newValue)
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.enableHolyIceIndicator"))
+                                .binding(defaults.slayers.vampireSlayer.enableHolyIceIndicator,
+                                        () -> config.slayers.vampireSlayer.enableHolyIceIndicator,
+                                        newValue -> config.slayers.vampireSlayer.enableHolyIceIndicator = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.holyIceIndicatorTickDelay"))
+                                .binding(defaults.slayers.vampireSlayer.holyIceIndicatorTickDelay,
+                                        () -> config.slayers.vampireSlayer.holyIceIndicatorTickDelay,
+                                        newValue -> config.slayers.vampireSlayer.holyIceIndicatorTickDelay = newValue)
+                                .controller(IntegerFieldControllerBuilder::create)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.holyIceUpdateFrequency"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip")))
+                                .binding(defaults.slayers.vampireSlayer.holyIceUpdateFrequency,
+                                        () -> config.slayers.vampireSlayer.holyIceUpdateFrequency,
+                                        newValue -> config.slayers.vampireSlayer.holyIceUpdateFrequency = newValue)
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.enableHealingMelonIndicator"))
+                                .binding(defaults.slayers.vampireSlayer.enableHealingMelonIndicator,
+                                        () -> config.slayers.vampireSlayer.enableHealingMelonIndicator,
+                                        newValue -> config.slayers.vampireSlayer.enableHealingMelonIndicator = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Float>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.healingMelonHealthThreshold"))
+                                .binding(defaults.slayers.vampireSlayer.healingMelonHealthThreshold,
+                                        () -> config.slayers.vampireSlayer.healingMelonHealthThreshold,
+                                        newValue -> config.slayers.vampireSlayer.healingMelonHealthThreshold = newValue)
+                                .controller(FloatFieldControllerBuilder::create)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.enableSteakStakeIndicator"))
+                                .binding(defaults.slayers.vampireSlayer.enableSteakStakeIndicator,
+                                        () -> config.slayers.vampireSlayer.enableSteakStakeIndicator,
+                                        newValue -> config.slayers.vampireSlayer.enableSteakStakeIndicator = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip")))
+                                .binding(defaults.slayers.vampireSlayer.steakStakeUpdateFrequency,
+                                        () -> config.slayers.vampireSlayer.steakStakeUpdateFrequency,
+                                        newValue -> config.slayers.vampireSlayer.steakStakeUpdateFrequency = newValue)
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.enableManiaIndicator"))
+                                .binding(defaults.slayers.vampireSlayer.enableManiaIndicator,
+                                        () -> config.slayers.vampireSlayer.enableManiaIndicator,
+                                        newValue -> config.slayers.vampireSlayer.enableManiaIndicator = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip")))
+                                .binding(defaults.slayers.vampireSlayer.maniaUpdateFrequency,
+                                        () -> config.slayers.vampireSlayer.maniaUpdateFrequency,
+                                        newValue -> config.slayers.vampireSlayer.maniaUpdateFrequency = newValue)
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+                                .build())
+                        .build())
 
-				.build();
-	}
+                .build();
+    }
 }

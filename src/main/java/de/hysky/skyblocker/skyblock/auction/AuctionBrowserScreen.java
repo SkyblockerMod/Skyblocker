@@ -171,7 +171,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     protected void drawSlot(DrawContext context, Slot slot) {
-        if (SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN && slot.hasStack() && isSlotHighlighted.getOrDefault(slot.id, false)) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasStack() && isSlotHighlighted.getOrDefault(slot.id, false)) {
             context.drawBorder(slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
         }
         super.drawSlot(context, slot);
@@ -284,7 +284,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                         } else categoryTabWidget.setToggled(false);
                     }
                 } else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
-                    if (!SkyblockerConfigManager.get().general.fancyAuctionHouse.highlightCheapBIN) return;
+                    if (!SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN) return;
                     List<Text> tooltip = ItemUtils.getLore(stack);
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
@@ -351,7 +351,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         assert client != null;
         try {
             List<Text> tooltip = ItemUtils.getLore(stack);
-            String str = tooltip.get(0).getString().trim();
+            String str = tooltip.getFirst().getString().trim();
             str = str.substring(1, str.length() - 1); // remove parentheses
             String[] parts = str.split("/"); // split the string
             currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page

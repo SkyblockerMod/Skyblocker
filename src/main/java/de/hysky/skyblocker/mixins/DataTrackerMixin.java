@@ -32,7 +32,7 @@ public abstract class DataTrackerMixin {
     @SuppressWarnings("ConstantValue")
     @Inject(method = "writeUpdatedEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;copyToFrom(Lnet/minecraft/entity/data/DataTracker$Entry;Lnet/minecraft/entity/data/DataTracker$SerializedEntry;)V"))
     private <T> void skyblocker$onWriteUpdatedEntries(CallbackInfo ci, @Local DataTracker.Entry<T> entry, @Local DataTracker.SerializedEntry<T> serializedEntry) {
-        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayer.endermanSlayer.enableYangGlyphsNotification && entry.getData() == EndermanEntityAccessor.getCARRIED_BLOCK() && entry.get() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.isOf(Blocks.BEACON) && ((Optional<?>) serializedEntry.value()).isEmpty()) {
+        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification && entry.getData() == EndermanEntityAccessor.getCARRIED_BLOCK() && entry.get() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.isOf(Blocks.BEACON) && ((Optional<?>) serializedEntry.value()).isEmpty()) {
             MinecraftClient client = MinecraftClient.getInstance();
             if (trackedEntity instanceof Entity entity && MobGlow.getArmorStands(entity).stream().anyMatch(armorStand -> armorStand.getName().getString().contains(client.getSession().getUsername()))) {
                 client.inGameHud.setTitleTicks(5, 20, 10);

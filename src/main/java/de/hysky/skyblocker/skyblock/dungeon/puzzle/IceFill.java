@@ -54,7 +54,7 @@ public class IceFill extends DungeonPuzzle {
                         context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoards[2])));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printPath1").executes(context -> {
-                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.get(0).toString()));
+                        context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.getFirst().toString()));
                         return Command.SINGLE_SUCCESS;
                     })).then(literal("printPath2").executes(context -> {
                         context.getSource().sendFeedback(Constants.PREFIX.get().append(INSTANCE.iceFillPaths.get(1).toString()));
@@ -80,7 +80,7 @@ public class IceFill extends DungeonPuzzle {
 
     @Override
     public void tick(MinecraftClient client) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveIceFill || client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveIceFill || client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();
@@ -150,7 +150,7 @@ public class IceFill extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (!SkyblockerConfigManager.get().locations.dungeons.solveIceFill || !DungeonManager.isCurrentRoomMatched()) {
+        if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveIceFill || !DungeonManager.isCurrentRoomMatched()) {
             return;
         }
         Room room = DungeonManager.getCurrentRoom();

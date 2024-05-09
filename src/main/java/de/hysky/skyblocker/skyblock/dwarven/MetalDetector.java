@@ -101,7 +101,7 @@ public class MetalDetector {
      * @param overlay if the message is an overlay message
      */
     private static void getDistanceMessage(Text text, boolean overlay) {
-        if (!overlay || !SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
+        if (!overlay || !SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
             checkChestFound(text);
             return;
         }
@@ -236,12 +236,12 @@ public class MetalDetector {
      */
     private static void render(WorldRenderContext context) {
         //only render enabled and if there is a few location options and in the mines of divan
-        if (!SkyblockerConfigManager.get().locations.dwarvenMines.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
+        if (!SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
             return;
         }
         //only one location render just that and guiding line to it
         if (possibleBlocks.size() == 1) {
-            Vec3i block = possibleBlocks.get(0).add(0, -1, 0); //the block you are taken to is one block above the chest
+            Vec3i block = possibleBlocks.getFirst().add(0, -1, 0); //the block you are taken to is one block above the chest
             CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure"), new BlockPos(block.getX(), block.getY(), block.getZ()));
             waypoint.render(context);
             RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);

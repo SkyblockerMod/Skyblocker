@@ -29,7 +29,7 @@ public class ColorTerminal extends ContainerSolver {
     @Override
     protected boolean isEnabled() {
         targetColor = null;
-        return SkyblockerConfigManager.get().locations.dungeons.terminals.solveColor;
+        return SkyblockerConfigManager.get().dungeons.terminals.solveColor;
     }
 
     @Override

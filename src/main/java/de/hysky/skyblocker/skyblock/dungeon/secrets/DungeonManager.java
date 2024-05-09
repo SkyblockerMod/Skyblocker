@@ -12,7 +12,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -227,7 +227,7 @@ public class DungeonManager {
      */
     public static void init() {
         CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
-        if (!SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableRoomMatching) {
+        if (!SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching) {
             return;
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
@@ -628,7 +628,7 @@ public class DungeonManager {
         }
 
         // Process key found messages for door highlight
-        if (SkyblockerConfigManager.get().locations.dungeons.doorHighlight.enableDoorHighlight) {
+        if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight) {
             Matcher matcher = KEY_FOUND.matcher(message);
             if (matcher.matches()) {
                 String name = matcher.group("name");
@@ -755,12 +755,12 @@ public class DungeonManager {
     }
 
     /**
-     * Checks if {@link SkyblockerConfig.SecretWaypoints#enableRoomMatching room matching} is enabled and the player is in a dungeon.
+     * Checks if {@link DungeonsConfig.SecretWaypoints#enableRoomMatching room matching} is enabled and the player is in a dungeon.
      *
      * @return whether room matching and dungeon secrets should be processed
      */
     private static boolean shouldProcess() {
-        return SkyblockerConfigManager.get().locations.dungeons.secretWaypoints.enableRoomMatching && Utils.isInDungeons();
+        return SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching && Utils.isInDungeons();
     }
 
     /**

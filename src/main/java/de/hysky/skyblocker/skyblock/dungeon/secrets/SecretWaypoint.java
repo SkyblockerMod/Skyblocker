@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -38,7 +39,7 @@ public class SecretWaypoint extends Waypoint {
     ).apply(instance, SecretWaypoint::new));
     public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();
     static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
-    private static final Supplier<SkyblockerConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().locations.dungeons.secretWaypoints;
+    private static final Supplier<DungeonsConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretWaypoints;
     static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final int secretIndex;
     final Category category;
@@ -131,10 +132,10 @@ public class SecretWaypoint extends Waypoint {
         DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
         private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         private final String name;
-        private final Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate;
+        private final Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate;
         private final float[] colorComponents;
 
-        Category(String name, Predicate<SkyblockerConfig.SecretWaypoints> enabledPredicate, int... intColorComponents) {
+        Category(String name, Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate, int... intColorComponents) {
             this.name = name;
             this.enabledPredicate = enabledPredicate;
             colorComponents = new float[intColorComponents.length];
@@ -164,7 +165,7 @@ public class SecretWaypoint extends Waypoint {
         }
 
         boolean isEnabled() {
-            return enabledPredicate.test(SkyblockerConfigManager.get().locations.dungeons.secretWaypoints);
+            return enabledPredicate.test(SkyblockerConfigManager.get().dungeons.secretWaypoints);
         }
 
         @Override

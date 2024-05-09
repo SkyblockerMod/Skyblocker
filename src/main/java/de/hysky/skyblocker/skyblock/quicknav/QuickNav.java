@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.quicknav;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -14,6 +14,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Locale;
 import java.util.regex.PatternSyntaxException;
 
 public class QuickNav {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuickNav.class);
 
     public static void init() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
@@ -34,7 +37,7 @@ public class QuickNav {
 
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
-        SkyblockerConfig.QuickNav data = SkyblockerConfigManager.get().quickNav;
+        QuickNavigationConfig data = SkyblockerConfigManager.get().quickNav;
         try {
             if (data.button1.render) buttons.add(parseButton(data.button1, screenTitle, 0));
             if (data.button2.render) buttons.add(parseButton(data.button2, screenTitle, 1));
@@ -49,21 +52,21 @@ public class QuickNav {
             if (data.button11.render) buttons.add(parseButton(data.button11, screenTitle, 10));
             if (data.button12.render) buttons.add(parseButton(data.button12, screenTitle, 11));
         } catch (CommandSyntaxException e) {
-            e.printStackTrace();
+            LOGGER.error("[Skyblocker] Failed to initialize Quick Nav Button", e);
         }
         return buttons;
     }
 
-    private static QuickNavButton parseButton(SkyblockerConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
-    	SkyblockerConfig.ItemData itemData = buttonInfo.item;
-        String nbtString = "{id:\"minecraft:" + itemData.itemName.toLowerCase(Locale.ROOT) + "\",Count:1";
+    private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
+        QuickNavigationConfig.ItemData itemData = buttonInfo.item;
+        String nbtString = "{id:\"minecraft:" + itemData.id.toLowerCase(Locale.ROOT) + "\",Count:1";
         if (itemData.nbt.length() > 2) nbtString += "," + itemData.nbt;
         nbtString += "}";
         boolean uiTitleMatches = false;
         try {
             uiTitleMatches = screenTitle.matches(buttonInfo.uiTitle);
         } catch (PatternSyntaxException e) {
-            e.printStackTrace();
+            LOGGER.error("[Skyblocker] Failed to parse Quick Nav Button", e);
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
                 player.sendMessage(Text.of(Formatting.RED + "[Skyblocker] Invalid regex in quicknav button " + (id + 1) + "!"), false);

@@ -1,10 +1,10 @@
 {
     "key.hotbarSlotLock": "Slotslås (Hotbar)",
     "key.wikiLookup": "Wiki Opslag",
-    "text.autoconfig.skyblocker.title": "Skyblocker Innstillinger",
-    "text.autoconfig.skyblocker.category.general": "Generelt",
+    "skyblocker.config.title": "Skyblocker Innstillinger",
+    "skyblocker.config.general": "Generelt",
     "key.categories.skyblocker": "SkyBlocker",
-    "text.autoconfig.skyblocker.option.general.bars": "Liv, mana, forsvar og XP-bar",
-    "text.autoconfig.skyblocker.option.general.bars.enableBars": "Aktiver bar",
-    "text.autoconfig.skyblocker.option.general.bars.barpositions": "Konfigurer barposisjoner"
+    "skyblocker.config.uiAndVisuals.bars": "Liv, mana, forsvar og XP-bar",
+    "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver bar",
+    "skyblocker.option.general.bars.barpositions": "Konfigurer barposisjoner"
 }

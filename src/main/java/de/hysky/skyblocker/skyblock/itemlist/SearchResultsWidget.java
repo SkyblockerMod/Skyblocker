@@ -93,7 +93,7 @@ public class SearchResultsWidget implements Drawable {
             SkyblockCraftingRecipe recipe = this.recipeResults.get(this.currentPage);
             for (ResultButtonWidget button : resultButtons)
                 button.clearItemStack();
-            resultButtons.get(5).setItemStack(recipe.getGrid().get(0));
+            resultButtons.get(5).setItemStack(recipe.getGrid().getFirst());
             resultButtons.get(6).setItemStack(recipe.getGrid().get(1));
             resultButtons.get(7).setItemStack(recipe.getGrid().get(2));
             resultButtons.get(10).setItemStack(recipe.getGrid().get(3));

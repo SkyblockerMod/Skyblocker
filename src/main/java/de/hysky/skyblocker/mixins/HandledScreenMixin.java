@@ -109,7 +109,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     @Inject(at = @At("HEAD"), method = "mouseClicked")
     public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (SkyblockerConfigManager.get().locations.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+        if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
             VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
     }
 
@@ -120,18 +120,18 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         if (!Utils.isOnSkyblock()) return;
 
         // Hide Empty Tooltips
-        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
             ci.cancel();
         }
 
         // Backpack Preview
-        boolean shiftDown = SkyblockerConfigManager.get().general.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
+        boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
         if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, this, focusedSlot.getIndex(), x, y)) {
             ci.cancel();
         }
 
         // Compactor Preview
-        if (SkyblockerConfigManager.get().general.compactorDeletorPreview) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
             Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
             if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, matcher.group("type"), matcher.group("size"), x, y)) {
                 ci.cancel();
@@ -185,9 +185,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
 
         // Prevent clicks on filler items
-        if (SkyblockerConfigManager.get().general.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+        if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
                 // Allow clicks in Ultrasequencer and Superpairs
-                (!UltrasequencerSolver.INSTANCE.getName().matcher(title).matches() || SkyblockerConfigManager.get().general.experiments.enableUltrasequencerSolver)) {
+                (!UltrasequencerSolver.INSTANCE.getName().matcher(title).matches() || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
             ci.cancel();
             return;
         }
