@@ -47,7 +47,7 @@ public class Calculator {
                     token.tokenLength = 1;
                     //add implicit multiplication when there is a number before brackets
                     if (!tokens.isEmpty()) {
-                        TokenType lastType = tokens.get(tokens.size() - 1).type;
+                        TokenType lastType = tokens.getLast().type;
                         if (lastType == TokenType.R_PARENTHESIS || lastType == TokenType.NUMBER) {
                             Token mutliplyToken = new Token();
                             mutliplyToken.type = TokenType.OPERATOR;
@@ -219,7 +219,7 @@ public class Calculator {
 
     public static double calculate(String equation) {
         //custom bit for replacing purse with its value
-        equation = equation.replace("purse",String.valueOf((int)Utils.getPurse()));
+        equation = equation.toLowerCase().replaceAll("p(urse)?",String.valueOf((int)Utils.getPurse()));
         return evaluate(shunt(lex(equation)));
     }
 }
