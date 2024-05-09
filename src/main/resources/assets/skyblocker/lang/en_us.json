@@ -414,8 +414,6 @@
 
   "skyblocker.config.misc": "Misc",
 
-  "skyblocker.config.misc.hideStatusEffectOverlay": "Hide Status Effect Overlay",
-
   "skyblocker.config.misc.richPresence": "Discord RPC",
   "skyblocker.config.misc.richPresence.customMessage": "Custom Message",
   "skyblocker.config.misc.richPresence.cycleMode": "Cycle Skyblock Info",
@@ -493,6 +491,8 @@
   "skyblocker.config.uiAndVisuals": "UI & Visuals",
 
   "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
+
+  "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
 
   "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence & XP Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",

@@ -450,7 +450,7 @@
     "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "开火冻结计时器（F3/M3）",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold": "中性的临界点",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold.@Tooltip": "低于这个数值的利润将被视为中性。",
-    "skyblocker.config.misc.hideStatusEffectOverlay": "隐藏状态效果动画",
+    "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "隐藏状态效果动画",
     "skyblocker.tips.fancyTabExtraInfo": "你知道吗？在拿着N或M时可以在精致菜单中看到额外的信息。",
     "skyblocker.config.dungeons.map.mapScreen": "地牢地图和分数的位置设置...",
     "skyblocker.config.quickNav.button": "按钮 %d",

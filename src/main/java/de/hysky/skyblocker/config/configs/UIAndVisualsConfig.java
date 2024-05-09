@@ -24,6 +24,9 @@ public class UIAndVisualsConfig {
     public boolean fancyCraftingTable = true;
 
     @SerialEntry
+    public boolean hideStatusEffectOverlay = false;
+
+    @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
     @SerialEntry

@@ -141,7 +141,7 @@
     "skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Mostra o nível do atributo como uma contagem de stack e os iniciais do nome do atributo.",
     "skyblocker.config.slayer": "Slayers",
     "skyblocker.updateRepository.error": "§cAtualização do repositório local falhou. Remova os arquivos manualmente e reinicie o jogo.",
-    "skyblocker.config.misc.hideStatusEffectOverlay": "Esconder Overlay de Status de Efeitos",
+    "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Esconder Overlay de Status de Efeitos",
     "skyblocker.config.general.itemList.enableItemList": "Ativar Lista de Itens",
     "skyblocker.config.general.itemList": "Lista de Itens",
     "text.skyblocker.open": "Abrir",

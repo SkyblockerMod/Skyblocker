@@ -4,8 +4,6 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
 
 public class MiscConfig {
-    @SerialEntry
-    public boolean hideStatusEffectOverlay = false;
 
     @SerialEntry
     public RichPresence richPresence = new RichPresence();

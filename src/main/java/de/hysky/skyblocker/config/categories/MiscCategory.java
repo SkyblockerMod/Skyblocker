@@ -17,13 +17,6 @@ public class MiscCategory {
                 .name(Text.translatable("skyblocker.config.misc"))
 
                 //Uncategorized Options
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.misc.hideStatusEffectOverlay"))
-                        .binding(defaults.misc.hideStatusEffectOverlay,
-                                () -> config.misc.hideStatusEffectOverlay,
-                                newValue -> config.misc.hideStatusEffectOverlay = newValue)
-                        .controller(ConfigUtils::createBooleanController)
-                        .build())
 
                 //Discord RPC
                 .group(OptionGroup.createBuilder()

@@ -274,7 +274,7 @@
     "skyblocker.config.general.itemInfoDisplay.attributeShardInfo": "Информация об Attribute Shard",
     "skyblocker.config.general.itemInfoDisplay": "Отображение информации о предмете",
     "skyblocker.dungeons.secrets.markSecretMissing": "§b[§6Skyblocker§b] §rПометил секрет #%d как пропущенный.",
-    "skyblocker.config.misc.hideStatusEffectOverlay": "Скрыть отображение статуса эффектов",
+    "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Скрыть отображение статуса эффектов",
     "skyblocker.dungeons.secrets.markSecretFound": "§b[§6Skyblocker§b] §гПометил секрет #%d как найденный.",
     "skyblocker.dungeons.secrets.markSecretMissingUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как пропущенный.",
     "skyblocker.dungeons.secrets.markSecretFoundUnable": "§b[§6Skyblocker§b] §cНевозможно отметить секрет #%d как найденный.",

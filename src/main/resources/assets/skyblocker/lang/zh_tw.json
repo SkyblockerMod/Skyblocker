@@ -415,7 +415,7 @@
     "skyblocker.rift.enigmaSouls.markAllMissing": "§r將所有Enigma之魂標記為已忽略！",
     "skyblocker.shortcuts.deleteQuestion": "你確定要移除這個快捷指令嗎？",
     "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "值越低，更新越頻繁，可能會導致卡頓。",
-    "skyblocker.config.misc.hideStatusEffectOverlay": "隱藏狀態效果動畫",
+    "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "隱藏狀態效果動畫",
     "key.itemProtection": "保護物品",
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission": "啟用Weird Transmission目標位置顯示",
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission": "啟用Instant Transmission技能目標位置顯示",
