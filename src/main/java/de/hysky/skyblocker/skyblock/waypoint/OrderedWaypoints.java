@@ -72,6 +72,7 @@ public class OrderedWaypoints {
 	private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
 
 	private static CompletableFuture<Void> loaded;
+	private static boolean showAll;
 
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(_client -> load());
@@ -114,6 +115,8 @@ public class OrderedWaypoints {
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
 												.executes(context -> toggleGroup(context.getSource(), getString(context, "groupName")))))
+								.then(literal("showAll")
+										.executes(context -> showAll(context.getSource())))
 								.then(literal("import")
 										.then(literal("coleWeight")
 												.then(argument("groupName", word())
@@ -215,39 +218,54 @@ public class OrderedWaypoints {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	private static int showAll(FabricClientCommandSource source) {
+		source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.ordered.showAll")));
+		showAll = !showAll;
+
+		return Command.SINGLE_SUCCESS;
+	}
+
 	private static void render(WorldRenderContext wrc) {
 		if ((Utils.isInCrystalHollows() || Utils.isInDwarvenMines()) && loaded.isDone() && SEMAPHORE.tryAcquire()) {
 			for (OrderedWaypointGroup group : WAYPOINTS.values()) {
 				if (group.enabled()) {
 					List<OrderedWaypoint> waypoints = group.waypoints();
 					if (waypoints.isEmpty()) continue;
-					ClientPlayerEntity player = MinecraftClient.getInstance().player;
-					int centreIndex = INDEX_STORE.computeIfAbsent(group.name(), name -> 0);
 
-					for (int i = 0; i < waypoints.size(); i++) {
-						OrderedWaypoint waypoint = waypoints.get(i);
+					if (!showAll) {
+						ClientPlayerEntity player = MinecraftClient.getInstance().player;
+						int centreIndex = INDEX_STORE.computeIfAbsent(group.name(), name -> 0);
 
-						if (waypoint.getPos().isWithinDistance(player.getPos(), RADIUS)) {
-							centreIndex = i;
-							INDEX_STORE.put(group.name(), i);
+						for (int i = 0; i < waypoints.size(); i++) {
+							OrderedWaypoint waypoint = waypoints.get(i);
 
-							break;
+							if (waypoint.getPos().isWithinDistance(player.getPos(), RADIUS)) {
+								centreIndex = i;
+								INDEX_STORE.put(group.name(), i);
+
+								break;
+							}
+						}
+
+						int previousIndex = (centreIndex - 1 + waypoints.size()) % waypoints.size();
+						int currentIndex = (centreIndex + waypoints.size()) % waypoints.size();
+						int nextIndex = (centreIndex + 1) % waypoints.size();
+
+						OrderedWaypoint previous = waypoints.get(previousIndex);
+						OrderedWaypoint current = waypoints.get(currentIndex);
+						OrderedWaypoint next = waypoints.get(nextIndex);
+
+						previous.render(wrc, RelativeIndex.PREVIOUS, previousIndex);
+						current.render(wrc, RelativeIndex.CURRENT, currentIndex);
+						next.render(wrc, RelativeIndex.NEXT, nextIndex);
+
+						RenderHelper.renderLineFromCursor(wrc, Vec3d.ofCenter(next.getPos().up()), LIGHT_GRAY, 1f, 5f);
+					} else {
+						for (int i = 0; i < waypoints.size(); i++) {
+							//Render them as white by default
+							waypoints.get(i).render(wrc, RelativeIndex.CURRENT, i);
 						}
 					}
-
-					int previousIndex = (centreIndex - 1 + waypoints.size()) % waypoints.size();
-					int currentIndex = (centreIndex + waypoints.size()) % waypoints.size();
-					int nextIndex = (centreIndex + 1) % waypoints.size();
-
-					OrderedWaypoint previous = waypoints.get(previousIndex);
-					OrderedWaypoint current = waypoints.get(currentIndex);
-					OrderedWaypoint next = waypoints.get(nextIndex);
-
-					previous.render(wrc, RelativeIndex.PREVIOUS, previousIndex);
-					current.render(wrc, RelativeIndex.CURRENT, currentIndex);
-					next.render(wrc, RelativeIndex.NEXT, nextIndex);
-
-					RenderHelper.renderLineFromCursor(wrc, Vec3d.ofCenter(next.getPos().up()), LIGHT_GRAY, 1f, 5f);
 				}
 			}
 
