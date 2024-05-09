@@ -11,6 +11,6 @@ public class ComboFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().chats.hideCombo;
+        return SkyblockerConfigManager.get().chat.hideCombo;
     }
 }

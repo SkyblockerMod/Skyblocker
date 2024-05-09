@@ -34,6 +34,6 @@ public class AdFilter extends ChatPatternListener {
 
 	@Override
 	protected ChatFilterResult state() {
-		return SkyblockerConfigManager.get().chats.hideAds;
+		return SkyblockerConfigManager.get().chat.hideAds;
 	}
 }

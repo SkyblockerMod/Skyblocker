@@ -20,114 +20,114 @@ public class ChatCategory {
                         .name(Text.translatable("skyblocker.config.chat.filter"))
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideAbility"))
-                                .binding(defaults.chats.hideAbility,
-                                        () -> config.chats.hideAbility,
-                                        newValue -> config.chats.hideAbility = newValue)
+                                .binding(defaults.chat.hideAbility,
+                                        () -> config.chat.hideAbility,
+                                        newValue -> config.chat.hideAbility = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideHeal"))
-                                .binding(defaults.chats.hideHeal,
-                                        () -> config.chats.hideHeal,
-                                        newValue -> config.chats.hideHeal = newValue)
+                                .binding(defaults.chat.hideHeal,
+                                        () -> config.chat.hideHeal,
+                                        newValue -> config.chat.hideHeal = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideAOTE"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.filter.hideAOTE.@Tooltip")))
-                                .binding(defaults.chats.hideAOTE,
-                                        () -> config.chats.hideAOTE,
-                                        newValue -> config.chats.hideAOTE = newValue)
+                                .binding(defaults.chat.hideAOTE,
+                                        () -> config.chat.hideAOTE,
+                                        newValue -> config.chat.hideAOTE = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideImplosion"))
-                                .binding(defaults.chats.hideImplosion,
-                                        () -> config.chats.hideImplosion,
-                                        newValue -> config.chats.hideImplosion = newValue)
+                                .binding(defaults.chat.hideImplosion,
+                                        () -> config.chat.hideImplosion,
+                                        newValue -> config.chat.hideImplosion = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideMoltenWave"))
-                                .binding(defaults.chats.hideMoltenWave,
-                                        () -> config.chats.hideMoltenWave,
-                                        newValue -> config.chats.hideMoltenWave = newValue)
+                                .binding(defaults.chat.hideMoltenWave,
+                                        () -> config.chat.hideMoltenWave,
+                                        newValue -> config.chat.hideMoltenWave = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideAds"))
-                                .binding(defaults.chats.hideAds,
-                                        () -> config.chats.hideAds,
-                                        newValue -> config.chats.hideAds = newValue)
+                                .binding(defaults.chat.hideAds,
+                                        () -> config.chat.hideAds,
+                                        newValue -> config.chat.hideAds = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideTeleportPad"))
-                                .binding(defaults.chats.hideTeleportPad,
-                                        () -> config.chats.hideTeleportPad,
-                                        newValue -> config.chats.hideTeleportPad = newValue)
+                                .binding(defaults.chat.hideTeleportPad,
+                                        () -> config.chat.hideTeleportPad,
+                                        newValue -> config.chat.hideTeleportPad = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideCombo"))
-                                .binding(defaults.chats.hideCombo,
-                                        () -> config.chats.hideCombo,
-                                        newValue -> config.chats.hideCombo = newValue)
+                                .binding(defaults.chat.hideCombo,
+                                        () -> config.chat.hideCombo,
+                                        newValue -> config.chat.hideCombo = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideAutopet"))
-                                .binding(defaults.chats.hideAutopet,
-                                        () -> config.chats.hideAutopet,
-                                        newValue -> config.chats.hideAutopet = newValue)
+                                .binding(defaults.chat.hideAutopet,
+                                        () -> config.chat.hideAutopet,
+                                        newValue -> config.chat.hideAutopet = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideShowOff"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.filter.hideShowOff.@Tooltip")))
-                                .binding(defaults.chats.hideShowOff,
-                                        () -> config.chats.hideShowOff,
-                                        newValue -> config.chats.hideShowOff = newValue)
+                                .binding(defaults.chat.hideShowOff,
+                                        () -> config.chat.hideShowOff,
+                                        newValue -> config.chat.hideShowOff = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideToggleSkyMall"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip")))
-                                .binding(defaults.chats.hideToggleSkyMall,
-                                        () -> config.chats.hideToggleSkyMall,
-                                        newValue -> config.chats.hideToggleSkyMall = newValue)
+                                .binding(defaults.chat.hideToggleSkyMall,
+                                        () -> config.chat.hideToggleSkyMall,
+                                        newValue -> config.chat.hideToggleSkyMall = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideMana"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.filter.hideMana.@Tooltip")))
-                                .binding(defaults.chats.hideMana,
-                                        () -> config.chats.hideMana,
-                                        newValue -> config.chats.hideMana = newValue)
+                                .binding(defaults.chat.hideMana,
+                                        () -> config.chat.hideMana,
+                                        newValue -> config.chat.hideMana = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideMimicKill"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.filter.hideMimicKill.@Tooltip")))
-                                .binding(defaults.chats.hideMimicKill,
-                                        () -> config.chats.hideMimicKill,
-                                        newValue -> config.chats.hideMimicKill = newValue)
+                                .binding(defaults.chat.hideMimicKill,
+                                        () -> config.chat.hideMimicKill,
+                                        newValue -> config.chat.hideMimicKill = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideDeath"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.filter.hideDeath.@Tooltip")))
-                                .binding(defaults.chats.hideDeath,
-                                        () -> config.chats.hideDeath,
-                                        newValue -> config.chats.hideDeath = newValue)
+                                .binding(defaults.chat.hideDeath,
+                                        () -> config.chat.hideDeath,
+                                        newValue -> config.chat.hideDeath = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<ChatFilterResult>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideDicer"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.filter.hideDicer.@Tooltip")))
-                                .binding(defaults.chats.hideDicer,
-                                        () -> config.chats.hideDicer,
-                                        newValue -> config.chats.hideDicer = newValue)
+                                .binding(defaults.chat.hideDicer,
+                                        () -> config.chat.hideDicer,
+                                        newValue -> config.chat.hideDicer = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .build())
@@ -144,17 +144,17 @@ public class ChatCategory {
                         .option(Option.<Integer>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.chatRules.announcementLength"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.chatRules.announcementLength.@Tooltip")))
-                                .binding(defaults.chats.chatRuleConfig.announcementLength,
-                                        () -> config.chats.chatRuleConfig.announcementLength,
-                                        newValue -> config.chats.chatRuleConfig.announcementLength = newValue)
+                                .binding(defaults.chat.chatRuleConfig.announcementLength,
+                                        () -> config.chat.chatRuleConfig.announcementLength,
+                                        newValue -> config.chat.chatRuleConfig.announcementLength = newValue)
                                 .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(5, 200).step(1))
                                 .build())
                         .option(Option.<Integer>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.chatRules.announcementScale"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.chatRules.announcementScale.@Tooltip")))
-                                .binding(defaults.chats.chatRuleConfig.announcementScale,
-                                        () -> config.chats.chatRuleConfig.announcementScale,
-                                        newValue -> config.chats.chatRuleConfig.announcementScale = newValue)
+                                .binding(defaults.chat.chatRuleConfig.announcementScale,
+                                        () -> config.chat.chatRuleConfig.announcementScale,
+                                        newValue -> config.chat.chatRuleConfig.announcementScale = newValue)
                                 .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 8).step(1))
                                 .build())
                         .build())

@@ -15,7 +15,7 @@ public class DeathFilter extends ChatPatternListener {
 
 	@Override
 	protected ChatFilterResult state() {
-		return SkyblockerConfigManager.get().chats.hideDeath;
+		return SkyblockerConfigManager.get().chat.hideDeath;
 	}
 
 	@Override

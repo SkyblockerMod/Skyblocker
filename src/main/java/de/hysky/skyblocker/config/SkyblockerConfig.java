@@ -35,7 +35,7 @@ public class SkyblockerConfig {
     public SlayersConfig slayers = new SlayersConfig();
 
     @SerialEntry
-    public ChatConfig chats = new ChatConfig();
+    public ChatConfig chat = new ChatConfig();
 
     @SerialEntry
     public QuickNavigationConfig quickNav = new QuickNavigationConfig();

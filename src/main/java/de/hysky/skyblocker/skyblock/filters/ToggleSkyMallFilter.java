@@ -11,6 +11,6 @@ public class ToggleSkyMallFilter extends SimpleChatFilter {
 
 	@Override
 	protected ChatFilterResult state() {
-		return SkyblockerConfigManager.get().chats.hideToggleSkyMall;
+		return SkyblockerConfigManager.get().chat.hideToggleSkyMall;
 	}
 }

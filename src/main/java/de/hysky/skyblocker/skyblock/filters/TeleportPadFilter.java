@@ -11,6 +11,6 @@ public class TeleportPadFilter extends SimpleChatFilter {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().chats.hideTeleportPad;
+        return SkyblockerConfigManager.get().chat.hideTeleportPad;
     }
 }

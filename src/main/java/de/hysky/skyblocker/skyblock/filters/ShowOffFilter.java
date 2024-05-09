@@ -14,6 +14,6 @@ public class ShowOffFilter extends SimpleChatFilter {
 
 	@Override
 	protected ChatFilterResult state() {
-		return SkyblockerConfigManager.get().chats.hideShowOff;
+		return SkyblockerConfigManager.get().chat.hideShowOff;
 	}
 }

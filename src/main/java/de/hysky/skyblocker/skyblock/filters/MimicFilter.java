@@ -16,7 +16,7 @@ public class MimicFilter extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().chats.hideMimicKill;
+        return SkyblockerConfigManager.get().chat.hideMimicKill;
     }
 
     @Override

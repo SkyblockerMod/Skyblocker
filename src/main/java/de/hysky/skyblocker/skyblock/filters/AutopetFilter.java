@@ -16,7 +16,7 @@ public class AutopetFilter extends ChatPatternListener {
 
     @Override
     public boolean onMatch(Text _message, Matcher matcher) {
-        if (SkyblockerConfigManager.get().chats.hideAutopet == ChatFilterResult.ACTION_BAR) {
+        if (SkyblockerConfigManager.get().chat.hideAutopet == ChatFilterResult.ACTION_BAR) {
             Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(
                     Text.literal(
                             _message.getString().replace("VIEW RULE", "")
@@ -27,9 +27,9 @@ public class AutopetFilter extends ChatPatternListener {
 
     @Override
     public ChatFilterResult state() {
-        if (SkyblockerConfigManager.get().chats.hideAutopet == ChatFilterResult.ACTION_BAR)
+        if (SkyblockerConfigManager.get().chat.hideAutopet == ChatFilterResult.ACTION_BAR)
             return ChatFilterResult.FILTER;
         else
-            return SkyblockerConfigManager.get().chats.hideAutopet;
+            return SkyblockerConfigManager.get().chat.hideAutopet;
     }
 }
