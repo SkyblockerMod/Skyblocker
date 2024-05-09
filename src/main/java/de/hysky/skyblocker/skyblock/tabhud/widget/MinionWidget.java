@@ -93,7 +93,7 @@ public class MinionWidget extends TabHudWidget {
     public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
     public MinionWidget() {
-        super("Minions" ,TITLE, Formatting.DARK_AQUA.getColorValue());
+        super("Minions", TITLE, Formatting.DARK_AQUA.getColorValue());
     }
 
     @Override
