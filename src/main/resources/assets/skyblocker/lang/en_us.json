@@ -537,12 +537,12 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions": "Maximum Suggestions",
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip": "The maximum number of suggested items to show.",
 
-  "text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator": "Input Calculator",
-  "text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
-  "text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
-  "text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.requiresEquals": "Only show with \"=\".",
-  "text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message start with \"=\".",
-  "text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
+  "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
+  "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "Only show with \"=\".",
+  "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message start with \"=\".",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
 
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy tab HUD (Temporarily disabled outside dungeons)",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",

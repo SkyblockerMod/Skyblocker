@@ -335,19 +335,19 @@ public class UIAndVisualsCategory {
 
                 //Input Calculator
                 .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator"))
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator"))
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.enabled"))
-                                .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.enabled.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.enabled"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.inputCalculator.enabled,
                                         () -> config.uiAndVisuals.inputCalculator.enabled,
                                         newValue -> config.uiAndVisuals.inputCalculator.enabled = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.requiresEquals"))
-                                .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.inputCalculator.requiresEquals,
                                         () -> config.uiAndVisuals.inputCalculator.requiresEquals,
                                         newValue -> config.uiAndVisuals.inputCalculator.requiresEquals = newValue)
