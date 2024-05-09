@@ -19,7 +19,7 @@ public class SignCalculator {
     private static Double output;
 
     public static void renderCalculator(DrawContext context, String message, int renderX, int renderY) {
-        if (SkyblockerConfigManager.get().general.inputCalculator.requiresEquals) {
+        if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals) {
             if (message.startsWith("=")) {
                 message = message.substring(1);
             }

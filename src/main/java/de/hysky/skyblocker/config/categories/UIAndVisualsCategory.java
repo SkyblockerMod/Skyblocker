@@ -333,6 +333,28 @@ public class UIAndVisualsCategory {
                                 .build())
                         .build())
 
+                //Input Calculator
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.enabled"))
+                                .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.enabled.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.inputCalculator.enabled,
+                                        () -> config.uiAndVisuals.inputCalculator.enabled,
+                                        newValue -> config.uiAndVisuals.inputCalculator.enabled = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.requiresEquals"))
+                                .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.inputCalculator.requiresEquals,
+                                        () -> config.uiAndVisuals.inputCalculator.requiresEquals,
+                                        newValue -> config.uiAndVisuals.inputCalculator.requiresEquals = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
                 //Flame Overlay
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay"))
