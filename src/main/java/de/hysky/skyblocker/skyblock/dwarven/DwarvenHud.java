@@ -33,7 +33,7 @@ public class DwarvenHud {
 
     private static final List<Pattern> COMMISSIONS = Stream.of(
             "(?:Titanium|Mithril|Hard Stone) Miner",
-            "(?:Glacite Walker|Golden Goblin|(?<!Golden )Goblin|Goblin Raid|Treasure Hoarder|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst|Maniac) Slayer",
+            "(?:Glacite Walker|Golden Goblin|(?<!Golden )Goblin|Goblin Raid|Treasure Hoarder|Automaton|Sludge|Team Treasurite Member|Yog|Boss Corleone|Thyst|Maniac|Mines) Slayer",
             "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Mithril",
             "(?:Lava Springs|Cliffside Veins|Rampart's Quarry|Upper Mines|Royal Mines) Titanium",
             "Goblin Raid",
@@ -95,6 +95,7 @@ public class DwarvenHud {
      * @param powderHudY Y coordinate of the powder hud
      * @param commissions the commissions to render to the commissions hud
      */
+    @Deprecated(since = "1.20.3+1.20.6", forRemoval = true)
     private static void renderClassic(DrawContext context, int comHudX, int comHudY, int powderHudX, int powderHudY, List<Commission> commissions) {
         if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
             context.fill(comHudX, comHudY, comHudX + 200, comHudY + (20 * commissions.size()), 0x64000000);
