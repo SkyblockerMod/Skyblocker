@@ -157,20 +157,20 @@ public class QuickNavigationConfig {
     }
 
     public static class ItemData {
-        public ItemData(String itemName, int count, String nbt) {
-            this.itemName = itemName;
+        public ItemData(String id, int count, String nbt) {
+            this.id = id;
             this.count = count;
             this.nbt = nbt;
         }
 
-        public ItemData(String itemName) {
-            this.itemName = itemName;
+        public ItemData(String id) {
+            this.id = id;
             this.count = 1;
             this.nbt = "";
         }
 
         @SerialEntry
-        public String itemName;
+        public String id;
 
         @SerialEntry
         public int count;

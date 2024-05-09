@@ -59,7 +59,7 @@ public class QuickNav {
 
     private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
         QuickNavigationConfig.ItemData itemData = buttonInfo.item;
-        String nbtString = "{id:\"minecraft:" + itemData.itemName.toLowerCase(Locale.ROOT) + "\",Count:1";
+        String nbtString = "{id:\"minecraft:" + itemData.id.toLowerCase(Locale.ROOT) + "\",Count:1";
         if (itemData.nbt.length() > 2) nbtString += "," + itemData.nbt;
         nbtString += "}";
         boolean uiTitleMatches = false;
