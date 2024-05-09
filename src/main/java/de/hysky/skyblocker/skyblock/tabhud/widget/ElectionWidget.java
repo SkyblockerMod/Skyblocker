@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -53,7 +54,7 @@ public class ElectionWidget extends TabHudWidget {
 
     @Override
     public void updateContent(List<Text> lines) {
-        String status = PlayerListMgr.strAt(76);
+        String status = lines.getFirst().getString();
         if (status == null) {
             this.addComponent(new IcoTextComponent());
             this.addComponent(new IcoTextComponent());
@@ -67,7 +68,11 @@ public class ElectionWidget extends TabHudWidget {
             IcoTextComponent over = new IcoTextComponent(Ico.BARRIER, EL_OVER);
             this.addComponent(over);
 
-            String win = PlayerListMgr.strAt(77);
+            for (int i = 1; i < lines.size(); i++) {
+                this.addComponent(new PlainTextComponent(lines.get(i)));
+            }
+
+            /*String win = PlayerListMgr.strAt(77);
             if (win == null || !win.contains(": ")) {
                 this.addComponent(new IcoTextComponent());
             } else {
@@ -78,26 +83,24 @@ public class ElectionWidget extends TabHudWidget {
             }
 
             this.addSimpleIcoText(Ico.PLAYER, "Participants:", Formatting.AQUA, 78);
-            this.addSimpleIcoText(Ico.SIGN, "Year:", Formatting.LIGHT_PURPLE, 79);
+            this.addSimpleIcoText(Ico.SIGN, "Year:", Formatting.LIGHT_PURPLE, 79);*/
 
         } else {
             // election is going on
-            this.addSimpleIcoText(Ico.CLOCK, "End in:", Formatting.GOLD, 76);
+            this.addSimpleIcoText(Ico.CLOCK, "End in:", Formatting.GOLD, lines.getFirst().getString().trim());
 
-            for (int i = 77; i <= 79; i++) {
-                Matcher m = PlayerListMgr.regexAt(i, VOTE_PATTERN);
-                if (m == null) {
-                    this.addComponent(new ProgressComponent());
-                } else {
-
+            for (int i = 1; i < lines.size(); i++) {
+                String string = lines.get(i).getString();
+                Matcher m = VOTE_PATTERN.matcher(string);
+                if (m.matches()) {
                     String mayorname = m.group("mayor");
                     String pcntstr = m.group("pcnt");
                     float pcnt = Float.parseFloat(pcntstr);
-                    Text candidate = Text.literal(mayorname).formatted(COLS[i - 77]);
+                    Text candidate = Text.literal(mayorname).formatted(COLS[i - 1]);
                     ProgressComponent pc = new ProgressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt,
-                            COLS[i - 77].getColorValue());
+                            COLS[i - 1].getColorValue());
                     this.addComponent(pc);
-                }
+                } else this.addComponent(new PlainTextComponent(lines.get(i)));
             }
         }
     }
