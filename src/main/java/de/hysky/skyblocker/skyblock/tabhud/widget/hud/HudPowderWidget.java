@@ -65,7 +65,7 @@ public class HudPowderWidget extends HudWidget {
     // another repulsive hack to make this widget-like hud element work with the new widget class
     // DON'T USE WITH THE WIDGET SYSTEM, ONLY USE FOR DWARVENHUD!
     public HudPowderWidget() {
-        super(TITLE, Formatting.DARK_AQUA.getColorValue());
+        super(TITLE, Formatting.DARK_AQUA.getColorValue(), "hud_powder");
     }
 
     /**

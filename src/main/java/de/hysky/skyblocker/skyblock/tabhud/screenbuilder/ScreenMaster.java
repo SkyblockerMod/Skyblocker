@@ -10,11 +10,13 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.main.Main;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -86,21 +88,25 @@ public class ScreenMaster {
     @Init
     public static void init() {
 
-        try {
-            ClassPath.from(TabHudWidget.class.getClassLoader()).getTopLevelClasses("de.hysky.skyblocker.skyblock.tabhud.widget").iterator().forEachRemaining(classInfo -> {
-                Class<?> load = classInfo.load();
-                if (!load.getSuperclass().equals(TabHudWidget.class)) return;
-                try {
-                    TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
-                    PlayerListMgr.widgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
-                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                    LOGGER.error("[Skyblocker] Failed to load {} hud widget", classInfo.getName(), e);
-                }
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            System.out.println(Object.class);
+            try {
+                ClassPath.from(TabHudWidget.class.getClassLoader()).getTopLevelClasses("de.hysky.skyblocker.skyblock.tabhud.widget").iterator().forEachRemaining(classInfo -> {
+                    try {
+                        Class<?> load = Class.forName(classInfo.getName());
+                        if (!load.getSuperclass().equals(TabHudWidget.class)) return;
+                        TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
+                        PlayerListMgr.widgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
+                    } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                        LOGGER.error("[Skyblocker] Failed to load {} hud widget", classInfo.getName(), e);
+                    }
 
-            });
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
-        }
+                });
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
+            }
+        });
+
 
         // WHY MUST IT ALWAYS BE SUCH NESTED GARBAGE MINECRAFT KEEP THAT IN DFU FFS
 
@@ -139,8 +145,7 @@ public class ScreenMaster {
                                 }
 
                             } catch (Exception ex) {
-                                throw new IllegalStateException(
-                                        "Rejected this resource pack. Reason: " + ex.getMessage());
+                                LOGGER.error("it borked", ex);
                             }
                         }
 
@@ -156,7 +161,7 @@ public class ScreenMaster {
                             }
                         }
                         if (excnt > 0) {
-                            throw new IllegalStateException("This screen definition isn't valid, see above");
+                            LOGGER.warn("shit went down");
                         }
                     }
                 });
