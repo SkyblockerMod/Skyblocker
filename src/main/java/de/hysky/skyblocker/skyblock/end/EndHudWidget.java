@@ -26,7 +26,7 @@ public class EndHudWidget extends HudWidget {
     public static final EndHudWidget INSTANCE = new EndHudWidget(TITLE, Formatting.DARK_PURPLE.getColorValue());
 
     public EndHudWidget(MutableText title, Integer colorValue) {
-        super(title, colorValue);
+        super(title, colorValue, "hud_end");
         this.setX(5);
         this.setY(5);
         this.update();

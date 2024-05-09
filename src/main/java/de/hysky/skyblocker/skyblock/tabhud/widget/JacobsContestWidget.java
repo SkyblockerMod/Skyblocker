@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.TableComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -10,6 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +20,7 @@ import static java.util.Map.entry;
 
 // this widget shows info about the current jacob's contest (garden only)
 
-public class JacobsContestWidget extends HudWidget {
+public class JacobsContestWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Jacob's Contest").formatted(Formatting.YELLOW,
             Formatting.BOLD);
@@ -40,36 +42,29 @@ public class JacobsContestWidget extends HudWidget {
     );
 
     public JacobsContestWidget() {
-        super(TITLE, Formatting.YELLOW.getColorValue());
+        super("Jacob's Contest", TITLE, Formatting.YELLOW.getColorValue());
     }
 
     @Override
-    public void updateContent() {
-        Text jacobStatus = PlayerListMgr.textAt(76);
-
-        if (jacobStatus.getString().equals("ACTIVE")) {
-            this.addComponent(new IcoTextComponent(Ico.CLOCK, jacobStatus));
+    public void updateContent(List<Text> lines) {
+        if (!lines.getFirst().getString().contains("Starts")) {
+            this.addComponent(new IcoTextComponent(Ico.CLOCK, Text.literal("Ends in: ").append(lines.getFirst())));
+            for (int i = 1; i < lines.size(); i++) {
+                this.addComponent(new PlainTextComponent(lines.get(i)));
+            }
         } else {
-            this.addSimpleIcoText(Ico.CLOCK, "Starts in:", Formatting.GOLD, 76);
-        }
-
-        TableComponent tc = new TableComponent(1, 3, Formatting.YELLOW.getColorValue());
-
-        for (int i = 77; i < 80; i++) {
-            Matcher item = PlayerListMgr.regexAt(i, CROP_PATTERN);
-            IcoTextComponent itc;
-            if (item == null) {
-                itc = new IcoTextComponent();
-            } else {
-                String cropName = item.group("crop").trim(); //Trimming is needed because during a contest the space separator will be caught
-                if (item.group("fortune").equals("☘")) {
-                    itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.literal(cropName).append(Text.literal(" ☘").formatted(Formatting.GOLD)));
-                } else {
-                    itc = new IcoTextComponent(FARM_DATA.get(cropName), Text.of(cropName));
+            for (Text line : lines) {
+                String string = line.getString();
+                switch (string.toLowerCase()) {
+                    case String s when s.contains("ends") || s.contains("starts") ->
+                            this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
+                    case String s when s.contains("○") -> {
+                        String trim = string.replace("○", "").trim();
+                        this.addComponent(new IcoTextComponent(FARM_DATA.get(trim), Text.literal(trim)));
+                    }
+                    default -> this.addComponent(new PlainTextComponent(line));
                 }
             }
-            tc.addToCell(0, i - 77, itc);
         }
-        this.addComponent(tc);
     }
 }

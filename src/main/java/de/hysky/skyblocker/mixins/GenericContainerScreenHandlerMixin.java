@@ -25,6 +25,7 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
         if (MinecraftClient.getInstance().currentScreen instanceof PartyFinderScreen screen) {
             screen.markDirty();
         }
+        onContentChanged(slots.get(slot).inventory); // this should be default behavior
     }
 
     @Override
