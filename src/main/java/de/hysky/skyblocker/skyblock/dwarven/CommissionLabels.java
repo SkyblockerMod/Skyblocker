@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -30,15 +30,15 @@ public class CommissionLabels {
      * @param completed      if there is a commission completed
      */
     protected static void update(List<String> newCommissions, boolean completed) {
-        SkyblockerConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.mode;
-        if (currentMode == SkyblockerConfig.CommissionWaypointMode.OFF) {
+        MiningConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().mining.commissionWaypoints.mode;
+        if (currentMode == MiningConfig.CommissionWaypointMode.OFF) {
             return;
         }
         activeWaypoints.clear();
         String location = Utils.getIslandArea().substring(2);
         //find commission locations in glacite
         if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Mineshafts") || location.equals("Glacite Lake")) {
-            if (currentMode != SkyblockerConfig.CommissionWaypointMode.BOTH && currentMode != SkyblockerConfig.CommissionWaypointMode.GLACITE) {
+            if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
                 return;
             }
 
@@ -53,13 +53,13 @@ public class CommissionLabels {
                 }
             }
             //add base waypoint if enabled
-            if (SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.showBaseCamp) {
+            if (SkyblockerConfigManager.get().mining.commissionWaypoints.showBaseCamp) {
                 activeWaypoints.add(new MiningLocationLabel(MiningLocationLabel.glaciteCategory.CAMPFIRE, MiningLocationLabel.glaciteCategory.CAMPFIRE.getLocations()[0]));
             }
             return;
         }
         //find commission locations in dwarven mines
-        if (currentMode != SkyblockerConfig.CommissionWaypointMode.BOTH && currentMode != SkyblockerConfig.CommissionWaypointMode.DWARVEN) {
+        if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.DWARVEN) {
             return;
         }
 
@@ -73,7 +73,7 @@ public class CommissionLabels {
             }
         }
         //if there is a commission completed and enabled show emissary
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.showEmissary && completed) {
+        if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
             for (MiningLocationLabel.dwarvenEmissaries emissaries : DWARVEN_EMISSARYS) {
                 activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
             }
@@ -86,7 +86,7 @@ public class CommissionLabels {
      * @param context render context
      */
     private static void render(WorldRenderContext context) {
-        if (!Utils.isInDwarvenMines() || SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.mode == SkyblockerConfig.CommissionWaypointMode.OFF) {
+        if (!Utils.isInDwarvenMines() || SkyblockerConfigManager.get().mining.commissionWaypoints.mode == MiningConfig.CommissionWaypointMode.OFF) {
             return;
         }
         for (MiningLocationLabel MiningLocationLabel : activeWaypoints) {

@@ -15,7 +15,7 @@ public class MiningLocationLabel {
     private final Vec3d centerPos;
 
     MiningLocationLabel(Category category, BlockPos pos) {
-        if (SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.useColor) {
+        if (SkyblockerConfigManager.get().mining.commissionWaypoints.useColor) {
             this.name = Text.literal(category.getName()).withColor(category.getColor());
         } else {
             this.name = Text.literal(category.getName());
@@ -32,7 +32,7 @@ public class MiningLocationLabel {
     public void render(WorldRenderContext context) {
         Vec3d posUp = centerPos.add(0, 1, 0);
         double distance = context.camera().getPos().distanceTo(centerPos);
-        float scale = (float) (SkyblockerConfigManager.get().locations.dwarvenMines.commissionWaypoints.textScale * (distance / 10));
+        float scale = (float) (SkyblockerConfigManager.get().mining.commissionWaypoints.textScale * (distance / 10));
         RenderHelper.renderText(context, name, posUp, scale, true);
         RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
     }

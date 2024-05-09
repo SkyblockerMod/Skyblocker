@@ -160,6 +160,56 @@ public class MiningCategory {
                                 .build())
 
                         .build())
+
+                //commission waypoints
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.mining.commissionWaypoints"))
+                        .collapsed(false)
+                        .option(Option.<MiningConfig.CommissionWaypointMode>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.mode"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[0]"),
+                                        Text.translatable("skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[1]"),
+                                        Text.translatable("skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[2]"),
+                                        Text.translatable("skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[3]"),
+                                        Text.translatable("skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]")))
+                                .binding(defaults.mining.commissionWaypoints.mode,
+                                        () -> config.mining.commissionWaypoints.mode,
+                                        newValue -> config.mining.commissionWaypoints.mode = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.useColor"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.commissionWaypoints.useColor.@Tooltip")))
+                                .binding(defaults.mining.commissionWaypoints.useColor,
+                                        () -> config.mining.commissionWaypoints.useColor,
+                                        newValue -> config.mining.commissionWaypoints.useColor = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Float>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.textScale"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.commissionWaypoints.textScale.@Tooltip")))
+                                .binding(defaults.mining.commissionWaypoints.textScale,
+                                        () -> config.mining.commissionWaypoints.textScale,
+                                        newValue -> config.mining.commissionWaypoints.textScale = newValue)
+                                .controller(FloatFieldControllerBuilder::create)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.showBaseCamp"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.commissionWaypoints.showBaseCamp.@Tooltip")))
+                                .binding(defaults.mining.commissionWaypoints.showBaseCamp,
+                                        () -> config.mining.commissionWaypoints.showBaseCamp,
+                                        newValue -> config.mining.commissionWaypoints.showBaseCamp = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.showEmissary"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.commissionWaypoints.showEmissary.@Tooltip")))
+                                .binding(defaults.mining.commissionWaypoints.showEmissary,
+                                        () -> config.mining.commissionWaypoints.showEmissary,
+                                        newValue -> config.mining.commissionWaypoints.showEmissary = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
                 .build();
     }
 }
