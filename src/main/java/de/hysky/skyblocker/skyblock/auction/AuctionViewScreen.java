@@ -90,13 +90,13 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         verticalLayout.forEachChild(this::addDrawableChild);
         updateLayout();
 
-        ButtonWidget build = new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+        ButtonWidget backButton = new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
                 .position(x + backgroundWidth - 16, y + 4)
                 .size(12, 12)
                 .tooltip(Tooltip.of(Text.literal("or press ESC!")))
                 .build();
-        build.setTooltipDelay(Duration.ofSeconds(2));
-        addDrawableChild(build);
+        backButton.setTooltipDelay(Duration.ofSeconds(1));
+        addDrawableChild(backButton);
 
 
     }
