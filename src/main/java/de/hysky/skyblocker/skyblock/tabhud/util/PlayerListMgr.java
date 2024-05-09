@@ -10,7 +10,9 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +40,8 @@ import java.util.regex.Pattern;
 public class PlayerListMgr {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
-	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s)(Players \\(\\d+\\)|Island)(\\s|$)");
-	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("(^|\\s)Info(\\s|$)");
+	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s*)(Players \\(\\d+\\)|Island)(\\s*|$)");
+	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("(^|\\s*)Info(\\s*|$)");
 
 	/**
 	 * The player list in tab.
@@ -82,8 +84,9 @@ public class PlayerListMgr {
 			if (displayName == null) continue;
 			String string = displayName.getString();
 
-			if (!playersDone) {
-				// check if Players (number)
+            if (string.isBlank()) continue;
+            if (!playersDone) {
+                // check if Players (number)
 				if (playersColumnPredicate.test(string)) {
 					if (!doingPlayers) {
 						doingPlayers = true;
@@ -98,35 +101,54 @@ public class PlayerListMgr {
 					contents.clear();
 					continue;
 				}
-				// add player to contents
-				contents.add(displayName); // Players don't have the silly space
             } else {
-				if (string.isBlank()) continue;
-				if (infoColumnPredicate.test(string)) continue;
+                if (infoColumnPredicate.test(string)) continue;
+				// New widget alert!!!!
 				if (!string.startsWith(" ")) {
 					if (!contents.isEmpty()) widgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 					contents.clear();
 					Pair<String, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
-					if (!nameAndInfo.right().getString().isBlank()) contents.add(nameAndInfo.right());
+					if (!nameAndInfo.right().getString().isBlank()) contents.add(trim(nameAndInfo.right()));
 					continue;
 				}
-				contents.add(removeSpace(displayName)); // remove the silly space
-			}
-		}
+            }
+			// Add the line to the content
+            contents.add(trim(displayName));
+        }
+		if (!contents.isEmpty()) widgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 		ScreenBuilder.positionsNeedsUpdating = true;
 	}
 
-	private static Text removeSpace(Text text) {
-		AtomicBoolean removed = new AtomicBoolean(false);
-		MutableText out = Text.empty();
+	private static Text trim(Text text) {
+		List<Text> trimmedParts = new ArrayList<>();
+		AtomicBoolean leadingSpaceFound = new AtomicBoolean(false);
+
+		// leading spaces
 		text.visit((style, asString) -> {
-			if (!removed.get()) {
-				out.append(Text.literal(asString.substring(1)).fillStyle(style));
-				removed.set(true);
-			} else out.append(Text.literal(asString).fillStyle(style));
+			String trimmed = asString;
+			if (!leadingSpaceFound.get()) {
+				trimmed = trimmed.stripLeading();
+				if (!trimmed.isBlank()) leadingSpaceFound.set(true);
+				else return Optional.empty();
+			}
+			trimmedParts.add(Text.literal(trimmed).setStyle(style));
 			return Optional.empty();
 		}, Style.EMPTY);
+
+		// trailing spaces
+		for (int i = 0; i < trimmedParts.size(); i++) {
+			Text last = trimmedParts.removeLast();
+			String trimmed = last.getString().stripTrailing();
+			if (!trimmed.isBlank()) {
+				trimmedParts.add(Text.literal(trimmed).setStyle(last.getStyle()));
+				break;
+			}
+		}
+
+		MutableText out = Text.empty();
+		trimmedParts.forEach(out::append);
+
 		return out;
 	}
 
@@ -136,7 +158,7 @@ public class PlayerListMgr {
 			tabHudWidget.updateFromTab(lines);
 			return tabHudWidget;
 		} else {
-			DefaultTabHudWidget defaultTabHudWidget = new DefaultTabHudWidget(hypixelWidgetName, Text.literal(hypixelWidgetName));
+			DefaultTabHudWidget defaultTabHudWidget = new DefaultTabHudWidget(hypixelWidgetName, Text.literal(hypixelWidgetName).formatted(Formatting.BOLD));
 			widgetInstances.put(defaultTabHudWidget.getHypixelWidgetName(), defaultTabHudWidget);
 			defaultTabHudWidget.updateFromTab(lines);
 			return defaultTabHudWidget;

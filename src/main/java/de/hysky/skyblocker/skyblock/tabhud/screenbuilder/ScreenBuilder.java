@@ -3,10 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 import java.io.BufferedReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,9 +19,12 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PlaceStage;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.StackStage;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 public class ScreenBuilder {
@@ -85,9 +85,6 @@ public class ScreenBuilder {
         // do widgets that require args the normal way
         JsonElement arg;
         switch (name) {
-            case "EventWidget" -> {
-                return new EventWidget(widget.get("inGarden").getAsBoolean());
-            }
             case "DungeonPlayerWidget" -> {
                 return new DungeonPlayerWidget(widget.get("player").getAsInt());
             }
@@ -168,15 +165,11 @@ public class ScreenBuilder {
 
     private static int totalWidth = 0;
 
-    /**
-     * Run the pipeline to build a Screen
-     */
-    public void run(DrawContext context, int screenW, int screenH) {
-
+    private void topAligned(MatrixStack matrices, int screenW, int screenH) {
         if (positionsNeedsUpdating) {
 
             positionsNeedsUpdating = false;
-            final int maxY = 200;
+            final int maxY = 300;
             final int startY = 20;
 
             totalWidth = 0;
@@ -185,6 +178,7 @@ public class ScreenBuilder {
             int currentY = startY;
             for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
                 if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) continue;
+                tabHudWidget.update();
                 if (currentY + tabHudWidget.getHeight() > maxY) {
                     totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
                     currentY = startY;
@@ -196,11 +190,82 @@ public class ScreenBuilder {
             }
             totalWidth += currentWidth;
         }
+        matrices.translate((float) (screenW - totalWidth)/2, 0, 0);
+    }
+
+    private void centered(MatrixStack matrices, int screenW, int screenH) {
+        if (positionsNeedsUpdating) {
+            positionsNeedsUpdating = false;
+            totalWidth = 0;
+
+            final int maxY = Math.min(400, (int) (screenH*0.9f));
+            // each column is a pair of a list of widgets for the rows and an int for the width of the column
+            List<ObjectIntPair<List<TabHudWidget>>> columns = new ArrayList<>();
+            columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
+
+            int currentY = 0;
+            int currentWidth = 0;
+
+            for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
+                if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) continue;
+                tabHudWidget.update();
+                if (currentY + tabHudWidget.getHeight() > maxY) {
+                    currentY = 0;
+                    currentWidth = 0;
+                    columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
+                }
+                tabHudWidget.setY(currentY);
+                currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
+                currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
+                columns.getLast().right(currentWidth);
+                columns.getLast().left().add(tabHudWidget);
+            }
+            for (int i = 0; i < columns.size(); i++) {
+                ObjectIntPair<List<TabHudWidget>> listObjectIntPair = columns.get(i);
+                int columnWidth = listObjectIntPair.rightInt();
+                List<TabHudWidget> column = listObjectIntPair.left();
+
+                // calculate the height of the column
+                int height = (column.size() - 1) * ScreenConst.WIDGET_PAD;
+                for (TabHudWidget tabHudWidget : column) {
+                    height += tabHudWidget.getHeight();
+                }
+                // set x and y of the widgets!
+                int offset = (screenH - height) / 2;
+                for (TabHudWidget tabHudWidget : column) {
+                    tabHudWidget.setY(tabHudWidget.getY() + offset);
+                    if (i < columns.size() / 2) {
+                        tabHudWidget.setX(totalWidth + columnWidth - tabHudWidget.getWidth());
+                    } else {
+                        tabHudWidget.setX(totalWidth);
+                    }
+                }
+                totalWidth += columnWidth + ScreenConst.WIDGET_PAD;
+            }
+        }
+
+        matrices.translate((float) (screenW - totalWidth)/2, 0, 0);
+    }
+
+    /**
+     * Run the pipeline to build a Screen
+     */
+    public void run(DrawContext context, int screenW, int screenH) {
+
+        int i = 0;
+        for (TabHudWidget value : PlayerListMgr.widgetInstances.values()) {
+            context.drawText(MinecraftClient.getInstance().textRenderer, value.getHypixelWidgetName(), 0, i, PlayerListMgr.widgetsToShow.contains(value) ? Colors.LIGHT_YELLOW : -1, true);
+            i+=9;
+        }
+
+
 
         MatrixStack matrices = context.getMatrices();
         matrices.push();
-        matrices.translate((float) (screenW - totalWidth)/2, 0, 0);
-        for (HudWidget w : instances) {
+
+        centered(matrices, screenW, screenH);
+
+        for (HudWidget w : PlayerListMgr.widgetsToShow) {
             w.render(context);
         }
         matrices.pop();

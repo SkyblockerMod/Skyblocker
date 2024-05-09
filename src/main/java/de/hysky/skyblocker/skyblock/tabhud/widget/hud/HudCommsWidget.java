@@ -34,7 +34,7 @@ public class HudCommsWidget extends HudWidget {
     // another repulsive hack to make this widget-like hud element work with the new widget class
     // DON'T USE WITH THE WIDGET SYSTEM, ONLY USE FOR DWARVENHUD!
     public HudCommsWidget() {
-        super(TITLE, Formatting.DARK_AQUA.getColorValue());
+        super(TITLE, Formatting.DARK_AQUA.getColorValue(), "hud_commissions");
     }
 
     public void updateData(List<Commission> commissions, boolean isFancy) {

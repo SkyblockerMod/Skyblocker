@@ -29,7 +29,7 @@ public class PlayerListHudMixin {
 
     @Inject(at = @At("HEAD"), method = "render", cancellable = true)
     public void skyblocker$renderTabHud(CallbackInfo info, @Local(argsOnly = true) DrawContext context, @Local(argsOnly = true) int w) {
-        if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
             return;
         }
 

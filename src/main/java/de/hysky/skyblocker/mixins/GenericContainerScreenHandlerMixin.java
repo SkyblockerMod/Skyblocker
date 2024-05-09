@@ -42,6 +42,7 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
             }
             case null, default -> {}
         }
+        onContentChanged(slots.get(slot).inventory); // this should be default behavior
     }
 
     @Override
