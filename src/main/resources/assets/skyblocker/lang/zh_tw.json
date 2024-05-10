@@ -325,7 +325,7 @@
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "將物品背景顏色顯示為其稀有度所對應的顔色。",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "物品稀有度背景不透明度",
     "skyblocker.config.mining.dwarvenMines.solvePuzzler": "解開Puzzler的謎題",
-    "text.skyblocker.open": "開啟",
+    "text.skyblocker.open": "打開",
     "skyblocker.dungeons.secrets.markSecretFound": "§r將秘密 #%d 標記為已找到。",
     "skyblocker.config.dungeons.dungeonScore": "地牢分數",
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "地牢分數%d訊息",
@@ -577,5 +577,17 @@
     "skyblocker.bars.config.showValue": "顯示價值",
     "skyblocker.bars.config.icon": "圖標",
     "skyblocker.config.uiAndVisuals.bars.openScreen": "狀態欄設定介面",
-    "skyblocker.bars.config.explanationTitle": "這是什麽？"
+    "skyblocker.bars.config.explanationTitle": "這是什麽？",
+    "skyblocker.config.dungeons.puzzle": "謎題助手",
+    "skyblocker.config.farming": "農業",
+    "skyblocker.config.helpers": "助手",
+    "skyblocker.config.mining.crystalHollows": "水晶洞窟",
+    "skyblocker.config.mining.dwarvenMines": "矮人礦井",
+    "skyblocker.config.otherLocations.end.protectorLocationEnable": "啟用保護者位置",
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled": "顯示Zealot擊殺訊息",
+    "skyblocker.config.otherLocations.rift.mcGrubberStacks.@Tooltip": "用於計算Motes銷售價格。",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路徑點類型",
+    "skyblocker.config.dungeons.map": "地圖",
+    "skyblocker.config.general.itemTooltip.enableExoticTooltip": "啟用異域風情提示",
+    "skyblocker.config.otherLocations.rift.mirrorverseWaypoints": "啟用Mirrorverse路徑點"
 }
