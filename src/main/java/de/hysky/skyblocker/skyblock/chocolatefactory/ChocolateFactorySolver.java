@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
@@ -33,14 +34,13 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	@Override
 	protected boolean isEnabled() {
-		return true; //Todo: add a config option and check if it's enabled from there
+		return SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper;
 	}
 
 	@Override
 	protected void start(GenericContainerScreen screen) {
 		markHighlightsDirty(); //Recalculate highlights when the screen is opened, which happens when upgrading rabbits
 	}
-
 
 	//Todo: Handle unemployed rabbits as well. They have a different lore format.
 	@Override
@@ -70,8 +70,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		           .stream()
 		           .map(Text::getString)
 		           .collect(Collectors.joining(" ")); //Join all lore lines into one string for ease of regexing
-					//The space is so that the regex pattern still matches even if the word is split into 2 lines,
-					//as normally the line end and line start contain no spaces and would not match the pattern when concatenated
+//					The space is so that the regex pattern still matches even if the word is split into 2 lines,
+//					as normally the line end and line start contain no spaces and would not match the pattern when concatenated
 	}
 
 	/**
