@@ -256,7 +256,7 @@ public class ConfigDatafixer {
 			dungeonsNew.add("croesusHelper", dungeonsOld.get("croesusHelper"));
 			dungeonsNew.addProperty("playerSecretsTracker", JsonHelper.getBoolean(dungeonsOld, "playerSecretsTracker").orElse(false));
 			dungeonsNew.add("starredMobGlow", dungeonsOld.get("starredMobGlow"));
-			dungeonsNew.addProperty("starredMobBoudingBoxes", JsonHelper.getBoolean(dungeonsOld, "starredMobBoudingBoxes").orElse(true));
+			dungeonsNew.addProperty("starredMobBoundingBoxes", JsonHelper.getBoolean(dungeonsOld, "starredMobBoundingBoxes").orElse(true));
 			dungeonsNew.add("allowDroppingProtectedItems", dungeonsOld.get("allowDroppingProtectedItems"));
 		};
 
