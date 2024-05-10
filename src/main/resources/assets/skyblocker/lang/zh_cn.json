@@ -143,7 +143,7 @@
     "skyblocker.config.uiAndVisuals.waypoints": "路径点",
     "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "启用路径点",
     "skyblocker.config.dungeons.secretWaypoints.waypointType": "路径点类型",
-    "text.skyblocker.open": "开启",
+    "text.skyblocker.open": "打开",
     "skyblocker.config.general.wikiLookup.enableWikiLookup": "启用wiki查阅功能",
     "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "指针悬停于物品上，按F4键打开wiki中的条目。",
     "skyblocker.config.helpers.mythologicalRitual": "神话仪式助手",
@@ -578,5 +578,17 @@
     "skyblocker.config.uiAndVisuals.bars.openScreen": "状态栏配置屏幕",
     "skyblocker.bars.config.explanationTitle": "这是什么？",
     "skyblocker.config.dungeons.starredMobBoundingBoxes": "星标怪物碰撞箱",
-    "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "绘制星标怪物的碰撞箱。"
+    "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "绘制星标怪物的碰撞箱。",
+    "skyblocker.config.dungeons.map": "地图",
+    "skyblocker.config.dungeons.puzzle": "谜题助手",
+    "skyblocker.config.general.itemTooltip.enableExoticTooltip": "启用异域风情提示",
+    "skyblocker.config.mining.dwarvenMines": "矮人矿井",
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled": "显示Zealot击杀信息",
+    "skyblocker.config.otherLocations.rift.mcGrubberStacks.@Tooltip": "用于计算Motes销售价格。",
+    "skyblocker.config.otherLocations.rift.mirrorverseWaypoints": "启用Mirrorverse路径点",
+    "skyblocker.config.farming": "农业",
+    "skyblocker.config.helpers": "助手",
+    "skyblocker.config.mining.crystalHollows": "水晶洞窟",
+    "skyblocker.config.otherLocations.end.protectorLocationEnable": "启用保护者位置",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路径点类型"
 }
