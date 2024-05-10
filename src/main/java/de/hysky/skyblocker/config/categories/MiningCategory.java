@@ -216,8 +216,8 @@ public class MiningCategory {
                         .name(Text.translatable("skyblocker.config.mining.glacite"))
                         .collapsed(false)
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.glacite.coldOverlay.enabled"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.coldOverlay.enabled.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.mining.glacite.coldOverlay"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.coldOverlay@Tooltip")))
                                 .binding(defaults.mining.glacite.coldOverlay,
                                         () -> config.mining.glacite.coldOverlay,
                                         newValue -> config.mining.glacite.coldOverlay = newValue)
