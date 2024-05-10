@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class CommissionLabels {
 
-    private static final Map<String, MiningLocationLabel.dwarvenCategory> DWARVEN_LOCATIONS = Arrays.stream(MiningLocationLabel.dwarvenCategory.values()).collect(Collectors.toMap(MiningLocationLabel.dwarvenCategory::toString, Function.identity()));
-    private static final List<MiningLocationLabel.dwarvenEmissaries> DWARVEN_EMISSARYS = Arrays.stream(MiningLocationLabel.dwarvenEmissaries.values()).toList();
-    private static final Map<String, MiningLocationLabel.glaciteCategory> GLACITE_LOCATIONS = Arrays.stream(MiningLocationLabel.glaciteCategory.values()).collect(Collectors.toMap(MiningLocationLabel.glaciteCategory::toString, Function.identity()));
+    private static final Map<String, MiningLocationLabel.DwarvenCategory> DWARVEN_LOCATIONS = Arrays.stream(MiningLocationLabel.DwarvenCategory.values()).collect(Collectors.toMap(MiningLocationLabel.DwarvenCategory::toString, Function.identity()));
+    private static final List<MiningLocationLabel.DwarvenEmissaries> DWARVEN_EMISSARIES = Arrays.stream(MiningLocationLabel.DwarvenEmissaries.values()).toList();
+    private static final Map<String, MiningLocationLabel.GlaciteCategory> GLACITE_LOCATIONS = Arrays.stream(MiningLocationLabel.GlaciteCategory.values()).collect(Collectors.toMap(MiningLocationLabel.GlaciteCategory::toString, Function.identity()));
 
     protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
 
@@ -43,9 +43,9 @@ public class CommissionLabels {
             }
 
             for (String commission : newCommissions) {
-                for (Map.Entry<String, MiningLocationLabel.glaciteCategory> glaciteLocation : GLACITE_LOCATIONS.entrySet()) {
+                for (Map.Entry<String, MiningLocationLabel.GlaciteCategory> glaciteLocation : GLACITE_LOCATIONS.entrySet()) {
                     if (commission.contains(glaciteLocation.getKey())) {
-                        MiningLocationLabel.glaciteCategory category = glaciteLocation.getValue();
+                        MiningLocationLabel.GlaciteCategory category = glaciteLocation.getValue();
                         for (BlockPos gemstoneLocation : category.getLocations()) {
                             activeWaypoints.add(new MiningLocationLabel(category, gemstoneLocation));
                         }
@@ -54,7 +54,7 @@ public class CommissionLabels {
             }
             //add base waypoint if enabled
             if (SkyblockerConfigManager.get().mining.commissionWaypoints.showBaseCamp) {
-                activeWaypoints.add(new MiningLocationLabel(MiningLocationLabel.glaciteCategory.CAMPFIRE, MiningLocationLabel.glaciteCategory.CAMPFIRE.getLocations()[0]));
+                activeWaypoints.add(new MiningLocationLabel(MiningLocationLabel.GlaciteCategory.CAMPFIRE, MiningLocationLabel.GlaciteCategory.CAMPFIRE.getLocations()[0]));
             }
             return;
         }
@@ -64,9 +64,9 @@ public class CommissionLabels {
         }
 
         for (String commission : newCommissions) {
-            for (Map.Entry<String, MiningLocationLabel.dwarvenCategory> dwarvenLocation : DWARVEN_LOCATIONS.entrySet()) {
+            for (Map.Entry<String, MiningLocationLabel.DwarvenCategory> dwarvenLocation : DWARVEN_LOCATIONS.entrySet()) {
                 if (commission.contains(dwarvenLocation.getKey())) {
-                    MiningLocationLabel.dwarvenCategory category = dwarvenLocation.getValue();
+                    MiningLocationLabel.DwarvenCategory category = dwarvenLocation.getValue();
                     category.isTitanium = commission.contains("Titanium");
                     activeWaypoints.add(new MiningLocationLabel(category, category.getLocation()));
                 }
@@ -74,7 +74,7 @@ public class CommissionLabels {
         }
         //if there is a commission completed and enabled show emissary
         if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
-            for (MiningLocationLabel.dwarvenEmissaries emissaries : DWARVEN_EMISSARYS) {
+            for (MiningLocationLabel.DwarvenEmissaries emissaries : DWARVEN_EMISSARIES) {
                 activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
             }
         }

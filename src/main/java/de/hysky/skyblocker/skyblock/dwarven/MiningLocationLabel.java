@@ -43,7 +43,7 @@ public class MiningLocationLabel {
         int getColor(); //all the color codes are the color of the block the waypoint is for
     }
 
-    enum dwarvenCategory implements Category {
+    enum DwarvenCategory implements Category {
         LAVA_SPRINGS("Lava Springs", new BlockPos(60, 197, -15)),
         CLIFFSIDE_VEINS("Cliffside Veins", new BlockPos(40, 128, 40)),
         RAMPARTS_QUARRY("Rampart's Quarry", new BlockPos(-100, 150, -20)),
@@ -56,7 +56,7 @@ public class MiningLocationLabel {
         private final String name;
         private final BlockPos location;
 
-        dwarvenCategory(String name, BlockPos location) {
+        DwarvenCategory(String name, BlockPos location) {
             this.name = name;
             this.location = location;
         }
@@ -84,7 +84,7 @@ public class MiningLocationLabel {
         }
     }
 
-    enum dwarvenEmissaries implements Category {
+    enum DwarvenEmissaries implements Category {
         LAVA_SPRINGS(new BlockPos(58, 198, -8)),
         CLIFFSIDE_VEINS(new BlockPos(42, 134, 22)),
         RAMPARTS_QUARRY(new BlockPos(-72, 153, -10)),
@@ -95,7 +95,7 @@ public class MiningLocationLabel {
 
         private final BlockPos location;
 
-        dwarvenEmissaries( BlockPos location) {
+        DwarvenEmissaries(BlockPos location) {
 
             this.location = location;
         }
@@ -120,7 +120,7 @@ public class MiningLocationLabel {
         }
     }
 
-    enum glaciteCategory implements Category {
+    enum GlaciteCategory implements Category {
         AQUAMARINE("Aquamarine", 0x334cb1, new BlockPos[]{new BlockPos(-1, 139, 437), new BlockPos(90, 151, 229), new BlockPos(56, 151, 400), new BlockPos(51, 117, 303)}),
         ONYX("Onyx", 0x191919, new BlockPos[]{new BlockPos(79, 119, 411), new BlockPos(-14, 132, 386), new BlockPos(18, 136, 370), new BlockPos(16, 138, 411), new BlockPos(-68, 130, 408)}),
         PERIDOT("Peridot", 0x667f33, new BlockPos[]{new BlockPos(-61, 147, 302), new BlockPos(91, 122, 397), new BlockPos(-73, 122, 458), new BlockPos(-77, 120, 282)}),
@@ -131,7 +131,7 @@ public class MiningLocationLabel {
         private final int color;
         private final BlockPos[] location;
 
-        glaciteCategory(String name, int color, BlockPos[] location) {
+        GlaciteCategory(String name, int color, BlockPos[] location) {
             this.name = name;
             this.color = color;
             this.location = location;
