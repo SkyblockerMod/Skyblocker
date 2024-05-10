@@ -23,8 +23,6 @@ public class CompactDamage {
 	private CompactDamage() {
 	}
 
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat(SkyblockerConfigManager.get().general.compactDamage.format);
-
 	public static void compactDamage(ArmorStandEntity entity) {
 		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible() || entity.getFireTicks() != -1 || !entity.shouldHideBasePlate()) return;
 		//Dmg armor stands have no base plate and have a fire time of -1 (just one of these isn't enough to determine if it's a dmg armor stand)
@@ -39,7 +37,7 @@ public class CompactDamage {
 			String dmg = text.getString().replace(",", "");
 			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
 			String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg));
-			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).withColor(SkyblockerConfigManager.get().general.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF)).setStyle(customName.getStyle());
+			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).withColor(SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF)).setStyle(customName.getStyle());
 		} else { //Crit damage
 			String dmg = siblings.subList(1, siblings.size() - 1) //First and last sibling are the crit symbols
 			                     .stream()
@@ -54,8 +52,8 @@ public class CompactDamage {
 			for (int i = 0; i < length; i++) {
 				prettierCustomName.append(Text.literal(prettifiedDmg.substring(i, i + 1)).withColor(
 						CustomArmorAnimatedDyes.interpolate(
-								SkyblockerConfigManager.get().general.compactDamage.critDamageGradientStart.getRGB() & 0x00FFFFFF,
-								SkyblockerConfigManager.get().general.compactDamage.critDamageGradientEnd.getRGB() & 0x00FFFFFF,
+								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart.getRGB() & 0x00FFFFFF,
+								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd.getRGB() & 0x00FFFFFF,
 								i / (length - 1.0)
 						)
 				));
@@ -68,9 +66,13 @@ public class CompactDamage {
 
 	private static String prettifyDamageNumber(long damage) {
 		if (damage < 1_000) return String.valueOf(damage);
-		if (damage < 1_000_000) return DECIMAL_FORMAT.format(damage / 1_000.0) + "k";
-		if (damage < 1_000_000_000) return DECIMAL_FORMAT.format(damage / 1_000_000.0) + "m";
-		if (damage < 1_000_000_000_000L) return DECIMAL_FORMAT.format(damage / 1_000_000_000.0) + "b";
-		return DECIMAL_FORMAT.format(damage / 1_000_000_000_000.0) + "t"; //This will probably never be reached
+		if (damage < 1_000_000) return format(damage / 1_000.0) + "k";
+		if (damage < 1_000_000_000) return format(damage / 1_000_000.0) + "m";
+		if (damage < 1_000_000_000_000L) return format(damage / 1_000_000_000.0) + "b";
+		return format(damage / 1_000_000_000_000.0) + "t"; //This will probably never be reached
+	}
+
+	private static String format(double number) {
+		return ("%." + SkyblockerConfigManager.get().uiAndVisuals.compactDamage.precision + "f").formatted(number);
 	}
 }
