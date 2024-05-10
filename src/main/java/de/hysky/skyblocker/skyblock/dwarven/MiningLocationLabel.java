@@ -9,20 +9,13 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class MiningLocationLabel {
-    final Text name;
-    final Category category;
-    private final Vec3d centerPos;
+public record MiningLocationLabel (Category category, Vec3d centerPos){
 
-    MiningLocationLabel(Category category, BlockPos pos) {
+    private Text getName() {
         if (SkyblockerConfigManager.get().mining.commissionWaypoints.useColor) {
-            this.name = Text.literal(category.getName()).withColor(category.getColor());
-        } else {
-            this.name = Text.literal(category.getName());
+            return Text.literal(category.getName()).withColor(category.getColor());
         }
-
-        this.category = category;
-        this.centerPos = pos.toCenterPos();
+        return Text.literal(category.getName());
     }
 
     /**
@@ -33,7 +26,7 @@ public class MiningLocationLabel {
         Vec3d posUp = centerPos.add(0, 1, 0);
         double distance = context.camera().getPos().distanceTo(centerPos);
         float scale = (float) (SkyblockerConfigManager.get().mining.commissionWaypoints.textScale * (distance / 10));
-        RenderHelper.renderText(context, name, posUp, scale, true);
+        RenderHelper.renderText(context, getName(), posUp, scale, true);
         RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
     }
 

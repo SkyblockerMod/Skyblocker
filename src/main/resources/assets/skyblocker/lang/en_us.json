@@ -385,7 +385,7 @@
   "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[3]": "\nBoth: Show waypoints in dwarven mines and glacite tunnels.",
   "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]": "\n(takes effect when commissions updated)",
   "skyblocker.config.mining.commissionWaypoints.useColor": "Colored Waypoints",
-  "skyblocker.config.mining.commissionWaypoints.useColor.@Tooltip": "Color the waypoint text to match the block it's for (takes effect when commissions updated).",
+  "skyblocker.config.mining.commissionWaypoints.useColor.@Tooltip": "Color the waypoint text to match the block it's for.",
   "skyblocker.config.mining.commissionWaypoints.textScale": "Text Scale",
   "skyblocker.config.mining.commissionWaypoints.textScale.@Tooltip": "Scale the size of the commission labels.",
   "skyblocker.config.mining.commissionWaypoints.showBaseCamp": "Show Basecamp Waypoint",

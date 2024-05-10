@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
@@ -47,14 +48,14 @@ public class CommissionLabels {
                     if (commission.contains(glaciteLocation.getKey())) {
                         MiningLocationLabel.GlaciteCategory category = glaciteLocation.getValue();
                         for (BlockPos gemstoneLocation : category.getLocations()) {
-                            activeWaypoints.add(new MiningLocationLabel(category, gemstoneLocation));
+                            activeWaypoints.add(new MiningLocationLabel(category, gemstoneLocation.toCenterPos()));
                         }
                     }
                 }
             }
             //add base waypoint if enabled
             if (SkyblockerConfigManager.get().mining.commissionWaypoints.showBaseCamp) {
-                activeWaypoints.add(new MiningLocationLabel(MiningLocationLabel.GlaciteCategory.CAMPFIRE, MiningLocationLabel.GlaciteCategory.CAMPFIRE.getLocations()[0]));
+                activeWaypoints.add(new MiningLocationLabel(MiningLocationLabel.GlaciteCategory.CAMPFIRE, MiningLocationLabel.GlaciteCategory.CAMPFIRE.getLocations()[0].toCenterPos()));
             }
             return;
         }
@@ -68,14 +69,14 @@ public class CommissionLabels {
                 if (commission.contains(dwarvenLocation.getKey())) {
                     MiningLocationLabel.DwarvenCategory category = dwarvenLocation.getValue();
                     category.isTitanium = commission.contains("Titanium");
-                    activeWaypoints.add(new MiningLocationLabel(category, category.getLocation()));
+                    activeWaypoints.add(new MiningLocationLabel(category, category.getLocation().toCenterPos()));
                 }
             }
         }
         //if there is a commission completed and enabled show emissary
         if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
             for (MiningLocationLabel.DwarvenEmissaries emissaries : DWARVEN_EMISSARIES) {
-                activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
+                activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation().toCenterPos()));
             }
         }
     }
