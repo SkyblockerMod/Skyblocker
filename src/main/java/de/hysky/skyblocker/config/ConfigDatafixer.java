@@ -257,7 +257,7 @@ public class ConfigDatafixer {
 			dungeonsNew.addProperty("playerSecretsTracker", JsonHelper.getBoolean(dungeonsOld, "playerSecretsTracker").orElse(false));
 			dungeonsNew.add("starredMobGlow", dungeonsOld.get("starredMobGlow"));
 			dungeonsNew.addProperty("starredMobBoundingBoxes", JsonHelper.getBoolean(dungeonsOld, "starredMobBoundingBoxes").orElse(true));
-			dungeonsNew.add("allowDroppingProtectedItems", dungeonsOld.get("allowDroppingProtectedItems"));
+			dungeonsNew.addProperty("allowDroppingProtectedItems", JsonHelper.getBoolean(dungeonsOld, "allowDroppingProtectedItems").orElse(false));
 		};
 
 		DataFixer map = (oldFmt, newFmt) -> {
@@ -281,10 +281,10 @@ public class ConfigDatafixer {
 			solverConfig.add("creeperSolver", dungeonsOld.get("creeperSolver"));
 			solverConfig.add("solveTrivia", dungeonsOld.get("solveTrivia"));
 			solverConfig.add("solveTicTacToe", dungeonsOld.get("solveTicTacToe"));
-			solverConfig.add("solveWaterboard", dungeonsOld.get("solveWaterboard"));
-			solverConfig.add("solveBoulder", dungeonsOld.get("solveBoulder"));
-			solverConfig.add("solveIceFill", dungeonsOld.get("solveIceFill"));
-			solverConfig.add("solveSilverfish", dungeonsOld.get("solveSilverfish"));
+			solverConfig.addProperty("solveWaterboard", JsonHelper.getBoolean(dungeonsOld, "solveWaterboard").orElse(true));
+			solverConfig.addProperty("solveBoulder", JsonHelper.getBoolean(dungeonsOld, "solveBoulder").orElse(true));
+			solverConfig.addProperty("solveIceFill", JsonHelper.getBoolean(dungeonsOld, "solveIceFill").orElse(true));
+			solverConfig.addProperty("solveSilverfish", JsonHelper.getBoolean(dungeonsOld, "solveSilverfish").orElse(true));
 
 			newFmt.getAsJsonObject("dungeons").add("puzzleSolvers", solverConfig);
 		};
@@ -376,7 +376,6 @@ public class ConfigDatafixer {
 
 		return new DataFixer[] { mainFixer };
 	}
-
 
 	private static DataFixer[] getQuickNavDataFixerRules() {
 		DataFixer toggle = (oldFmt, newFmt) -> newFmt.getAsJsonObject("quickNav").add("enableQuickNav", oldFmt.getAsJsonObject("quickNav").get("enableQuickNav"));
