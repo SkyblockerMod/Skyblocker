@@ -11,15 +11,15 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.PatternSyntaxException;
 
 public class QuickNav {
@@ -59,10 +59,9 @@ public class QuickNav {
 
     private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
         QuickNavigationConfig.ItemData itemData = buttonInfo.item;
-        String nbtString = "{id:\"minecraft:" + itemData.id.toLowerCase(Locale.ROOT) + "\",Count:1";
-        if (itemData.nbt.length() > 2) nbtString += "," + itemData.nbt;
-        nbtString += "}";
+        ItemStack stack = ItemStackComponentizationFixer.fromComponentsString(itemData.id, Math.clamp(itemData.count, 1, 99), itemData.components);
         boolean uiTitleMatches = false;
+
         try {
             uiTitleMatches = screenTitle.matches(buttonInfo.uiTitle);
         } catch (PatternSyntaxException e) {
@@ -75,6 +74,6 @@ public class QuickNav {
         return new QuickNavButton(id,
                 uiTitleMatches,
                 buttonInfo.clickEvent,
-                ItemStackComponentizationFixer.fixUpItem(StringNbtReader.parse(nbtString)));
+                stack);
     }
 }
