@@ -213,14 +213,14 @@ public class MiningCategory {
 
                 //Glacite Tunnels
                 .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.mining.glacite.coldOverlay"))
+                        .name(Text.translatable("skyblocker.config.mining.glacite"))
                         .collapsed(false)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.glacite.coldOverlay.enabled"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.coldOverlay.enabled.@Tooltip")))
-                                .binding(defaults.mining.glacite.ColdOverlay,
-                                        () -> config.mining.glacite.ColdOverlay,
-                                        newValue -> config.mining.glacite.ColdOverlay = newValue)
+                                .binding(defaults.mining.glacite.coldOverlay,
+                                        () -> config.mining.glacite.coldOverlay,
+                                        newValue -> config.mining.glacite.coldOverlay = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())

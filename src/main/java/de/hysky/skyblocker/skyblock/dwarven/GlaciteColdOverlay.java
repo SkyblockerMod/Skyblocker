@@ -38,7 +38,7 @@ public class GlaciteColdOverlay {
     }
 
     public static void update() {
-        if (!Utils.isInDwarvenMines() || System.currentTimeMillis() - resetTime < 3000 || !SkyblockerConfigManager.get().mining.glacite.ColdOverlay) {
+        if (!Utils.isInDwarvenMines() || System.currentTimeMillis() - resetTime < 3000 || !SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
             cold = 0;
             return;
         }
@@ -66,7 +66,7 @@ public class GlaciteColdOverlay {
     }
 
     public static void render(DrawContext context, float tickDelta) {
-        if (Utils.isInDwarvenMines() && SkyblockerConfigManager.get().mining.glacite.ColdOverlay) {
+        if (Utils.isInDwarvenMines() && SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
             renderOverlay(context, POWDER_SNOW_OUTLINE, cold / 100f);
         }
     }
