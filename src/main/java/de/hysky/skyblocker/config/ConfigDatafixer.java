@@ -63,7 +63,7 @@ public class ConfigDatafixer {
 			//Write the updated file
 			boolean success = writeConfig(CONFIG_DIR.resolve("skyblocker.json"), newConfig);
 
-			if (!success) throw new IllegalStateException();
+			if (!success) throw new IllegalStateException("Failed to write the new config to the file!");
 
 			long end = System.currentTimeMillis();
 			LOGGER.info("[Skyblocker Config Data Fixer] Applied {} datafixers in {} ms!", fixers.length, (end - start));
