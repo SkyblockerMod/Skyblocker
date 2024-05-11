@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import de.hysky.skyblocker.skyblock.events.JacobEventToast;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
