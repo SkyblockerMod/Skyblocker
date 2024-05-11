@@ -657,5 +657,16 @@
     "skyblocker.bars.config.showValue": "Показываемое значение",
     "skyblocker.bars.config.icon": "Иконка",
     "skyblocker.config.uiAndVisuals.bars.openScreen": "Экран настройки полос эффектов",
-    "skyblocker.bars.config.explanationTitle": "Что это?"
+    "skyblocker.bars.config.explanationTitle": "Что это?",
+    "skyblocker.config.dungeons.professor": "Профессор (Этаж3/Мастер3)",
+    "skyblocker.config.farming": "Фермерство",
+    "skyblocker.config.chat.filter": "Фильтр",
+    "skyblocker.config.mining.crystalHollows": "Crуstal Hollows",
+    "skyblocker.config.mining.dwarvenMines": "Гномьи Шахты",
+    "skyblocker.config.misc": "Разное",
+    "skyblocker.config.otherLocations.end.protectorLocationEnable": "Показать местоположение Protector'а",
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Показать инфо о убийствах Зеалотов",
+    "skyblocker.config.dungeons.map": "Карта",
+    "skyblocker.config.dungeons.puzzle": "Решатель головоломок",
+    "skyblocker.config.helpers": "Помощники"
 }
