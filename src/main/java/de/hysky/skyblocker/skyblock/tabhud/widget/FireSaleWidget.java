@@ -34,34 +34,23 @@ public class FireSaleWidget extends TabHudWidget {
 
     // TODO make it work (waiting for a fire sale to see the widget)
     @Override
-    public void updateContent(List<Text> ignore) {
-        Text event = PlayerListMgr.textAt(46);
-
-        if (event == null) {
-            this.addComponent(new PlainTextComponent(Text.literal("No Fire Sales!").formatted(Formatting.GRAY)));
-            return;
-        }
-
-        String text = event.getString();
-
-        //We're keeping both cases as it might have something to do with having multiple fire sales at once vs having only one
-        if (text.contains("starting in") || text.contains("Starts in")) {
-            this.addComponent(new IcoTextComponent(Ico.CLOCK, event));
-            return;
-        }
-
-        for (int i = 46;; i++) {
-            Matcher m = PlayerListMgr.regexAt(i, FIRE_PATTERN);
-            if (m == null) {
-                break;
+    public void updateContent(List<Text> lines) {
+        for (int i = 1; i < lines.size(); i++) {
+            Text text = lines.get(i);
+            Matcher m = FIRE_PATTERN.matcher(text.getString());
+            if (m.matches()) {
+                String avail = m.group("avail");
+                Text itemTxt = Text.literal(m.group("item"));
+                float total = Float.parseFloat(m.group("total")) * 1000;
+                Text prgressTxt = Text.literal(String.format("%s/%.0f", avail, total));
+                float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
+                ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt, Colors.pcntToCol(pcnt));
+                this.addComponent(pc);
+            } else if (text.getString().toLowerCase() instanceof String s && (s.contains("starts") || s.contains("starting"))) {
+                this.addComponent(new IcoTextComponent(Ico.CLOCK, text));
+            } else {
+                this.addComponent(new PlainTextComponent(text));
             }
-            String avail = m.group("avail");
-            Text itemTxt = Text.literal(m.group("item"));
-            float total = Float.parseFloat(m.group("total")) * 1000;
-            Text prgressTxt = Text.literal(String.format("%s/%.0f", avail, total));
-            float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
-            ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt, Colors.pcntToCol(pcnt));
-            this.addComponent(pc);
         }
     }
 }
