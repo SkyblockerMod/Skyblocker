@@ -5,7 +5,7 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 public class SkyblockerConfig {
     @SerialEntry
-    public int version = 2;
+    public int version = SkyblockerConfigManager.CONFIG_VERSION;
 
     @SerialEntry
     public GeneralConfig general = new GeneralConfig();

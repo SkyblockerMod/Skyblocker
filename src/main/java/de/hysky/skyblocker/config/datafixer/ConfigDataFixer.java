@@ -10,6 +10,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.datafixer.JsonHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
@@ -23,7 +24,6 @@ public class ConfigDataFixer {
 	protected static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 	public static final DSL.TypeReference CONFIG_TYPE = () -> "config";
-	public static final int VERSION = 2;
 
 	public static void apply() {
 		apply(CONFIG_DIR.resolve("skyblocker.json"), CONFIG_DIR.resolve("skyblocker.json.old"));
@@ -35,7 +35,7 @@ public class ConfigDataFixer {
 
 		//Should never be null if the file exists unless its malformed JSON or something in which case well it gets reset
 		JsonObject oldConfig = loadConfig(configDir);
-		if (oldConfig == null || JsonHelper.getInt(oldConfig, "version").orElse(1) == VERSION) return;
+		if (oldConfig == null || JsonHelper.getInt(oldConfig, "version").orElse(1) == SkyblockerConfigManager.CONFIG_VERSION) return;
 
 		JsonObject newConfig = apply(oldConfig);
 
@@ -47,19 +47,23 @@ public class ConfigDataFixer {
 	}
 
 	public static JsonObject apply(JsonObject oldConfig) {
-		DataFixerBuilder builder = new DataFixerBuilder(VERSION);
+        long start = System.currentTimeMillis();
+
+		JsonObject newConfig = build().update(CONFIG_TYPE, new Dynamic<>(JsonOps.INSTANCE, oldConfig), JsonHelper.getInt(oldConfig, "version").orElse(1), SkyblockerConfigManager.CONFIG_VERSION).getValue().getAsJsonObject();
+
+		long end = System.currentTimeMillis();
+		LOGGER.info("[Skyblocker Config Data Fixer] Applied datafixers in {} ms!", end - start);
+		return newConfig;
+	}
+
+	private static DataFixer build() {
+		DataFixerBuilder builder = new DataFixerBuilder(SkyblockerConfigManager.CONFIG_VERSION);
+
 		builder.addSchema(1, ConfigSchema::new);
 		Schema schema2 = builder.addSchema(2, Schema::new);
 		builder.addFixer(new ConfigFix1(schema2, true));
-		DataFixer dataFixer = builder.buildUnoptimized();
 
-		long start = System.currentTimeMillis();
-
-		JsonObject newConfig = dataFixer.update(CONFIG_TYPE, new Dynamic<>(JsonOps.INSTANCE, oldConfig), JsonHelper.getInt(oldConfig, "version").orElse(1), VERSION).getValue().getAsJsonObject();
-
-		long end = System.currentTimeMillis();
-		LOGGER.info("[Skyblocker Config Data Fixer] Applied datafixers in {} ms!", (end - start));
-		return newConfig;
+		return builder.buildUnoptimized();
 	}
 
 	private static JsonObject loadConfig(Path path) {
