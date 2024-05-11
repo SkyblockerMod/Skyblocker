@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.config;
+package de.hysky.skyblocker.config.datafixer;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,60 +21,69 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.StringNbtReader;
 
-public class ConfigDatafixer {
+public class ConfigDataFixer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 
 	public static void apply() {
+		apply(CONFIG_DIR.resolve("skyblocker.json"), CONFIG_DIR.resolve("skyblocker.json.old"));
+	}
+
+	public static void apply(Path configDir, Path backupDir) {
 		//User is new - has no config file (or maybe config folder)
-		if (!Files.exists(CONFIG_DIR) || !Files.exists(CONFIG_DIR.resolve("skyblocker.json"))) return;
+		if (!Files.exists(CONFIG_DIR) || !Files.exists(configDir)) return;
 
 		//Should never be null if the file exists unless its malformed JSON or something in which case well it gets reset
-		JsonObject oldConfig = loadConfig();
+		JsonObject oldConfig = loadConfig(configDir);
 		if (oldConfig == null || JsonHelper.getInt(oldConfig, "version").orElse(1) != 1) return;
 
 		try {
-			JsonObject newConfig = prepareNewFormat();
-
-			DataFixer[] generalFixers = getGeneralDataFixerRules();
-			DataFixer[] uiAndVisualsDataFixers = getUIAndVisualsDataFixerRules();
-			DataFixer[] dungeonsFixers = getDungeonsDataFixerRules();
-			DataFixer[] helpersFixers = getHelpersDataFixerRules();
-			DataFixer[] crimsonFixer = getCrimsonIsleDataFixerRule();
-			DataFixer[] miningFixers = getMiningDataFixerRules();
-			DataFixer[] farmingFixers = getFarmingDataFixerRules();
-			DataFixer[] otherLocationsFixers = getOtherLocationsDataFixerRules();
-			DataFixer[] slayersFixers = getSlayersDataFixerRules();
-			DataFixer[] chatFixers = getChatDataFixerRules();
-			DataFixer[] quickNavFixers = getQuickNavDataFixerRules();
-			DataFixer[] miscFixers = getMiscDataFixerRules();
-
-			//Combine into 1 array
-			DataFixer[] fixers = Stream.of(generalFixers, uiAndVisualsDataFixers, dungeonsFixers, helpersFixers, crimsonFixer, miningFixers, farmingFixers, otherLocationsFixers, slayersFixers, chatFixers, quickNavFixers, miscFixers)
-					.flatMap(Arrays::stream)
-					.toArray(DataFixer[]::new);
-
-			long start = System.currentTimeMillis();
-
-			for (DataFixer fixer : fixers) {
-				fixer.apply(oldConfig, newConfig);
-			}
+			JsonObject newConfig = apply(oldConfig);
 
 			//Write the updated file
-			boolean success = writeConfig(CONFIG_DIR.resolve("skyblocker.json"), newConfig);
+			boolean success = writeConfig(configDir, newConfig);
 
 			if (!success) throw new IllegalStateException("Failed to write the new config to the file!");
-
-			long end = System.currentTimeMillis();
-			LOGGER.info("[Skyblocker Config Data Fixer] Applied {} datafixers in {} ms!", fixers.length, (end - start));
 		} catch (Throwable t) {
 			LOGGER.error(LogUtils.FATAL_MARKER, "[Skyblocker Config Data Fixer] Failed to fix up config file!", t);
-			writeConfig(CONFIG_DIR.resolve("skyblocker-1.json"), oldConfig);
+			writeConfig(backupDir, oldConfig);
 		}
 	}
 
-	private static JsonObject loadConfig() {
-		try (BufferedReader reader = Files.newBufferedReader(CONFIG_DIR.resolve("skyblocker.json"))) {
+	public static JsonObject apply(JsonObject oldConfig) {
+		JsonObject newConfig = prepareNewFormat();
+
+		DataFixer[] generalFixers = getGeneralDataFixerRules();
+		DataFixer[] uiAndVisualsDataFixers = getUIAndVisualsDataFixerRules();
+		DataFixer[] dungeonsFixers = getDungeonsDataFixerRules();
+		DataFixer[] helpersFixers = getHelpersDataFixerRules();
+		DataFixer[] crimsonFixer = getCrimsonIsleDataFixerRule();
+		DataFixer[] miningFixers = getMiningDataFixerRules();
+		DataFixer[] farmingFixers = getFarmingDataFixerRules();
+		DataFixer[] otherLocationsFixers = getOtherLocationsDataFixerRules();
+		DataFixer[] slayersFixers = getSlayersDataFixerRules();
+		DataFixer[] chatFixers = getChatDataFixerRules();
+		DataFixer[] quickNavFixers = getQuickNavDataFixerRules();
+		DataFixer[] miscFixers = getMiscDataFixerRules();
+
+		//Combine into 1 array
+		DataFixer[] fixers = Stream.of(generalFixers, uiAndVisualsDataFixers, dungeonsFixers, helpersFixers, crimsonFixer, miningFixers, farmingFixers, otherLocationsFixers, slayersFixers, chatFixers, quickNavFixers, miscFixers)
+				.flatMap(Arrays::stream)
+				.toArray(DataFixer[]::new);
+
+		long start = System.currentTimeMillis();
+
+		for (DataFixer fixer : fixers) {
+			fixer.apply(oldConfig, newConfig);
+		}
+
+		long end = System.currentTimeMillis();
+		LOGGER.info("[Skyblocker Config Data Fixer] Applied {} datafixers in {} ms!", fixers.length, (end - start));
+		return newConfig;
+	}
+
+	private static JsonObject loadConfig(Path path) {
+		try (BufferedReader reader = Files.newBufferedReader(path)) {
 			return JsonParser.parseReader(reader).getAsJsonObject();
 		} catch (Throwable t) {
 			LOGGER.error("[Skyblocker Config Data Fixer] Failed to load config file!", t);

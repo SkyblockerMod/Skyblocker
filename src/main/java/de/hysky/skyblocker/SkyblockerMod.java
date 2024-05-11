@@ -3,7 +3,7 @@ package de.hysky.skyblocker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import de.hysky.skyblocker.config.ConfigDatafixer;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.config.ImageRepoLoader;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
@@ -102,7 +102,7 @@ public class SkyblockerMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
-        ConfigDatafixer.apply();
+        ConfigDataFixer.apply();
         Utils.init();
         SkyblockerConfigManager.init();
         SkyblockerScreen.initClass();
