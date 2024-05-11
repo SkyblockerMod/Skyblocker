@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.itemlist;
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.events.JacobEventToast;
+import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
@@ -160,7 +161,7 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
         public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
             for (int i = 0; i < crops.length; i++) {
                 String crop = crops[i];
-                context.drawItem(JacobEventToast.cropItems.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);
+                context.drawItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);
             }
         }
 

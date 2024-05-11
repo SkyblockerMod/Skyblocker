@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.events;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -13,29 +11,11 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class JacobEventToast extends EventToast {
 
     private final String[] crops;
 
     private static final ItemStack DEFAULT_ITEM = new ItemStack(Items.IRON_HOE);
-
-    public static final Map<String, ItemStack> cropItems = new HashMap<>();
-
-    static {
-        cropItems.put("Wheat", new ItemStack(Items.WHEAT));
-        cropItems.put("Mushroom", new ItemStack(Items.RED_MUSHROOM));
-        cropItems.put("Pumpkin", new ItemStack(Items.CARVED_PUMPKIN));
-        cropItems.put("Melon", new ItemStack(Items.MELON));
-        cropItems.put("Sugar Cane", new ItemStack(Items.SUGAR_CANE));
-        cropItems.put("Cactus", new ItemStack(Items.CACTUS));
-        cropItems.put("Carrot", new ItemStack(Items.CARROT));
-        cropItems.put("Cocoa Beans", new ItemStack(Items.COCOA_BEANS));
-        cropItems.put("Potato", new ItemStack(Items.POTATO));
-        cropItems.put("Nether Wart", new ItemStack(Items.NETHER_WART));
-    }
 
     public JacobEventToast(long eventStartTime, String name, String[] crops) {
         super(eventStartTime, name, new ItemStack(Items.IRON_HOE));
