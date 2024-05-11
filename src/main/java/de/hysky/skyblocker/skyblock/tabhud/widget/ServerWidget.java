@@ -26,12 +26,12 @@ public class ServerWidget extends TabHudWidget {
 
     @Override
     public void updateContent(List<Text> lines) {
-        this.addComponent(new IcoTextComponent(Ico.MAP, Text.literal("Area:").append(lines.getFirst().copy().formatted(Formatting.DARK_AQUA))));
+        this.addComponent(new IcoTextComponent(Ico.MAP, Text.literal("Area: ").append(lines.getFirst().copy().formatted(Formatting.DARK_AQUA))));
         for (int i = 1; i < lines.size(); i++) {
             Text text = lines.get(i);
             String string = text.getString();
             switch (string.toLowerCase()) {
-                case String s when s.contains("server") -> this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, string);
+                case String s when s.contains("server") -> this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, string.split(":", 2)[1]);
                 case String s when s.contains("gems") -> this.addComponent(new IcoTextComponent(Ico.EMERALD, text));
                 case String s when s.contains("crystals") -> this.addComponent(new IcoTextComponent(Ico.EMERALD, text));
                 case String s when s.contains("copper") -> this.addComponent(new IcoTextComponent(Ico.COPPER, text));
