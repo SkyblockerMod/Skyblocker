@@ -396,6 +396,14 @@
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
 
+  "skyblocker.config.eventNotifications": "Event Notifications",
+
+  "skyblocker.config.eventNotifications.monologue": "can you pls log onto skyblock rq pls? that would be cool cuz like if you are seeing dis then it means that ur config either got cleared or that this is ur first time using the mod if so then thanks for choosing it and hopefully you enjoy it! so yea this is where you will be able to set reminders for all events in skyblock they will be added as you encounter so you first need to log onto skyblock so yea hope you enjoy the mod and all that",
+  "skyblocker.config.eventNotifications.notificationSound": "Notification Sound",
+  "skyblocker.config.eventNotifications.@Tooltip[0]": "Configure how much time before an event you will be reminded with a notification toast! For example if you set '5m' and '30s' in the list, you will receive a notification 5 minutes before and another 30 seconds before an event starts.",
+  "skyblocker.config.eventNotifications.@Tooltip[1]": "The order doesn't matter. If you want to disable notifications, just empty the list.",
+  "skyblocker.config.eventNotifications.@Tooltip[2]": "This list will modify the '%s' event",
+
   "skyblocker.config.mining": "Mining",
 
   "skyblocker.config.mining.commissionWaypoints": "Commission Waypoints",
@@ -623,13 +631,6 @@
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
 
-  "skyblocker.config.eventNotifications": "Event Notifications",
-  "skyblocker.config.eventNotifications.notificationSound": "Notification Sound",
-  "skyblocker.config.eventNotifications.monologue": "can you pls log onto skyblock rq pls? that would be cool cuz like if you are seeing dis then it means that ur config either got cleared or that this is ur first time using the mod if so then thanks for choosing it and hopefully you enjoy it! so yea this is where you will be able to set reminders for all events in skyblock they will be added as you encounter so you first need to log onto skyblock so yea hope you enjoy the mod and all that",
-  "skyblocker.config.eventNotifications.@Tooltip[0]": "Configure how much time before an event you will be reminded with a notification toast! For example if you set '5m' and '30s' in the list, you will receive a notification 5 minutes before and another 30 seconds before an event starts.",
-  "skyblocker.config.eventNotifications.@Tooltip[1]": "The order doesn't matter. If you want to disable notifications, just empty the list.",
-  "skyblocker.config.eventNotifications.@Tooltip[2]": "This list will modify the '%s' event",
-
   "skyblocker.itemTooltip.noData": "\u00a7cNo Data",
   "skyblocker.itemTooltip.nullMessage": "\u00a7cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
@@ -704,6 +705,14 @@
   "skyblocker.end.hud.protectorLocations.rightFront": "Right Front",
   "skyblocker.end.hud.protectorLocations.rightBack": "Right Back",
 
+  "skyblocker.events.startsNow": "%s starts now!",
+  "skyblocker.events.startsSoon": "%s starts soon!",
+  "skyblocker.events.tab.endsIn": "Ends in %s",
+  "skyblocker.events.tab.clickToWarp": "Click to warp!",
+  "skyblocker.events.tab.noMore": "No more this year!",
+  "skyblocker.events.tab.startsIn": "Starts in %s",
+
+
   "skyblocker.garden.hud.mouseLocked": "Mouse locked.",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
@@ -767,13 +776,6 @@
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid in order to protect it!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
-
-  "skyblocker.events.startsSoon": "%s starts soon!",
-  "skyblocker.events.startsNow": "%s starts now!",
-  "skyblocker.events.tab.clickToWarp": "Click to warp!",
-  "skyblocker.events.tab.noMore": "No more this year!",
-  "skyblocker.events.tab.startsIn": "Starts in %s",
-  "skyblocker.events.tab.endsIn": "Ends in %s",
 
   "skyblocker.tips.enabled": "§aEnabled Tips.",
   "skyblocker.tips.disabled": "§cDisabled Tips.",

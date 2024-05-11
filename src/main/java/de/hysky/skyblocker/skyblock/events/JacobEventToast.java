@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.events;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.ToastManager;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Colors;
@@ -14,9 +16,11 @@ import net.minecraft.util.math.MathHelper;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JacobEventToast extends EventToast{
+public class JacobEventToast extends EventToast {
 
     private final String[] crops;
+
+    private static final ItemStack DEFAULT_ITEM = new ItemStack(Items.IRON_HOE);
 
     public static final Map<String, ItemStack> cropItems = new HashMap<>();
 
@@ -42,34 +46,35 @@ public class JacobEventToast extends EventToast{
     public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
         context.drawGuiTexture(TEXTURE, 0, 0, getWidth(), getHeight());
 
-        int y = (getHeight() - getInnerContentsHeight())/2;
+        int y = (getHeight() - getInnerContentsHeight()) / 2;
         TextRenderer textRenderer = manager.getClient().textRenderer;
-        if (startTime < 3_000){
-            int k = MathHelper.floor(MathHelper.clamp((3_000 - startTime) / 200.0f, 0.0f, 1.0f) * 255.0f) << 24 | 0x4000000;
+        MatrixStack matrices = context.getMatrices();
+        if (startTime < 3_000) {
+            int k = MathHelper.floor(Math.clamp((3_000 - startTime) / 200.0f, 0.0f, 1.0f) * 255.0f) << 24 | 0x4000000;
             y = 2 + drawMessage(context, 30, y, 0xFFFFFF | k);
-        } else  {
-            int k = (~MathHelper.floor(MathHelper.clamp((startTime - 3_000) / 200.0f, 0.0f, 1.0f) * 255.0f)) << 24 | 0x4000000;
+        } else {
+            int k = (~MathHelper.floor(Math.clamp((startTime - 3_000) / 200.0f, 0.0f, 1.0f) * 255.0f)) << 24 | 0x4000000;
 
 
             String s = "Crops:";
             int x = 30 + textRenderer.getWidth(s) + 4;
-            context.drawText(textRenderer, s, 30, 7 + (16 - textRenderer.fontHeight)/2, Colors.WHITE, false);
+            context.drawText(textRenderer, s, 30, 7 + (16 - textRenderer.fontHeight) / 2, Colors.WHITE, false);
             for (int i = 0; i < crops.length; i++) {
-                context.drawItem(cropItems.get(crops[i]), x + i * (16 + 8), 7);
+                context.drawItem(JacobsContestWidget.FARM_DATA.getOrDefault(crops[i], DEFAULT_ITEM), x + i * (16 + 8), 7);
             }
             // IDK how to make the items transparent, so I just redraw the texture on top
-            context.getMatrices().push();
-            context.getMatrices().translate(0, 0, 400f);
-            RenderHelper.renderNineSliceColored(context, TEXTURE, 0, 0, getWidth(), getHeight(), 1f, 1f, 1f, (k >> 24)/ 255f);
-            context.getMatrices().pop();
+            matrices.push();
+            matrices.translate(0, 0, 400f);
+            RenderHelper.renderNineSliceColored(context, TEXTURE, 0, 0, getWidth(), getHeight(), 1f, 1f, 1f, (k >> 24) / 255f);
+            matrices.pop();
             y += textRenderer.fontHeight * message.size();
         }
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 400f);
+        matrices.push();
+        matrices.translate(0, 0, 400f);
         drawTimer(context, 30, y);
 
-        context.drawItemWithoutEntity(icon, 8, getHeight()/2 - 8);
-        context.getMatrices().pop();
-        return startTime > 5_000 ? Visibility.HIDE: Visibility.SHOW;
+        context.drawItemWithoutEntity(icon, 8, getHeight() / 2 - 8);
+        matrices.pop();
+        return startTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
     }
 }

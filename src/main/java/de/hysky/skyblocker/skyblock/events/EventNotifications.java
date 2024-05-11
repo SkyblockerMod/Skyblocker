@@ -19,7 +19,6 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -167,16 +166,6 @@ public class EventNotifications {
                     jsonObject.get("duration").getAsInt(),
                     jsonObject.get("extras").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toArray(String[]::new),
                     location);
-        }
-
-        @Override
-        public String toString() {
-            return new ToStringBuilder(this)
-                    .append("start", start)
-                    .append("duration", duration)
-                    .append("extras", extras)
-                    .append("warpCommand", warpCommand)
-                    .toString();
         }
     }
 }

@@ -26,7 +26,7 @@ public class JacobsContestWidget extends Widget {
     //TODO Properly match the contest placement and display it
     private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>[A-Za-z ]+).*");
 
-    private static final Map<String, ItemStack> FARM_DATA = Map.ofEntries(
+    public static final Map<String, ItemStack> FARM_DATA = Map.ofEntries(
             entry("Wheat", new ItemStack(Items.WHEAT)),
             entry("Sugar Cane", new ItemStack(Items.SUGAR_CANE)),
             entry("Carrot", new ItemStack(Items.CARROT)),

@@ -44,8 +44,8 @@ public class SkyblockerConfig {
     public QuickNavigationConfig quickNav = new QuickNavigationConfig();
 
     @SerialEntry
-    public MiscConfig misc = new MiscConfig();
+    public EventNotificationsConfig eventNotifications = new EventNotificationsConfig();
 
     @SerialEntry
-    public EventNotificationsConfig eventNotifications = new EventNotificationsConfig();
+    public MiscConfig misc = new MiscConfig();
 }
