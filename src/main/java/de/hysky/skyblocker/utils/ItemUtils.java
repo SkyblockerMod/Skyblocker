@@ -33,6 +33,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -202,16 +203,16 @@ public class ItemUtils {
         return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
     }
 
-    public static String getHeadTexture(ItemStack stack) {
-        if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
+    public static Optional<String> getHeadTexture(ItemStack stack) {
+        if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return Optional.empty();
 
-        ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
-        String texture = profile.properties().get("textures").stream()
-                .map(Property::value)
-                .findFirst()
-                .orElse("");
+        Iterator<Property> iterator = stack.get(DataComponentTypes.PROFILE)
+                                           .properties()
+                                           .get("textures")
+                                           .iterator();
 
-        return texture;
+        if (!iterator.hasNext()) return Optional.empty();
+        return Optional.of(iterator.next().value());
     }
 
     public static ItemStack getSkyblockerStack() {

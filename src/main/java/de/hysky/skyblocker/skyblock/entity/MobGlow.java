@@ -104,7 +104,7 @@ public class MobGlow {
 			// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id for the nukekubi head,
 			// compare against it to exclusively find armorstands that are nukekubi heads
 			// get the texture of the nukekubi head item itself and compare it
-			String texture = ItemUtils.getHeadTexture(armorItem);
+			String texture = ItemUtils.getHeadTexture(armorItem).orElse("");
 
 			return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
 		}

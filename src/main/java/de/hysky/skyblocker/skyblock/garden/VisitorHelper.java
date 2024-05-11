@@ -94,9 +94,7 @@ public class VisitorHelper {
     }
 
     private static @Nullable String getTextureOrNull(ItemStack stack) {
-        String texture = ItemUtils.getHeadTexture(stack);
-
-        return texture.isEmpty() ? null : texture;
+        return ItemUtils.getHeadTexture(stack).orElse(null);
     }
 
     private static void processLore(String visitorName, @Nullable String visitorTexture, List<Text> loreList) {

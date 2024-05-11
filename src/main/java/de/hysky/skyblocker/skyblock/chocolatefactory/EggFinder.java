@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.chocolatefactory;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -10,11 +11,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.slf4j.Logger;
@@ -46,26 +45,14 @@ public class EggFinder {
 		if (BREAKFAST.egg.getValue() != null && DINNER.egg.getValue() != null && LUNCH.egg.getValue() != null) return; //Don't check for eggs if we already found all of them
 		if (!(entity instanceof ArmorStandEntity armorStand) || armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
 		for (ItemStack itemStack : armorStand.getArmorItems()) {
-			try {
-				if (!itemStack.isEmpty() || itemStack.getItem() == Items.PLAYER_HEAD) {
-					String texture = itemStack.getComponents()
-					                          .get(DataComponentTypes.PROFILE)
-					                          .properties()
-					                          .get("textures")
-					                          .iterator()
-					                          .next()
-					                          .value();
-
-					for (EggType type : EggType.entries) {
-						if (texture.equals(type.texture)) {
-							handleFoundEgg(armorStand, type);
-							return;
-						}
+			ItemUtils.getHeadTexture(itemStack).ifPresent(texture -> {
+				for (EggType type : EggType.entries) {
+					if (texture.equals(type.texture)) {
+						handleFoundEgg(armorStand, type);
+						return;
 					}
 				}
-			} catch (Exception e) {
-				//Ignored. This simply exists to make the code cleaner without a bunch of if statements to check the existence of each key.
-			}
+			});
 		}
 	}
 

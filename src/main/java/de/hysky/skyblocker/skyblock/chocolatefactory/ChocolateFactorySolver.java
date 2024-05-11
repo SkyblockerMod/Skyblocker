@@ -1,23 +1,15 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.*;
-import net.fabricmc.loader.impl.lib.sat4j.minisat.core.Solver;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -27,6 +19,7 @@ import java.util.stream.Collectors;
 public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern CPS_PATTERN = Pattern.compile("\\+([\\d,]+) Chocolate per second");
 	private static final Pattern COST_PATTERN = Pattern.compile("Cost ([\\d,]+) Chocolate");
+	private static final Pattern HIRE_PATTERN = Pattern.compile("(HIRE|PROMOTE) ➜ \\[\\d+] \\S+ *");
 
 	public ChocolateFactorySolver() {
 		super("^Chocolate Factory$");
@@ -42,7 +35,6 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		markHighlightsDirty(); //Recalculate highlights when the screen is opened, which happens when upgrading rabbits
 	}
 
-	//Todo: Handle unemployed rabbits as well. They have a different lore format.
 	@Override
 	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
 		Int2DoubleMap cpsIncreaseFactors = new Int2DoubleLinkedOpenHashMap(5); //There are only 5 rabbits on the screen.
@@ -51,7 +43,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			ItemStack item = entry.getValue();
 			if (item.getItem() != Items.PLAYER_HEAD || item.isEmpty()) continue;
 
-			String lore = getLore(item);
+			String lore = getConcattedLore(item);
 			if (lore.isBlank()) continue;
 
 			OptionalDouble cpsIncreaseFactor = getCPSIncreaseFactor(lore);
@@ -63,15 +55,13 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return List.of(ColorHighlight.green(bestSlot.get().getIntKey()));
 	}
 
-	private String getLore(ItemStack item) {
-		LoreComponent lore = item.get(DataComponentTypes.LORE);
-		if (lore == null || lore.lines().isEmpty()) return "";
-		return lore.lines()
-		           .stream()
-		           .map(Text::getString)
-		           .collect(Collectors.joining(" ")); //Join all lore lines into one string for ease of regexing
-//					The space is so that the regex pattern still matches even if the word is split into 2 lines,
-//					as normally the line end and line start contain no spaces and would not match the pattern when concatenated
+	private String getConcattedLore(ItemStack item) {
+		return ItemUtils.getLore(item)
+		                .stream()
+		                .map(Text::getString)
+		                .collect(Collectors.joining(" ")); //Join all lore lines into one string for ease of regexing
+//					     The space is so that the regex pattern still matches even if the word is split into 2 lines,
+//					     as normally the line end and the line start contain no spaces and would not match the pattern when concatenated
 	}
 
 	/**
@@ -82,15 +72,42 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	 * @return The CPS increase factor of the item, or an empty optional if it couldn't be found
 	 */
 	private OptionalDouble getCPSIncreaseFactor(String lore) {
-		Matcher cpsMatcher = CPS_PATTERN.matcher(lore);
-		if (!cpsMatcher.find()) return OptionalDouble.empty();
-		int currentCps = Integer.parseInt(cpsMatcher.group(1).replace(",", ""));
-		if (!cpsMatcher.find()) return OptionalDouble.empty(); //If there is no second match, we can't get the CPS increase
-		int nextCps = Integer.parseInt(cpsMatcher.group(1).replace(",", ""));
+		Matcher hireMatcher = HIRE_PATTERN.matcher(lore);
+		if (!hireMatcher.find()) return OptionalDouble.empty(); //Not a hireable/promotable rabbit. Could be a locked or maxed rabbit.
 
-		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		if (!costMatcher.find(cpsMatcher.end())) return OptionalDouble.empty(); //Cost is always at the end of the string, so we can start check from the end of the last match
-		int cost = Integer.parseInt(costMatcher.group(1).replace(",", ""));
-		return OptionalDouble.of((nextCps - currentCps) / (double) cost);
+		switch (hireMatcher.group(1)) {
+			case "HIRE" -> {
+				Matcher cpsMatcher = CPS_PATTERN.matcher(lore);
+				OptionalInt cps = getValueFromMatcher(cpsMatcher, hireMatcher.end()); //Cps line is right after the hire line
+				if (cps.isEmpty()) return OptionalDouble.empty();
+
+				Matcher costMatcher = COST_PATTERN.matcher(lore);
+				OptionalInt cost = getValueFromMatcher(costMatcher, cpsMatcher.end()); //Cost comes after the cps line
+				if (cost.isEmpty()) return OptionalDouble.empty();
+				return OptionalDouble.of(cps.getAsInt() / (double) cost.getAsInt());
+			}
+			case "PROMOTE" -> {
+				Matcher cpsMatcher = CPS_PATTERN.matcher(lore);
+				OptionalInt currentCps = getValueFromMatcher(cpsMatcher); //Current cps is before the hire line
+				if (currentCps.isEmpty()) return OptionalDouble.empty();
+				OptionalInt nextCps = getValueFromMatcher(cpsMatcher, hireMatcher.end()); //Next cps is right after the hire line
+				if (nextCps.isEmpty()) return OptionalDouble.empty();
+
+				Matcher costMatcher = COST_PATTERN.matcher(lore);
+				OptionalInt cost = getValueFromMatcher(costMatcher, cpsMatcher.end()); //Cost comes after the cps line
+				if (cost.isEmpty()) return OptionalDouble.empty();
+				return OptionalDouble.of((nextCps.getAsInt() - currentCps.getAsInt()) / (double) cost.getAsInt());
+			}
+			default -> { return OptionalDouble.empty(); }
+		}
+	}
+
+	private OptionalInt getValueFromMatcher(Matcher matcher) {
+		return getValueFromMatcher(matcher, matcher.hasMatch() ? matcher.end() : 0);
+	}
+
+	private OptionalInt getValueFromMatcher(Matcher matcher, int startingIndex) {
+		if (!matcher.find(startingIndex)) return OptionalInt.empty();
+		return OptionalInt.of(Integer.parseInt(matcher.group(1).replace(",", "")));
 	}
 }
