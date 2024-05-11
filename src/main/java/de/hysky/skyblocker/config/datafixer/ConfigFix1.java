@@ -37,7 +37,7 @@ public class ConfigFix1 extends DataFix {
     }
 
     private static <T> Dynamic<T> fixGeneral(Dynamic<T> dynamic) {
-        return dynamic.update("general", general -> general.update("itemTooltip", itemTooltip -> itemTooltip.set("dungeonQuality", general.get("dungeonQuality").get().getOrThrow())).remove("dungeonQuality"));
+        return dynamic.update("general", general -> general.update("itemTooltip", itemTooltip -> itemTooltip.setFieldIfPresent("dungeonQuality", general.get("dungeonQuality").result())).remove("dungeonQuality"));
     }
 
     private static <T> Dynamic<T> fixUIAndVisuals(Dynamic<T> dynamic) {
@@ -59,6 +59,23 @@ public class ConfigFix1 extends DataFix {
                 .setFieldIfPresent("teleportOverlay", general.get("teleportOverlay").result())
                 .setFieldIfPresent("searchOverlay", general.get("searchOverlay").result())
                 .setFieldIfPresent("flameOverlay", general.get("flameOverlay").result())
+        ).update("general", newGeneral -> newGeneral
+                .remove("compactorDeletorPreview")
+                .remove("dontStripSkinAlphaValues")
+                .remove("backpackPreviewWithoutShift")
+                .remove("hideEmptyTooltips")
+                .remove("fancyCraftingTable")
+                .remove("hideStatusEffectOverlay")
+                .remove("chestValue")
+                .remove("itemCooldown")
+                .remove("titleContainer")
+                .remove("tabHud")
+                .remove("fancyAuctionHouse")
+                .remove("bars")
+                .remove("waypoints")
+                .remove("teleportOverlay")
+                .remove("searchOverlay")
+                .remove("flameOverlay")
         );
     }
 
@@ -70,6 +87,12 @@ public class ConfigFix1 extends DataFix {
                 .setFieldIfPresent("experiments", general.get("experiments").result())
                 .setFieldIfPresent("fishing", general.get("fishing").result())
                 .setFieldIfPresent("fairySouls", general.get("fairySouls").result())
+        ).update("general", newGeneral -> newGeneral
+                .remove("enableNewYearCakesHelper")
+                .remove("mythologicalRitual")
+                .remove("experiments")
+                .remove("fishing")
+                .remove("fairySouls")
         );
     }
 
@@ -111,14 +134,14 @@ public class ConfigFix1 extends DataFix {
                 .setFieldIfPresent("doorHighlight", dungeons.get("doorHighlight").result())
                 .setFieldIfPresent("dungeonScore", dungeons.get("dungeonScore").result())
                 .setFieldIfPresent("dungeonChestProfit", dungeons.get("dungeonChestProfit").result())
-        );
+        ).update("locations", locations -> locations.remove("dungeons")).update("general", newGeneral -> newGeneral.remove("betterPartyFinder"));
     }
 
     private static <T> Dynamic<T> fixCrimsonIsle(Dynamic<T> dynamic) {
-        return dynamic.setFieldIfPresent("crimsonIsle", dynamic.get("locations").get("crimsonIsle").result());
+        return dynamic.setFieldIfPresent("crimsonIsle", dynamic.get("locations").get("crimsonIsle").result()).update("locations", locations -> locations.remove("crimsonIsle"));
     }
 
-    private static <T> Dynamic<T> fixMining(Dynamic<T> dynamic) { // TODO just paste dwarvenMines into mining
+    private static <T> Dynamic<T> fixMining(Dynamic<T> dynamic) {
         OptionalDynamic<T> dwarvenMines = dynamic.get("locations").get("dwarvenMines");
         return dynamic.set("mining", dynamic.emptyMap()
                 .setFieldIfPresent("enableDrillFuel", dwarvenMines.get("enableDrillFuel").result())
@@ -135,23 +158,17 @@ public class ConfigFix1 extends DataFix {
                 .set("crystalHollows", dynamic.emptyMap()
                         .setFieldIfPresent("metalDetectorHelper", dwarvenMines.get("metalDetectorHelper").result())
                 )
-        );
+        ).update("locations", locations -> locations.remove("dwarvenMines"));
     }
 
-    private static <T> Dynamic<T> fixFarming(Dynamic<T> dynamic) { // TODO just paste locations into farming
+    private static <T> Dynamic<T> fixFarming(Dynamic<T> dynamic) {
         return dynamic.set("farming", dynamic.emptyMap()
                 .setFieldIfPresent("garden", dynamic.get("locations").get("garden").result())
-        );
+        ).update("locations", locations -> locations.remove("garden"));
     }
 
-    private static <T> Dynamic<T> fixOtherLocations(Dynamic<T> dynamic) { // TODO just paste locations into otherLocations
-        OptionalDynamic<T> locations = dynamic.get("locations");
-        return dynamic.set("otherLocations", dynamic.emptyMap()
-                .setFieldIfPresent("barn", locations.get("barn").result())
-                .setFieldIfPresent("rift", locations.get("rift").result())
-                .setFieldIfPresent("end", locations.get("end").result())
-                .setFieldIfPresent("spidersDen", locations.get("spidersDen").result())
-        );
+    private static <T> Dynamic<T> fixOtherLocations(Dynamic<T> dynamic) {
+        return dynamic.renameField("locations", "otherLocations");
     }
 
     private static <T> Dynamic<T> fixSlayers(Dynamic<T> dynamic) {
@@ -203,6 +220,8 @@ public class ConfigFix1 extends DataFix {
     }
 
     private static <T> Dynamic<T> fixMisc(Dynamic<T> dynamic) {
-        return dynamic.set("misc", dynamic.emptyMap().setFieldIfPresent("richPresence", dynamic.get("richPresence").result()));
+        return dynamic.set("misc", dynamic.emptyMap()
+                .setFieldIfPresent("richPresence", dynamic.get("richPresence").result())
+        ).remove("richPresence");
     }
 }
