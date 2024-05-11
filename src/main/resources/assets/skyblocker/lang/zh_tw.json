@@ -589,5 +589,9 @@
     "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路徑點類型",
     "skyblocker.config.dungeons.map": "地圖",
     "skyblocker.config.general.itemTooltip.enableExoticTooltip": "啟用異域風情提示",
-    "skyblocker.config.otherLocations.rift.mirrorverseWaypoints": "啟用Mirrorverse路徑點"
+    "skyblocker.config.otherLocations.rift.mirrorverseWaypoints": "啟用Mirrorverse路徑點",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "不完整的顔色",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "當價格數據不完整時顯示的顏色。",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "路徑點：高亮顯示並使用信標光束。\n\n邊框路徑點：顯示路徑點和邊框。\n\n高亮：只顯示高亮。\n\n邊框+高亮：顯示高亮與邊框。\n\n邊框：只顯示邊框。",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "當背包中箭毒的數量低於設定的值時收到警告。\n\n16是最小值。\n如果需要平滑的DPS階段，應設定為32。"
 }
