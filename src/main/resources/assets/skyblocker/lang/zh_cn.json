@@ -416,7 +416,7 @@
     "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§c未找到地牢入口房间坐标。请返回绿色的入口房间。",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "在使用弓箭但没有箭毒时发出警告。只在DPS阶段有效。",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "箭毒警告阈值",
-    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "当背包中箭毒的数量低于设定的值时收到警告。",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "当背包中箭毒的数量低于设定的值时收到警告。\n\n16是最小值。\n如果需要平滑的DPS阶段，应设置为32。",
     "skyblocker.config.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip": "值越低，更新越频繁，可能会导致卡顿。",
     "skyblocker.config.dungeons.professor.floor3GuardianHealthDisplay.@Tooltip": "在F3/M3的Boss战中，在守卫者下方显示它们的生命值。",
     "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "启用爆破路径点",
@@ -590,5 +590,8 @@
     "skyblocker.config.helpers": "助手",
     "skyblocker.config.mining.crystalHollows": "水晶洞窟",
     "skyblocker.config.otherLocations.end.protectorLocationEnable": "启用保护者位置",
-    "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路径点类型"
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路径点类型",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "不完整的颜色",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "当价格数据不完整时显示的颜色。",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "路径点：高亮显示并使用信标光束。\n\n边框路径点：显示路径点和边框。\n\n高亮：只显示高亮。\n\n边框+高亮：显示高亮与边框。\n\n边框：只显示边框。"
 }
