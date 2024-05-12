@@ -95,11 +95,11 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// Excessive widgets config
-			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets")) -> {
+			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.currentScreen instanceof WidgetsConfigurationScreen)) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				switch (client.currentScreen) {
-					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler);
-					case null, default -> client.setScreen(new WidgetsConfigurationScreen(containerScreenHandler));
+					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
+					case null, default -> client.setScreen(new WidgetsConfigurationScreen(containerScreenHandler, nameLowercase));
 				}
 				ci.cancel();
 			}
