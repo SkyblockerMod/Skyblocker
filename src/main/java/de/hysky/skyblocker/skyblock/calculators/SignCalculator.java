@@ -17,15 +17,13 @@ public class SignCalculator {
     private static double output;
 
     public static void renderCalculator(DrawContext context, String message, int renderX, int renderY) {
-        if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals) {
-            if (message.startsWith("=")) {
-                message = message.substring(1);
-            }
-            else {
-                output = -1;
-                lastInput = message;
-                return;
-            }
+        if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals && !message.startsWith("=")) {
+            output = -1;
+            lastInput = message;
+            return;
+        }
+        if (message.startsWith("=")) {
+            message = message.substring(1);
         }
         //only update output if new input
         if (!message.equals(lastInput)) { //

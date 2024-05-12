@@ -15,13 +15,14 @@ public class Calculator {
         int tokenLength;
     }
 
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([kmbse]?)");
-    private static final Map<String, Integer> magnitudeValues = Map.of(
-        "s", 64,
-        "e", 160,
-        "k", 1000,
-        "m", 1000000,
-        "b", 1000000000
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbt]?)");
+    private static final Map<String, Long> MAGNITUDE_VALUES = Map.of(
+            "s", 64L,
+            "e", 160L,
+            "k", 1_000L,
+            "m", 1_000_000L,
+            "b", 1_000_000_000L,
+            "t", 1_000_000_000_000L
     );
 
     private static List<Token> lex(String input) {
@@ -88,7 +89,7 @@ public class Calculator {
         Deque<Token> operatorStack = new ArrayDeque<>();
         List<Token> outputQueue = new ArrayList<>();
 
-        for (Token shuntingToken : tokens)
+        for (Token shuntingToken : tokens) {
             switch (shuntingToken.type) {
                 case NUMBER -> outputQueue.add(shuntingToken);
                 case OPERATOR -> {
@@ -122,6 +123,7 @@ public class Calculator {
                     }
                 }
             }
+        }
         //empty the operator stack
         while (!operatorStack.isEmpty()) {
             Token leftToken = operatorStack.pop();
@@ -189,10 +191,10 @@ public class Calculator {
         String magnitude = numberMatcher.group(2);
 
         if (!magnitude.isEmpty()) {
-            if (!magnitudeValues.containsKey(magnitude)) {//its invalid if its another letter
+            if (!MAGNITUDE_VALUES.containsKey(magnitude)) {//its invalid if its another letter
                 throw new UnsupportedOperationException("Invalid magnitude");
             }
-            number *= magnitudeValues.get(magnitude);
+            number *= MAGNITUDE_VALUES.get(magnitude);
         }
 
         return number;
@@ -200,7 +202,7 @@ public class Calculator {
 
     public static double calculate(String equation) {
         //custom bit for replacing purse with its value
-        equation = equation.toLowerCase().replaceAll("p(urse)?",String.valueOf((int)Utils.getPurse()));
+        equation = equation.toLowerCase().replaceAll("p(urse)?", String.valueOf(Utils.getPurse()));
         return evaluate(shunt(lex(equation)));
     }
 }
