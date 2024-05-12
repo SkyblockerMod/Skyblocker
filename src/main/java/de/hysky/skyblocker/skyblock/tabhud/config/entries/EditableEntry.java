@@ -13,12 +13,12 @@ import net.minecraft.util.Colors;
 
 import java.util.List;
 
-public class IslandEntry extends WidgetsListEntry {
+public class EditableEntry extends WidgetsListEntry {
 
     private final ButtonWidget editButton;
     private final boolean locked;
 
-    public IslandEntry(WidgetsOrderingTab parent, int slotId, ItemStack icon) {
+    public EditableEntry(WidgetsOrderingTab parent, int slotId, ItemStack icon) {
         super(parent, slotId, icon);
         editButton = ButtonWidget.builder(Text.literal("EDIT"), button -> this.parent.clickAndWaitForServer(this.slotId, 0))
                 .size(32, 12)

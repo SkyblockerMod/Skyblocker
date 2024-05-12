@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
@@ -49,7 +50,7 @@ public class PlayerListMgr {
 
 	public static void updateList() {
 
-		if (!Utils.isOnSkyblock()) {
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
 			return;
 		}
 
