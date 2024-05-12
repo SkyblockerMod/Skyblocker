@@ -41,6 +41,16 @@ public class FancyStatusBars {
     public static BarPositioner barPositioner = new BarPositioner();
     public static Map<String, StatusBar> statusBars = new HashMap<>();
 
+    public static boolean isHealthFancyBarVisible() {
+        StatusBar health = statusBars.get("health");
+        return health.anchor != null || health.inMouse;
+    }
+
+    public static boolean isExperienceFancyBarVisible() {
+        StatusBar experience = statusBars.get("experience");
+        return experience.anchor != null || experience.inMouse;
+    }
+
     public static void init() {
         statusBars.put("health", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/health"),
                 new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)},
@@ -177,6 +187,12 @@ public class FancyStatusBars {
             ScreenPos anchorPosition = barAnchor.getAnchorPosition(width, height);
             BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 
+            int targetSize = sizeRule.targetSize();
+            boolean visibleHealthMove = barAnchor == BarPositioner.BarAnchor.HOTBAR_TOP && !isHealthFancyBarVisible();
+            if (visibleHealthMove) {
+                targetSize /= 2;
+            }
+
             if (sizeRule.isTargetSize()) {
                 for (int row = 0; row < barPositioner.getRowCount(barAnchor); row++) {
                     LinkedList<StatusBar> barRow = barPositioner.getRow(barAnchor, row);
@@ -188,13 +204,13 @@ public class FancyStatusBars {
                         totalSize += (statusBar.size = Math.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize()));
 
                     whileLoop:
-                    while (totalSize != sizeRule.targetSize()) {
-                        if (totalSize > sizeRule.targetSize()) {
+                    while (totalSize != targetSize) {
+                        if (totalSize > targetSize) {
                             for (StatusBar statusBar : barRow) {
                                 if (statusBar.size > sizeRule.minSize()) {
                                     statusBar.size--;
                                     totalSize--;
-                                    if (totalSize == sizeRule.targetSize()) break whileLoop;
+                                    if (totalSize == targetSize) break whileLoop;
                                 }
                             }
                         } else {
@@ -202,7 +218,7 @@ public class FancyStatusBars {
                                 if (statusBar.size < sizeRule.maxSize()) {
                                     statusBar.size++;
                                     totalSize++;
-                                    if (totalSize == sizeRule.targetSize()) break whileLoop;
+                                    if (totalSize == targetSize) break whileLoop;
                                 }
                             }
                         }
@@ -219,9 +235,11 @@ public class FancyStatusBars {
                 // Update the positions
                 float widthPerSize;
                 if (sizeRule.isTargetSize())
-                    widthPerSize = (float) sizeRule.totalWidth() / sizeRule.targetSize();
+                    widthPerSize = (float) sizeRule.totalWidth() / targetSize;
                 else
                     widthPerSize = sizeRule.widthPerSize();
+
+                if (visibleHealthMove) widthPerSize /= 2;
 
                 int currSize = 0;
                 int rowSize = barRow.size();
@@ -243,7 +261,7 @@ public class FancyStatusBars {
                     statusBar.size = Math.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
 
                     float x = barAnchor.isRight() ?
-                            anchorPosition.x() + currSize * widthPerSize :
+                            anchorPosition.x() + (visibleHealthMove ? sizeRule.totalWidth() / 2.f : 0) + currSize * widthPerSize :
                             anchorPosition.x() - currSize * widthPerSize - statusBar.size * widthPerSize;
                     statusBar.setX(MathHelper.ceil(x) + offsetX);
 
@@ -263,9 +281,13 @@ public class FancyStatusBars {
         }
     }
 
+    public static boolean isEnabled() {
+        return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift();
+    }
+
     public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
         var player = client.player;
-        if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || player == null || Utils.isInTheRift())
+        if (!isEnabled() || player == null)
             return false;
 
         Collection<StatusBar> barCollection = statusBars.values();

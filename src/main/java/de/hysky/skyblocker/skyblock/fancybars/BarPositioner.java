@@ -156,7 +156,7 @@ public class BarPositioner {
                 SizeRule.freeSize(25, 2, 6)),
 
         HOTBAR_TOP(true, true,
-                (scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 91, scaledHeight - 23),
+                (scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 91, scaledHeight - (FancyStatusBars.isExperienceFancyBarVisible() ? 23 : 35)),
                 SizeRule.targetSize(12, 182, 2),
                 anchorPosition -> new ScreenRect(anchorPosition.x(), anchorPosition.y() - 20, 182, 20)),
 
