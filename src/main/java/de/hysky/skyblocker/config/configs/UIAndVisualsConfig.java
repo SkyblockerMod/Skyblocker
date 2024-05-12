@@ -247,7 +247,7 @@ public class UIAndVisualsConfig {
         public boolean enabled = true;
 
         @SerialEntry
-        public boolean requiresEquals = true;
+        public boolean requiresEquals = false;
     }
 
     public static class FlameOverlay {

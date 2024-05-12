@@ -7,16 +7,14 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public class SignCalculator {
-
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-
-    private static final DecimalFormat FORMATTER = new DecimalFormat("#,###.##");
+    private static final NumberFormat FORMATTER = NumberFormat.getInstance();
 
     private static String lastInput;
-    private static Double output;
+    private static double output;
 
     public static void renderCalculator(DrawContext context, String message, int renderX, int renderY) {
         if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals) {
@@ -24,7 +22,7 @@ public class SignCalculator {
                 message = message.substring(1);
             }
             else {
-                output = null;
+                output = -1;
                 lastInput = message;
                 return;
             }
@@ -34,7 +32,7 @@ public class SignCalculator {
             try {
                 output = Calculator.calculate(message);
             } catch (Exception e) {
-                output = null;
+                output = -1;
             }
         }
 
@@ -44,14 +42,14 @@ public class SignCalculator {
     }
 
     public static String getNewValue(Boolean isPrice) {
-        if (output == null) {
+        if (output == -1) {
             //if mode is not activated or just invalid equation return what the user typed in
             return lastInput;
         }
 
         //price can except decimals and exponents
         if (isPrice) {
-            return output.toString();
+            return FORMATTER.format(output);
         }
         //amounts want an integer number so round
         return Long.toString(Math.round(output));
@@ -59,8 +57,8 @@ public class SignCalculator {
 
     private static void render(DrawContext context, String input, int renderX, int renderY) {
         Text text;
-        if (output == null) {
-            text = Text.translatable("text.autoconfig.skyblocker.option.general.inputCalculator.invalidEquation").formatted(Formatting.RED);
+        if (output == -1) {
+            text = Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED);
         } else {
             text = Text.literal(input + " = " + FORMATTER.format(output)).formatted(Formatting.GREEN);
         }

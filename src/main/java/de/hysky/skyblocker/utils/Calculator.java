@@ -1,14 +1,10 @@
 package de.hysky.skyblocker.utils;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import net.minecraft.util.Util;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Calculator {
-
     public enum TokenType {
         NUMBER, OPERATOR, L_PARENTHESIS, R_PARENTHESIS
     }
@@ -20,13 +16,13 @@ public class Calculator {
     }
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([kmbse]?)");
-    private static final HashMap<String, Integer> magnitudeValues = Util.make(new HashMap<>(), map -> {
-        map.put("s", 64);
-        map.put("e", 160);
-        map.put("k", 1000);
-        map.put("m", 1000000);
-        map.put("b", 1000000000);
-    });
+    private static final Map<String, Integer> magnitudeValues = Map.of(
+        "s", 64,
+        "e", 160,
+        "k", 1000,
+        "m", 1000000,
+        "b", 1000000000
+    );
 
     private static List<Token> lex(String input) {
         List<Token> tokens = new ArrayList<>();
@@ -88,16 +84,13 @@ public class Calculator {
      * @param tokens equation in infix notation order
      * @return equation in RPN order
      */
-
     private static List<Token> shunt(List<Token> tokens) {
         Deque<Token> operatorStack = new ArrayDeque<>();
         List<Token> outputQueue = new ArrayList<>();
 
         for (Token shuntingToken : tokens)
             switch (shuntingToken.type) {
-                case NUMBER -> {
-                    outputQueue.add(shuntingToken);
-                }
+                case NUMBER -> outputQueue.add(shuntingToken);
                 case OPERATOR -> {
                     int precedence = getPrecedence(shuntingToken.value);
                     while (!operatorStack.isEmpty()) {
@@ -115,9 +108,7 @@ public class Calculator {
                     }
                     operatorStack.push(shuntingToken);
                 }
-                case L_PARENTHESIS -> {
-                    operatorStack.push(shuntingToken);
-                }
+                case L_PARENTHESIS -> operatorStack.push(shuntingToken);
                 case R_PARENTHESIS -> {
                     while (true) {
                         if (operatorStack.isEmpty()) {
@@ -164,33 +155,23 @@ public class Calculator {
         Deque<Double> values = new ArrayDeque<>();
         for (Token token : tokens) {
             switch (token.type) {
-                case NUMBER -> {
-                    values.push(calculateValue(token.value));
-                }
+                case NUMBER -> values.push(calculateValue(token.value));
                 case OPERATOR -> {
                     double right = values.pop();
                     double left = values.pop();
                     switch (token.value) {
-                        case "+" -> {
-                            values.push(left + right);
-                        }
-                        case "-" -> {
-                            values.push(left - right);
-                        }
+                        case "+" -> values.push(left + right);
+                        case "-" -> values.push(left - right);
                         case "/" -> {
                             if (right == 0) {
                                 throw new UnsupportedOperationException("Can not divide by 0");
                             }
                             values.push(left / right);
                         }
-                        case "*" -> {
-                            values.push(left * right);
-                        }
+                        case "*" -> values.push(left * right);
                     }
                 }
-                case L_PARENTHESIS, R_PARENTHESIS -> {
-                    throw new UnsupportedOperationException("Equation is not in RPN");
-                }
+                case L_PARENTHESIS, R_PARENTHESIS -> throw new UnsupportedOperationException("Equation is not in RPN");
             }
         }
         if (values.isEmpty()) {

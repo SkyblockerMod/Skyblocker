@@ -14,7 +14,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -22,8 +22,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class CalculatorCommand {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-
-    private static final DecimalFormat FORMATTER = new DecimalFormat("#,###.##");
+    private static final NumberFormat FORMATTER = NumberFormat.getInstance();
 
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(CalculatorCommand::calculate);
@@ -44,7 +43,7 @@ public class CalculatorCommand {
         try {
             text.append(Text.literal(FORMATTER.format(Calculator.calculate(calculation))).formatted(Formatting.GREEN));
         } catch (UnsupportedOperationException e) {
-            text.append(Text.translatable("text.autoconfig.skyblocker.option.general.inputCalculator.invalidEquation").formatted(Formatting.RED));
+            text.append(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED));
         }
 
         if (CLIENT == null || CLIENT.player == null) {

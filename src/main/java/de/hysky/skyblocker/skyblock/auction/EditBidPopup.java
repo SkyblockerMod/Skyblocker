@@ -76,8 +76,7 @@ public class EditBidPopup extends AbstractPopupScreen {
         if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.enabled) {
             if (!isStringGood(SignCalculator.getNewValue(false))) return;
             sendPacket(SignCalculator.getNewValue(false));
-        }
-        else {
+        } else {
             if (!isStringGood(textFieldWidget.getText().trim())) return;
             sendPacket(textFieldWidget.getText().trim());
         }
