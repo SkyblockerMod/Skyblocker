@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.tab.TabManager;
 import net.minecraft.client.gui.widget.TabNavigationWidget;
 import net.minecraft.item.ItemStack;
@@ -14,11 +13,10 @@ import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerListener {
 
     private GenericContainerScreenHandler handler;
+    private String titleLowercase;
 
     // Tabs and stuff
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
@@ -28,10 +26,11 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     private boolean switchingToPopup = false;
 
-    public WidgetsConfigurationScreen(GenericContainerScreenHandler handler) {
+    public WidgetsConfigurationScreen(GenericContainerScreenHandler handler, String titleLowercase) {
         super(Text.literal("Widgets Configuration"));
         this.handler = handler;
         handler.addListener(this);
+        this.titleLowercase = titleLowercase;
     }
 
     @Override
@@ -57,10 +56,11 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         }
     }
 
-    public void updateHandler(GenericContainerScreenHandler newHandler) {
+    public void updateHandler(GenericContainerScreenHandler newHandler, String title) {
         handler.removeListener(this);
         handler = newHandler;
         handler.addListener(this);
+        this.titleLowercase = title;
         widgetsOrderingTab.updateHandler(handler);
     }
 
@@ -79,8 +79,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
                 widgetsOrderingTab.hopper(null);
             }
         }
-        if (slotId > 9 && slotId < this.handler.getRows() * 9 - 9) {
-            widgetsOrderingTab.updateEntries();
+        if (slotId > 9 && slotId < this.handler.getRows() * 9 - 9 || slotId == 45 || slotId == 53) {
+            widgetsOrderingTab.updateEntries(titleLowercase);
         }
     }
 

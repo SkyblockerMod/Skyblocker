@@ -46,7 +46,7 @@ public class ElectionWidget extends TabHudWidget {
         MAYOR_DATA.put("Marina", Ico.FISH_ROD);
     }
 
-    private static final Formatting[] COLS = { Formatting.GOLD, Formatting.RED, Formatting.LIGHT_PURPLE };
+    private static final Formatting[] COLS = { Formatting.RED, Formatting.LIGHT_PURPLE, Formatting.GREEN, Formatting.AQUA, Formatting.YELLOW };
 
     public ElectionWidget() {
         super("Election", TITLE, Formatting.YELLOW.getColorValue());

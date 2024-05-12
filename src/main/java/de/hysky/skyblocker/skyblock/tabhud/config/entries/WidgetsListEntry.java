@@ -7,11 +7,16 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
 
 import java.util.List;
 
 public abstract class WidgetsListEntry extends ElementListWidget.Entry<WidgetsListEntry> {
+
+    protected static final Text ENABLED_TEXT = Text.literal("ENABLED").formatted(Formatting.GREEN);
+    protected static final Text DISABLED_TEXT = Text.literal("DISABLED").formatted(Formatting.RED);
 
     protected final int slotId;
     protected final WidgetsOrderingTab parent;
