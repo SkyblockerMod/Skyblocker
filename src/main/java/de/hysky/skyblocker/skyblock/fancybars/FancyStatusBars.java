@@ -269,11 +269,11 @@ public class FancyStatusBars {
             return false;
 
         Collection<StatusBar> barCollection = statusBars.values();
-        for (StatusBar value : barCollection) {
-            value.render(context, -1, -1, client.getLastFrameDuration());
+        for (StatusBar statusBar : barCollection) {
+            if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getLastFrameDuration());
         }
         for (StatusBar statusBar : barCollection) {
-            if (statusBar.showText()) statusBar.renderText(context);
+            if (statusBar.anchor != null && statusBar.showText()) statusBar.renderText(context);
         }
         StatusBarTracker.Resource health = statusBarTracker.getHealth();
         statusBars.get("health").updateValues(health.value() / (float) health.max(), health.overflow() / (float) health.max(), health.value());
