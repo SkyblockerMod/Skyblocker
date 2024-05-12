@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -9,7 +10,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public record MiningLocationLabel (Category category, Vec3d centerPos){
+public record MiningLocationLabel(Category category, Vec3d centerPos) implements Renderable {
+    public MiningLocationLabel(Category category, BlockPos pos) {
+        this(category, pos.toCenterPos());
+    }
 
     private Text getName() {
         if (SkyblockerConfigManager.get().mining.commissionWaypoints.useColor) {
@@ -19,9 +23,10 @@ public record MiningLocationLabel (Category category, Vec3d centerPos){
     }
 
     /**
-     * render the name and distance to the label scaled so can be seen at a distance
+     * Renders the name and distance to the label scaled so can be seen at a distance
      * @param context render context
      */
+    @Override
     public void render(WorldRenderContext context) {
         Vec3d posUp = centerPos.add(0, 1, 0);
         double distance = context.camera().getPos().distanceTo(centerPos);
@@ -30,7 +35,7 @@ public record MiningLocationLabel (Category category, Vec3d centerPos){
         RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
     }
 
-    interface Category {
+    public interface Category {
         String getName();
 
         int getColor(); //all the color codes are the color of the block the waypoint is for
@@ -83,8 +88,8 @@ public record MiningLocationLabel (Category category, Vec3d centerPos){
         RAMPARTS_QUARRY(new BlockPos(-72, 153, -10)),
         UPPER_MINES(new BlockPos(-132, 174, -50)),
         ROYAL_MINES(new BlockPos(171, 150, 31)),
-        DWARVEN_VILLAGE( new BlockPos(-37, 200, -92)),
-        DWARVEN_MINES( new BlockPos(89, 198, -92));
+        DWARVEN_VILLAGE(new BlockPos(-37, 200, -92)),
+        DWARVEN_MINES(new BlockPos(89, 198, -92));
 
         private final BlockPos location;
 
