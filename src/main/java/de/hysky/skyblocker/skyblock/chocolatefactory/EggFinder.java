@@ -22,10 +22,6 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder.EggType.BREAKFAST;
-import static de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder.EggType.DINNER;
-import static de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder.EggType.LUNCH;
-
 public class EggFinder {
 	private static final Pattern eggFoundPattern = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner)");
 	private static final Pattern newEggPattern = Pattern.compile("^HOPPITY'S HUNT A Chocolate (Breakfast|Lunch|Dinner) Egg has appeared!$");
@@ -42,12 +38,11 @@ public class EggFinder {
 
 	public static void checkIfEgg(Entity entity) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
-		if (BREAKFAST.egg.getValue() != null && DINNER.egg.getValue() != null && LUNCH.egg.getValue() != null) return; //Don't check for eggs if we already found all of them
 		if (!(entity instanceof ArmorStandEntity armorStand) || armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
 		for (ItemStack itemStack : armorStand.getArmorItems()) {
 			ItemUtils.getHeadTexture(itemStack).ifPresent(texture -> {
 				for (EggType type : EggType.entries) {
-					if (texture.equals(type.texture)) {
+					if (texture.equals(type.texture) && type.egg.getValue() == null) {
 						handleFoundEgg(armorStand, type);
 						return;
 					}
