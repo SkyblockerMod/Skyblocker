@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class TimeTowerReminder {
 
 	private static void sendMessage() {
 		if (MinecraftClient.getInstance().player == null) return;
-		MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Your Chocolate Factory's Time Tower has deactivated!").withColor(0xFF5555)));
+		MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Your Chocolate Factory's Time Tower has deactivated!").formatted(Formatting.RED)));
 
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		try {
