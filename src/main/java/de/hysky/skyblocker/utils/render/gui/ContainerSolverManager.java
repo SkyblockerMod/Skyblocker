@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
+import de.hysky.skyblocker.skyblock.dungeon.terminal.LightsOnTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
@@ -47,6 +48,7 @@ public class ContainerSolverManager {
                 new ColorTerminal(),
                 new OrderTerminal(),
                 new StartsWithTerminal(),
+                new LightsOnTerminal(),
                 new CroesusHelper(),
                 new CroesusProfit(),
                 new ChronomatronSolver(),
@@ -114,10 +116,15 @@ public class ContainerSolverManager {
         highlights = null;
     }
 
-    public void onSlotClick(int slot, ItemStack stack) {
+    /**
+     * @return Whether the click should be disallowed.
+     */
+    public boolean onSlotClick(int slot, ItemStack stack) {
         if (currentSolver != null) {
-            currentSolver.onClickSlot(slot, stack, screenId, groups);
+            return currentSolver.onClickSlot(slot, stack, screenId, groups);
         }
+
+        return false;
     }
 
     public void onDraw(DrawContext context, List<Slot> slots) {

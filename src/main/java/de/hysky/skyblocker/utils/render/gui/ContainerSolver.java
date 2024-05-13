@@ -20,7 +20,7 @@ public abstract class ContainerSolver {
 
     protected abstract boolean isEnabled();
 
-    public Pattern getName() {
+    public final Pattern getName() {
         return containerName;
     }
 
@@ -34,12 +34,13 @@ public abstract class ContainerSolver {
         SkyblockerMod.getInstance().containerSolverManager.markDirty();
     }
 
-    protected void onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+    protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+        return false;
     }
 
     protected abstract List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots);
 
-    protected void trimEdges(Int2ObjectMap<ItemStack> slots, int rows) {
+    protected final void trimEdges(Int2ObjectMap<ItemStack> slots, int rows) {
         for (int i = 0; i < rows; i++) {
             slots.remove(9 * i);
             slots.remove(9 * i + 8);

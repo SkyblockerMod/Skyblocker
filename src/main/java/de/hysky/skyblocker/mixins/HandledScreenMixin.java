@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.terminal.TerminalSolver;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -215,8 +216,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
             }
         }
 
-        if (currentSolver != null) {
-            SkyblockerMod.getInstance().containerSolverManager.onSlotClick(slotId, stack);
+        if (currentSolver instanceof TerminalSolver) {
+            boolean disallowed = SkyblockerMod.getInstance().containerSolverManager.onSlotClick(slotId, stack);
+
+            if (disallowed) ci.cancel();
         }
 
         // Experiment Solvers

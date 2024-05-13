@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OrderTerminal extends ContainerSolver {
+public class OrderTerminal extends ContainerSolver implements TerminalSolver {
     private final int PANES_NUM = 14;
     private int[] orderedSlots;
     private int currentNum = Integer.MAX_VALUE;
@@ -54,5 +54,16 @@ public class OrderTerminal extends ContainerSolver {
         }
         currentNum = 0;
         return true;
+    }
+
+    @Override
+    protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+        if (stack == null || stack.isEmpty()) return false;
+
+        if (!stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.getCount() != currentNum + 1) {
+            return shouldBlockIncorrectClicks();
+        }
+
+        return false;
     }
 }

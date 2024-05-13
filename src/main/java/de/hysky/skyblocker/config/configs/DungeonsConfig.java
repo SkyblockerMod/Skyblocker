@@ -127,6 +127,9 @@ public class DungeonsConfig {
 
         @SerialEntry
         public boolean solveStartsWith = true;
+
+        @SerialEntry
+        public boolean blockIncorrectClicks = false;
     }
 
     public static class SecretWaypoints {

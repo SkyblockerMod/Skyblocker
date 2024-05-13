@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class StartsWithTerminal extends ContainerSolver {
+public class StartsWithTerminal extends ContainerSolver implements TerminalSolver {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
 	private int lastKnownScreenId = Integer.MIN_VALUE;
 
@@ -50,9 +50,9 @@ public class StartsWithTerminal extends ContainerSolver {
 	}
 
 	@Override
-	protected void onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+	protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
 		//Some random glass pane was clicked or something
-		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return;
+		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
 
 		ItemState state = trackedItemStates.get(slot);
 		String prefix = groups[0];
@@ -61,16 +61,17 @@ public class StartsWithTerminal extends ContainerSolver {
 		//Also, since Hypixel closes & reopens the GUI after every click we check if the last known screen id is the same that way in case the server lags and
 		//either a player tries to click a second item or if the player puts the clicked item back and tries to click another that we don't mark multiple items
 		//as clicked when only the first one will count.
-		
+
 		//While Hypixel does use a different syncId each time they open the screen we opt to use our own so as to avoid them potentially changing that
 		//and in turn breaking this logic
 		if (stack.getName().getString().startsWith(prefix) && !state.clicked() && lastKnownScreenId != screenId) {
 			trackedItemStates.put(slot, state.click());
 			lastKnownScreenId = screenId;
+		} else {
+			return shouldBlockIncorrectClicks();
 		}
-		//In the future we could add an else branch and return a boolean to cancel the click since it would be wrong
 
-		return;
+		return false;
 	}
 
 	//We only setup the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
