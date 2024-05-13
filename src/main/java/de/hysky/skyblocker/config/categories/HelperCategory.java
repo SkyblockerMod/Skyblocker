@@ -176,6 +176,14 @@ public class HelperCategory {
                                         newValue -> config.helpers.chocolateFactory.waypointType = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip")))
+                                .binding(defaults.helpers.chocolateFactory.enableTimeTowerReminder,
+                                        () -> config.helpers.chocolateFactory.enableTimeTowerReminder,
+                                        newValue -> config.helpers.chocolateFactory.enableTimeTowerReminder = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
 
                         .build())
 

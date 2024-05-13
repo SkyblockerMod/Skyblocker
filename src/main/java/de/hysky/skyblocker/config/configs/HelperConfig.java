@@ -79,5 +79,8 @@ public class HelperConfig {
 
         @SerialEntry
         public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+        @SerialEntry
+        public boolean enableTimeTowerReminder = true;
     }
 }
