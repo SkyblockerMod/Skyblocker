@@ -19,12 +19,12 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,6 +36,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientWorld world;
+
+    @Shadow
+    @Final
+    private static Logger LOGGER;
 
     @Inject(method = "onBlockUpdate", at = @At("RETURN"))
     private void skyblocker$onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
@@ -111,7 +115,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
             CompactDamage.compactDamage(armorStandEntity);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
         }
     }
 }
