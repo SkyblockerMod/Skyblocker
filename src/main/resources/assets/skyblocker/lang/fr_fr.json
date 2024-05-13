@@ -224,7 +224,6 @@
     "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Cache les cannes à pêche des autres joueurs",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Opacité du Fond de Rareté d'Item",
     "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity": "Opacité du Feu",
-    "skyblocker.config.quickNav.button.item.nbt": "NBT",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "Vous avez le plus haut rang d'accessoire dans cette famille.",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "Cet accessoire est une amélioration comparé à celui dans la même famille que vous avez déjà. Montre aussi le rang de cet accessoire dans sa famille.",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "Vous n'avez aucun accessoire de cette famille.",

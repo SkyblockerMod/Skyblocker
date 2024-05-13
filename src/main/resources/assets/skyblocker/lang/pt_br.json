@@ -249,7 +249,6 @@
     "skyblocker.config.quickNav.button.render": "Renderização",
     "skyblocker.config.quickNav.button.item.itemName": "ID do item",
     "skyblocker.config.quickNav.button.item.count": "Quantidade do item",
-    "skyblocker.config.quickNav.button.item.nbt": "NBT",
     "skyblocker.config.quickNav.button.uiTitle": "Título de interface",
     "skyblocker.itemProtection.added": "§fSeu %s vai estar protegido agora! §o*o seu item estar mais um pouco seguro :')*",
     "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Ativar marcadores de Stonk",

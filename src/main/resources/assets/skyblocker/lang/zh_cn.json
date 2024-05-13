@@ -236,7 +236,6 @@
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "价格数据不完整时显示的颜色。",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "不完整的颜色",
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "启用分数状态栏",
-    "skyblocker.config.quickNav.button.item.nbt": "NBT",
     "skyblocker.config.mining.dwarvenHud.enabledCommissions": "启用任务栏",
     "skyblocker.config.mining.dwarvenHud.enabledPowder": "启用粉末栏",
     "skyblocker.config.mining.crystalsHud": "水晶洞窟地图",

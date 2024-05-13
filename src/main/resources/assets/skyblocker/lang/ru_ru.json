@@ -154,7 +154,6 @@
     "skyblocker.config.general.itemTooltip.enableMuseumInfo": "Включить музейную информацию",
     "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "Алфавитная сортировка сортирует имена в алфавитном порядке, в то время как сортировка по умолчанию не имеет определенного порядка.",
     "skyblocker.config.quickNav.button.item.count": "Кол-во предметов",
-    "skyblocker.config.quickNav.button.item.nbt": "NBT-информация",
     "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls": "Подсвечивать только ближайшие fairy souls",
     "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip": "Когда включено, Fairy Souls в радиусе 50 блоков подсвечиваются",
     "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Тип Пополняющих/Заправочных меток",

@@ -142,7 +142,6 @@
     "skyblocker.config.dungeons.map.mapScaling": "地図の大きさ",
     "skyblocker.config.otherLocations.end.resetText": "リセット",
     "skyblocker.config.dungeons.dungeonScore": "ダンジョンの得点",
-    "skyblocker.config.quickNav.button.item.nbt": "NBT",
     "skyblocker.config.quickNav.button.item.count": "アイテムの数量",
     "skyblocker.config.farming.garden.enableHud": "農業のHUDを有効にする",
     "skyblocker.config.farming.garden.farmingHud": "農業のHUDの設定…",
