@@ -304,7 +304,7 @@ public class DungeonScore {
 			if (s.equals("You")) return MinecraftClient.getInstance().getSession().getUsername(); //This will be wrong if the dead player is called 'You' but that's unlikely
 			else return s;
 		});
-		ProfileUtils.updateProfile(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
+		ProfileUtils.updateProfileByName(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
 	}
 
 	private static void checkMessageForWatcher(String message) {

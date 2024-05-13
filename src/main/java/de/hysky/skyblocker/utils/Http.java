@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.utils;
 
+import de.hysky.skyblocker.SkyblockerMod;
+import net.minecraft.SharedConstants;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -15,12 +20,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.SharedConstants;
 
 /**
  * @implNote All http requests are sent using HTTP 2

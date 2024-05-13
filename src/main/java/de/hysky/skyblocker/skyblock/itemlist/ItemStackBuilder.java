@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemStackBuilder {
-    private static final Pattern SKULL_UUID_PATTERN = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"");
-    private static final Pattern SKULL_TEXTURE_PATTERN = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"");
+    public static final Pattern SKULL_UUID_PATTERN = Pattern.compile("(?<=SkullOwner:\\{)Id:\"(.{36})\"");
+    public static final Pattern SKULL_TEXTURE_PATTERN = Pattern.compile("(?<=Properties:\\{textures:\\[0:\\{Value:)\"(.+?)\"");
     private static final Pattern COLOR_PATTERN = Pattern.compile("color:(\\d+)");
     private static final Pattern EXPLOSION_COLOR_PATTERN = Pattern.compile("\\{Explosion:\\{(?:Type:[0-9a-z]+,)?Colors:\\[(?<color>[0-9]+)]\\}");
     private static Map<String, Map<Rarity, PetNumbers>> petNums;
@@ -138,7 +138,7 @@ public class ItemStackBuilder {
         return list;
     }
 
-    private static String injectData(String string, List<Pair<String, String>> injectors) {
+    public static String injectData(String string, List<Pair<String, String>> injectors) {
         for (Pair<String, String> injector : injectors) {
             string = string.replaceAll(injector.getLeft(), injector.getRight());
         }
