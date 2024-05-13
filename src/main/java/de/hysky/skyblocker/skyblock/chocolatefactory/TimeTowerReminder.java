@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class TimeTowerReminder {
 	private static final String TIME_TOWER_FILE = "time_tower.txt";
-	private static final Pattern TIME_TOWER_PATTERN = Pattern.compile("^TIME TOWER! Your Chocolate Factory production has increased");
+	private static final Pattern TIME_TOWER_PATTERN = Pattern.compile("^TIME TOWER! Your Chocolate Factory production has increased by \\+[\\d.]+x for \\dh!$");
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Time Tower Reminder");
 
 	private TimeTowerReminder() {
