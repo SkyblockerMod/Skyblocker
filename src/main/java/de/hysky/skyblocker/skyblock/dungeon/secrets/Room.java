@@ -208,7 +208,7 @@ public class Room implements Tickable, Renderable {
         SecretWaypoint.Category category = SecretWaypoint.Category.CategoryArgumentType.getCategory(context, "category");
         Text waypointName = context.getArgument("name", Text.class);
         addCustomWaypoint(secretIndex, category, waypointName, pos);
-        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category.asString(), waypointName)));
+        context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.stringifiedTranslatable("skyblocker.dungeons.secrets.customWaypointAdded", pos.getX(), pos.getY(), pos.getZ(), name, secretIndex, category, waypointName)));
     }
 
     /**

@@ -4,9 +4,6 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
-import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
-import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -67,32 +64,6 @@ public class GeneralCategory {
                                 .name(Text.translatable("skyblocker.config.general.shortcuts.config"))
                                 .text(Text.translatable("text.skyblocker.open"))
                                 .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new ShortcutsConfigScreen(screen)))
-                                .build())
-                        .build())
-
-                //Waypoints
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.enableWaypoints"))
-                                .binding(defaults.general.waypoints.enableWaypoints,
-                                        () -> config.general.waypoints.enableWaypoints,
-                                        newValue -> config.general.waypoints.enableWaypoints = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Waypoint.Type>createBuilder()
-                                .name(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType"))
-                                .description(OptionDescription.of(Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.@Tooltip"), Text.translatable("text.autoconfig.skyblocker.option.general.waypoints.waypointType.generalNote")))
-                                .binding(defaults.general.waypoints.waypointType,
-                                        () -> config.general.waypoints.waypointType,
-                                        newValue -> config.general.waypoints.waypointType = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.waypoints.config"))
-                                .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WaypointsScreen(screen)))
                                 .build())
                         .build())
 

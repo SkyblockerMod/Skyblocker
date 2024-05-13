@@ -50,7 +50,7 @@ public class ShortcutsConfigScreen extends Screen {
         buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
             if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
                 scrollAmount = shortcutsConfigListWidget.getScrollAmount();
-                client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.translatable("skyblocker.shortcuts.deleteWarning", shortcutEntry.toString()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+                client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
             }
         }).build();
         adder.add(buttonDelete);
