@@ -122,7 +122,7 @@
     "skyblocker.config.dungeons.puzzle.solveTicTacToe": "井字棋谜题助手",
     "skyblocker.config.dungeons.secretWaypoints": "地牢秘密路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "启用地牢秘密路径点",
-    "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "“Alphabetical”以词典序排列玩家，而“Default”以Hypixel默认顺序排列",
+    "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "“Alphabetical”以词典序排列玩家，而“Default”以Hypixel默认顺序排列。",
     "skyblocker.config.dungeons.puzzle.solveTicTacToe.@Tooltip": "以红色方块标记井字棋的下一步！",
     "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "在地牢内启用箭袋提示",
     "skyblocker.config.general.quiverWarning": "箭袋提示",
@@ -139,7 +139,7 @@
     "skyblocker.config.general.wikiLookup.officialWiki": "使用Hypixel官方维基",
     "skyblocker.config.general.wikiLookup.officialWiki.@Tooltip": "在查阅时使用Hypixel官方维基代替Fandom维基。",
     "skyblocker.config.general.itemTooltip.enableObtainedDate": "显示获取时间",
-    "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "此功能可用较短的别名替换较长的原始命令，使用“/skyblocker shortcuts”以编辑。 (“更精简的命令”功能必须启用才可生效)",
+    "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "此功能可用较短的别名替换较长的原始命令，使用“/skyblocker shortcuts”以编辑。 “更精简的命令”功能必须启用才可生效。",
     "skyblocker.config.uiAndVisuals.waypoints": "路径点",
     "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "启用路径点",
     "skyblocker.config.dungeons.secretWaypoints.waypointType": "路径点类型",
@@ -593,5 +593,13 @@
     "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路径点类型",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "不完整的颜色",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "当价格数据不完整时显示的颜色。",
-    "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "路径点：高亮显示并使用信标光束。\n\n边框路径点：显示路径点和边框。\n\n高亮：只显示高亮。\n\n边框+高亮：显示高亮与边框。\n\n边框：只显示边框。"
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "路径点：高亮显示并使用信标光束。\n\n边框路径点：显示路径点和边框。\n\n高亮：只显示高亮。\n\n边框+高亮：显示高亮与边框。\n\n边框：只显示边框。",
+    "skyblocker.config.general.itemTooltip.enableExoticTooltip.@Tooltip": "当护甲是异域风情时，在物品名称下方显示异域风情的类型。",
+    "skyblocker.config.slayer.vampireSlayer.enableHealingMelonIndicator": "启用治疗西瓜指示器",
+    "skyblocker.config.slayer.vampireSlayer.enableHolyIceIndicator": "启用神圣冰块指示器",
+    "skyblocker.config.slayer.vampireSlayer.holyIceUpdateFrequency": "神圣冰块指示器更新频率（以游戏刻为单位）",
+    "skyblocker.shortcuts.commandSuggestionTooltip": "由于Minecraft的限制，命令建议只有在加入新世界后才会起作用。",
+    "skyblocker.config.uiAndVisuals": "UI&视觉效果",
+    "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues": "修正透明皮肤像素",
+    "skyblocker.config.slayer.vampireSlayer.holyIceIndicatorTickDelay": "神圣冰块指示器延迟（以游戏刻为单位）"
 }
