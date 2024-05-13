@@ -48,14 +48,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button1.item.count,
                                         () -> config.quickNav.button1.item.count,
                                         newValue -> config.quickNav.button1.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button1.item.nbt,
-                                        () -> config.quickNav.button1.item.nbt,
-                                        newValue -> config.quickNav.button1.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button1.item.components,
+                                        () -> config.quickNav.button1.item.components,
+                                        newValue -> config.quickNav.button1.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -97,14 +97,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button2.item.count,
                                         () -> config.quickNav.button2.item.count,
                                         newValue -> config.quickNav.button2.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button2.item.nbt,
-                                        () -> config.quickNav.button2.item.nbt,
-                                        newValue -> config.quickNav.button2.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button2.item.components,
+                                        () -> config.quickNav.button2.item.components,
+                                        newValue -> config.quickNav.button2.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -146,14 +146,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button3.item.count,
                                         () -> config.quickNav.button3.item.count,
                                         newValue -> config.quickNav.button3.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button3.item.nbt,
-                                        () -> config.quickNav.button3.item.nbt,
-                                        newValue -> config.quickNav.button3.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button3.item.components,
+                                        () -> config.quickNav.button3.item.components,
+                                        newValue -> config.quickNav.button3.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -195,14 +195,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button4.item.count,
                                         () -> config.quickNav.button4.item.count,
                                         newValue -> config.quickNav.button4.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button4.item.nbt,
-                                        () -> config.quickNav.button4.item.nbt,
-                                        newValue -> config.quickNav.button4.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button4.item.components,
+                                        () -> config.quickNav.button4.item.components,
+                                        newValue -> config.quickNav.button4.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -244,14 +244,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button5.item.count,
                                         () -> config.quickNav.button5.item.count,
                                         newValue -> config.quickNav.button5.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button5.item.nbt,
-                                        () -> config.quickNav.button5.item.nbt,
-                                        newValue -> config.quickNav.button5.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button5.item.components,
+                                        () -> config.quickNav.button5.item.components,
+                                        newValue -> config.quickNav.button5.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -293,14 +293,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button6.item.count,
                                         () -> config.quickNav.button6.item.count,
                                         newValue -> config.quickNav.button6.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button6.item.nbt,
-                                        () -> config.quickNav.button6.item.nbt,
-                                        newValue -> config.quickNav.button6.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button6.item.components,
+                                        () -> config.quickNav.button6.item.components,
+                                        newValue -> config.quickNav.button6.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -342,14 +342,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button7.item.count,
                                         () -> config.quickNav.button7.item.count,
                                         newValue -> config.quickNav.button7.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button7.item.nbt,
-                                        () -> config.quickNav.button7.item.nbt,
-                                        newValue -> config.quickNav.button7.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button7.item.components,
+                                        () -> config.quickNav.button7.item.components,
+                                        newValue -> config.quickNav.button7.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -391,14 +391,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button8.item.count,
                                         () -> config.quickNav.button8.item.count,
                                         newValue -> config.quickNav.button8.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button8.item.nbt,
-                                        () -> config.quickNav.button8.item.nbt,
-                                        newValue -> config.quickNav.button8.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button8.item.components,
+                                        () -> config.quickNav.button8.item.components,
+                                        newValue -> config.quickNav.button8.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -440,14 +440,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button9.item.count,
                                         () -> config.quickNav.button9.item.count,
                                         newValue -> config.quickNav.button9.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button9.item.nbt,
-                                        () -> config.quickNav.button9.item.nbt,
-                                        newValue -> config.quickNav.button9.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button9.item.components,
+                                        () -> config.quickNav.button9.item.components,
+                                        newValue -> config.quickNav.button9.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -489,14 +489,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button10.item.count,
                                         () -> config.quickNav.button10.item.count,
                                         newValue -> config.quickNav.button10.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button10.item.nbt,
-                                        () -> config.quickNav.button10.item.nbt,
-                                        newValue -> config.quickNav.button10.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button10.item.components,
+                                        () -> config.quickNav.button10.item.components,
+                                        newValue -> config.quickNav.button10.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -538,14 +538,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button11.item.count,
                                         () -> config.quickNav.button11.item.count,
                                         newValue -> config.quickNav.button11.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button11.item.nbt,
-                                        () -> config.quickNav.button11.item.nbt,
-                                        newValue -> config.quickNav.button11.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button11.item.components,
+                                        () -> config.quickNav.button11.item.components,
+                                        newValue -> config.quickNav.button11.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
@@ -587,14 +587,14 @@ public class QuickNavigationCategory {
                                 .binding(defaults.quickNav.button12.item.count,
                                         () -> config.quickNav.button12.item.count,
                                         newValue -> config.quickNav.button12.item.count = newValue)
-                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 64))
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                                 .build())
                         .option(Option.<String>createBuilder()
-                                .name(Text.translatable("skyblocker.config.quickNav.button.item.nbt"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.nbt.@Tooltip")))
-                                .binding(defaults.quickNav.button12.item.nbt,
-                                        () -> config.quickNav.button12.item.nbt,
-                                        newValue -> config.quickNav.button12.item.nbt = newValue)
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button12.item.components,
+                                        () -> config.quickNav.button12.item.components,
+                                        newValue -> config.quickNav.button12.item.components = newValue)
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .option(Option.<String>createBuilder()
