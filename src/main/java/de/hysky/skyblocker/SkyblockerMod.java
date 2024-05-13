@@ -165,6 +165,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemProtection.init();
         CreeperBeams.init();
         Boulder.init();
+        ThreeWeirdos.init();
         VisitorHelper.init();
         ItemRarityBackgrounds.init();
         MuseumItemCache.init();

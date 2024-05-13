@@ -21,7 +21,10 @@ public abstract class ChatPatternListenerTest<T extends ChatPatternListener> {
     }
 
     protected void assertGroup(String message, int group, String expect) {
-        Matcher matcher = matcher(message);
+        assertGroup(matcher(message), group, expect);
+    }
+
+    public static void assertGroup(Matcher matcher, int group, String expect) {
         assertTrue(matcher.matches());
         assertEquals(expect, matcher.group(group));
     }

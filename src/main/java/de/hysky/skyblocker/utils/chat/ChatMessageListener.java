@@ -3,7 +3,6 @@ package de.hysky.skyblocker.utils.chat;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.ThreeWeirdos;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.Trivia;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
@@ -40,7 +39,6 @@ public interface ChatMessageListener {
                 new Fetchur(),
                 new Puzzler(),
                 new Reparty(),
-                new ThreeWeirdos(),
                 new Trivia(),
                 new TreasureHunter(),
                 new HungryHiker(),
