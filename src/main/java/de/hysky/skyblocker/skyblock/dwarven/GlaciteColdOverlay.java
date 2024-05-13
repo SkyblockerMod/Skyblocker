@@ -1,9 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -22,7 +20,6 @@ public class GlaciteColdOverlay {
 
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
-        HudRenderEvents.AFTER_MAIN_HUD.register(GlaciteColdOverlay::render);
         ClientReceiveMessageEvents.GAME.register(GlaciteColdOverlay::coldReset);
     }
 
@@ -37,7 +34,7 @@ public class GlaciteColdOverlay {
         }
     }
 
-    public static void update() {
+    private static void update() {
         if (!Utils.isInDwarvenMines() || System.currentTimeMillis() - resetTime < 3000 || !SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
             cold = 0;
             return;
@@ -65,7 +62,7 @@ public class GlaciteColdOverlay {
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    public static void render(DrawContext context, float tickDelta) {
+    public static void render(DrawContext context) {
         if (Utils.isInDwarvenMines() && SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
             renderOverlay(context, POWDER_SNOW_OUTLINE, cold / 100f);
         }

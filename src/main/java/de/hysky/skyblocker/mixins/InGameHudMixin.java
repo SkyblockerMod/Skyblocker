@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.skyblock.dwarven.GlaciteColdOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
@@ -112,6 +113,11 @@ public abstract class InGameHudMixin {
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
     private void skyblocker$dontRenderStatusEffects(CallbackInfo ci) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) ci.cancel();
+    }
+
+    @Inject(method = "renderMiscOverlays", at = @At("TAIL"))
+    private void skyblocker$afterMiscOverlays(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+        GlaciteColdOverlay.render(context);
     }
 
     @ModifyExpressionValue(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAttackCooldownProgress(F)F"))
