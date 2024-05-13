@@ -62,7 +62,11 @@ public class EggFinder {
 		eggType.egg.setValue(new Egg(entity, new Waypoint(entity.getBlockPos().up(2), SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(eggType.color))));
 
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages) return;
-		MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append("Found a ").append(Text.literal("Chocolate " + eggType + " Egg").withColor(eggType.color)).append(" at " + entity.getBlockPos().up(2).toShortString() + "!"));
+		MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get()
+		                                                                 .append("Found a ")
+		                                                                 .append(Text.literal("Chocolate " + eggType + " Egg")
+		                                                                             .withColor(eggType.color))
+		                                                                 .append(" at " + entity.getBlockPos().up(2).toShortString() + "!"));
 	}
 
 	private static void renderWaypoints(WorldRenderContext context) {
