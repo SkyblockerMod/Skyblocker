@@ -178,7 +178,7 @@
     "skyblocker.config.general.itemTooltip.enableMuseumInfo.@Tooltip": "如果該物品可捐贈給博物館，則會顯示該物品在博物館中的類別。 它還會顯示一個標記，指示您是否已將該物品捐贈給您的博物館（尚不支持免費贈品）。\n\n為了獲得準確資訊，請啟用博物館API！",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold": "中性的臨界值",
     "skyblocker.config.helpers.fishing.enableFishingHelper": "啟用釣魚助手",
-    "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "此功能可用較短的別名替換較長的原始指令，使用「/skyblocker shortcuts」以編輯。（需要啟用快捷指令功能才可生效）",
+    "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "此功能可用較短的別名替換較長的原始指令，使用「/skyblocker shortcuts」以編輯。需要啟用快捷指令功能才可生效。",
     "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "啟用AOTV路徑點",
     "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "點擊帶有綠色框的控制桿來解決謎題。",
     "skyblocker.config.dungeons.puzzle.solveSilverfish": "蠹蟲謎題助手",
@@ -593,5 +593,13 @@
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "不完整的顔色",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "當價格數據不完整時顯示的顏色。",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "路徑點：高亮顯示並使用信標光束。\n\n邊框路徑點：顯示路徑點和邊框。\n\n高亮：只顯示高亮。\n\n邊框+高亮：顯示高亮與邊框。\n\n邊框：只顯示邊框。",
-    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "當背包中箭毒的數量低於設定的值時收到警告。\n\n16是最小值。\n如果需要平滑的DPS階段，應設定為32。"
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "當背包中箭毒的數量低於設定的值時收到警告。\n\n16是最小值。\n如果需要平滑的DPS階段，應設定為32。",
+    "skyblocker.config.slayer.vampireSlayer.enableHealingMelonIndicator": "啟用治療西瓜指示器",
+    "skyblocker.config.slayer.vampireSlayer.holyIceIndicatorTickDelay": "神聖冰塊指示器延遲（以遊戲刻為單位）",
+    "skyblocker.config.slayer.vampireSlayer.holyIceUpdateFrequency": "神聖冰塊指示器更新頻率（以遊戲刻為單位）",
+    "skyblocker.config.uiAndVisuals": "UI&視覺效果",
+    "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues": "修正透明外觀像素",
+    "skyblocker.config.general.itemTooltip.enableExoticTooltip.@Tooltip": "當護甲是異域風情時，在物品名稱下方顯示異域風情的類型。",
+    "skyblocker.shortcuts.commandSuggestionTooltip": "由於Minecraft的限制，指令建議只有在加入新世界後才會起作用。",
+    "skyblocker.config.slayer.vampireSlayer.enableHolyIceIndicator": "啟用神聖冰塊指示器"
 }
