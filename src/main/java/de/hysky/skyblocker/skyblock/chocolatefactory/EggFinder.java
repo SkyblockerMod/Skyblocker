@@ -112,7 +112,7 @@ public class EggFinder {
 		public final String texture;
 
 		//This is to not create an array each time we iterate over the values
-		public static final ObjectImmutableList<EggType> entries = ObjectImmutableList.of(BREAKFAST, DINNER);
+		public static final ObjectImmutableList<EggType> entries = ObjectImmutableList.of(BREAKFAST, LUNCH, DINNER);
 
 		EggType(MutableObject<Egg> egg, int color, String texture) {
 			this.egg = egg;
