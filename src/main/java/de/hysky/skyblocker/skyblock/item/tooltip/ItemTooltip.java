@@ -40,6 +40,8 @@ public class ItemTooltip {
     public static void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
         if (!Utils.isOnSkyblock() || client.player == null) return;
 
+        smoothenLines(lines);
+
         String name = getInternalNameFromNBT(stack, false);
         String internalID = getInternalNameFromNBT(stack, true);
         String neuName = name;
@@ -390,6 +392,15 @@ public class ItemTooltip {
         message.append(Text.literal("(" + eachPriceString.replace(".0", "") + " each)").formatted(Formatting.GRAY));
 
         return message;
+    }
+
+    private static void smoothenLines(List<Text> lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            Text line = lines.get(i);
+            if (line.getString().equals("-----------------")) {
+                lines.set(i, Text.literal("                      ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD));
+            }
+        }
     }
 
     // If these options is true beforehand, the client will get first data of these options while loading.
