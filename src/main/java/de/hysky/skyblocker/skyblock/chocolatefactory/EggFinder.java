@@ -76,7 +76,7 @@ public class EggFinder {
 	private static void onChatMessage(Text text, boolean overlay) {
 		if (overlay || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		Matcher matcher = eggFoundPattern.matcher(text.getString());
-		if (matcher.matches()) {
+		if (matcher.find()) {
 			try {
 				Egg egg = EggType.valueOf(matcher.group(1).toUpperCase()).egg.getValue();
 				if (egg != null) egg.waypoint.setFound();
@@ -87,7 +87,7 @@ public class EggFinder {
 
 		//There's only one egg of the same type at any given time, so we can set the changed egg to null
 		matcher = newEggPattern.matcher(text.getString());
-		if (matcher.matches()) {
+		if (matcher.find()) {
 			try {
 				EggType.valueOf(matcher.group(1).toUpperCase()).egg.setValue(null);
 			} catch (IllegalArgumentException e) {
