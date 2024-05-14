@@ -1,33 +1,27 @@
 package de.hysky.skyblocker.skyblock;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Pattern;
 
 
 public class CompactDamage {
+	private static final Pattern DAMAGE_PATTERN = Pattern.compile("✧?[\\d,]+✧?");
 	private CompactDamage() {
 	}
 
 	public static void compactDamage(ArmorStandEntity entity) {
-		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible() || entity.getFireTicks() != -1 || !entity.shouldHideBasePlate()) return;
-		//Dmg armor stands have no base plate and have a fire time of -1 (just one of these isn't enough to determine if it's a dmg armor stand)
-		//In fact, even this much checking might not be accurate. Needs testing, or just waiting until someone reports it as an issue
+		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible()) return;
 		Text customName = entity.getCustomName();
+		if (!DAMAGE_PATTERN.matcher(customName.getString()).matches()) return;
 		List<Text> siblings = customName.getSiblings();
 		if (siblings.isEmpty()) return;
 
@@ -37,7 +31,7 @@ public class CompactDamage {
 			String dmg = text.getString().replace(",", "");
 			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
 			String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg));
-			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).withColor(SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF)).setStyle(customName.getStyle());
+			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).withColor(text.getStyle().getColor() == TextColor.fromFormatting(Formatting.GRAY) ? SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF : Formatting.GRAY.getColorValue())).setStyle(customName.getStyle());
 		} else { //Crit damage
 			String dmg = siblings.subList(1, siblings.size() - 1) //First and last sibling are the crit symbols
 			                     .stream()
