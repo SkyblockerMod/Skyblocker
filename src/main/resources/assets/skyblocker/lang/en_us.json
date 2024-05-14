@@ -523,6 +523,14 @@
   "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "Incomplete Color",
   "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "The color to display when the price data is incomplete.",
 
+  "skyblocker.config.uiAndVisuals.compactDamage": "Compact Damage",
+  "skyblocker.config.uiAndVisuals.compactDamage.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.compactDamage.precision": "Precision",
+  "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip" : "The number of digits to display after the decimal point.",
+  "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Color",
+  "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Crit Damage Gradient Start Color",
+  "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "Crit Damage Gradient End Color",
+
   "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
 
   "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues": "Correct Transparent Skin Pixels",

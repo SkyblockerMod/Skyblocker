@@ -3,6 +3,8 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -18,12 +20,11 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
-import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,6 +36,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientWorld world;
+
+    @Shadow
+    @Final
+    private static Logger LOGGER;
 
     @Inject(method = "onBlockUpdate", at = @At("RETURN"))
     private void skyblocker$onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
@@ -102,5 +107,15 @@ public abstract class ClientPlayNetworkHandlerMixin {
             TheEnd.onEntityDeath(entity);
         }
         return entity;
+    }
+
+    @Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
+    private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+        if (!SkyblockerConfigManager.get().uiAndVisuals.compactDamage.enabled || !(entity instanceof ArmorStandEntity armorStandEntity)) return;
+        try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
+            CompactDamage.compactDamage(armorStandEntity);
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
+        }
     }
 }

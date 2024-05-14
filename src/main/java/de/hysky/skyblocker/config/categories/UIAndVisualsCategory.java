@@ -8,11 +8,14 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.awt.*;
 
 public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -376,6 +379,49 @@ public class UIAndVisualsCategory {
                                 .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1))
                                 .build())
                         .build())
+
+                //Compact Damage Numbers
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.enabled"))
+                                .binding(defaults.uiAndVisuals.compactDamage.enabled,
+                                        () -> config.uiAndVisuals.compactDamage.enabled,
+                                        newValue -> config.uiAndVisuals.compactDamage.enabled = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.compactDamage.precision,
+                                        () -> config.uiAndVisuals.compactDamage.precision,
+                                        newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1,3).step(1))
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor"))
+                                .binding(defaults.uiAndVisuals.compactDamage.normalDamageColor,
+                                        () -> config.uiAndVisuals.compactDamage.normalDamageColor,
+                                        newValue -> config.uiAndVisuals.compactDamage.normalDamageColor = newValue)
+                                .controller(ColorControllerBuilder::create)
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart"))
+                                .binding(defaults.uiAndVisuals.compactDamage.critDamageGradientStart,
+                                        () -> config.uiAndVisuals.compactDamage.critDamageGradientStart,
+                                        newValue -> config.uiAndVisuals.compactDamage.critDamageGradientStart = newValue)
+                                .controller(ColorControllerBuilder::create)
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd"))
+                                .binding(defaults.uiAndVisuals.compactDamage.critDamageGradientEnd,
+                                        () -> config.uiAndVisuals.compactDamage.critDamageGradientEnd,
+                                        newValue -> config.uiAndVisuals.compactDamage.critDamageGradientEnd = newValue)
+                                .controller(ColorControllerBuilder::create)
+                                .build())
+                        .build()
+                )
 
                 .build();
     }

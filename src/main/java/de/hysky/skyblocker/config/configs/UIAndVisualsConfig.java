@@ -4,6 +4,7 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.util.Formatting;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,9 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public FlameOverlay flameOverlay = new FlameOverlay();
+
+    @SerialEntry
+    public CompactDamage compactDamage = new CompactDamage();
 
     public static class ChestValue {
         @SerialEntry
@@ -258,4 +262,20 @@ public class UIAndVisualsConfig {
         public int flameOpacity = 100;
     }
 
+    public static class CompactDamage {
+        @SerialEntry
+        public boolean enabled = true;
+
+        @SerialEntry
+        public int precision = 1;
+
+        @SerialEntry
+        public Color normalDamageColor = new Color(0xFFFFFF);
+
+        @SerialEntry
+        public Color critDamageGradientStart = new Color(0xFFFF55);
+
+        @SerialEntry
+        public Color critDamageGradientEnd = new Color(0xFF5555);
+    }
 }
