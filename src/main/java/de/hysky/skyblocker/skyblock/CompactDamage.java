@@ -14,14 +14,15 @@ import java.util.regex.Pattern;
 
 
 public class CompactDamage {
-	private static final Pattern DAMAGE_PATTERN = Pattern.compile("✧?[\\d,]+✧?");
+	private static final Pattern DAMAGE_PATTERN = Pattern.compile("✧?[\\d,]+✧?❤?");
 	private CompactDamage() {
 	}
 
 	public static void compactDamage(ArmorStandEntity entity) {
 		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible()) return;
 		Text customName = entity.getCustomName();
-		if (!DAMAGE_PATTERN.matcher(customName.getString()).matches()) return;
+		String customNameStringified = customName.getString();
+		if (!DAMAGE_PATTERN.matcher(customNameStringified).matches()) return;
 		List<Text> siblings = customName.getSiblings();
 		if (siblings.isEmpty()) return;
 
@@ -39,7 +40,10 @@ public class CompactDamage {
 			} else color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
 			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color));
 		} else { //Crit damage
-			String dmg = siblings.subList(1, siblings.size() - 1) //First and last sibling are the crit symbols
+			boolean wasDoubled = customNameStringified.contains("❤");
+			int entriesToRemove = wasDoubled ? 2 : 1;
+
+			String dmg = siblings.subList(1, siblings.size() - entriesToRemove) //First and last sibling are the crit symbols and maybe heart
 			                     .stream()
 			                     .map(Text::getString)
 			                     .reduce("", String::concat) //Concatenate all the siblings to get the dmg number
@@ -58,6 +62,9 @@ public class CompactDamage {
 						)
 				));
 			}
+
+			if (wasDoubled) prettierCustomName.append(Text.literal("❤").formatted(Formatting.LIGHT_PURPLE));
+
 			prettierCustomName.setStyle(customName.getStyle());
 		}
 
