@@ -75,9 +75,9 @@ public class CompactDamage {
 	private static String prettifyDamageNumber(long damage) {
 		if (damage < 1_000) return String.valueOf(damage);
 		if (damage < 1_000_000) return format(damage / 1_000.0) + "k";
-		if (damage < 1_000_000_000) return format(damage / 1_000_000.0) + "m";
-		if (damage < 1_000_000_000_000L) return format(damage / 1_000_000_000.0) + "b";
-		return format(damage / 1_000_000_000_000.0) + "t"; //This will probably never be reached
+		if (damage < 1_000_000_000) return format(damage / 1_000_000.0) + "M";
+		if (damage < 1_000_000_000_000L) return format(damage / 1_000_000_000.0) + "B";
+		return format(damage / 1_000_000_000_000.0) + "T"; //This will probably never be reached
 	}
 
 	private static String format(double number) {
