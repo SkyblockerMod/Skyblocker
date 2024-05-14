@@ -136,7 +136,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private OptionalLong getTotalChocolate(ItemStack item) {
-		if (item.isEmpty() || item.getItem() != Items.PLAYER_HEAD) return OptionalLong.empty();
+		if (!item.isOf(Items.PLAYER_HEAD)) return OptionalLong.empty();
 		Matcher matcher = TOTAL_CHOCOLATE_PATTERN.matcher(item.getName().getString());
 		if (!matcher.find()) return OptionalLong.empty();
 		return OptionalLong.of(Long.parseLong(matcher.group(1).replace(",", "")));
