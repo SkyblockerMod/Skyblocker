@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.PopupScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
@@ -21,7 +22,9 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,6 +59,15 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            clickSlot(BACK_BUTTON_SLOT);
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     protected void init() {
         super.init();
         verticalLayout.spacing(2).getMainPositioner().alignHorizontalCenter();
@@ -78,10 +90,13 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         verticalLayout.forEachChild(this::addDrawableChild);
         updateLayout();
 
-        addDrawableChild(new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+        ButtonWidget backButton = new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
                 .position(x + backgroundWidth - 16, y + 4)
                 .size(12, 12)
-                .build());
+                .tooltip(Tooltip.of(Text.literal("or press ESC!")))
+                .build();
+        backButton.setTooltipDelay(Duration.ofSeconds(1));
+        addDrawableChild(backButton);
 
 
     }
@@ -189,7 +204,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     @Override
     public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
-        if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13) return;
+        if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13 || slotId >= handler.getRows() * 9) return;
         assert client != null;
         if (stack.isOf(Items.RED_TERRACOTTA)) { // Red terracotta shows up when you can cancel it
             changeState(BuyState.CANCELLABLE_AUCTION);
