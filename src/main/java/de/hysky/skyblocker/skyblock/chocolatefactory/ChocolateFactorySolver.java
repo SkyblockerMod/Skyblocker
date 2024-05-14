@@ -88,7 +88,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private Optional<Rabbit> getCoach(ItemStack cpsItem, ItemStack coachItem) {
-		if (coachItem.isEmpty() || cpsItem.isEmpty() || coachItem.getItem() != Items.PLAYER_HEAD || cpsItem.getItem() != Items.COCOA_BEANS) return Optional.empty();
+		if (!coachItem.isOf(Items.PLAYER_HEAD) || !cpsItem.isOf(Items.COCOA_BEANS)) return Optional.empty();
 		String cpsItemLore = getConcattedLore(cpsItem);
 
 		Matcher cpsMatcher = CPS_PATTERN.matcher(cpsItemLore);
