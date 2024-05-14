@@ -37,10 +37,10 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		final Int2ObjectMap<Rabbit> cpsIncreaseFactors = new Int2ObjectLinkedOpenHashMap<>(6);
 		for (int i = 29; i <= 33; i++) { // The 5 rabbits slots are in 29, 30, 31, 32 and 33.
 			ItemStack item = slots.get(i);
-			if (item.getItem() != Items.PLAYER_HEAD || item.isEmpty()) continue;
-
-			int finalI = i; //Java, pfft.
-			getRabbit(item).ifPresent(rabbit -> cpsIncreaseFactors.put(finalI, rabbit));
+			if (item.isOf(Items.PLAYER_HEAD)) {
+				int finalI = i; //Java, pfft.
+				getRabbit(item).ifPresent(rabbit -> cpsIncreaseFactors.put(finalI, rabbit));
+			}
 		}
 
 		//Coach is in slot 42 while the factory info item is in slot 45.
