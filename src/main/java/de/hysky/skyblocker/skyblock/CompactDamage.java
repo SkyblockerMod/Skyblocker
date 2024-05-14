@@ -37,7 +37,7 @@ public class CompactDamage {
 					color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
 				} else color = text.getStyle().getColor().getRgb();
 			} else color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
-			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).withColor(color).setStyle(customName.getStyle()));
+			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color));
 		} else { //Crit damage
 			String dmg = siblings.subList(1, siblings.size() - 1) //First and last sibling are the crit symbols
 			                     .stream()
