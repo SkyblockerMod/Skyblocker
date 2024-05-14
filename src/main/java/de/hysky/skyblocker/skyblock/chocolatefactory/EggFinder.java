@@ -39,9 +39,13 @@ public class EggFinder {
 	}
 
 	public static void checkIfEgg(Entity entity) {
+		if (entity instanceof ArmorStandEntity armorStand) checkIfEgg(armorStand);
+	}
+
+	public static void checkIfEgg(ArmorStandEntity armorStand) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
-		if (!(entity instanceof ArmorStandEntity armorStand) || armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
+		if (armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
 		for (ItemStack itemStack : armorStand.getArmorItems()) {
 			ItemUtils.getHeadTexture(itemStack).ifPresent(texture -> {
 				for (EggType type : EggType.entries) {
