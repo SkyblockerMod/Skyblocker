@@ -21,6 +21,9 @@ public class MiningConfig {
     @SerialEntry
     public CrystalsWaypoints crystalsWaypoints = new CrystalsWaypoints();
 
+    @SerialEntry
+    public CommissionWaypoints commissionWaypoints = new CommissionWaypoints();
+
     public static class DwarvenMines {
         @SerialEntry
         public boolean solveFetchur = true;
@@ -83,6 +86,37 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean findInChat = true;
+    }
+
+    public static class CommissionWaypoints {
+        @SerialEntry
+        public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
+
+        @SerialEntry
+        public boolean useColor = true;
+
+        @SerialEntry
+        public float textScale = 1;
+
+        @SerialEntry
+        public boolean showBaseCamp = false;
+
+        @SerialEntry
+        public boolean showEmissary = true;
+    }
+
+    public enum CommissionWaypointMode {
+        OFF, DWARVEN, GLACITE, BOTH;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case OFF -> "Off";
+                case DWARVEN -> "Dwarven";
+                case GLACITE -> "Glacite";
+                case BOTH -> "Both";
+            };
+        }
     }
 
     public enum DwarvenHudStyle {
