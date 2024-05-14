@@ -252,6 +252,13 @@ public class DungeonsCategory {
                                         newValue -> config.dungeons.terminals.solveStartsWith = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.terminals.blockIncorrectClicks"))
+                                .binding(defaults.dungeons.terminals.blockIncorrectClicks,
+                                        () -> config.dungeons.terminals.blockIncorrectClicks,
+                                        newValue -> config.dungeons.terminals.blockIncorrectClicks = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 // Dungeon Secret Waypoints

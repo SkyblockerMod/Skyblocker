@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
-public class ColorTerminal extends ContainerSolver {
+public class ColorTerminal extends ContainerSolver implements TerminalSolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
     private static final Map<String, DyeColor> colorFromName;
     private DyeColor targetColor;
@@ -53,6 +53,14 @@ public class ColorTerminal extends ContainerSolver {
         return highlights;
     }
 
+    @Override
+    protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+        if (stack.hasGlint() || !targetColor.equals(itemColor.get(stack.getItem()))) {
+            return shouldBlockIncorrectClicks();
+        }
+
+        return false;
+    }
 
     static {
         colorFromName = new HashMap<>();

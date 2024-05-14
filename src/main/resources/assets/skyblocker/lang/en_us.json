@@ -168,6 +168,7 @@
   "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nWARNING: This feature is experimental and you may encounter issues with it.",
 
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
+  "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
   "skyblocker.config.dungeons.terminals.solveOrder": "Solve Click In Order",
   "skyblocker.config.dungeons.terminals.solveStartsWith": "Solve Starts With",
