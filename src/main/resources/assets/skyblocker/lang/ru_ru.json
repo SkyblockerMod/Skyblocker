@@ -667,5 +667,16 @@
     "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Показать инфо о убийствах Зеалотов",
     "skyblocker.config.dungeons.map": "Карта",
     "skyblocker.config.dungeons.puzzle": "Решатель головоломок",
-    "skyblocker.config.helpers": "Помощники"
+    "skyblocker.config.helpers": "Помощники",
+    "skyblocker.config.mining.commissionWaypoints.mode": "Включить точки приёма комиссий",
+    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[1]": "\nDwarvеn: Показывает пункты приёма только в шахтах Дварфов.",
+    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[2]": "\nGlаcite: Показывает пункты приёма только в ледяных шахтах.",
+    "skyblocker.config.mining.commissionWaypoints.useColor": "Цветные точки",
+    "skyblocker.config.mining.commissionWaypoints.useColor.@Tooltip": "Цвет текста точки, предназначенный для конкретного блока.",
+    "skyblocker.config.mining.commissionWaypoints.textScale": "Размер текста",
+    "skyblocker.config.mining.commissionWaypoints.textScale.@Tooltip": "Укажите размер текста-подсказки о комиссиях.",
+    "skyblocker.config.mining.commissionWaypoints": "Точки приёма комиссий",
+    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[0]": "Выкл: Не показывает точки приёма комиссий.",
+    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[3]": "\nBoth: Показывает точки приёма и в шахтах Дварфов, и в ледяных шахтах.",
+    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]": "\n(изменения вступят в силу, когда обновятся комиссии)"
 }
