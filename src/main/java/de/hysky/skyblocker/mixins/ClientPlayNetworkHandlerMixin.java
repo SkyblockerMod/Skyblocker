@@ -124,4 +124,9 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         EggFinder.checkIfEgg(entity);
     }
+
+    @Inject(method = "onEntityTrackerUpdate", at = @At(value = "TAIL"))
+    private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+        EggFinder.checkIfEgg(entity);
+    }
 }
