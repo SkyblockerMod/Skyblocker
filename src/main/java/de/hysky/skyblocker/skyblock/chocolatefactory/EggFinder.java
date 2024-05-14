@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -39,6 +40,7 @@ public class EggFinder {
 
 	public static void checkIfEgg(Entity entity) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
+		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 		if (!(entity instanceof ArmorStandEntity armorStand) || armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
 		for (ItemStack itemStack : armorStand.getArmorItems()) {
 			ItemUtils.getHeadTexture(itemStack).ifPresent(texture -> {
