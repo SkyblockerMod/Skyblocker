@@ -5,6 +5,8 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 public class QuickNavigationConfig {
     @SerialEntry
     public boolean enableQuickNav = true;
+    @SerialEntry
+    public boolean enableExtendedQuickNav = true;
 
     @SerialEntry
     public QuickNavItem button1 = new QuickNavItem(true, new ItemData("diamond_sword"), "Your Skills", "/skills");
@@ -67,6 +69,12 @@ public class QuickNavigationConfig {
 
     @SerialEntry
     public QuickNavItem button12 = new QuickNavItem(true, new ItemData("crafting_table"), "Craft Item", "/craft");
+
+    @SerialEntry
+    public QuickNavItem button13 = new QuickNavItem(true, new ItemData("player_head", 1, "[minecraft:profile={id:[I;-562285948,532499670,-1705302742,775653035],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZlMmRjZGE0MWVjM2FmZjhhZjUwZjI3MmVjMmUwNmE4ZjUwOWUwZjgwN2YyMzU1YTFmNWEzM2MxYjY2ZTliNCJ9fX0=\"}]}]"), "Bazaar .*", "/bz");
+
+    @SerialEntry
+    public QuickNavItem button14 = new QuickNavItem(true, new ItemData("player_head", 1, "[minecraft:profile={id:[I;-562285948,532499670,-1705302742,775653035],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzFlNDBmNDAyOTgxMzAzZmM4NTA4ZDkyMThkNGE3MzdhYzkzMTc2NmI4NTI4MWY5NDg5ZGI1OTA4OTU3ZGMyMiJ9fX0=\"}]}]"), "Auction House", "/ah");
 
     public static class QuickNavItem {
         public QuickNavItem(Boolean render, ItemData itemData, String uiTitle, String clickEvent) {

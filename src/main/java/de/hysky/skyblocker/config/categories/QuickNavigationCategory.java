@@ -25,6 +25,15 @@ public class QuickNavigationCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+                //Enable Extended Quick Nav Buttons
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.quickNav.enableExtendedQuickNav"))
+                        .binding(defaults.quickNav.enableExtendedQuickNav,
+                                () -> config.quickNav.enableExtendedQuickNav,
+                                newValue -> config.quickNav.enableExtendedQuickNav = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+
                 //Button 1
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.button", 1))
@@ -613,6 +622,103 @@ public class QuickNavigationCategory {
                                 .build())
                         .build())
 
+                //Button 13
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.quickNav.button", 13))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.render"))
+                                .binding(defaults.quickNav.button13.render,
+                                        () -> config.quickNav.button13.render,
+                                        newValue -> config.quickNav.button13.render = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.itemName"))
+                                .binding(defaults.quickNav.button13.item.id,
+                                        () -> config.quickNav.button13.item.id,
+                                        newValue -> config.quickNav.button13.item.id = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.count"))
+                                .binding(defaults.quickNav.button13.item.count,
+                                        () -> config.quickNav.button13.item.count,
+                                        newValue -> config.quickNav.button13.item.count = newValue)
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button13.item.components,
+                                        () -> config.quickNav.button13.item.components,
+                                        newValue -> config.quickNav.button13.item.components = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.uiTitle"))
+                                .binding(defaults.quickNav.button13.uiTitle,
+                                        () -> config.quickNav.button13.uiTitle,
+                                        newValue -> config.quickNav.button13.uiTitle = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.clickEvent"))
+                                .binding(defaults.quickNav.button13.clickEvent,
+                                        () -> config.quickNav.button13.clickEvent,
+                                        newValue -> config.quickNav.button13.clickEvent = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .build())
+
+                //Button 14
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.quickNav.button", 14))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.render"))
+                                .binding(defaults.quickNav.button14.render,
+                                        () -> config.quickNav.button14.render,
+                                        newValue -> config.quickNav.button14.render = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.itemName"))
+                                .binding(defaults.quickNav.button14.item.id,
+                                        () -> config.quickNav.button14.item.id,
+                                        newValue -> config.quickNav.button14.item.id = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.count"))
+                                .binding(defaults.quickNav.button14.item.count,
+                                        () -> config.quickNav.button14.item.count,
+                                        newValue -> config.quickNav.button14.item.count = newValue)
+                                .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
+                                .binding(defaults.quickNav.button14.item.components,
+                                        () -> config.quickNav.button14.item.components,
+                                        newValue -> config.quickNav.button14.item.components = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.uiTitle"))
+                                .binding(defaults.quickNav.button14.uiTitle,
+                                        () -> config.quickNav.button14.uiTitle,
+                                        newValue -> config.quickNav.button14.uiTitle = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .option(Option.<String>createBuilder()
+                                .name(Text.translatable("skyblocker.config.quickNav.button.clickEvent"))
+                                .binding(defaults.quickNav.button14.clickEvent,
+                                        () -> config.quickNav.button14.clickEvent,
+                                        newValue -> config.quickNav.button14.clickEvent = newValue)
+                                .controller(StringControllerBuilder::create)
+                                .build())
+                        .build())
                 .build();
     }
 }
