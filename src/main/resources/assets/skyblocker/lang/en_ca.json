@@ -42,5 +42,8 @@
     "skyblocker.bars.config.mainColor": "Main Colour",
     "skyblocker.bars.config.overflowColor": "Overflow Colour",
     "skyblocker.bars.config.textColor": "Text Colour",
-    "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armour stands to %s"
+    "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armour stands to %s",
+    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "Crit Damage Gradient End Colour",
+    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Crit Damage Gradient Start Colour",
+    "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Colour"
 }
