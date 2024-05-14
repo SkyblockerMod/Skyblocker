@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.ints.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
-import org.apache.commons.math3.analysis.function.Min;
 
 import java.util.*;
 import java.util.List;
