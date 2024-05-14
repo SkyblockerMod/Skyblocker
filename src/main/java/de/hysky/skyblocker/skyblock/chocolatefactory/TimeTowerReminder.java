@@ -16,8 +16,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Instant;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class TimeTowerReminder {
 	private static final String TIME_TOWER_FILE = "time_tower.txt";
@@ -34,16 +34,20 @@ public class TimeTowerReminder {
 
 	public static void checkIfTimeTower(Message message, boolean overlay) {
 		if (!TIME_TOWER_PATTERN.matcher(message.getString()).matches()) return;
-		Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60*60*20); // 1 hour
+		Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60 * 60 * 20); // 1 hour
 
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
-		if (!tempFile.exists() && !tempFile.mkdir()) {
-			LOGGER.error("[Skyblocker Time Tower Reminder] Failed to create temp file for Time Tower Reminder!");
-			return;
+		if (!tempFile.exists()) {
+			try {
+				tempFile.createNewFile();
+			} catch (IOException e) {
+				LOGGER.error("[Skyblocker Time Tower Reminder] Failed to create temp file for Time Tower Reminder!", e);
+				return;
+			}
 		}
 
 		try (FileWriter writer = new FileWriter(tempFile)) {
-			writer.write(Instant.now().toString());
+			writer.write(String.valueOf(System.currentTimeMillis()));
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker Time Tower Reminder] Failed to write to temp file for Time Tower Reminder!", e);
 		}
@@ -65,8 +69,15 @@ public class TimeTowerReminder {
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		if (!tempFile.exists()) return;
 
-		long time = tempFile.lastModified();
-		if (System.currentTimeMillis() - time >= 60*60*1000) sendMessage();
-		else Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60*60*20 - (int) ((System.currentTimeMillis() - time) / 50)); // 50 milliseconds is 1 tick
+		long time;
+		try (Stream<String> file = Files.lines(tempFile.toPath())) {
+			time = Long.parseLong(file.findFirst().orElseThrow());
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Time Tower Reminder] Failed to read temp file for Time Tower Reminder!", e);
+			return;
+		}
+
+		if (System.currentTimeMillis() - time >= 60 * 60 * 1000) sendMessage();
+		else Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60 * 60 * 20 - (int) ((System.currentTimeMillis() - time) / 50)); // 50 milliseconds is 1 tick
 	}
 }
