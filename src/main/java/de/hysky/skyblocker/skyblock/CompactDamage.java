@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 
 public class CompactDamage {
-	private static final Pattern DAMAGE_PATTERN = Pattern.compile("✧?[\\d,]+✧?❤?");
+	private static final Pattern DAMAGE_PATTERN = Pattern.compile("(?:✧|✯)?[\\d,]+(?:✧|✯?)❤?");
 	private CompactDamage() {
 	}
 
@@ -40,7 +40,7 @@ public class CompactDamage {
 			} else color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
 			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color));
 		} else { //Crit damage
-			boolean wasDoubled = customNameStringified.contains("❤");
+			boolean wasDoubled = customNameStringified.contains("❤"); //Ring of love ability adds a heart to the end of the damage string
 			int entriesToRemove = wasDoubled ? 2 : 1;
 
 			String dmg = siblings.subList(1, siblings.size() - entriesToRemove) //First and last sibling are the crit symbols and maybe heart
@@ -50,7 +50,8 @@ public class CompactDamage {
 			                     .replace(",", "");
 
 			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
-			String prettifiedDmg = "✧" + prettifyDamageNumber(Long.parseLong(dmg)) + "✧";
+			String dmgSymbol = customNameStringified.charAt(0) != '✯' ? "✧" : "✯"; //Mega Crit ability from the Overload enchantment
+			String prettifiedDmg = dmgSymbol + prettifyDamageNumber(Long.parseLong(dmg)) + dmgSymbol;
 			prettierCustomName = Text.literal("");
 			int length = prettifiedDmg.length();
 			for (int i = 0; i < length; i++) {
