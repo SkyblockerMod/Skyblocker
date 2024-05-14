@@ -47,10 +47,7 @@ import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
 import de.hysky.skyblocker.skyblock.waypoint.Relics;
-import de.hysky.skyblocker.utils.ApiUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.ProfileUtils;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -187,6 +184,7 @@ public class SkyblockerMod implements ClientModInitializer {
         MobBoundingBoxes.init();
         EggFinder.init();
         TimeTowerReminder.init();
+        SkyblockTime.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
