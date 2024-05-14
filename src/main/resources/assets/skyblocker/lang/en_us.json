@@ -536,6 +536,13 @@
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity": "Flame Opacity",
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip": "100%  default opacity\n0%     off",
 
+  "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
+  "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "Only show with \"=\".",
+  "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message start with \"=\".",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
+
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
 

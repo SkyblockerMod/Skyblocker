@@ -54,6 +54,9 @@ public class UIAndVisualsConfig {
     public SearchOverlay searchOverlay = new SearchOverlay();
 
     @SerialEntry
+    public InputCalculator inputCalculator = new InputCalculator();
+
+    @SerialEntry
     public FlameOverlay flameOverlay = new FlameOverlay();
 
     public static class ChestValue {
@@ -237,6 +240,14 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public List<String> auctionHistory = new ArrayList<>();
+    }
+
+    public static class InputCalculator {
+        @SerialEntry
+        public boolean enabled = true;
+
+        @SerialEntry
+        public boolean requiresEquals = false;
     }
 
     public static class FlameOverlay {
