@@ -56,13 +56,13 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		                                                             .collect(Collectors.toCollection(LinkedList::new));
 
 		Int2ObjectMap.Entry<Rabbit> bestEntry = sorted.removeFirst();
-		if (totalChocolate.isEmpty() || bestEntry.getValue().cost < totalChocolate.getAsLong()) return List.of(ColorHighlight.green(bestEntry.getIntKey()));
+		if (totalChocolate.isEmpty()) return List.of(ColorHighlight.yellow(bestEntry.getIntKey()));
 
-		for (Int2ObjectMap.Entry<Rabbit> entry : sorted) {
-			if (entry.getValue().cost > totalChocolate.getAsLong()) continue;
-			return List.of(ColorHighlight.green(entry.getIntKey()), ColorHighlight.yellow(bestEntry.getIntKey()));
-		}
-		return List.of(ColorHighlight.green(bestEntry.getIntKey()));
+		if (bestEntry.getValue().cost <= totalChocolate.getAsLong()) return List.of(ColorHighlight.green(bestEntry.getIntKey()));
+
+		for (Int2ObjectMap.Entry<Rabbit> entry : sorted) if (entry.getValue().cost <= totalChocolate.getAsLong()) return List.of(ColorHighlight.green(entry.getIntKey()), ColorHighlight.yellow(bestEntry.getIntKey()));
+
+		return List.of(ColorHighlight.yellow(bestEntry.getIntKey()));
 	}
 
 	/**
