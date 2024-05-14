@@ -31,7 +31,13 @@ public class CompactDamage {
 			String dmg = text.getString().replace(",", "");
 			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
 			String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg));
-			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).withColor(text.getStyle().getColor() == TextColor.fromFormatting(Formatting.GRAY) ? SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF : Formatting.GRAY.getColorValue())).setStyle(customName.getStyle());
+			int color;
+			if (text.getStyle().getColor() != null) {
+				if (text.getStyle().getColor() == TextColor.fromFormatting(Formatting.GRAY)) {
+					color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB();
+				} else color = text.getStyle().getColor().getRgb();
+			} else color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB();
+			prettierCustomName = Text.literal("").append(Text.literal(prettifiedDmg).withColor(color).setStyle(customName.getStyle()));
 		} else { //Crit damage
 			String dmg = siblings.subList(1, siblings.size() - 1) //First and last sibling are the crit symbols
 			                     .stream()
