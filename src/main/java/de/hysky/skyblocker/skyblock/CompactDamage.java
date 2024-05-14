@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 
 public class CompactDamage {
-	private static final Pattern DAMAGE_PATTERN = Pattern.compile("(?:✧|✯)?[\\d,]+(?:✧|✯?)❤?");
+	private static final Pattern DAMAGE_PATTERN = Pattern.compile("[✧✯]?[\\d,]+[✧✯]?❤?");
 	private CompactDamage() {
 	}
 
