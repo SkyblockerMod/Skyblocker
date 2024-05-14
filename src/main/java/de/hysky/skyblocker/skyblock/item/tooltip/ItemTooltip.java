@@ -398,7 +398,7 @@ public class ItemTooltip {
         for (int i = 0; i < lines.size(); i++) {
             Text line = lines.get(i);
             if (line.getString().equals("-----------------")) {
-                lines.set(i, Text.literal("                      ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD));
+                lines.set(i, Text.literal("                    ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD));
             }
         }
     }
