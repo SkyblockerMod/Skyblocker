@@ -115,7 +115,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
-		OptionalInt cost = getIntFromMatcher(costMatcher, multiplierIncreaseMatcher.end()); //Cost comes after the multiplier line
+		OptionalInt cost = getIntFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
 		if (cost.isEmpty()) return Optional.empty();
 
 		return Optional.of(new Rabbit(currentCps.getAsDouble() / totalMultiplier.getAsDouble() * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), 42));
@@ -133,7 +133,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		OptionalInt cost = getIntFromMatcher(costMatcher, cpsMatcher.end()); //Cost comes after the cps line
+		OptionalInt cost = getIntFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		if (cost.isEmpty()) return Optional.empty();
 		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot));
 	}
