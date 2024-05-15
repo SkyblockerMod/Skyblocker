@@ -398,9 +398,13 @@ public class ItemTooltip {
         for (int i = 0; i < lines.size(); i++) {
             Text line = lines.get(i);
             if (line.getString().equals("-----------------")) {
-                lines.set(i, Text.literal("                    ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD));
+                lines.set(i, createSmoothLine());
             }
         }
+    }
+
+    public static Text createSmoothLine() {
+        return Text.literal("                    ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD);
     }
 
     // If these options is true beforehand, the client will get first data of these options while loading.
