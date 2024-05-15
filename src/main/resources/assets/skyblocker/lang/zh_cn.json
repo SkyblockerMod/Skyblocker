@@ -619,5 +619,19 @@
     "skyblocker.config.mining.commissionWaypoints.showEmissary": "显示使者",
     "skyblocker.config.mining.commissionWaypoints.showEmissary.@Tooltip": "当矮人矿井中的任务完成时，显示使者的位置（任务更新后生效）。",
     "skyblocker.config.mining.commissionWaypoints.useColor": "路径点着色",
-    "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "阻止错误的点击"
+    "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "阻止错误的点击",
+    "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues.@Tooltip": "启用后，在Skyblock中，皮肤纹理中像素的Alpha值不再被剥离。\n\n这导致使用玩家头的物品上的“填充”像素现在完全透明，尽管这在奇怪的情况下可能会产生一些副作用。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "仅当“=”时显示。",
+    "skyblocker.config.uiAndVisuals.inputCalculator": "输入计算器",
+    "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "启用告示牌计算器",
+    "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "使你可以在输入诸如拍卖价格之类的值时进行计算。\n 单位：\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\npurse/P = 当前钱包中的硬币数",
+    "skyblocker.config.uiAndVisuals.compactDamage": "简洁的伤害数值",
+    "skyblocker.config.uiAndVisuals.compactDamage.enabled": "启用",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision": "精确度",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "小数点后的位数。",
+    "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "常规伤害颜色",
+    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "暴击伤害渐变颜色的起始色",
+    "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "仅当信息以“=”开头时才显示计算器。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "无效方程",
+    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "暴击伤害渐变颜色的结束色"
 }
