@@ -87,6 +87,10 @@ public enum Location {
      */
     GLACITE_MINESHAFT("mineshaft"),
     /**
+     * Goodbye 1.8 hello 1.21 (and foraging 50 for all)!
+     */
+    MODERN_FORAGING_ISLAND("placeholder"),
+    /**
      * Unknown Skyblock location
      */
     UNKNOWN("unknown");

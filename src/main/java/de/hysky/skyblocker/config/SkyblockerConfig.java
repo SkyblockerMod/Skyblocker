@@ -20,6 +20,9 @@ public class SkyblockerConfig {
     public DungeonsConfig dungeons = new DungeonsConfig();
 
     @SerialEntry
+    public ForagingConfig foraging = new ForagingConfig();
+
+    @SerialEntry
     public CrimsonIsleConfig crimsonIsle = new CrimsonIsleConfig();
 
     @SerialEntry

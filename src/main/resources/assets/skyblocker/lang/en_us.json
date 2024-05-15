@@ -185,6 +185,9 @@
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.visitorHelper": "Visitor helper",
 
+  "skyblocker.config.foraging": "Foraging",
+  "skyblocker.config.foraging.hunting": "Hunting",
+
   "skyblocker.config.general": "General",
 
   "skyblocker.config.general.chestValue.@Tooltip": "Calculate the value of this container.",
