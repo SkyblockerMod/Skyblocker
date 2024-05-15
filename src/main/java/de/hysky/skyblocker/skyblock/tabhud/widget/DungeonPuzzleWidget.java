@@ -26,7 +26,7 @@ public class DungeonPuzzleWidget extends TabHudWidget {
     private static final Pattern PUZZLE_PATTERN = Pattern.compile("(?<name>.*): \\[(?<status>.*)\\] ?.*");
 
     public DungeonPuzzleWidget() {
-        super("Puzzles", TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Puzzles", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override

@@ -18,7 +18,7 @@ public class DungeonSecretWidget extends TabHudWidget {
     private static final Pattern DISCOVERIES = Pattern.compile("Discoveries: (\\d+)");
 
     public DungeonSecretWidget() {
-        super("Discoveries", TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Discoveries", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
