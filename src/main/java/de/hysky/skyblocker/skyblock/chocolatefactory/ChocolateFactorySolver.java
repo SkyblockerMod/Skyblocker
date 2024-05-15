@@ -36,7 +36,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static long totalChocolate = -1L;
 	private static double totalCps = -1.0;
 	private static double totalCpsMultiplier = -1.0;
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.#");
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
 	private static ItemStack bestUpgrade = null;
 	private static ItemStack bestAffordableUpgrade = null;
 
@@ -112,8 +112,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		if (cpsIncreaseFactors.isEmpty()) return;
 
-		for (int j = 0; j < cpsIncreaseFactors.size(); j++) {
-			Rabbit rabbit = cpsIncreaseFactors.get(j);
+		for (Rabbit rabbit : cpsIncreaseFactors) {
 			if (rabbit.itemStack != stack) continue;
 
 			lines.add(Text.literal("")
