@@ -619,5 +619,19 @@
     "skyblocker.config.mining.commissionWaypoints.showBaseCamp": "顯示營地路徑點",
     "skyblocker.config.mining.commissionWaypoints.showBaseCamp.@Tooltip": "在極寒隧道中顯示營地的路徑點（任務更新後生效）。",
     "skyblocker.config.mining.commissionWaypoints.showEmissary": "顯示使者",
-    "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "阻止錯誤的點擊"
+    "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "阻止錯誤的點擊",
+    "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues.@Tooltip": "啟用後，在Skyblock中，外觀紋理中像素的Alpha值不再被剝離。\n\n這導致使用玩家頭的物品上的「填充」像素現在完全透明，儘管這在奇怪的情況下可能會產生一些副作用。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "啟用告示牌計算器",
+    "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "使你可以在輸入諸如拍賣價格之類的值時進行計算。\n  單位：\n   S = 64\n   E = 160\n   K = 1,000\n   M = 1,000,000\n   B = 1,000,000,000\n\npurse/P = 目前錢包中的硬幣數",
+    "skyblocker.config.uiAndVisuals.inputCalculator": "輸入計算器",
+    "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "僅當「=」時顯示。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "僅當訊息以「=」開頭時才顯示計算器。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "無效方程",
+    "skyblocker.config.uiAndVisuals.compactDamage": "簡潔的傷害數值",
+    "skyblocker.config.uiAndVisuals.compactDamage.enabled": "已啟用",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision": "精確度",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "小數點後的位數。",
+    "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "常規傷害顏色",
+    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "暴擊傷害漸層顏色的起始色",
+    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "暴擊傷害漸層顏色的結束色"
 }
