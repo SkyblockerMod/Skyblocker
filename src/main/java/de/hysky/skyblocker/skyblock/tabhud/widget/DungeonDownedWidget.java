@@ -18,7 +18,7 @@ public class DungeonDownedWidget extends TabHudWidget {
             Formatting.BOLD);
 
     public DungeonDownedWidget() {
-        super("Downed", TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Downed", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override

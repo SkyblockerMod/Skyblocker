@@ -24,7 +24,7 @@ public class DungeonDeathWidget extends TabHudWidget {
     private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
     public DungeonDeathWidget() {
-        super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Deaths", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
