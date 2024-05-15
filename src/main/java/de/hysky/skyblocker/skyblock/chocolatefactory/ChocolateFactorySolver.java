@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
@@ -13,7 +14,6 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern CPS_PATTERN = Pattern.compile("([\\d,.]+) Chocolate per second");
@@ -22,6 +22,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern TOTAL_MULTIPLIER_PATTERN = Pattern.compile("Total Multiplier: ([\\d.]+)x");
 	private static final Pattern MULTIPLIER_INCREASE_PATTERN = Pattern.compile("\\+([\\d.]+)x Chocolate per second");
 	private static final Pattern TOTAL_CHOCOLATE_PATTERN = Pattern.compile("([\\d,]+) Chocolate");
+	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(6);
+	private static long totalChocolate = -1L;
 
 	public ChocolateFactorySolver() {
 		super("^Chocolate Factory$");
@@ -34,35 +36,38 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	@Override
 	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
-		final Int2ObjectMap<Rabbit> cpsIncreaseFactors = new Int2ObjectLinkedOpenHashMap<>(6);
+		updateFactoryInfo(slots);
+
+		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return List.of(); //Something went wrong or there's nothing we can afford.
+		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
+
+		if (bestRabbit.cost <= totalChocolate) return List.of(ColorHighlight.green(bestRabbit.slot));
+
+		for (Rabbit rabbit : cpsIncreaseFactors.subList(1, cpsIncreaseFactors.size())) {
+			if (rabbit.cost <= totalChocolate) {
+				return List.of(ColorHighlight.green(rabbit.slot), ColorHighlight.yellow(bestRabbit.slot));
+			}
+		}
+
+		return List.of(ColorHighlight.yellow(bestRabbit.slot));
+	}
+
+	private void updateFactoryInfo(Int2ObjectMap<ItemStack> slots) {
+		cpsIncreaseFactors.clear();
+
 		for (int i = 29; i <= 33; i++) { // The 5 rabbits slots are in 29, 30, 31, 32 and 33.
 			ItemStack item = slots.get(i);
 			if (item.isOf(Items.PLAYER_HEAD)) {
-				int finalI = i; //Java, pfft.
-				getRabbit(item).ifPresent(rabbit -> cpsIncreaseFactors.put(finalI, rabbit));
+				getRabbit(item, i).ifPresent(cpsIncreaseFactors::add);
 			}
 		}
 
 		//Coach is in slot 42 while the factory info item is in slot 45.
-		getCoach(slots.get(45), slots.get(42)).ifPresent(coach -> cpsIncreaseFactors.put(42, coach));
-		if (cpsIncreaseFactors.isEmpty()) return List.of(); //Something went wrong.
+		getCoach(slots.get(45), slots.get(42)).ifPresent(cpsIncreaseFactors::add);
+		getTotalChocolate(slots.get(13)).ifPresent(l -> totalChocolate = l);
 
-		OptionalLong totalChocolate = getTotalChocolate(slots.get(13));
-
-		List<Int2ObjectMap.Entry<Rabbit>> sorted = cpsIncreaseFactors.int2ObjectEntrySet()
-		                                                             .stream() //Compare cost/cpsIncrease rather than cpsIncrease/cost to avoid getting close to 0 and losing precision.
-		                                                             .sorted(Comparator.comparingDouble(entry -> entry.getValue().cost() / entry.getValue().cpsIncrease())) //Ascending order, lower = better
-		                                                             .dropWhile(entry -> entry.getValue().cost == 0)
-		                                                             .collect(Collectors.toCollection(LinkedList::new));
-
-		Int2ObjectMap.Entry<Rabbit> bestEntry = sorted.removeFirst();
-		if (totalChocolate.isEmpty()) return List.of(ColorHighlight.yellow(bestEntry.getIntKey()));
-
-		if (bestEntry.getValue().cost <= totalChocolate.getAsLong()) return List.of(ColorHighlight.green(bestEntry.getIntKey()));
-
-		for (Int2ObjectMap.Entry<Rabbit> entry : sorted) if (entry.getValue().cost <= totalChocolate.getAsLong()) return List.of(ColorHighlight.green(entry.getIntKey()), ColorHighlight.yellow(bestEntry.getIntKey()));
-
-		return List.of(ColorHighlight.yellow(bestEntry.getIntKey()));
+		//Compare cost/cpsIncrease rather than cpsIncrease/cost to avoid getting close to 0 and losing precision.
+		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
 	}
 
 	/**
@@ -113,10 +118,10 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		OptionalInt cost = getIntFromMatcher(costMatcher, multiplierIncreaseMatcher.end()); //Cost comes after the multiplier line
 		if (cost.isEmpty()) return Optional.empty();
 
-		return Optional.of(new Rabbit(currentCps.getAsDouble() / totalMultiplier.getAsDouble() * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt()));
+		return Optional.of(new Rabbit(currentCps.getAsDouble() / totalMultiplier.getAsDouble() * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), 42));
 	}
 
-	private Optional<Rabbit> getRabbit(ItemStack item) {
+	private Optional<Rabbit> getRabbit(ItemStack item, int slot) {
 		String lore = getConcattedLore(item);
 		Matcher cpsMatcher = CPS_INCREASE_PATTERN.matcher(lore);
 		OptionalInt currentCps = getIntFromMatcher(cpsMatcher);
@@ -130,7 +135,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalInt cost = getIntFromMatcher(costMatcher, cpsMatcher.end()); //Cost comes after the cps line
 		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt()));
+		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot));
 	}
 
 	private OptionalLong getTotalChocolate(ItemStack item) {
@@ -158,6 +163,6 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return OptionalDouble.of(Double.parseDouble(matcher.group(1).replace(",", "")));
 	}
 
-	private record Rabbit(double cpsIncrease, int cost) {
+	private record Rabbit(double cpsIncrease, int cost, int slot) {
 	}
 }
