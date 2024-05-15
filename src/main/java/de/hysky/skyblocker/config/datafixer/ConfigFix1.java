@@ -14,7 +14,7 @@ import net.minecraft.nbt.StringNbtReader;
 
 import java.util.Locale;
 
-public class ConfigFix1 extends DataFix {
+public class ConfigFix1 extends ConfigDataFix {
     public ConfigFix1(Schema outputSchema, boolean changesType) {
         super(outputSchema, changesType);
     }
@@ -30,10 +30,6 @@ public class ConfigFix1 extends DataFix {
 
     private <T> Dynamic<T> fix(Dynamic<T> dynamic) {
         return fixMisc(fixQuickNav(fixChat(fixSlayers(fixOtherLocations(fixFarming(fixMining(fixCrimsonIsle(fixDungeons(fixHelpers(fixUIAndVisuals(fixGeneral(fixVersion(dynamic)))))))))))));
-    }
-
-    private <T> Dynamic<T> fixVersion(Dynamic<T> dynamic) {
-        return dynamic.set("version", dynamic.createInt(DataFixUtils.getVersion(getVersionKey())));
     }
 
     private static <T> Dynamic<T> fixGeneral(Dynamic<T> dynamic) {

@@ -31,6 +31,10 @@ public class QuickNavButton extends ClickableWidget {
         return index < 7;
     }
 
+    public boolean toggled() {
+        return toggled;
+    }
+
     /**
      * Constructs a new QuickNavButton with the given parameters.
      *
@@ -53,8 +57,8 @@ public class QuickNavButton extends ClickableWidget {
             int x = ((HandledScreenAccessor) handledScreen).getX();
             int y = ((HandledScreenAccessor) handledScreen).getY();
             int h = ((HandledScreenAccessor) handledScreen).getBackgroundHeight();
-            this.setX(x + 27 * this.index % 7);
-            this.setY(y + this.index < 7 ? -28 : h - 4);
+            this.setX(x + this.index % 7 * 25);
+            this.setY(this.index < 7 ? y - 28 : y + h - 4);
         }
     }
 
@@ -90,7 +94,7 @@ public class QuickNavButton extends ClickableWidget {
         RenderSystem.disableDepthTest();
 
         // Construct the texture identifier based on the index and toggled state
-        Identifier tabTexture = new Identifier("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled ? "selected" : "unselected") + "_" + index % 7);
+        Identifier tabTexture = new Identifier("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
         // Render the button texture
         context.drawGuiTexture(tabTexture, this.getX(), this.getY(), this.width, this.height);

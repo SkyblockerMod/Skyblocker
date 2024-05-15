@@ -8,7 +8,9 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.ItemControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 
 public class QuickNavigationCategory {
@@ -54,26 +56,26 @@ public class QuickNavigationCategory {
                                 newValue -> button.render = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
-                .option(Option.<String>createBuilder()
+                .option(Option.<Item>createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.button.item.itemName"))
-                        .binding(defaultButton.item.id,
-                                () -> button.item.id,
-                                newValue -> button.item.id = newValue)
-                        .controller(StringControllerBuilder::create)
+                        .binding(defaultButton.itemData.item,
+                                () -> button.itemData.item,
+                                newValue -> button.itemData.item = newValue)
+                        .controller(ItemControllerBuilder::create)
                         .build())
                 .option(Option.<Integer>createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.button.item.count"))
-                        .binding(defaultButton.item.count,
-                                () -> button.item.count,
-                                newValue -> button.item.count = newValue)
+                        .binding(defaultButton.itemData.count,
+                                () -> button.itemData.count,
+                                newValue -> button.itemData.count = newValue)
                         .controller(opt -> IntegerFieldControllerBuilder.create(opt).range(1, 99))
                         .build())
                 .option(Option.<String>createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip")))
-                        .binding(defaultButton.item.components,
-                                () -> button.item.components,
-                                newValue -> button.item.components = newValue)
+                        .binding(defaultButton.itemData.components,
+                                () -> button.itemData.components,
+                                newValue -> button.itemData.components = newValue)
                         .controller(StringControllerBuilder::create)
                         .build())
                 .option(Option.<String>createBuilder()

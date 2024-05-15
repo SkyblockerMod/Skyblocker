@@ -14,6 +14,8 @@ import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
+import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
+import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
@@ -41,6 +43,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -89,8 +92,20 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     @Final
     protected T handler;
 
+    @Unique
+    private List<QuickNavButton> quickNavButtons;
+
     protected HandledScreenMixin(Text title) {
         super(title);
+    }
+
+    @Inject(method = "init", at = @At("RETURN"))
+    private void skyblocker$initQuickNav(CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && client != null && client.player != null && !client.player.isCreative()) {
+            for (QuickNavButton quickNavButton : quickNavButtons = QuickNav.init(getTitle().getString().trim())) {
+                addSelectableChild(quickNavButton);
+            }
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "keyPressed")
@@ -109,8 +124,33 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     @Inject(at = @At("HEAD"), method = "mouseClicked")
     public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar")))
+        if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
             VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
+        }
+    }
+
+    /**
+     * Draws the unselected tabs in front of the background blur, but behind the main inventory, similar to creative inventory tabs
+     */
+    @Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
+    private void skyblocker$drawUnselectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
+            if (!quickNavButton.toggled()) {
+                quickNavButton.render(context, mouseX, mouseY, delta);
+            }
+        }
+    }
+
+    /**
+     * Draws the selected tab in front of the background blur and the main inventory, similar to creative inventory tabs
+     */
+    @Inject(method = "renderBackground", at = @At("RETURN"))
+    private void skyblocker$drawSelectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
+            if (quickNavButton.toggled()) {
+                quickNavButton.render(context, mouseX, mouseY, delta);
+            }
+        }
     }
 
     @SuppressWarnings("DataFlowIssue")
@@ -165,7 +205,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     /**
      * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks)
      * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item
-     * 
+     *
      * @implNote This runs before {@link ScreenHandler#onSlotClick(int, int, SlotActionType, net.minecraft.entity.player.PlayerEntity)}
      */
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)

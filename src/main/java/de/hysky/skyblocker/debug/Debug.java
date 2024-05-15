@@ -2,20 +2,26 @@ package de.hysky.skyblocker.debug;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.Text;
-
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Debug {
 	private static final boolean DEBUG_ENABLED = Boolean.parseBoolean(System.getProperty("skyblocker.debug", "false"));
@@ -24,6 +30,10 @@ public class Debug {
 
 	public static boolean debugEnabled() {
 		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment();
+	}
+
+	public static boolean shouldShowInvisibleArmorStands() {
+		return showInvisibleArmorStands;
 	}
 
 	public static void init() {
@@ -35,6 +45,15 @@ public class Debug {
 					.then(toggleShowingInvisibleArmorStands())
 					.then(dumpArmorStandHeadTextures())
 			)));
+			ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+				if (screen instanceof HandledScreen<?> handledScreen) {
+                    ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
+                        if (key == GLFW.GLFW_KEY_U && client.player != null) {
+                            client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, ((HandledScreenAccessor) handledScreen).getFocusedSlot().getStack()))));
+                        }
+                    });
+                }
+            });
 		}
 	}
 
@@ -72,9 +91,5 @@ public class Debug {
 
 					return Command.SINGLE_SUCCESS;
 				});
-	}
-
-	public static boolean shouldShowInvisibleArmorStands() {
-		return showInvisibleArmorStands;
 	}
 }

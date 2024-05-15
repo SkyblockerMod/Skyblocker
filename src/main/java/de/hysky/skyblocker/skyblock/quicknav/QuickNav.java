@@ -26,16 +26,6 @@ import java.util.regex.PatternSyntaxException;
 public class QuickNav {
     private static final Logger LOGGER = LoggerFactory.getLogger(QuickNav.class);
 
-    public static void init() {
-        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && screen instanceof HandledScreen<?> && client.player != null && !client.player.isCreative()) {
-                String screenTitle = screen.getTitle().getString().trim();
-                List<QuickNavButton> buttons = QuickNav.init(screenTitle);
-                for (QuickNavButton button : buttons) Screens.getButtons(screen).add(button);
-            }
-        });
-    }
-
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
         QuickNavigationConfig data = SkyblockerConfigManager.get().quickNav;
@@ -61,8 +51,8 @@ public class QuickNav {
     }
 
     private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
-        QuickNavigationConfig.ItemData itemData = buttonInfo.item;
-        ItemStack stack = ItemStackComponentizationFixer.fromComponentsString(itemData.id, Math.clamp(itemData.count, 1, 99), itemData.components);
+        QuickNavigationConfig.ItemData itemData = buttonInfo.itemData;
+        ItemStack stack = ItemStackComponentizationFixer.fromComponentsString(itemData.item.toString(), Math.clamp(itemData.count, 1, 99), itemData.components);
         boolean uiTitleMatches = false;
 
         try {

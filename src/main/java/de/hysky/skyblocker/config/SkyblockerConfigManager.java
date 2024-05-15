@@ -26,7 +26,7 @@ import java.lang.StackWalker.Option;
 import java.nio.file.Path;
 
 public class SkyblockerConfigManager {
-    public static final int CONFIG_VERSION = 2;
+    public static final int CONFIG_VERSION = 3;
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
     private static final ConfigClassHandler<SkyblockerConfig> HANDLER = ConfigClassHandler.createBuilder(SkyblockerConfig.class)
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
