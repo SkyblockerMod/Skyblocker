@@ -25,15 +25,6 @@ public class QuickNavigationCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
-                //Enable Extended Quick Nav Buttons
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.quickNav.enableExtendedQuickNav"))
-                        .binding(defaults.quickNav.enableExtendedQuickNav,
-                                () -> config.quickNav.enableExtendedQuickNav,
-                                newValue -> config.quickNav.enableExtendedQuickNav = newValue)
-                        .controller(ConfigUtils::createBooleanController)
-                        .build())
-
                 //Button 1
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.button", 1))

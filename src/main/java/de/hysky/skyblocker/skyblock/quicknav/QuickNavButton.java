@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -17,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-@Environment(value=EnvType.CLIENT)
+@Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
     private final int index;
     private boolean toggled;
@@ -27,14 +25,10 @@ public class QuickNavButton extends ClickableWidget {
     /**
      * Checks if the current tab is a top tab based on its index.
      *
-     * @return true if the index is less than 6, false otherwise.
+     * @return true if the index is less than 7, false otherwise.
      */
     private boolean isTopTab() {
-        if (!SkyblockerConfigManager.get().quickNav.enableExtendedQuickNav) {
-            return index < 6;
-        } else {
-            return index < 7;
-        }
+        return index < 7;
     }
 
     /**
@@ -46,7 +40,7 @@ public class QuickNavButton extends ClickableWidget {
      * @param icon    the icon to display on the button.
      */
     public QuickNavButton(int index, boolean toggled, String command, ItemStack icon) {
-        super(0, 0, 25, 32, Text.empty());
+        super(0, 0, 26, 32, Text.empty());
         this.index = index;
         this.toggled = toggled;
         this.command = command;
@@ -59,14 +53,8 @@ public class QuickNavButton extends ClickableWidget {
             int x = ((HandledScreenAccessor) handledScreen).getX();
             int y = ((HandledScreenAccessor) handledScreen).getY();
             int h = ((HandledScreenAccessor) handledScreen).getBackgroundHeight();
-            if (h > 166) --h; // why is this even a thing
-            if (!SkyblockerConfigManager.get().quickNav.enableExtendedQuickNav) {
-                this.setX(x + this.index % 6 * 26 + 4);
-                this.setY(this.index < 6 ? y - 26 : y + h - 4);
-            } else {
-                this.setX(x + 3 + this.index % 7 * 24);
-                this.setY(this.index < 7 ? y - 25 : y + h - 4);
-            }
+            this.setX(x + 27 * this.index % 7);
+            this.setY(y + this.index < 7 ? -28 : h - 4);
         }
     }
 
@@ -102,43 +90,16 @@ public class QuickNavButton extends ClickableWidget {
         RenderSystem.disableDepthTest();
 
         // Construct the texture identifier based on the index and toggled state
-        String tabType = isTopTab() ? "top" : "bottom";
-        Identifier BUTTON_TEXTURES = new Identifier("container/creative_inventory/tab_" + tabType +
-                (toggled ? "_selected_" : "_unselected_") + 2);
+        Identifier tabTexture = new Identifier("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled ? "selected" : "unselected") + "_" + index % 7);
 
         // Render the button texture
-        int y = this.getY();
-        if (!SkyblockerConfigManager.get().quickNav.enableExtendedQuickNav) {
-            if (this.toggled) {
-                if (this.index < 6) y -= 2;
-            } else {
-                y += (this.index >= 6) ? 4 : -2;
-            }
-            int height = this.height - ((this.toggled) ? 0 : 4);
-
-            context.drawGuiTexture(BUTTON_TEXTURES, this.getX() + 1, y, this.width, height);
-
-            // Render the button icon
-            int yOffset = !this.toggled && this.index < 6 ? 1 : 0;
-            context.drawItem(this.icon, this.getX() + 5, this.getY() + 6 + yOffset);
-        } else {
-            if (this.toggled) {
-                if (this.index < 7) y -= 3;
-            } else {
-                y += (this.index >= 7) ? 4 : -2;
-            }
-            int height = this.height - ((this.toggled) ? 0 : 4);
-            context.drawGuiTexture(BUTTON_TEXTURES, this.getX(), y, this.width - 1, height);
-            // Render the button icon
-            int yOffset = !this.toggled && this.index < 7 ? 1 : 0;
-            context.drawItem(this.icon, this.getX() + 4, this.getY() + 6 + yOffset);
-        }
+        context.drawGuiTexture(tabTexture, this.getX(), this.getY(), this.width, this.height);
+        // Render the button icon
+        int yOffset = this.index < 7 ? 1 : -1;
+        context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
         RenderSystem.enableDepthTest();
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-        // TODO Auto-generated method stub
-
-    }
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 }

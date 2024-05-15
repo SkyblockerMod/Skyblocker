@@ -4,6 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -51,10 +52,8 @@ public class QuickNav {
             if (data.button10.render) buttons.add(parseButton(data.button10, screenTitle, 9));
             if (data.button11.render) buttons.add(parseButton(data.button11, screenTitle, 10));
             if (data.button12.render) buttons.add(parseButton(data.button12, screenTitle, 11));
-            if (SkyblockerConfigManager.get().quickNav.enableExtendedQuickNav) {
-                if (data.button13.render) buttons.add(parseButton(data.button13, screenTitle, 12));
-                if (data.button14.render) buttons.add(parseButton(data.button14, screenTitle, 13));
-            }
+            if (data.button13.render) buttons.add(parseButton(data.button13, screenTitle, 12));
+            if (data.button14.render) buttons.add(parseButton(data.button14, screenTitle, 13));
         } catch (CommandSyntaxException e) {
             LOGGER.error("[Skyblocker] Failed to initialize Quick Nav Button", e);
         }
@@ -69,15 +68,12 @@ public class QuickNav {
         try {
             uiTitleMatches = screenTitle.matches(buttonInfo.uiTitle);
         } catch (PatternSyntaxException e) {
-            LOGGER.error("[Skyblocker] Failed to parse Quick Nav Button", e);
+            LOGGER.error("[Skyblocker] Failed to parse Quick Nav Button with regex: {}", buttonInfo.uiTitle, e);
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
-                player.sendMessage(Text.of(Formatting.RED + "[Skyblocker] Invalid regex in quicknav button " + (id + 1) + "!"), false);
+                player.sendMessage(Constants.PREFIX.get().append(Text.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").formatted(Formatting.RED)), false);
             }
         }
-        return new QuickNavButton(id,
-                uiTitleMatches,
-                buttonInfo.clickEvent,
-                stack);
+        return new QuickNavButton(id, uiTitleMatches, buttonInfo.clickEvent, stack);
     }
 }

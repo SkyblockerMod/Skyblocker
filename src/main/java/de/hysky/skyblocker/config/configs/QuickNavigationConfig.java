@@ -5,8 +5,6 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 public class QuickNavigationConfig {
     @SerialEntry
     public boolean enableQuickNav = true;
-    @SerialEntry
-    public boolean enableExtendedQuickNav = true;
 
     @SerialEntry
     public QuickNavItem button1 = new QuickNavItem(true, new ItemData("diamond_sword"), "Your Skills", "/skills");
