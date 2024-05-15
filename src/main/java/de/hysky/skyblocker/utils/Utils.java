@@ -118,6 +118,10 @@ public class Utils {
         return location == Location.KUUDRAS_HOLLOW;
     }
 
+    public static boolean isInModernForagingIsland() {
+        return location == Location.MODERN_FORAGING_ISLAND;
+    }
+
     public static boolean isInjected() {
         return isInjected;
     }
