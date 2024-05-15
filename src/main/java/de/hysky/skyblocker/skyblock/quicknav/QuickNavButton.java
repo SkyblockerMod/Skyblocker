@@ -46,7 +46,7 @@ public class QuickNavButton extends ClickableWidget {
      * @param icon    the icon to display on the button.
      */
     public QuickNavButton(int index, boolean toggled, String command, ItemStack icon) {
-        super(0, 0, 26, 32, Text.empty());
+        super(0, 0, 25, 32, Text.empty());
         this.index = index;
         this.toggled = toggled;
         this.command = command;
@@ -64,7 +64,7 @@ public class QuickNavButton extends ClickableWidget {
                 this.setX(x + this.index % 6 * 26 + 4);
                 this.setY(this.index < 6 ? y - 26 : y + h - 4);
             } else {
-                this.setX(x + this.index % 7 * 25);
+                this.setX(x + 3 + this.index % 7 * 24);
                 this.setY(this.index < 7 ? y - 25 : y + h - 4);
             }
         }
@@ -116,14 +116,14 @@ public class QuickNavButton extends ClickableWidget {
             }
             int height = this.height - ((this.toggled) ? 0 : 4);
 
-            context.drawGuiTexture(BUTTON_TEXTURES, this.getX(), y, this.width, height);
+            context.drawGuiTexture(BUTTON_TEXTURES, this.getX() + 1, y, this.width, height);
 
             // Render the button icon
             int yOffset = !this.toggled && this.index < 6 ? 1 : 0;
             context.drawItem(this.icon, this.getX() + 5, this.getY() + 6 + yOffset);
         } else {
             if (this.toggled) {
-                if (this.index < 7) y -= 2;
+                if (this.index < 7) y -= 3;
             } else {
                 y += (this.index >= 7) ? 4 : -2;
             }
@@ -136,9 +136,9 @@ public class QuickNavButton extends ClickableWidget {
         RenderSystem.enableDepthTest();
     }
 
-	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-		// TODO Auto-generated method stub
+    @Override
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }
