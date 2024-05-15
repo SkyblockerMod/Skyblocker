@@ -34,6 +34,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +50,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class MythologicalRitual {
     private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d)/4\\)");
     private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
+    private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
     private static long lastEchoTime;
     private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
     @Nullable
@@ -107,6 +110,16 @@ public class MythologicalRitual {
                 if (burrow.nextBurrowLine == null) {
                     burrow.nextBurrowLine = new Vec3d[1001];
                 }
+                if (burrow.echoBurrowDirection != null && burrow.echoBurrowDirection[0] != null && burrow.echoBurrowDirection[1] != null) {
+                    Vector2D p = new Vector2D(pos.getX() + 0.5, pos.getZ() + 0.5);
+                    burrow.nextLine = new Line(p, p.add(new Vector2D(nextBurrowDirection.x, nextBurrowDirection.z)), 0.0001);
+                    Line line = new Line(
+                            new Vector2D(burrow.echoBurrowDirection[0].x, burrow.echoBurrowDirection[0].z),
+                            new Vector2D(burrow.echoBurrowDirection[1].x, burrow.echoBurrowDirection[1].z),
+                            0.0001);
+                    Vector2D intersection = line.intersection(burrow.nextLine);
+                    burrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 100, intersection.getY());
+                }
                 fillLine(burrow.nextBurrowLine, Vec3d.ofCenter(pos.up()), nextBurrowDirection);
             } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType()) && packet.getCount() == 2) {
                 if (System.currentTimeMillis() > lastEchoTime + 10_000) {
@@ -123,6 +136,15 @@ public class MythologicalRitual {
                 Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize();
                 if (previousBurrow.echoBurrowLine == null) {
                     previousBurrow.echoBurrowLine = new Vec3d[1001];
+                }
+                if (previousBurrow.nextLine != null) {
+                    Vector2D intersection = previousBurrow.nextLine.intersection(new Line(
+                            new Vector2D(previousBurrow.echoBurrowDirection[0].x, previousBurrow.echoBurrowDirection[0].z),
+                            new Vector2D(previousBurrow.echoBurrowDirection[1].x, previousBurrow.echoBurrowDirection[1].z),
+                            0.0001
+                    ));
+                    previousBurrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 100, intersection.getY());
+
                 }
                 fillLine(previousBurrow.echoBurrowLine, previousBurrow.echoBurrowDirection[0], echoBurrowDirection);
             }
@@ -151,6 +173,9 @@ public class MythologicalRitual {
                     }
                     if (burrow.echoBurrowLine != null) {
                         RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+                    }
+                    if (burrow.estimatedPos != null && !burrow.shouldRender()) {
+                        RenderHelper.renderFilledWithBeaconBeam(context, burrow.estimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
                     }
                 }
             }
@@ -214,6 +239,10 @@ public class MythologicalRitual {
         private Vec3d[] echoBurrowDirection;
         @Nullable
         private Vec3d[] echoBurrowLine;
+        @Nullable
+        private BlockPos estimatedPos;
+        @Nullable
+        private Line nextLine; // The echo line could be stored, but it is easily computed so eh
 
         private GriffinBurrow(BlockPos pos) {
             super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);
