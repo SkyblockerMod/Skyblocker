@@ -408,7 +408,7 @@ public class OrderedWaypoints {
 		}
 
 		@Override
-		protected float[] getColorComponents() {
+		public float[] getColorComponents() {
 			if (this.colorComponents.length != 3) {
 				return switch (this.relativeIndex) {
 					case PREVIOUS -> RED;

@@ -3,10 +3,12 @@ package de.hysky.skyblocker.utils.waypoint;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class Waypoint implements Renderable {
@@ -16,9 +18,9 @@ public class Waypoint implements Renderable {
     final Box box;
     final Supplier<Type> typeSupplier;
     protected final float[] colorComponents;
-    final float alpha;
-    final float lineWidth;
-    final boolean throughWalls;
+    public final float alpha;
+    public final float lineWidth;
+    public final boolean throughWalls;
     private boolean shouldRender;
 
     public Waypoint(BlockPos pos, Type type, float[] colorComponents) {
@@ -56,6 +58,22 @@ public class Waypoint implements Renderable {
         this.shouldRender = shouldRender;
     }
 
+    public Waypoint withX(int x) {
+        return new Waypoint(new BlockPos(x, pos.getY(), pos.getZ()), typeSupplier, getColorComponents(), alpha, lineWidth, throughWalls, shouldRender());
+    }
+
+    public Waypoint withY(int y) {
+        return new Waypoint(pos.withY(y), typeSupplier, getColorComponents(), alpha, lineWidth, throughWalls, shouldRender());
+    }
+
+    public Waypoint withZ(int z) {
+        return new Waypoint(new BlockPos(pos.getX(), pos.getY(), z), typeSupplier, getColorComponents(), alpha, lineWidth, throughWalls, shouldRender());
+    }
+
+    public Waypoint withColor(float[] colorComponents, float alpha) {
+        return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, shouldRender());
+    }
+
     public boolean shouldRender() {
         return shouldRender;
     }
@@ -70,6 +88,10 @@ public class Waypoint implements Renderable {
 
     public void toggle() {
         this.shouldRender = !this.shouldRender;
+    }
+
+    public void setShouldRender(boolean shouldRender) {
+        this.shouldRender = shouldRender;
     }
 
     public float[] getColorComponents() {
@@ -96,16 +118,26 @@ public class Waypoint implements Renderable {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(pos, typeSupplier.get(), Arrays.hashCode(colorComponents), alpha, lineWidth, throughWalls, shouldRender);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         return super.equals(obj) || obj instanceof Waypoint other && pos.equals(other.pos) && typeSupplier.get() == other.typeSupplier.get() && Arrays.equals(colorComponents, other.colorComponents) && alpha == other.alpha && lineWidth == other.lineWidth && throughWalls == other.throughWalls && shouldRender == other.shouldRender;
     }
 
-    public enum Type {
+    public enum Type implements StringIdentifiable {
         WAYPOINT,
         OUTLINED_WAYPOINT,
         HIGHLIGHT,
         OUTLINED_HIGHLIGHT,
         OUTLINE;
+
+        @Override
+        public String asString() {
+            return name().toLowerCase();
+        }
 
         @Override
         public String toString() {

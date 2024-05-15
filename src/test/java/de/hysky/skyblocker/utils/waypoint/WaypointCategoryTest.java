@@ -23,14 +23,14 @@ public class WaypointCategoryTest {
     void testCodecEncode() {
         WaypointCategory category = new WaypointCategory("category", "hub", List.of(new NamedWaypoint(BlockPos.ORIGIN, "waypoint", new float[]{0f, 0.5f, 1f}, false), new NamedWaypoint(new BlockPos(-1, 0, 1), "waypoint", new float[]{0f, 0f, 0f}, true)));
         Object categoryJson = WaypointCategory.CODEC.encodeStart(JsonOps.INSTANCE, category).result().orElseThrow();
-        String expectedJson = "{\"name\":\"category\",\"island\":\"hub\",\"waypoints\":[{\"pos\":[0,0,0],\"name\":\"waypoint\",\"colorComponents\":[0.0,0.5,1.0],\"shouldRender\":false},{\"pos\":[-1,0,1],\"name\":\"waypoint\",\"colorComponents\":[0.0,0.0,0.0],\"shouldRender\":true}]}";
+        String expectedJson = "{\"name\":\"category\",\"island\":\"hub\",\"waypoints\":[{\"colorComponents\":[0.0,0.5,1.0],\"alpha\":0.5,\"shouldRender\":false,\"pos\":[0,0,0],\"name\":\"waypoint\"},{\"colorComponents\":[0.0,0.0,0.0],\"alpha\":0.5,\"shouldRender\":true,\"pos\":[-1,0,1],\"name\":\"waypoint\"}]}";
 
         Assertions.assertEquals(expectedJson, categoryJson.toString());
     }
 
     @Test
     void testCodecDecode() {
-        String categoryJson = "{\"name\":\"category\",\"island\":\"hub\",\"waypoints\":[{\"pos\":[0,0,0],\"name\":\"waypoint\",\"colorComponents\":[0.0,0.5,1.0],\"shouldRender\":false},{\"pos\":[-1,0,1],\"name\":\"waypoint\",\"colorComponents\":[0.0,0.0,0.0],\"shouldRender\":true}]}";
+        String categoryJson = "{\"name\":\"category\",\"island\":\"hub\",\"waypoints\":[{\"colorComponents\":[0.0,0.5,1.0],\"alpha\":0.5,\"shouldRender\":false,\"pos\":[0,0,0],\"name\":\"waypoint\"},{\"colorComponents\":[0.0,0.0,0.0],\"alpha\":0.5,\"shouldRender\":true,\"pos\":[-1,0,1],\"name\":\"waypoint\"}]}";
         WaypointCategory category = WaypointCategory.CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(categoryJson, JsonElement.class)).result().orElseThrow();
         WaypointCategory expectedCategory = new WaypointCategory("category", "hub", List.of(new NamedWaypoint(BlockPos.ORIGIN, "waypoint", new float[]{0f, 0.5f, 1f}, false), new NamedWaypoint(new BlockPos(-1, 0, 1), "waypoint", new float[]{0f, 0f, 0f}, true)));
 
