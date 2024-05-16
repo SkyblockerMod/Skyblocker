@@ -20,6 +20,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,7 +37,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static long totalChocolate = -1L;
 	private static double totalCps = -1.0;
 	private static double totalCpsMultiplier = -1.0;
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 	private static ItemStack bestUpgrade = null;
 	private static ItemStack bestAffordableUpgrade = null;
 
