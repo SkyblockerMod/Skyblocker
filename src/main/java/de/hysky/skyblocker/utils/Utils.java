@@ -74,6 +74,8 @@ public class Utils {
     private static long clientWorldJoinTime = 0;
     private static boolean sentLocRaw = false;
     private static boolean canSendLocRaw = false;
+    //This is required to prevent the location change event from being fired twice.
+    private static boolean locationChanged = true;
 
     private static String mayor = "";
 
@@ -379,6 +381,7 @@ public class Utils {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/locraw");
                 sentLocRaw = true;
                 canSendLocRaw = false;
+                locationChanged = true;
             }
         } else {
             resetLocRawInfo();
@@ -408,6 +411,11 @@ public class Utils {
         }
         if (locRaw.has("map")) {
             map = locRaw.get("map").getAsString();
+        }
+
+        if (locationChanged) {
+            SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
+            locationChanged = false;
         }
     }
 
