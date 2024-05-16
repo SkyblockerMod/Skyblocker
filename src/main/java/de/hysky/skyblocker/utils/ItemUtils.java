@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;

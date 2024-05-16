@@ -1,21 +1,15 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
