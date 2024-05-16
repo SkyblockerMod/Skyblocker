@@ -203,16 +203,22 @@ public class ItemUtils {
         return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
     }
 
-    public static Optional<String> getHeadTexture(ItemStack stack) {
-        if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return Optional.empty();
+    public static String getHeadTexture(ItemStack stack) {
+        if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
 
         Iterator<Property> iterator = stack.get(DataComponentTypes.PROFILE)
                                            .properties()
                                            .get("textures")
                                            .iterator();
 
-        if (!iterator.hasNext()) return Optional.empty();
-        return Optional.of(iterator.next().value());
+        if (!iterator.hasNext()) return "";
+        return iterator.next().value();
+    }
+
+    public static Optional<String> getHeadTextureOptional(ItemStack stack) {
+        String texture = getHeadTexture(stack);
+        if (texture == null) return Optional.empty();
+        return Optional.of(texture);
     }
 
     public static ItemStack getSkyblockerStack() {

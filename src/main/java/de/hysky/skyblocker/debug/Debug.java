@@ -83,9 +83,7 @@ public class Debug {
 						Iterable<ItemStack> equippedItems = armorStand.getEquippedItems();
 
 						for (ItemStack stack : equippedItems) {
-							ItemUtils.getHeadTexture(stack).ifPresent(texture -> {
-								context.getSource().sendFeedback(Text.of(texture));
-							});
+							ItemUtils.getHeadTextureOptional(stack).ifPresent(texture -> context.getSource().sendFeedback(Text.of(texture)));
 						}
 					}
 

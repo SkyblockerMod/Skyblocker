@@ -47,7 +47,7 @@ public class EggFinder {
 		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 		if (armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
 		for (ItemStack itemStack : armorStand.getArmorItems()) {
-			ItemUtils.getHeadTexture(itemStack).ifPresent(texture -> {
+			ItemUtils.getHeadTextureOptional(itemStack).ifPresent(texture -> {
 				for (EggType type : EggType.entries) {
 					if (texture.equals(type.texture) && type.egg.getValue() == null) {
 						handleFoundEgg(armorStand, type);
