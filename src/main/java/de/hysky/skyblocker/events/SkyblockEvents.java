@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.events;
 
+import de.hysky.skyblocker.utils.Location;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
@@ -19,6 +20,12 @@ public final class SkyblockEvents {
         }
     });
 
+    public static final Event<SkyblockEvents.SkyblockLocationChange> LOCATION_CHANGE = EventFactory.createArrayBacked(SkyblockEvents.SkyblockLocationChange.class, callbacks -> location -> {
+        for (SkyblockEvents.SkyblockLocationChange callback : callbacks) {
+            callback.onSkyblockLocationChange(location);
+        }
+    });
+
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface SkyblockJoin {
@@ -29,5 +36,11 @@ public final class SkyblockEvents {
     @FunctionalInterface
     public interface SkyblockLeave {
         void onSkyblockLeave();
+    }
+
+    @Environment(EnvType.CLIENT)
+    @FunctionalInterface
+    public interface SkyblockLocationChange {
+        void onSkyblockLocationChange(Location location);
     }
 }
