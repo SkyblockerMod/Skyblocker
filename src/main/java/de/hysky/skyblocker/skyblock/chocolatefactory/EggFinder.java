@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -21,6 +19,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,14 +27,35 @@ public class EggFinder {
 	private static final Pattern eggFoundPattern = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner)");
 	private static final Pattern newEggPattern = Pattern.compile("^HOPPITY'S HUNT A Chocolate (Breakfast|Lunch|Dinner) Egg has appeared!$");
 	private static final Logger logger = LoggerFactory.getLogger("Skyblocker Egg Finder");
+	private static final LinkedList<ArmorStandEntity> armorStandQueue = new LinkedList<>();
+	private static final Location[] possibleLocations = {Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.HUB, Location.THE_END, Location.THE_PARK, Location.GOLD_MINE};
+	private static boolean isLocationCorrect = false;
 
 	private EggFinder() {
 	}
 
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> clearEggs());
+		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> invalidateState());
+		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.GAME.register(EggFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
+	}
+
+	private static void handleLocationChange(Location location) {
+		for (Location possibleLocation : possibleLocations) {
+			if (location == possibleLocation) {
+				isLocationCorrect = true;
+				break;
+			}
+		}
+		if (!isLocationCorrect) {
+			armorStandQueue.clear();
+			return;
+		}
+
+		while (!armorStandQueue.isEmpty()) {
+			handleArmorStand(armorStandQueue.poll());
+		}
 	}
 
 	public static void checkIfEgg(Entity entity) {
@@ -46,6 +66,14 @@ public class EggFinder {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 		if (armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
+		if (Utils.getLocation() == Location.UNKNOWN) { //The location is unknown upon world change and will be changed via /locraw soon, so we can queue it for now
+			armorStandQueue.add(armorStand);
+			return;
+		}
+		if (isLocationCorrect) handleArmorStand(armorStand);
+	}
+
+	private static void handleArmorStand(ArmorStandEntity armorStand) {
 		for (ItemStack itemStack : armorStand.getArmorItems()) {
 			ItemUtils.getHeadTextureOptional(itemStack).ifPresent(texture -> {
 				for (EggType type : EggType.entries) {
@@ -58,8 +86,9 @@ public class EggFinder {
 		}
 	}
 
-	private static void clearEggs() {
+	private static void invalidateState() {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
+		isLocationCorrect = false;
 		for (EggType type : EggType.entries) {
 			type.egg.setValue(null);
 		}
