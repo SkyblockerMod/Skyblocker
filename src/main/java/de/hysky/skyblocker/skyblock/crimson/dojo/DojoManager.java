@@ -17,12 +17,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -31,14 +33,14 @@ import java.util.regex.Pattern;
 public class DojoManager {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final String START_MESSAGE = "§e[NPC] §eMaster Tao§f: Ahhh, here we go! Let's get you into the Arena.";
+    private static final String START_MESSAGE = "[NPC] Master Tao: Ahhh, here we go! Let's get you into the Arena.";
     private static final Pattern TEST_OF_PATTERN = Pattern.compile("\\s+Test of (\\w+) OBJECTIVES");
     private static final String CHALLENGE_FINISHED_REGEX = "\\s+CHALLENGE ((COMPLETED)|(FAILED))";
 
 
     protected enum DojoChallenges {
         NONE("none", enabled -> false),
-        FORCE("Force",enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
+        FORCE("Force", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
         MASTERY("Mastery", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableMasteryHelper),
         DISCIPLINE("Discipline", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableDisciplineHelper),
         SWIFTNESS("Swiftness", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableSwiftnessHelper),
@@ -56,7 +58,6 @@ public class DojoManager {
         public static DojoChallenges from(String name) {
             return Arrays.stream(DojoChallenges.values()).filter(n -> name.equals(n.name)).findFirst().orElse(NONE);
         }
-
     }
 
     protected static DojoChallenges currentChallenge = DojoChallenges.NONE;
@@ -91,7 +92,8 @@ public class DojoManager {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || overlay) {
             return;
         }
-        if (text.getString().equals(START_MESSAGE)) {
+        System.out.println(Formatting.strip(text.getString()));
+        if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
             inArena = true;
             return;
         }
