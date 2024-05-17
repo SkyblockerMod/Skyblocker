@@ -38,12 +38,12 @@ public class DojoManager {
 
     protected enum DojoChallenges {
         NONE("none", enabled -> false),
-        FORCE("Force",enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableForceHelper),
-        MASTERY("Mastery", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableMasteryHelper),
-        DISCIPLINE("Discipline", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableDisciplineHelper),
-        SWIFTNESS("Swiftness", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableSwiftnessHelper),
-        CONTROL("Control", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableControlHelper),
-        TENACITY("Tenacity", enabled -> SkyblockerConfigManager.get().locations.crimsonIsle.dojo.enableTenacityHelper);
+        FORCE("Force",enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
+        MASTERY("Mastery", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableMasteryHelper),
+        DISCIPLINE("Discipline", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableDisciplineHelper),
+        SWIFTNESS("Swiftness", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableSwiftnessHelper),
+        CONTROL("Control", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableControlHelper),
+        TENACITY("Tenacity", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableTenacityHelper);
 
         private final String name;
         private final Predicate<Boolean> enabled;

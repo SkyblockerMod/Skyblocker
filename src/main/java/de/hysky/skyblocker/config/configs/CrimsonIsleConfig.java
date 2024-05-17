@@ -7,6 +7,10 @@ public class CrimsonIsleConfig {
     @SerialEntry
     public Kuudra kuudra = new Kuudra();
 
+    @SerialEntry
+    public Dojo dojo = new Dojo();
+
+
     public static class Kuudra {
         @SerialEntry
         public boolean supplyWaypoints = true;
@@ -31,5 +35,25 @@ public class CrimsonIsleConfig {
 
         @SerialEntry
         public int arrowPoisonThreshold = 32;
+    }
+
+    public static class Dojo {
+        @SerialEntry
+        public boolean enableForceHelper = true;
+
+        @SerialEntry
+        public boolean enableMasteryHelper = true;
+
+        @SerialEntry
+        public boolean enableDisciplineHelper = true;
+
+        @SerialEntry
+        public boolean enableSwiftnessHelper = true;
+
+        @SerialEntry
+        public boolean enableControlHelper = true;
+
+        @SerialEntry
+        public boolean enableTenacityHelper = true;
     }
 }
