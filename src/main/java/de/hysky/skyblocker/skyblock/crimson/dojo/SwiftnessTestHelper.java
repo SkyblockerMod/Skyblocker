@@ -29,6 +29,6 @@ public class SwiftnessTestHelper {
             return;
         }
         System.out.println("render" + lastBlock);
-        RenderHelper.renderFilled(context,lastBlock, new float[]{0f, 1f, 0f}, 0.5f, true);
+        RenderHelper.renderFilled(context, lastBlock, new float[]{0f, 1f, 0f}, 0.5f, true);
     }
 }
