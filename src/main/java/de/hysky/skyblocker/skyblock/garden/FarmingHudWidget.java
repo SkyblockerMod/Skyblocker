@@ -60,7 +60,7 @@ public class FarmingHudWidget extends Widget {
         if (client.player == null) return;
 
         ItemStack farmingTool = client.player.getMainHandStack();
-        addSimpleIcoText(farmingTool, "Counter: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
+        addSimpleIcoText(farmingTool, FarmingHud.counterText(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
         float cropsPerMinute = FarmingHud.cropsPerMinute();
         addSimpleIcoText(farmingTool, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
         DoubleBooleanPair itemPrice = ItemUtils.getItemPrice(FARMING_TOOLS.get(ItemUtils.getItemId(farmingTool)));

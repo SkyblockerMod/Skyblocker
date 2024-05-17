@@ -33,8 +33,8 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-    private static final Pattern COUNTER = Pattern.compile("Counter: (?<count>[\\d,]+) .+");
     private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
+    private static CounterType counterType;
     private static final Deque<IntLongPair> counter = new ArrayDeque<>();
     private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
     private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
@@ -54,16 +54,12 @@ public class FarmingHud {
                 }
 
                 ItemStack stack = MinecraftClient.getInstance().player.getMainHandStack();
-                Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, FarmingHud.COUNTER);
-                if (matcher != null) {
-                    try {
-                        int count = NUMBER_FORMAT.parse(matcher.group("count")).intValue();
-                        if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
-                            counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
-                        }
-                    } catch (ParseException e) {
-                        LOGGER.error("[Skyblocker Farming HUD] Failed to parse counter", e);
-                    }
+                if (tryParseCounter(stack, CounterType.CULTIVATING.pattern)) {
+                    counterType = CounterType.CULTIVATING;
+                } else if (tryParseCounter(stack, CounterType.COUNTER.pattern)) {
+                    counterType = CounterType.COUNTER;
+                } else {
+                    counterType = CounterType.NONE;
                 }
 
                 FarmingHudWidget.INSTANCE.update();
@@ -92,8 +88,27 @@ public class FarmingHud {
                 .executes(Scheduler.queueOpenScreenCommand(() -> new FarmingHudConfigScreen(null)))))));
     }
 
+    private static boolean tryParseCounter(ItemStack stack, Pattern counterPattern) {
+        Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, counterPattern);
+        if (matcher == null) return false;
+        try {
+            int count = NUMBER_FORMAT.parse(matcher.group("count")).intValue();
+            if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
+                counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
+            }
+            return true;
+        } catch (ParseException e) {
+            LOGGER.error("[Skyblocker Farming HUD] Failed to parse counter", e);
+            return false;
+        }
+    }
+
     private static boolean shouldRender() {
         return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && Utils.getLocation() == Location.GARDEN;
+    }
+
+    public static String counterText() {
+        return counterType.text;
     }
 
     public static int counter() {
@@ -119,5 +134,19 @@ public class FarmingHud {
 
     public static double farmingXpPerHour() {
         return farmingXp.stream().mapToDouble(FloatLongPair::leftFloat).sum() * blockBreaks() * 1800; // Hypixel only sends xp updates around every half a second
+    }
+
+    public enum CounterType {
+        NONE(Pattern.compile(""), "No Counter: "),
+        COUNTER(Pattern.compile("Counter: (?<count>[\\d,]+) .+"), "Counter: "),
+        CULTIVATING(Pattern.compile("Cultivating (?<cultivating>[IVXLCDM]+) (?<count>[\\d,]+)"), "Cultivating Counter: ");
+
+        private final Pattern pattern;
+        private final String text;
+
+        CounterType(Pattern pattern, String text) {
+            this.pattern = pattern;
+            this.text = text;
+        }
     }
 }
