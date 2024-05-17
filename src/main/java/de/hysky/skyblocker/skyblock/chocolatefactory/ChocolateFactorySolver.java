@@ -18,6 +18,8 @@ import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -33,10 +35,14 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern TOTAL_MULTIPLIER_PATTERN = Pattern.compile("Total Multiplier: ([\\d.]+)x");
 	private static final Pattern MULTIPLIER_INCREASE_PATTERN = Pattern.compile("\\+([\\d.]+)x Chocolate per second");
 	private static final Pattern CHOCOLATE_PATTERN = Pattern.compile("^([\\d,]+) Chocolate$");
+	private static final Pattern PRESTIGE_REQUIREMENT_PATTERN = Pattern.compile("Chocolate this Prestige: ([\\d,]+) +Requires (\\S+) Chocolate this Prestige!");
 	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(6);
 	private static long totalChocolate = -1L;
 	private static double totalCps = -1.0;
 	private static double totalCpsMultiplier = -1.0;
+	private static long requiredUntilNextPrestige = -1L;
+	private static double timeTowerMultiplier = -1.0;
+	private static boolean isTimeTowerActive = false;
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 	private static ItemStack bestUpgrade = null;
 	private static ItemStack bestAffordableUpgrade = null;
@@ -54,20 +60,28 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	@Override
 	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
 		updateFactoryInfo(slots);
+		List<ColorHighlight> highlights = new ArrayList<>();
 
-		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return List.of(); //Something went wrong or there's nothing we can afford.
+		getPrestigeHighlight(slots.get(28)).ifPresent(highlights::add);
+
+		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return highlights; //Something went wrong or there's nothing we can afford.
 		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
 		bestUpgrade = bestRabbit.itemStack;
-		if (bestRabbit.cost <= totalChocolate) return List.of(ColorHighlight.green(bestRabbit.slot));
+		if (bestRabbit.cost <= totalChocolate) {
+			highlights.add(ColorHighlight.green(bestRabbit.slot));
+			return highlights;
+		}
+		highlights.add(ColorHighlight.yellow(bestRabbit.slot));
 
 		for (Rabbit rabbit : cpsIncreaseFactors.subList(1, cpsIncreaseFactors.size())) {
 			if (rabbit.cost <= totalChocolate) {
 				bestAffordableUpgrade = rabbit.itemStack;
-				return List.of(ColorHighlight.green(rabbit.slot), ColorHighlight.yellow(bestRabbit.slot));
+				highlights.add(ColorHighlight.green(rabbit.slot));
+				break;
 			}
 		}
 
-		return List.of(ColorHighlight.yellow(bestRabbit.slot));
+		return highlights;
 	}
 
 	private static void updateFactoryInfo(Int2ObjectMap<ItemStack> slots) {
@@ -82,15 +96,32 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		//Coach is in slot 42
 		getCoach(slots.get(42)).ifPresent(cpsIncreaseFactors::add);
+
+		//The clickable chocolate is in slot 13, holds the total chocolate
 		RegexUtils.getLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(13).getName().getString())).ifPresent(l -> totalChocolate = l);
 
 		//Cps item (cocoa bean) is in slot 45
 		String cpsItemLore = getConcatenatedLore(slots.get(45));
 		Matcher cpsMatcher = CPS_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(cpsMatcher).ifPresent(d -> totalCps = d);
-
 		Matcher multiplierMatcher = TOTAL_MULTIPLIER_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
+
+		//Prestige item is in slot 28
+		Matcher matcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(getConcatenatedLore(slots.get(28)));
+		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(matcher);
+		if (currentChocolate.isPresent()) {
+			String requirement = matcher.group(2); //If the first one matched, we can assume the 2nd one is also matched since it's one whole regex
+			//Since the last character is either M or B we can just try to replace both characters. Only the correct one will actually replace anything.
+			String amountString = requirement.replace("M", "000000").replace("B", "000000000");
+			if (NumberUtils.isParsable(amountString)) {
+				requiredUntilNextPrestige = Long.parseLong(amountString) - currentChocolate.getAsLong();
+			}
+		}
+
+		//Time Tower is in slot 39
+		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
+		isTimeTowerActive = ItemUtils.getLore(slots.get(39)).getLast().getString().equals("The Time Tower is active!");
 
 		//Compare cost/cpsIncrease rather than cpsIncrease/cost to avoid getting close to 0 and losing precision.
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
@@ -98,42 +129,99 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private static void handleTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper) return;
-		if (!(MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen screen) || !screen.getTitle().getString().equals("Chocolate Factory") ) return;
+		if (!(MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen screen) || !screen.getTitle().getString().equals("Chocolate Factory")) return;
+
+		int lineIndex = lines.size();
+		boolean shouldAddLine = false;
 
 		String lore = concatenateLore(lines);
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
-		if (cost.isEmpty() || totalChocolate == -1L || totalCps == -1.0) return;
+		//Available on all items with a chocolate cost
+		if (cost.isPresent()) shouldAddLine = addUpgradeTimerToLore(lines, cost.getAsLong());
 
-		lines.add(ItemTooltip.createSmoothLine());
+		//Prestige item
+		if (stack.isOf(Items.DROPPER) && requiredUntilNextPrestige != -1L) {
+			shouldAddLine = addPrestigeTimerToLore(lines) || shouldAddLine;
+		}
+		//Time tower
+		else if (stack.isOf(Items.CLOCK)) {
+			shouldAddLine = addTimeTowerStatsToLore(lines) || shouldAddLine;
+		}
+		//Rabbits
+		else if (stack.isOf(Items.PLAYER_HEAD)) {
+			shouldAddLine = addRabbitStatsToLore(lines, stack) || shouldAddLine ;
+		}
 
-		lines.add(Text.literal("")
+		//This is an ArrayList, so this operation is probably not very efficient, but logically it's pretty much the only way I can think of
+		if (shouldAddLine) lines.add(lineIndex, ItemTooltip.createSmoothLine());
+	}
+
+	private static boolean addUpgradeTimerToLore(List<Text> lines, long cost) {
+		if (totalChocolate == -1L || totalCps == -1.0) return false;
+		lines.add(Text.empty()
 		              .append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
-		              .append(formatTime((cost.getAsLong() - totalChocolate) / totalCps)));
+		              .append(formatTime((cost - totalChocolate) / totalCps)));
+		return true;
+	}
 
-		if (cpsIncreaseFactors.isEmpty()) return;
+	private static boolean addPrestigeTimerToLore(List<Text> lines) {
+		if (requiredUntilNextPrestige == -1L || totalCps == -1.0) return false;
+		lines.add(Text.empty()
+		              .append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
+		              .append(Text.literal(DECIMAL_FORMAT.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
+		lines.add(Text.empty()
+		              .append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
+		              .append(formatTime(requiredUntilNextPrestige / totalCps)));
+		return true;
+	}
 
+	private static boolean addTimeTowerStatsToLore(List<Text> lines) {
+		if (totalCps == -1.0 || totalCpsMultiplier == -1.0 || timeTowerMultiplier == -1.0) return false;
+		lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
+		lines.add(Text.empty()
+		              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+		              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
+		lines.add(Text.empty()
+		              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+		              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+		if (timeTowerMultiplier < 1.5) {
+			lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
+			lines.add(Text.empty()
+			              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+			              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
+			lines.add(Text.empty()
+			              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+			              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+		}
+		return true;
+	}
+
+	private static boolean addRabbitStatsToLore(List<Text> lines, ItemStack stack) {
+		if (cpsIncreaseFactors.isEmpty()) return false;
+		boolean changed = false;
 		for (Rabbit rabbit : cpsIncreaseFactors) {
 			if (rabbit.itemStack != stack) continue;
-
-			lines.add(Text.literal("")
+			changed = true;
+			lines.add(Text.empty()
 			              .append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
 			              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
 
-			lines.add(Text.literal("")
+			lines.add(Text.empty()
 			              .append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
 			              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
 
 			if (rabbit.itemStack == bestUpgrade) {
-				if (cost.getAsLong() <= totalChocolate) {
+				if (rabbit.cost <= totalChocolate) {
 					lines.add(Text.literal("Best upgrade").formatted(Formatting.GREEN));
 				} else {
 					lines.add(Text.literal("Best upgrade, can't afford").formatted(Formatting.YELLOW));
 				}
-			} else if (rabbit.itemStack == bestAffordableUpgrade && cost.getAsLong() <= totalChocolate) {
+			} else if (rabbit.itemStack == bestAffordableUpgrade && rabbit.cost <= totalChocolate) {
 				lines.add(Text.literal("Best upgrade you can afford").formatted(Formatting.GREEN));
 			}
 		}
+		return changed;
 	}
 
 	private static MutableText formatTime(double seconds) {
@@ -218,6 +306,37 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot, item));
 	}
 
+	private static Optional<ColorHighlight> getPrestigeHighlight(ItemStack item) {
+		List<Text> loreList = ItemUtils.getLore(item);
+		if (loreList.isEmpty()) return Optional.empty();
+
+		String lore = loreList.getLast().getString(); //The last line holds the text we're looking for
+		if (lore.equals("Click to prestige!")) return Optional.of(ColorHighlight.green(28));
+		return Optional.of(ColorHighlight.red(28));
+	}
+
 	private record Rabbit(double cpsIncrease, int cost, int slot, ItemStack itemStack) {
+	}
+
+	//Perhaps the part below can go to a separate file later on, but I couldn't find a proper name for the class, so they're staying here.
+	private static final Map<Character, Integer> romanMap = Map.of(
+			'I', 1,
+			'V', 5,
+			'X', 10,
+			'L', 50,
+			'C', 100,
+			'D', 500,
+			'M', 1000
+	);
+
+	public static int romanToDecimal(String romanNumeral) {
+		int decimal = 0;
+		int lastNumber = 0;
+		for (int i = romanNumeral.length() - 1; i >= 0; i--) {
+			char ch = romanNumeral.charAt(i);
+			decimal = romanMap.get(ch) >= lastNumber ? decimal + romanMap.get(ch) : decimal - romanMap.get(ch);
+			lastNumber = romanMap.get(ch);
+		}
+		return decimal;
 	}
 }
