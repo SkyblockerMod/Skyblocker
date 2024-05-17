@@ -81,6 +81,60 @@ public class CrimsonIsleCategory {
                                 .controller(IntegerFieldControllerBuilder::create)
                                 .build())
                         .build())
-                .build();
+				//dojo
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.crimson.dojo"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.crimson.dojo.forceHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.forceHelper.@Tooltip")))
+								.binding(config.crimsonIsle.dojo.enableForceHelper,
+										() -> config.crimsonIsle.dojo.enableForceHelper,
+										newValue -> config.crimsonIsle.dojo.enableForceHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.crimson.dojo.masteryHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.masteryHelper.@Tooltip")))
+								.binding(config.crimsonIsle.dojo.enableMasteryHelper,
+										() -> config.crimsonIsle.dojo.enableMasteryHelper,
+										newValue -> config.crimsonIsle.dojo.enableMasteryHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.crimson.dojo.disciplineHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.disciplineHelper.@Tooltip")))
+								.binding(config.crimsonIsle.dojo.enableDisciplineHelper,
+										() -> config.crimsonIsle.dojo.enableDisciplineHelper,
+										newValue -> config.crimsonIsle.dojo.enableDisciplineHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.crimson.dojo.swiftnessHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.swiftnessHelper.@Tooltip")))
+								.binding(config.crimsonIsle.dojo.enableSwiftnessHelper,
+										() -> config.crimsonIsle.dojo.enableSwiftnessHelper,
+										newValue -> config.crimsonIsle.dojo.enableSwiftnessHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.crimson.dojo.controlHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.controlHelper.@Tooltip")))
+								.binding(config.crimsonIsle.dojo.enableControlHelper,
+										() -> config.crimsonIsle.dojo.enableControlHelper,
+										newValue -> config.crimsonIsle.dojo.enableControlHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.crimson.dojo.tenacityHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.tenacityHelper.@Tooltip")))
+								.binding(config.crimsonIsle.dojo.enableTenacityHelper,
+										() -> config.crimsonIsle.dojo.enableTenacityHelper,
+										newValue -> config.crimsonIsle.dojo.enableTenacityHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
+
+				.build();
     }
 }
