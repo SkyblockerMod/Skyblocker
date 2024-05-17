@@ -94,6 +94,14 @@ public class CrimsonIsleCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.crimson.dojo.staminaHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.staminaHelper.@Tooltip")))
+								.binding(config.crimsonIsle.dojo.enableStaminaHelper,
+										() -> config.crimsonIsle.dojo.enableStaminaHelper,
+										newValue -> config.crimsonIsle.dojo.enableStaminaHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.crimson.dojo.masteryHelper"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.crimson.dojo.masteryHelper.@Tooltip")))
 								.binding(config.crimsonIsle.dojo.enableMasteryHelper,
