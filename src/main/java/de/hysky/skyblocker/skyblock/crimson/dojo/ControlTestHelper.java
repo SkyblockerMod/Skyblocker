@@ -23,7 +23,6 @@ public class ControlTestHelper {
         if (entity instanceof WitherSkeletonEntity witherSkeleton && correctWitherSkeleton == null) {
             correctWitherSkeleton = witherSkeleton;
             pingMultiplier = Util.getMeasuringTimeMs() / 100000;
-            System.out.println(pingMultiplier);
         }
     }
 

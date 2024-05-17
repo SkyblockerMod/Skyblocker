@@ -53,11 +53,14 @@ public class TenacityTestHelper {
         return CLIENT.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, fireball));
     }
 
+    /**
+     * If a spawned entity is an armour stand add it to the fireballs map (assuming all armour stands are fireballs)
+     *
+     * @param entity spawned entity
+     */
     protected static void onEntitySpawn(Entity entity) {
         if (entity instanceof ArmorStandEntity armorStand) {
-            // they should be holding coal block but are not holding anything idk
             fireBallsWithStartPos.put(armorStand, armorStand.getPos());
-
         }
     }
 
@@ -67,6 +70,11 @@ public class TenacityTestHelper {
         }
     }
 
+    /**
+     * Uses the particles spawned with the fireballs to offset from the armour stand position to get a mor accurate guess of where its going
+     *
+     * @param packet particle packet
+     */
     protected static void onParticle(ParticleS2CPacket packet) {
         if (!ParticleTypes.FLAME.equals(packet.getParameters().getType())) {
             return;
