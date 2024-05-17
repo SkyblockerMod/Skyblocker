@@ -17,8 +17,8 @@ import java.util.List;
 
 public class MasteryTestHelper {
 
-
     private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
+    private static final int BLOCK_LIFE_TIME = 6850;
 
     private static final List<BlockPos> blockOrder = new ArrayList<>();
     private static final Map<BlockPos, Long> endTimes = new HashMap<>();
@@ -31,7 +31,7 @@ public class MasteryTestHelper {
     protected static void onBlockUpdate(BlockPos pos, BlockState state) {
         if (state.isOf(Blocks.LIME_WOOL)) {
             blockOrder.add(pos);
-            endTimes.put(pos, System.currentTimeMillis() + 6850);
+            endTimes.put(pos, System.currentTimeMillis() + BLOCK_LIFE_TIME);
         }
         if (state.isAir()) {
             blockOrder.remove(pos);
@@ -45,7 +45,7 @@ public class MasteryTestHelper {
             RenderHelper.renderLineFromCursor(context, blockOrder.getFirst().toCenterPos(), Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1f, 2);
         }
         if (blockOrder.size() >= 2) {
-            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{blockOrder.get(0).toCenterPos(), blockOrder.get(1).toCenterPos()}, new float[]{0f, 1f, 0f}, 1, 2, false);
+            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{blockOrder.get(0).toCenterPos(), blockOrder.get(1).toCenterPos()}, Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1, 2, false);
         }
 
         //render times

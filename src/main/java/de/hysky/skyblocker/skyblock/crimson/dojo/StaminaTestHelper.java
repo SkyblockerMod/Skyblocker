@@ -21,10 +21,10 @@ public class StaminaTestHelper {
 
     private static final List<BlockPos> wallHoles = new ArrayList<>();
     private static final List<BlockPos> lastHoles = new ArrayList<>();
-    private static final Map<BlockPos, wallDirections> holeDirections = new HashMap<>();
+    private static final Map<BlockPos, holeDirection> holeDirections = new HashMap<>();
     private static BlockPos middleBase;
 
-    private enum wallDirections {
+    private enum holeDirection {
         POSITIVE_X,
         POSITIVE_Z,
         NEGATIVE_X,
@@ -41,10 +41,45 @@ public class StaminaTestHelper {
     }
 
     protected static void update() {
-        if (CLIENT == null || CLIENT.player == null || CLIENT.world == null) {
+
+        //search the world around the player for walls 30 x 10 x 30 area centered on player
+
+        List<BlockPos> currentBottomWallLocations = findWallBlocks();
+        if (currentBottomWallLocations == null) { //stop here if the center pos has not been found
             return;
         }
-        //search the world around the player for walls 30 x 10 x 30 area centered on player
+        //find walls
+        List<Box> walls = findWalls(currentBottomWallLocations);
+
+        //find air then holes and add whole to list
+        lastHoles.clear();
+        lastHoles.addAll(wallHoles);
+        wallHoles.clear();
+        for (Box wall : walls) {
+            wallHoles.addAll(findAirInBox(wall));
+        }
+        // get direction for the holes
+        Map<BlockPos, holeDirection> lastHoleDirections = new HashMap<>(holeDirections);
+        holeDirections.clear();
+        for (BlockPos hole : wallHoles) {
+            holeDirection holeDirection = getWholeDirection(hole);
+            if (holeDirection == StaminaTestHelper.holeDirection.UNCHANGED) {
+                holeDirections.put(hole, lastHoleDirections.get(hole));
+                continue;
+            }
+            holeDirections.put(hole, holeDirection);
+        }
+    }
+
+    /**
+     * Locates the center of the game and once this is found scans the bottom of room for blocks that make up the walls
+     *
+     * @return list of blocks that make up the bottom of the walls
+     */
+    private static List<BlockPos> findWallBlocks() {
+        if (CLIENT == null || CLIENT.player == null || CLIENT.world == null) {
+            return null;
+        }
         BlockPos playerPos = CLIENT.player.getBlockPos();
         //find the center first before starting to look for walls
         if (middleBase == null) {
@@ -55,12 +90,12 @@ public class StaminaTestHelper {
                         BlockState state = CLIENT.world.getBlockState(pos);
                         if (state.isOf(Blocks.CHISELED_STONE_BRICKS)) {
                             middleBase = pos;
-                            return;
+                            return null;
                         }
                     }
                 }
             }
-            return;
+            return null;
         }
         List<BlockPos> currentBottomWallLocations = new ArrayList<>();
         for (int x = middleBase.getX() - 15; x < middleBase.getX() + 15; x++) {
@@ -73,48 +108,26 @@ public class StaminaTestHelper {
                 }
             }
         }
-
-        //find walls
-        List<Box> walls = findWalls(currentBottomWallLocations);
-
-        //find air then holes and add whole to list
-        lastHoles.clear();
-        lastHoles.addAll(wallHoles);
-        wallHoles.clear();
-        for (Box wall : walls) {
-            wallHoles.addAll(findAirInBox(wall));
-        }
-        // get direction for the holes
-        Map<BlockPos, wallDirections> lastHoleDirections = new HashMap<>(holeDirections);
-        holeDirections.clear();
-        for (BlockPos hole : wallHoles) {
-            wallDirections holeDirection = getWholeDirection(hole);
-            if (holeDirection == wallDirections.UNCHANGED) {
-                holeDirections.put(hole, lastHoleDirections.get(hole));
-                continue;
-            }
-            holeDirections.put(hole, holeDirection);
-        }
+        return currentBottomWallLocations;
     }
 
     private static List<Box> findWalls(List<BlockPos> currentBottomWallLocations) {
         Map<Integer, List<BlockPos>> possibleWallsX = new HashMap<>();
         Map<Integer, List<BlockPos>> possibleWallsZ = new HashMap<>();
-        for (BlockPos andesite : currentBottomWallLocations) {
+        for (BlockPos block : currentBottomWallLocations) {
             //add to the x walls
-            int x = andesite.getX();
+            int x = block.getX();
             if (!possibleWallsX.containsKey(x)) {
                 possibleWallsX.put(x, new ArrayList<>());
 
             }
-            possibleWallsX.get(x).add(andesite);
+            possibleWallsX.get(x).add(block);
             //add to the z walls
-            int z = andesite.getZ();
+            int z = block.getZ();
             if (!possibleWallsZ.containsKey(z)) {
                 possibleWallsZ.put(z, new ArrayList<>());
-
             }
-            possibleWallsZ.get(z).add(andesite);
+            possibleWallsZ.get(z).add(block);
         }
 
         //extract only the lines that are long enough to be a wall and not from walls overlapping
@@ -188,31 +201,31 @@ public class StaminaTestHelper {
         return holes;
     }
 
-    private static wallDirections getWholeDirection(BlockPos hole) {
+    private static holeDirection getWholeDirection(BlockPos hole) {
         //the value has not changed since last time
         if (lastHoles.contains(hole)) {
-            return wallDirections.UNCHANGED;
+            return holeDirection.UNCHANGED;
         }
         //check each direction to work out which way the whole is going
         BlockPos posX = hole.add(1, 0, 0);
         if (lastHoles.contains(posX)) {
-            return wallDirections.POSITIVE_X;
+            return holeDirection.POSITIVE_X;
         }
         BlockPos negX = hole.add(-1, 0, 0);
         if (lastHoles.contains(negX)) {
             System.out.println("positiveX");
-            return wallDirections.NEGATIVE_X;
+            return holeDirection.NEGATIVE_X;
         }
         BlockPos posZ = hole.add(0, 0, 1);
         if (lastHoles.contains(posZ)) {
-            return wallDirections.POSITIVE_Z;
+            return holeDirection.POSITIVE_Z;
         }
         BlockPos negZ = hole.add(0, 0, -1);
         if (lastHoles.contains(negZ)) {
-            return wallDirections.NEGATIVE_Z;
+            return holeDirection.NEGATIVE_Z;
         }
         // if pos can not be found mark as new
-        return wallDirections.NEW;
+        return holeDirection.NEW;
 
     }
 
@@ -222,13 +235,13 @@ public class StaminaTestHelper {
         }
         BlockPos playerPos = CLIENT.player.getBlockPos();
         for (BlockPos hole : wallHoles) {
-            float[] color = isHoleIncoming(hole,holeDirections.get(hole),playerPos) ? INCOMING_COLOR : OUTGOING_COLOR;
+            float[] color = isHoleIncoming(hole, holeDirections.get(hole), playerPos) ? INCOMING_COLOR : OUTGOING_COLOR;
             RenderHelper.renderFilled(context, hole, color, 0.3f, true);
         }
     }
 
-    private static boolean isHoleIncoming(BlockPos holePos, wallDirections holeDirection, BlockPos playerPos) {
-        return  switch (holeDirection) {
+    private static boolean isHoleIncoming(BlockPos holePos, holeDirection holeDirection, BlockPos playerPos) {
+        return switch (holeDirection) {
             case POSITIVE_X -> playerPos.getX() < holePos.getX();
             case POSITIVE_Z -> playerPos.getZ() < holePos.getZ();
             case NEGATIVE_X -> playerPos.getX() > holePos.getX();

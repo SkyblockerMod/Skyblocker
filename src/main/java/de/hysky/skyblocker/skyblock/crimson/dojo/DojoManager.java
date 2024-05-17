@@ -78,12 +78,12 @@ public class DojoManager {
     private static void reset() {
         inArena = false;
         currentChallenge = DojoChallenges.NONE;
-        SwiftnessTestHelper.reset();
-        MasteryTestHelper.reset();
-        TenacityTestHelper.reset();
         ForceTestHelper.reset();
-        ControlTestHelper.reset();
         StaminaTestHelper.reset();
+        MasteryTestHelper.reset();
+        SwiftnessTestHelper.reset();
+        ControlTestHelper.reset();
+        TenacityTestHelper.reset();
     }
 
     /**
@@ -141,8 +141,8 @@ public class DojoManager {
             return false;
         }
         return switch (currentChallenge) {
-            case DISCIPLINE -> DisciplineTestHelper.shouldGlow(name);
             case FORCE -> ForceTestHelper.shouldGlow(name);
+            case DISCIPLINE -> DisciplineTestHelper.shouldGlow(name);
             default -> false;
         };
     }
@@ -157,8 +157,8 @@ public class DojoManager {
             return 0xf57738;
         }
         return switch (currentChallenge) {
-            case DISCIPLINE -> DisciplineTestHelper.getColor();
             case FORCE -> ForceTestHelper.getColor();
+            case DISCIPLINE -> DisciplineTestHelper.getColor();
             default -> 0xf57738;
         };
     }
@@ -174,8 +174,8 @@ public class DojoManager {
             return;
         }
         switch (currentChallenge) {
-            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos, state);
             case MASTERY -> MasteryTestHelper.onBlockUpdate(pos, state);
+            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos, state);
         }
     }
 
@@ -188,9 +188,9 @@ public class DojoManager {
             return;
         }
         switch (currentChallenge) {
-            case TENACITY -> TenacityTestHelper.onEntitySpawn(entity);
             case FORCE -> ForceTestHelper.onEntitySpawn(entity);
             case CONTROL -> ControlTestHelper.onEntitySpawn(entity);
+            case TENACITY -> TenacityTestHelper.onEntitySpawn(entity);
         }
     }
 
@@ -199,8 +199,8 @@ public class DojoManager {
             return;
         }
         switch (currentChallenge) {
-            case TENACITY -> TenacityTestHelper.onEntityDespawn(entity);
             case FORCE -> ForceTestHelper.onEntityDespawn(entity);
+            case TENACITY -> TenacityTestHelper.onEntityDespawn(entity);
         }
     }
 
@@ -230,10 +230,10 @@ public class DojoManager {
         switch (currentChallenge) {
             case FORCE -> ForceTestHelper.render(context);
             case STAMINA -> StaminaTestHelper.render(context);
-            case SWIFTNESS -> SwiftnessTestHelper.render(context);
-            case TENACITY -> TenacityTestHelper.render(context);
             case MASTERY -> MasteryTestHelper.render(context);
+            case SWIFTNESS -> SwiftnessTestHelper.render(context);
             case CONTROL -> ControlTestHelper.render(context);
+            case TENACITY -> TenacityTestHelper.render(context);
         }
     }
 }

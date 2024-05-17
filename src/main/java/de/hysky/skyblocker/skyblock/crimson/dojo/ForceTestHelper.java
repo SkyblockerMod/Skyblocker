@@ -17,6 +17,7 @@ import java.util.Map;
 public class ForceTestHelper {
 
     private static final DecimalFormat FORMATTER = new DecimalFormat("0.0");
+    private static final int ZOMBIE_LIFE_TIME = 10100;
 
     private static final Map<ZombieEntity, Long> zombies = new HashMap<>();
 
@@ -24,6 +25,12 @@ public class ForceTestHelper {
         zombies.clear();
     }
 
+    /**
+     * If a zombie value is negative make it glow
+     *
+     * @param name zombies value
+     * @return if the zombie should glow
+     */
     protected static boolean shouldGlow(String name) {
         if (name == null) return false;
         return name.contains("-");
@@ -35,14 +42,14 @@ public class ForceTestHelper {
 
     protected static void onEntitySpawn(Entity entity) {
         if (entity instanceof ZombieEntity zombie) {
-            zombies.put(zombie, System.currentTimeMillis() + 10100); //they last for 10100 millis ish so this is the time they despawn
+            zombies.put(zombie, System.currentTimeMillis() + ZOMBIE_LIFE_TIME);
         }
     }
 
     protected static void onEntityAttacked(Entity entity) {
         if (entity instanceof ZombieEntity zombie) {
             if (zombies.containsKey(zombie)) {
-                zombies.put(zombie, System.currentTimeMillis() + 10100); //timer is reset when they are hit
+                zombies.put(zombie, System.currentTimeMillis() + ZOMBIE_LIFE_TIME); //timer is reset when they are hit
             }
         }
     }
@@ -68,8 +75,8 @@ public class ForceTestHelper {
                 text = text.formatted(Formatting.RED);
             }
 
-            Vec3d lablePos = zombie.getKey().getEyePos();
-            RenderHelper.renderText(context, text, lablePos, 1.5f, true);
+            Vec3d labelPos = zombie.getKey().getEyePos();
+            RenderHelper.renderText(context, text, labelPos, 1.5f, true);
         }
     }
 }

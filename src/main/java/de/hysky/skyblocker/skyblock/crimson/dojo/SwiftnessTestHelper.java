@@ -24,6 +24,11 @@ public class SwiftnessTestHelper {
         }
     }
 
+    /**
+     * Renders a green block around the newest block
+     *
+     * @param context render context
+     */
     protected static void render(WorldRenderContext context) {
         if (lastBlock == null) {
             return;
