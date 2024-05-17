@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -41,6 +42,7 @@ public class DojoManager {
     protected enum DojoChallenges {
         NONE("none", enabled -> false),
         FORCE("Force", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
+        STAMINA("Stamina", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableStaminaHelper),
         MASTERY("Mastery", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableMasteryHelper),
         DISCIPLINE("Discipline", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableDisciplineHelper),
         SWIFTNESS("Swiftness", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableSwiftnessHelper),
@@ -70,6 +72,7 @@ public class DojoManager {
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
         ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
         AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);
+        Scheduler.INSTANCE.scheduleCyclic(DojoManager::update, 3);
     }
 
     private static void reset() {
@@ -80,6 +83,7 @@ public class DojoManager {
         TenacityTestHelper.reset();
         ForceTestHelper.reset();
         ControlTestHelper.reset();
+        StaminaTestHelper.reset();
     }
 
     /**
@@ -92,7 +96,6 @@ public class DojoManager {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || overlay) {
             return;
         }
-        System.out.println(Formatting.strip(text.getString()));
         if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
             inArena = true;
             return;
@@ -115,6 +118,15 @@ public class DojoManager {
             if (!currentChallenge.enabled.test(true)) {
                 currentChallenge = DojoChallenges.NONE;
             }
+        }
+    }
+
+    private static void update() {
+        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+            return;
+        }
+        if (currentChallenge == DojoChallenges.STAMINA) {
+            StaminaTestHelper.update();
         }
     }
 
@@ -217,6 +229,7 @@ public class DojoManager {
         }
         switch (currentChallenge) {
             case FORCE -> ForceTestHelper.render(context);
+            case STAMINA -> StaminaTestHelper.render(context);
             case SWIFTNESS -> SwiftnessTestHelper.render(context);
             case TENACITY -> TenacityTestHelper.render(context);
             case MASTERY -> MasteryTestHelper.render(context);

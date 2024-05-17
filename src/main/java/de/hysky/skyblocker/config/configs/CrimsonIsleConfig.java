@@ -42,6 +42,9 @@ public class CrimsonIsleConfig {
         public boolean enableForceHelper = true;
 
         @SerialEntry
+        public boolean enableStaminaHelper = true;
+
+        @SerialEntry
         public boolean enableMasteryHelper = true;
 
         @SerialEntry
