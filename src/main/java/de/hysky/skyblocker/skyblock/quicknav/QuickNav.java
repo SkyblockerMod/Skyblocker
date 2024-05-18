@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -46,9 +47,9 @@ public class QuickNav {
 
     private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
         QuickNavigationConfig.ItemData itemData = buttonInfo.itemData;
-        ItemStack stack = ItemStackComponentizationFixer.fromComponentsString(itemData.item.toString(), Math.clamp(itemData.count, 1, 99), itemData.components);
-        boolean uiTitleMatches = false;
+        ItemStack stack = itemData != null && itemData.item != null && itemData.components != null ? ItemStackComponentizationFixer.fromComponentsString(itemData.item.toString(), Math.clamp(itemData.count, 1, 99), itemData.components) : new ItemStack(Items.BEDROCK);
 
+        boolean uiTitleMatches = false;
         try {
             uiTitleMatches = screenTitle.matches(buttonInfo.uiTitle);
         } catch (PatternSyntaxException e) {
