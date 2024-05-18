@@ -278,4 +278,15 @@ public abstract class HudWidget implements Element, Widget {
     public String getInternalID() {
         return internalID;
     }
+
+    private boolean positioned = false;
+
+
+    public boolean isPositioned() {
+        return positioned;
+    }
+
+    public void setPositioned(boolean positioned) {
+        this.positioned = positioned;
+    }
 }
