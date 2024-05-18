@@ -68,6 +68,13 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.hideStatusEffectOverlay = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory"))
+                        .binding(defaults.uiAndVisuals.showEquipmentInInventory,
+                                () -> config.uiAndVisuals.showEquipmentInInventory,
+                                newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()

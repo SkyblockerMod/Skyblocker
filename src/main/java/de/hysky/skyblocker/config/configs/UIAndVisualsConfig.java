@@ -28,6 +28,9 @@ public class UIAndVisualsConfig {
     public boolean hideStatusEffectOverlay = false;
 
     @SerialEntry
+    public boolean showEquipmentInInventory = true;
+
+    @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
     @SerialEntry
