@@ -202,7 +202,7 @@ public class Calculator {
 
     public static double calculate(String equation) {
         //custom bit for replacing purse with its value
-        equation = equation.toLowerCase().replaceAll("p(urse)?", String.valueOf(Utils.getPurse()));
+        equation = equation.toLowerCase().replaceAll("p(urse)?", String.valueOf((int)Utils.getPurse()));
         return evaluate(shunt(lex(equation)));
     }
 }
