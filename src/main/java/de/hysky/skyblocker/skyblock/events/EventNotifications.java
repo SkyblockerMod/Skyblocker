@@ -134,12 +134,12 @@ public class EventNotifications {
             }
             String eventName = entry.getKey();
             List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, DEFAULT_REMINDERS);
-            if (reminderTimes.isEmpty()) return;
+            if (reminderTimes.isEmpty()) continue;
 
             for (Integer reminderTime : reminderTimes) {
                 if (currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
                     MinecraftClient instance = MinecraftClient.getInstance();
-                    if (eventName.equals("Jacob's Farming Contest")) {
+                    if (eventName.equals(JACOBS)) {
                         instance.getToastManager().add(
                                 new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras())
                         );
