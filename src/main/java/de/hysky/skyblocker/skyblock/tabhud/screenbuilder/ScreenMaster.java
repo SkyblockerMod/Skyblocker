@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
+import de.hysky.skyblocker.utils.Location;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -39,6 +40,7 @@ public class ScreenMaster {
     private static final HashMap<String, ScreenBuilder> standardMap = new HashMap<>();
     private static final HashMap<String, ScreenBuilder> screenAMap = new HashMap<>();
     private static final HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
+    private static final Map<Location, ScreenBuilder> builderMap = new HashMap<>();
 
     /**
      * Load a screen mapping from an identifier
@@ -57,6 +59,10 @@ public class ScreenMaster {
             case "screen_a" -> screenAMap.put(location, sb);
             case "screen_b" -> screenBMap.put(location, sb);
         }
+    }
+
+    public static ScreenBuilder getScreenBuilder(Location location) {
+        return builderMap.computeIfAbsent(location, location1 -> new ScreenBuilder(new Identifier("")));
     }
 
     /**
@@ -106,6 +112,7 @@ public class ScreenMaster {
                 LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
             }
         });
+        /*
 
 
         // WHY MUST IT ALWAYS BE SUCH NESTED GARBAGE MINECRAFT KEEP THAT IN DFU FFS
@@ -165,6 +172,8 @@ public class ScreenMaster {
                         }
                     }
                 });
+
+         */
     }
 
 }
