@@ -8,6 +8,7 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -34,19 +35,33 @@ public class ChatRulesHandler {
     private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
     private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
     /**
-     * look up table for the locations input by the users to raw locations
-     */
-    protected static final HashMap<String, String> locations = new HashMap<>();
-    /**
      * list of possible locations still formatted for the tool tip
      */
-    protected static final List<String> locationsList = new ArrayList<>();
+    protected static final List<String> locationsList = List.of (
+            "The Farming Islands",
+            "Crystal Hollows",
+            "Jerry's Workshop",
+            "The Park",
+            "Dark Auction",
+            "Dungeons",
+            "The End",
+            "Crimson Isle",
+            "Hub",
+            "Kuudra's Hollow",
+            "Private Island",
+            "Dwarven Mines",
+            "The Garden",
+            "Gold Mine",
+            "Blazing Fortress",
+            "Deep Caverns",
+            "Spider's Den",
+            "Mineshaft"
+    );
 
     protected static final List<ChatRule> chatRuleList = new ArrayList<>();
 
     public static void init() {
         CompletableFuture.runAsync(ChatRulesHandler::loadChatRules);
-        CompletableFuture.runAsync(ChatRulesHandler::loadLocations);
         ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
     }
 
@@ -74,26 +89,6 @@ public class ChatRulesHandler {
 
         chatRuleList.add(cleanHubRule);
         chatRuleList.add(miningAbilityRule);
-    }
-
-    private static void loadLocations() {
-        try {
-            String response = Http.sendGetRequest("https://api.hypixel.net/v2/resources/games");
-            JsonObject locationsJson = JsonParser.parseString(response).getAsJsonObject().get("games").getAsJsonObject().get("SKYBLOCK").getAsJsonObject().get("modeNames").getAsJsonObject();
-            for (Map.Entry<String, JsonElement> entry : locationsJson.entrySet()) {
-                //fix old naming todo remove when hypixel fix
-                if (Objects.equals(entry.getKey(), "instanced")) {
-                    locationsList.add(entry.getValue().getAsString());
-                    locations.put(entry.getValue().getAsString().replace(" ", "").toLowerCase(), "kuudra");
-                    continue;
-                }
-                locationsList.add(entry.getValue().getAsString());
-                //add to list in a simplified for so more lenient for user input
-                locations.put(entry.getValue().getAsString().replace(" ", "").toLowerCase(), entry.getKey());
-            }
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Chat Rules] Failed to load locations!", e);
-        }
     }
 
     protected static void saveChatRules() {
