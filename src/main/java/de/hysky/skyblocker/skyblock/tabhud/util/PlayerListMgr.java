@@ -1,9 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
@@ -12,6 +9,7 @@ import java.util.regex.Pattern;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -61,24 +59,30 @@ public class PlayerListMgr {
 			playerList = cpnwh.getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList();
 		}
 
-		Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
-		Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
+		// TODO DUNGEONS CHECK
+		if (!(MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible())) {
+			updateWidgetsFrom(playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).toList());
+		}
+
+
+	}
+
+	public static void updateWidgetsFrom(List<Text> lines) {
+		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
+		final Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
 
 		widgetsToShow.clear();
 		boolean doingPlayers = false;
 		boolean playersDone = false;
 		String hypixelWidgetName = "";
 		List<Text> contents = new ArrayList<>();
-		// TODO DUNGEONS CHECK
 
-		for (PlayerListEntry playerListEntry : playerList) {
-			Text displayName = playerListEntry.getDisplayName();
-			if (displayName == null) continue;
+		for (Text displayName : lines) {
 			String string = displayName.getString();
 
-            if (string.isBlank()) continue;
-            if (!playersDone) {
-                // check if Players (number)
+			if (string.isBlank()) continue;
+			if (!playersDone) {
+				// check if Players (number)
 				if (playersColumnPredicate.test(string)) {
 					if (!doingPlayers) {
 						doingPlayers = true;
@@ -93,8 +97,8 @@ public class PlayerListMgr {
 					contents.clear();
 					continue;
 				}
-            } else {
-                if (infoColumnPredicate.test(string)) continue;
+			} else {
+				if (infoColumnPredicate.test(string)) continue;
 				// New widget alert!!!!
 				if (!string.startsWith(" ")) {
 					if (!contents.isEmpty()) widgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
@@ -104,10 +108,10 @@ public class PlayerListMgr {
 					if (!nameAndInfo.right().getString().isBlank()) contents.add(trim(nameAndInfo.right()));
 					continue;
 				}
-            }
+			}
 			// Add the line to the content
-            contents.add(trim(displayName));
-        }
+			contents.add(trim(displayName));
+		}
 		if (!contents.isEmpty()) widgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 		ScreenBuilder.positionsNeedsUpdating = true;
 	}

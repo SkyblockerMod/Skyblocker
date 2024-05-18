@@ -39,7 +39,7 @@ public class ScreenBuilder {
     // maps alias -> widget instance
     private final HashMap<String, HudWidget> objectMap = new HashMap<>();
 
-    private final String builderName;
+    //private final String builderName;
 
     private final Map<String, Boolean> positioning = new Object2ObjectOpenHashMap<>();
 
@@ -48,7 +48,7 @@ public class ScreenBuilder {
      */
     public ScreenBuilder(Identifier ident) {
 
-        try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager().openAsReader(ident)) {
+        /*try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager().openAsReader(ident)) {
             this.builderName = ident.getPath();
 
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
@@ -73,7 +73,7 @@ public class ScreenBuilder {
         } catch (Exception ex) {
             // rethrow as unchecked exception so that I don't have to catch anything in the ScreenMaster
             throw new IllegalStateException("Failed to load file " + ident + ". Reason: " + ex.getMessage());
-        }
+        }*/
     }
 
     /**
@@ -82,7 +82,7 @@ public class ScreenBuilder {
      */
     public HudWidget instanceFrom(String name, JsonObject widget) {
 
-        // do widgets that require args the normal way
+        /*// do widgets that require args the normal way
         JsonElement arg;
         switch (name) {
             case "DungeonPlayerWidget" -> {
@@ -124,7 +124,7 @@ public class ScreenBuilder {
 
         // load failed.
         if (clazz == null) {
-           throw new NoSuchElementException(builderName + "/[ERROR]: No such Widget type \"" + name + "\"!");
+            throw new NoSuchElementException(builderName + "/[ERROR]: No such Widget type \"" + name + "\"!");
         }
 
         // return instance of that class.
@@ -132,9 +132,10 @@ public class ScreenBuilder {
             Constructor<?> ctor = clazz.getConstructor();
             return (HudWidget) ctor.newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
+                 | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
             throw new IllegalStateException(builderName + "/" + name + ": Internal error...");
-        }
+        }*/
+        return null;
     }
 
     /**
@@ -149,7 +150,7 @@ public class ScreenBuilder {
             case "stack" -> new StackStage(this, descr);
             case "align" -> new AlignStage(this, descr);
             case "collideAgainst" -> new CollideStage(this, descr);
-            default -> throw new NoSuchElementException("No such op " + op + " as requested by " + this.builderName);
+            default -> throw new NoSuchElementException("No such op " + op + " as requested by ");
         };
     }
 
@@ -158,93 +159,124 @@ public class ScreenBuilder {
      */
     public HudWidget getInstance(String name) {
         if (!this.objectMap.containsKey(name)) {
-            throw new NoSuchElementException("No widget with alias " + name + " in screen " + builderName);
+            throw new NoSuchElementException("No widget with alias " + name + " in screen ");
         }
         return this.objectMap.get(name);
     }
 
-    private static int totalWidth = 0;
+    private List<TabHudWidget> topAligned(int screenW, int screenH) {
+        List<TabHudWidget> affected = new ArrayList<>();
+        List<TabHudWidget> unaffected = new ArrayList<>();
 
-    private void topAligned(MatrixStack matrices, int screenW, int screenH) {
-        if (positionsNeedsUpdating) {
+        final int maxY = 300;
+        final int startY = 20;
 
-            positionsNeedsUpdating = false;
-            final int maxY = 300;
-            final int startY = 20;
+        int totalWidth = 0;
 
-            totalWidth = 0;
-
-            int currentWidth = 0;
-            int currentY = startY;
-            for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
-                if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) continue;
-                tabHudWidget.update();
-                if (currentY + tabHudWidget.getHeight() > maxY) {
-                    totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
-                    currentY = startY;
-                    currentWidth = 0;
-                }
-                tabHudWidget.setPosition(totalWidth, currentY);
-                currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
-                currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
+        int currentWidth = 0;
+        int currentY = startY;
+        for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
+            if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) {
+                unaffected.add(tabHudWidget);
+                continue;
             }
-            totalWidth += currentWidth;
+            affected.add(tabHudWidget);
+
+            tabHudWidget.update();
+            if (currentY + tabHudWidget.getHeight() > maxY) {
+                totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
+                currentY = startY;
+                currentWidth = 0;
+            }
+            tabHudWidget.setPosition(totalWidth, currentY);
+            currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
+            currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
         }
-        matrices.translate((float) (screenW - totalWidth)/2, 0, 0);
+        totalWidth += currentWidth;
+
+        // centering
+        int off = (screenW - totalWidth) / 2;
+        for (TabHudWidget tabHudWidget : affected) {
+            tabHudWidget.setX(tabHudWidget.getX() - off);
+        }
+
+        return unaffected;
+
     }
 
-    private void centered(MatrixStack matrices, int screenW, int screenH) {
-        if (positionsNeedsUpdating) {
-            positionsNeedsUpdating = false;
-            totalWidth = 0;
+    private List<TabHudWidget> centered(int screenW, int screenH) {
+        List<TabHudWidget> affected = new ArrayList<>();
+        List<TabHudWidget> unaffected = new ArrayList<>();
 
-            final int maxY = Math.min(400, (int) (screenH*0.9f));
-            // each column is a pair of a list of widgets for the rows and an int for the width of the column
-            List<ObjectIntPair<List<TabHudWidget>>> columns = new ArrayList<>();
-            columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
+        int totalWidth = 0;
 
-            int currentY = 0;
-            int currentWidth = 0;
+        final int maxY = Math.min(400, (int) (screenH * 0.9f));
+        // each column is a pair of a list of widgets for the rows and an int for the width of the column
+        List<ObjectIntPair<List<TabHudWidget>>> columns = new ArrayList<>();
+        columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
 
-            for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
-                if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) continue;
-                tabHudWidget.update();
-                if (currentY + tabHudWidget.getHeight() > maxY) {
-                    currentY = 0;
-                    currentWidth = 0;
-                    columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
-                }
-                tabHudWidget.setY(currentY);
-                currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
-                currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
-                columns.getLast().right(currentWidth);
-                columns.getLast().left().add(tabHudWidget);
+        int currentY = 0;
+        int currentWidth = 0;
+
+        for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
+            if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) {
+                unaffected.add(tabHudWidget);
+                continue;
             }
-            for (int i = 0; i < columns.size(); i++) {
-                ObjectIntPair<List<TabHudWidget>> listObjectIntPair = columns.get(i);
-                int columnWidth = listObjectIntPair.rightInt();
-                List<TabHudWidget> column = listObjectIntPair.left();
+            affected.add(tabHudWidget);
 
-                // calculate the height of the column
-                int height = (column.size() - 1) * ScreenConst.WIDGET_PAD;
-                for (TabHudWidget tabHudWidget : column) {
-                    height += tabHudWidget.getHeight();
-                }
-                // set x and y of the widgets!
-                int offset = (screenH - height) / 2;
-                for (TabHudWidget tabHudWidget : column) {
-                    tabHudWidget.setY(tabHudWidget.getY() + offset);
-                    if (i < columns.size() / 2) {
-                        tabHudWidget.setX(totalWidth + columnWidth - tabHudWidget.getWidth());
-                    } else {
-                        tabHudWidget.setX(totalWidth);
-                    }
-                }
-                totalWidth += columnWidth + ScreenConst.WIDGET_PAD;
+            tabHudWidget.update();
+            // Too large to fit in column
+            if (currentY + tabHudWidget.getHeight() > maxY) {
+                currentY = 0;
+                currentWidth = 0;
+                columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
             }
+            tabHudWidget.setY(currentY);
+            currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
+            currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
+            columns.getLast().right(currentWidth);
+            columns.getLast().left().add(tabHudWidget);
+        }
+        for (int i = 0; i < columns.size(); i++) {
+            ObjectIntPair<List<TabHudWidget>> listObjectIntPair = columns.get(i);
+            int columnWidth = listObjectIntPair.rightInt();
+            List<TabHudWidget> column = listObjectIntPair.left();
+
+            // calculate the height of the column
+            int height = (column.size() - 1) * ScreenConst.WIDGET_PAD;
+            for (TabHudWidget tabHudWidget : column) {
+                height += tabHudWidget.getHeight();
+            }
+            // set x and y of the widgets!
+            int offset = (screenH - height) / 2;
+            for (TabHudWidget tabHudWidget : column) {
+                tabHudWidget.setY(tabHudWidget.getY() + offset);
+                if (i < columns.size() / 2) {
+                    tabHudWidget.setX(totalWidth + columnWidth - tabHudWidget.getWidth());
+                } else {
+                    tabHudWidget.setX(totalWidth);
+                }
+            }
+            totalWidth += columnWidth + ScreenConst.WIDGET_PAD;
         }
 
-        matrices.translate((float) (screenW - totalWidth)/2, 0, 0);
+        // Center everything
+        int off = (screenW - totalWidth) / 2;
+        for (TabHudWidget tabHudWidget : affected) {
+            tabHudWidget.setX(tabHudWidget.getX() - off);
+        }
+
+        return unaffected;
+    }
+
+    private void positionWidgets(int screenW, int screenH) {
+        List<TabHudWidget> unaffected;
+        if (false) {
+            unaffected = centered(screenW, screenH);
+        } else {
+            unaffected = topAligned(screenW, screenH);
+        }
     }
 
     /**
@@ -255,20 +287,17 @@ public class ScreenBuilder {
         int i = 0;
         for (TabHudWidget value : PlayerListMgr.widgetInstances.values()) {
             context.drawText(MinecraftClient.getInstance().textRenderer, value.getHypixelWidgetName(), 0, i, PlayerListMgr.widgetsToShow.contains(value) ? Colors.LIGHT_YELLOW : -1, true);
-            i+=9;
+            i += 9;
         }
 
-
-
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-
-        centered(matrices, screenW, screenH);
+        if (positionsNeedsUpdating) {
+            positionsNeedsUpdating = false;
+            positionWidgets(screenW, screenH);
+        }
 
         for (HudWidget w : PlayerListMgr.widgetsToShow) {
             w.render(context);
         }
-        matrices.pop();
     }
 
 }

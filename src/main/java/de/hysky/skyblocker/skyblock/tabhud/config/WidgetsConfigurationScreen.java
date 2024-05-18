@@ -18,6 +18,11 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     private GenericContainerScreenHandler handler;
     private String titleLowercase;
 
+    private boolean tabPreview = false;
+    public boolean isPreviewVisible() {
+        return tabPreview;
+    }
+
     // Tabs and stuff
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
     @Nullable
@@ -68,6 +73,9 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+        if (slotId == 4) {
+            tabPreview = stack.isOf(Items.PLAYER_HEAD);
+        }
         if (widgetsOrderingTab == null) {
             if (slotId == 13) slotThirteenBacklog = stack.copy();
             return;
