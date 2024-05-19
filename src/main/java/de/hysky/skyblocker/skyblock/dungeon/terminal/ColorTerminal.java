@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
-public class ColorTerminal extends ContainerSolver implements TerminalSolver {
+public non-sealed class ColorTerminal extends ContainerSolver implements TerminalSolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
     private static final Map<String, DyeColor> colorFromName;
     private DyeColor targetColor;

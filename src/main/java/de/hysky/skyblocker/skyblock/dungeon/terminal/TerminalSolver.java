@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
-public interface TerminalSolver {
+public sealed interface TerminalSolver permits ColorTerminal, LightsOnTerminal, OrderTerminal, StartsWithTerminal {
 
 	default boolean shouldBlockIncorrectClicks() {
 		return SkyblockerConfigManager.get().dungeons.terminals.blockIncorrectClicks;

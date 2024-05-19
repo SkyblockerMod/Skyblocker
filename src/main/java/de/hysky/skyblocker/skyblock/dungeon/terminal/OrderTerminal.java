@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OrderTerminal extends ContainerSolver implements TerminalSolver {
+public non-sealed class OrderTerminal extends ContainerSolver implements TerminalSolver {
     private final int PANES_NUM = 14;
     private int[] orderedSlots;
     private int currentNum = Integer.MAX_VALUE;
