@@ -135,6 +135,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		if (!(MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen screen) || !screen.getTitle().getString().equals("Chocolate Factory")) return;
 
 		int lineIndex = lines.size();
+		//This boolean is used to determine if we should add a smooth line to separate the added information from the rest of the tooltip.
+		//It should be set to true if there's any information added, false otherwise.
 		boolean shouldAddLine = false;
 
 		String lore = concatenateLore(lines);
@@ -161,7 +163,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static boolean addUpgradeTimerToLore(List<Text> lines, long cost) {
-		if (totalChocolate == -1L || totalCps == -1.0) return false;
+		if (totalChocolate < 0L || totalCps < 0.0) return false;
 		lines.add(Text.empty()
 		              .append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
 		              .append(formatTime((cost - totalChocolate) / totalCps)));
@@ -180,7 +182,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static boolean addTimeTowerStatsToLore(List<Text> lines) {
-		if (totalCps == -1.0 || totalCpsMultiplier == -1.0 || timeTowerMultiplier == -1.0) return false;
+		if (totalCps < 0.0 || totalCpsMultiplier < 0.0 || timeTowerMultiplier < 0.0) return false;
 		lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
 		lines.add(Text.empty()
 		              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
