@@ -394,10 +394,14 @@ public class ItemTooltip {
         return message;
     }
 
+    //This is static to not create a new text object for each line in every item
+    private static final Text bumpyLine = Text.literal("-----------------").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH);
+
     private static void smoothenLines(List<Text> lines) {
         for (int i = 0; i < lines.size(); i++) {
-            Text line = lines.get(i);
-            if (line.getString().equals("-----------------")) {
+            List<Text> lineSiblings = lines.get(i).getSiblings();
+            //Compare the first sibling rather than the whole object as the style of the root object can change while visually staying the same
+            if (lineSiblings.size() == 1 && lineSiblings.getFirst().equals(bumpyLine)) {
                 lines.set(i, createSmoothLine());
             }
         }
