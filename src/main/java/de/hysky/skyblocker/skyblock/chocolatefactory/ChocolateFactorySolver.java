@@ -121,7 +121,10 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		//Time Tower is in slot 39
 		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		isTimeTowerActive = ItemUtils.getLore(slots.get(39)).getLast().getString().equals("The Time Tower is active!");
+		List<Text> timeTowerLore = ItemUtils.getLore(slots.get(39));
+		if (!timeTowerLore.isEmpty()) {
+			isTimeTowerActive = timeTowerLore.getLast().getString().equals("The Time Tower is active!");
+		}
 
 		//Compare cost/cpsIncrease rather than cpsIncrease/cost to avoid getting close to 0 and losing precision.
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
