@@ -217,7 +217,7 @@ public class ItemUtils {
 
     public static Optional<String> getHeadTextureOptional(ItemStack stack) {
         String texture = getHeadTexture(stack);
-        if (texture == null) return Optional.empty();
+        if (texture.isBlank()) return Optional.empty();
         return Optional.of(texture);
     }
 
