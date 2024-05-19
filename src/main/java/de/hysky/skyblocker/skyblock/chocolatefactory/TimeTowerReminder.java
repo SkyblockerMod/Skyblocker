@@ -24,6 +24,7 @@ public class TimeTowerReminder {
 	private static final String TIME_TOWER_FILE = "time_tower.txt";
 	private static final Pattern TIME_TOWER_PATTERN = Pattern.compile("^TIME TOWER! Your Chocolate Factory production has increased by \\+[\\d.]+x for \\dh!$");
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Time Tower Reminder");
+	private static boolean scheduled = false;
 
 	private TimeTowerReminder() {
 	}
@@ -34,9 +35,9 @@ public class TimeTowerReminder {
 	}
 
 	public static void checkIfTimeTower(Message message, boolean overlay) {
-		if (!TIME_TOWER_PATTERN.matcher(message.getString()).matches()) return;
+		if (!TIME_TOWER_PATTERN.matcher(message.getString()).matches() || scheduled) return;
 		Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60 * 60 * 20); // 1 hour
-
+		scheduled = true;
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		if (!tempFile.exists()) {
 			try {
@@ -60,6 +61,7 @@ public class TimeTowerReminder {
 
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		try {
+			scheduled = false;
 			if (tempFile.exists()) Files.delete(tempFile.toPath());
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Time Tower Reminder] Failed to delete temp file for Time Tower Reminder!", e);
@@ -68,7 +70,7 @@ public class TimeTowerReminder {
 
 	private static void checkTempFile() {
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
-		if (!tempFile.exists()) return;
+		if (!tempFile.exists() || scheduled) return;
 
 		long time;
 		try (Stream<String> file = Files.lines(tempFile.toPath())) {
