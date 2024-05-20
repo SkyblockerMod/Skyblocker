@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.experiment;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -11,7 +10,7 @@ import net.minecraft.item.Items;
 
 import java.util.*;
 
-public class SuperpairsSolver extends ExperimentSolver {
+public non-sealed class SuperpairsSolver extends ExperimentSolver {
     private int superpairsPrevClickedSlot;
     private ItemStack superpairsCurrentSlot;
     private final Set<Integer> superpairsDuplicatedSlots = new HashSet<>();

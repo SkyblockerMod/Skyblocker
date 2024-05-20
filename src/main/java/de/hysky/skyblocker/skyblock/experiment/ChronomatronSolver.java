@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.experiment;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -17,7 +16,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChronomatronSolver extends ExperimentSolver {
+public non-sealed class ChronomatronSolver extends ExperimentSolver {
     public static final ImmutableMap<Item, Item> TERRACOTTA_TO_GLASS = ImmutableMap.ofEntries(
             new AbstractMap.SimpleImmutableEntry<>(Items.RED_TERRACOTTA, Items.RED_STAINED_GLASS),
             new AbstractMap.SimpleImmutableEntry<>(Items.ORANGE_TERRACOTTA, Items.ORANGE_STAINED_GLASS),
