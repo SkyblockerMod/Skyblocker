@@ -76,6 +76,7 @@ public class SkyblockerMod implements ClientModInitializer {
     public static final String VERSION = SKYBLOCKER_MOD.getMetadata().getVersion().getFriendlyString();
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson GSON_COMPACT = new GsonBuilder().create();
     private static SkyblockerMod INSTANCE;
     public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public final StatusBarTracker statusBarTracker = new StatusBarTracker();
@@ -119,7 +120,6 @@ public class SkyblockerMod implements ClientModInitializer {
         EnderNodes.init();
         OrderedWaypoints.init();
         BackpackPreview.init();
-        QuickNav.init();
         ItemCooldowns.init();
         TabHud.init();
         DwarvenHud.init();

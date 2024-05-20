@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -9,6 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.SkyblockerMod;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
@@ -49,7 +49,6 @@ public class ItemUtils {
     private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
-    private static final Gson GSON = new Gson(); //GSON Instance with no config
     private static final Codec<RegistryEntry<Item>> EMPTY_ALLOWING_ITEM_CODEC = Registries.ITEM.getEntryCodec();
     public static final Codec<ItemStack> EMPTY_ALLOWING_ITEMSTACK_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
             EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getRegistryEntry),
@@ -59,7 +58,7 @@ public class ItemUtils {
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
-            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + GSON.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
             return Command.SINGLE_SUCCESS;
         });
     }

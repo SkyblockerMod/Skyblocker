@@ -1,20 +1,16 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,16 +20,6 @@ import java.util.regex.PatternSyntaxException;
 
 public class QuickNav {
     private static final Logger LOGGER = LoggerFactory.getLogger(QuickNav.class);
-
-    public static void init() {
-        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && screen instanceof HandledScreen<?> && client.player != null && !client.player.isCreative()) {
-                String screenTitle = screen.getTitle().getString().trim();
-                List<QuickNavButton> buttons = QuickNav.init(screenTitle);
-                for (QuickNavButton button : buttons) Screens.getButtons(screen).add(button);
-            }
-        });
-    }
 
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
@@ -51,6 +37,8 @@ public class QuickNav {
             if (data.button10.render) buttons.add(parseButton(data.button10, screenTitle, 9));
             if (data.button11.render) buttons.add(parseButton(data.button11, screenTitle, 10));
             if (data.button12.render) buttons.add(parseButton(data.button12, screenTitle, 11));
+            if (data.button13.render) buttons.add(parseButton(data.button13, screenTitle, 12));
+            if (data.button14.render) buttons.add(parseButton(data.button14, screenTitle, 13));
         } catch (CommandSyntaxException e) {
             LOGGER.error("[Skyblocker] Failed to initialize Quick Nav Button", e);
         }
@@ -58,22 +46,19 @@ public class QuickNav {
     }
 
     private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
-        QuickNavigationConfig.ItemData itemData = buttonInfo.item;
-        ItemStack stack = ItemStackComponentizationFixer.fromComponentsString(itemData.id, Math.clamp(itemData.count, 1, 99), itemData.components);
-        boolean uiTitleMatches = false;
+        QuickNavigationConfig.ItemData itemData = buttonInfo.itemData;
+        ItemStack stack = itemData != null && itemData.item != null && itemData.components != null ? ItemStackComponentizationFixer.fromComponentsString(itemData.item.toString(), Math.clamp(itemData.count, 1, 99), itemData.components) : new ItemStack(Items.BARRIER);
 
+        boolean uiTitleMatches = false;
         try {
             uiTitleMatches = screenTitle.matches(buttonInfo.uiTitle);
         } catch (PatternSyntaxException e) {
-            LOGGER.error("[Skyblocker] Failed to parse Quick Nav Button", e);
+            LOGGER.error("[Skyblocker] Failed to parse Quick Nav Button with regex: {}", buttonInfo.uiTitle, e);
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
-                player.sendMessage(Text.of(Formatting.RED + "[Skyblocker] Invalid regex in quicknav button " + (id + 1) + "!"), false);
+                player.sendMessage(Constants.PREFIX.get().append(Text.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").formatted(Formatting.RED)), false);
             }
         }
-        return new QuickNavButton(id,
-                uiTitleMatches,
-                buttonInfo.clickEvent,
-                stack);
+        return new QuickNavButton(id, uiTitleMatches, buttonInfo.clickEvent, stack);
     }
 }

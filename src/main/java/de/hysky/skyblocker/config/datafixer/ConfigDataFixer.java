@@ -47,9 +47,13 @@ public class ConfigDataFixer {
 	}
 
 	public static JsonObject apply(JsonObject oldConfig) {
+		return apply(oldConfig, SkyblockerConfigManager.CONFIG_VERSION);
+	}
+
+	public static JsonObject apply(JsonObject oldConfig, int newVersion) {
         long start = System.currentTimeMillis();
 
-		JsonObject newConfig = build().update(CONFIG_TYPE, new Dynamic<>(JsonOps.INSTANCE, oldConfig), JsonHelper.getInt(oldConfig, "version").orElse(1), SkyblockerConfigManager.CONFIG_VERSION).getValue().getAsJsonObject();
+		JsonObject newConfig = build().update(CONFIG_TYPE, new Dynamic<>(JsonOps.INSTANCE, oldConfig), JsonHelper.getInt(oldConfig, "version").orElse(1), newVersion).getValue().getAsJsonObject();
 
 		long end = System.currentTimeMillis();
 		LOGGER.info("[Skyblocker Config Data Fixer] Applied datafixers in {} ms!", end - start);
@@ -62,6 +66,8 @@ public class ConfigDataFixer {
 		builder.addSchema(1, ConfigSchema::new);
 		Schema schema2 = builder.addSchema(2, Schema::new);
 		builder.addFixer(new ConfigFix1(schema2, true));
+		Schema schema3 = builder.addSchema(3, Schema::new);
+		builder.addFixer(new ConfigFix2QuickNav(schema3, true));
 
 		return builder.buildUnoptimized();
 	}

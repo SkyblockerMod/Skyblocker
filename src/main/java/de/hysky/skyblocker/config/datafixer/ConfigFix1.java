@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.config.datafixer;
 
 import com.mojang.datafixers.DSL;
-import com.mojang.datafixers.DataFix;
-import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
@@ -14,7 +12,7 @@ import net.minecraft.nbt.StringNbtReader;
 
 import java.util.Locale;
 
-public class ConfigFix1 extends DataFix {
+public class ConfigFix1 extends ConfigDataFix {
     public ConfigFix1(Schema outputSchema, boolean changesType) {
         super(outputSchema, changesType);
     }
@@ -30,10 +28,6 @@ public class ConfigFix1 extends DataFix {
 
     private <T> Dynamic<T> fix(Dynamic<T> dynamic) {
         return fixMisc(fixQuickNav(fixChat(fixSlayers(fixOtherLocations(fixFarming(fixMining(fixCrimsonIsle(fixDungeons(fixHelpers(fixUIAndVisuals(fixGeneral(fixVersion(dynamic)))))))))))));
-    }
-
-    private <T> Dynamic<T> fixVersion(Dynamic<T> dynamic) {
-        return dynamic.set("version", dynamic.createInt(DataFixUtils.getVersion(getVersionKey())));
     }
 
     private static <T> Dynamic<T> fixGeneral(Dynamic<T> dynamic) {
@@ -180,19 +174,9 @@ public class ConfigFix1 extends DataFix {
     }
 
     private static <T> Dynamic<T> fixQuickNav(Dynamic<T> dynamic) {
-        return dynamic.update("quickNav", quickNav -> quickNav
-                .update("button1", ConfigFix1::fixQuickNavButton)
-                .update("button2", ConfigFix1::fixQuickNavButton)
-                .update("button3", ConfigFix1::fixQuickNavButton)
-                .update("button4", ConfigFix1::fixQuickNavButton)
-                .update("button5", ConfigFix1::fixQuickNavButton)
-                .update("button6", ConfigFix1::fixQuickNavButton)
-                .update("button7", ConfigFix1::fixQuickNavButton)
-                .update("button8", ConfigFix1::fixQuickNavButton)
-                .update("button9", ConfigFix1::fixQuickNavButton)
-                .update("button10", ConfigFix1::fixQuickNavButton)
-                .update("button11", ConfigFix1::fixQuickNavButton)
-                .update("button12", ConfigFix1::fixQuickNavButton));
+        return dynamic.update("quickNav", quickNav -> quickNav.updateMapValues(button ->
+                button.getFirst().asString().getOrThrow().startsWith("button") ? button.mapSecond(ConfigFix1::fixQuickNavButton) : button
+        ));
     }
 
     private static <T> Dynamic<T> fixQuickNavButton(Dynamic<T> button) {
