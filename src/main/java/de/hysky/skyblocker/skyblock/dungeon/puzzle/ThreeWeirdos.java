@@ -74,7 +74,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (shouldSolve() && boundingBox !=null) {
+        if (shouldSolve() && boundingBox != null) {
             RenderHelper.renderFilled(context, boundingBox, GREEN_COLOR_COMPONENTS, 0.5f, false);
         }
     }
