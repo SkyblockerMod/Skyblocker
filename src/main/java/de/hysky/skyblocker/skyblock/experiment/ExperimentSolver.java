@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ExperimentSolver extends ContainerSolver {
+public sealed abstract class ExperimentSolver extends ContainerSolver permits ChronomatronSolver, SuperpairsSolver, UltrasequencerSolver {
     public enum State {
         REMEMBER, WAIT, SHOW, END
     }

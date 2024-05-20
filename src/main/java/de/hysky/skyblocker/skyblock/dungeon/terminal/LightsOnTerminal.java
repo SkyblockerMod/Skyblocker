@@ -13,7 +13,7 @@ import net.minecraft.item.Items;
  * 
  * This doesn't solve the terminal because you don't need a solver for it, but rather to simply allow for click blocking.
  */
-public class LightsOnTerminal extends ContainerSolver implements TerminalSolver {
+public final class LightsOnTerminal extends ContainerSolver implements TerminalSolver {
 	private static final List<ColorHighlight> EMPTY = List.of();
 
 	public LightsOnTerminal() {

@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.experiment;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -12,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UltrasequencerSolver extends ExperimentSolver {
+public final class UltrasequencerSolver extends ExperimentSolver {
     public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
     private int ultrasequencerNextSlot;
 

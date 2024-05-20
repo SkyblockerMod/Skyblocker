@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class StartsWithTerminal extends ContainerSolver implements TerminalSolver {
+public final class StartsWithTerminal extends ContainerSolver implements TerminalSolver {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
 	private int lastKnownScreenId = Integer.MIN_VALUE;
 
