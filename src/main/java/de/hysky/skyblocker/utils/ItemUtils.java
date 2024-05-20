@@ -206,13 +206,13 @@ public class ItemUtils {
     public static String getHeadTexture(ItemStack stack) {
         if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
 
-        Iterator<Property> iterator = stack.get(DataComponentTypes.PROFILE)
-                                           .properties()
-                                           .get("textures")
-                                           .iterator();
+        ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
+        String texture = profile.properties().get("textures").stream()
+                .map(Property::value)
+                .findFirst()
+                .orElse("");
 
-        if (!iterator.hasNext()) return "";
-        return iterator.next().value();
+        return texture;
     }
 
     public static Optional<String> getHeadTextureOptional(ItemStack stack) {
