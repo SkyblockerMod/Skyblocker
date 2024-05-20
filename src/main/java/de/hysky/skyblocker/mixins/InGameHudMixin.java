@@ -5,8 +5,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -22,10 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,6 +31,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
@@ -79,21 +78,34 @@ public abstract class InGameHudMixin {
 
     @Inject(method = { "renderExperienceBar", "renderExperienceLevel" }, at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderExperienceBar(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift())
+        if (Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && FancyStatusBars.isExperienceFancyBarVisible())
             ci.cancel();
     }
 
-    @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V", shift = At.Shift.AFTER), cancellable = true)
     private void skyblocker$renderStatusBars(DrawContext context, CallbackInfo ci) {
-        if (!Utils.isOnSkyblock())
-            return;
-        if (statusBars.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight()))
-            ci.cancel();
+        if (Utils.isOnSkyblock() && statusBars.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight())) ci.cancel();
+    }
+
+    @Inject(method = "renderHealthBar", at = @At(value = "HEAD"), cancellable = true)
+    private void skyblocker$renderHealthBar(DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, CallbackInfo ci) {
+        if (!Utils.isOnSkyblock()) return;
+        if (FancyStatusBars.isEnabled() && FancyStatusBars.isHealthFancyBarVisible()) ci.cancel();
+    }
+
+    @ModifyExpressionValue(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getScaledWindowHeight()I"))
+    private int skyblocker$moveHealthDown(int original) {
+        return Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && !FancyStatusBars.isHealthFancyBarVisible() && FancyStatusBars.isExperienceFancyBarVisible() ? original + 6 : original;
+    }
+
+    @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
+    private static void skyblocker$renderStatusBars(DrawContext context, PlayerEntity player, int i, int j, int k, int x, CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && FancyStatusBars.isEnabled()) ci.cancel();
     }
 
     @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
     private void skyblocker$renderMountHealth(CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift())
+        if (Utils.isOnSkyblock() && FancyStatusBars.isEnabled())
             ci.cancel();
     }
 
@@ -124,16 +136,16 @@ public abstract class InGameHudMixin {
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2))
     private LayeredDrawer.Layer skyblocker$afterMainHud(LayeredDrawer.Layer mainHudLayer) {
         return (context, tickDelta) -> {
-        	mainHudLayer.render(context, tickDelta);
-        	HudRenderEvents.AFTER_MAIN_HUD.invoker().onRender(context, tickDelta);
+            mainHudLayer.render(context, tickDelta);
+            HudRenderEvents.AFTER_MAIN_HUD.invoker().onRender(context, tickDelta);
         };
     }
 
     @ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 1)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
     private LayeredDrawer.Layer skyblocker$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
         return (context, tickDelta) -> {
-        	HudRenderEvents.BEFORE_CHAT.invoker().onRender(context, tickDelta);
-        	beforeChatLayer.render(context, tickDelta);
+            HudRenderEvents.BEFORE_CHAT.invoker().onRender(context, tickDelta);
+            beforeChatLayer.render(context, tickDelta);
         };
     }
 

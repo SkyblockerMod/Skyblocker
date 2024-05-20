@@ -277,7 +277,7 @@ public class StatusBarsConfigScreen extends Screen {
     public void removed() {
         super.removed();
         FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
-        if (cursorBar != null) cursorBar.ghost = false;
+        if (cursorBar != null) cursorBar.inMouse = false;
         FancyStatusBars.updatePositions();
         assert client != null;
         GLFW.glfwSetCursor(client.getWindow().getHandle(), 0);
@@ -292,7 +292,7 @@ public class StatusBarsConfigScreen extends Screen {
     private void onBarClick(StatusBar statusBar, int button, int mouseX, int mouseY) {
         if (button == 0) {
             cursorBar = statusBar;
-            cursorBar.ghost = true;
+            cursorBar.inMouse = true;
             if (statusBar.anchor != null)
                 FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
             FancyStatusBars.updatePositions();
@@ -321,7 +321,7 @@ public class StatusBarsConfigScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (cursorBar != null) {
-            cursorBar.ghost = false;
+            cursorBar.inMouse = false;
             cursorBar = null;
             FancyStatusBars.updatePositions();
             checkNullAnchor(FancyStatusBars.statusBars.values());
