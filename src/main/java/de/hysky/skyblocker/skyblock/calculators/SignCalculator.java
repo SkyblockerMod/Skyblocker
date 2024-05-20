@@ -47,7 +47,7 @@ public class SignCalculator {
 
         //price can except decimals and exponents
         if (isPrice) {
-            return FORMATTER.format(output);
+            return String.valueOf(output);
         }
         //amounts want an integer number so round
         return Long.toString(Math.round(output));
