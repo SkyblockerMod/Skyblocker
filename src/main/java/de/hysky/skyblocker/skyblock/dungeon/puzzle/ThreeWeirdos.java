@@ -25,6 +25,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
     protected static final Pattern PATTERN = Pattern.compile("^\\[NPC] ([A-Z][a-z]+): (?:The reward is(?: not in my chest!|n't in any of our chests\\.)|My chest (?:doesn't have the reward\\. We are all telling the truth\\.|has the reward and I'm telling the truth!)|At least one of them is lying, and the reward is not in [A-Z][a-z]+'s chest!|Both of them are telling the truth\\. Also, [A-Z][a-z]+ has the reward in their chest!)$");
     private static final float[] GREEN_COLOR_COMPONENTS = new float[]{0, 1, 0};
     private static BlockPos pos;
+    static Box boundingBox;
 
     private ThreeWeirdos() {
         super("three-weirdos", "three-chests");
@@ -63,6 +64,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
         );
         if (!npcs.isEmpty()) {
             pos = room.relativeToActual(relative.add(1, 0, 0));
+            boundingBox = RenderHelper.getBlockBoundingBox(world, pos);
             npcs.forEach(entity -> entity.setCustomName(Text.literal(name).formatted(Formatting.GREEN)));
         }
     }
@@ -72,8 +74,8 @@ public class ThreeWeirdos extends DungeonPuzzle {
 
     @Override
     public void render(WorldRenderContext context) {
-        if (shouldSolve() && pos != null) {
-            RenderHelper.renderFilled(context, pos, GREEN_COLOR_COMPONENTS, 0.5f, true);
+        if (shouldSolve() && boundingBox !=null) {
+            RenderHelper.renderFilled(context, boundingBox, GREEN_COLOR_COMPONENTS, 0.5f, false);
         }
     }
 

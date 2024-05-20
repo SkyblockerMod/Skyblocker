@@ -31,6 +31,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
+import net.minecraft.world.BlockView;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -59,6 +60,20 @@ public class RenderHelper {
     public static void renderFilledWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
         renderFilled(context, pos, colorComponents, alpha, throughWalls);
         renderBeaconBeam(context, pos, colorComponents);
+    }
+    public static void renderFilled(WorldRenderContext context, Box boundingBox, float[] colorComponents, float alpha, boolean throughWalls) {
+        MatrixStack matrices = context.matrixStack();
+        Vec3d camera = context.camera().getPos();
+
+        matrices.push();
+        matrices.translate(-camera.x, -camera.y, -camera.z);
+
+        VertexConsumerProvider consumers = context.consumers();
+        VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
+
+        WorldRenderer.renderFilledBox(matrices, buffer, boundingBox.minX, boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+
+        matrices.pop();
     }
 
     public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
@@ -458,5 +473,17 @@ public class RenderHelper {
         }
 
         return null;
+    }
+
+    /**
+     * Retrieves the bounding box of a block in the world.
+     *
+     * @param world The client world.
+     * @param pos   The position of the block.
+     * @return The bounding box of the block.
+     */
+    public static Box getBlockBoundingBox(BlockView world, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
+        return blockState.getOutlineShape(world, pos).getBoundingBox().offset(pos);
     }
 }
