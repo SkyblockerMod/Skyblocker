@@ -6,6 +6,7 @@ import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -16,7 +17,7 @@ import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public abstract class DungeonPuzzle implements Tickable, Renderable {
+public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable {
     protected final String puzzleName;
     @NotNull
     private final Set<String> roomNames;
@@ -46,13 +47,14 @@ public abstract class DungeonPuzzle implements Tickable, Renderable {
             }
             return Command.SINGLE_SUCCESS;
         })))))));
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+        ClientPlayConnectionEvents.JOIN.register(this);
     }
 
     public boolean shouldSolve() {
         return shouldSolve;
     }
 
+    @Override
     public void reset() {
         shouldSolve = false;
     }
