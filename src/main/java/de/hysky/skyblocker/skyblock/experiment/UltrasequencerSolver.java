@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public non-sealed class UltrasequencerSolver extends ExperimentSolver {
+public final class UltrasequencerSolver extends ExperimentSolver {
     public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
     private int ultrasequencerNextSlot;
 

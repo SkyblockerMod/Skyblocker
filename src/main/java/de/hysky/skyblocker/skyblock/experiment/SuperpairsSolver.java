@@ -10,7 +10,7 @@ import net.minecraft.item.Items;
 
 import java.util.*;
 
-public non-sealed class SuperpairsSolver extends ExperimentSolver {
+public final class SuperpairsSolver extends ExperimentSolver {
     private int superpairsPrevClickedSlot;
     private ItemStack superpairsCurrentSlot;
     private final Set<Integer> superpairsDuplicatedSlots = new HashSet<>();
