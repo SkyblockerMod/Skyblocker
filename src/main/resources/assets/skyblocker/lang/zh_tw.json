@@ -57,7 +57,7 @@
     "skyblocker.config.helpers.fishing": "釣魚助手",
     "key.skyblocker.toggleB": "將HUD分頁切換至顯示屏B",
     "key.skyblocker.toggleA": "將HUD分頁切換至顯示屏A",
-    "skyblocker.config.quickNav.button.item.itemName": "物品ID",
+    "skyblocker.config.quickNav.button.item.itemName": "物品",
     "skyblocker.config.quickNav.button.uiTitle": "UI標題",
     "skyblocker.config.quickNav.button.item.count": "物品數量",
     "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "末影珍珠路徑點",
@@ -633,5 +633,9 @@
     "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "小數點後的位數。",
     "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "常規傷害顏色",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "暴擊傷害漸層顏色的起始色",
-    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "暴擊傷害漸層顏色的結束色"
+    "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "暴擊傷害漸層顏色的結束色",
+    "skyblocker.config.quickNav.enableExtendedQuickNav": "啟用擴充快速導航",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\n此選項並不適用於所有路徑點。 某些路徑點（例如地牢秘密路徑點）有自己的路徑點類型選項。",
+    "skyblocker.config.foraging": "覓食",
+    "skyblocker.config.foraging.hunting": "狩獵"
 }
