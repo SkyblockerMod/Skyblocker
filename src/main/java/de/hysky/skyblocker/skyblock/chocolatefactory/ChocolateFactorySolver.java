@@ -36,6 +36,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern MULTIPLIER_INCREASE_PATTERN = Pattern.compile("\\+([\\d.]+)x Chocolate per second");
 	private static final Pattern CHOCOLATE_PATTERN = Pattern.compile("^([\\d,]+) Chocolate$");
 	private static final Pattern PRESTIGE_REQUIREMENT_PATTERN = Pattern.compile("Chocolate this Prestige: ([\\d,]+) +Requires (\\S+) Chocolate this Prestige!");
+	private static final Pattern TIME_TOWER_STATUS_PATTERN = Pattern.compile("Status: (ACTIVE|INACTIVE)");
 	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(6);
 	private static long totalChocolate = -1L;
 	private static double totalCps = -1.0;
@@ -121,9 +122,9 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		//Time Tower is in slot 39
 		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		List<Text> timeTowerLore = ItemUtils.getLore(slots.get(39));
-		if (!timeTowerLore.isEmpty()) {
-			isTimeTowerActive = timeTowerLore.getLast().getString().equals("The Time Tower is active!");
+		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(39)));
+		if (timeTowerStatusMatcher.find()) {
+			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
 
 		//Compare cost/cpsIncrease rather than cpsIncrease/cost to avoid getting close to 0 and losing precision.
