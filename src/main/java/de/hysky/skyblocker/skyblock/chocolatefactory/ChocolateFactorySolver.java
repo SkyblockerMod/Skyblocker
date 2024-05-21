@@ -109,10 +109,10 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		RegexUtils.getDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
 
 		//Prestige item is in slot 28
-		Matcher matcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(getConcatenatedLore(slots.get(28)));
-		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(matcher);
+		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(getConcatenatedLore(slots.get(28)));
+		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(prestigeMatcher);
 		if (currentChocolate.isPresent()) {
-			String requirement = matcher.group(2); //If the first one matched, we can assume the 2nd one is also matched since it's one whole regex
+			String requirement = prestigeMatcher.group(2); //If the first one matched, we can assume the 2nd one is also matched since it's one whole regex
 			//Since the last character is either M or B we can just try to replace both characters. Only the correct one will actually replace anything.
 			String amountString = requirement.replace("M", "000000").replace("B", "000000000");
 			if (NumberUtils.isParsable(amountString)) {
