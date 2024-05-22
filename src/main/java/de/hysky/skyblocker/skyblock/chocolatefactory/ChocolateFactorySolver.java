@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChocolateFactorySolver extends ContainerSolver {
+	//Patterns
 	private static final Pattern CPS_PATTERN = Pattern.compile("([\\d,.]+) Chocolate per second");
 	private static final Pattern CPS_INCREASE_PATTERN = Pattern.compile("\\+([\\d,]+) Chocolate per second");
 	private static final Pattern COST_PATTERN = Pattern.compile("Cost ([\\d,]+) Chocolate");
@@ -36,16 +37,30 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern CHOCOLATE_PATTERN = Pattern.compile("^([\\d,]+) Chocolate$");
 	private static final Pattern PRESTIGE_REQUIREMENT_PATTERN = Pattern.compile("Chocolate this Prestige: ([\\d,]+) +Requires (\\S+) Chocolate this Prestige!");
 	private static final Pattern TIME_TOWER_STATUS_PATTERN = Pattern.compile("Status: (ACTIVE|INACTIVE)");
-	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(6);
+
+	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(8);
 	private static long totalChocolate = -1L;
 	private static double totalCps = -1.0;
 	private static double totalCpsMultiplier = -1.0;
 	private static long requiredUntilNextPrestige = -1L;
+	private static boolean canPrestige = false;
+	private static boolean reachedMaxPrestige = false;
 	private static double timeTowerMultiplier = -1.0;
 	private static boolean isTimeTowerActive = false;
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 	private static ItemStack bestUpgrade = null;
 	private static ItemStack bestAffordableUpgrade = null;
+
+	//Slots, for ease of maintenance rather than using magic numbers everywhere.
+	private static final byte RABBITS_START = 28;
+	private static final byte RABBITS_END = 34;
+	private static final byte COACH_SLOT = 42;
+	private static final byte CHOCOLATE_SLOT = 13;
+	private static final byte CPS_SLOT = 45;
+	private static final byte PRESTIGE_SLOT = 27;
+	private static final byte TIME_TOWER_SLOT = 39;
+	private static final byte STRAY_RABBIT_START = 0;
+	private static final byte STRAY_RABBIT_END = 26;
 
 	public ChocolateFactorySolver() {
 		super("^Chocolate Factory$");
@@ -62,7 +77,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		updateFactoryInfo(slots);
 		List<ColorHighlight> highlights = new ArrayList<>();
 
-		getPrestigeHighlight(slots.get(28)).ifPresent(highlights::add);
+		getPrestigeHighlight().ifPresent(highlights::add);
+		getStrayRabbitHighlight(slots).ifPresent(highlights::add);
 
 		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return highlights; //Something went wrong or there's nothing we can afford.
 		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
@@ -87,7 +103,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static void updateFactoryInfo(Int2ObjectMap<ItemStack> slots) {
 		cpsIncreaseFactors.clear();
 
-		for (int i = 29; i <= 33; i++) { // The 5 rabbits slots are in 29, 30, 31, 32 and 33.
+		for (int i = RABBITS_START; i <= RABBITS_END; i++) { // The 7 rabbits slots are in 28, 29, 30, 31, 32, 33 and 34.
 			ItemStack item = slots.get(i);
 			if (item.isOf(Items.PLAYER_HEAD)) {
 				getRabbit(item, i).ifPresent(cpsIncreaseFactors::add);
@@ -95,20 +111,21 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		//Coach is in slot 42
-		getCoach(slots.get(42)).ifPresent(cpsIncreaseFactors::add);
+		getCoach(slots.get(COACH_SLOT)).ifPresent(cpsIncreaseFactors::add);
 
 		//The clickable chocolate is in slot 13, holds the total chocolate
-		RegexUtils.getLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(13).getName().getString())).ifPresent(l -> totalChocolate = l);
+		RegexUtils.getLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getName().getString())).ifPresent(l -> totalChocolate = l);
 
 		//Cps item (cocoa bean) is in slot 45
-		String cpsItemLore = getConcatenatedLore(slots.get(45));
+		String cpsItemLore = getConcatenatedLore(slots.get(CPS_SLOT));
 		Matcher cpsMatcher = CPS_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(cpsMatcher).ifPresent(d -> totalCps = d);
 		Matcher multiplierMatcher = TOTAL_MULTIPLIER_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
 
 		//Prestige item is in slot 28
-		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(getConcatenatedLore(slots.get(28)));
+		String prestigeLore = getConcatenatedLore(slots.get(PRESTIGE_SLOT));
+		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(prestigeLore);
 		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(prestigeMatcher);
 		if (currentChocolate.isPresent()) {
 			String requirement = prestigeMatcher.group(2); //If the first one matched, we can assume the 2nd one is also matched since it's one whole regex
@@ -117,11 +134,17 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			if (NumberUtils.isParsable(amountString)) {
 				requiredUntilNextPrestige = Long.parseLong(amountString) - currentChocolate.getAsLong();
 			}
+		} else if (prestigeLore.endsWith("Click to prestige!")) {
+			canPrestige = true;
+			reachedMaxPrestige = false;
+		} else if (prestigeLore.endsWith("You have reached max prestige!")) {
+			canPrestige = false;
+			reachedMaxPrestige = true;
 		}
 
 		//Time Tower is in slot 39
-		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(39)));
+		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
+		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(TIME_TOWER_SLOT)));
 		if (timeTowerStatusMatcher.find()) {
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
@@ -146,7 +169,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		if (cost.isPresent()) shouldAddLine = addUpgradeTimerToLore(lines, cost.getAsLong());
 
 		//Prestige item
-		if (stack.isOf(Items.DROPPER) && requiredUntilNextPrestige != -1L) {
+		if (stack.isOf(Items.DROPPER)) {
 			shouldAddLine = addPrestigeTimerToLore(lines) || shouldAddLine;
 		}
 		//Time tower
@@ -171,11 +194,13 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static boolean addPrestigeTimerToLore(List<Text> lines) {
-		if (requiredUntilNextPrestige == -1L || totalCps == -1.0) return false;
-		lines.add(Text.empty()
-		              .append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
-		              .append(Text.literal(DECIMAL_FORMAT.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
-		lines.add(Text.empty()
+		if (totalCps < 0.0 || reachedMaxPrestige) return false;
+		if (requiredUntilNextPrestige > 0 && !canPrestige) {
+			lines.add(Text.empty()
+			              .append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
+			              .append(Text.literal(DECIMAL_FORMAT.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
+		}
+		lines.add(Text.empty() //Keep this outside of the `if` to match the format of the upgrade tooltips, that say "Time until upgrade: Now" when it's possible
 		              .append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
 		              .append(formatTime(requiredUntilNextPrestige / totalCps)));
 		return true;
@@ -292,7 +317,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
 		if (cost.isEmpty()) return Optional.empty();
 
-		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), 42, coachItem));
+		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), COACH_SLOT, coachItem));
 	}
 
 	private static Optional<Rabbit> getRabbit(ItemStack item, int slot) {
@@ -312,13 +337,20 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot, item));
 	}
 
-	private static Optional<ColorHighlight> getPrestigeHighlight(ItemStack item) {
-		List<Text> loreList = ItemUtils.getLore(item);
-		if (loreList.isEmpty()) return Optional.empty();
+	private static Optional<ColorHighlight> getPrestigeHighlight() {
+		if (reachedMaxPrestige) return Optional.empty();
+		if (canPrestige) return Optional.of(ColorHighlight.green(PRESTIGE_SLOT));
+		return Optional.of(ColorHighlight.red(PRESTIGE_SLOT));
+	}
 
-		String lore = loreList.getLast().getString(); //The last line holds the text we're looking for
-		if (lore.equals("Click to prestige!")) return Optional.of(ColorHighlight.green(28));
-		return Optional.of(ColorHighlight.red(28));
+	private static Optional<ColorHighlight> getStrayRabbitHighlight(Int2ObjectMap<ItemStack> slots) {
+		for (byte i = STRAY_RABBIT_START; i < STRAY_RABBIT_END; i++) {
+			ItemStack item = slots.get(i);
+			if (item.isOf(Items.PLAYER_HEAD) && item.getName().getString().equals("CLICK ME!")) {
+				return Optional.of(ColorHighlight.green(i));
+			}
+		}
+		return Optional.empty();
 	}
 
 	private record Rabbit(double cpsIncrease, int cost, int slot, ItemStack itemStack) {
