@@ -64,7 +64,7 @@ public class EggFinder {
 
 	public static void checkIfEgg(ArmorStandEntity armorStand) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
-		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
+//		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 		if (armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
 		if (Utils.getLocation() == Location.UNKNOWN) { //The location is unknown upon world change and will be changed via /locraw soon, so we can queue it for now
 			armorStandQueue.add(armorStand);
