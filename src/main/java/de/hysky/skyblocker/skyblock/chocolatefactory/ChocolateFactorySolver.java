@@ -230,6 +230,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static MutableText formatTime(double seconds) {
+		seconds = Math.ceil(seconds);
 		if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
 
 		StringBuilder builder = new StringBuilder();
