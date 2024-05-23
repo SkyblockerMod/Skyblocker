@@ -76,8 +76,8 @@ public class EggFinder {
 	private static void handleArmorStand(ArmorStandEntity armorStand) {
 		for (ItemStack itemStack : armorStand.getArmorItems()) {
 			ItemUtils.getHeadTextureOptional(itemStack).ifPresent(texture -> {
-				for (EggType type : EggType.entries) {
-					if (texture.equals(type.texture) && type.egg.getValue() == null) {
+				for (EggType type : EggType.entries) { //Compare blockPos rather than entity to avoid incorrect matches when the entity just moves rather than a new one being spawned elsewhere
+					if (texture.equals(type.texture) && (type.egg.getValue() == null || !type.egg.getValue().entity.getBlockPos().equals(armorStand.getBlockPos()))) {
 						handleFoundEgg(armorStand, type);
 						return;
 					}
