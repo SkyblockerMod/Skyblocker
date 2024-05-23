@@ -1,15 +1,8 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import java.io.BufferedReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 import de.hysky.skyblocker.skyblock.tabhud.widget.*;
@@ -23,7 +16,6 @@ import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
@@ -178,9 +170,11 @@ public class ScreenBuilder {
         for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
             if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) {
                 unaffected.add(tabHudWidget);
+                tabHudWidget.setPositioned(false);
                 continue;
             }
             affected.add(tabHudWidget);
+            tabHudWidget.setPositioned(true);
 
             tabHudWidget.update();
             if (currentY + tabHudWidget.getHeight() > maxY) {
@@ -221,9 +215,11 @@ public class ScreenBuilder {
         for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
             if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) {
                 unaffected.add(tabHudWidget);
+                tabHudWidget.setPositioned(false);
                 continue;
             }
             affected.add(tabHudWidget);
+            tabHudWidget.setPositioned(true);
 
             tabHudWidget.update();
             // Too large to fit in column
@@ -270,7 +266,15 @@ public class ScreenBuilder {
         return unaffected;
     }
 
+    private final List<HudWidget> hudScreen = new ArrayList<>();
+    private final List<HudWidget> mainTabScreen = new ArrayList<>();
+    private final List<HudWidget> secondaryTabScreen = new ArrayList<>();
+
     private void positionWidgets(int screenW, int screenH) {
+        hudScreen.clear();
+        mainTabScreen.clear();
+        secondaryTabScreen.clear();
+
         List<TabHudWidget> unaffected;
         if (false) {
             unaffected = centered(screenW, screenH);
