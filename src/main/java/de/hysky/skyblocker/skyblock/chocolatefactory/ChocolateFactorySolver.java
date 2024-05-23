@@ -6,7 +6,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.MinecraftClient;
@@ -24,7 +24,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -156,7 +155,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 		//Rabbits
 		else if (stack.isOf(Items.PLAYER_HEAD)) {
-			shouldAddLine = addRabbitStatsToLore(lines, stack) || shouldAddLine ;
+			shouldAddLine = addRabbitStatsToLore(lines, stack) || shouldAddLine;
 		}
 
 		//This is an ArrayList, so this operation is probably not very efficient, but logically it's pretty much the only way I can think of

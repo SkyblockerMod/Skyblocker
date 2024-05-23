@@ -2,10 +2,9 @@ package de.hysky.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.config.ImageRepoLoader;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;

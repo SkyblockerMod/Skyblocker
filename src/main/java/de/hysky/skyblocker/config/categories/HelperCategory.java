@@ -3,13 +3,11 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
-import dev.isxander.yacl3.config.v2.api.autogen.TickBox;
 import net.minecraft.text.Text;
 
 public class HelperCategory {
@@ -184,7 +182,6 @@ public class HelperCategory {
                                         newValue -> config.helpers.chocolateFactory.enableTimeTowerReminder = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-
                         .build())
 
                 .build();

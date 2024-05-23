@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -395,13 +394,13 @@ public class ItemTooltip {
     }
 
     //This is static to not create a new text object for each line in every item
-    private static final Text bumpyLine = Text.literal("-----------------").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH);
+    private static final Text BUMPY_LINE = Text.literal("-----------------").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH);
 
     private static void smoothenLines(List<Text> lines) {
         for (int i = 0; i < lines.size(); i++) {
             List<Text> lineSiblings = lines.get(i).getSiblings();
             //Compare the first sibling rather than the whole object as the style of the root object can change while visually staying the same
-            if (lineSiblings.size() == 1 && lineSiblings.getFirst().equals(bumpyLine)) {
+            if (lineSiblings.size() == 1 && lineSiblings.getFirst().equals(BUMPY_LINE)) {
                 lines.set(i, createSmoothLine());
             }
         }

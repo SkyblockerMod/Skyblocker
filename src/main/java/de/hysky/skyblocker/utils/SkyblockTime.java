@@ -45,17 +45,17 @@ public class SkyblockTime {
 		skyblockSeason.set(Season.values()[getSkyblockMonth() / 3]);
 		skyblockMonth.set(Month.values()[getSkyblockMonth()]);
 		skyblockDay.set(getSkyblockDay());
-		LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}",skyblockYear.get(), skyblockSeason.get(), skyblockMonth.get(), skyblockDay.get());
+		LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}", skyblockYear.get(), skyblockSeason.get(), skyblockMonth.get(), skyblockDay.get());
 	}
 
 	public enum Season {
-		SPRING, SUMMER, FALL, WINTER;
+		SPRING, SUMMER, FALL, WINTER
 	}
 
 	public enum Month {
 		EARLY_SPRING, SPRING, LATE_SPRING,
 		EARLY_SUMMER, SUMMER, LATE_SUMMER,
 		EARLY_FALL, FALL, LATE_FALL,
-		EARLY_WINTER, WINTER, LATE_WINTER;
+		EARLY_WINTER, WINTER, LATE_WINTER
 	}
 }
