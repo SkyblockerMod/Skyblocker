@@ -232,19 +232,19 @@ public class ChatRule {
             return true;
         }
 
-        String rawLocation = Utils.getLocationRaw();
+        String cleanedMapLocation = Utils.getMap().toLowerCase().replace(" ", "");
         Boolean isLocationValid = null;
-
-        for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are raw locations split by "," and start with ! if not locations
-            String rawValidLocation = ChatRulesHandler.locations.get(validLocation.replace("!",""));
-            if (rawValidLocation == null) continue;
+        for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are split by "," and start with ! if not locations
+            if (validLocation == null) continue;
             if (validLocation.startsWith("!")) {//not location
-                if (Objects.equals(rawValidLocation, rawLocation.toLowerCase())) {
+                if (Objects.equals(validLocation.substring(1), cleanedMapLocation)) {
                     isLocationValid = false;
                     break;
+                } else {
+                    isLocationValid = true;
                 }
             } else {
-                if (Objects.equals(rawValidLocation, rawLocation.toLowerCase())) { //normal location
+                if (Objects.equals(validLocation, cleanedMapLocation)) { //normal location
                     isLocationValid = true;
                     break;
                 }

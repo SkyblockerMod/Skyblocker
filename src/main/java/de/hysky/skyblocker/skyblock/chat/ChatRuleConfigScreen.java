@@ -156,6 +156,7 @@ public class ChatRuleConfigScreen extends Screen {
         locationLabelTextPos = currentPos;
         lineXOffset = client.textRenderer.getWidth(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations")) + SPACER_X;
         locationsInput = new TextFieldWidget(client.textRenderer, currentPos.leftInt() + lineXOffset, currentPos.rightInt(), 200, 20, Text.of(""));
+        locationsInput.setMaxLength(96);
         locationsInput.setText(chatRule.getValidLocations());
         MutableText locationToolTip = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip");
         locationToolTip.append("\n");
