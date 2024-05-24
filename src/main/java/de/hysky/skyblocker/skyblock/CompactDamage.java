@@ -19,6 +19,7 @@ public class CompactDamage {
 	}
 
 	public static void compactDamage(ArmorStandEntity entity) {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.compactDamage.enabled) return;
 		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible()) return;
 		Text customName = entity.getCustomName();
 		String customNameStringified = customName.getString();

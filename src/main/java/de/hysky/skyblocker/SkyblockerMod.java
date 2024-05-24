@@ -2,15 +2,16 @@ package de.hysky.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.config.ImageRepoLoader;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;
 import de.hysky.skyblocker.skyblock.chat.ChatRuleAnnouncementScreen;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
+import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
+import de.hysky.skyblocker.skyblock.chocolatefactory.TimeTowerReminder;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.dungeon.*;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
@@ -45,10 +46,7 @@ import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
 import de.hysky.skyblocker.skyblock.waypoint.Relics;
-import de.hysky.skyblocker.utils.ApiUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.ProfileUtils;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -183,6 +181,9 @@ public class SkyblockerMod implements ClientModInitializer {
         BeaconHighlighter.init();
         WarpAutocomplete.init();
         MobBoundingBoxes.init();
+        EggFinder.init();
+        TimeTowerReminder.init();
+        SkyblockTime.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

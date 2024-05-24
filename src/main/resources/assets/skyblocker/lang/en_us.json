@@ -273,6 +273,18 @@
 
   "skyblocker.config.helpers": "Helpers",
 
+  "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
+  "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
+  "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
+  "skyblocker.config.helpers.chocolateFactory.enableEggFinder": "Enable Egg Finder",
+  "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "Highlights eggs from Hoppity's Hunt.",
+  "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Enable Time Tower Reminder",
+  "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Sends a message in chat when your Time Tower deactivates.",
+  "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages": "Send Egg Found Messages",
+  "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip": "Sends a message in chat when an egg is found in the current island.",
+  "skyblocker.config.helpers.chocolateFactory.waypointType": "Egg Waypoint Type",
+  "skyblocker.config.helpers.chocolateFactory.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
+
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
 

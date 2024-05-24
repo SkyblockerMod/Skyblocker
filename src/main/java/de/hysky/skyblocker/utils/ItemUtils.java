@@ -33,6 +33,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -212,6 +213,12 @@ public class ItemUtils {
                 .orElse("");
 
         return texture;
+    }
+
+    public static Optional<String> getHeadTextureOptional(ItemStack stack) {
+        String texture = getHeadTexture(stack);
+        if (texture.isBlank()) return Optional.empty();
+        return Optional.of(texture);
     }
 
     public static ItemStack getSkyblockerStack() {

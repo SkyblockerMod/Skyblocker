@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 public class HelperConfig {
@@ -18,6 +19,9 @@ public class HelperConfig {
 
     @SerialEntry
     public FairySouls fairySouls = new FairySouls();
+
+    @SerialEntry
+    public ChocolateFactory chocolateFactory = new ChocolateFactory();
 
     public static class MythologicalRitual {
         @SerialEntry
@@ -61,5 +65,22 @@ public class HelperConfig {
 
         @SerialEntry
         public boolean highlightOnlyNearbySouls = false;
+    }
+
+    public static class ChocolateFactory {
+        @SerialEntry
+        public boolean enableChocolateFactoryHelper = true;
+
+        @SerialEntry
+        public boolean enableEggFinder = true;
+
+        @SerialEntry
+        public boolean sendEggFoundMessages = true;
+
+        @SerialEntry
+        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+        @SerialEntry
+        public boolean enableTimeTowerReminder = true;
     }
 }
