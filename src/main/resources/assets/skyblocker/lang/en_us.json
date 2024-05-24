@@ -446,6 +446,10 @@
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
 
+  "skyblocker.config.mining.glacite": "Glacite Tunnels",
+  "skyblocker.config.mining.glacite.coldOverlay": "Cold Overlay",
+  "skyblocker.config.mining.glacite.coldOverlay@Tooltip": "Shows a frosty overlay in the Glacite mines that gets stronger as you get colder.",
+
   "skyblocker.config.misc": "Misc",
 
   "skyblocker.config.misc.richPresence": "Discord RPC",

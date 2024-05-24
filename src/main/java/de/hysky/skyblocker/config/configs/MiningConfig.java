@@ -24,6 +24,9 @@ public class MiningConfig {
     @SerialEntry
     public CommissionWaypoints commissionWaypoints = new CommissionWaypoints();
 
+    @SerialEntry
+    public Glacite glacite = new Glacite();
+
     public static class DwarvenMines {
         @SerialEntry
         public boolean solveFetchur = true;
@@ -117,6 +120,11 @@ public class MiningConfig {
                 case BOTH -> "Both";
             };
         }
+    }
+
+    public static class Glacite {
+        @SerialEntry
+        public boolean coldOverlay = true;
     }
 
     public enum DwarvenHudStyle {

@@ -120,6 +120,7 @@ public class SkyblockerMod implements ClientModInitializer {
         BackpackPreview.init();
         ItemCooldowns.init();
         TabHud.init();
+        GlaciteColdOverlay.init();
         DwarvenHud.init();
         CommissionLabels.init();
         CrystalsHud.init();
