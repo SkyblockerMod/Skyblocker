@@ -198,6 +198,20 @@ public class HelperCategory {
                                 .build())
                         .build())
 
+                //Bazaar
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.helpers.bazaar"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                 .name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper"))
+                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip")))
+                                 .binding(defaults.helpers.bazaar.enableBazaarHelper,
+		                                 () -> config.helpers.bazaar.enableBazaarHelper,
+		                                 newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
+                                 .controller(ConfigUtils::createBooleanController)
+                                 .build())
+		                .build())
+
                 .build();
     }
 }
