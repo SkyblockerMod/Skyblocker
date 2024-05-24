@@ -48,7 +48,7 @@ public class Debug {
 			ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 				if (screen instanceof HandledScreen<?> handledScreen) {
                     ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
-                        if (key == GLFW.GLFW_KEY_U && client.player != null) {
+                        if (key == GLFW.GLFW_KEY_U && client.player != null && ((HandledScreenAccessor) handledScreen).getFocusedSlot() != null && ((HandledScreenAccessor) handledScreen).getFocusedSlot().hasStack()) {
                             client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, ((HandledScreenAccessor) handledScreen).getFocusedSlot().getStack()))));
                         }
                     });
