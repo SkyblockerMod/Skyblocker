@@ -125,9 +125,10 @@ public class DojoManager {
         if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
             return;
         }
-        if (currentChallenge == DojoChallenges.STAMINA) {
-            StaminaTestHelper.update();
-        }
+         switch (currentChallenge) {
+            case STAMINA -> StaminaTestHelper.update();
+            case CONTROL -> ControlTestHelper.update();
+        };
     }
 
     /**
