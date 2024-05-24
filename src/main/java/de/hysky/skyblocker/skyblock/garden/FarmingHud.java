@@ -34,7 +34,7 @@ public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
-    private static CounterType counterType;
+    private static CounterType counterType = CounterType.NONE;
     private static final Deque<IntLongPair> counter = new ArrayDeque<>();
     private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
     private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
@@ -54,11 +54,7 @@ public class FarmingHud {
                 }
 
                 ItemStack stack = MinecraftClient.getInstance().player.getMainHandStack();
-                if (tryParseCounter(stack, CounterType.CULTIVATING.pattern)) {
-                    counterType = CounterType.CULTIVATING;
-                } else if (tryParseCounter(stack, CounterType.COUNTER.pattern)) {
-                    counterType = CounterType.COUNTER;
-                } else {
+                if (!tryParseCounter(stack, CounterType.CULTIVATING) && !tryParseCounter(stack, CounterType.COUNTER)) {
                     counterType = CounterType.NONE;
                 }
 
@@ -88,11 +84,15 @@ public class FarmingHud {
                 .executes(Scheduler.queueOpenScreenCommand(() -> new FarmingHudConfigScreen(null)))))));
     }
 
-    private static boolean tryParseCounter(ItemStack stack, Pattern counterPattern) {
-        Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, counterPattern);
+    private static boolean tryParseCounter(ItemStack stack, CounterType counterType) {
+        Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, counterType.pattern);
         if (matcher == null) return false;
         try {
             int count = NUMBER_FORMAT.parse(matcher.group("count")).intValue();
+            if (FarmingHud.counterType != counterType) {
+                counter.clear();
+                FarmingHud.counterType = counterType;
+            }
             if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
                 counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
             }
