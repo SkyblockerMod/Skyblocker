@@ -10,6 +10,8 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
@@ -89,6 +91,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 waypointEntry.enabled.onPress();
             }
         }
+    }
+
+    private BlockPos getDefaultPos() {
+        return client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.getType() == HitResult.Type.BLOCK ? blockHitResult.getBlockPos() : client.player != null ? client.player.getBlockPos() : BlockPos.ORIGIN;
     }
 
     protected abstract static class AbstractWaypointEntry extends Entry<AbstractWaypointEntry> {
@@ -180,7 +186,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final ButtonWidget buttonDelete;
 
         public WaypointEntry(WaypointCategoryEntry category) {
-            this(category, new NamedWaypoint(BlockPos.ORIGIN, "New Waypoint", new float[]{0f, 1f, 0f}));
+            this(category, new NamedWaypoint(getDefaultPos(), "New Waypoint", new float[]{0f, 1f, 0f}));
         }
 
         public WaypointEntry(WaypointCategoryEntry category, NamedWaypoint waypoint) {
@@ -192,12 +198,15 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             nameField.setChangedListener(this::updateName);
             xField = new TextFieldWidget(client.textRenderer, 26, 20, Text.literal("X"));
             xField.setText(Integer.toString(waypoint.pos.getX()));
+            xField.setTextPredicate(this::checkInt);
             xField.setChangedListener(this::updateX);
             yField = new TextFieldWidget(client.textRenderer, 26, 20, Text.literal("Y"));
             yField.setText(Integer.toString(waypoint.pos.getY()));
+            yField.setTextPredicate(this::checkInt);
             yField.setChangedListener(this::updateY);
             zField = new TextFieldWidget(client.textRenderer, 26, 20, Text.literal("Z"));
             zField.setText(Integer.toString(waypoint.pos.getZ()));
+            zField.setTextPredicate(this::checkInt);
             zField.setChangedListener(this::updateZ);
             colorField = new TextFieldWidget(client.textRenderer, 56, 20, Text.literal("Color"));
             colorField.setText(String.format("%02X%02X%02X%02X", (int) (waypoint.alpha * 255), (int) (waypoint.getColorComponents()[0] * 255), (int) (waypoint.getColorComponents()[1] * 255), (int) (waypoint.getColorComponents()[2] * 255)));
@@ -219,7 +228,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             return children;
         }
 
-        public void updateName(String name) {
+        private void updateName(String name) {
             if (waypoint.name.getString().equals(name)) return;
             int index = category.category.waypoints().indexOf(waypoint);
             waypoint = waypoint.withName(name);
@@ -228,19 +237,28 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             }
         }
 
-        public void updateX(String xString) {
+        private boolean checkInt(String string) {
+            try {
+                Integer.parseInt(string);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        private void updateX(String xString) {
             updateInt(xString, waypoint.pos.getX(), waypoint::withX);
         }
 
-        public void updateY(String yString) {
+        private void updateY(String yString) {
             updateInt(yString, waypoint.pos.getY(), waypoint::withY);
         }
 
-        public void updateZ(String zString) {
+        private void updateZ(String zString) {
             updateInt(zString, waypoint.pos.getZ(), waypoint::withZ);
         }
 
-        public void updateInt(String newValueString, int currentValue, Int2ObjectFunction<NamedWaypoint> wither) {
+        private void updateInt(String newValueString, int currentValue, Int2ObjectFunction<NamedWaypoint> wither) {
             try {
                 int index = category.category.waypoints().indexOf(waypoint);
                 int newValue = Integer.parseInt(newValueString);
@@ -254,7 +272,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             }
         }
 
-        public void updateColor(String colorString) {
+        private void updateColor(String colorString) {
             try {
                 int index = category.category.waypoints().indexOf(waypoint);
                 int colorInt = Integer.parseInt(colorString, 16);
