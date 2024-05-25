@@ -647,5 +647,9 @@
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "啟用時間塔提醒",
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "當時間塔停止運作時，在聊天欄發送提示訊息。",
     "skyblocker.config.helpers.chocolateFactory": "巧克力工廠",
-    "skyblocker.config.helpers.chocolateFactory.waypointType": "彩蛋路徑點類型"
+    "skyblocker.config.helpers.chocolateFactory.waypointType": "彩蛋路徑點類型",
+    "skyblocker.config.mining.glacite": "極寒隧道",
+    "skyblocker.config.mining.glacite.coldOverlay": "寒冷效果動畫修改",
+    "skyblocker.config.mining.glacite.coldOverlay@Tooltip": "顯示極寒隧道中的霜凍效果，隨著溫度的降低，霜凍效果會變得更強。",
+    "skyblocker.config.misc": "雜項"
 }
