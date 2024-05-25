@@ -88,9 +88,10 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     public void removed() {
         super.removed();
-        // move it back, the handler is the same for the entire session
+        // put the handler back how it was, the handler is the same while the player is alive/in the same world
         Slot slot = handler.slots.get(45);
         ((SlotAccessor) slot).setX(slot.x - 21);
+        handler.slots.removeIf(slot1 -> slot1 instanceof EquipmentSlot);
     }
 
     @Override
