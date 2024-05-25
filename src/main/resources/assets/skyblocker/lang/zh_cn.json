@@ -634,7 +634,6 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "仅当信息以“=”开头时才显示计算器。",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "无效方程",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "暴击伤害渐变颜色的结束色",
-    "skyblocker.config.quickNav.enableExtendedQuickNav": "启用扩展快速导航",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\n此选项并不适用于所有路径点。某些路径点（例如地牢秘密路径点）有自己的路径点类型选项。",
     "skyblocker.config.foraging.hunting": "狩猎",
     "skyblocker.config.foraging": "觅食",

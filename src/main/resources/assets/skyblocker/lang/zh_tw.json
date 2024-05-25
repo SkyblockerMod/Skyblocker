@@ -634,7 +634,6 @@
     "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "常規傷害顏色",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "暴擊傷害漸層顏色的起始色",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "暴擊傷害漸層顏色的結束色",
-    "skyblocker.config.quickNav.enableExtendedQuickNav": "啟用擴充快速導航",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\n此選項並不適用於所有路徑點。 某些路徑點（例如地牢秘密路徑點）有自己的路徑點類型選項。",
     "skyblocker.config.foraging": "覓食",
     "skyblocker.config.foraging.hunting": "狩獵",
