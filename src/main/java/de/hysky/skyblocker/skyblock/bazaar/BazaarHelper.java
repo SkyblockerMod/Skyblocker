@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class BazaarHelper extends ContainerSolver {
 	private static final Pattern ORDER_PATTERN = Pattern.compile("You have [\\d,]+ (items|coins) to claim!");
+
 	public BazaarHelper() {
 		super("Your Bazaar Orders");
 	}
@@ -27,6 +28,11 @@ public class BazaarHelper extends ContainerSolver {
 	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
 		ArrayList<ColorHighlight> highlights = new ArrayList<>();
 		for (int slot = 0; slot < slots.size(); slot++) {
+			if (ItemUtils.getLoreLineIf(slots.get(slot), str -> str.equals("Expired!")) != null) {
+				highlights.add(ColorHighlight.red(slot));
+				continue;
+			}
+
 			Matcher matcher = ItemUtils.getLoreLineIfMatch(slots.get(slot), ORDER_PATTERN);
 			if (matcher != null) {
 				switch (matcher.group(1)) {
