@@ -26,4 +26,10 @@ public abstract class InventoryScreenMixin {
         if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory) return original.call(x, y, width, height, textures, pressAction);
         return new TexturedButtonWidget(x + 21, y, width, height, textures, pressAction);
     }
+
+    @WrapOperation(method = "method_19891", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;setPosition(II)V"))
+    private void skyblocker$moveButtonWhenPressed(ButtonWidget instance, int i, int j, Operation<Void> original) {
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory) original.call(instance, i, j);
+        else instance.setPosition(i + 21, j);
+    }
 }

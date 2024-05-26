@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Opened here {@code de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen}
  * <br>
- * Book button is moved here {@code de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton}
+ * Book button is moved here {@code de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker}
  */
 public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
