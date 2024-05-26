@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import com.mojang.brigadier.Message;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -49,7 +50,7 @@ public class TimeTowerReminder {
 		}
 
 		try (FileWriter writer = new FileWriter(tempFile)) {
-			writer.write(String.valueOf(System.currentTimeMillis()));
+			writer.write(String.valueOf(System.currentTimeMillis())); //Overwrites the file so no need to handle case where the file already exists and has text
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker Time Tower Reminder] Failed to write to temp file for Time Tower Reminder!", e);
 		}
@@ -57,8 +58,9 @@ public class TimeTowerReminder {
 
 	private static void sendMessage() {
 		if (MinecraftClient.getInstance().player == null || !Utils.isOnSkyblock()) return;
-		MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Your Chocolate Factory's Time Tower has deactivated!").formatted(Formatting.RED)));
-
+		if (SkyblockerConfigManager.get().helpers.chocolateFactory.enableTimeTowerReminder) {
+			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Your Chocolate Factory's Time Tower has deactivated!").formatted(Formatting.RED)));
+		}
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		try {
 			scheduled = false;
