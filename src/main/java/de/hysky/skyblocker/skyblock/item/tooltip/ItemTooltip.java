@@ -128,7 +128,7 @@ public class ItemTooltip {
             }
         }
 
-        final Map<Integer, String> itemTierFloors = Map.of(
+        final Map<Integer, String> itemTierFloors = Map.ofEntries(
         	0, "E",
         	1, "F1",
         	2, "F2",
