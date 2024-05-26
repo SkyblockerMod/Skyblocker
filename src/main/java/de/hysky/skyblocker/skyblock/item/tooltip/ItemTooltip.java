@@ -130,7 +130,7 @@ public class ItemTooltip {
 
         final Map<Integer, String> itemTierFloors = Map.ofEntries(
         	Map.entry(0, "E"),
-        Map.entry(	1, "F1"),
+        Map.entry(1, "F1"),
         	Map.entry(2, "F2"),
         	Map.entry(3, "F3"),
         	Map.entry(4, "F4/M1"),
