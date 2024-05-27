@@ -75,7 +75,6 @@ public class VisitorHelper {
                     MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
 
                     MinecraftClient.getInstance().keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
-
                     return;
                 }
                 yPosition += LINE_SPACING + textHeight;
