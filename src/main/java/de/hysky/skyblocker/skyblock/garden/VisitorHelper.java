@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -26,11 +27,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.text.NumberFormat;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 //TODO: check inventory items, sum all repeated items into one
 public class VisitorHelper {
@@ -58,36 +58,36 @@ public class VisitorHelper {
         drawScreenItems(context, textRenderer, mouseX, mouseY);
     }
 
-    public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
-        int yPosition = TEXT_START_Y;
+public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
+    int yPosition = TEXT_START_Y;
 
-        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            int textWidth;
-            int textHeight = textRenderer.fontHeight;
+    for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+        int textWidth;
+        int textHeight = textRenderer.fontHeight;
+
+        yPosition += LINE_SPACING + textHeight;
+
+        for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
+            String itemText = itemEntry.getKey();
+
+            textWidth = textRenderer.getWidth(itemEntry.getKey() + " x" + itemEntry.getIntValue());
+
+            if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
+            }
+
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X, yPosition - 12, textRenderer.getWidth(visitorEntry.getKey().left() + " [Copy Amount]"), textHeight)) {
+                client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
+                client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+                return;
+            }
 
             yPosition += LINE_SPACING + textHeight;
-
-            for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
-                String itemText = itemEntry.getKey();
-                textWidth = textRenderer.getWidth(itemEntry.getKey() + " x" + itemEntry.getIntValue());
-
-                // Calculate the x position for the "Copy Amount" text
-                int visitorNameWidth = textRenderer.getWidth(visitorEntry.getKey().left());
-                int copyAmountTextX = TEXT_START_X + visitorNameWidth + 7;
-
-                if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
-                    MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
-                }
-
-                if (isMouseOverText(mouseX, mouseY, copyAmountTextX, yPosition, textRenderer.getWidth("[Copy Amount]"), textHeight)) {
-                    MinecraftClient.getInstance().keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
-                    return;
-                }
-
-                yPosition += LINE_SPACING + textHeight;
-            }
         }
     }
+}
+
     public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if (slotId == 29 || slotId == 13 || slotId == 33) {
             itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
@@ -141,9 +141,7 @@ public class VisitorHelper {
         int index = 0;
         for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
             Pair<String, String> visitorName = visitorEntry.getKey();
-            Text visitorNameText = Text.literal(visitorName.left());
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal("[Copy Amount]"), textRenderer.getWidth(visitorNameText) + 7, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left() + " [Copy Amount]"), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
             index++;
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
@@ -169,7 +167,7 @@ public class VisitorHelper {
         Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
         if (items == null) return null;
         ItemStack stack = items.values().stream()
-                .filter(i -> Formatting.strip(i.getDisplayName()).equals(strippedName))
+                .filter(i -> Objects.equals(Formatting.strip(i.getDisplayName()), strippedName))
                 .findFirst()
                 .map(NEUItem::getSkyblockItemId)
                 .map(ItemRepository::getItemStack)
