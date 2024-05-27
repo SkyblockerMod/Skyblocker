@@ -138,9 +138,7 @@ public class VisitorHelper {
         int index = 0;
         for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
             Pair<String, String> visitorName = visitorEntry.getKey();
-            Text visitorNameText = Text.literal(visitorName.left());
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal("[Copy Amount]"), textRenderer.getWidth(visitorNameText) + 7, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left() + " [Copy Amount]"), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
             index++;
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
