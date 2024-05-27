@@ -71,10 +71,6 @@ public class VisitorHelper {
                 String itemText = itemEntry.getKey();
                 textWidth = textRenderer.getWidth(itemEntry.getKey() + " x" + itemEntry.getIntValue());
 
-                // Calculate the x position for the "Copy Amount" text
-                int visitorNameWidth = textRenderer.getWidth(visitorEntry.getKey().left());
-                int copyAmountTextX = TEXT_START_X + visitorNameWidth + 7;
-
                 if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
                     MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
                 }
