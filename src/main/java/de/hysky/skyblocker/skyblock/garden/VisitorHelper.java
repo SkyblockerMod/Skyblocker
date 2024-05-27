@@ -84,6 +84,7 @@ public class VisitorHelper {
             }
         }
     }
+
     public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if (slotId == 29 || slotId == 13 || slotId == 33) {
             itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
