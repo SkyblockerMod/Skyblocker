@@ -27,10 +27,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.List;
 
 //TODO: check inventory items, sum all repeated items into one
 public class VisitorHelper {
@@ -58,35 +56,34 @@ public class VisitorHelper {
         drawScreenItems(context, textRenderer, mouseX, mouseY);
     }
 
-public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
-    int yPosition = TEXT_START_Y;
+    public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
+        int yPosition = TEXT_START_Y;
 
-    for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-        int textWidth;
-        int textHeight = textRenderer.fontHeight;
-
-        yPosition += LINE_SPACING + textHeight;
-
-        for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
-            String itemText = itemEntry.getKey();
-
-            textWidth = textRenderer.getWidth(itemEntry.getKey() + " x" + itemEntry.getIntValue());
-
-            if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
-            }
-            // Change the copy amount color eventually?
-            MinecraftClient client = MinecraftClient.getInstance();
-            if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X, yPosition - 12, textRenderer.getWidth(visitorEntry.getKey().left() + " [Copy Amount]"), textHeight)) {
-                client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
-                client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
-                return;
-            }
+        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+            int textWidth;
+            int textHeight = textRenderer.fontHeight;
 
             yPosition += LINE_SPACING + textHeight;
+
+            for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
+                String itemText = itemEntry.getKey();
+
+                textWidth = textRenderer.getWidth(itemEntry.getKey() + " x" + itemEntry.getIntValue());
+
+                if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
+                    MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
+                }
+                MinecraftClient client = MinecraftClient.getInstance();
+                if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X, yPosition - 12, textRenderer.getWidth(visitorEntry.getKey().left() + " [Copy Amount]"), textHeight)) {
+                    client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
+                    client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+                    return;
+                }
+
+                yPosition += LINE_SPACING + textHeight;
+            }
         }
     }
-}
 
     public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if (slotId == 29 || slotId == 13 || slotId == 33) {
@@ -178,7 +175,7 @@ public static void onMouseClicked(double mouseX, double mouseY, int mouseButton,
     }
 
     private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mousseY) {
-    	Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
+        Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
         drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + TEXT_INDENT, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
         // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
         if (stack != null) {
