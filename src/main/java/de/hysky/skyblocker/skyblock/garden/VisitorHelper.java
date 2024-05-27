@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -72,6 +73,9 @@ public class VisitorHelper {
 
                 if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
                     MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
+
+                    MinecraftClient.getInstance().keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
+
                     return;
                 }
                 yPosition += LINE_SPACING + textHeight;
