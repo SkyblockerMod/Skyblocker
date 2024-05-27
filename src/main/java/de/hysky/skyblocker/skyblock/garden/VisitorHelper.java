@@ -75,7 +75,7 @@ public static void onMouseClicked(double mouseX, double mouseY, int mouseButton,
             if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
             }
-
+            // Change the copy amount color eventually?
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X, yPosition - 12, textRenderer.getWidth(visitorEntry.getKey().left() + " [Copy Amount]"), textHeight)) {
                 client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
