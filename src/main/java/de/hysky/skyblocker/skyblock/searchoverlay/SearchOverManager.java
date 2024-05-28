@@ -234,6 +234,7 @@ public class SearchOverManager {
 
     /**
      * determines if a value should be moved to the front of the search
+     *
      * @param name name of the suggested item
      * @return if the value should be at the front of the search queue
      */
@@ -243,7 +244,7 @@ public class SearchOverManager {
         }
         //do nothing to non pets
         if (!auctionPets.contains(name.toLowerCase())) {
-            return  false;
+            return false;
         }
         //only front load pets when there is enough of the pet typed, so it does not spoil searching for other items
         return (double) search.length() / name.length() > 0.5;

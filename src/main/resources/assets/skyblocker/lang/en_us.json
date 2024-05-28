@@ -251,6 +251,9 @@
   "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "Enable Quiver Warning In Dungeons",
 
   "skyblocker.config.general.searchOverlay.historyLabel": "History:",
+  "skyblocker.config.general.searchOverlay.starsLabel": "Stars:",
+  "skyblocker.config.general.searchOverlay.starsTooltip": "Star count for dungeon items",
+  "skyblocker.config.general.searchOverlay.maxPet": "Max Pet Level",
 
   "skyblocker.config.general.shortcuts": "Shortcuts",
   "skyblocker.config.general.shortcuts.config": "Shortcuts Config...",

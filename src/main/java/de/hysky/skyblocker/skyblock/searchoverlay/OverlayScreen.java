@@ -93,17 +93,17 @@ public class OverlayScreen extends Screen {
             maxPetButton = ButtonWidget.builder(Text.literal("temp"), a -> {
                         SearchOverManager.maxPetLevel = !SearchOverManager.maxPetLevel;
                         if (SearchOverManager.maxPetLevel) {
-                            maxPetButton.setMessage(Text.literal("Max Pet Level ✔").formatted(Formatting.GREEN));
+                            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
                         } else {
-                            maxPetButton.setMessage(Text.literal("Max Pet Level ❌").formatted(Formatting.RED));
+                            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ❌")).formatted(Formatting.RED));
                         }
                     })
                     .position(startX + rowWidth, startY)
                     .size(rowWidth / 2, rowHeight).build();
             if (SearchOverManager.maxPetLevel) {
-                maxPetButton.setMessage(Text.literal("Max Pet Level ✔").formatted(Formatting.GREEN));
+                maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
             } else {
-                maxPetButton.setMessage(Text.literal("Max Pet Level ❌").formatted(Formatting.RED));
+                maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ❌")).formatted(Formatting.RED));
             }
 
             //dungeon star input
@@ -112,7 +112,7 @@ public class OverlayScreen extends Screen {
                 dungeonStarField.setText(String.valueOf(SearchOverManager.dungeonStars));
             }
             dungeonStarField.setMaxLength(2);
-            dungeonStarField.setTooltip(Tooltip.of(Text.of("Star count for dungeon items")));
+            dungeonStarField.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.starsTooltip")));
             dungeonStarField.setChangedListener(SearchOverManager::updateDungeonStars);
         }
 
@@ -150,7 +150,7 @@ public class OverlayScreen extends Screen {
             context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
         }
         if (SearchOverManager.isAuction) {
-            context.drawText(textRenderer, Text.literal("Stars:"), dungeonStarField.getX() - dungeonStarField.getWidth() + renderOffset, dungeonStarField.getY() + rowHeight / 4, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.starsLabel"), dungeonStarField.getX() - dungeonStarField.getWidth() + renderOffset, dungeonStarField.getY() + rowHeight / 4, 0xFFFFFFFF, true);
         }
 
         //draw item stacks and tooltip to buttons
