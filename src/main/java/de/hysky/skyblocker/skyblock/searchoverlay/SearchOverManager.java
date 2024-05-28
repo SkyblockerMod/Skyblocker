@@ -54,7 +54,7 @@ public class SearchOverManager {
 
     protected static String search = "";
     protected static Boolean maxPetLevel = false;
-    protected static int dungeonStars = -1;
+    protected static int dungeonStars = 0;
 
     // Use non-final variables and swap them to prevent concurrent modification
     private static HashSet<String> bazaarItems;
@@ -248,15 +248,6 @@ public class SearchOverManager {
         }
         //only front load pets when there is enough of the pet typed, so it does not spoil searching for other items
         return (double) search.length() / name.length() > 0.5;
-    }
-
-    protected static void updateDungeonStars(String newValue) {
-        try {
-            dungeonStars = Math.min(Integer.parseInt(newValue), 10);
-        } catch (Exception e) {
-            //not parsable number just set to 0
-            dungeonStars = 0;
-        }
     }
 
     /**

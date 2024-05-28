@@ -1,15 +1,13 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import dev.isxander.yacl3.gui.TooltipButtonWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -21,11 +19,12 @@ import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 public class OverlayScreen extends Screen {
 
     protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
+    private static final Identifier BACKGROUND_TEXTURE = new Identifier("social_interactions/background");
     private static final int rowHeight = 20;
     private TextFieldWidget searchField;
     private ButtonWidget finishedButton;
     private ButtonWidget maxPetButton;
-    private TextFieldWidget dungeonStarField;
+    private ButtonWidget dungeonStarButton;
     private ButtonWidget[] suggestionButtons;
     private ButtonWidget[] historyButtons;
 
@@ -92,28 +91,20 @@ public class OverlayScreen extends Screen {
             //max pet level button
             maxPetButton = ButtonWidget.builder(Text.literal("temp"), a -> {
                         SearchOverManager.maxPetLevel = !SearchOverManager.maxPetLevel;
-                        if (SearchOverManager.maxPetLevel) {
-                            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
-                        } else {
-                            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ❌")).formatted(Formatting.RED));
-                        }
+                        updateMaxPetText();
                     })
-                    .position(startX + rowWidth, startY)
+                    .tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.maxPet.@Tooltip")))
+                    .position(startX, startY - rowHeight - 8)
                     .size(rowWidth / 2, rowHeight).build();
-            if (SearchOverManager.maxPetLevel) {
-                maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
-            } else {
-                maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ❌")).formatted(Formatting.RED));
-            }
+            updateMaxPetText();
 
             //dungeon star input
-            this.dungeonStarField = new TextFieldWidget(textRenderer, startX + (int) (rowWidth * 1.25), startY + rowHeight, rowWidth / 4, rowHeight, Text.literal(""));
-            if (SearchOverManager.dungeonStars > 0) {
-                dungeonStarField.setText(String.valueOf(SearchOverManager.dungeonStars));
-            }
-            dungeonStarField.setMaxLength(2);
-            dungeonStarField.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.starsTooltip")));
-            dungeonStarField.setChangedListener(SearchOverManager::updateDungeonStars);
+            dungeonStarButton = ButtonWidget.builder(Text.literal("✪"), a -> updateStars())
+                    .tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.starsTooltip")))
+                    .position(startX + (int) (rowWidth * 0.5), startY - rowHeight - 8)
+                    .size(rowWidth / 2, rowHeight).build();
+
+            updateStars();
         }
 
         //add drawables in order to make tab navigation sensible
@@ -130,11 +121,69 @@ public class OverlayScreen extends Screen {
 
         if (SearchOverManager.isAuction) {
             addDrawableChild(maxPetButton);
-            addDrawableChild(dungeonStarField);
+            addDrawableChild(dungeonStarButton);
+
         }
 
         //focus the search box
         this.setInitialFocus(searchField);
+    }
+
+    /**
+     * finds if the mouse is clicked on the dungeon star button and if so works out amount of stars to set
+     *
+     * @param mouseX the X coordinate of the mouse
+     * @param mouseY the Y coordinate of the mouse
+     * @param button the mouse button number
+     * @return super
+     */
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (SearchOverManager.isAuction && dungeonStarButton.isHovered() && client != null) {
+            double actualTextWidth = client.textRenderer.getWidth(dungeonStarButton.getMessage());
+            double textOffset = (dungeonStarButton.getWidth() - actualTextWidth) / 2;
+            double offset = mouseX - (dungeonStarButton.getX() + textOffset);
+            int starCount = (int) ((offset / actualTextWidth) * 10);
+            starCount = Math.clamp(0, starCount + 1, 10);
+            //if same as old value set stars to 0 else set to selected amount
+            if (starCount == SearchOverManager.dungeonStars) {
+                SearchOverManager.dungeonStars = 0;
+            } else {
+                SearchOverManager.dungeonStars = starCount;
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void updateMaxPetText() {
+        if (SearchOverManager.maxPetLevel) {
+            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
+        } else {
+            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ❌")).formatted(Formatting.RED));
+        }
+    }
+
+    private void updateStars() {
+        MutableText stars = Text.empty();
+        for (int i = 0; i < SearchOverManager.dungeonStars; i++) {
+            stars.append(Text.literal("✪").formatted(Formatting.GREEN));
+        }
+        for (int i = SearchOverManager.dungeonStars; i < 10; i++) {
+            stars.append(Text.literal("✪"));
+        }
+        dungeonStarButton.setMessage(stars);
+    }
+
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.renderBackground(context, mouseX, mouseY, delta);
+        //find max height
+        int maxHeight = rowHeight * (1 + suggestionButtons.length + historyButtons.length);
+        if (historyButtons.length > 0) { //add space for history label if it could exist
+            maxHeight += (int) (rowHeight * 0.75);
+        }
+        context.drawGuiTexture(BACKGROUND_TEXTURE, searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
     }
 
     /**
@@ -148,9 +197,6 @@ public class OverlayScreen extends Screen {
         //labels
         if (historyButtons.length > 0 && historyButtons[0] != null) {
             context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
-        }
-        if (SearchOverManager.isAuction) {
-            context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.starsLabel"), dungeonStarField.getX() - dungeonStarField.getWidth() + renderOffset, dungeonStarField.getY() + rowHeight / 4, 0xFFFFFFFF, true);
         }
 
         //draw item stacks and tooltip to buttons
