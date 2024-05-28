@@ -290,5 +290,11 @@
     "skyblocker.config.uiAndVisuals.waypoints": "Waypoints",
     "skyblocker.config.uiAndVisuals.chestValue.enableChestValue.@Tooltip": "Adiciona um botão em contêineres para calcular o valor do mesmo.",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "A cor para mostrar quando o dado dos preços está incompleta.",
-    "skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip": "Waypoint: Mostra um destaque e um raio de beacon.\n\nWaypoint Contornado: Mostra tanto um waypoint e um contorno.\n\nDestaque: Apenas mostra um destaque.\n\nDestaque Contornado: Mostra tanto um destaque e um contorno.\n\nContorno: Apenas mostra um contorno."
+    "skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip": "Waypoint: Mostra um destaque e um raio de beacon.\n\nWaypoint Contornado: Mostra tanto um waypoint e um contorno.\n\nDestaque: Apenas mostra um destaque.\n\nDestaque Contornado: Mostra tanto um destaque e um contorno.\n\nContorno: Apenas mostra um contorno.",
+    "text.skyblocker.source": "Fonte",
+    "text.skyblocker.website": "Site",
+    "text.skyblocker.translate": "Traduzir",
+    "text.skyblocker.modrinth": "Modrinth",
+    "text.skyblocker.discord": "Discord",
+    "text.skyblocker.confirm": "Confirmar"
 }
