@@ -20,13 +20,11 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
 import java.util.OptionalLong;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EssenceShopPrice {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EssenceShopPrice.class);
-	private static final Set<String> ESSENCE_SHOPS = Set.of("Dragon Essence Shop", "Spider Essence Shop", "Crimson Essence Shop", "Ice Essence Shop", "Gold Essence Shop", "Diamond Essence Shop", "Undead Essence Shop", "Wither Essence Shop");
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("Cost (?<amount>[0-9,]+) (?<type>[A-Za-z]+) Essence");
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
@@ -36,7 +34,7 @@ public class EssenceShopPrice {
 
 	private static void handleTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.showEssenceCost) return;
-		if (!(MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen screen) || !ESSENCE_SHOPS.contains(screen.getTitle().getString())) return;
+		if (!(MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen screen) || !screen.getTitle().getString().contains("Essence Shop")) return;
 
 		String lore = Utils.concatenateLore(lines);
 		Matcher essenceMatcher = ESSENCE_PATTERN.matcher(lore);
