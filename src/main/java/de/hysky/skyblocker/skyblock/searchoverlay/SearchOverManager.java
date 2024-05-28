@@ -156,11 +156,11 @@ public class SearchOverManager {
                     //add names that are pets to the list of pets to work with the lvl 100 button
                     if (name != null && name.startsWith(PET_NAME_START)) {
                         name = name.replace(PET_NAME_START, "");
-                        auctionPets.add(name);
+                        auctionPets.add(name.toLowerCase());
                     }
                     //if it has essence cost add to starable items
-                    if (essenceCosts.contains(neuItem.getSkyblockItemId())) {
-                        starableItems.add(name);
+                    if (name != null && essenceCosts.contains(neuItem.getSkyblockItemId())) {
+                        starableItems.add(name.toLowerCase());
                     }
                     auctionItems.add(name);
                     namesToId.put(name, id);
@@ -330,8 +330,8 @@ public class SearchOverManager {
     private static void addExtras() {
         // pet level
         if (maxPetLevel) {
-            if (auctionPets.contains(search)) {
-                if (search.equals("Golden Dragon")) {
+            if (auctionPets.contains(search.toLowerCase())) {
+                if (search.equalsIgnoreCase("golden dragon")) {
                     search = "[Lvl 200] " + search;
                 } else {
                     search = "[Lvl 100] " + search;
@@ -347,7 +347,7 @@ public class SearchOverManager {
 
         // dungeon stars
         // check if it's a dungeon item and if so add correct stars
-        if (dungeonStars > 0 && starableItems.contains(search)) {
+        if (dungeonStars > 0 && starableItems.contains(search.toLowerCase())) {
             StringBuilder starString = new StringBuilder(" ");
             //add stars up to 5
             starString.append("✪".repeat(Math.max(0, Math.min(dungeonStars, 5))));
