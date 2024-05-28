@@ -13,7 +13,8 @@ import java.util.List;
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(),
-			new DungeonQualityTooltip(0)
+			new DungeonQualityTooltip(0),
+			new ObtainedTooltip(1),
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 

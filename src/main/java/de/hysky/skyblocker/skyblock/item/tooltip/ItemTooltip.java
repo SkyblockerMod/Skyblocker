@@ -135,15 +135,6 @@ public class ItemTooltip {
                     .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), count)));
         }
 
-        if (TooltipInfoType.OBTAINED.isTooltipEnabled()) {
-            String timestamp = ItemUtils.getTimestamp(stack);
-
-            if (!timestamp.isEmpty()) {
-                lines.add(Text.literal(String.format("%-21s", "Obtained: "))
-                        .formatted(Formatting.LIGHT_PURPLE)
-                        .append(Text.literal(timestamp).formatted(Formatting.RED)));
-            }
-        }
 
         if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID) && !bazaarOpened) {
             String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
