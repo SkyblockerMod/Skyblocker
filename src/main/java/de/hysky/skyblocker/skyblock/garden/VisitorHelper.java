@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -12,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -74,6 +76,14 @@ public class VisitorHelper {
                     MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
                     return;
                 }
+
+                MinecraftClient client = MinecraftClient.getInstance();
+                if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X, yPosition - 12, textRenderer.getWidth(visitorEntry.getKey().left() + " [Copy Amount]"), textHeight)) {
+                    client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
+                    client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+                    return;
+                }
+
                 yPosition += LINE_SPACING + textHeight;
             }
         }
@@ -132,7 +142,7 @@ public class VisitorHelper {
         int index = 0;
         for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
             Pair<String, String> visitorName = visitorEntry.getKey();
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left() + " [Copy Amount]"), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
             index++;
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
