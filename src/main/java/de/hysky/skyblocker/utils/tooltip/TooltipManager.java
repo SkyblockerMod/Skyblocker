@@ -15,6 +15,7 @@ public class TooltipManager {
 			new LineSmoothener(),
 			new DungeonQualityTooltip(0),
 			new ObtainedTooltip(1),
+			new MotesTooltip(0)
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
