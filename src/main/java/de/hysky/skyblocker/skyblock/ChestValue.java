@@ -183,7 +183,7 @@ public class ChestValue {
 	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price, and the {@code right boolean} indicating if the price
 	 * was based on complete data.
 	 */
-	private static LongBooleanPair getItemPrice(String id) {
+	public static LongBooleanPair getItemPrice(String id) {
 		JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
 		JsonObject lbinPrices = TooltipInfoType.LOWEST_BINS.getData();
 

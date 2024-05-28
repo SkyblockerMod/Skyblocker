@@ -550,6 +550,8 @@
   "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Crit Damage Gradient Start Color",
   "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "Crit Damage Gradient End Color",
 
+  "skyblocker.config.uiAndVisuals.showEssenceCost": "Show Essence Cost",
+
   "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
 
   "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues": "Correct Transparent Skin Pixels",

@@ -2,11 +2,10 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
@@ -65,6 +64,13 @@ public class UIAndVisualsCategory {
                         .binding(defaults.uiAndVisuals.hideStatusEffectOverlay,
                                 () -> config.uiAndVisuals.hideStatusEffectOverlay,
                                 newValue -> config.uiAndVisuals.hideStatusEffectOverlay = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.showEssenceCost"))
+                        .binding(defaults.uiAndVisuals.showEssenceCost,
+                                () -> config.uiAndVisuals.showEssenceCost,
+                                newValue -> config.uiAndVisuals.showEssenceCost = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 

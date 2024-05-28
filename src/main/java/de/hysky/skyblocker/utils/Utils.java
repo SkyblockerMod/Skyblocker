@@ -18,6 +18,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -491,5 +492,25 @@ public class Utils {
         client.inGameHud.getChatHud().addMessage(message);
         ((MessageHandlerAccessor) client.getMessageHandler()).invokeAddToChatLog(message, Instant.now());
         client.getNarratorManager().narrateSystemMessage(message);
+    }
+
+    /**
+     * Utility method.
+     */
+    public static String getConcatenatedLore(ItemStack item) {
+        return concatenateLore(ItemUtils.getLore(item));
+    }
+
+    /**
+     * Concatenates the lore of an item into one string.
+     * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
+     */
+    public static String concatenateLore(List<Text> lore) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < lore.size(); i++) {
+            stringBuilder.append(lore.get(i).getString());
+            if (i != lore.size() - 1) stringBuilder.append(" ");
+        }
+        return stringBuilder.toString();
     }
 }
