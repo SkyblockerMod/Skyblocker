@@ -229,7 +229,24 @@ public class SearchOverManager {
         //update the suggestion values
         int totalSuggestions = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions;
         if (newValue.isBlank() || totalSuggestions == 0) return; //do not search for empty value
-        suggestionsArray = (isAuction ? auctionItems : bazaarItems).stream().filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toArray(String[]::new);
+        suggestionsArray = (isAuction ? auctionItems : bazaarItems).stream().sorted(Comparator.comparing(SearchOverManager::shouldFrontLoad, Comparator.reverseOrder())).filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toArray(String[]::new);
+    }
+
+    /**
+     * determines if a value should be moved to the front of the search
+     * @param name name of the suggested item
+     * @return if the value should be at the front of the search queue
+     */
+    private static boolean shouldFrontLoad(String name) {
+        if (!isAuction) {
+            return false;
+        }
+        //do nothing to non pets
+        if (!auctionPets.contains(name.toLowerCase())) {
+            return  false;
+        }
+        //only front load pets when there is enough of the pet typed, so it does not spoil searching for other items
+        return (double) search.length() / name.length() > 0.5;
     }
 
     protected static void updateDungeonStars(String newValue) {
