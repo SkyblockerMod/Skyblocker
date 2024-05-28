@@ -26,7 +26,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class ItemTooltip {
@@ -125,40 +128,6 @@ public class ItemTooltip {
             }
         }
 
-        final Map<Integer, String> itemTierFloors = Map.ofEntries(
-        	Map.entry(0, "E"),
-        	Map.entry(1, "F1"),
-        	Map.entry(2, "F2"),
-        	Map.entry(3, "F3"),
-        	Map.entry(4, "F4/M1"),
-        	Map.entry(5, "F5/M2"),
-        	Map.entry(6, "F6/M3"),
-        	Map.entry(7, "F7/M4"),
-        	Map.entry(8, "M5"),
-        	Map.entry(9, "M6"),
-        	Map.entry(10, "M7")
-        );
-
-        if (SkyblockerConfigManager.get().general.itemTooltip.dungeonQuality) {
-            NbtCompound customData = ItemUtils.getCustomData(stack);
-            if (customData != null && customData.contains("baseStatBoostPercentage")) {
-                int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
-                boolean maxQuality = baseStatBoostPercentage == 50;
-                if (maxQuality) {
-                    lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
-                } else {
-                    lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
-                }
-                if (customData.contains("item_tier")) {     // sometimes it just isn't here?
-                    int itemTier = customData.getInt("item_tier");
-                    if (maxQuality) {
-                        lines.add(Text.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + itemTierFloors.get(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
-                    } else {
-                        lines.add(Text.literal(String.format("%-21s", "Floor Tier:") + itemTier + " (" + itemTierFloors.get(itemTier) + ")").formatted(Formatting.BLUE));
-                    }
-                }
-            }
-        }
 
         if (TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
             lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
