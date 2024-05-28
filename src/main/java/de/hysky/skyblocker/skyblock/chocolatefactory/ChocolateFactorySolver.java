@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import de.hysky.skyblocker.utils.tooltip.LineSmoothener;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -182,7 +182,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		//This is an ArrayList, so this operation is probably not very efficient, but logically it's pretty much the only way I can think of
-		if (shouldAddLine) lines.add(lineIndex, ItemTooltip.createSmoothLine());
+		if (shouldAddLine) lines.add(lineIndex, LineSmoothener.createSmoothLine());
 	}
 
 	private static boolean addUpgradeTimerToLore(List<Text> lines, long cost) {

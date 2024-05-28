@@ -11,7 +11,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TooltipManager {
-	private static final TooltipAdder[] adders = new TooltipAdder[]{};
+	private static final TooltipAdder[] adders = new TooltipAdder[]{
+			new LineSmoothener()
+	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
 	private TooltipManager() {

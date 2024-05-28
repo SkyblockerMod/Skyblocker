@@ -22,7 +22,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +37,6 @@ public class ItemTooltip {
 
     public static void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
         if (!Utils.isOnSkyblock() || client.player == null) return;
-
-        smoothenLines(lines);
 
         String name = getInternalNameFromNBT(stack, false);
         String internalID = getInternalNameFromNBT(stack, true);
@@ -392,23 +389,6 @@ public class ItemTooltip {
         message.append(Text.literal("(" + eachPriceString.replace(".0", "") + " each)").formatted(Formatting.GRAY));
 
         return message;
-    }
-
-    //This is static to not create a new text object for each line in every item
-    private static final Text BUMPY_LINE = Text.literal("-----------------").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH);
-
-    private static void smoothenLines(List<Text> lines) {
-        for (int i = 0; i < lines.size(); i++) {
-            List<Text> lineSiblings = lines.get(i).getSiblings();
-            //Compare the first sibling rather than the whole object as the style of the root object can change while visually staying the same
-            if (lineSiblings.size() == 1 && lineSiblings.getFirst().equals(BUMPY_LINE)) {
-                lines.set(i, createSmoothLine());
-            }
-        }
-    }
-
-    public static Text createSmoothLine() {
-        return Text.literal("                    ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD);
     }
 
     // If these options is true beforehand, the client will get first data of these options while loading.
