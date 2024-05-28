@@ -21,6 +21,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -158,7 +159,7 @@ public class Utils {
 
     /**
      * Can be used to restrict features to being active only on the Alpha network.
-     * 
+     *
      * @return the current environment parsed from the Mod API.
      */
     @NotNull
@@ -552,6 +553,26 @@ public class Utils {
         client.inGameHud.getChatHud().addMessage(message);
         ((MessageHandlerAccessor) client.getMessageHandler()).invokeAddToChatLog(message, Instant.now());
         client.getNarratorManager().narrateSystemMessage(message);
+    }
+
+    /**
+     * Utility method.
+     */
+    public static String getConcatenatedLore(ItemStack item) {
+        return concatenateLore(ItemUtils.getLore(item));
+    }
+
+    /**
+     * Concatenates the lore of an item into one string.
+     * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
+     */
+    public static String concatenateLore(List<Text> lore) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < lore.size(); i++) {
+            stringBuilder.append(lore.get(i).getString());
+            if (i != lore.size() - 1) stringBuilder.append(" ");
+        }
+        return stringBuilder.toString();
     }
 
     public static String getUndashedUuid() {

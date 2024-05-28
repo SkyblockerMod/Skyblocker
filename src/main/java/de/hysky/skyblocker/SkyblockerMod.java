@@ -200,6 +200,7 @@ public class SkyblockerMod implements ClientModInitializer {
         EggFinder.init();
         TimeTowerReminder.init();
         SkyblockTime.init();
+        new EssenceShopPrice();
         JerryTimer.init();
         TooltipManager.init();
         SlotTextManager.init();

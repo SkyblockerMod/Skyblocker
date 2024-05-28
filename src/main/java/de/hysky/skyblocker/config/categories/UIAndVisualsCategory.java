@@ -75,6 +75,13 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.showEssenceCost"))
+                        .binding(defaults.uiAndVisuals.showEssenceCost,
+                                () -> config.uiAndVisuals.showEssenceCost,
+                                newValue -> config.uiAndVisuals.showEssenceCost = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
