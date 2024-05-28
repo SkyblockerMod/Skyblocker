@@ -356,7 +356,7 @@ public class SearchOverManager {
             }
         } else {
             // still filter for only pets
-            if (auctionPets.contains(search)) {
+            if (auctionPets.contains(search.toLowerCase())) {
                 // add bracket so only get pets
                 search = "] " + search;
             }
