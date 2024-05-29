@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;

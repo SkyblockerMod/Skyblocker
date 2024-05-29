@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -14,7 +14,7 @@ public class LineSmoothener extends TooltipAdder {
 		return Text.literal("                    ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD);
 	}
 
-	protected LineSmoothener() {
+	public LineSmoothener() {
 		super(Integer.MIN_VALUE);
 	}
 

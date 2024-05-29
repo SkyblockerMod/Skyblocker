@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 
 public class DungeonQualityTooltip extends TooltipAdder {
-	protected DungeonQualityTooltip(int priority) {
+	public DungeonQualityTooltip(int priority) {
 		super(priority);
 	}
 

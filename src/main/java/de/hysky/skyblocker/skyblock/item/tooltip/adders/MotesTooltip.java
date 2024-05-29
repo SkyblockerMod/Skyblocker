@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MotesTooltip extends TooltipAdder {
-	protected MotesTooltip(int priority) {
+	public MotesTooltip(int priority) {
 		super(priority);
 	}
 

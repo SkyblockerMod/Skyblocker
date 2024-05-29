@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
@@ -12,7 +12,7 @@ import java.util.List;
 public class LBinTooltip extends TooltipAdder {
 	public static boolean lbinExist = false;
 
-	protected LBinTooltip(int priority) {
+	public LBinTooltip(int priority) {
 		super(priority);
 	}
 

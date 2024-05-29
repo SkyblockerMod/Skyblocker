@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 
 public class AvgBinTooltip extends TooltipAdder {
-	protected AvgBinTooltip(int priority) {
+	public AvgBinTooltip(int priority) {
 		super(priority);
 	}
 

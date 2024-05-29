@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 
 public class NpcPriceTooltip extends TooltipAdder {
-	protected NpcPriceTooltip(int priority) {
+	public NpcPriceTooltip(int priority) {
 		super(priority);
 	}
 

@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.utils.tooltip.ObtainedTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedTooltip;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.tooltip;
+package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -13,7 +13,7 @@ import java.util.List;
 public class BazaarPriceTooltip extends TooltipAdder {
 	public static boolean bazaarExist = false;
 
-	protected BazaarPriceTooltip(int priority) {
+	public BazaarPriceTooltip(int priority) {
 		super(priority);
 	}
 
