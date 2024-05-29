@@ -263,6 +263,7 @@
   "skyblocker.config.general.itemTooltip.enableMuseumInfo.@Tooltip": "If this item is donatable to the museum, then the item's category in the musuem is displayed. It also displays a marker indicating whether you've donated that item to your musuem or not (freebies not yet supported).\n\nMake sure to enable your Museum API for accurate information!",
   "skyblocker.config.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "skyblocker.config.general.itemTooltip.enableObtainedDate": "Enable Obtained Date",
+  "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",
 
   "skyblocker.config.general.quiverWarning": "Quiver Warning",
   "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Enable Quiver Warning",
@@ -595,8 +596,6 @@
   "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Color",
   "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Crit Damage Gradient Start Color",
   "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "Crit Damage Gradient End Color",
-
-  "skyblocker.config.uiAndVisuals.showEssenceCost": "Show Essence Cost",
 
   "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
 

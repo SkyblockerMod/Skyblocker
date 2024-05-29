@@ -222,6 +222,13 @@ public class GeneralCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.showEssenceCost"))
+                                .binding(defaults.general.showEssenceCost,
+                                        () -> config.general.showEssenceCost,
+                                        newValue -> config.general.showEssenceCost = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
 
                 //Item Info Display
                 .group(OptionGroup.createBuilder()
