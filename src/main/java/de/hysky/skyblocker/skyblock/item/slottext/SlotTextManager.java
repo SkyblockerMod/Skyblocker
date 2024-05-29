@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EnchantmentLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.MinionLevelAdder;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -12,7 +13,8 @@ import java.util.ArrayList;
 
 public class SlotTextManager {
 	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
-			new EnchantmentLevelAdder()
+			new EnchantmentLevelAdder(),
+			new MinionLevelAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 
