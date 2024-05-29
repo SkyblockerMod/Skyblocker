@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 
 public class EggFinder {
 	private static final Pattern eggFoundPattern = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner)");
-	private static final Pattern newEggPattern = Pattern.compile("^HOPPITY'S HUNT A Chocolate (Breakfast|Lunch|Dinner) Egg has appeared!$");
 	private static final Logger logger = LoggerFactory.getLogger("Skyblocker Egg Finder");
 	private static final LinkedList<ArmorStandEntity> armorStandQueue = new LinkedList<>();
 	private static final Location[] possibleLocations = {Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.HUB, Location.THE_END, Location.THE_PARK, Location.GOLD_MINE};
@@ -144,16 +143,6 @@ public class EggFinder {
 				if (egg != null) egg.waypoint.setFound();
 			} catch (IllegalArgumentException e) {
 				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg found message. Tried to match against: " + matcher.group(0), e);
-			}
-		}
-
-		//There's only one egg of the same type at any given time, so we can set the changed egg to null
-		matcher = newEggPattern.matcher(text.getString());
-		if (matcher.find()) {
-			try {
-				EggType.valueOf(matcher.group(1).toUpperCase()).egg.setValue(null);
-			} catch (IllegalArgumentException e) {
-				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg spawn message. Tried to match against: " + matcher.group(0), e);
 			}
 		}
 	}
