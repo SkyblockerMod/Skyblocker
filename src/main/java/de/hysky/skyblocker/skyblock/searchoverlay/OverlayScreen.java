@@ -49,7 +49,7 @@ public class OverlayScreen extends Screen {
         searchField.setMaxLength(30);
 
         // finish buttons
-        finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), a -> close())
+        finishedButton = ButtonWidget.builder(Text.literal(""), a -> close())
                 .position(startX + rowWidth - rowHeight, startY)
                 .size(rowHeight, rowHeight).build();
 
@@ -89,7 +89,7 @@ public class OverlayScreen extends Screen {
         //auction only elements
         if (SearchOverManager.isAuction) {
             //max pet level button
-            maxPetButton = ButtonWidget.builder(Text.literal("temp"), a -> {
+            maxPetButton = ButtonWidget.builder(Text.literal(""), a -> {
                         SearchOverManager.maxPetLevel = !SearchOverManager.maxPetLevel;
                         updateMaxPetText();
                     })
@@ -144,7 +144,7 @@ public class OverlayScreen extends Screen {
             double textOffset = (dungeonStarButton.getWidth() - actualTextWidth) / 2;
             double offset = mouseX - (dungeonStarButton.getX() + textOffset);
             int starCount = (int) ((offset / actualTextWidth) * 10);
-            starCount = Math.clamp(0, starCount + 1, 10);
+            starCount = Math.clamp(starCount + 1, 0, 10);
             //if same as old value set stars to 0 else set to selected amount
             if (starCount == SearchOverManager.dungeonStars) {
                 SearchOverManager.dungeonStars = 0;
@@ -167,7 +167,7 @@ public class OverlayScreen extends Screen {
     private void updateStars() {
         MutableText stars = Text.empty();
         for (int i = 0; i < SearchOverManager.dungeonStars; i++) {
-            stars.append(Text.literal("✪").formatted(Formatting.GREEN));
+            stars.append(Text.literal("✪").formatted(i < 5 ? Formatting.YELLOW : Formatting.RED));
         }
         for (int i = SearchOverManager.dungeonStars; i < 10; i++) {
             stars.append(Text.literal("✪"));
