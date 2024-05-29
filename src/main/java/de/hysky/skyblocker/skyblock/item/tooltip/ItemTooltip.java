@@ -12,8 +12,6 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -123,34 +121,7 @@ public class ItemTooltip {
 
 
 
-        if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
-            String uuid = ItemUtils.getItemUuid(stack);
-            boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
-            //DyedColorComponent#getColor returns ARGB so we mask out the alpha bits
-            int dyeColor = DyedColorComponent.getColor(stack, 0);
 
-            // dyeColor will have alpha = 255 if it's dyed, and alpha = 0 if it's not dyed,
-            if (!hasCustomDye && dyeColor != 0) {
-                dyeColor = dyeColor & 0x00FFFFFF;
-                String colorHex = String.format("%06X", dyeColor);
-                String expectedHex = ExoticTooltip.getExpectedHex(internalID);
-
-                boolean correctLine = false;
-                for (Text text : lines) {
-                    String existingTooltip = text.getString() + " ";
-                    if (existingTooltip.startsWith("Color: ")) {
-                        correctLine = true;
-
-                        addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, existingTooltip);
-                        break;
-                    }
-                }
-
-                if (!correctLine) {
-                    addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, "");
-                }
-            }
-        }
 
         if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
             Pair<AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
@@ -200,12 +171,6 @@ public class ItemTooltip {
         return neuName;
     }
 
-    private static void addExoticTooltip(List<Text> lines, String internalID, NbtCompound customData, String colorHex, String expectedHex, String existingTooltip) {
-        if (expectedHex != null && !colorHex.equalsIgnoreCase(expectedHex) && !ExoticTooltip.isException(internalID, colorHex) && !ExoticTooltip.intendedDyed(customData)) {
-            final ExoticTooltip.DyeType type = ExoticTooltip.checkDyeType(colorHex);
-            lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + "(").append(type.getTranslatedText()).append(Formatting.DARK_GRAY + ")"));
-        }
-    }
 
     public static void nullWarning() {
         if (!sentNullWarning && client.player != null) {

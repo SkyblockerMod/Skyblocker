@@ -17,6 +17,7 @@ public class TooltipManager {
 			new DungeonQualityTooltip(0),
 			new ObtainedTooltip(3),
 			new MuseumTooltip(4),
+			new ColorTooltip(5),
 			new MotesTooltip(0),
 			new NpcPriceTooltip(1)
 	};
