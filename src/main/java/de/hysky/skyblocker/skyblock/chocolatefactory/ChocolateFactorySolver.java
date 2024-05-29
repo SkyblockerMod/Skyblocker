@@ -375,6 +375,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		int lastNumber = 0;
 		for (int i = romanNumeral.length() - 1; i >= 0; i--) {
 			char ch = romanNumeral.charAt(i);
+			if (!romanMap.containsKey(ch)) return 0;
 			decimal = romanMap.get(ch) >= lastNumber ? decimal + romanMap.get(ch) : decimal - romanMap.get(ch);
 			lastNumber = romanMap.get(ch);
 		}
