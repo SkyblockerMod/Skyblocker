@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class BazaarPriceTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		bazaarExist = false;
 		final ItemStack itemStack = focusedSlot.getStack();
 		final String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
@@ -29,17 +30,26 @@ public class BazaarPriceTooltip extends TooltipAdder {
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;
 
 		if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name)) {
+			int amount;
+			if (lines.get(1).getString().endsWith("Sack")) {
+				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V
+				//Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
+				String line = lines.get(3).getSiblings().get(1).getString().replace(",", "");
+				amount = NumberUtils.isParsable(line) && !line.equals("0") ? Integer.parseInt(line) : itemStack.getCount();
+			} else {
+				amount = itemStack.getCount();
+			}
 			JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(name);
-			lore.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
-			             .formatted(Formatting.GOLD)
-			             .append(getItem.get("buyPrice").isJsonNull()
+			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
+			              .formatted(Formatting.GOLD)
+			              .append(getItem.get("buyPrice").isJsonNull()
 					             ? Text.literal("No data").formatted(Formatting.RED)
-					             : ItemTooltip.getCoinsMessage(getItem.get("buyPrice").getAsDouble(), itemStack.getCount())));
-			lore.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
-			             .formatted(Formatting.GOLD)
-			             .append(getItem.get("sellPrice").isJsonNull()
+					              : ItemTooltip.getCoinsMessage(getItem.get("buyPrice").getAsDouble(), amount)));
+			lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
+			              .formatted(Formatting.GOLD)
+			              .append(getItem.get("sellPrice").isJsonNull()
 					             ? Text.literal("No data").formatted(Formatting.RED)
-					             : ItemTooltip.getCoinsMessage(getItem.get("sellPrice").getAsDouble(), itemStack.getCount())));
+					              : ItemTooltip.getCoinsMessage(getItem.get("sellPrice").getAsDouble(), amount)));
 			bazaarExist = true;
 		}
 	}

@@ -17,7 +17,7 @@ public class AvgBinTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
 		String neuName = ItemTooltip.getInternalNameFromNBT(itemStack, false);
 		String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
@@ -40,7 +40,7 @@ public class AvgBinTooltip extends TooltipAdder {
 
 					// "No data" line because of API not keeping old data, it causes NullPointerException
 					if (type == GeneralConfig.Average.ONE_DAY || type == GeneralConfig.Average.BOTH) {
-						lore.add(
+						lines.add(
 								Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
 								    .formatted(Formatting.GOLD)
 								    .append(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName) == null
@@ -50,7 +50,7 @@ public class AvgBinTooltip extends TooltipAdder {
 						);
 					}
 					if (type == GeneralConfig.Average.THREE_DAY || type == GeneralConfig.Average.BOTH) {
-						lore.add(
+						lines.add(
 								Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
 								    .formatted(Formatting.GOLD)
 								    .append(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName) == null

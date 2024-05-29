@@ -53,17 +53,17 @@ public class TooltipManager {
 	 *
 	 * <p>If you want to add info to the tooltips of multiple items, consider using a switch statement with {@code focusedSlot.getIndex()}</p>
 	 *
-	 * @param lore        The lore of the focused item.
+	 * @param lines The tooltip lines of the focused item. This includes the display name, as it's a part of the tooltip (at index 0).
 	 * @param focusedSlot The slot that is currently focused by the cursor.
-	 * @return The lore itself after all adders have added their text.
+	 * @return The lines list itself after all adders have added their text.
 	 * @deprecated This method is public only for the sake of the mixin. Don't call directly, not that there is any point to it.
 	 */
 	@Deprecated
-	public static List<Text> addToTooltip(List<Text> lore, Slot focusedSlot) {
-		if (!Utils.isOnSkyblock()) return lore;
+	public static List<Text> addToTooltip(List<Text> lines, Slot focusedSlot) {
+		if (!Utils.isOnSkyblock()) return lines;
 		for (TooltipAdder adder : currentScreenAdders) {
-			adder.addToTooltip(lore, focusedSlot);
+			adder.addToTooltip(lines, focusedSlot);
 		}
-		return lore;
+		return lines;
 	}
 }

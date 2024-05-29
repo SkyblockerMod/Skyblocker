@@ -15,13 +15,13 @@ public class NpcPriceTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack stack = focusedSlot.getStack();
 		final String internalID = ItemTooltip.getInternalNameFromNBT(stack, true);
 		if (internalID != null && TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
-			lore.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
-			             .formatted(Formatting.YELLOW)
-			             .append(ItemTooltip.getCoinsMessage(TooltipInfoType.NPC.getData().get(internalID).getAsDouble(), stack.getCount())));
+			lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
+			              .formatted(Formatting.YELLOW)
+			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.NPC.getData().get(internalID).getAsDouble(), stack.getCount())));
 		}
 	}
 }

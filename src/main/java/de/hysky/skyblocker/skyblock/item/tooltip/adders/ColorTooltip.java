@@ -27,7 +27,7 @@ public class ColorTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
 		final String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
 		if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && itemStack.contains(DataComponentTypes.DYED_COLOR)) {
@@ -43,18 +43,18 @@ public class ColorTooltip extends TooltipAdder {
 				String expectedHex = getExpectedHex(internalID);
 
 				boolean correctLine = false;
-				for (Text text : lore) {
+				for (Text text : lines) {
 					String existingTooltip = text.getString() + " ";
 					if (existingTooltip.startsWith("Color: ")) {
 						correctLine = true;
 
-						addExoticTooltip(lore, internalID, ItemUtils.getCustomData(itemStack), colorHex, expectedHex, existingTooltip);
+						addExoticTooltip(lines, internalID, ItemUtils.getCustomData(itemStack), colorHex, expectedHex, existingTooltip);
 						break;
 					}
 				}
 
 				if (!correctLine) {
-					addExoticTooltip(lore, internalID, ItemUtils.getCustomData(itemStack), colorHex, expectedHex, "");
+					addExoticTooltip(lines, internalID, ItemUtils.getCustomData(itemStack), colorHex, expectedHex, "");
 				}
 			}
 		}

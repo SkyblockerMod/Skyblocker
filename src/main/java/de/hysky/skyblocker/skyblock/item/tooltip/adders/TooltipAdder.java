@@ -32,5 +32,8 @@ public abstract class TooltipAdder {
 		this.priority = priority;
 	}
 
-	public abstract void addToTooltip(List<Text> lore, Slot focusedSlot);
+	/**
+	 * @implNote The first element of the lines list holds the item's display name, as it's a list of all lines that will be displayed in the tooltip.
+	 */
+	public abstract void addToTooltip(List<Text> lines, Slot focusedSlot);
 }

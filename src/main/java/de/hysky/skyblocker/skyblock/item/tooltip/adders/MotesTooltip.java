@@ -18,13 +18,13 @@ public class MotesTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
 		final String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
 		if (internalID != null && TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
-			lore.add(Text.literal(String.format("%-20s", "Motes Price:"))
-			             .formatted(Formatting.LIGHT_PURPLE)
-			             .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), itemStack.getCount())));
+			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
+			              .formatted(Formatting.LIGHT_PURPLE)
+			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), itemStack.getCount())));
 		}
 	}
 

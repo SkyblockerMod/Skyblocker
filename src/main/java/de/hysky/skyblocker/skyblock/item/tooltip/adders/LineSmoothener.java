@@ -19,12 +19,12 @@ public class LineSmoothener extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
-		for (int i = 0; i < lore.size(); i++) {
-			List<Text> lineSiblings = lore.get(i).getSiblings();
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
+		for (int i = 0; i < lines.size(); i++) {
+			List<Text> lineSiblings = lines.get(i).getSiblings();
 			//Compare the first sibling rather than the whole object as the style of the root object can change while visually staying the same
 			if (lineSiblings.size() == 1 && lineSiblings.getFirst().equals(BUMPY_LINE)) {
-				lore.set(i, createSmoothLine());
+				lines.set(i, createSmoothLine());
 			}
 		}
 	}

@@ -15,24 +15,24 @@ public class DungeonQualityTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		if (!SkyblockerConfigManager.get().general.itemTooltip.dungeonQuality) return;
 		NbtCompound customData = ItemUtils.getCustomData(focusedSlot.getStack());
 		if (customData == null || !customData.contains("baseStatBoostPercentage")) return;
 		int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
 		boolean maxQuality = baseStatBoostPercentage == 50;
 		if (maxQuality) {
-			lore.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
+			lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
 		} else {
-			lore.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
+			lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
 		}
 
 		if (customData.contains("item_tier")) {     // sometimes it just isn't here?
 			int itemTier = customData.getInt("item_tier");
 			if (maxQuality) {
-				lore.add(Text.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
+				lines.add(Text.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
 			} else {
-				lore.add(Text.literal(String.format("%-21s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.BLUE));
+				lines.add(Text.literal(String.format("%-21s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.BLUE));
 			}
 		}
 	}

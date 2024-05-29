@@ -17,7 +17,7 @@ public class AccessoryTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final String internalID = ItemTooltip.getInternalNameFromNBT(focusedSlot.getStack(), true);
 		if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
@@ -36,7 +36,7 @@ public class AccessoryTooltip extends TooltipAdder {
 					default -> Text.literal("? Unknown").formatted(Formatting.GRAY);
 				};
 
-				lore.add(title.append(stateText));
+				lines.add(title.append(stateText));
 			}
 		}
 	}

@@ -18,7 +18,7 @@ public class MuseumTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lore, Slot focusedSlot) {
+	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
 		final String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
 		if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID)) {
@@ -31,18 +31,18 @@ public class MuseumTooltip extends TooltipAdder {
 
 			//Special case the special category so that it doesn't always display not donated
 			if (itemCategory.equals("Special")) {
-				lore.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
-				             .formatted(Formatting.LIGHT_PURPLE));
+				lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
+				              .formatted(Formatting.LIGHT_PURPLE));
 			} else {
 				NbtCompound customData = ItemUtils.getCustomData(itemStack);
 				boolean isInMuseum = (customData.contains("donated_museum") && customData.getBoolean("donated_museum")) || MuseumItemCache.hasItemInMuseum(internalID);
 
 				Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
 
-				lore.add(Text.literal(String.format(format, "Museum (" + itemCategory + "):"))
-				             .formatted(Formatting.LIGHT_PURPLE)
-				             .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
-				             .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
+				lines.add(Text.literal(String.format(format, "Museum (" + itemCategory + "):"))
+				              .formatted(Formatting.LIGHT_PURPLE)
+				              .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
+				              .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
 			}
 		}
 	}
