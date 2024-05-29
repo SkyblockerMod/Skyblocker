@@ -14,6 +14,7 @@ import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
@@ -27,6 +28,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -308,5 +310,20 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			context.drawTexture(ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 			RenderSystem.disableBlend();
 		}
+	}
+
+	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
+	private void skyblocker$drawSlotText(DrawContext context, Slot slot, CallbackInfo ci) {
+		Text text = SlotTextManager.getText(slot);
+		if (text == null) return;
+		MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		matrices.translate(0.0f, 0.0f, 200.0f);
+		int length = textRenderer.getWidth(text);
+		if (length > 16) {
+			matrices.scale(16.0f / length, 16.0f / length, 1.0f); //Make them fit in the slot. FYI, a slot is sized 16x16.
+		}
+		context.drawText(textRenderer, text, length > 16 ? (int) (slot.x * length / 16f) : slot.x, length > 16 ? (int) ((slot.y + 9) * length / 16f) : slot.y, 0xFFFFFF, true);
+		matrices.pop();
 	}
 }
