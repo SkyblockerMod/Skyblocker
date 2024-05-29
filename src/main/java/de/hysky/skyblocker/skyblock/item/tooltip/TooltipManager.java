@@ -40,7 +40,7 @@ public class TooltipManager {
 	private static void onScreenChange(Screen screen) {
 		final String title = screen.getTitle().getString();
 		for (TooltipAdder adder : adders) {
-			if (adder.titlePattern == null || adder.titlePattern.matcher(title).matches()) {
+			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
 				currentScreenAdders.add(adder);
 			}
 		}

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.skyblock.ChestValue;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,8 @@ import java.util.regex.Pattern;
 public abstract class SlotTextAdder {
 	/**
 	 * The title of the screen must match this pattern for this adder to be applied. Null means it will be applied to all screens.
+	 * @implNote Don't end your regex with a {@code $} as {@link ChestValue} appends text to the end of the title,
+	 * so the regex will stop matching if the player uses it.
 	 */
 	public final Pattern titlePattern;
 
