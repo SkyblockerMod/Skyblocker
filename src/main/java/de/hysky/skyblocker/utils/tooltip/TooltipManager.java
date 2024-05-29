@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.tooltip;
 
+import de.hysky.skyblocker.skyblock.item.tooltip.AccessoryTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.MuseumTooltip;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -15,11 +16,12 @@ public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(),
 			new DungeonQualityTooltip(0),
+			new NpcPriceTooltip(1),
 			new ObtainedTooltip(3),
 			new MuseumTooltip(4),
 			new ColorTooltip(5),
+			new AccessoryTooltip(6),
 			new MotesTooltip(0),
-			new NpcPriceTooltip(1)
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
