@@ -61,6 +61,9 @@ public class MiningConfig {
     public static class CrystalHollows {
         @SerialEntry
         public boolean metalDetectorHelper = true;
+
+        @SerialEntry
+        public boolean nucleusWaypoints = false;
     }
 
     public static class CrystalsHud {

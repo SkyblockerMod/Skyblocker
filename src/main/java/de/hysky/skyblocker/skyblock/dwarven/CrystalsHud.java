@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -33,7 +34,7 @@ public class CrystalsHud {
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("crystals")
                                 .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
-
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
         HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
             if (!SkyblockerConfigManager.get().mining.crystalsHud.enabled
                     || CLIENT.player == null

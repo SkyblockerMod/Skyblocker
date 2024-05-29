@@ -414,6 +414,8 @@
   "skyblocker.config.mining.crystalHollows": "Crystal Hollows",
   "skyblocker.config.mining.crystalHollows.metalDetectorHelper": "Metal Detector Helper",
   "skyblocker.config.mining.crystalHollows.metalDetectorHelper.@Tooltip": "Helper for the metal detector puzzle in the Mines of Divan.",
+  "skyblocker.config.mining.crystalHollows.nucleusWaypoints": "Nucleus Waypoints",
+  "skyblocker.config.mining.crystalHollows.nucleusWaypoints.@Tooltip": "Show waypoints to the Nucleus in the Crystal Hollows.",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
   "skyblocker.config.mining.crystalsHud.enabled": "Enabled",
