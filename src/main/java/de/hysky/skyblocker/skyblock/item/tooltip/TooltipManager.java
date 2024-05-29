@@ -20,7 +20,7 @@ public class TooltipManager {
 			new AvgBinTooltip(4), //Has to come after lbin price
 			new DungeonQualityTooltip(5),
 			new MotesTooltip(6),
-			new ObtainedTooltip(7),
+			new ObtainedDateTooltip(7),
 			new MuseumTooltip(8),
 			new ColorTooltip(9),
 			new AccessoryTooltip(10),

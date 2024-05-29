@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
@@ -49,10 +49,10 @@ public class ItemUtilsTest {
 
 	@Test
 	void testGetTimestamp() {
-		Assertions.assertEquals("February 5, 2022", ObtainedTooltip.getTimestamp(DARK_CLAYMORE_OLD));
-		Assertions.assertEquals("December 16, 2022", ObtainedTooltip.getTimestamp(DARK_CLAYMORE)); // The timestamp is 1671157200000 which is December 16, 2022 in UTC
-		Assertions.assertEquals("April 12, 2024", ObtainedTooltip.getTimestamp(TITANIUM_DRILL_DR_X655));
-		Assertions.assertEquals("March 1, 2021", ObtainedTooltip.getTimestamp(ASTRAEA));
+		Assertions.assertEquals("February 5, 2022", ObtainedDateTooltip.getTimestamp(DARK_CLAYMORE_OLD));
+		Assertions.assertEquals("December 16, 2022", ObtainedDateTooltip.getTimestamp(DARK_CLAYMORE)); // The timestamp is 1671157200000 which is December 16, 2022 in UTC
+		Assertions.assertEquals("April 12, 2024", ObtainedDateTooltip.getTimestamp(TITANIUM_DRILL_DR_X655));
+		Assertions.assertEquals("March 1, 2021", ObtainedDateTooltip.getTimestamp(ASTRAEA));
 	}
 
 	@Test

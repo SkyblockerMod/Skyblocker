@@ -16,11 +16,11 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Locale;
 
-public class ObtainedTooltip extends TooltipAdder {
+public class ObtainedDateTooltip extends TooltipAdder {
 	private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
 	private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
 
-	public ObtainedTooltip(int priority) {
+	public ObtainedDateTooltip(int priority) {
 		super(priority);
 	}
 
