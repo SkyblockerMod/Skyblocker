@@ -1,10 +1,17 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -13,6 +20,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -39,6 +48,17 @@ public class EggFinder {
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.GAME.register(EggFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
+		                                                                                                                         .then(ClientCommandManager.literal("eggFinder")
+		                                                                                                                                                   .then(ClientCommandManager.literal("shareLocation")
+		                                                                                                                                                                             .then(ClientCommandManager.argument("x", IntegerArgumentType.integer())
+		                                                                                                                                                                                                       .then(ClientCommandManager.argument("y", IntegerArgumentType.integer())
+		                                                                                                                                                                                                                                 .then(ClientCommandManager.argument("z", IntegerArgumentType.integer())
+		                                                                                                                                                                                                                                                           .then(ClientCommandManager.argument("eggType", StringArgumentType.word())
+		                                                                                                                                                                                                                                                                                     .executes(context -> {
+			                                                                                                                                                                                                                                                                                     MessageScheduler.INSTANCE.sendMessageAfterCooldown("[Skyblocker] Chocolate " + context.getArgument("eggType", String.class) + " Egg found at " + context.getArgument("x", Integer.class) + " " + context.getArgument("y", Integer.class) + " " + context.getArgument("z", Integer.class) + "!");
+			                                                                                                                                                                                                                                                                                     return Command.SINGLE_SUCCESS;
+		                                                                                                                                                                                                                                                                                     })))))))));
 	}
 
 	private static void handleLocationChange(Location location) {
@@ -102,7 +122,9 @@ public class EggFinder {
 		                                                                 .append("Found a ")
 		                                                                 .append(Text.literal("Chocolate " + eggType + " Egg")
 		                                                                             .withColor(eggType.color))
-		                                                                 .append(" at " + entity.getBlockPos().up(2).toShortString() + "!"));
+		                                                                 .append(" at " + entity.getBlockPos().up(2).toShortString() + "!")
+		                                                                 .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + entity.getBlockX() + " " + entity.getBlockY() + 2 + " " + entity.getBlockZ() + " " + eggType))
+		                                                                                       .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))));
 	}
 
 	private static void renderWaypoints(WorldRenderContext context) {
