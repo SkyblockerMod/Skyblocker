@@ -122,7 +122,6 @@ public class OverlayScreen extends Screen {
         if (SearchOverManager.isAuction) {
             addDrawableChild(maxPetButton);
             addDrawableChild(dungeonStarButton);
-
         }
 
         //focus the search box
@@ -130,7 +129,7 @@ public class OverlayScreen extends Screen {
     }
 
     /**
-     * finds if the mouse is clicked on the dungeon star button and if so works out amount of stars to set
+     * Finds if the mouse is clicked on the dungeon star button and if so works out what stars the user clicked on
      *
      * @param mouseX the X coordinate of the mouse
      * @param mouseY the Y coordinate of the mouse
@@ -156,6 +155,9 @@ public class OverlayScreen extends Screen {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    /**
+     * Updates the text displayed on the max pet level button to represent the settings current state
+     */
     private void updateMaxPetText() {
         if (SearchOverManager.maxPetLevel) {
             maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
@@ -164,6 +166,9 @@ public class OverlayScreen extends Screen {
         }
     }
 
+    /**
+     * Updates stars in dungeon star input to represent the current star value
+     */
     private void updateStars() {
         MutableText stars = Text.empty();
         for (int i = 0; i < SearchOverManager.dungeonStars; i++) {
@@ -175,6 +180,13 @@ public class OverlayScreen extends Screen {
         dungeonStarButton.setMessage(stars);
     }
 
+    /**
+     * Renders the background for the search using the social interactions background
+     * @param context context
+     * @param mouseX mouseX
+     * @param mouseY mouseY
+     * @param delta delta
+     */
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderBackground(context, mouseX, mouseY, delta);
@@ -194,7 +206,6 @@ public class OverlayScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         int renderOffset = (rowHeight - 16) / 2;
         context.drawGuiTexture(SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
-        //labels
         if (historyButtons.length > 0 && historyButtons[0] != null) {
             context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
         }

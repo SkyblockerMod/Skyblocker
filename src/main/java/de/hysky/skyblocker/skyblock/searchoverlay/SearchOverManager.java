@@ -141,8 +141,8 @@ public class SearchOverManager {
         }
 
         //get auction items
-        Set<@NEUId String> essenceCosts = NEURepoManager.NEU_REPO.getConstants().getEssenceCost().getCosts().keySet();
         try {
+            Set<@NEUId String> essenceCosts = NEURepoManager.NEU_REPO.getConstants().getEssenceCost().getCosts().keySet();
             if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 TooltipInfoType.THREE_DAY_AVERAGE.run();
             }
