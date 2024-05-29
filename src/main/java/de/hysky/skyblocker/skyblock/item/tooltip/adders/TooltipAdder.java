@@ -11,8 +11,14 @@ import java.util.regex.Pattern;
  * Extend this class and add it to {@link TooltipManager#adders} to add additional text to tooltips.
  */
 public abstract class TooltipAdder {
+	/**
+	 * The title of the screen must match this pattern for this adder to be applied. Null means it will be applied to all screens.
+	 */
 	public final Pattern titlePattern;
-	//Lower priority means it will be applied first
+	/**
+	 * The priority of this adder. Lower priority means it will be applied first.
+	 * @apiNote Consider taking this value on your class' constructor and setting it from {@link TooltipManager#adders} to make it easy to read and maintain.
+	 */
 	public final int priority;
 
 	protected TooltipAdder(String titlePattern, int priority) {
@@ -33,7 +39,8 @@ public abstract class TooltipAdder {
 	}
 
 	/**
-	 * @implNote The first element of the lines list holds the item's display name, as it's a list of all lines that will be displayed in the tooltip.
+	 * @implNote The first element of the lines list holds the item's display name,
+	 * as it's a list of all lines that will be displayed in the tooltip.
 	 */
 	public abstract void addToTooltip(List<Text> lines, Slot focusedSlot);
 }

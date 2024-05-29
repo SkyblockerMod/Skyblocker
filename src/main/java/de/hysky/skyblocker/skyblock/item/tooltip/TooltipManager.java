@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
-			new LineSmoothener(),
+			new LineSmoothener(), // Applies before anything else
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3), //Has to come after bz price
