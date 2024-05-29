@@ -9,8 +9,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -29,92 +27,8 @@ import java.util.concurrent.CompletableFuture;
 public class ItemTooltip {
     protected static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    protected static final GeneralConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
+    public static final GeneralConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
-
-    public static void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
-        if (!Utils.isOnSkyblock() || client.player == null) return;
-
-        String name = getInternalNameFromNBT(stack, false);
-        String internalID = getInternalNameFromNBT(stack, true);
-        String neuName = name;
-        if (name == null || internalID == null) return;
-
-        if (name.startsWith("ISSHINY_")) {
-            name = "SHINY_" + internalID;
-            neuName = internalID;
-        }
-
-        if (lines.isEmpty()) {
-            return;
-        }
-
-        int count = stack.getCount();
-
-        boolean bazaarExist = false;
-
-        if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name)) {
-            JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(name);
-            lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
-                    .formatted(Formatting.GOLD)
-                    .append(getItem.get("buyPrice").isJsonNull()
-                            ? Text.literal("No data").formatted(Formatting.RED)
-                            : getCoinsMessage(getItem.get("buyPrice").getAsDouble(), count)));
-            lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
-                    .formatted(Formatting.GOLD)
-                    .append(getItem.get("sellPrice").isJsonNull()
-                            ? Text.literal("No data").formatted(Formatting.RED)
-                            : getCoinsMessage(getItem.get("sellPrice").getAsDouble(), count)));
-            bazaarExist = true;
-        }
-
-        // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
-        boolean lbinExist = false;
-        if (TooltipInfoType.LOWEST_BINS.isTooltipEnabledAndHasOrNullWarning(name) && !bazaarExist) {
-            lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
-                    .formatted(Formatting.GOLD)
-                    .append(getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), count)));
-            lbinExist = true;
-        }
-
-        if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
-            if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
-                nullWarning();
-            } else {
-                /*
-                  We are skipping check average prices for potions, runes
-                  and enchanted books because there is no data for their in API.
-                 */
-                neuName = getNeuName(internalID, neuName);
-
-                if (!neuName.isEmpty() && lbinExist) {
-                    GeneralConfig.Average type = config.avg;
-
-                    // "No data" line because of API not keeping old data, it causes NullPointerException
-                    if (type == GeneralConfig.Average.ONE_DAY || type == GeneralConfig.Average.BOTH) {
-                        lines.add(
-                                Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
-                                        .formatted(Formatting.GOLD)
-                                        .append(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName) == null
-                                                ? Text.literal("No data").formatted(Formatting.RED)
-                                                : getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), count)
-                                        )
-                        );
-                    }
-                    if (type == GeneralConfig.Average.THREE_DAY || type == GeneralConfig.Average.BOTH) {
-                        lines.add(
-                                Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
-                                        .formatted(Formatting.GOLD)
-                                        .append(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName) == null
-                                                ? Text.literal("No data").formatted(Formatting.RED)
-                                                : getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), count)
-                                        )
-                        );
-                    }
-                }
-            }
-        }
-    }
 
     @NotNull
     public static String getNeuName(String internalID, String neuName) {

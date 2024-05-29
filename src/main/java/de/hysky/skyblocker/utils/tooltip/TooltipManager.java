@@ -13,13 +13,16 @@ import java.util.List;
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(),
-			new DungeonQualityTooltip(0),
 			new NpcPriceTooltip(1),
-			new ObtainedTooltip(3),
-			new MuseumTooltip(4),
-			new ColorTooltip(5),
-			new AccessoryTooltip(6),
-			new MotesTooltip(0),
+			new BazaarPriceTooltip(2),
+			new LBinTooltip(3), //Has to come after bz price
+			new AvgBinTooltip(4), //Has to come after lbin price
+			new DungeonQualityTooltip(5),
+			new MotesTooltip(6),
+			new ObtainedTooltip(7),
+			new MuseumTooltip(8),
+			new ColorTooltip(9),
+			new AccessoryTooltip(10),
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
