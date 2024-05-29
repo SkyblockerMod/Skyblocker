@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -20,6 +21,7 @@ import net.minecraft.client.texture.Scaling;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
@@ -332,6 +334,14 @@ public class RenderHelper {
         } else { //Vanilla
             RenderSystem.recordRenderCall(runnable::run);
         }
+    }
+
+    public static Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
+        return getBlockBoundingBox(world, world.getBlockState(pos), pos);
+    }
+
+    public static Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
+        return state.getOutlineShape(world, pos).asCuboid().getBoundingBox().offset(pos);
     }
 
     /**

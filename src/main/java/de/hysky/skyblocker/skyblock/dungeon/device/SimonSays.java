@@ -100,7 +100,7 @@ public class SimonSays {
 				//If the button hasn't been clicked yet
 				//Also don't do anything if the button isn't there which means the device is showing the sequence
 				if (!CLICKED_BUTTONS.contains(buttonPos) && state.getBlock().equals(Blocks.STONE_BUTTON)) {
-					Box outline = state.getOutlineShape(world, buttonPos).asCuboid().getBoundingBox().offset(buttonPos);
+					Box outline = RenderHelper.getBlockBoundingBox(world, state, buttonPos);
 					float[] colour = buttonsRendered == 0 ? GREEN : YELLOW;
 
 					RenderHelper.renderFilled(context, Boxes.getMinVec(outline), Boxes.getLengthVec(outline), colour, 0.5f, true);
