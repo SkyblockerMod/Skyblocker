@@ -78,7 +78,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		List<ColorHighlight> highlights = new ArrayList<>();
 
 		getPrestigeHighlight().ifPresent(highlights::add);
-		getStrayRabbitHighlight(slots).ifPresent(highlights::add);
+		highlights.addAll(getStrayRabbitHighlight(slots));
 
 		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return highlights; //Something went wrong or there's nothing we can afford.
 		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
@@ -343,14 +343,15 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return Optional.of(ColorHighlight.red(PRESTIGE_SLOT));
 	}
 
-	private static Optional<ColorHighlight> getStrayRabbitHighlight(Int2ObjectMap<ItemStack> slots) {
+	private static List<ColorHighlight> getStrayRabbitHighlight(Int2ObjectMap<ItemStack> slots) {
+		final List<ColorHighlight> highlights = new ArrayList<>();
 		for (byte i = STRAY_RABBIT_START; i < STRAY_RABBIT_END; i++) {
 			ItemStack item = slots.get(i);
 			if (item.isOf(Items.PLAYER_HEAD) && item.getName().getString().equals("CLICK ME!")) {
-				return Optional.of(ColorHighlight.green(i));
+				highlights.add(ColorHighlight.green(i));
 			}
 		}
-		return Optional.empty();
+		return highlights;
 	}
 
 	private record Rabbit(double cpsIncrease, int cost, int slot, ItemStack itemStack) {
