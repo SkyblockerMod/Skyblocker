@@ -1,8 +1,9 @@
-package de.hysky.skyblocker.skyblock.item.tooltip;
+package de.hysky.skyblocker.utils.tooltip;
 
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.tooltip.TooltipAdder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;

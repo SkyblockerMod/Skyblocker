@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils.tooltip;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.AccessoryTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.MuseumTooltip;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;

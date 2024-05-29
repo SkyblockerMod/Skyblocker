@@ -108,7 +108,7 @@ public class AccessoriesHelper {
 				.put(page, new ObjectOpenHashSet<>(accessoryIds));
 	}
 
-	static Pair<AccessoryReport, String> calculateReport4Accessory(String accessoryId) {
+	public static Pair<AccessoryReport, String> calculateReport4Accessory(String accessoryId) {
 		if (!ACCESSORY_DATA.containsKey(accessoryId) || Utils.getProfileId().isEmpty()) return Pair.of(AccessoryReport.INELIGIBLE, null);
 
 		Accessory accessory = ACCESSORY_DATA.get(accessoryId);
@@ -208,7 +208,7 @@ public class AccessoriesHelper {
 		}
 	}
 
-	enum AccessoryReport {
+	public enum AccessoryReport {
 		HAS_HIGHEST_TIER, //You've collected the highest tier - Collected
 		IS_GREATER_TIER, //This accessory is an upgrade from the one in the same family that you already have - Upgrade -- Shows you what tier this accessory is in its family
 		HAS_GREATER_TIER, //This accessory has a higher tier upgrade - Upgradable -- Shows you the highest tier accessory you've collected in that family
