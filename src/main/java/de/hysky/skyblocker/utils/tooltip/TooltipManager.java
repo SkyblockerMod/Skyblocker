@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.tooltip;
 
+import de.hysky.skyblocker.skyblock.item.tooltip.MuseumTooltip;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,6 +16,7 @@ public class TooltipManager {
 			new LineSmoothener(),
 			new DungeonQualityTooltip(0),
 			new ObtainedTooltip(3),
+			new MuseumTooltip(4),
 			new MotesTooltip(0),
 			new NpcPriceTooltip(1)
 	};
