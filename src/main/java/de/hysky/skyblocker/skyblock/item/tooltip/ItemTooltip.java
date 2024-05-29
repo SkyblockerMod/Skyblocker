@@ -56,17 +56,10 @@ public class ItemTooltip {
         }
 
         int count = stack.getCount();
-        boolean bazaarOpened = lines.stream().anyMatch(each -> each.getString().contains("Buy price:") || each.getString().contains("Sell price:"));
-
-        if (TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
-            lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
-                    .formatted(Formatting.YELLOW)
-                    .append(getCoinsMessage(TooltipInfoType.NPC.getData().get(internalID).getAsDouble(), count)));
-        }
 
         boolean bazaarExist = false;
 
-        if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name) && !bazaarOpened) {
+        if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name)) {
             JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(name);
             lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
                     .formatted(Formatting.GOLD)
@@ -83,7 +76,7 @@ public class ItemTooltip {
 
         // bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
         boolean lbinExist = false;
-        if (TooltipInfoType.LOWEST_BINS.isTooltipEnabledAndHasOrNullWarning(name) && !bazaarOpened && !bazaarExist) {
+        if (TooltipInfoType.LOWEST_BINS.isTooltipEnabledAndHasOrNullWarning(name) && !bazaarExist) {
             lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
                     .formatted(Formatting.GOLD)
                     .append(getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), count)));
@@ -129,7 +122,7 @@ public class ItemTooltip {
         }
 
 
-        if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID) && !bazaarOpened) {
+        if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID)) {
             String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
             String format = switch (itemCategory) {
                 case "Weapons" -> "%-18s";
@@ -307,7 +300,7 @@ public class ItemTooltip {
         return internalName;
     }
 
-    private static Text getCoinsMessage(double price, int count) {
+    public static Text getCoinsMessage(double price, int count) {
         // Format the price string once
         String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
 
@@ -318,10 +311,9 @@ public class ItemTooltip {
 
         // If count is greater than 1, include the "each" information
         String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
-        MutableText message = Text.literal(priceStringTotal + " Coins ").formatted(Formatting.DARK_AQUA);
-        message.append(Text.literal("(" + priceString + " each)").formatted(Formatting.GRAY));
 
-        return message;
+        return Text.literal(priceStringTotal + " Coins ").formatted(Formatting.DARK_AQUA)
+                   .append(Text.literal("(" + priceString + " each)").formatted(Formatting.GRAY));
     }
 
     // If these options is true beforehand, the client will get first data of these options while loading.

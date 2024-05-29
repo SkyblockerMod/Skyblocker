@@ -14,8 +14,9 @@ public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(),
 			new DungeonQualityTooltip(0),
-			new ObtainedTooltip(1),
-			new MotesTooltip(0)
+			new ObtainedTooltip(3),
+			new MotesTooltip(0),
+			new NpcPriceTooltip(1)
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
