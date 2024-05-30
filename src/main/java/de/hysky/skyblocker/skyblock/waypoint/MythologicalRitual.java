@@ -118,7 +118,7 @@ public class MythologicalRitual {
                             new Vector2D(burrow.echoBurrowDirection[1].x, burrow.echoBurrowDirection[1].z),
                             0.0001);
                     Vector2D intersection = line.intersection(burrow.nextLine);
-                    burrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 100, intersection.getY());
+                    burrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 5, intersection.getY());
                 }
                 fillLine(burrow.nextBurrowLine, Vec3d.ofCenter(pos.up()), nextBurrowDirection);
             } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType()) && packet.getCount() == 2) {
@@ -143,7 +143,7 @@ public class MythologicalRitual {
                             new Vector2D(previousBurrow.echoBurrowDirection[1].x, previousBurrow.echoBurrowDirection[1].z),
                             0.0001
                     ));
-                    previousBurrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 100, intersection.getY());
+                    previousBurrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 5, intersection.getY());
 
                 }
                 fillLine(previousBurrow.echoBurrowLine, previousBurrow.echoBurrowDirection[0], echoBurrowDirection);
