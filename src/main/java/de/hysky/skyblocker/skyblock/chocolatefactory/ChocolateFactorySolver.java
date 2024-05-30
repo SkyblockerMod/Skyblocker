@@ -345,9 +345,11 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private static List<ColorHighlight> getStrayRabbitHighlight(Int2ObjectMap<ItemStack> slots) {
 		final List<ColorHighlight> highlights = new ArrayList<>();
-		for (byte i = STRAY_RABBIT_START; i < STRAY_RABBIT_END; i++) {
+		for (byte i = STRAY_RABBIT_START; i <= STRAY_RABBIT_END; i++) {
 			ItemStack item = slots.get(i);
-			if (item.isOf(Items.PLAYER_HEAD) && item.getName().getString().equals("CLICK ME!")) {
+			if (!item.isOf(Items.PLAYER_HEAD)) continue;
+			String name = item.getName().getString();
+			if (name.equals("CLICK ME!") || name.startsWith("GOLDEN RABBIT")) {
 				highlights.add(ColorHighlight.green(i));
 			}
 		}
