@@ -34,6 +34,7 @@ public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
+    private static final MinecraftClient client = MinecraftClient.getInstance();
     private static CounterType counterType = CounterType.NONE;
     private static final Deque<IntLongPair> counter = new ArrayDeque<>();
     private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
@@ -53,8 +54,8 @@ public class FarmingHud {
                     farmingXp.poll();
                 }
 
-                ItemStack stack = MinecraftClient.getInstance().player.getMainHandStack();
-                if (!tryParseCounter(stack, CounterType.CULTIVATING) && !tryParseCounter(stack, CounterType.COUNTER)) {
+                ItemStack stack = client.player.getMainHandStack();
+                if (stack == null || !tryParseCounter(stack, CounterType.CULTIVATING) && !tryParseCounter(stack, CounterType.COUNTER)) {
                     counterType = CounterType.NONE;
                 }
 
@@ -104,7 +105,7 @@ public class FarmingHud {
     }
 
     private static boolean shouldRender() {
-        return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && Utils.getLocation() == Location.GARDEN;
+        return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && client.player != null && Utils.getLocation() == Location.GARDEN;
     }
 
     public static String counterText() {

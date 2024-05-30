@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -58,15 +59,18 @@ public class FarmingHudWidget extends Widget {
     @Override
     public void updateContent() {
         if (client.player == null) return;
+        ItemStack farmingToolStack = client.player.getMainHandStack();
+        if (farmingToolStack == null) return;
+        String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));
+        ItemStack cropStack = ItemRepository.getItemStack(cropItemId);
 
-        ItemStack farmingTool = client.player.getMainHandStack();
-        addSimpleIcoText(farmingTool, FarmingHud.counterText(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
+        addSimpleIcoText(cropStack, FarmingHud.counterText(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
         float cropsPerMinute = FarmingHud.cropsPerMinute();
-        addSimpleIcoText(farmingTool, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
-        DoubleBooleanPair itemPrice = ItemUtils.getItemPrice(FARMING_TOOLS.get(ItemUtils.getItemId(farmingTool)));
+        addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
+        DoubleBooleanPair itemPrice = ItemUtils.getItemPrice(cropItemId);
         addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, itemPrice.rightBoolean() ? FarmingHud.NUMBER_FORMAT.format((int) (itemPrice.leftDouble() * cropsPerMinute * 0.6) * 100) : "No Data"); // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6
 
-        addSimpleIcoText(farmingTool, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
+        addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
         //noinspection DataFlowIssue
         addComponent(new ProgressComponent(Ico.LANTERN, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
         addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.farmingXpPerHour()));
