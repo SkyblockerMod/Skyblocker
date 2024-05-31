@@ -88,7 +88,6 @@ public class WidgetsOrderingTab implements Tab {
         for (int i = 0; i < hopperTooltip.size(); i++) {
             Text text = hopperTooltip.get(i);
             String string = text.getString();
-            System.out.println(string);
             if (start == -1 && string.contains("▶")) {
                 start = i;
             }

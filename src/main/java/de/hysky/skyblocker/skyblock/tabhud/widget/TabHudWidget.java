@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -29,6 +30,11 @@ public abstract class TabHudWidget extends HudWidget {
     public void updateFromTab(List<Text> lines) {
         cachedComponents.clear();
         updateContent(lines);
+    }
+
+    @Override
+    public boolean shouldRender(Location location) {
+        return false;
     }
 
     /**

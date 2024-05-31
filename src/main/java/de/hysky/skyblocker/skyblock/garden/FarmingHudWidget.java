@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -100,5 +101,10 @@ public class FarmingHudWidget extends HudWidget {
         // Return the formatted price if npc price is higher or bazaar price is present.
         // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
         return shouldUseNpcPrice || itemBazaarPrice.rightBoolean() ? FarmingHud.NUMBER_FORMAT.format((int) (price * cropsPerMinute * 0.6) * 100) : "No Data";
+    }
+
+    @Override
+    public boolean shouldRender(Location location) {
+        return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
     }
 }

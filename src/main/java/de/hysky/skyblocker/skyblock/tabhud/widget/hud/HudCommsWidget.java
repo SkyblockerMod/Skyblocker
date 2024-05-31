@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.hud;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud.Commission;
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -7,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -67,4 +69,8 @@ public class HudCommsWidget extends HudWidget {
         }
     }
 
+    @Override
+    public boolean shouldRender(Location location) {
+        return location.equals(Location.DWARVEN_MINES) || location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions;
+    }
 }

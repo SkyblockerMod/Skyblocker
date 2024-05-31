@@ -1,9 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.google.common.reflect.ClassPath;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -11,22 +9,13 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.main.Main;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +31,8 @@ public class ScreenMaster {
     private static final HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
     private static final Map<Location, ScreenBuilder> builderMap = new HashMap<>();
 
+    public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
+
     /**
      * Load a screen mapping from an identifier
      */
@@ -52,17 +43,10 @@ public class ScreenMaster {
         String screenType = parts[parts.length - 2];
         String location = parts[parts.length - 1];
         location = location.replace(".json", "");
-
-        ScreenBuilder sb = new ScreenBuilder(ident);
-        switch (screenType) {
-            case "standard" -> standardMap.put(location, sb);
-            case "screen_a" -> screenAMap.put(location, sb);
-            case "screen_b" -> screenBMap.put(location, sb);
-        }
     }
 
     public static ScreenBuilder getScreenBuilder(Location location) {
-        return builderMap.computeIfAbsent(location, location1 -> new ScreenBuilder(new Identifier("")));
+        return builderMap.get(location);
     }
 
     /**
@@ -87,12 +71,14 @@ public class ScreenMaster {
             sb = lookup.get("default");
         }
 
-        sb.run(context, w, h);
+        getScreenBuilder(Utils.getLocation()).run(context, w, h);
 
     }
 
     @Init
     public static void init() {
+
+        SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             System.out.println(Object.class);
@@ -102,7 +88,7 @@ public class ScreenMaster {
                         Class<?> load = Class.forName(classInfo.getName());
                         if (!load.getSuperclass().equals(TabHudWidget.class)) return;
                         TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
-                        PlayerListMgr.widgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
+                        PlayerListMgr.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
                     } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                         LOGGER.error("[Skyblocker] Failed to load {} hud widget", classInfo.getName(), e);
                     }
@@ -112,6 +98,10 @@ public class ScreenMaster {
                 LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
             }
         });
+
+        for (Location value : Location.values()) {
+            builderMap.put(value, new ScreenBuilder(value));
+        }
         /*
 
 
