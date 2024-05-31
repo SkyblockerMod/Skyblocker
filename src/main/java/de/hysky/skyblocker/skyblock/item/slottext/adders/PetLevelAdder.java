@@ -18,10 +18,7 @@ public class PetLevelAdder extends SlotTextAdder {
 	public @Nullable Text getText(Slot slot) {
 		ItemStack itemStack = slot.getStack();
 		if (!itemStack.isOf(Items.PLAYER_HEAD)) return null;
-		Text name = itemStack.getName();
-		String nameStr = name.getString();
-		if (!nameStr.startsWith("[Lvl ")) return null;
-		String level = nameStr.substring(5, nameStr.indexOf(']'));
+		String level = CatacombsLevelAdder.getBracketedLevelFromName(itemStack);
 		if (!NumberUtils.isDigits(level)) return null;
 		return Text.literal(level).formatted(Formatting.GOLD);
 	}

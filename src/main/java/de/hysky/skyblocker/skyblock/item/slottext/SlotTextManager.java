@@ -16,7 +16,10 @@ public class SlotTextManager {
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
 			new SkyblockLevelAdder(),
-			new SkillLevelAdder()
+			new SkillLevelAdder(),
+			new CatacombsLevelAdder.Dungeoneering(),
+			new CatacombsLevelAdder.DungeonClasses(),
+			new CatacombsLevelAdder.ReadyUp()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 
