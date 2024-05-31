@@ -323,7 +323,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (length > 16) {
 			matrices.scale(16.0f / length, 16.0f / length, 1.0f); //Make them fit in the slot. FYI, a slot is sized 16x16.
 		}
-		context.drawText(textRenderer, text, length > 16 ? (int) (slot.x * length / 16f) : slot.x, length > 16 ? (int) ((slot.y + 9) * length / 16f) : slot.y + 9, 0xFFFFFF, true);
+		context.drawText(textRenderer, text, length > 16 ? (int) (slot.x * length / 16f) : slot.x, length > 16 ? (int) ((slot.y + 9) * length / 16f) + 1 : slot.y + 9, 0xFFFFFF, true);
 		matrices.pop();
 	}
 }
