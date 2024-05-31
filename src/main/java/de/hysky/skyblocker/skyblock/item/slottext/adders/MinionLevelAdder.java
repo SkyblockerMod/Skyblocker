@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
@@ -21,7 +21,7 @@ public class MinionLevelAdder extends SlotTextAdder {
 		String name = itemStack.getName().getString();
 		if (!name.contains("Minion")) return null;
 		String romanNumeral = name.substring(name.lastIndexOf(' ') + 1); //+1 because we don't need the space itself
-		int level = ChocolateFactorySolver.romanToDecimal(romanNumeral); //Temporary line. The method will be moved out later.
+		int level = RomanNumerals.romanToDecimal(romanNumeral);
 		if (level == 0) return null;
 		return Text.literal(String.valueOf(level)).formatted(Formatting.DARK_PURPLE);
 	}

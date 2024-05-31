@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
@@ -37,6 +37,6 @@ public class EnchantmentLevelAdder extends SlotTextAdder {
 
 	private static int getEnchantLevelFromString(String str) {
 		String romanNumeral = str.substring(str.lastIndexOf(' ') + 1); //+1 because we don't need the space itself
-		return ChocolateFactorySolver.romanToDecimal(romanNumeral); //Temporary line. The method will be moved out later.
+		return RomanNumerals.romanToDecimal(romanNumeral); //Temporary line. The method will be moved out later.
 	}
 }

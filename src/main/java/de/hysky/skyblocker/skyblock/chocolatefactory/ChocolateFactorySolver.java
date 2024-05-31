@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -143,8 +144,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		//Time Tower is in slot 39
-		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(TIME_TOWER_SLOT)));
+		timeTowerMultiplier = RomanNumerals.romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
+		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(39)));
 		if (timeTowerStatusMatcher.find()) {
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
@@ -357,28 +358,5 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private record Rabbit(double cpsIncrease, int cost, int slot, ItemStack itemStack) {
-	}
-
-	//Perhaps the part below can go to a separate file later on, but I couldn't find a proper name for the class, so they're staying here.
-	private static final Map<Character, Integer> romanMap = Map.of(
-			'I', 1,
-			'V', 5,
-			'X', 10,
-			'L', 50,
-			'C', 100,
-			'D', 500,
-			'M', 1000
-	);
-
-	public static int romanToDecimal(String romanNumeral) {
-		int decimal = 0;
-		int lastNumber = 0;
-		for (int i = romanNumeral.length() - 1; i >= 0; i--) {
-			char ch = romanNumeral.charAt(i);
-			if (!romanMap.containsKey(ch)) return 0;
-			decimal = romanMap.get(ch) >= lastNumber ? decimal + romanMap.get(ch) : decimal - romanMap.get(ch);
-			lastNumber = romanMap.get(ch);
-		}
-		return decimal;
 	}
 }
