@@ -42,7 +42,8 @@ public class VisitorHelper {
     private static final Map<String, ItemStack> itemCache = new HashMap<>();
     private static final int TEXT_START_X = 4;
     private static final int TEXT_START_Y = 4;
-    private static final int TEXT_INDENT = 8;
+    private static final int ENTRY_INDENT = 8;
+    private static final int ITEM_INDENT = 20;
     private static final int LINE_SPACING = 3;
 
     public static void init() {
@@ -61,30 +62,32 @@ public class VisitorHelper {
 
     public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
         int yPosition = TEXT_START_Y;
-
         for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            int textWidth;
-            int textHeight = textRenderer.fontHeight;
-
-            yPosition += LINE_SPACING + textHeight;
+            yPosition += LINE_SPACING + textRenderer.fontHeight;
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
                 String itemText = itemEntry.getKey();
-                textWidth = textRenderer.getWidth(itemText + " x" + itemEntry.getIntValue());
+                int textWidth = textRenderer.getWidth(itemText + " x" + itemEntry.getIntValue());
 
-                if (isMouseOverText(mouseX, mouseY, TEXT_START_X + TEXT_INDENT, yPosition, textWidth, textHeight)) {
+                // Check if the mouse is over the item text
+                // The text starts at `TEXT_START_X + ENTRY_INDENT + ITEM_INDENT`
+                if (isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT, yPosition, textWidth, textRenderer.fontHeight)) {
+                    // Send command to buy the item from the bazaar
                     MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
                     return;
                 }
 
+                // Check if the mouse is over the copy amount text
+                // The copy amount text starts at `TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textWidth`
                 MinecraftClient client = MinecraftClient.getInstance();
-                if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X, yPosition - 12, textRenderer.getWidth(visitorEntry.getKey().left() + " [Copy Amount]"), textHeight)) {
+                if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textWidth, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
+                    // Copy the amount to the clipboard
                     client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
                     client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
                     return;
                 }
 
-                yPosition += LINE_SPACING + textHeight;
+                yPosition += LINE_SPACING + textRenderer.fontHeight;
             }
         }
     }
@@ -122,7 +125,7 @@ public class VisitorHelper {
         }
     }
 
-    private static void updateItemMap(String visitorName, @Nullable String visitorTexture,  Text lore) {
+    private static void updateItemMap(String visitorName, @Nullable String visitorTexture, Text lore) {
         String[] splitItemText = lore.getString().split(" x");
         String itemName = splitItemText[0].trim();
         if (itemName.isEmpty()) return;
@@ -142,7 +145,7 @@ public class VisitorHelper {
         int index = 0;
         for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
             Pair<String, String> visitorName = visitorEntry.getKey();
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left() + " [Copy Amount]"), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
             index++;
 
             for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
@@ -178,12 +181,23 @@ public class VisitorHelper {
         return stack;
     }
 
-    private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mousseY) {
-    	Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
-        drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + TEXT_INDENT, TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)), mouseX, mousseY);
+    /**
+     * Draws the item entry, amount, and copy amount text with optional underline and the item icon
+     */
+    private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mouseY) {
+        Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
+        Text copyAmount = Text.literal(" [Copy Amount]");
+
+        // Calculate the y position of the text with index as the line number
+        int y = TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight);
+        // Draw the item and amount text
+        drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT, y, mouseX, mouseY);
+        // Draw the copy amount text separately after the item and amount text
+        drawTextWithOptionalUnderline(context, textRenderer, copyAmount, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textRenderer.getWidth(text), y, mouseX, mouseY);
+
         // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
         if (stack != null) {
-            context.drawItem(stack, TEXT_START_X + TEXT_INDENT + 2 + textRenderer.getWidth(text), TEXT_START_Y + (index * (LINE_SPACING + textRenderer.fontHeight)) - textRenderer.fontHeight + 5);
+            context.drawItem(stack, TEXT_START_X + ENTRY_INDENT, y - textRenderer.fontHeight + 5);
         }
     }
 
