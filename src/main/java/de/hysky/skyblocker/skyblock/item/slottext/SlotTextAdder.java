@@ -34,7 +34,7 @@ public abstract class SlotTextAdder {
 	}
 
 	/**
-	 * This method will be called for each rendered slot. Consider using a switch statement on {@link Slot#getIndex()} if you wish to add different text to different slots.
+	 * This method will be called for each rendered slot. Consider using a switch statement on {@link Slot#id} if you wish to add different text to different slots.
 	 *
 	 * @return The text to be rendered. Return null if no text should be rendered.
 	 * @implNote By minecraft's design, scaled text inexplicably moves around.
