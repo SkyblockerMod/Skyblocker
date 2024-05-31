@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -29,4 +30,8 @@ public class ErrorWidget extends HudWidget {
         this.addComponent(inf);
     }
 
+    @Override
+    public boolean shouldRender(Location location) {
+        return false;
+    }
 }

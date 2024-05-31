@@ -1,16 +1,15 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.*;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 import de.hysky.skyblocker.skyblock.tabhud.widget.*;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.AlignStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CollideStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PlaceStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.StackStage;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -18,6 +17,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public class ScreenBuilder {
 
@@ -33,12 +33,14 @@ public class ScreenBuilder {
 
     //private final String builderName;
 
-    private final Map<String, Boolean> positioning = new Object2ObjectOpenHashMap<>();
+    private final Map<String, PositionRule> positioning = new Object2ObjectOpenHashMap<>();
+    private final Location location;
 
     /**
      * Create a ScreenBuilder from a json.
      */
-    public ScreenBuilder(Identifier ident) {
+    public ScreenBuilder(Location location) {
+        this.location = location;
 
         /*try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager().openAsReader(ident)) {
             this.builderName = ident.getPath();
@@ -146,6 +148,10 @@ public class ScreenBuilder {
         };
     }
 
+    public @Nullable PositionRule getPositionRule(String widgetInternalId) {
+        return positioning.get(widgetInternalId);
+    }
+
     /**
      * Lookup Widget instance from alias name
      */
@@ -156,131 +162,60 @@ public class ScreenBuilder {
         return this.objectMap.get(name);
     }
 
-    private List<TabHudWidget> topAligned(int screenW, int screenH) {
-        List<TabHudWidget> affected = new ArrayList<>();
-        List<TabHudWidget> unaffected = new ArrayList<>();
-
-        final int maxY = 300;
-        final int startY = 20;
-
-        int totalWidth = 0;
-
-        int currentWidth = 0;
-        int currentY = startY;
-        for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
-            if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) {
-                unaffected.add(tabHudWidget);
-                tabHudWidget.setPositioned(false);
-                continue;
-            }
-            affected.add(tabHudWidget);
-            tabHudWidget.setPositioned(true);
-
-            tabHudWidget.update();
-            if (currentY + tabHudWidget.getHeight() > maxY) {
-                totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
-                currentY = startY;
-                currentWidth = 0;
-            }
-            tabHudWidget.setPosition(totalWidth, currentY);
-            currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
-            currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
-        }
-        totalWidth += currentWidth;
-
-        // centering
-        int off = (screenW - totalWidth) / 2;
-        for (TabHudWidget tabHudWidget : affected) {
-            tabHudWidget.setX(tabHudWidget.getX() - off);
-        }
-
-        return unaffected;
-
-    }
-
-    private List<TabHudWidget> centered(int screenW, int screenH) {
-        List<TabHudWidget> affected = new ArrayList<>();
-        List<TabHudWidget> unaffected = new ArrayList<>();
-
-        int totalWidth = 0;
-
-        final int maxY = Math.min(400, (int) (screenH * 0.9f));
-        // each column is a pair of a list of widgets for the rows and an int for the width of the column
-        List<ObjectIntPair<List<TabHudWidget>>> columns = new ArrayList<>();
-        columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
-
-        int currentY = 0;
-        int currentWidth = 0;
-
-        for (TabHudWidget tabHudWidget : PlayerListMgr.widgetsToShow) {
-            if (positioning.getOrDefault(tabHudWidget.getInternalID(), false)) {
-                unaffected.add(tabHudWidget);
-                tabHudWidget.setPositioned(false);
-                continue;
-            }
-            affected.add(tabHudWidget);
-            tabHudWidget.setPositioned(true);
-
-            tabHudWidget.update();
-            // Too large to fit in column
-            if (currentY + tabHudWidget.getHeight() > maxY) {
-                currentY = 0;
-                currentWidth = 0;
-                columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
-            }
-            tabHudWidget.setY(currentY);
-            currentY += tabHudWidget.getHeight() + ScreenConst.WIDGET_PAD;
-            currentWidth = Math.max(currentWidth, tabHudWidget.getWidth());
-            columns.getLast().right(currentWidth);
-            columns.getLast().left().add(tabHudWidget);
-        }
-        for (int i = 0; i < columns.size(); i++) {
-            ObjectIntPair<List<TabHudWidget>> listObjectIntPair = columns.get(i);
-            int columnWidth = listObjectIntPair.rightInt();
-            List<TabHudWidget> column = listObjectIntPair.left();
-
-            // calculate the height of the column
-            int height = (column.size() - 1) * ScreenConst.WIDGET_PAD;
-            for (TabHudWidget tabHudWidget : column) {
-                height += tabHudWidget.getHeight();
-            }
-            // set x and y of the widgets!
-            int offset = (screenH - height) / 2;
-            for (TabHudWidget tabHudWidget : column) {
-                tabHudWidget.setY(tabHudWidget.getY() + offset);
-                if (i < columns.size() / 2) {
-                    tabHudWidget.setX(totalWidth + columnWidth - tabHudWidget.getWidth());
-                } else {
-                    tabHudWidget.setX(totalWidth);
-                }
-            }
-            totalWidth += columnWidth + ScreenConst.WIDGET_PAD;
-        }
-
-        // Center everything
-        int off = (screenW - totalWidth) / 2;
-        for (TabHudWidget tabHudWidget : affected) {
-            tabHudWidget.setX(tabHudWidget.getX() - off);
-        }
-
-        return unaffected;
-    }
-
     private final List<HudWidget> hudScreen = new ArrayList<>();
     private final List<HudWidget> mainTabScreen = new ArrayList<>();
     private final List<HudWidget> secondaryTabScreen = new ArrayList<>();
 
-    private void positionWidgets(int screenW, int screenH) {
+    public void positionWidgets(int screenW, int screenH) {
         hudScreen.clear();
         mainTabScreen.clear();
         secondaryTabScreen.clear();
 
-        List<TabHudWidget> unaffected;
-        if (false) {
-            unaffected = centered(screenW, screenH);
-        } else {
-            unaffected = topAligned(screenW, screenH);
+        WidgetPositioner newPositioner = DefaultPositioner.CENTERED.getNewPositioner(screenW, screenH);
+
+        for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
+            if (widget.shouldRender(location)) {
+                hudScreen.add(widget);
+                widget.update();
+                widget.setPositioned(false);
+            }
         }
+
+        // TODO check things and stuff
+        mainTabScreen.addAll(PlayerListMgr.tabWidgetsToShow);
+
+        for (HudWidget widget : mainTabScreen) {
+            newPositioner.positionWidget(widget);
+            widget.setPositioned(true);
+        }
+        newPositioner.finalizePositioning();
+        for (HudWidget widget : hudScreen) {
+            if (!widget.isPositioned()) {
+                WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
+            }
+        }
+        for (HudWidget widget : secondaryTabScreen) {
+            if (!widget.isPositioned()) {
+                WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
+            }
+        }
+    }
+
+    public void renderWidgets(DrawContext context, Layer layer) {
+        List<HudWidget> widgetsToRender = getHudWidgets(layer);
+
+        for (HudWidget widget : widgetsToRender) {
+            widget.render(context);
+        }
+    }
+
+    public List<HudWidget> getHudWidgets(Layer layer) {
+        return switch (layer) {
+            case MAIN_TAB -> mainTabScreen;
+            case SECONDARY_TAB -> secondaryTabScreen;
+            case HUD -> hudScreen;
+            case null -> List.of();
+        };
     }
 
     /**
@@ -289,8 +224,8 @@ public class ScreenBuilder {
     public void run(DrawContext context, int screenW, int screenH) {
 
         int i = 0;
-        for (TabHudWidget value : PlayerListMgr.widgetInstances.values()) {
-            context.drawText(MinecraftClient.getInstance().textRenderer, value.getHypixelWidgetName(), 0, i, PlayerListMgr.widgetsToShow.contains(value) ? Colors.LIGHT_YELLOW : -1, true);
+        for (TabHudWidget value : PlayerListMgr.tabWidgetInstances.values()) {
+            context.drawText(MinecraftClient.getInstance().textRenderer, value.getHypixelWidgetName(), 0, i, PlayerListMgr.tabWidgetsToShow.contains(value) ? Colors.LIGHT_YELLOW : -1, true);
             i += 9;
         }
 
@@ -299,8 +234,27 @@ public class ScreenBuilder {
             positionWidgets(screenW, screenH);
         }
 
-        for (HudWidget w : PlayerListMgr.widgetsToShow) {
-            w.render(context);
+        renderWidgets(context, Layer.MAIN_TAB);
+    }
+
+    public enum Layer {
+        MAIN_TAB,
+        SECONDARY_TAB,
+        HUD
+    }
+
+    private enum DefaultPositioner {
+        TOP(TopAlignedWidgetPositioner::new),
+        CENTERED(CenteredWidgetPositioner::new);
+
+        private final BiFunction<Integer, Integer, WidgetPositioner> function;
+
+        DefaultPositioner(BiFunction<Integer, Integer, WidgetPositioner> widgetPositionerSupplier) {
+            function = widgetPositionerSupplier;
+        }
+
+        public WidgetPositioner getNewPositioner(int screenWidth, int screenHeight) {
+            return function.apply(screenWidth, screenHeight);
         }
     }
 
