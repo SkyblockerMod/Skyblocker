@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.Text;
 
 public class EmptyWidget extends HudWidget {
@@ -9,4 +10,9 @@ public class EmptyWidget extends HudWidget {
 
     @Override
     public void updateContent() {}
+
+    @Override
+    public boolean shouldRender(Location location) {
+        return false;
+    }
 }

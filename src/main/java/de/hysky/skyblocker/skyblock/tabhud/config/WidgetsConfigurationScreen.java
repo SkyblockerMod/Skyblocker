@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tab.TabManager;
@@ -13,12 +15,41 @@ import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerListener {
 
     private GenericContainerScreenHandler handler;
     private String titleLowercase;
 
     private boolean tabPreview = false;
+    private PreviewTab previewTab;
+
+    private final Map<String, Location> nameToLocation = Map.ofEntries(
+            Map.entry("private islands", Location.PRIVATE_ISLAND),
+            Map.entry("the hub", Location.HUB),
+            Map.entry("the dungeon hub", Location.DUNGEON_HUB),
+            Map.entry("the farming islands", Location.THE_FARMING_ISLAND),
+            Map.entry("garden", Location.GARDEN),
+            Map.entry("the park", Location.THE_PARK),
+            Map.entry("the gold mine", Location.GOLD_MINE),
+            Map.entry("deep caverns", Location.DEEP_CAVERNS),
+            Map.entry("dwarven mines", Location.DWARVEN_MINES),
+            Map.entry("crystal hollows", Location.CRYSTAL_HOLLOWS),
+            Map.entry("the mineshaft", Location.GLACITE_MINESHAFT),
+            Map.entry("spider's den", Location.SPIDERS_DEN),
+            Map.entry("the end", Location.THE_END),
+            Map.entry("crimson isle", Location.CRIMSON_ISLE),
+            Map.entry("kuudra", Location.KUUDRAS_HOLLOW),
+            Map.entry("the rift", Location.THE_RIFT),
+            Map.entry("jerry's workshop", Location.WINTER_ISLAND)
+    );
+    private Location currentLocation = Location.HUB;
+
+    public Location getCurrentLocation() {
+        return currentLocation;
+    }
+
     public boolean isPreviewVisible() {
         return tabPreview;
     }
@@ -41,8 +72,9 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     @Override
     protected void init() {
         widgetsOrderingTab = new WidgetsOrderingTab(this.client, this.handler);
+        previewTab = new PreviewTab(this.client, this);
         this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-                .tabs(this.widgetsOrderingTab)
+                .tabs(this.widgetsOrderingTab, this.previewTab)
                 .build();
         this.tabNavigation.selectTab(0, false);
         this.addDrawableChild(tabNavigation);
@@ -61,12 +93,22 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         }
     }
 
-    public void updateHandler(GenericContainerScreenHandler newHandler, String title) {
+    public void updateHandler(GenericContainerScreenHandler newHandler, String titleLowercase) {
         handler.removeListener(this);
         handler = newHandler;
         handler.addListener(this);
-        this.titleLowercase = title;
+        this.titleLowercase = titleLowercase;
+        String trim = this.titleLowercase
+                .replace("widgets in", "")
+                .replace("widgets on", "")
+                .trim();
+
+        currentLocation = nameToLocation.getOrDefault(trim, Utils.getLocation());
         widgetsOrderingTab.updateHandler(handler);
+    }
+
+    public GenericContainerScreenHandler getHandler() {
+        return handler;
     }
 
     private @Nullable ItemStack slotThirteenBacklog = null;

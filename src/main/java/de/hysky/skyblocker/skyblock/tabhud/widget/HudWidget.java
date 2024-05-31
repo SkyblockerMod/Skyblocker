@@ -6,9 +6,11 @@ import java.util.function.Consumer;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -59,6 +61,7 @@ public abstract class HudWidget implements Element, Widget {
         this.color = 0xff000000 | colorValue;
         HUDS.put(internalID, this);
         this.internalID = internalID;
+        ScreenMaster.widgetInstances.put(internalID, this);
     }
 
     public void addComponent(Component c) {
@@ -72,6 +75,8 @@ public abstract class HudWidget implements Element, Widget {
     }
 
     public abstract void updateContent();
+
+    public abstract boolean shouldRender(Location location);
 
     /**
      * Shorthand function for simple components.
@@ -268,6 +273,11 @@ public abstract class HudWidget implements Element, Widget {
     @Override
     public boolean isFocused() {
         return focused;
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY <= getY() + getHeight();
     }
 
     @Override
