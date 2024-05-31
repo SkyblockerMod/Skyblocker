@@ -1,9 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
-import de.hysky.skyblocker.skyblock.item.slottext.adders.EnchantmentLevelAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.adders.MinionLevelAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.adders.PetLevelAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.adders.SkyblockLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -18,7 +15,8 @@ public class SlotTextManager {
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
-			new SkyblockLevelAdder()
+			new SkyblockLevelAdder(),
+			new SkillLevelAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 
