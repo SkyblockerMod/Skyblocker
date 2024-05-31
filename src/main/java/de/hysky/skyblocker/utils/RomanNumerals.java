@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.utils;
 
 public class RomanNumerals {
+	private RomanNumerals() {
+	}
 	private static int getDecimalValue(char romanChar) {
 		return switch (romanChar) {
 			case 'I' -> 1;
@@ -12,6 +14,14 @@ public class RomanNumerals {
 			case 'M' -> 1000;
 			default -> 0;
 		};
+	}
+
+	public static boolean isValidRomanNumeral(String romanNumeral) {
+		if (romanNumeral == null || romanNumeral.isEmpty()) return false;
+		for (int i = 0; i < romanNumeral.length(); i++) {
+			if (getDecimalValue(romanNumeral.charAt(i)) == 0) return false;
+		}
+		return true;
 	}
 
 	/**
