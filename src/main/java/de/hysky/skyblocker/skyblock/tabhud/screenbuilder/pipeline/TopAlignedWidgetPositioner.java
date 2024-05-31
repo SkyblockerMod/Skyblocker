@@ -25,6 +25,7 @@ public class TopAlignedWidgetPositioner extends WidgetPositioner {
     @Override
     public void positionWidget(HudWidget hudWidget) {
         widgets.add(hudWidget);
+
         if (currentY + hudWidget.getHeight() > MAX_COLUMN_HEIGHT) {
             totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
             currentY = START_Y;
@@ -40,7 +41,7 @@ public class TopAlignedWidgetPositioner extends WidgetPositioner {
     public void finalizePositioning() {
         int off = (screenWidth - totalWidth) / 2;
         for (HudWidget widget : widgets) {
-            widget.setX(widget.getX() - off);
+            widget.setX(widget.getX() + off);
         }
     }
 }

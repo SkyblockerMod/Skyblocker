@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +17,6 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -43,8 +41,8 @@ public class PlayerListMgr {
 
 	private static List<PlayerListEntry> playerList;
     private static String footer;
-	public static final Map<String, TabHudWidget> widgetInstances = new Object2ObjectOpenHashMap<>();
-	public static final List<TabHudWidget> widgetsToShow = new ObjectArrayList<>(5);
+	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
+	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
 
 	public static void updateList() {
 
@@ -71,7 +69,7 @@ public class PlayerListMgr {
 		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
 		final Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
 
-		widgetsToShow.clear();
+		tabWidgetsToShow.clear();
 		boolean doingPlayers = false;
 		boolean playersDone = false;
 		String hypixelWidgetName = "";
@@ -93,7 +91,7 @@ public class PlayerListMgr {
 				// Check if info, if it is, dip out
 				if (infoColumnPredicate.test(string)) {
 					playersDone = true;
-					widgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
+					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 					contents.clear();
 					continue;
 				}
@@ -101,7 +99,7 @@ public class PlayerListMgr {
 				if (infoColumnPredicate.test(string)) continue;
 				// New widget alert!!!!
 				if (!string.startsWith(" ")) {
-					if (!contents.isEmpty()) widgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
+					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 					contents.clear();
 					Pair<String, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
@@ -112,7 +110,7 @@ public class PlayerListMgr {
 			// Add the line to the content
 			contents.add(trim(displayName));
 		}
-		if (!contents.isEmpty()) widgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
+		if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 		ScreenBuilder.positionsNeedsUpdating = true;
 	}
 
@@ -149,14 +147,16 @@ public class PlayerListMgr {
 	}
 
 	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Text> lines) {
-		if (widgetInstances.containsKey(hypixelWidgetName)) {
-			TabHudWidget tabHudWidget = widgetInstances.get(hypixelWidgetName);
+		if (tabWidgetInstances.containsKey(hypixelWidgetName)) {
+			TabHudWidget tabHudWidget = tabWidgetInstances.get(hypixelWidgetName);
 			tabHudWidget.updateFromTab(lines);
+			tabHudWidget.update();
 			return tabHudWidget;
 		} else {
 			DefaultTabHudWidget defaultTabHudWidget = new DefaultTabHudWidget(hypixelWidgetName, Text.literal(hypixelWidgetName).formatted(Formatting.BOLD));
-			widgetInstances.put(defaultTabHudWidget.getHypixelWidgetName(), defaultTabHudWidget);
+			tabWidgetInstances.put(defaultTabHudWidget.getHypixelWidgetName(), defaultTabHudWidget);
 			defaultTabHudWidget.updateFromTab(lines);
+			defaultTabHudWidget.update();
 			return defaultTabHudWidget;
 		}
 	}

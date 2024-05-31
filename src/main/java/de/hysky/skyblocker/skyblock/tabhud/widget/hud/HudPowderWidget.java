@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.hud;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -129,4 +131,8 @@ public class HudPowderWidget extends HudWidget {
         this.addSimpleIcoText(Ico.BLUE_ICE, "Glacite: ", Formatting.AQUA, glacitePowderString);
     }
 
+    @Override
+    public boolean shouldRender(Location location) {
+        return location.equals(Location.DWARVEN_MINES) || location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder;
+    }
 }
