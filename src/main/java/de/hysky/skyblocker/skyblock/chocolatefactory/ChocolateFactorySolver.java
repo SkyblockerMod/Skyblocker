@@ -144,8 +144,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		//Time Tower is in slot 39
-		timeTowerMultiplier = RomanNumerals.romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(39)));
+		timeTowerMultiplier = RomanNumerals.romanToDecimal(StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
+		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(TIME_TOWER_SLOT)));
 		if (timeTowerStatusMatcher.find()) {
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
