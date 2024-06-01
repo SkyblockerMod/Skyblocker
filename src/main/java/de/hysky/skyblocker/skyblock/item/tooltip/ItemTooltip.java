@@ -1,17 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class ItemTooltip {
@@ -56,74 +49,11 @@ public class ItemTooltip {
         return neuName;
     }
 
-
     public static void nullWarning() {
         if (!sentNullWarning && client.player != null) {
             LOGGER.warn(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")).getString());
             sentNullWarning = true;
         }
-    }
-
-    // TODO What in the world is this?
-    public static String getInternalNameFromNBT(ItemStack stack, boolean internalIDOnly) {
-        NbtCompound customData = ItemUtils.getCustomData(stack);
-
-        if (customData == null || !customData.contains(ItemUtils.ID, NbtElement.STRING_TYPE)) {
-            return null;
-        }
-        String internalName = customData.getString(ItemUtils.ID);
-
-        if (internalIDOnly) {
-            return internalName;
-        }
-
-        // Transformation to API format.
-        if (customData.contains("is_shiny")) {
-            return "ISSHINY_" + internalName;
-        }
-
-        switch (internalName) {
-            case "ENCHANTED_BOOK" -> {
-                if (customData.contains("enchantments")) {
-                    NbtCompound enchants = customData.getCompound("enchantments");
-                    Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
-                    String enchant = firstEnchant.orElse("");
-                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
-                }
-            }
-            case "PET" -> {
-                if (customData.contains("petInfo")) {
-                    JsonObject petInfo = SkyblockerMod.GSON.fromJson(customData.getString("petInfo"), JsonObject.class);
-                    return "LVL_1_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
-                }
-            }
-            case "POTION" -> {
-                String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
-                String extended = customData.contains("extended") ? "_EXTENDED" : "";
-                String splash = customData.contains("splash") ? "_SPLASH" : "";
-                if (customData.contains("potion") && customData.contains("potion_level")) {
-                    return (customData.getString("potion") + "_" + internalName + "_" + customData.getInt("potion_level")
-                            + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
-                }
-            }
-            case "RUNE" -> {
-                if (customData.contains("runes")) {
-                    NbtCompound runes = customData.getCompound("runes");
-                    Optional<String> firstRunes = runes.getKeys().stream().findFirst();
-                    String rune = firstRunes.orElse("");
-                    return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
-                }
-            }
-            case "ATTRIBUTE_SHARD" -> {
-                if (customData.contains("attributes")) {
-                    NbtCompound shards = customData.getCompound("attributes");
-                    Optional<String> firstShards = shards.getKeys().stream().findFirst();
-                    String shard = firstShards.orElse("");
-                    return internalName + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
-                }
-            }
-        }
-        return internalName;
     }
 
     public static Text getCoinsMessage(double price, int count) {

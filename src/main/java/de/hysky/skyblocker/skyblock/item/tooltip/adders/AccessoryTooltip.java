@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.screen.slot.Slot;
@@ -18,7 +17,7 @@ public class AccessoryTooltip extends TooltipAdder {
 
 	@Override
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		final String internalID = ItemTooltip.getInternalNameFromNBT(focusedSlot.getStack(), true);
+		final String internalID = focusedSlot.getStack().skyblocker$getInternalId(true);
 		if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 

@@ -295,8 +295,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
                             try {
                                 long parsed = Long.parseLong(coins);
-                                String name = ItemTooltip.getInternalNameFromNBT(stack, false);
-                                String internalID = ItemTooltip.getInternalNameFromNBT(stack, true);
+                                String name = stack.skyblocker$getInternalId(false);
+                                String internalID = stack.skyblocker$getInternalId(true);
                                 String neuName = name;
                                 if (name == null || internalID == null) break;
                                 if (name.startsWith("ISSHINY_")) {

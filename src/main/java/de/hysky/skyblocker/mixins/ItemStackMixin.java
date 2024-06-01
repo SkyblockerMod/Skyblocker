@@ -1,13 +1,19 @@
 package de.hysky.skyblocker.mixins;
 
+import com.google.gson.JsonObject;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.ItemStackInternalIdGetter;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.TooltipAppender;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,8 +23,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Locale;
+import java.util.Optional;
+
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin {
+public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
 
 	@Shadow
 	public abstract int getDamage();
@@ -28,6 +37,15 @@ public abstract class ItemStackMixin {
 
 	@Unique
 	private int maxDamage;
+
+	@Unique
+	private String internalId;
+
+	@Unique
+	private String internalName;
+
+	@Unique
+	private String neuName;
 
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
 	private Text skyblocker$customItemNames(Text original) {
@@ -102,5 +120,92 @@ public abstract class ItemStackMixin {
 		maxDamage = durability.rightInt();
 		setDamage(durability.rightInt() - durability.leftInt());
 		return true;
+	}
+
+	@Override
+	public String skyblocker$getInternalId(boolean internalIDOnly) {
+		if (internalIDOnly) {
+			if (internalId != null && !internalId.isEmpty()) return internalId;
+			internalId = skyblocker$getInternalNameFromNBT(true);
+			return internalId;
+		} // else
+		if (internalName != null && !internalName.isEmpty()) return internalName;
+		internalName = skyblocker$getInternalNameFromNBT(false);
+		return internalName;
+	}
+
+	@Override
+	public String skyblocker$getNeuName() {
+		if (neuName != null && !neuName.isEmpty()) return neuName;
+		String name = skyblocker$getInternalId(false);
+		String internalId = skyblocker$getInternalId(true);
+		if (name == null || internalId == null) return "";
+
+		if (name.startsWith("ISSHINY_")) name = internalId;
+
+		neuName = ItemTooltip.getNeuName(internalId, name);
+		return neuName;
+	}
+
+	@Unique
+	private String skyblocker$getInternalNameFromNBT(boolean internalIDOnly) {
+		NbtCompound customData = ItemUtils.getCustomData((ItemStack) (Object) this);
+
+		if (customData == null || !customData.contains(ItemUtils.ID, NbtElement.STRING_TYPE)) {
+			return null;
+		}
+		String customDataString = customData.getString(ItemUtils.ID);
+
+		if (internalIDOnly) {
+			return customDataString;
+		}
+
+		// Transformation to API format.
+		if (customData.contains("is_shiny")) {
+			return "ISSHINY_" + customDataString;
+		}
+
+		switch (customDataString) {
+			case "ENCHANTED_BOOK" -> {
+				if (customData.contains("enchantments")) {
+					NbtCompound enchants = customData.getCompound("enchantments");
+					Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
+					String enchant = firstEnchant.orElse("");
+					return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
+				}
+			}
+			case "PET" -> {
+				if (customData.contains("petInfo")) {
+					JsonObject petInfo = SkyblockerMod.GSON.fromJson(customData.getString("petInfo"), JsonObject.class);
+					return "LVL_1_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
+				}
+			}
+			case "POTION" -> {
+				String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
+				String extended = customData.contains("extended") ? "_EXTENDED" : "";
+				String splash = customData.contains("splash") ? "_SPLASH" : "";
+				if (customData.contains("potion") && customData.contains("potion_level")) {
+					return (customData.getString("potion") + "_" + customDataString + "_" + customData.getInt("potion_level")
+							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
+				}
+			}
+			case "RUNE" -> {
+				if (customData.contains("runes")) {
+					NbtCompound runes = customData.getCompound("runes");
+					Optional<String> firstRunes = runes.getKeys().stream().findFirst();
+					String rune = firstRunes.orElse("");
+					return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
+				}
+			}
+			case "ATTRIBUTE_SHARD" -> {
+				if (customData.contains("attributes")) {
+					NbtCompound shards = customData.getCompound("attributes");
+					Optional<String> firstShards = shards.getKeys().stream().findFirst();
+					String shard = firstShards.orElse("");
+					return customDataString + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
+				}
+			}
+		}
+		return customDataString;
 	}
 }

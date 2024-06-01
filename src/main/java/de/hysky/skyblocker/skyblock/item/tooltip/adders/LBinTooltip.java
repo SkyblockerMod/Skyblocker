@@ -20,9 +20,9 @@ public class LBinTooltip extends TooltipAdder {
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		lbinExist = false;
 		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
+		final String internalID = itemStack.skyblocker$getInternalId(true);
 		if (internalID == null) return;
-		String name = ItemTooltip.getInternalNameFromNBT(itemStack, false);
+		String name = itemStack.skyblocker$getInternalId(false);
 		if (name == null) return;
 
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;

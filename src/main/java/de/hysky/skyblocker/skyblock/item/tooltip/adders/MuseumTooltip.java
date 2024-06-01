@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,7 @@ public class MuseumTooltip extends TooltipAdder {
 	@Override
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
+		final String internalID = itemStack.skyblocker$getInternalId(true);
 		if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
 			String format = switch (itemCategory) {

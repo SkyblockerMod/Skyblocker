@@ -19,11 +19,9 @@ public class AvgBinTooltip extends TooltipAdder {
 	@Override
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
-		String neuName = ItemTooltip.getInternalNameFromNBT(itemStack, false);
-		String internalID = ItemTooltip.getInternalNameFromNBT(itemStack, true);
+		String neuName = itemStack.skyblocker$getNeuName();
+		String internalID = itemStack.skyblocker$getInternalId(true);
 		if (neuName == null || internalID == null) return;
-
-		if (neuName.startsWith("ISSHINY_")) neuName = internalID;
 
 		if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
 			if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
@@ -33,8 +31,6 @@ public class AvgBinTooltip extends TooltipAdder {
                   We are skipping check average prices for potions, runes
                   and enchanted books because there is no data for their in API.
                  */
-				neuName = ItemTooltip.getNeuName(internalID, neuName);
-
 				if (!neuName.isEmpty() && LBinTooltip.lbinExist) {
 					GeneralConfig.Average type = ItemTooltip.config.avg;
 

@@ -52,6 +52,11 @@
         "modmenu.modrinth": "https://modrinth.com/mod/skyblocker-liap",
         "text.skyblocker.translate": "https://translate.hysky.de"
       }
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1799": [
+        "de/hysky/skyblocker/injected/ItemStackInternalIdGetter"
+      ]
     }
   }
 }

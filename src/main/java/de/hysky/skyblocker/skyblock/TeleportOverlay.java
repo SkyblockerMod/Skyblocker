@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -27,7 +26,7 @@ public class TeleportOverlay {
     private static void render(WorldRenderContext wrc) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
-            String itemId = ItemTooltip.getInternalNameFromNBT(heldItem, true);
+            String itemId = heldItem.skyblocker$getInternalId(true);
             NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
             if (itemId != null) {

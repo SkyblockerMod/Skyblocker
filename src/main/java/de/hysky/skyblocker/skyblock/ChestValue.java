@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -81,7 +80,7 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String id = ItemTooltip.getInternalNameFromNBT(stack, false);
+				String id = stack.skyblocker$getInternalId(false);
 
 				//Regular item price
 				if (id != null) {
@@ -160,7 +159,7 @@ public class ChestValue {
 					continue;
 				}
 
-				String id = ItemTooltip.getInternalNameFromNBT(stack, false);
+				String id = stack.skyblocker$getInternalId(false);
 
 				if (id != null) {
 					LongBooleanPair priceData = getItemPrice(id);
