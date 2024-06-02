@@ -128,17 +128,18 @@ public class ItemTooltip {
             }
         }
 
-        final Map<Integer, String> itemTierFloors = Map.of(
-        	1, "F1",
-        	2, "F2",
-        	3, "F3",
-        	4, "F4/M1",
-        	5, "F5/M2",
-        	6, "F6/M3",
-        	7, "F7/M4",
-        	8, "M5",
-        	9, "M6",
-        	10, "M7"
+        final Map<Integer, String> itemTierFloors = Map.ofEntries(
+        	Map.entry(0, "E"),
+        	Map.entry(1, "F1"),
+        	Map.entry(2, "F2"),
+        	Map.entry(3, "F3"),
+        	Map.entry(4, "F4/M1"),
+        	Map.entry(5, "F5/M2"),
+        	Map.entry(6, "F6/M3"),
+        	Map.entry(7, "F7/M4"),
+        	Map.entry(8, "M5"),
+        	Map.entry(9, "M6"),
+        	Map.entry(10, "M7")
         );
 
         if (SkyblockerConfigManager.get().general.itemTooltip.dungeonQuality) {
