@@ -3,9 +3,11 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -17,9 +19,12 @@ import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 public class OverlayScreen extends Screen {
 
     protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
+    private static final Identifier BACKGROUND_TEXTURE = new Identifier("social_interactions/background");
     private static final int rowHeight = 20;
     private TextFieldWidget searchField;
     private ButtonWidget finishedButton;
+    private ButtonWidget maxPetButton;
+    private ButtonWidget dungeonStarButton;
     private ButtonWidget[] suggestionButtons;
     private ButtonWidget[] historyButtons;
 
@@ -44,9 +49,10 @@ public class OverlayScreen extends Screen {
         searchField.setMaxLength(30);
 
         // finish buttons
-        finishedButton = ButtonWidget.builder(Text.literal("").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), a -> close())
+        finishedButton = ButtonWidget.builder(Text.literal(""), a -> close())
                 .position(startX + rowWidth - rowHeight, startY)
                 .size(rowHeight, rowHeight).build();
+
 
         // suggested item buttons
         int rowOffset = rowHeight;
@@ -80,6 +86,26 @@ public class OverlayScreen extends Screen {
                 break;
             }
         }
+        //auction only elements
+        if (SearchOverManager.isAuction) {
+            //max pet level button
+            maxPetButton = ButtonWidget.builder(Text.literal(""), a -> {
+                        SearchOverManager.maxPetLevel = !SearchOverManager.maxPetLevel;
+                        updateMaxPetText();
+                    })
+                    .tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.maxPet.@Tooltip")))
+                    .position(startX, startY - rowHeight - 8)
+                    .size(rowWidth / 2, rowHeight).build();
+            updateMaxPetText();
+
+            //dungeon star input
+            dungeonStarButton = ButtonWidget.builder(Text.literal("✪"), a -> updateStars())
+                    .tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.starsTooltip")))
+                    .position(startX + (int) (rowWidth * 0.5), startY - rowHeight - 8)
+                    .size(rowWidth / 2, rowHeight).build();
+
+            updateStars();
+        }
 
         //add drawables in order to make tab navigation sensible
         addDrawableChild(searchField);
@@ -93,8 +119,83 @@ public class OverlayScreen extends Screen {
         }
         addDrawableChild(finishedButton);
 
+        if (SearchOverManager.isAuction) {
+            addDrawableChild(maxPetButton);
+            addDrawableChild(dungeonStarButton);
+        }
+
         //focus the search box
         this.setInitialFocus(searchField);
+    }
+
+    /**
+     * Finds if the mouse is clicked on the dungeon star button and if so works out what stars the user clicked on
+     *
+     * @param mouseX the X coordinate of the mouse
+     * @param mouseY the Y coordinate of the mouse
+     * @param button the mouse button number
+     * @return super
+     */
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (SearchOverManager.isAuction && dungeonStarButton.isHovered() && client != null) {
+            double actualTextWidth = client.textRenderer.getWidth(dungeonStarButton.getMessage());
+            double textOffset = (dungeonStarButton.getWidth() - actualTextWidth) / 2;
+            double offset = mouseX - (dungeonStarButton.getX() + textOffset);
+            int starCount = (int) ((offset / actualTextWidth) * 10);
+            starCount = Math.clamp(starCount + 1, 0, 10);
+            //if same as old value set stars to 0 else set to selected amount
+            if (starCount == SearchOverManager.dungeonStars) {
+                SearchOverManager.dungeonStars = 0;
+            } else {
+                SearchOverManager.dungeonStars = starCount;
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    /**
+     * Updates the text displayed on the max pet level button to represent the settings current state
+     */
+    private void updateMaxPetText() {
+        if (SearchOverManager.maxPetLevel) {
+            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
+        } else {
+            maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ❌")).formatted(Formatting.RED));
+        }
+    }
+
+    /**
+     * Updates stars in dungeon star input to represent the current star value
+     */
+    private void updateStars() {
+        MutableText stars = Text.empty();
+        for (int i = 0; i < SearchOverManager.dungeonStars; i++) {
+            stars.append(Text.literal("✪").formatted(i < 5 ? Formatting.YELLOW : Formatting.RED));
+        }
+        for (int i = SearchOverManager.dungeonStars; i < 10; i++) {
+            stars.append(Text.literal("✪"));
+        }
+        dungeonStarButton.setMessage(stars);
+    }
+
+    /**
+     * Renders the background for the search using the social interactions background
+     * @param context context
+     * @param mouseX mouseX
+     * @param mouseY mouseY
+     * @param delta delta
+     */
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.renderBackground(context, mouseX, mouseY, delta);
+        //find max height
+        int maxHeight = rowHeight * (1 + suggestionButtons.length + historyButtons.length);
+        if (historyButtons.length > 0) { //add space for history label if it could exist
+            maxHeight += (int) (rowHeight * 0.75);
+        }
+        context.drawGuiTexture(BACKGROUND_TEXTURE, searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
     }
 
     /**

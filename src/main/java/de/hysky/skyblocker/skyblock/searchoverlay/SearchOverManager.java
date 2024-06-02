@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.util.NEUId;
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -24,10 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,8 +38,7 @@ public class SearchOverManager {
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Search Overlay");
 
     private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("ENCHANTMENT_(\\D*)_(\\d+)");
-    private static final Pattern AUCTION_PET_AND_RUNE_PATTERN = Pattern.compile("([A-Z0-9_]+);(\\d+)");
-
+    private static final String PET_NAME_START = "[Lvl {LVL}] ";
     /**
      * converts index (in array) +1 to a roman numeral
      */
@@ -52,14 +49,18 @@ public class SearchOverManager {
 
     private static @Nullable SignBlockEntity sign = null;
     private static boolean signFront = true;
-    private static boolean isAuction;
+    protected static boolean isAuction;
     private static boolean isCommand;
 
     protected static String search = "";
+    protected static Boolean maxPetLevel = false;
+    protected static int dungeonStars = 0;
 
     // Use non-final variables and swap them to prevent concurrent modification
     private static HashSet<String> bazaarItems;
     private static HashSet<String> auctionItems;
+    private static HashSet<String> auctionPets;
+    private static HashSet<String> starableItems;
     private static HashMap<String, String> namesToId;
 
     public static String[] suggestionsArray = {};
@@ -91,6 +92,8 @@ public class SearchOverManager {
     private static void loadItems() {
         HashSet<String> bazaarItems = new HashSet<>();
         HashSet<String> auctionItems = new HashSet<>();
+        HashSet<String> auctionPets = new HashSet<>();
+        HashSet<String> starableItems = new HashSet<>();
         HashMap<String, String> namesToId = new HashMap<>();
 
         //get bazaar items
@@ -139,28 +142,28 @@ public class SearchOverManager {
 
         //get auction items
         try {
+            Set<@NEUId String> essenceCosts = NEURepoManager.NEU_REPO.getConstants().getEssenceCost().getCosts().keySet();
             if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 TooltipInfoType.THREE_DAY_AVERAGE.run();
             }
             for (Map.Entry<String, JsonElement> entry : TooltipInfoType.THREE_DAY_AVERAGE.getData().entrySet()) {
                 String id = entry.getKey();
-
-                Matcher matcher = AUCTION_PET_AND_RUNE_PATTERN.matcher(id);
-                if (matcher.find()) {//is a pet or rune convert id to name
-                    String name = matcher.group(1).replace("_", " ");
-                    name = capitalizeFully(name);
-                    auctionItems.add(name);
-                    namesToId.put(name, id);
-                    continue;
-                }
-                //something else look up in NEU repo.
+                //look up in NEU repo.
                 id = id.split("[+-]")[0];
                 NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
                 if (neuItem != null) {
                     String name = Formatting.strip(neuItem.getDisplayName());
+                    //add names that are pets to the list of pets to work with the lvl 100 button
+                    if (name != null && name.startsWith(PET_NAME_START)) {
+                        name = name.replace(PET_NAME_START, "");
+                        auctionPets.add(name.toLowerCase());
+                    }
+                    //if it has essence cost add to starable items
+                    if (name != null && essenceCosts.contains(neuItem.getSkyblockItemId())) {
+                        starableItems.add(name.toLowerCase());
+                    }
                     auctionItems.add(name);
                     namesToId.put(name, id);
-                    continue;
                 }
             }
         } catch (Exception e) {
@@ -169,11 +172,14 @@ public class SearchOverManager {
 
         SearchOverManager.bazaarItems = bazaarItems;
         SearchOverManager.auctionItems = auctionItems;
+        SearchOverManager.auctionPets = auctionPets;
+        SearchOverManager.starableItems = starableItems;
         SearchOverManager.namesToId = namesToId;
     }
 
     /**
      * Capitalizes the first letter off every word in a string
+     *
      * @param str string to capitalize
      */
     private static String capitalizeFully(String str) {
@@ -188,8 +194,9 @@ public class SearchOverManager {
 
     /**
      * Receives data when a search is started and resets values
-     * @param sign the sign that is being edited
-     * @param front if it's the front of the sign
+     *
+     * @param sign      the sign that is being edited
+     * @param front     if it's the front of the sign
      * @param isAuction if the sign is loaded from the auction house menu or bazaar
      */
     public static void updateSign(@NotNull SignBlockEntity sign, boolean front, boolean isAuction) {
@@ -214,6 +221,7 @@ public class SearchOverManager {
 
     /**
      * Updates the search value and the suggestions based on that value.
+     *
      * @param newValue new search value
      */
     protected static void updateSearch(String newValue) {
@@ -221,11 +229,30 @@ public class SearchOverManager {
         //update the suggestion values
         int totalSuggestions = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions;
         if (newValue.isBlank() || totalSuggestions == 0) return; //do not search for empty value
-        suggestionsArray = (isAuction ? auctionItems : bazaarItems).stream().filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toArray(String[]::new);
+        suggestionsArray = (isAuction ? auctionItems : bazaarItems).stream().sorted(Comparator.comparing(SearchOverManager::shouldFrontLoad, Comparator.reverseOrder())).filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toArray(String[]::new);
+    }
+
+    /**
+     * determines if a value should be moved to the front of the search
+     *
+     * @param name name of the suggested item
+     * @return if the value should be at the front of the search queue
+     */
+    private static boolean shouldFrontLoad(String name) {
+        if (!isAuction) {
+            return false;
+        }
+        //do nothing to non pets
+        if (!auctionPets.contains(name.toLowerCase())) {
+            return false;
+        }
+        //only front load pets when there is enough of the pet typed, so it does not spoil searching for other items
+        return (double) search.length() / name.length() > 0.5;
     }
 
     /**
      * Gets the suggestion in the suggestion array at the index
+     *
      * @param index index of suggestion
      */
     protected static String getSuggestion(int index) {
@@ -242,6 +269,7 @@ public class SearchOverManager {
 
     /**
      * Gets the item name in the history array at the index
+     *
      * @param index index of suggestion
      */
     protected static String getHistory(int index) {
@@ -286,17 +314,61 @@ public class SearchOverManager {
     }
 
     /**
-     *Saves the current value of ({@link SearchOverManager#search}) then pushes it to a command or sign depending on how the gui was opened
+     * Saves the current value of ({@link SearchOverManager#search}) then pushes it to a command or sign depending on how the gui was opened
      */
     protected static void pushSearch() {
         //save to history
         if (!search.isEmpty()) {
             saveHistory();
         }
+        //add pet level or dungeon starts if in ah
+        if (isAuction) {
+            addExtras();
+        }
+        //push
         if (isCommand) {
             pushCommand();
         } else {
             pushSign();
+        }
+    }
+
+    /**
+     * Adds pet level 100 or necessary dungeon starts if needed
+     */
+    private static void addExtras() {
+        // pet level
+        if (maxPetLevel) {
+            if (auctionPets.contains(search.toLowerCase())) {
+                if (search.equalsIgnoreCase("golden dragon")) {
+                    search = "[Lvl 200] " + search;
+                } else {
+                    search = "[Lvl 100] " + search;
+                }
+            }
+        } else {
+            // still filter for only pets
+            if (auctionPets.contains(search.toLowerCase())) {
+                // add bracket so only get pets
+                search = "] " + search;
+            }
+        }
+
+        // dungeon stars
+        // check if it's a dungeon item and if so add correct stars
+        if (dungeonStars > 0 && starableItems.contains(search.toLowerCase())) {
+            StringBuilder starString = new StringBuilder(" ");
+            //add stars up to 5
+            starString.append("✪".repeat(Math.max(0, Math.min(dungeonStars, 5))));
+            //add number for other stars
+            switch (dungeonStars) {
+                case 6 -> starString.append("➊");
+                case 7 -> starString.append("➋");
+                case 8 -> starString.append("➌");
+                case 9 -> starString.append("➍");
+                case 10 -> starString.append("➎");
+            }
+            search += starString.toString();
         }
     }
 
