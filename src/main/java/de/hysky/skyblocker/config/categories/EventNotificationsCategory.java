@@ -6,6 +6,8 @@ import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.config.DurationController;
 import dev.isxander.yacl3.api.*;
+import it.unimi.dsi.fastutil.ints.IntImmutableList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.text.Text;
@@ -43,13 +45,13 @@ public class EventNotificationsCategory {
     }
 
     private static List<OptionGroup> createGroups(SkyblockerConfig config) {
-        Map<String, List<Integer>> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;
+        Map<String, IntList> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;
         List<OptionGroup> groups = new ArrayList<>(eventsReminderTimes.size());
         if (eventsReminderTimes.isEmpty()) return List.of(OptionGroup.createBuilder().option(LabelOption.create(Text.translatable("skyblocker.config.eventNotifications.monologue"))).build());
-        for (Map.Entry<String, List<Integer>> entry : eventsReminderTimes.entrySet()) {
+        for (Map.Entry<String, IntList> entry : eventsReminderTimes.entrySet()) {
             groups.add(ListOption.<Integer>createBuilder()
                     .name(Text.literal(entry.getKey()))
-                    .binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, entry::setValue)
+                    .binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, integers -> entry.setValue(new IntImmutableList(integers)))
                     .controller(option -> () -> new DurationController(option)) // yea
                             .description(OptionDescription.of(Text.translatable("skyblocker.config.eventNotifications.@Tooltip[0]"),
                                     Text.empty(),

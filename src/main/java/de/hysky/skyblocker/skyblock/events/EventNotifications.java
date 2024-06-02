@@ -11,6 +11,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -32,7 +33,7 @@ public class EventNotifications {
 
     public static final String JACOBS = "Jacob's Farming Contest";
 
-    public static final List<Integer> DEFAULT_REMINDERS = List.of(60, 60 * 5);
+    public static final IntList DEFAULT_REMINDERS = IntList.of(60, 60 * 5);
 
     public static final Map<String, ItemStack> eventIcons = new Object2ObjectOpenHashMap<>();
 
@@ -127,6 +128,8 @@ public class EventNotifications {
             LinkedList<SkyblockEvent> nextEvents = entry.getValue();
             SkyblockEvent skyblockEvent = nextEvents.peekFirst();
             if (skyblockEvent == null) continue;
+
+            // Remove finished event
             if (newTime > skyblockEvent.start() + skyblockEvent.duration()) {
                 nextEvents.pollFirst();
                 skyblockEvent = nextEvents.peekFirst();
