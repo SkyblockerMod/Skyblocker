@@ -6,7 +6,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EventNotificationsConfig {
