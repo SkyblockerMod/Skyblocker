@@ -7,6 +7,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -16,9 +17,12 @@ import java.util.*;
 import java.util.List;
 
 public class MasteryTestHelper {
-
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
-    private static final int BLOCK_LIFE_TIME = 6850;
+    /**
+     * How long it takes for a block to turn red
+     */
+    private static final int BLOCK_LIFE_TIME = 6550;
 
     private static final List<BlockPos> blockOrder = new ArrayList<>();
     private static final Map<BlockPos, Long> endTimes = new HashMap<>();
@@ -29,9 +33,15 @@ public class MasteryTestHelper {
     }
 
     protected static void onBlockUpdate(BlockPos pos, BlockState state) {
+        if (CLIENT == null || CLIENT.player == null) {
+            return;
+        }
         if (state.isOf(Blocks.LIME_WOOL)) {
             blockOrder.add(pos);
-            endTimes.put(pos, System.currentTimeMillis() + BLOCK_LIFE_TIME);
+            //add lifetime of a block to the time to get time when block expires
+            // work out how long it will take between the player firing and arrow hitting the block and to subtract from time
+            long travelTime = (long) (CLIENT.player.getPos().distanceTo(pos.toCenterPos()) * (1000 / 60)); //an arrow speed is about 60 blocks a second from a full draw
+            endTimes.put(pos, System.currentTimeMillis() + BLOCK_LIFE_TIME - DojoManager.ping - travelTime);
         }
         if (state.isAir()) {
             blockOrder.remove(pos);
