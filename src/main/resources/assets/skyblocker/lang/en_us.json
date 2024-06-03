@@ -878,7 +878,7 @@
   "skyblocker.crimson.dojo.swiftnessHelper": "Enable Swiftness Helper",
   "skyblocker.crimson.dojo.swiftnessHelper.@Tooltip": "highlights the newest wool block to go to.",
   "skyblocker.crimson.dojo.controlHelper": "Enable Control Helper",
-  "skyblocker.crimson.dojo.controlHelper.@Tooltip": "Creates a line from cursor to where to aim (this is not exact and is guessed of ping).",
+  "skyblocker.crimson.dojo.controlHelper.@Tooltip": "enders an outline around where to aim.",
   "skyblocker.crimson.dojo.tenacityHelper": "Enable Tenacity Helper",
   "skyblocker.crimson.dojo.tenacityHelper.@Tooltip": "Shows a path for each fireball and predicted block they are going to hit.",
 

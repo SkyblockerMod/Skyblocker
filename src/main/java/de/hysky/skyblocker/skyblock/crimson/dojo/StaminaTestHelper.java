@@ -236,7 +236,7 @@ public class StaminaTestHelper {
         BlockPos playerPos = CLIENT.player.getBlockPos();
         for (BlockPos hole : wallHoles) {
             float[] color = isHoleIncoming(hole, holeDirections.get(hole), playerPos) ? INCOMING_COLOR : OUTGOING_COLOR;
-            RenderHelper.renderFilled(context, hole, color, 0.3f, true);
+            RenderHelper.renderFilled(context, hole, color, 0.3f, false);
         }
     }
 

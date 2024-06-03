@@ -2,27 +2,29 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
-import net.minecraft.util.Util;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 
 public class ControlTestHelper {
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     private static WitherSkeletonEntity correctWitherSkeleton;
-    private static long ping;
-    private static Vec3d lastTargetPos;
     private static Vec3d lastPos;
-    private static Vec3d aimOffset;
+    private static long lastUpdate;
+    private static Vec3d pingOffset;
+    private static Vec3d lastPingOffset;
 
     protected static void reset() {
         correctWitherSkeleton = null;
-        ping = 0;
-        lastTargetPos = null;
         lastPos = null;
-        aimOffset = null;
+        lastUpdate = -1;
+        pingOffset = null;
+        lastPingOffset = null;
     }
 
     /**
@@ -33,41 +35,43 @@ public class ControlTestHelper {
     protected static void onEntitySpawn(Entity entity) {
         if (entity instanceof WitherSkeletonEntity witherSkeleton && correctWitherSkeleton == null) {
             correctWitherSkeleton = witherSkeleton;
-            ping = Util.getMeasuringTimeMs();
-            aimOffset = new Vec3d(0, 0, 0);
         }
     }
 
     /**
-     * update the aim offset for the wither skeleton based on ping
+     * Finds where to look in 3 ticks effected by ping
      */
     protected static void update() {
         if (correctWitherSkeleton != null) {
             //smoothly adjust the ping throughout the test
-            ping = (ping + Util.getMeasuringTimeMs()) / 2;
             if (lastPos != null) {
-                lastTargetPos = aimOffset;
-                double ping = (double) ControlTestHelper.ping / 1000000;
+                lastPingOffset = pingOffset;
+                double ping = (double) DojoManager.ping / 1000;
                 //find distance between last position and current position of skeleton
                 Vec3d movementVector = correctWitherSkeleton.getPos().subtract(lastPos).multiply(1, 0.1, 1);
-                //adjust the vector to current ping (20 / 3 is used because that is how many times this is updated a second. Every 3 ticks)
-                movementVector = movementVector.multiply((double) 20 / 3 * ping);
-                //smoothly adjust the aim offset based on the new value
-                aimOffset = (aimOffset.add(movementVector)).multiply(0.5);
+                //adjust the vector to current ping
+                pingOffset = movementVector.multiply((double) 23 / 20 + ping);
             }
             lastPos = correctWitherSkeleton.getPos();
+            lastUpdate = System.currentTimeMillis();
         }
     }
 
     /**
-     * Renders a line from the cursor where the player should aim
+     * Renders an outline around where the player should aim (assumes values are updated every 3 ticks)
      *
      * @param context render context
      */
     protected static void render(WorldRenderContext context) {
-        if (correctWitherSkeleton != null && aimOffset != null && lastTargetPos != null) {
-            Vec3d aimPos = correctWitherSkeleton.getEyePos().add(aimOffset);
-            RenderHelper.renderLineFromCursor(context, aimPos, Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1, 3);
+        if (CLIENT.player != null && correctWitherSkeleton != null && pingOffset != null && lastPingOffset != null) {
+            float tickDelta = context.tickDelta();
+            //how long until net update
+            double updatePercent = (double) (System.currentTimeMillis() - lastUpdate) / 150;
+            Vec3d aimPos = correctWitherSkeleton.getEyePos().add(pingOffset.multiply(updatePercent)).add(lastPingOffset.multiply(1 - updatePercent));
+            Box targetBox = new Box(aimPos.add(-0.5, -0.5, -0.5), aimPos.add(0.5, 0.5, 0.5));
+            boolean playerLookingAtBox = targetBox.raycast(CLIENT.player.getCameraPosVec(tickDelta),CLIENT.player.getCameraPosVec(tickDelta).add(CLIENT.player.getRotationVec(tickDelta).multiply(30))).isPresent();
+            float[] boxColor = playerLookingAtBox ? Color.GREEN.getColorComponents(new float[]{0, 0, 0}) : Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0});
+            RenderHelper.renderOutline(context, targetBox, boxColor, 3, true);
         }
     }
 }
