@@ -12,9 +12,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -64,6 +66,7 @@ public class DojoManager {
 
     protected static DojoChallenges currentChallenge = DojoChallenges.NONE;
     public static boolean inArena = false;
+    protected static long ping = -1;
 
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
@@ -98,6 +101,8 @@ public class DojoManager {
         }
         if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
             inArena = true;
+            //update the players ping
+            getPing();
             return;
         }
         if (!inArena) {
@@ -119,6 +124,16 @@ public class DojoManager {
                 currentChallenge = DojoChallenges.NONE;
             }
         }
+    }
+
+    private static void getPing() {
+        ClientPlayNetworkHandler networkHandler = CLIENT.getNetworkHandler();
+        if (networkHandler != null) {
+            networkHandler.sendPacket(new QueryPingC2SPacket(System.currentTimeMillis()));
+        }
+    }
+    public static void onPingResult(long ping) {
+        DojoManager.ping = ping;
     }
 
     private static void update() {
@@ -237,4 +252,5 @@ public class DojoManager {
             case TENACITY -> TenacityTestHelper.render(context);
         }
     }
+
 }

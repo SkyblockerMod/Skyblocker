@@ -872,7 +872,7 @@
   "skyblocker.crimson.dojo.staminaHelper": "Enable Stamina Helper",
   "skyblocker.crimson.dojo.staminaHelper.@Tooltip": "Highlights the holes in the walls turning orange once you have been through a wall.",
   "skyblocker.crimson.dojo.masteryHelper": "Enable Mastery Helper",
-  "skyblocker.crimson.dojo.masteryHelper.@Tooltip": "Shows timer for how long a block has left and a path to follow.",
+  "skyblocker.crimson.dojo.masteryHelper.@Tooltip": "Shows count down to when to relase the bow and a path to follow.",
   "skyblocker.crimson.dojo.disciplineHelper": "Enable Discipline Helper",
   "skyblocker.crimson.dojo.disciplineHelper.@Tooltip": "Outlines the zombies to attack with currently held sword.",
   "skyblocker.crimson.dojo.swiftnessHelper": "Enable Swiftness Helper",
