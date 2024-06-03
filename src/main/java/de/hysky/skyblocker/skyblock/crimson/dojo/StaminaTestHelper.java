@@ -5,8 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.util.math.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +15,13 @@ import java.util.Map;
 public class StaminaTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final int WALL_THRESHOLD_VALUE = 13;
+    private static final int WALL_HEIGHT = 5;
     private static final float[] INCOMING_COLOR = new float[]{0f, 1f, 0f, 0f};
     private static final float[] OUTGOING_COLOR = new float[]{1f, 0.64f, 0f, 0f};
 
-    private static final List<BlockPos> wallHoles = new ArrayList<>();
-    private static final List<BlockPos> lastHoles = new ArrayList<>();
-    private static final Map<BlockPos, holeDirection> holeDirections = new HashMap<>();
+    private static final List<Box> wallHoles = new ArrayList<>();
+    private static final List<Box> lastHoles = new ArrayList<>();
+    private static final Map<Box, holeDirection> holeDirections = new HashMap<>();
     private static BlockPos middleBase;
 
     private enum holeDirection {
@@ -56,12 +56,12 @@ public class StaminaTestHelper {
         lastHoles.addAll(wallHoles);
         wallHoles.clear();
         for (Box wall : walls) {
-            wallHoles.addAll(findAirInBox(wall));
+            wallHoles.addAll(findHolesInBox(wall));
         }
         // get direction for the holes
-        Map<BlockPos, holeDirection> lastHoleDirections = new HashMap<>(holeDirections);
+        Map<Box, holeDirection> lastHoleDirections = new HashMap<>(holeDirections);
         holeDirections.clear();
-        for (BlockPos hole : wallHoles) {
+        for (Box hole : wallHoles) {
             holeDirection holeDirection = getWholeDirection(hole);
             if (holeDirection == StaminaTestHelper.holeDirection.UNCHANGED) {
                 holeDirections.put(hole, lastHoleDirections.get(hole));
@@ -164,7 +164,7 @@ public class StaminaTestHelper {
                 }
             }
             //expand wall to top
-            maxPos = new BlockPos(maxPos.getX(), maxPos.getY() + 5, maxPos.getZ());
+            maxPos = new BlockPos(maxPos.getX(), maxPos.getY() + WALL_HEIGHT, maxPos.getZ());
 
             wallBoxes.add(Box.enclosing(minPos, maxPos));
         }
@@ -172,55 +172,77 @@ public class StaminaTestHelper {
         return wallBoxes;
     }
 
-    private static List<BlockPos> findAirInBox(Box box) {
-        List<BlockPos> air = new ArrayList<>();
+    private static List<Box> findHolesInBox(Box box) {
+        List<Box> holes = new ArrayList<>();
         if (CLIENT == null || CLIENT.player == null || CLIENT.world == null) {
-            return air;
+            return holes;
         }
-        for (int x = (int) box.minX; x < box.maxX; x++) {
-            for (int y = (int) box.minY; y < box.maxY; y++) {
-                for (int z = (int) box.minZ; z < box.maxZ; z++) {
+        //get the direction vector
+        Vec3i wallDirection = box.getLengthX() == 1 ? new Vec3i(0, 0, 1) : new Vec3i(1, 0, 0);
+        //find the corners of boxes (only need 3)
+        List<BlockPos> topLeft = new ArrayList<>();
+        List<BlockPos> topRight = new ArrayList<>();
+        List<BlockPos> bottomLeft = new ArrayList<>();
+        for (int z = (int) box.minZ; z < box.maxZ; z++) {
+            for (int x = (int) box.minX; x < box.maxX; x++) {
+                for (int y = (int) box.minY; y < box.maxY; y++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = CLIENT.world.getBlockState(pos);
-                    if (state.isAir()) {
-                        air.add(pos);
+                    if (!state.isAir()) {
+                        //do not check non-air
+                        continue;
                     }
+                    boolean top = y == box.maxY - 1|| !CLIENT.world.getBlockState(pos.add(0, 1, 0)).isAir();
+                    boolean bottom = !CLIENT.world.getBlockState(pos.add(0, -1, 0)).isAir();
+                    boolean left = !CLIENT.world.getBlockState(pos.add(wallDirection)).isAir();
+                    boolean right = !CLIENT.world.getBlockState(pos.subtract(wallDirection)).isAir();
+                    if (top) {
+                        if (left) {
+                            topLeft.add(pos);
+                        }
+                        if (right) {
+                            topRight.add(pos);
+                        }
+                    }
+                    if (bottom && left) {
+                        bottomLeft.add(pos);
+                    }
+
                 }
             }
         }
-        return air;
-    }
-
-    private static List<Box> combineAir(List<BlockPos> airLocations) {
-        //todo
-        List<Box> holes = new ArrayList<>();
-        //check if air is conected to existing whole and if so
-        for (BlockPos airLocation : airLocations) {
-            holes.add(Box.enclosing(airLocation, airLocation));
+        // gets box around top of hole then expands to the bottom of hole
+        for (int i = 0; i < topLeft.size(); i++) {
+            if (topRight.size() <= i || bottomLeft.size() <= i) {
+                //if corners can not be found end looking
+                break;
+            }
+            Box hole = Box.enclosing(topLeft.get(i), topRight.get(i));
+            hole = hole.stretch(0, bottomLeft.get(i).getY() - topLeft.get(i).getY(), 0);
+            holes.add(hole);
         }
         return holes;
     }
 
-    private static holeDirection getWholeDirection(BlockPos hole) {
+    private static holeDirection getWholeDirection(Box hole) {
         //the value has not changed since last time
         if (lastHoles.contains(hole)) {
             return holeDirection.UNCHANGED;
         }
         //check each direction to work out which way the whole is going
-        BlockPos posX = hole.add(1, 0, 0);
+        Box posX = hole.offset(1, 0, 0);
         if (lastHoles.contains(posX)) {
             return holeDirection.POSITIVE_X;
         }
-        BlockPos negX = hole.add(-1, 0, 0);
+        Box negX = hole.offset(-1, 0, 0);
         if (lastHoles.contains(negX)) {
-            System.out.println("positiveX");
             return holeDirection.NEGATIVE_X;
         }
-        BlockPos posZ = hole.add(0, 0, 1);
+        Box posZ = hole.offset(0, 0, 1);
         if (lastHoles.contains(posZ)) {
             return holeDirection.POSITIVE_Z;
         }
-        BlockPos negZ = hole.add(0, 0, -1);
+        Box negZ = hole.offset(0, 0, -1);
         if (lastHoles.contains(negZ)) {
             return holeDirection.NEGATIVE_Z;
         }
@@ -234,18 +256,18 @@ public class StaminaTestHelper {
             return;
         }
         BlockPos playerPos = CLIENT.player.getBlockPos();
-        for (BlockPos hole : wallHoles) {
+        for (Box hole : wallHoles) {
             float[] color = isHoleIncoming(hole, holeDirections.get(hole), playerPos) ? INCOMING_COLOR : OUTGOING_COLOR;
-            RenderHelper.renderFilled(context, hole, color, 0.3f, false);
+            RenderHelper.renderFilled(context, new BlockPos((int) hole.minX, (int) hole.minY, (int) hole.minZ), new Vec3d(hole.getLengthX(), hole.getLengthY(), hole.getLengthZ()), color, 0.3f, false);
         }
     }
 
-    private static boolean isHoleIncoming(BlockPos holePos, holeDirection holeDirection, BlockPos playerPos) {
+    private static boolean isHoleIncoming(Box holePos, holeDirection holeDirection, BlockPos playerPos) {
         return switch (holeDirection) {
-            case POSITIVE_X -> playerPos.getX() < holePos.getX();
-            case POSITIVE_Z -> playerPos.getZ() < holePos.getZ();
-            case NEGATIVE_X -> playerPos.getX() > holePos.getX();
-            case NEGATIVE_Z -> playerPos.getZ() > holePos.getZ();
+            case POSITIVE_X -> playerPos.getX() < holePos.minX;
+            case POSITIVE_Z -> playerPos.getZ() < holePos.minZ;
+            case NEGATIVE_X -> playerPos.getX() > holePos.maxX;
+            case NEGATIVE_Z -> playerPos.getZ() > holePos.maxZ;
 
             default -> true;
         };
