@@ -5,10 +5,10 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SlotTextManager {
 	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
@@ -51,13 +51,13 @@ public class SlotTextManager {
 	 * @implNote Only the first adder that returns a non-null text will be used.
 	 * The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
 	 */
-	@Nullable
-	public static Text getText(Slot slot) {
-		if (currentScreenAdders.isEmpty()) return null;
+	@NotNull
+	public static List<PositionedText> getText(Slot slot) {
+		if (currentScreenAdders.isEmpty()) return List.of();
 		for (SlotTextAdder adder : currentScreenAdders) {
-			Text text = adder.getText(slot);
-			if (text != null) return text;
+			List<PositionedText> text = adder.getText(slot);
+			if (!text.isEmpty()) return text;
 		}
-		return null;
+		return List.of();
 	}
 }

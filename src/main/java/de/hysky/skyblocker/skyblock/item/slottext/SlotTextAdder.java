@@ -2,9 +2,10 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.skyblock.ChestValue;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -16,18 +17,28 @@ public abstract class SlotTextAdder {
 	 * @implNote Don't end your regex with a {@code $} as {@link ChestValue} appends text to the end of the title,
 	 * so the regex will stop matching if the player uses it.
 	 */
-	public final Pattern titlePattern;
+	public final @Nullable Pattern titlePattern;
 
-	protected SlotTextAdder(String titlePattern) {
+	/**
+	 * Utility constructor that will compile the given string into a pattern.
+	 *
+	 * @see #SlotTextAdder(Pattern)
+	 */
+	protected SlotTextAdder(@NotNull String titlePattern) {
 		this(Pattern.compile(titlePattern));
 	}
 
-	protected SlotTextAdder(Pattern titlePattern) {
+	/**
+	 * Creates a SlotTextAdder that will be applied to screens with titles that match the given pattern.
+	 *
+	 * @param titlePattern The pattern to match the screen title against.
+	 */
+	protected SlotTextAdder(@NotNull Pattern titlePattern) {
 		this.titlePattern = titlePattern;
 	}
 
 	/**
-	 * Creates a SlotTextRenderer that will be applied to all screens.
+	 * Creates a SlotTextAdder that will be applied to all screens.
 	 */
 	protected SlotTextAdder() {
 		this.titlePattern = null;
@@ -36,10 +47,10 @@ public abstract class SlotTextAdder {
 	/**
 	 * This method will be called for each rendered slot. Consider using a switch statement on {@link Slot#id} if you wish to add different text to different slots.
 	 *
-	 * @return The text to be rendered. Return null if no text should be rendered.
+	 * @return A list of positioned text to be rendered. Return {@link List#of()} if no text should be rendered.
 	 * @implNote By minecraft's design, scaled text inexplicably moves around.
 	 * So, limit your text to 3 characters (or roughly less than 20 width) if you want it to not look horrible.
 	 */
-	@Nullable
-	public abstract Text getText(Slot slot);
+	public abstract @NotNull List<PositionedText> getText(Slot slot);
+
 }
