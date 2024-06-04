@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.TooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -9,13 +10,9 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.item.TooltipType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -49,8 +46,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static double timeTowerMultiplier = -1.0;
 	private static boolean isTimeTowerActive = false;
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-	private static ItemStack bestUpgrade = null;
-	private static ItemStack bestAffordableUpgrade = null;
+	private static int bestUpgrade = -1;
+	private static int bestAffordableUpgrade = -1;
 
 	//Slots, for ease of maintenance rather than using magic numbers everywhere.
 	private static final byte RABBITS_START = 28;
@@ -64,8 +61,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final byte STRAY_RABBIT_END = 26;
 
 	public ChocolateFactorySolver() {
-		super("^Chocolate Factory$");
-		ItemTooltipCallback.EVENT.register(ChocolateFactorySolver::handleTooltip);
+		super("^Chocolate Factory$"); //There are multiple screens that fit the pattern `^Chocolate Factory`, so the $ is required
 	}
 
 	@Override
@@ -83,7 +79,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return highlights; //Something went wrong or there's nothing we can afford.
 		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
-		bestUpgrade = bestRabbit.itemStack;
+		bestUpgrade = bestRabbit.slot;
 		if (bestRabbit.cost <= totalChocolate) {
 			highlights.add(ColorHighlight.green(bestRabbit.slot));
 			return highlights;
@@ -92,7 +88,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		for (Rabbit rabbit : cpsIncreaseFactors.subList(1, cpsIncreaseFactors.size())) {
 			if (rabbit.cost <= totalChocolate) {
-				bestAffordableUpgrade = rabbit.itemStack;
+				bestAffordableUpgrade = rabbit.slot;
 				highlights.add(ColorHighlight.green(rabbit.slot));
 				break;
 			}
@@ -154,130 +150,6 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
 	}
 
-	private static void handleTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
-		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper) return;
-		if (!(MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen screen) || !screen.getTitle().getString().equals("Chocolate Factory")) return;
-
-		int lineIndex = lines.size();
-		//This boolean is used to determine if we should add a smooth line to separate the added information from the rest of the tooltip.
-		//It should be set to true if there's any information added, false otherwise.
-		boolean shouldAddLine = false;
-
-		String lore = concatenateLore(lines);
-		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
-		//Available on all items with a chocolate cost
-		if (cost.isPresent()) shouldAddLine = addUpgradeTimerToLore(lines, cost.getAsLong());
-
-		//Prestige item
-		if (stack.isOf(Items.DROPPER)) {
-			shouldAddLine = addPrestigeTimerToLore(lines) || shouldAddLine;
-		}
-		//Time tower
-		else if (stack.isOf(Items.CLOCK)) {
-			shouldAddLine = addTimeTowerStatsToLore(lines) || shouldAddLine;
-		}
-		//Rabbits
-		else if (stack.isOf(Items.PLAYER_HEAD)) {
-			shouldAddLine = addRabbitStatsToLore(lines, stack) || shouldAddLine;
-		}
-
-		//This is an ArrayList, so this operation is probably not very efficient, but logically it's pretty much the only way I can think of
-		if (shouldAddLine) lines.add(lineIndex, LineSmoothener.createSmoothLine());
-	}
-
-	private static boolean addUpgradeTimerToLore(List<Text> lines, long cost) {
-		if (totalChocolate < 0L || totalCps < 0.0) return false;
-		lines.add(Text.empty()
-		              .append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
-		              .append(formatTime((cost - totalChocolate) / totalCps)));
-		return true;
-	}
-
-	private static boolean addPrestigeTimerToLore(List<Text> lines) {
-		if (totalCps < 0.0 || reachedMaxPrestige) return false;
-		if (requiredUntilNextPrestige > 0 && !canPrestige) {
-			lines.add(Text.empty()
-			              .append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
-			              .append(Text.literal(DECIMAL_FORMAT.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
-		}
-		lines.add(Text.empty() //Keep this outside of the `if` to match the format of the upgrade tooltips, that say "Time until upgrade: Now" when it's possible
-		              .append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
-		              .append(formatTime(requiredUntilNextPrestige / totalCps)));
-		return true;
-	}
-
-	private static boolean addTimeTowerStatsToLore(List<Text> lines) {
-		if (totalCps < 0.0 || totalCpsMultiplier < 0.0 || timeTowerMultiplier < 0.0) return false;
-		lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
-		lines.add(Text.empty()
-		              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-		              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
-		lines.add(Text.empty()
-		              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-		              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
-		if (timeTowerMultiplier < 1.5) {
-			lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
-			lines.add(Text.empty()
-			              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-			              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
-			lines.add(Text.empty()
-			              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-			              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
-		}
-		return true;
-	}
-
-	private static boolean addRabbitStatsToLore(List<Text> lines, ItemStack stack) {
-		if (cpsIncreaseFactors.isEmpty()) return false;
-		boolean changed = false;
-		for (Rabbit rabbit : cpsIncreaseFactors) {
-			if (rabbit.itemStack != stack) continue;
-			changed = true;
-			lines.add(Text.empty()
-			              .append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
-			              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
-
-			lines.add(Text.empty()
-			              .append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
-			              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
-
-			if (rabbit.itemStack == bestUpgrade) {
-				if (rabbit.cost <= totalChocolate) {
-					lines.add(Text.literal("Best upgrade").formatted(Formatting.GREEN));
-				} else {
-					lines.add(Text.literal("Best upgrade, can't afford").formatted(Formatting.YELLOW));
-				}
-			} else if (rabbit.itemStack == bestAffordableUpgrade && rabbit.cost <= totalChocolate) {
-				lines.add(Text.literal("Best upgrade you can afford").formatted(Formatting.GREEN));
-			}
-		}
-		return changed;
-	}
-
-	private static MutableText formatTime(double seconds) {
-		seconds = Math.ceil(seconds);
-		if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
-
-		StringBuilder builder = new StringBuilder();
-		if (seconds >= 86400) {
-			builder.append((int) (seconds / 86400)).append("d ");
-			seconds %= 86400;
-		}
-		if (seconds >= 3600) {
-			builder.append((int) (seconds / 3600)).append("h ");
-			seconds %= 3600;
-		}
-		if (seconds >= 60) {
-			builder.append((int) (seconds / 60)).append("m ");
-			seconds %= 60;
-		}
-		if (seconds >= 1) {
-			builder.append((int) seconds).append("s");
-		}
-		return Text.literal(builder.toString()).formatted(Formatting.GOLD);
-	}
-
 	/**
 	 * Utility method.
 	 */
@@ -318,7 +190,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
 		if (cost.isEmpty()) return Optional.empty();
 
-		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), COACH_SLOT, coachItem));
+		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), COACH_SLOT));
 	}
 
 	private static Optional<Rabbit> getRabbit(ItemStack item, int slot) {
@@ -335,7 +207,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot, item));
+		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot));
 	}
 
 	private static Optional<ColorHighlight> getPrestigeHighlight() {
@@ -357,6 +229,137 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return highlights;
 	}
 
-	private record Rabbit(double cpsIncrease, int cost, int slot, ItemStack itemStack) {
+	private record Rabbit(double cpsIncrease, int cost, int slot) { }
+
+	public static final class Tooltip extends TooltipAdder {
+		public Tooltip() {
+			super("^Chocolate Factory", 0); //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
+		}
+
+		@Override
+		public void addToTooltip(List<Text> lines, Slot focusedSlot) {
+			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper) return;
+
+			int lineIndex = lines.size();
+			//This boolean is used to determine if we should add a smooth line to separate the added information from the rest of the tooltip.
+			//It should be set to true if there's any information added, false otherwise.
+			boolean shouldAddLine = false;
+
+			String lore = concatenateLore(lines);
+			Matcher costMatcher = COST_PATTERN.matcher(lore);
+			OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
+			//Available on all items with a chocolate cost
+			if (cost.isPresent()) shouldAddLine |= addUpgradeTimerToLore(lines, cost.getAsLong());
+
+			int index = focusedSlot.id;
+
+			//Prestige item
+			if (index == PRESTIGE_SLOT) {
+				shouldAddLine |= addPrestigeTimerToLore(lines);
+			}
+			//Time tower
+			else if (index == TIME_TOWER_SLOT) {
+				shouldAddLine |= addTimeTowerStatsToLore(lines);
+			}
+			//Rabbits
+			else if (index == COACH_SLOT || (index >= RABBITS_START && index <= RABBITS_END)) {
+				shouldAddLine |= addRabbitStatsToLore(lines, index);
+			}
+
+			//This is an ArrayList, so this operation is probably not very efficient, but logically it's pretty much the only way I can think of
+			if (shouldAddLine) lines.add(lineIndex, LineSmoothener.createSmoothLine());
+		}
+
+		private static boolean addUpgradeTimerToLore(List<Text> lines, long cost) {
+			if (totalChocolate < 0L || totalCps < 0.0) return false;
+			lines.add(Text.empty()
+			              .append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
+			              .append(formatTime((cost - totalChocolate) / totalCps)));
+			return true;
+		}
+
+		private static boolean addPrestigeTimerToLore(List<Text> lines) {
+			if (totalCps < 0.0 || reachedMaxPrestige) return false;
+			if (requiredUntilNextPrestige > 0 && !canPrestige) {
+				lines.add(Text.empty()
+				              .append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
+				              .append(Text.literal(DECIMAL_FORMAT.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
+			}
+			lines.add(Text.empty() //Keep this outside of the `if` to match the format of the upgrade tooltips, that say "Time until upgrade: Now" when it's possible
+			              .append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
+			              .append(formatTime(requiredUntilNextPrestige / totalCps)));
+			return true;
+		}
+
+		private static boolean addTimeTowerStatsToLore(List<Text> lines) {
+			if (totalCps < 0.0 || totalCpsMultiplier < 0.0 || timeTowerMultiplier < 0.0) return false;
+			lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
+			lines.add(Text.empty()
+			              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+			              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
+			lines.add(Text.empty()
+			              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+			              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+			if (timeTowerMultiplier < 1.5) {
+				lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
+				lines.add(Text.empty()
+				              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+				              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
+				lines.add(Text.empty()
+				              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+				              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+			}
+			return true;
+		}
+
+		private static boolean addRabbitStatsToLore(List<Text> lines, int slot) {
+			if (cpsIncreaseFactors.isEmpty()) return false;
+			for (Rabbit rabbit : cpsIncreaseFactors) {
+				if (rabbit.slot == slot) {
+					lines.add(Text.empty()
+					              .append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
+					              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+
+					lines.add(Text.empty()
+					              .append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
+					              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+
+					if (rabbit.slot == bestUpgrade) {
+						if (rabbit.cost <= totalChocolate) {
+							lines.add(Text.literal("Best upgrade").formatted(Formatting.GREEN));
+						} else {
+							lines.add(Text.literal("Best upgrade, can't afford").formatted(Formatting.YELLOW));
+						}
+					} else if (rabbit.slot == bestAffordableUpgrade && rabbit.cost <= totalChocolate) {
+						lines.add(Text.literal("Best upgrade you can afford").formatted(Formatting.GREEN));
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private static MutableText formatTime(double seconds) {
+			seconds = Math.ceil(seconds);
+			if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
+
+			StringBuilder builder = new StringBuilder();
+			if (seconds >= 86400) {
+				builder.append((int) (seconds / 86400)).append("d ");
+				seconds %= 86400;
+			}
+			if (seconds >= 3600) {
+				builder.append((int) (seconds / 3600)).append("h ");
+				seconds %= 3600;
+			}
+			if (seconds >= 60) {
+				builder.append((int) (seconds / 60)).append("m ");
+				seconds %= 60;
+			}
+			if (seconds >= 1) {
+				builder.append((int) seconds).append("s");
+			}
+			return Text.literal(builder.toString()).formatted(Formatting.GOLD);
+		}
 	}
 }

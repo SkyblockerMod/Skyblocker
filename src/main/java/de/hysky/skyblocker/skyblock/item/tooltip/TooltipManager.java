@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -14,10 +15,11 @@ import java.util.List;
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(), // Applies before anything else
+			new ChocolateFactorySolver.Tooltip(),
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
-			new LBinTooltip(3), //Has to come after bz price
-			new AvgBinTooltip(4), //Has to come after lbin price
+			new LBinTooltip(3),
+			new AvgBinTooltip(4),
 			new DungeonQualityTooltip(5),
 			new MotesTooltip(6),
 			new ObtainedDateTooltip(7),
