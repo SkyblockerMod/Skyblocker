@@ -2,33 +2,35 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RancherBootsSpeedAdder extends SlotTextAdder {
+	private static final Pattern SPEED_PATTERN = Pattern.compile("Current Speed Cap: (\\d+) ?(\\d+)?");
+
 	public RancherBootsSpeedAdder() {
 		super();
 	}
 
-	@SuppressWarnings("deprecation") //It's only deprecated to discourage usage as the nbt is supposed to be immutable, but we're not mutating it anyway, so it's fine
 	@Override
 	public @NotNull List<PositionedText> getText(Slot slot) {
 		final ItemStack itemStack = slot.getStack();
-		if (!itemStack.isOf(Items.LEATHER_BOOTS)) return List.of();
-		final ComponentMap components = itemStack.getComponents();
-		if (!components.contains(DataComponentTypes.CUSTOM_DATA)) return List.of();
-		NbtComponent nbt = components.get(DataComponentTypes.CUSTOM_DATA);
-		if (nbt == null || nbt.isEmpty()) return List.of();
-		if (!nbt.contains("ranchers_speed")) return List.of();
-		return List.of(PositionedText.BOTTOM_LEFT(Text.literal(String.valueOf(nbt.getNbt().getInt("ranchers_speed"))).formatted(Formatting.GREEN)));
+		//                                                          V null-safe equals.
+		if (!itemStack.isOf(Items.LEATHER_BOOTS) && !StringUtils.equals(itemStack.getInternalId(), "RANCHERS_BOOTS")) return List.of();
+		Matcher matcher = ItemUtils.getLoreLineIfMatch(slot.getStack(), SPEED_PATTERN);
+		if (matcher == null) return List.of();
+		String speed = matcher.group(2);
+		if (speed == null) speed = matcher.group(1); //2nd group only matches when the speed cap is set to a number beyond the player's actual speed cap.
+		return List.of(PositionedText.BOTTOM_LEFT(Text.literal(speed).formatted(Formatting.GREEN)));
 	}
 }
