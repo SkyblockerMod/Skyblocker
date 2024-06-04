@@ -149,6 +149,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			if (NumberUtils.isParsable(amountString)) {
 				requiredUntilNextPrestige = Long.parseLong(amountString) - currentChocolate.getAsLong();
 			}
+			canPrestige = false;
 		} else if (prestigeLore.endsWith("Click to prestige!")) {
 			canPrestige = true;
 			reachedMaxPrestige = false;
