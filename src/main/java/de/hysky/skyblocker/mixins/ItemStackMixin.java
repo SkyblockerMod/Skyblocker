@@ -15,6 +15,7 @@ import net.minecraft.item.TooltipAppender;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -123,6 +124,7 @@ public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
 	}
 
 	@Override
+	@Nullable
 	public String getInternalId() {
 		if (internalId != null && !internalId.isEmpty()) return internalId;
 		internalId = skyblocker$getInternalNameFromNBT(true);
@@ -130,6 +132,7 @@ public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
 	}
 
 	@Override
+	@Nullable
 	public String getInternalName() {
 		if (internalName != null && !internalName.isEmpty()) return internalName;
 		internalName = skyblocker$getInternalNameFromNBT(false);
@@ -137,11 +140,12 @@ public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
 	}
 
 	@Override
+	@Nullable
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
 		String name = getInternalName();
 		String id = getInternalId();
-		if (name == null || id == null) return "";
+		if (name == null || id == null) return null;
 
 		if (name.startsWith("ISSHINY_")) name = id;
 
