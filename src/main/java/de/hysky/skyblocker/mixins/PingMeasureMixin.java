@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.network.PingMeasurer;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;

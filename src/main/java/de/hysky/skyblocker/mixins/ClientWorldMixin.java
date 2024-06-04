@@ -2,7 +2,6 @@ package de.hysky.skyblocker.mixins;
 
 
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
