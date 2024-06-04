@@ -1,11 +1,15 @@
 package de.hysky.skyblocker.injected;
 
 public interface ItemStackInternalIdGetter {
-	default String skyblocker$getInternalId(boolean internalIdOnly) {
+	default String getInternalId() {
 		return "";
 	}
 
-	default String skyblocker$getNeuName() {
+	default String getInternalName() {
+		return "";
+	}
+
+	default String getNeuName() {
 		return "";
 	}
 }

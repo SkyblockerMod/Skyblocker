@@ -28,7 +28,7 @@ public class ColorTooltip extends TooltipAdder {
 	@Override
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = itemStack.skyblocker$getInternalId(true);
+		final String internalID = itemStack.getInternalId();
 		if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && itemStack.contains(DataComponentTypes.DYED_COLOR)) {
 			String uuid = ItemUtils.getItemUuid(itemStack);
 			boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);

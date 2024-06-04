@@ -17,7 +17,7 @@ public class AccessoryTooltip extends TooltipAdder {
 
 	@Override
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		final String internalID = focusedSlot.getStack().skyblocker$getInternalId(true);
+		final String internalID = focusedSlot.getStack().getInternalId();
 		if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 

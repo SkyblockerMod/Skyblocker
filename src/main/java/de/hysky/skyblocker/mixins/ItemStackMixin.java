@@ -123,27 +123,29 @@ public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
 	}
 
 	@Override
-	public String skyblocker$getInternalId(boolean internalIDOnly) {
-		if (internalIDOnly) {
-			if (internalId != null && !internalId.isEmpty()) return internalId;
-			internalId = skyblocker$getInternalNameFromNBT(true);
-			return internalId;
-		} // else
+	public String getInternalId() {
+		if (internalId != null && !internalId.isEmpty()) return internalId;
+		internalId = skyblocker$getInternalNameFromNBT(true);
+		return internalId;
+	}
+
+	@Override
+	public String getInternalName() {
 		if (internalName != null && !internalName.isEmpty()) return internalName;
 		internalName = skyblocker$getInternalNameFromNBT(false);
 		return internalName;
 	}
 
 	@Override
-	public String skyblocker$getNeuName() {
+	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
-		String name = skyblocker$getInternalId(false);
-		String internalId = skyblocker$getInternalId(true);
-		if (name == null || internalId == null) return "";
+		String name = getInternalName();
+		String id = getInternalId();
+		if (name == null || id == null) return "";
 
-		if (name.startsWith("ISSHINY_")) name = internalId;
+		if (name.startsWith("ISSHINY_")) name = id;
 
-		neuName = ItemTooltip.getNeuName(internalId, name);
+		neuName = ItemTooltip.getNeuName(id, name);
 		return neuName;
 	}
 

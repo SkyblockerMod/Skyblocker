@@ -26,7 +26,7 @@ public class TeleportOverlay {
     private static void render(WorldRenderContext wrc) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableTeleportOverlays && client.player != null && client.world != null) {
             ItemStack heldItem = client.player.getMainHandStack();
-            String itemId = heldItem.skyblocker$getInternalId(true);
+            String itemId = heldItem.getInternalId();
             NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
             if (itemId != null) {

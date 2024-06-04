@@ -80,11 +80,11 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String id = stack.skyblocker$getInternalId(false);
+				String internalName = stack.getInternalName();
 
 				//Regular item price
-				if (id != null) {
-					LongBooleanPair priceData = getItemPrice(id);
+				if (internalName != null) {
+					LongBooleanPair priceData = getItemPrice(internalName);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
@@ -159,10 +159,10 @@ public class ChestValue {
 					continue;
 				}
 
-				String id = stack.skyblocker$getInternalId(false);
+				String internalName = stack.getInternalName();
 
-				if (id != null) {
-					LongBooleanPair priceData = getItemPrice(id);
+				if (internalName != null) {
+					LongBooleanPair priceData = getItemPrice(internalName);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 

@@ -22,9 +22,9 @@ public class BazaarPriceTooltip extends TooltipAdder {
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		bazaarExist = false;
 		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = itemStack.skyblocker$getInternalId(true);
+		final String internalID = itemStack.getInternalId();
 		if (internalID == null) return;
-		String name = itemStack.skyblocker$getInternalId(false);
+		String name = itemStack.getInternalName();
 		if (name == null) return;
 
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;
