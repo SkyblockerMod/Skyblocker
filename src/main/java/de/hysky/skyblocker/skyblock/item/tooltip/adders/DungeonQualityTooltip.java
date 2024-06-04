@@ -39,6 +39,7 @@ public class DungeonQualityTooltip extends TooltipAdder {
 
 	final String getItemTierFloor(int tier) {
 		return switch (tier) {
+			case 0 -> "E";
 			case 1 -> "F1";
 			case 2 -> "F2";
 			case 3 -> "F3";
