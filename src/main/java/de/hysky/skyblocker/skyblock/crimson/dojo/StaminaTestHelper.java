@@ -192,7 +192,7 @@ public class StaminaTestHelper {
                         //do not check non-air
                         continue;
                     }
-                    boolean top = y == box.maxY - 1|| !CLIENT.world.getBlockState(pos.add(0, 1, 0)).isAir();
+                    boolean top = y == box.maxY - 1 || !CLIENT.world.getBlockState(pos.add(0, 1, 0)).isAir();
                     boolean bottom = !CLIENT.world.getBlockState(pos.add(0, -1, 0)).isAir();
                     boolean left = !CLIENT.world.getBlockState(pos.add(wallDirection)).isAir();
                     boolean right = !CLIENT.world.getBlockState(pos.subtract(wallDirection)).isAir();
