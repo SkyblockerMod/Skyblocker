@@ -63,7 +63,7 @@ public class MobGlow {
 				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() -> TheEnd.isSpecialZealot(enderman);
 
 				//dojo
-				case ZombieEntity zombie when Utils.getLocation() == Location.CRIMSON_ISLE && DojoManager.inArena -> DojoManager.shouldGlow(getArmourStandName(zombie));
+				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmourStandName(zombie));
 
 				default -> false;
 			};
@@ -109,7 +109,7 @@ public class MobGlow {
 
 			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
 			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
-			case ZombieEntity zombie when Utils.getLocation() == Location.CRIMSON_ISLE && DojoManager.inArena -> DojoManager.getColor();
+			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 
 			default -> 0xf57738;
 		};

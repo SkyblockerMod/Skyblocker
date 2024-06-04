@@ -96,7 +96,7 @@ public class DojoManager {
      * @param overlay is overlay
      */
     private static void onMessage(Text text, Boolean overlay) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || overlay) {
+        if (!Utils.isInCrimson() || overlay) {
             return;
         }
         if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
@@ -137,7 +137,7 @@ public class DojoManager {
     }
 
     private static void update() {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return;
         }
          switch (currentChallenge) {
@@ -153,7 +153,7 @@ public class DojoManager {
      * @return if the zombie should glow
      */
     public static boolean shouldGlow(String name) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return false;
         }
         return switch (currentChallenge) {
@@ -169,7 +169,7 @@ public class DojoManager {
      * @return if the zombie should glow
      */
     public static int getColor() {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return 0xf57738;
         }
         return switch (currentChallenge) {
@@ -186,7 +186,7 @@ public class DojoManager {
      * @param state the state of the new block
      */
     public static void onBlockUpdate(BlockPos pos, BlockState state) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         switch (currentChallenge) {
@@ -196,7 +196,7 @@ public class DojoManager {
     }
 
     private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena || CLIENT == null || CLIENT.player == null) {
+        if (!Utils.isInCrimson() || !inArena || CLIENT == null || CLIENT.player == null) {
             return;
         }
         //check close by
@@ -211,7 +211,7 @@ public class DojoManager {
     }
 
     private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         switch (currentChallenge) {
@@ -221,7 +221,7 @@ public class DojoManager {
     }
 
     private static ActionResult onEntityAttacked(PlayerEntity playerEntity, World world, Hand hand, Entity entity, EntityHitResult entityHitResult) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return ActionResult.PASS;
         }
         if (currentChallenge == DojoChallenges.FORCE) {
@@ -231,7 +231,7 @@ public class DojoManager {
     }
 
     public static void onParticle(ParticleS2CPacket packet) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         if (currentChallenge == DojoChallenges.TENACITY) {
@@ -240,7 +240,7 @@ public class DojoManager {
     }
 
     private static void render(WorldRenderContext context) {
-        if (Utils.getLocation() != Location.CRIMSON_ISLE || !inArena) {
+        if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         switch (currentChallenge) {

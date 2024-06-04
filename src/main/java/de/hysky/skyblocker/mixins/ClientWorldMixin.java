@@ -17,7 +17,7 @@ public class ClientWorldMixin {
 
     @Inject(method = "handleBlockUpdate", at = @At("RETURN"))
     private void skyblocker$handleBlockUpdate(BlockPos pos, BlockState state, int flags, CallbackInfo ci) {
-        if (Utils.getLocation() == Location.CRIMSON_ISLE) {
+        if (Utils.isInCrimson()) {
             DojoManager.onBlockUpdate(pos.toImmutable(), state);
         }
     }

@@ -120,6 +120,9 @@ public class Utils {
     public static boolean isInKuudra() {
         return location == Location.KUUDRAS_HOLLOW;
     }
+    public static boolean isInCrimson() {
+        return location == Location.CRIMSON_ISLE;
+    }
 
     public static boolean isInModernForagingIsland() {
         return location == Location.MODERN_FORAGING_ISLAND;

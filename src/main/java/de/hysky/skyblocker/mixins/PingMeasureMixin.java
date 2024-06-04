@@ -15,7 +15,7 @@ public class PingMeasureMixin {
 
     @Inject(method = "onPingResult", at = @At("RETURN"))
     private void skyblocker$onPingResult(PingResultS2CPacket packet, CallbackInfo ci) {
-        if (Utils.getLocation() == Location.CRIMSON_ISLE) {
+        if (Utils.isInCrimson()) {
             long ping = System.currentTimeMillis() - packet.startTime();
             DojoManager.onPingResult(ping);
         }
