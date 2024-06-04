@@ -38,6 +38,20 @@ public class HelperCategory {
                                 .build())
                         .build())
 
+                //Jerry Timer
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.helpers.jerry"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.jerry.enableJerryTimer"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip")))
+                                .binding(defaults.helpers.jerry.enableJerryTimer,
+                                        () -> config.helpers.jerry.enableJerryTimer,
+                                        newValue -> config.helpers.jerry.enableJerryTimer = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
                 //Experiments Solver
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.helpers.experiments"))

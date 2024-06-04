@@ -36,6 +36,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.mayors.JerryTimer;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
@@ -189,6 +190,7 @@ public class SkyblockerMod implements ClientModInitializer {
         EggFinder.init();
         TimeTowerReminder.init();
         SkyblockTime.init();
+        JerryTimer.init();
         TooltipManager.init();
         SlotTextManager.init();
 
