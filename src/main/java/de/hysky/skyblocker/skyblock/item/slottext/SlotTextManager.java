@@ -21,7 +21,8 @@ public class SlotTextManager {
 			new CatacombsLevelAdder.Dungeoneering(),
 			new CatacombsLevelAdder.DungeonClasses(),
 			new CatacombsLevelAdder.ReadyUp(),
-			new RancherBootsSpeedAdder()
+			new RancherBootsSpeedAdder(),
+			new AttributeShardAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 

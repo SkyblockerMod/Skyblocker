@@ -1,9 +1,22 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 
-public class AttributeShards {
-	private static final Object2ObjectOpenHashMap<String, String> ID_2_SHORT_NAME = new Object2ObjectOpenHashMap<>();
+import java.util.List;
+
+public class AttributeShardAdder extends SlotTextAdder {
+	private static final Object2ObjectMap<String, String> ID_2_SHORT_NAME = new Object2ObjectOpenHashMap<>();
 
 	static {
 		//Weapons
@@ -50,10 +63,35 @@ public class AttributeShards {
 		ID_2_SHORT_NAME.put("fishing_speed", "FS");
 		ID_2_SHORT_NAME.put("hunter", "H");
 		ID_2_SHORT_NAME.put("trophy_hunter", "TH");
-
 	}
 
-	public static String getShortName(String id) {
-		return ID_2_SHORT_NAME.getOrDefault(id, "");
+	public AttributeShardAdder() {
+		super();
+	}
+
+	@Override
+	public @NotNull List<PositionedText> getText(Slot slot) {
+		final ItemStack stack = slot.getStack();
+		NbtCompound customData = ItemUtils.getCustomData(stack);
+
+		if (!ItemUtils.getItemId(stack).equals("ATTRIBUTE_SHARD")) return List.of();
+
+		NbtCompound attributesTag = customData.getCompound("attributes");
+		String[] attributes = attributesTag.getKeys().toArray(String[]::new);
+
+		if (attributes.length != 1) return List.of();
+		String attributeId = attributes[0];
+		int attributeLevel = attributesTag.getInt(attributeId);
+		String attributeInitials = ID_2_SHORT_NAME.getOrDefault(attributeId, "");
+
+		return List.of(
+				PositionedText.BOTTOM_RIGHT(Text.literal(String.valueOf(attributeLevel))),
+				PositionedText.TOP_LEFT(Text.literal(attributeInitials).formatted(Formatting.AQUA))
+		);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return SkyblockerConfigManager.get().general.itemInfoDisplay.attributeShardInfo;
 	}
 }
