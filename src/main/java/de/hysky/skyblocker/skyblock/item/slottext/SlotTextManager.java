@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -29,7 +30,7 @@ public class SlotTextManager {
 
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if (screen instanceof HandledScreen<?>) {
+			if (screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
