@@ -36,6 +36,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern CHOCOLATE_PATTERN = Pattern.compile("^([\\d,]+) Chocolate$");
 	private static final Pattern PRESTIGE_REQUIREMENT_PATTERN = Pattern.compile("Chocolate this Prestige: ([\\d,]+) +Requires (\\S+) Chocolate this Prestige!");
 	private static final Pattern TIME_TOWER_STATUS_PATTERN = Pattern.compile("Status: (ACTIVE|INACTIVE)");
+	private static final Pattern TIME_TOWER_MULTIPLIER_PATTERN = Pattern.compile("by \\+([\\d.]+)x for \\dh\\.");
 
 	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(8);
 	private static long totalChocolate = -1L;
@@ -160,9 +161,11 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		//Time Tower is in slot 39
 		isTimeTowerMaxed = StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ').equals("XV");
-		timeTowerMultiplier = RomanNumerals.romanToDecimal(StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(TIME_TOWER_SLOT)));
-		if (timeTowerStatusMatcher.find()) {
+		String timeTowerLore = getConcatenatedLore(slots.get(TIME_TOWER_SLOT));
+		Matcher timeTowerMultiplierMatcher = TIME_TOWER_MULTIPLIER_PATTERN.matcher(timeTowerLore);
+		RegexUtils.getDoubleFromMatcher(timeTowerMultiplierMatcher).ifPresent(d -> timeTowerMultiplier = d);
+		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(timeTowerLore);
+		if (timeTowerStatusMatcher.find(timeTowerMultiplierMatcher.hasMatch() ? timeTowerMultiplierMatcher.end() : 0)) {
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
 
