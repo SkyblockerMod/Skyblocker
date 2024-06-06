@@ -53,4 +53,12 @@ public abstract class SlotTextAdder {
 	 */
 	public abstract @NotNull List<PositionedText> getText(Slot slot);
 
+	/**
+	 * Override this method to add conditions to enable or disable this adder.
+	 * @return Whether this adder is enabled.
+	 * @implNote The slot text adders only work while in skyblock, so no need to check for that again.
+	 */
+	public boolean isEnabled() {
+		return true;
+	}
 }

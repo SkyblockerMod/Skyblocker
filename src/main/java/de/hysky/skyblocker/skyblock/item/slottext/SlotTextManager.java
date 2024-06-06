@@ -40,6 +40,7 @@ public class SlotTextManager {
 	private static void onScreenChange(Screen screen) {
 		final String title = screen.getTitle().getString();
 		for (SlotTextAdder adder : adders) {
+			if (!adder.isEnabled()) continue;
 			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
 				currentScreenAdders.add(adder);
 			}
