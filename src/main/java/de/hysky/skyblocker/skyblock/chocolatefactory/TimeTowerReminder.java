@@ -83,6 +83,9 @@ public class TimeTowerReminder {
 		}
 
 		if (System.currentTimeMillis() - time >= 60 * 60 * 1000) sendMessage();
-		else Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60 * 60 * 20 - (int) ((System.currentTimeMillis() - time) / 50)); // 50 milliseconds is 1 tick
+		else {
+			Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60 * 60 * 20 - (int) ((System.currentTimeMillis() - time) / 50)); // 50 milliseconds is 1 tick
+			scheduled = true;
+		}
 	}
 }
