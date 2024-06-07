@@ -654,5 +654,10 @@
     "skyblocker.config.misc": "杂项",
     "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "只显示最高等级的宠物",
     "skyblocker.config.general.searchOverlay.starsTooltip": "地牢物品的星星数量",
-    "skyblocker.config.general.searchOverlay.maxPet": "最高宠物等级"
+    "skyblocker.config.general.searchOverlay.maxPet": "最高宠物等级",
+    "skyblocker.config.eventNotifications": "活动通知",
+    "skyblocker.config.eventNotifications.notificationSound": "通知声音",
+    "skyblocker.config.eventNotifications.@Tooltip[0]": "设置在活动开始前多久你将收到通知！例如，如果在列表中设置“5m”和“30s”，你将分别在活动开始前5分钟和30秒前收到通知。",
+    "skyblocker.config.eventNotifications.@Tooltip[2]": "该列表将修改“%s”活动",
+    "skyblocker.config.eventNotifications.@Tooltip[1]": "顺序并不重要。如果想禁用通知，清空列表即可。"
 }
