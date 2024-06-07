@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.component.DataComponentTypes;
@@ -23,7 +24,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SearchResultsWidget implements Drawable {
+public class SearchResultsWidget implements Drawable, Element {
     private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_forward"), new Identifier("recipe_book/page_forward_highlighted"));
     private static final ButtonTextures PAGE_BACKWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_backward"), new Identifier("recipe_book/page_backward_highlighted"));
     private static final int COLS = 5;
@@ -223,6 +224,18 @@ public class SearchResultsWidget implements Drawable {
             return true;
         }
         return false;
+    }
+
+    private boolean focused = false;
+
+    @Override
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return focused;
     }
 
 }

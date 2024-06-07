@@ -83,6 +83,7 @@ public class SkyblockerConfigManager {
                 .category(SlayersCategory.create(defaults, config))
                 .category(ChatCategory.create(defaults, config))
                 .category(QuickNavigationCategory.create(defaults, config))
+                .category(EventNotificationsCategory.create(defaults, config))
                 .category(MiscCategory.create(defaults, config))).generateScreen(parent);
     }
 
