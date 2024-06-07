@@ -24,7 +24,7 @@ public class SkyblockTime {
 		Scheduler.INSTANCE.schedule(() -> Scheduler.INSTANCE.scheduleCyclic(SkyblockTime::updateTime, 1200 * 20), (int) (1200000 - (getSkyblockMillis() % 1200000)) / 50);
 	}
 
-	private static long getSkyblockMillis() {
+	public static long getSkyblockMillis() {
 		return System.currentTimeMillis() - SKYBLOCK_EPOCH;
 	}
 

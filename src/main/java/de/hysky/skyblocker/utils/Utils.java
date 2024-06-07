@@ -3,7 +3,6 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
-
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -77,7 +76,7 @@ public class Utils {
     private static boolean canSendLocRaw = false;
     //This is required to prevent the location change event from being fired twice.
     private static boolean locationChanged = true;
-
+    private static boolean mayorTickScheduled = false;
     private static String mayor = "";
 
     /**
@@ -191,11 +190,16 @@ public class Utils {
     }
 
     public static void init() {
-        SkyblockEvents.JOIN.register(() -> tickMayorCache(false));
+        SkyblockEvents.JOIN.register(() -> {
+            long millisUntilNextYear = 446400000L - (SkyblockTime.getSkyblockMillis() % 446400000L);
+            if (!mayorTickScheduled) {
+                Scheduler.INSTANCE.scheduleCyclic(Utils::tickMayorCache, (int) millisUntilNextYear / 50 + 1);
+                mayorTickScheduled = true;
+            }
+        });
         ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
-        Scheduler.INSTANCE.scheduleCyclic(() -> tickMayorCache(true), 24_000, true); // Update every 20 minutes
     }
 
     /**
@@ -358,8 +362,8 @@ public class Utils {
     // TODO: Combine with `ChocolateFactorySolver.formatTime` and move into `SkyblockTime`.
     public static Text getDurationText(int timeInSeconds) {
         int seconds = timeInSeconds % 60;
-        int minutes = (timeInSeconds/60) % 60;
-        int hours = (timeInSeconds/3600);
+        int minutes = (timeInSeconds / 60) % 60;
+        int hours = (timeInSeconds / 3600);
 
         MutableText time = Text.empty();
         if (hours > 0) {
@@ -479,9 +483,7 @@ public class Utils {
         location = Location.UNKNOWN;
     }
 
-    private static void tickMayorCache(boolean refresh) {
-        if (!mayor.isEmpty() && !refresh) return;
-
+    private static void tickMayorCache() {
         CompletableFuture.supplyAsync(() -> {
             try {
                 JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
@@ -492,14 +494,16 @@ public class Utils {
             }
             return "";
         }).thenAccept(s -> {
-            if (!s.isEmpty()) mayor = s;
+            if (!s.isEmpty()) {
+                mayor = s;
+                LOGGER.info("[Skyblocker] Mayor set to {}", mayor);
+            }
         });
-
     }
 
     /**
      * Used to avoid triggering things like chat rules or chat listeners infinitely, do not use otherwise.
-     * 
+     * <p>
      * Bypasses MessageHandler#onGameMessage
      */
     public static void sendMessageToBypassEvents(Text message) {
