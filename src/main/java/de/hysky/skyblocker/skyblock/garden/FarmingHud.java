@@ -16,6 +16,8 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,7 @@ public class FarmingHud {
     public static void init() {
         HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
             if (shouldRender()) {
-                if (!counter.isEmpty() && counter.peek().rightLong() + 10_000 < System.currentTimeMillis()) {
+                if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
                     counter.poll();
                 }
                 if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + 1000 < System.currentTimeMillis()) {
@@ -55,7 +57,7 @@ public class FarmingHud {
                 }
 
                 ItemStack stack = client.player.getMainHandStack();
-                if (stack == null || !tryParseCounter(stack, CounterType.CULTIVATING) && !tryParseCounter(stack, CounterType.COUNTER)) {
+                if (stack == null || !tryGetCounter(stack, CounterType.CULTIVATING) && !tryGetCounter(stack, CounterType.COUNTER)) {
                     counterType = CounterType.NONE;
                 }
 
@@ -85,23 +87,18 @@ public class FarmingHud {
                 .executes(Scheduler.queueOpenScreenCommand(() -> new FarmingHudConfigScreen(null)))))));
     }
 
-    private static boolean tryParseCounter(ItemStack stack, CounterType counterType) {
-        Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, counterType.pattern);
-        if (matcher == null) return false;
-        try {
-            int count = NUMBER_FORMAT.parse(matcher.group("count")).intValue();
-            if (FarmingHud.counterType != counterType) {
-                counter.clear();
-                FarmingHud.counterType = counterType;
-            }
-            if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
-                counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
-            }
-            return true;
-        } catch (ParseException e) {
-            LOGGER.error("[Skyblocker Farming HUD] Failed to parse counter", e);
-            return false;
+    private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
+        NbtCompound customData = ItemUtils.getCustomData(stack);
+        if (customData == null || !customData.contains(counterType.nbtKey, NbtElement.NUMBER_TYPE)) return false;
+        int count = customData.getInt(counterType.nbtKey);
+        if (FarmingHud.counterType != counterType) {
+            counter.clear();
+            FarmingHud.counterType = counterType;
         }
+        if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
+            counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
+        }
+        return true;
     }
 
     private static boolean shouldRender() {
@@ -138,15 +135,15 @@ public class FarmingHud {
     }
 
     public enum CounterType {
-        NONE(Pattern.compile(""), "No Counter: "),
-        COUNTER(Pattern.compile("Counter: (?<count>[\\d,]+) .+"), "Counter: "),
-        CULTIVATING(Pattern.compile("Cultivating (?<cultivating>[IVXLCDM]+) (?<count>[\\d,]+)"), "Cultivating Counter: ");
+        NONE("", "No Counter: "),
+        COUNTER("mined_crops", "Counter: "),
+        CULTIVATING("farmed_cultivating", "Cultivating Counter: ");
 
-        private final Pattern pattern;
+        private final String nbtKey;
         private final String text;
 
-        CounterType(Pattern pattern, String text) {
-            this.pattern = pattern;
+        CounterType(String nbtKey, String text) {
+            this.nbtKey = nbtKey;
             this.text = text;
         }
     }
