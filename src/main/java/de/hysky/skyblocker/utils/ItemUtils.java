@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -62,7 +63,7 @@ public class ItemUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static NbtCompound getCustomData(@NotNull ItemStack stack) {
+	public static NbtCompound getCustomData(@NotNull ComponentHolder stack) {
         return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
     }
 
@@ -104,7 +105,7 @@ public class ItemUtils {
      * @param stack the item stack to get the UUID from
      * @return the UUID of the item stack, or an empty string if the item stack is null or does not have a UUID
      */
-    public static String getItemUuid(@NotNull ItemStack stack) {
+	public static String getItemUuid(@NotNull ComponentHolder stack) {
         return getCustomData(stack).getString(UUID);
     }
 
