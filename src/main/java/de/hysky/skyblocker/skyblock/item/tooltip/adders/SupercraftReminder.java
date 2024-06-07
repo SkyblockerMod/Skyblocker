@@ -21,10 +21,10 @@ public class SupercraftReminder extends TooltipAdder {
 	@Override
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		if (focusedSlot.id != SUPERCRAFT_SLOT || !focusedSlot.getStack().isOf(Items.GOLDEN_PICKAXE)) return;
-		String UUID = ItemUtils.getItemUuid(focusedSlot.inventory.getStack(RECIPE_RESULT_SLOT));
-		if (!UUID.isEmpty()) return; //Items with UUID can't be stacked, and therefore the shift-click feature doesn't matter
-		int index = lines.size()-1;
-		if (lines.get(lines.size()-2).getString().equals("Recipe not unlocked!")) index--; //Place it right below the "Right-Click to set amount" line
+		String uuid = ItemUtils.getItemUuid(focusedSlot.inventory.getStack(RECIPE_RESULT_SLOT));
+		if (!uuid.isEmpty()) return; //Items with UUID can't be stacked, and therefore the shift-click feature doesn't matter
+		int index = lines.size() - 1;
+		if (lines.get(lines.size() - 2).getString().equals("Recipe not unlocked!")) index--; //Place it right below the "Right-Click to set amount" line
 		lines.add(index, Text.literal("Shift-Click to maximize the amount!").formatted(Formatting.GOLD));
 	}
 }
