@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.injected.ItemStackInternalIdGetter;
+import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -28,7 +28,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
+public abstract class ItemStackMixin implements SkyblockerStack {
 
 	@Shadow
 	public abstract int getDamage();
@@ -40,10 +40,10 @@ public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
 	private int maxDamage;
 
 	@Unique
-	private String internalId;
+	private String skyblockId;
 
 	@Unique
-	private String internalName;
+	private String skyblockName;
 
 	@Unique
 	private String neuName;
@@ -125,26 +125,26 @@ public abstract class ItemStackMixin implements ItemStackInternalIdGetter {
 
 	@Override
 	@Nullable
-	public String getInternalId() {
-		if (internalId != null && !internalId.isEmpty()) return internalId;
-		internalId = skyblocker$getInternalNameFromNBT(true);
-		return internalId;
+	public String getSkyblockId() {
+		if (skyblockId != null && !skyblockId.isEmpty()) return skyblockId;
+		skyblockId = skyblocker$getInternalNameFromNBT(true);
+		return skyblockId;
 	}
 
 	@Override
 	@Nullable
-	public String getInternalName() {
-		if (internalName != null && !internalName.isEmpty()) return internalName;
-		internalName = skyblocker$getInternalNameFromNBT(false);
-		return internalName;
+	public String getSkyblockName() {
+		if (skyblockName != null && !skyblockName.isEmpty()) return skyblockName;
+		skyblockName = skyblocker$getInternalNameFromNBT(false);
+		return skyblockName;
 	}
 
 	@Override
 	@Nullable
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
-		String name = getInternalName();
-		String id = getInternalId();
+		String name = getSkyblockName();
+		String id = getSkyblockId();
 		if (name == null || id == null) return null;
 
 		if (name.startsWith("ISSHINY_")) name = id;

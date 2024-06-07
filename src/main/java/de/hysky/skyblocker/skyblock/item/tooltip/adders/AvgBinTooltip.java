@@ -21,7 +21,7 @@ public class AvgBinTooltip extends TooltipAdder {
 	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
 		final ItemStack itemStack = focusedSlot.getStack();
 		String neuName = itemStack.getNeuName();
-		String internalID = itemStack.getInternalId();
+		String internalID = itemStack.getSkyblockId();
 		if (neuName == null || internalID == null) return;
 
 		if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {

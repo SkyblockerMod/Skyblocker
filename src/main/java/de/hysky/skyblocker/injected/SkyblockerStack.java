@@ -2,14 +2,14 @@ package de.hysky.skyblocker.injected;
 
 import org.jetbrains.annotations.Nullable;
 
-public interface ItemStackInternalIdGetter {
+public interface SkyblockerStack {
 	@Nullable
-	default String getInternalId() {
+	default String getSkyblockId() {
 		return "";
 	}
 
 	@Nullable
-	default String getInternalName() {
+	default String getSkyblockName() {
 		return "";
 	}
 

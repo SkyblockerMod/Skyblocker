@@ -55,7 +55,7 @@
     },
     "loom:injected_interfaces": {
       "net/minecraft/class_1799": [
-        "de/hysky/skyblocker/injected/ItemStackInternalIdGetter"
+        "de/hysky/skyblocker/injected/SkyblockerStack"
       ]
     }
   }

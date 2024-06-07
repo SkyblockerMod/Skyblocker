@@ -80,7 +80,7 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String internalName = stack.getInternalName();
+				String internalName = stack.getSkyblockName();
 
 				//Regular item price
 				if (internalName != null) {
@@ -159,7 +159,7 @@ public class ChestValue {
 					continue;
 				}
 
-				String internalName = stack.getInternalName();
+				String internalName = stack.getSkyblockName();
 
 				if (internalName != null) {
 					LongBooleanPair priceData = getItemPrice(internalName);
