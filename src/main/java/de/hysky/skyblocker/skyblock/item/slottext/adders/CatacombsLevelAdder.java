@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -23,15 +23,15 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<PositionedText> getText(Slot slot) {
+		public @NotNull List<SlotText> getText(Slot slot) {
 			switch (slot.id) {
 				case 12, 29, 30, 31, 32, 33 -> {
 					String name = slot.getStack().getName().getString();
 					int lastIndex = name.lastIndexOf(' ');
-					if (lastIndex == -1) return List.of(PositionedText.BOTTOM_LEFT(Text.literal("0").formatted(Formatting.RED)));
+					if (lastIndex == -1) return List.of(SlotText.bottomLeft(Text.literal("0").formatted(Formatting.RED)));
 					String level = name.substring(lastIndex + 1);
 					if (!NumberUtils.isDigits(level)) return List.of(); //Sanity check, just in case.
-					return List.of(PositionedText.BOTTOM_RIGHT(Text.literal(level).formatted(Formatting.RED)));
+					return List.of(SlotText.bottomRight(Text.literal(level).formatted(Formatting.RED)));
 				}
 				default -> {
 					return List.of();
@@ -47,12 +47,12 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<PositionedText> getText(Slot slot) {
+		public @NotNull List<SlotText> getText(Slot slot) {
 			switch (slot.id) {
 				case 11, 12, 13, 14, 15 -> {
 					String level = getBracketedLevelFromName(slot.getStack());
 					if (!NumberUtils.isDigits(level)) return List.of();
-					return List.of(PositionedText.BOTTOM_LEFT(Text.literal(level).formatted(Formatting.RED)));
+					return List.of(SlotText.bottomLeft(Text.literal(level).formatted(Formatting.RED)));
 				}
 				default -> {
 					return List.of();
@@ -68,12 +68,12 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<PositionedText> getText(Slot slot) {
+		public @NotNull List<SlotText> getText(Slot slot) {
 			switch (slot.id) {
 				case 29, 30, 31, 32, 33 -> {
 					String level = getBracketedLevelFromName(slot.getStack());
 					if (!NumberUtils.isDigits(level)) return List.of();
-					return List.of(PositionedText.BOTTOM_LEFT(Text.literal(level).formatted(Formatting.RED)));
+					return List.of(SlotText.bottomLeft(Text.literal(level).formatted(Formatting.RED)));
 				}
 				default -> {
 					return List.of();

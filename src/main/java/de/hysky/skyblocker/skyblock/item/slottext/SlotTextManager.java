@@ -57,10 +57,10 @@ public class SlotTextManager {
 	 * The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
 	 */
 	@NotNull
-	public static List<PositionedText> getText(Slot slot) {
+	public static List<SlotText> getText(Slot slot) {
 		if (currentScreenAdders.isEmpty()) return List.of();
 		for (SlotTextAdder adder : currentScreenAdders) {
-			List<PositionedText> text = adder.getText(slot);
+			List<SlotText> text = adder.getText(slot);
 			if (!text.isEmpty()) return text;
 		}
 		return List.of();

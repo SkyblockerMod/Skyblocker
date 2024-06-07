@@ -51,7 +51,7 @@ public abstract class SlotTextAdder {
 	 * @implNote By minecraft's design, scaled text inexplicably moves around.
 	 * So, limit your text to 3 characters (or roughly less than 20 width) if you want it to not look horrible.
 	 */
-	public abstract @NotNull List<PositionedText> getText(Slot slot);
+	public abstract @NotNull List<SlotText> getText(Slot slot);
 
 	/**
 	 * Override this method to add conditions to enable or disable this adder.

@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PrehistoricEggAdder extends SlotTextAdder {
 	@Override
-	public @NotNull List<PositionedText> getText(Slot slot) {
+	public @NotNull List<SlotText> getText(Slot slot) {
 		final ItemStack stack = slot.getStack();
 		if (!stack.isOf(Items.PLAYER_HEAD) || !StringUtils.equals(stack.getInternalId(), "PREHISTORIC_EGG")) return List.of();
 		NbtCompound nbt = ItemUtils.getCustomData(stack);
@@ -29,6 +29,6 @@ public class PrehistoricEggAdder extends SlotTextAdder {
 		else if (walked < 10000) walkedstr = String.format("%.1fk", walked/1000.0f);
 		else walkedstr = walked / 1000 + "k";
 
-		return List.of(PositionedText.BOTTOM_LEFT(Text.literal(walkedstr).formatted(Formatting.GOLD)));
+		return List.of(SlotText.bottomLeft(Text.literal(walkedstr).formatted(Formatting.GOLD)));
 	}
 }

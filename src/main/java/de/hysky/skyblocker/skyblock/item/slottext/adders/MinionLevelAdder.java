@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
@@ -18,7 +18,7 @@ public class MinionLevelAdder extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<PositionedText> getText(Slot slot) {
+	public @NotNull List<SlotText> getText(Slot slot) {
 		ItemStack itemStack = slot.getStack();
 		if (!itemStack.isOf(Items.PLAYER_HEAD)) return List.of();
 		String name = itemStack.getName().getString();
@@ -26,6 +26,6 @@ public class MinionLevelAdder extends SlotTextAdder {
 		String romanNumeral = name.substring(name.lastIndexOf(' ') + 1); //+1 because we don't need the space itself
 		int level = RomanNumerals.romanToDecimal(romanNumeral);
 		if (level == 0) return List.of();
-		return List.of(PositionedText.TOP_RIGHT(Text.literal(String.valueOf(level)).formatted(Formatting.AQUA)));
+		return List.of(SlotText.topRight(Text.literal(String.valueOf(level)).formatted(Formatting.AQUA)));
 	}
 }

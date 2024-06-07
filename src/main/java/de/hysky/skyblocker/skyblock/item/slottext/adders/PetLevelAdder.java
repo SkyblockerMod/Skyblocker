@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -18,11 +18,11 @@ public class PetLevelAdder extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<PositionedText> getText(Slot slot) {
+	public @NotNull List<SlotText> getText(Slot slot) {
 		ItemStack itemStack = slot.getStack();
 		if (!itemStack.isOf(Items.PLAYER_HEAD)) return List.of();
 		String level = CatacombsLevelAdder.getBracketedLevelFromName(itemStack);
 		if (!NumberUtils.isDigits(level)) return List.of();
-		return List.of(PositionedText.TOP_LEFT(Text.literal(level).formatted(Formatting.GOLD)));
+		return List.of(SlotText.topLeft(Text.literal(level).formatted(Formatting.GOLD)));
 	}
 }

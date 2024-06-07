@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -21,7 +21,7 @@ public class EnchantmentLevelAdder extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<PositionedText> getText(Slot slot) {
+	public @NotNull List<SlotText> getText(Slot slot) {
 		final ItemStack itemStack = slot.getStack();
 		if (!itemStack.isOf(Items.ENCHANTED_BOOK)) return List.of();
 		String name = itemStack.getName().getString();
@@ -31,11 +31,11 @@ public class EnchantmentLevelAdder extends SlotTextAdder {
 			NbtCompound enchantments = nbt.getCompound("enchantments");
 			if (enchantments.getSize() != 1) return List.of(); //Only makes sense to display the level when there's one enchant.
 			int level = enchantments.getInt(enchantments.getKeys().iterator().next());
-			return List.of(PositionedText.BOTTOM_LEFT(Text.literal(String.valueOf(level)).formatted(Formatting.GREEN)));
+			return List.of(SlotText.bottomLeft(Text.literal(String.valueOf(level)).formatted(Formatting.GREEN)));
 		} else { //In bazaar, the books have the enchantment level in the name
 			int level = getEnchantLevelFromString(name);
 			if (level == 0) return List.of();
-			return List.of(PositionedText.BOTTOM_LEFT(Text.literal(String.valueOf(level)).formatted(Formatting.GREEN)));
+			return List.of(SlotText.bottomLeft(Text.literal(String.valueOf(level)).formatted(Formatting.GREEN)));
 		}
 	}
 

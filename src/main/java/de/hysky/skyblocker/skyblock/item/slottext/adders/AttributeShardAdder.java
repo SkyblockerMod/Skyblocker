@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -70,7 +70,7 @@ public class AttributeShardAdder extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<PositionedText> getText(Slot slot) {
+	public @NotNull List<SlotText> getText(Slot slot) {
 		final ItemStack stack = slot.getStack();
 		NbtCompound customData = ItemUtils.getCustomData(stack);
 
@@ -85,8 +85,8 @@ public class AttributeShardAdder extends SlotTextAdder {
 		String attributeInitials = ID_2_SHORT_NAME.getOrDefault(attributeId, "");
 
 		return List.of(
-				PositionedText.BOTTOM_RIGHT(Text.literal(String.valueOf(attributeLevel)).withColor(0x34eb77)),
-				PositionedText.TOP_LEFT(Text.literal(attributeInitials).formatted(Formatting.AQUA))
+				SlotText.bottomRight(Text.literal(String.valueOf(attributeLevel)).withColor(0x34eb77)),
+				SlotText.topLeft(Text.literal(attributeInitials).formatted(Formatting.AQUA))
 		);
 	}
 

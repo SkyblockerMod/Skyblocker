@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.screen.slot.Slot;
@@ -16,7 +16,7 @@ public class SkyblockLevelAdder extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<PositionedText> getText(Slot slot) {
+	public @NotNull List<SlotText> getText(Slot slot) {
 		if (slot.getIndex() != 22) return List.of();
 		List<Text> lore = ItemUtils.getLore(slot.getStack());
 		if (lore.isEmpty()) return List.of();
@@ -24,6 +24,6 @@ public class SkyblockLevelAdder extends SlotTextAdder {
 		if (siblings.size() < 3) return List.of();
 		Text levelText = siblings.get(2); //The 3rd child is the level text itself
 		if (!NumberUtils.isDigits(levelText.getString())) return List.of();
-		return List.of(PositionedText.BOTTOM_LEFT(levelText));
+		return List.of(SlotText.bottomLeft(levelText));
 	}
 }

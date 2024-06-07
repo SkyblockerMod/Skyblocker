@@ -14,7 +14,7 @@ import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
-import de.hysky.skyblocker.skyblock.item.slottext.PositionedText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
@@ -315,30 +315,30 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
 	private void skyblocker$drawSlotText(DrawContext context, Slot slot, CallbackInfo ci) {
-		List<PositionedText> textList = SlotTextManager.getText(slot);
+		List<SlotText> textList = SlotTextManager.getText(slot);
 		if (textList.isEmpty()) return;
 		MatrixStack matrices = context.getMatrices();
 
-		for (PositionedText positionedText : textList) {
+		for (SlotText slotText : textList) {
 			matrices.push();
 			matrices.translate(0.0f, 0.0f, 200.0f);
-			int length = textRenderer.getWidth(positionedText.text());
+			int length = textRenderer.getWidth(slotText.text());
 			if (length > 16) {
 				matrices.scale(16.0f / length, 16.0f / length, 1.0f); //Make them fit in the slot. FYI, a slot is sized 16×16.
 				final float x = (slot.x * length / 16.0f) - slot.x; //Save in a variable to not recalculate
-				switch (positionedText.position()) {
+				switch (slotText.position()) {
 					case TOP_LEFT, TOP_RIGHT -> matrices.translate(x, (slot.y * length / 16.0f) - slot.y, 0.0f);
 					case BOTTOM_LEFT, BOTTOM_RIGHT -> matrices.translate(x, ((slot.y + 16f - textRenderer.fontHeight + 2f + 0.7f) * length / 16.0f) - slot.y, 0.0f);
 				}
 			} else {
-				switch (positionedText.position()) {
+				switch (slotText.position()) {
 					case TOP_LEFT -> { /*Do Nothing*/ }
 					case TOP_RIGHT -> matrices.translate(16f - length, 0.0f, 0.0f);
 					case BOTTOM_LEFT -> matrices.translate(0.0f, 16f - textRenderer.fontHeight + 2f, 0.0f);
 					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.fontHeight + 2f, 0.0f);
 				}
 			}
-			context.drawText(textRenderer, positionedText.text(), slot.x, slot.y, 0xFFFFFF, true);
+			context.drawText(textRenderer, slotText.text(), slot.x, slot.y, 0xFFFFFF, true);
 			matrices.pop();
 		}
 	}
