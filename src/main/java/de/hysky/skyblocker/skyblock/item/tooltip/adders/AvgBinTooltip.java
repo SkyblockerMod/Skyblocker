@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;

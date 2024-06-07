@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;

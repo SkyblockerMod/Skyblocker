@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
