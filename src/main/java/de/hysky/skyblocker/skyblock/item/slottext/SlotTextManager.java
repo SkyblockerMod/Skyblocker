@@ -24,7 +24,8 @@ public class SlotTextManager {
 			new RancherBootsSpeedAdder(),
 			new AttributeShardAdder(),
 			new PrehistoricEggAdder(),
-			new PotionLevelAdder()
+			new PotionLevelAdder(),
+			new CollectionAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 
