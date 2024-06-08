@@ -44,10 +44,27 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static boolean canPrestige = false;
 	private static boolean reachedMaxPrestige = false;
 	private static double timeTowerMultiplier = -1.0;
+	private static boolean isTimeTowerMaxed = false;
 	private static boolean isTimeTowerActive = false;
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 	private static int bestUpgrade = -1;
 	private static int bestAffordableUpgrade = -1;
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+
+	@Override
+	protected void reset() {
+		cpsIncreaseFactors.clear();
+		totalChocolate = -1L;
+		totalCps = -1.0;
+		totalCpsMultiplier = -1.0;
+		requiredUntilNextPrestige = -1L;
+		canPrestige = false;
+		reachedMaxPrestige = false;
+		timeTowerMultiplier = -1.0;
+		isTimeTowerMaxed = false;
+		isTimeTowerActive = false;
+		bestUpgrade = -1;
+		bestAffordableUpgrade = -1;
+	}
 
 	//Slots, for ease of maintenance rather than using magic numbers everywhere.
 	private static final byte RABBITS_START = 28;
@@ -140,6 +157,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		//Time Tower is in slot 39
+		isTimeTowerMaxed = StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ').equals("XV");
 		timeTowerMultiplier = RomanNumerals.romanToDecimal(StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
 		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(TIME_TOWER_SLOT)));
 		if (timeTowerStatusMatcher.find()) {
@@ -233,7 +251,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	public static final class Tooltip extends TooltipAdder {
 		public Tooltip() {
-			super("^Chocolate Factory", 0); //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
+			super("^Chocolate Factory$", 0); //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
 		}
 
 		@Override
@@ -300,7 +318,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			lines.add(Text.empty()
 			              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
 			              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
-			if (timeTowerMultiplier < 1.5) {
+			if (!isTimeTowerMaxed) {
 				lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
 				lines.add(Text.empty()
 				              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
