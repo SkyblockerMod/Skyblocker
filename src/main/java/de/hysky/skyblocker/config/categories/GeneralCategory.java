@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.categories;
 
+import de.hysky.skyblocker.SkyblockerScreen;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
@@ -15,6 +16,13 @@ public class GeneralCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("skyblocker.config.general"))
+
+                //Skyblocker Screen
+                .option(ButtonOption.createBuilder()
+                        .name(Text.translatable("skyblocker.skyblockerScreen"))
+                        .text(Text.translatable("text.skyblocker.open"))
+                        .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new SkyblockerScreen()))
+                        .build())
 
                 //Ungrouped Options
                 .option(Option.<Boolean>createBuilder()
