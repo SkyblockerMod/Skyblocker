@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.ChestValue;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
@@ -59,6 +60,6 @@ public abstract class SlotTextAdder {
 	 * @implNote The slot text adders only work while in skyblock, so no need to check for that again.
 	 */
 	public boolean isEnabled() {
-		return true;
+		return SkyblockerConfigManager.get().general.itemInfoDisplay.slotText;
 	}
 }

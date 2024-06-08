@@ -211,6 +211,14 @@ public class GeneralCategory {
                         .name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip")))
+                                .binding(defaults.general.itemInfoDisplay.slotText,
+                                        () -> config.general.itemInfoDisplay.slotText,
+                                        newValue -> config.general.itemInfoDisplay.slotText = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeShardInfo"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip")))
                                 .binding(defaults.general.itemInfoDisplay.attributeShardInfo,

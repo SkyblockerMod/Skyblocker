@@ -210,6 +210,8 @@
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Backgrounds",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item, the color represents the item's rarity.",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
+  "skyblocker.config.general.itemInfoDisplay.slotText": "Slot Text",
+  "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
