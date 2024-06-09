@@ -11,17 +11,15 @@ import java.util.regex.Pattern;
 /**
  * Abstract class for gui solvers. Extend this class to add a new gui solver, like terminal solvers or experiment solvers.
  */
-public abstract class ContainerSolver {
-    private final Pattern containerName;
-
-    protected ContainerSolver(String containerName) {
-        this.containerName = Pattern.compile(containerName);
+public abstract class ContainerSolver extends AbstractContainerMatcher {
+    protected ContainerSolver(String titlePattern) {
+        super(titlePattern);
     }
 
     protected abstract boolean isEnabled();
 
     public final Pattern getName() {
-        return containerName;
+        return titlePattern;
     }
 
     protected void start(GenericContainerScreen screen) {
