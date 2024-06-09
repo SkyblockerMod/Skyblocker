@@ -138,6 +138,19 @@ public class SlayersCategory {
                                 .build())
                         .build())
 
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.blazeSlayer"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip")))
+                                .binding(defaults.slayers.blazeSlayer.enableFirePillarAnnouncer,
+                                        () -> config.slayers.blazeSlayer.enableFirePillarAnnouncer,
+                                        newValue -> config.slayers.blazeSlayer.enableFirePillarAnnouncer = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
                 .build();
     }
 }

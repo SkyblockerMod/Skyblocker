@@ -121,6 +121,10 @@ public class Utils {
         return location == Location.KUUDRAS_HOLLOW;
     }
 
+    public static boolean isInCrimsonIsle() {
+        return location == Location.CRIMSON_ISLE;
+    }
+
     public static boolean isInModernForagingIsland() {
         return location == Location.MODERN_FORAGING_ISLAND;
     }

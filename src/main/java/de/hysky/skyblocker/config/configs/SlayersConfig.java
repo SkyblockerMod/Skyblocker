@@ -9,6 +9,9 @@ public class SlayersConfig {
     @SerialEntry
     public VampireSlayer vampireSlayer = new VampireSlayer();
 
+    @SerialEntry
+    public BlazeSlayer blazeSlayer = new BlazeSlayer();
+
     public static class EndermanSlayer {
         @SerialEntry
         public boolean enableYangGlyphsNotification = true;
@@ -56,5 +59,10 @@ public class SlayersConfig {
 
         @SerialEntry
         public int maniaUpdateFrequency = 5;
+    }
+
+    public static class BlazeSlayer {
+        @SerialEntry
+        public boolean enableFirePillarAnnouncer = true;
     }
 }
