@@ -43,7 +43,7 @@ public abstract class ItemStackMixin implements SkyblockerStack {
 	private String skyblockId;
 
 	@Unique
-	private String skyblockName;
+	private String skyblockApiId;
 
 	@Unique
 	private String neuName;
@@ -127,34 +127,31 @@ public abstract class ItemStackMixin implements SkyblockerStack {
 	@Nullable
 	public String getSkyblockId() {
 		if (skyblockId != null && !skyblockId.isEmpty()) return skyblockId;
-		skyblockId = skyblocker$getInternalNameFromNBT(true);
-		return skyblockId;
+		return skyblockId = skyblocker$getSkyblockId(true);
 	}
 
 	@Override
 	@Nullable
-	public String getSkyblockName() {
-		if (skyblockName != null && !skyblockName.isEmpty()) return skyblockName;
-		skyblockName = skyblocker$getInternalNameFromNBT(false);
-		return skyblockName;
+	public String getSkyblockApiId() {
+		if (skyblockApiId != null && !skyblockApiId.isEmpty()) return skyblockApiId;
+		return skyblockApiId = skyblocker$getSkyblockId(false);
 	}
 
 	@Override
 	@Nullable
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
-		String name = getSkyblockName();
+		String apiId = getSkyblockApiId();
 		String id = getSkyblockId();
-		if (name == null || id == null) return null;
+		if (apiId == null || id == null) return null;
 
-		if (name.startsWith("ISSHINY_")) name = id;
+		if (apiId.startsWith("ISSHINY_")) apiId = id;
 
-		neuName = ItemTooltip.getNeuName(id, name);
-		return neuName;
+		return neuName = ItemTooltip.getNeuName(id, apiId);
 	}
 
 	@Unique
-	private String skyblocker$getInternalNameFromNBT(boolean internalIDOnly) {
+	private String skyblocker$getSkyblockId(boolean internalIDOnly) {
 		NbtCompound customData = ItemUtils.getCustomData((ItemStack) (Object) this);
 
 		if (customData == null || !customData.contains(ItemUtils.ID, NbtElement.STRING_TYPE)) {

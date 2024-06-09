@@ -23,7 +23,7 @@ public class LBinTooltip extends TooltipAdder {
 		final ItemStack itemStack = focusedSlot.getStack();
 		final String internalID = itemStack.getSkyblockId();
 		if (internalID == null) return;
-		String name = itemStack.getSkyblockName();
+		String name = itemStack.getSkyblockApiId();
 		if (name == null) return;
 
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;

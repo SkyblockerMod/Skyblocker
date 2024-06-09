@@ -12,7 +12,6 @@ import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -44,7 +43,7 @@ public class ChestValue {
 				if (DUNGEON_CHESTS.contains(titleString)) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
 						ScreenEvents.afterTick(screen).register(screen_ ->
-								((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString, client))
+								((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString))
 						);
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
@@ -64,7 +63,7 @@ public class ChestValue {
 		});
 	}
 
-	private static Text getDungeonChestProfit(GenericContainerScreenHandler handler, Text title, String titleString, MinecraftClient client) {
+	private static Text getDungeonChestProfit(GenericContainerScreenHandler handler, Text title, String titleString) {
 		try {
 			long profit = 0;
 			boolean hasIncompleteData = false, usedKismet = false;
@@ -80,7 +79,7 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String internalName = stack.getSkyblockName();
+				String internalName = stack.getSkyblockApiId();
 
 				//Regular item price
 				if (internalName != null) {
@@ -115,7 +114,7 @@ public class ChestValue {
 
 				//Determine the cost of the chest
 				if (name.contains("Open Reward Chest")) {
-					String foundString = searchLoreFor(stack, client, "Coins");
+					String foundString = searchLoreFor(stack, "Coins");
 
 					//Incase we're searching the free chest
 					if (!StringUtils.isBlank(foundString)) {
@@ -127,7 +126,7 @@ public class ChestValue {
 
 				//Determine if a kismet was used or not
 				if (name.contains("Reroll Chest")) {
-					usedKismet = !StringUtils.isBlank(searchLoreFor(stack, client, "You already rerolled a chest!"));
+					usedKismet = !StringUtils.isBlank(searchLoreFor(stack, "You already rerolled a chest!"));
 				}
 			}
 
@@ -159,7 +158,7 @@ public class ChestValue {
 					continue;
 				}
 
-				String internalName = stack.getSkyblockName();
+				String internalName = stack.getSkyblockApiId();
 
 				if (internalName != null) {
 					LongBooleanPair priceData = getItemPrice(internalName);
@@ -205,7 +204,7 @@ public class ChestValue {
 	/**
 	 * Searches for a specific string of characters in the name and lore of an item
 	 */
-	private static String searchLoreFor(ItemStack stack, MinecraftClient client, String searchString) {
+	private static String searchLoreFor(ItemStack stack, String searchString) {
 		return ItemUtils.getLoreLineIf(stack, line -> line.contains(searchString));
 	}
 

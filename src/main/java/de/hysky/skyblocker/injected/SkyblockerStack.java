@@ -9,7 +9,7 @@ public interface SkyblockerStack {
 	}
 
 	@Nullable
-	default String getSkyblockName() {
+	default String getSkyblockApiId() {
 		return "";
 	}
 

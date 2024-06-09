@@ -295,7 +295,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
                             try {
                                 long parsed = Long.parseLong(coins);
-                                String name = stack.getSkyblockName();
+                                String name = stack.getSkyblockApiId();
                                 String internalID = stack.getSkyblockId();
                                 String neuName = name;
                                 if (name == null || internalID == null) break;
