@@ -115,7 +115,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
-        if (SkyblockerConfigManager.get().slayers.blazeSlayer.enableFirePillarAnnouncer) FirePillarAnnouncer.CheckFirePillar(armorStandEntity);
+        if (SkyblockerConfigManager.get().slayers.blazeSlayer.enableFirePillarAnnouncer) FirePillarAnnouncer.checkFirePillar(armorStandEntity);
 
         EggFinder.checkIfEgg(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers

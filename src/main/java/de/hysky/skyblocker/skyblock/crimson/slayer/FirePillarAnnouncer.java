@@ -14,7 +14,7 @@ public class FirePillarAnnouncer {
 
     private static final Pattern FIRE_PILLAR_PATTERN = Pattern.compile("(\\d+)s \\d+ hits");
 
-    public static void CheckFirePillar(Entity entity) {
+    public static void checkFirePillar(Entity entity) {
         if (Utils.isInCrimsonIsle() && SlayerUtils.isInSlayer() && entity instanceof ArmorStandEntity) {
 
             String entityName = entity.getName().getString();
@@ -23,16 +23,16 @@ public class FirePillarAnnouncer {
             if (matcher.matches()) {
                 Entity slayerentity = SlayerUtils.getSlayerEntity();
                 if (slayerentity == null || !(slayerentity.getBlockPos().isWithinDistance(entity.getPos(), 24))) return;
-                AnnounceFirePillarDetails(entityName);
+                announceFirePillarDetails(entityName);
             }
         }
     }
 
-    private static void AnnounceFirePillarDetails(String entityName) {
+    private static void announceFirePillarDetails(String entityName) {
         MinecraftClient client = MinecraftClient.getInstance();
         client.inGameHud.setTitleTicks(4, 10, 4);
         client.inGameHud.setTitle(Text.literal(""));
         client.inGameHud.setSubtitle(Text.literal(entityName)
-                .formatted(Formatting.BOLD, Formatting.YELLOW));
+                .formatted(Formatting.BOLD, Formatting.DARK_PURPLE));
     }
 }
