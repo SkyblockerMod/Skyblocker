@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - bleeding-edge
     paths-ignore:
       - 'src/main/resources/assets/skyblocker/lang/**'
       - 'CHANGELOG.md'
@@ -16,6 +17,9 @@ on:
       - 'CHANGELOG.md'
       - 'FEATURES.md'
       - 'README.md'
+env:
+  REF_NAME: ${{ github.ref_name }}
+  PR_NUMBER: ${{ github.event.number }}
 
 jobs:
   # This workflow contains a single job called "build"
@@ -31,9 +35,16 @@ jobs:
         with:
           result-encoding: string
           script: |
+            let buildType;
+            if (!process.env.PR_NUMBER) {
+              buildType = process.env.REF_NAME === "bleeding-edge" ? "alpha" : "beta";
+            } else {
+              buildType = `pr-${process.env.PR_NUMBER}`;
+            }
+
             const fs = require("fs");
             let file = fs.readFileSync("./gradle.properties");
-            file = file.toString().split("\n").map(e => e.trim().startsWith("mod_version") ? `${e}-beta-${process.env.GITHUB_SHA.substring(0, 7)}` : e).join("\n");
+            file = file.toString().split("\n").map(e => e.trim().startsWith("mod_version") ? `${e}-${buildType}-${process.env.GITHUB_SHA.substring(0, 7)}` : e).join("\n");
             fs.writeFileSync("./gradle.properties", file);
 
       - name: Set up JDK 21
