@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -79,11 +80,11 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String internalName = stack.getSkyblockApiId();
+				String id = stack.getSkyblockApiId();
 
 				//Regular item price
-				if (internalName != null) {
-					LongBooleanPair priceData = getItemPrice(internalName);
+				if (id != null) {
+					LongBooleanPair priceData = getItemPrice(id);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
@@ -158,10 +159,10 @@ public class ChestValue {
 					continue;
 				}
 
-				String internalName = stack.getSkyblockApiId();
+				String id = stack.getSkyblockApiId();
 
-				if (internalName != null) {
-					LongBooleanPair priceData = getItemPrice(internalName);
+				if (id != null) {
+					LongBooleanPair priceData = getItemPrice(id);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
