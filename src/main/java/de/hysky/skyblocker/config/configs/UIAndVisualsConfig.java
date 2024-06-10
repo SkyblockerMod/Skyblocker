@@ -63,6 +63,7 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public CompactDamage compactDamage = new CompactDamage();
 
+
     public static class ChestValue {
         @SerialEntry
         public boolean enableChestValue = true;

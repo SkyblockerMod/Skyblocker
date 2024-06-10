@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -117,15 +118,15 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		RegexUtils.getLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getName().getString())).ifPresent(l -> totalChocolate = l);
 
 		//Cps item (cocoa bean) is in slot 45
-		String cpsItemLore = getConcatenatedLore(slots.get(CPS_SLOT));
+		String cpsItemLore = Utils.getConcatenatedLore(slots.get(45));
+
 		Matcher cpsMatcher = CPS_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(cpsMatcher).ifPresent(d -> totalCps = d);
 		Matcher multiplierMatcher = TOTAL_MULTIPLIER_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
 
 		//Prestige item is in slot 28
-		String prestigeLore = getConcatenatedLore(slots.get(PRESTIGE_SLOT));
-		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(prestigeLore);
+		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(Utils.getConcatenatedLore(slots.get(28)));
 		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(prestigeMatcher);
 		if (currentChocolate.isPresent()) {
 			String requirement = prestigeMatcher.group(2); //If the first one matched, we can assume the 2nd one is also matched since it's one whole regex
@@ -143,8 +144,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		//Time Tower is in slot 39
-		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(getConcatenatedLore(slots.get(TIME_TOWER_SLOT)));
+		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
+		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(Utils.getConcatenatedLore(slots.get(39)));
 		if (timeTowerStatusMatcher.find()) {
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
@@ -162,7 +163,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		//It should be set to true if there's any information added, false otherwise.
 		boolean shouldAddLine = false;
 
-		String lore = concatenateLore(lines);
+		String lore = Utils.concatenateLore(lines);
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
 		//Available on all items with a chocolate cost
@@ -277,29 +278,9 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return Text.literal(builder.toString()).formatted(Formatting.GOLD);
 	}
 
-	/**
-	 * Utility method.
-	 */
-	private static String getConcatenatedLore(ItemStack item) {
-		return concatenateLore(ItemUtils.getLore(item));
-	}
-
-	/**
-	 * Concatenates the lore of an item into one string.
-	 * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
-	 */
-	private static String concatenateLore(List<Text> lore) {
-		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < lore.size(); i++) {
-			stringBuilder.append(lore.get(i).getString());
-			if (i != lore.size() - 1) stringBuilder.append(" ");
-		}
-		return stringBuilder.toString();
-	}
-
 	private static Optional<Rabbit> getCoach(ItemStack coachItem) {
 		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
-		String coachLore = getConcatenatedLore(coachItem);
+		String coachLore = Utils.getConcatenatedLore(coachItem);
 
 		if (totalCpsMultiplier == -1.0) return Optional.empty(); //We need the total multiplier to calculate the increase in cps.
 
@@ -321,7 +302,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static Optional<Rabbit> getRabbit(ItemStack item, int slot) {
-		String lore = getConcatenatedLore(item);
+		String lore = Utils.getConcatenatedLore(item);
 		Matcher cpsMatcher = CPS_INCREASE_PATTERN.matcher(lore);
 		OptionalInt currentCps = RegexUtils.getIntFromMatcher(cpsMatcher);
 		if (currentCps.isEmpty()) return Optional.empty();
