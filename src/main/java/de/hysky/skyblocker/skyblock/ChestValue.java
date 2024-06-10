@@ -7,13 +7,11 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.longs.LongBooleanPair;
+import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -45,7 +43,7 @@ public class ChestValue {
 				if (DUNGEON_CHESTS.contains(titleString)) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
 						ScreenEvents.afterTick(screen).register(screen_ ->
-								((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString, client))
+								((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString))
 						);
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
@@ -65,9 +63,9 @@ public class ChestValue {
 		});
 	}
 
-	private static Text getDungeonChestProfit(GenericContainerScreenHandler handler, Text title, String titleString, MinecraftClient client) {
+	private static Text getDungeonChestProfit(GenericContainerScreenHandler handler, Text title, String titleString) {
 		try {
-			long profit = 0;
+			double profit = 0;
 			boolean hasIncompleteData = false, usedKismet = false;
 			List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
 
@@ -85,12 +83,12 @@ public class ChestValue {
 
 				//Regular item price
 				if (id != null) {
-					LongBooleanPair priceData = getItemPrice(id);
+					DoubleBooleanPair priceData = ItemUtils.getItemPrice(id);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
 					//Add the item price to the profit
-					profit += priceData.leftLong() * stack.getCount();
+					profit += priceData.leftDouble() * stack.getCount();
 
 					continue;
 				}
@@ -103,12 +101,12 @@ public class ChestValue {
 						String type = matcher.group("type");
 						int amount = Integer.parseInt(matcher.group("amount"));
 
-						LongBooleanPair priceData = getItemPrice(("ESSENCE_" + type).toUpperCase());
+						DoubleBooleanPair priceData = ItemUtils.getItemPrice(("ESSENCE_" + type).toUpperCase());
 
 						if (!priceData.rightBoolean()) hasIncompleteData = true;
 
 						//Add the price of the essence to the profit
-						profit += priceData.leftLong() * amount;
+						profit += priceData.leftDouble() * amount;
 
 						continue;
 					}
@@ -116,7 +114,7 @@ public class ChestValue {
 
 				//Determine the cost of the chest
 				if (name.contains("Open Reward Chest")) {
-					String foundString = searchLoreFor(stack, client, "Coins");
+					String foundString = searchLoreFor(stack, "Coins");
 
 					//Incase we're searching the free chest
 					if (!StringUtils.isBlank(foundString)) {
@@ -128,19 +126,19 @@ public class ChestValue {
 
 				//Determine if a kismet was used or not
 				if (name.contains("Reroll Chest")) {
-					usedKismet = !StringUtils.isBlank(searchLoreFor(stack, client, "You already rerolled a chest!"));
+					usedKismet = !StringUtils.isBlank(searchLoreFor(stack, "You already rerolled a chest!"));
 				}
 			}
 
 			if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeKismet && usedKismet) {
-				LongBooleanPair kismetPriceData = getItemPrice("KISMET_FEATHER");
+				DoubleBooleanPair kismetPriceData = ItemUtils.getItemPrice("KISMET_FEATHER");
 
 				if (!kismetPriceData.rightBoolean()) hasIncompleteData = true;
 
-				profit -= kismetPriceData.leftLong();
+				profit -= kismetPriceData.leftDouble();
 			}
 
-			return Text.literal(titleString).append(getProfitText(profit, hasIncompleteData));
+			return Text.literal(titleString).append(getProfitText((long) profit, hasIncompleteData));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Profit Calculator] Failed to calculate dungeon chest profit! ", e);
 		}
@@ -150,7 +148,7 @@ public class ChestValue {
 
 	private static Text getChestValue(GenericContainerScreenHandler handler, Text title, String titleString) {
 		try {
-			long value = 0;
+			double value = 0;
 			boolean hasIncompleteData = false;
 			List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
 
@@ -163,15 +161,15 @@ public class ChestValue {
 				String id = ItemTooltip.getInternalNameFromNBT(stack, false);
 
 				if (id != null) {
-					LongBooleanPair priceData = getItemPrice(id);
+					DoubleBooleanPair priceData = ItemUtils.getItemPrice(id);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
-					value += priceData.leftLong() * stack.getCount();
+					value += priceData.leftDouble() * stack.getCount();
 				}
 			}
 
-			return Text.literal(titleString).append(getValueText(value, hasIncompleteData));
+			return Text.literal(titleString).append(getValueText((long) value, hasIncompleteData));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Value Calculator] Failed to calculate dungeon chest value! ", e);
 		}
@@ -180,33 +178,9 @@ public class ChestValue {
 	}
 
 	/**
-	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price, and the {@code right boolean} indicating if the price
-	 * was based on complete data.
-	 */
-	private static LongBooleanPair getItemPrice(String id) {
-		JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
-		JsonObject lbinPrices = TooltipInfoType.LOWEST_BINS.getData();
-
-		if (bazaarPrices == null || lbinPrices == null) return LongBooleanPair.of(0L, false);
-
-		if (bazaarPrices.has(id)) {
-			JsonObject item = bazaarPrices.get(id).getAsJsonObject();
-			boolean isPriceNull = item.get("sellPrice").isJsonNull();
-
-			return LongBooleanPair.of(isPriceNull ? 0L : (long) item.get("sellPrice").getAsDouble(), !isPriceNull);
-		}
-
-		if (lbinPrices.has(id)) {
-			return LongBooleanPair.of((long) lbinPrices.get(id).getAsDouble(), true);
-		}
-
-		return LongBooleanPair.of(0L, false);
-	}
-
-	/**
 	 * Searches for a specific string of characters in the name and lore of an item
 	 */
-	private static String searchLoreFor(ItemStack stack, MinecraftClient client, String searchString) {
+	private static String searchLoreFor(ItemStack stack, String searchString) {
 		return ItemUtils.getLoreLineIf(stack, line -> line.contains(searchString));
 	}
 

@@ -16,6 +16,8 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +35,9 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-    private static final Pattern COUNTER = Pattern.compile("Counter: (?<count>[\\d,]+) .+");
     private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
+    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static CounterType counterType = CounterType.NONE;
     private static final Deque<IntLongPair> counter = new ArrayDeque<>();
     private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
     private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
@@ -43,7 +46,7 @@ public class FarmingHud {
     public static void init() {
         HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
             if (shouldRender()) {
-                if (!counter.isEmpty() && counter.peek().rightLong() + 10_000 < System.currentTimeMillis()) {
+                if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
                     counter.poll();
                 }
                 if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + 1000 < System.currentTimeMillis()) {
@@ -53,17 +56,9 @@ public class FarmingHud {
                     farmingXp.poll();
                 }
 
-                ItemStack stack = MinecraftClient.getInstance().player.getMainHandStack();
-                Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, FarmingHud.COUNTER);
-                if (matcher != null) {
-                    try {
-                        int count = NUMBER_FORMAT.parse(matcher.group("count")).intValue();
-                        if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
-                            counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
-                        }
-                    } catch (ParseException e) {
-                        LOGGER.error("[Skyblocker Farming HUD] Failed to parse counter", e);
-                    }
+                ItemStack stack = client.player.getMainHandStack();
+                if (stack == null || !tryGetCounter(stack, CounterType.CULTIVATING) && !tryGetCounter(stack, CounterType.COUNTER)) {
+                    counterType = CounterType.NONE;
                 }
 
                 FarmingHudWidget.INSTANCE.update();
@@ -92,8 +87,26 @@ public class FarmingHud {
                 .executes(Scheduler.queueOpenScreenCommand(() -> new FarmingHudConfigScreen(null)))))));
     }
 
+    private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
+        NbtCompound customData = ItemUtils.getCustomData(stack);
+        if (customData == null || !customData.contains(counterType.nbtKey, NbtElement.NUMBER_TYPE)) return false;
+        int count = customData.getInt(counterType.nbtKey);
+        if (FarmingHud.counterType != counterType) {
+            counter.clear();
+            FarmingHud.counterType = counterType;
+        }
+        if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
+            counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
+        }
+        return true;
+    }
+
     private static boolean shouldRender() {
-        return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && Utils.getLocation() == Location.GARDEN;
+        return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && client.player != null && Utils.getLocation() == Location.GARDEN;
+    }
+
+    public static String counterText() {
+        return counterType.text;
     }
 
     public static int counter() {
@@ -119,5 +132,19 @@ public class FarmingHud {
 
     public static double farmingXpPerHour() {
         return farmingXp.stream().mapToDouble(FloatLongPair::leftFloat).sum() * blockBreaks() * 1800; // Hypixel only sends xp updates around every half a second
+    }
+
+    public enum CounterType {
+        NONE("", "No Counter: "),
+        COUNTER("mined_crops", "Counter: "),
+        CULTIVATING("farmed_cultivating", "Cultivating Counter: ");
+
+        private final String nbtKey;
+        private final String text;
+
+        CounterType(String nbtKey, String text) {
+            this.nbtKey = nbtKey;
+            this.text = text;
+        }
     }
 }

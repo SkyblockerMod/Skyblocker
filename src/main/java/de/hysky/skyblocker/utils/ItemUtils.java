@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -9,7 +11,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
@@ -65,7 +70,7 @@ public class ItemUtils {
     }
 
     @SuppressWarnings("deprecation")
-	public static NbtCompound getCustomData(@NotNull ItemStack stack) {
+    public static NbtCompound getCustomData(@NotNull ItemStack stack) {
         return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
     }
 
@@ -75,7 +80,7 @@ public class ItemUtils {
      * @param stack the item stack to get the internal name from
      * @return an optional containing the internal name of the item stack
      */
-	public static Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
+    public static Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
         return customData.contains(ID) ? Optional.of(customData.getString(ID)) : Optional.empty();
     }
@@ -86,7 +91,7 @@ public class ItemUtils {
      * @param stack the item stack to get the internal name from
      * @return the internal name of the item stack, or an empty string if the item stack is null or does not have an internal name
      */
-	public static String getItemId(@NotNull ItemStack stack) {
+    public static String getItemId(@NotNull ItemStack stack) {
         return getCustomData(stack).getString(ID);
     }
 
@@ -96,7 +101,7 @@ public class ItemUtils {
      * @param stack the item stack to get the UUID from
      * @return an optional containing the UUID of the item stack
      */
-	public static Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
+    public static Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
         return customData.contains(UUID) ? Optional.of(customData.getString(UUID)) : Optional.empty();
     }
@@ -107,8 +112,43 @@ public class ItemUtils {
      * @param stack the item stack to get the UUID from
      * @return the UUID of the item stack, or an empty string if the item stack is null or does not have a UUID
      */
-	public static String getItemUuid(@NotNull ItemStack stack) {
+    public static String getItemUuid(@NotNull ItemStack stack) {
         return getCustomData(stack).getString(UUID);
+    }
+
+    /**
+     * Gets the bazaar sell price or the lowest bin based on the id of the item stack.
+     *
+     * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
+     * and the {@code right boolean} indicating if the price was based on complete data.
+     */
+    public static DoubleBooleanPair getItemPrice(@NotNull ItemStack stack) {
+        return getItemPrice(getItemId(stack));
+    }
+
+    /**
+     * Gets the bazaar sell price or the lowest bin of the item with the specified id.
+     *
+     * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
+     * and the {@code right boolean} indicating if the price was based on complete data.
+     */
+    public static DoubleBooleanPair getItemPrice(@Nullable String id) {
+        JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
+        JsonObject lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
+
+        if (id == null || id.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
+
+        if (bazaarPrices.has(id)) {
+            JsonElement sellPrice = bazaarPrices.get(id).getAsJsonObject().get("sellPrice");
+            boolean isPriceNull = sellPrice.isJsonNull();
+            return DoubleBooleanPair.of(isPriceNull ? 0 : sellPrice.getAsDouble(), !isPriceNull);
+        }
+
+        if (lowestBinPrices.has(id)) {
+            return DoubleBooleanPair.of(lowestBinPrices.get(id).getAsDouble(), true);
+        }
+
+        return DoubleBooleanPair.of(0, false);
     }
 
     /**
@@ -127,7 +167,7 @@ public class ItemUtils {
      * @param stack the item under the pointer
      * @return if the item have a "Timestamp" it will be shown formated on the tooltip
      */
-	public static String getTimestamp(ItemStack stack) {
+    public static String getTimestamp(ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
 
         if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
@@ -198,7 +238,7 @@ public class ItemUtils {
     public static List<Text> getLore(ItemStack item) {
         return item.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
     }
-    
+
     public static PropertyMap propertyMapWithTexture(String textureValue) {
         return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
     }
@@ -207,12 +247,12 @@ public class ItemUtils {
         if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
 
         ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
-        String texture = profile.properties().get("textures").stream()
+        if (profile == null) return "";
+
+        return profile.properties().get("textures").stream()
                 .map(Property::value)
                 .findFirst()
                 .orElse("");
-
-        return texture;
     }
 
     public static Optional<String> getHeadTextureOptional(ItemStack stack) {

@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -18,31 +20,31 @@ import java.util.Map;
 
 public class FarmingHudWidget extends Widget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
-    public static final Map<String, ItemStack> FARMING_TOOLS = Map.ofEntries(
-            Map.entry("THEORETICAL_HOE_WHEAT_1", Ico.WHEAT),
-            Map.entry("THEORETICAL_HOE_WHEAT_2", Ico.WHEAT),
-            Map.entry("THEORETICAL_HOE_WHEAT_3", Ico.WHEAT),
-            Map.entry("THEORETICAL_HOE_CARROT_1", Ico.CARROT),
-            Map.entry("THEORETICAL_HOE_CARROT_2", Ico.CARROT),
-            Map.entry("THEORETICAL_HOE_CARROT_3", Ico.CARROT),
-            Map.entry("THEORETICAL_HOE_POTATO_1", Ico.POTATO),
-            Map.entry("THEORETICAL_HOE_POTATO_2", Ico.POTATO),
-            Map.entry("THEORETICAL_HOE_POTATO_3", Ico.POTATO),
-            Map.entry("THEORETICAL_HOE_CANE_1", Ico.SUGAR_CANE),
-            Map.entry("THEORETICAL_HOE_CANE_2", Ico.SUGAR_CANE),
-            Map.entry("THEORETICAL_HOE_CANE_3", Ico.SUGAR_CANE),
-            Map.entry("THEORETICAL_HOE_WARTS_1", Ico.NETHER_WART),
-            Map.entry("THEORETICAL_HOE_WARTS_2", Ico.NETHER_WART),
-            Map.entry("THEORETICAL_HOE_WARTS_3", Ico.NETHER_WART),
-            Map.entry("FUNGI_CUTTER", Ico.MUSHROOM),
-            Map.entry("CACTUS_KNIFE", Ico.CACTUS),
-            Map.entry("MELON_DICER", Ico.MELON),
-            Map.entry("MELON_DICER_2", Ico.MELON),
-            Map.entry("MELON_DICER_3", Ico.MELON),
-            Map.entry("PUMPKIN_DICER", Ico.PUMPKIN),
-            Map.entry("PUMPKIN_DICER_2", Ico.PUMPKIN),
-            Map.entry("PUMPKIN_DICER_3", Ico.PUMPKIN),
-            Map.entry("COCO_CHOPPER", Ico.COCOA_BEANS)
+    public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
+            Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
+            Map.entry("THEORETICAL_HOE_WHEAT_2", "WHEAT"),
+            Map.entry("THEORETICAL_HOE_WHEAT_3", "WHEAT"),
+            Map.entry("THEORETICAL_HOE_CARROT_1", "CARROT_ITEM"),
+            Map.entry("THEORETICAL_HOE_CARROT_2", "CARROT_ITEM"),
+            Map.entry("THEORETICAL_HOE_CARROT_3", "CARROT_ITEM"),
+            Map.entry("THEORETICAL_HOE_POTATO_1", "POTATO_ITEM"),
+            Map.entry("THEORETICAL_HOE_POTATO_2", "POTATO_ITEM"),
+            Map.entry("THEORETICAL_HOE_POTATO_3", "POTATO_ITEM"),
+            Map.entry("THEORETICAL_HOE_CANE_1", "SUGAR_CANE"),
+            Map.entry("THEORETICAL_HOE_CANE_2", "SUGAR_CANE"),
+            Map.entry("THEORETICAL_HOE_CANE_3", "SUGAR_CANE"),
+            Map.entry("THEORETICAL_HOE_WARTS_1", "NETHER_STALK"),
+            Map.entry("THEORETICAL_HOE_WARTS_2", "NETHER_STALK"),
+            Map.entry("THEORETICAL_HOE_WARTS_3", "NETHER_STALK"),
+            Map.entry("FUNGI_CUTTER", "RED_MUSHROOM"),
+            Map.entry("CACTUS_KNIFE", "CACTUS"),
+            Map.entry("MELON_DICER", "MELON"),
+            Map.entry("MELON_DICER_2", "MELON"),
+            Map.entry("MELON_DICER_3", "MELON"),
+            Map.entry("PUMPKIN_DICER", "PUMPKIN"),
+            Map.entry("PUMPKIN_DICER_2", "PUMPKIN"),
+            Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
+            Map.entry("COCO_CHOPPER", "INK_SACK:3")
     );
     public static final FarmingHudWidget INSTANCE = new FarmingHudWidget();
     private final MinecraftClient client = MinecraftClient.getInstance();
@@ -56,19 +58,28 @@ public class FarmingHudWidget extends Widget {
 
     @Override
     public void updateContent() {
-        ItemStack icon = client.player == null ? Ico.HOE : FARMING_TOOLS.getOrDefault(ItemUtils.getItemId(client.player.getMainHandStack()), Ico.HOE);
-        addSimpleIcoText(icon, "Counter: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
-        addSimpleIcoText(icon, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.cropsPerMinute() / 100 * 100));
-        addSimpleIcoText(icon, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
+        if (client.player == null) return;
+        ItemStack farmingToolStack = client.player.getMainHandStack();
+        if (farmingToolStack == null) return;
+        String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));
+        ItemStack cropStack = ItemRepository.getItemStack(cropItemId);
+
+        addSimpleIcoText(cropStack, FarmingHud.counterText(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
+        float cropsPerMinute = FarmingHud.cropsPerMinute();
+        addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
+        DoubleBooleanPair itemPrice = ItemUtils.getItemPrice(cropItemId);
+        addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, itemPrice.rightBoolean() ? FarmingHud.NUMBER_FORMAT.format((int) (itemPrice.leftDouble() * cropsPerMinute * 0.6) * 100) : "No Data"); // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6
+
+        addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
         //noinspection DataFlowIssue
         addComponent(new ProgressComponent(Ico.LANTERN, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
         addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.farmingXpPerHour()));
 
         Entity cameraEntity = client.getCameraEntity();
-        double yaw = cameraEntity == null ? 0.0d : cameraEntity.getYaw();
-        double pitch = cameraEntity == null ? 0.0d : cameraEntity.getPitch();
-        addComponent(new PlainTextComponent(Text.literal("Yaw: " + String.format("%.3f", MathHelper.wrapDegrees(yaw))).formatted(Formatting.YELLOW)));
-        addComponent(new PlainTextComponent(Text.literal("Pitch: " + String.format("%.3f", MathHelper.wrapDegrees(pitch))).formatted(Formatting.YELLOW)));
+        String yaw = cameraEntity == null ? "No Camera Entity" : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getYaw()));
+        String pitch = cameraEntity == null ? "No Camera Entity" : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getPitch()));
+        addComponent(new PlainTextComponent(Text.literal("Yaw: " + yaw).formatted(Formatting.GOLD)));
+        addComponent(new PlainTextComponent(Text.literal("Pitch: " + pitch).formatted(Formatting.GOLD)));
         if (LowerSensitivity.isSensitivityLowered()) {
             addComponent(new PlainTextComponent(Text.translatable("skyblocker.garden.hud.mouseLocked").formatted(Formatting.ITALIC)));
         }
