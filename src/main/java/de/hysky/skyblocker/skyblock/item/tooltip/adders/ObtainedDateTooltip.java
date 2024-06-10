@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -26,9 +27,9 @@ public class ObtainedDateTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		if (TooltipInfoType.OBTAINED.isTooltipEnabled()) {
-			String timestamp = getTimestamp(focusedSlot.getStack());
+			String timestamp = getTimestamp(stack);
 
 			if (!timestamp.isEmpty()) {
 				lines.add(Text.empty()

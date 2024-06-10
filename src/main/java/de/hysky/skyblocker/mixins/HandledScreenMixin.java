@@ -191,8 +191,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@SuppressWarnings("deprecation")
 	@ModifyReturnValue(method = "getTooltipFromItem", at = @At("RETURN"))
-	private List<Text> skyblocker$tooltips$addToTooltip(List<Text> tooltip) {
-		return TooltipManager.addToTooltip(tooltip, focusedSlot);
+	private List<Text> skyblocker$tooltips$addToTooltip(List<Text> tooltip, ItemStack stack) {
+		return TooltipManager.addToTooltip(focusedSlot, stack, tooltip);
 	}
 
 	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)

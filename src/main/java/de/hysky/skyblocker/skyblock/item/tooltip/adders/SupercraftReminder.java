@@ -2,10 +2,12 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -19,8 +21,8 @@ public class SupercraftReminder extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		if (focusedSlot.id != SUPERCRAFT_SLOT || !focusedSlot.getStack().isOf(Items.GOLDEN_PICKAXE)) return;
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		if (focusedSlot == null || focusedSlot.id != SUPERCRAFT_SLOT || !stack.isOf(Items.GOLDEN_PICKAXE)) return;
 		String uuid = ItemUtils.getItemUuid(focusedSlot.inventory.getStack(RECIPE_RESULT_SLOT));
 		if (!uuid.isEmpty()) return; //Items with UUID can't be stacked, and therefore the shift-click feature doesn't matter
 		int index = lines.size() - 1;

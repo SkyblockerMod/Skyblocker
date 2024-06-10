@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.utils.render.gui.AbstractContainerMatcher;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,5 +41,5 @@ public abstract class TooltipAdder extends AbstractContainerMatcher {
 	 * @implNote The first element of the lines list holds the item's display name,
 	 * as it's a list of all lines that will be displayed in the tooltip.
 	 */
-	public abstract void addToTooltip(List<Text> lines, Slot focusedSlot);
+	public abstract void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines);
 }

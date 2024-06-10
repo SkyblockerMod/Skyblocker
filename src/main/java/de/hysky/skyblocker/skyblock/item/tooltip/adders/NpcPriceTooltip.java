@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,8 +17,7 @@ public class NpcPriceTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		final ItemStack stack = focusedSlot.getStack();
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
 		if (internalID != null && TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))

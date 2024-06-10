@@ -3,10 +3,12 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,9 +18,9 @@ public class DungeonQualityTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		if (!SkyblockerConfigManager.get().general.itemTooltip.dungeonQuality) return;
-		NbtCompound customData = ItemUtils.getCustomData(focusedSlot.getStack());
+		NbtCompound customData = ItemUtils.getCustomData(stack);
 		if (customData == null || !customData.contains("baseStatBoostPercentage")) return;
 		int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
 		boolean maxQuality = baseStatBoostPercentage == 50;

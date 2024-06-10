@@ -14,6 +14,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +28,13 @@ public class ColorTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = itemStack.getSkyblockId();
-		if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && itemStack.contains(DataComponentTypes.DYED_COLOR)) {
-			String uuid = ItemUtils.getItemUuid(itemStack);
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		final String internalID = stack.getSkyblockId();
+		if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
+			String uuid = ItemUtils.getItemUuid(stack);
 			boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
 			//DyedColorComponent#getColor returns ARGB so we mask out the alpha bits
-			int dyeColor = DyedColorComponent.getColor(itemStack, 0);
+			int dyeColor = DyedColorComponent.getColor(stack, 0);
 
 			// dyeColor will have alpha = 255 if it's dyed, and alpha = 0 if it's not dyed,
 			if (!hasCustomDye && dyeColor != 0) {
@@ -48,13 +48,13 @@ public class ColorTooltip extends TooltipAdder {
 					if (existingTooltip.startsWith("Color: ")) {
 						correctLine = true;
 
-						addExoticTooltip(lines, internalID, ItemUtils.getCustomData(itemStack), colorHex, expectedHex, existingTooltip);
+						addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, existingTooltip);
 						break;
 					}
 				}
 
 				if (!correctLine) {
-					addExoticTooltip(lines, internalID, ItemUtils.getCustomData(itemStack), colorHex, expectedHex, "");
+					addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, "");
 				}
 			}
 		}

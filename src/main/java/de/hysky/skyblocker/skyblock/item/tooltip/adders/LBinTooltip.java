@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -18,12 +19,11 @@ public class LBinTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		lbinExist = false;
-		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = itemStack.getSkyblockId();
+		final String internalID = stack.getSkyblockId();
 		if (internalID == null) return;
-		String name = itemStack.getSkyblockApiId();
+		String name = stack.getSkyblockApiId();
 		if (name == null) return;
 
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;
@@ -33,7 +33,7 @@ public class LBinTooltip extends TooltipAdder {
 		if (TooltipInfoType.LOWEST_BINS.isTooltipEnabledAndHasOrNullWarning(name) && !BazaarPriceTooltip.bazaarExist) {
 			lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
 			              .formatted(Formatting.GOLD)
-			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), itemStack.getCount())));
+			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), stack.getCount())));
 			lbinExist = true;
 		}
 	}

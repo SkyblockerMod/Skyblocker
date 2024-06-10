@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class LineSmoothener extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		for (int i = 0; i < lines.size(); i++) {
 			List<Text> lineSiblings = lines.get(i).getSiblings();
 			//Compare the first sibling rather than the whole object as the style of the root object can change while visually staying the same

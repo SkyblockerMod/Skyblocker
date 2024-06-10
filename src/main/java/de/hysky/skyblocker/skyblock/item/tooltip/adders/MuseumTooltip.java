@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -18,9 +19,8 @@ public class MuseumTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = itemStack.getSkyblockId();
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
 			String format = switch (itemCategory) {
@@ -34,7 +34,7 @@ public class MuseumTooltip extends TooltipAdder {
 				lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
 				              .formatted(Formatting.LIGHT_PURPLE));
 			} else {
-				NbtCompound customData = ItemUtils.getCustomData(itemStack);
+				NbtCompound customData = ItemUtils.getCustomData(stack);
 				boolean isInMuseum = (customData.contains("donated_museum") && customData.getBoolean("donated_museum")) || MuseumItemCache.hasItemInMuseum(internalID);
 
 				Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
