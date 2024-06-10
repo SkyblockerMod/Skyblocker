@@ -10,6 +10,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -25,7 +26,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
@@ -34,13 +34,7 @@ import net.minecraft.util.dynamic.Codecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -51,8 +45,6 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class ItemUtils {
     public static final String ID = "id";
     public static final String UUID = "uuid";
-    private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
-    private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
     private static final Codec<RegistryEntry<Item>> EMPTY_ALLOWING_ITEM_CODEC = Registries.ITEM.getEntryCodec();
@@ -166,21 +158,12 @@ public class ItemUtils {
      *
      * @param stack the item under the pointer
      * @return if the item have a "Timestamp" it will be shown formated on the tooltip
+     * @deprecated use {@link ObtainedDateTooltip#getTimestamp(ItemStack)} instead
      */
     public static String getTimestamp(ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
 
-        if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
-            Instant date = Instant.ofEpochMilli(customData.getLong("timestamp"));
-            return OBTAINED_DATE_FORMATTER.format(date);
-        }
-
-        if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
-            TemporalAccessor date = OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp"));
-            return OBTAINED_DATE_FORMATTER.format(date);
-        }
-
-        return "";
+        return ObtainedDateTooltip.getTimestamp(stack);
     }
 
     public static boolean hasCustomDurability(@NotNull ItemStack stack) {

@@ -79,7 +79,7 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String id = ItemTooltip.getInternalNameFromNBT(stack, false);
+				String id = stack.getSkyblockApiId();
 
 				//Regular item price
 				if (id != null) {
@@ -158,7 +158,7 @@ public class ChestValue {
 					continue;
 				}
 
-				String id = ItemTooltip.getInternalNameFromNBT(stack, false);
+				String id = stack.getSkyblockApiId();
 
 				if (id != null) {
 					DoubleBooleanPair priceData = ItemUtils.getItemPrice(id);

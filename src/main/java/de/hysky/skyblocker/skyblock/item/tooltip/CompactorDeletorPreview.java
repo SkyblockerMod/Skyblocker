@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.item.ItemStack;
@@ -34,8 +33,7 @@ public class CompactorDeletorPreview {
     public static final Pattern NAME = Pattern.compile("PERSONAL_(?<type>COMPACTOR|DELETOR)_(?<size>\\d+)");
     private static final MinecraftClient client = MinecraftClient.getInstance();
 
-    public static boolean drawPreview(DrawContext context, ItemStack stack, String type, String size, int x, int y) {
-        List<Text> tooltips = Screen.getTooltipFromItem(client, stack);
+    public static boolean drawPreview(DrawContext context, ItemStack stack, List<Text> tooltips, String type, String size, int x, int y) {
         int targetIndex = getTargetIndex(tooltips);
         if (targetIndex == -1) return false;
 

@@ -31,11 +31,12 @@ import de.hysky.skyblocker.skyblock.garden.FarmingHud;
 import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
@@ -187,6 +188,8 @@ public class SkyblockerMod implements ClientModInitializer {
         EggFinder.init();
         TimeTowerReminder.init();
         SkyblockTime.init();
+        TooltipManager.init();
+        SlotTextManager.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

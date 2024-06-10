@@ -5,11 +5,9 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -235,7 +233,6 @@ public class Utils {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;
-                        ItemTooltipCallback.EVENT.register(ItemTooltip::getTooltip);
                     }
                     isOnSkyblock = true;
                     SkyblockEvents.JOIN.invoker().onSkyblockJoin();
