@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.skyblock.ChestValue;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
@@ -14,11 +15,11 @@ public abstract class AbstractContainerMatcher {
     @Nullable
     public final Pattern titlePattern;
 
-    public AbstractContainerMatcher() {
+    protected AbstractContainerMatcher() {
         this((Pattern) null);
     }
 
-    public AbstractContainerMatcher(String titlePattern) {
+    protected AbstractContainerMatcher(@NotNull String titlePattern) {
         this(Pattern.compile(titlePattern));
     }
 

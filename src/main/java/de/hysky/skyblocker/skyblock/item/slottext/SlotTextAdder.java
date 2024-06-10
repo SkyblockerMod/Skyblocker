@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.gui.AbstractContainerMatcher;
 import net.minecraft.screen.slot.Slot;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public abstract class SlotTextAdder extends AbstractContainerMatcher {
 	 *
 	 * @see #SlotTextAdder(Pattern)
 	 */
-	protected SlotTextAdder(@NotNull String titlePattern) {
+	protected SlotTextAdder(@NotNull @Language("RegExp") String titlePattern) {
 		super(titlePattern);
 	}
 
