@@ -21,11 +21,11 @@ import net.minecraft.scoreboard.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.http.client.HttpResponseException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +77,7 @@ public class Utils {
     //This is required to prevent the location change event from being fired twice.
     private static boolean locationChanged = true;
     private static boolean mayorTickScheduled = false;
+    private static int mayorTickRetryAttempts = 0;
     private static String mayor = "";
 
     /**
@@ -191,9 +192,9 @@ public class Utils {
 
     public static void init() {
         SkyblockEvents.JOIN.register(() -> {
-            long millisUntilNextYear = 446400000L - (SkyblockTime.getSkyblockMillis() % 446400000L);
             if (!mayorTickScheduled) {
-                Scheduler.INSTANCE.scheduleCyclic(Utils::tickMayorCache, (int) millisUntilNextYear / 50 + 1);
+                tickMayorCache();
+                scheduleMayorTick();
                 mayorTickScheduled = true;
             }
         });
@@ -483,20 +484,40 @@ public class Utils {
         location = Location.UNKNOWN;
     }
 
+    private static void scheduleMayorTick() {
+        long currentYearMillis = SkyblockTime.getSkyblockMillis() % 446400000L; //446400000ms is 1 year, 105600000ms is the amount of time from early spring 1st to late spring 27th
+        // If current time is past late spring 27th, the next mayor change is at next year's spring 27th, otherwise it's at this year's spring 27th
+        long millisUntilNextMayorChange = currentYearMillis > 105600000L ? 446400000L - currentYearMillis + 105600000L : 105600000L - currentYearMillis;
+        Scheduler.INSTANCE.schedule(Utils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20); // 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
+    }
+
     private static void tickMayorCache() {
         CompletableFuture.supplyAsync(() -> {
             try {
-                JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
-                if (json.get("success").getAsBoolean()) return json.get("mayor").getAsJsonObject().get("name").getAsString();
-                throw new IOException(json.get("cause").getAsString());
+                Http.ApiResponse response = Http.sendCacheableGetRequest("https://api.hypixel.net/v2/resources/skyblock/election");
+                if (!response.ok()) throw new HttpResponseException(response.statusCode(), response.content());
+                JsonObject json = JsonParser.parseString(response.content()).getAsJsonObject();
+                if (!json.get("success").getAsBoolean()) throw new RuntimeException("Request failed!"); //Can't find a more appropriate exception to throw here.
+                return json.get("mayor").getAsJsonObject().get("name").getAsString();
             } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to get mayor status!", e);
+                throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
             }
-            return "";
-        }).thenAccept(s -> {
-            if (!s.isEmpty()) {
-                mayor = s;
-                LOGGER.info("[Skyblocker] Mayor set to {}", mayor);
+        }).exceptionally(throwable -> {
+            LOGGER.error("[Skyblocker] Failed to get mayor status!", throwable.getCause());
+            if (mayorTickRetryAttempts < 5) {
+                int minutes = 5 * (mayorTickRetryAttempts == 0 ? 1 : 2 << mayorTickRetryAttempts - 1); //5, 10, 20, 40, 80 minutes
+                mayorTickRetryAttempts++;
+                LOGGER.warn("[Skyblocker] Retrying in {} minutes.", minutes);
+                Scheduler.INSTANCE.schedule(Utils::tickMayorCache, minutes * 60 * 20);
+            } else {
+                LOGGER.warn("[Skyblocker] Failed to get mayor status after 5 retries! Stopping further retries until next reboot.");
+            }
+            return ""; //Have to return a value for the thenAccept block.
+        }).thenAccept(result -> {
+            if (!result.isEmpty()) {
+                mayor = result;
+                LOGGER.info("[Skyblocker] Mayor set to {}.", mayor);
+                scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
             }
         });
     }

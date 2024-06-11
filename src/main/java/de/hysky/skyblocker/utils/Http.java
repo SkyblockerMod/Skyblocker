@@ -33,7 +33,7 @@ public class Http {
 			.followRedirects(Redirect.NORMAL)
 			.build();
 
-	private static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
+	public static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
 				.GET()
 				.header("Accept", "application/json")
