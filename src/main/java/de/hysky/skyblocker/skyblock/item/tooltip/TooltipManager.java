@@ -1,10 +1,14 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -36,6 +40,13 @@ public class TooltipManager {
 	}
 
 	public static void init() {
+		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
+			if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen<?> handledScreen) {
+				addToTooltip(((HandledScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
+			} else {
+				addToTooltip(null, stack, lines);
+			}
+		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
 			onScreenChange(screen);
 			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());

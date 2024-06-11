@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
@@ -44,7 +42,7 @@ public class ResultButtonWidget extends ClickableWidget {
     public void renderTooltip(DrawContext context, int mouseX, int mouseY) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.currentScreen == null) return;
-        List<Text> tooltip = client.currentScreen instanceof HandledScreen<?> handledScreen ? ((HandledScreenAccessor) handledScreen).invokeGetTooltipFromItem(this.itemStack) : Screen.getTooltipFromItem(client, this.itemStack);
+        List<Text> tooltip = Screen.getTooltipFromItem(client, this.itemStack);
         client.currentScreen.setTooltip(tooltip.stream().map(Text::asOrderedText).toList());
     }
 
