@@ -29,7 +29,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set jar name
         uses: actions/github-script@v7
@@ -37,12 +38,11 @@ jobs:
           result-encoding: string
           script: |
             let buildType;
-            if (!process.env.PR_NUMBER) {
-              buildType = process.env.REF_NAME === "bleeding-edge" ? "alpha" : "beta";
-            } else {
-              buildType = `pr-${process.env.PR_NUMBER}`;
+            buildType = process.env.REF_NAME === "master" || process.env.REF_NAME === "main" ? "beta" : "alpha";
+            if (process.env.PR_NUMBER) {
+              buildType += `-pr-${process.env.PR_NUMBER}`;
             }
-            console.log(`Set build type to ${buildType}`);
+            console.log(`Set build type to ${buildType}.`);
 
             const fs = require("fs");
             let file = fs.readFileSync("./gradle.properties");
@@ -81,7 +81,8 @@ jobs:
             **/build/reports/
             **/build/test-results/
 
-      - uses: actions/github-script@v7
+      - name: Process artifacts
+        uses: actions/github-script@v7
         id: fname
         with:
           result-encoding: string
@@ -89,7 +90,8 @@ jobs:
             const fs = require("fs")
             return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0].replace(".jar", "");
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.fname.outputs.result }}
           path: build/libs/
