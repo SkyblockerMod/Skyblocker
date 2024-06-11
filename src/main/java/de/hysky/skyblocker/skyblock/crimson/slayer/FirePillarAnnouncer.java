@@ -29,8 +29,11 @@ public class FirePillarAnnouncer {
             Matcher matcher = FIRE_PILLAR_PATTERN.matcher(entityName);
 
             if (matcher.matches()) {
+                // The detection method is whenever the entity is updated (i.e. name change) but this triggers twice on
+                // seven seconds remaining, creating a duplicate title string. Instead, round to five to skip the issue
+                // and only display the more critical numbers anyway that are closer to the explosion.
                 int seconds = Integer.parseInt(matcher.group(1));
-                if (seconds > 5) return;  // Only announce if 5 seconds or below
+                if (seconds > 5) return;
 
                 Entity slayerEntity = SlayerUtils.getSlayerEntity();
                 if (slayerEntity == null || !(slayerEntity.getBlockPos().isWithinDistance(entity.getPos(), 24))) return;
@@ -41,7 +44,6 @@ public class FirePillarAnnouncer {
 
     private static void announceFirePillarDetails(String entityName) {
         Title title = new Title(MutableText.of(new PlainTextContent.Literal(entityName)).formatted(Formatting.BOLD, Formatting.DARK_PURPLE));
-        if (TitleContainer.containsTitle(title)) return;
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.enableFirePillarCountdownSoundIndicator) {
             RenderHelper.displayInTitleContainerAndPlaySound(title, 15);
