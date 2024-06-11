@@ -144,13 +144,20 @@ public class SlayersCategory {
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip")))
-                                .binding(defaults.slayers.blazeSlayer.enableFirePillarAnnouncer,
-                                        () -> config.slayers.blazeSlayer.enableFirePillarAnnouncer,
-                                        newValue -> config.slayers.blazeSlayer.enableFirePillarAnnouncer = newValue)
+                                .binding(defaults.slayers.blazeSlayer.enableFirePillarCountdownAnnouncer,
+                                        () -> config.slayers.blazeSlayer.enableFirePillarCountdownAnnouncer,
+                                        newValue -> config.slayers.blazeSlayer.enableFirePillarCountdownAnnouncer = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarSoundIndicator"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarSoundIndicator.@Tooltip")))
+                                .binding(defaults.slayers.blazeSlayer.enableFirePillarCountdownSoundIndicator,
+                                        () -> config.slayers.blazeSlayer.enableFirePillarCountdownSoundIndicator,
+                                        newValue -> config.slayers.blazeSlayer.enableFirePillarCountdownSoundIndicator = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
-
                 .build();
     }
 }
