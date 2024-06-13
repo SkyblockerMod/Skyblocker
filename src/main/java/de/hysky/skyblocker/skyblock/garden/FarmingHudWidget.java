@@ -44,7 +44,7 @@ public class FarmingHudWidget extends Widget {
             Map.entry("PUMPKIN_DICER", "PUMPKIN"),
             Map.entry("PUMPKIN_DICER_2", "PUMPKIN"),
             Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
-            Map.entry("COCO_CHOPPER", "INK_SACK:3")
+            Map.entry("COCO_CHOPPER", "INK_SACK-3")
     );
     public static final FarmingHudWidget INSTANCE = new FarmingHudWidget();
     private final MinecraftClient client = MinecraftClient.getInstance();
