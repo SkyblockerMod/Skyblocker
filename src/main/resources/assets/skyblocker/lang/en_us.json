@@ -820,6 +820,7 @@
   "skyblocker.tips.tipsClick": "Click on a tip chat message to run its suggestion!",
   "skyblocker.tips.eventNotifications": "Check out the customizable event notifications in the config.",
   "skyblocker.tips.signCalculator": "Type an math expression in a sign to have the mod calculate it for you.",
+  "skyblocker.tips.calculateCommand": "Enter an expression after /skyblocker calculate to have the mod calculate it for you.",
   "skyblocker.tips.fancierBars": "Customize the look of your health, mana, defense, and experience bars with /skyblocker bars. You can snap and resize bars too!",
   "skyblocker.tips.crystalWaypointsShare": "Share Crystal Hollows Waypoints with /skyblocker crystalWaypoints share.",
   "skyblocker.tips.gardenMouseLock": "Lock your mouse while farming in the Skyblocker Garden config.",

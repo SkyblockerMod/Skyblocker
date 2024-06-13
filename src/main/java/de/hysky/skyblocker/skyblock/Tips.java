@@ -56,6 +56,7 @@ public class Tips {
             getTipFactory("skyblocker.tips.tipsClick", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker tips next"),
             getTipFactory("skyblocker.tips.eventNotifications", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
             getTipFactory("skyblocker.tips.signCalculator"),
+            getTipFactory("skyblocker.tips.calculateCommand", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker calculate"),
             getTipFactory("skyblocker.tips.fancierBars", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker bars"),
             getTipFactory("skyblocker.tips.crystalWaypointsShare", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker crystalWaypoints share"),
             getTipFactory("skyblocker.tips.gardenMouseLock", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
