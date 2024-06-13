@@ -24,6 +24,13 @@ public class EventNotificationsCategory {
         shouldPlaySound = false;
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("skyblocker.config.eventNotifications"))
+                .option(Option.<EventNotificationsConfig.Criterion>createBuilder()
+                        .binding(defaults.eventNotifications.criterion,
+                                () -> config.eventNotifications.criterion,
+                                criterion -> config.eventNotifications.criterion = criterion)
+                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .name(Text.translatable("skyblocker.config.eventNotifications.criterion"))
+                        .build())
                 .option(Option.<EventNotificationsConfig.Sound>createBuilder()
                         .binding(defaults.eventNotifications.reminderSound,
                                 () -> config.eventNotifications.reminderSound,

@@ -400,6 +400,7 @@
 
   "skyblocker.config.eventNotifications": "Event Notifications",
 
+  "skyblocker.config.eventNotifications.criterion": "Notification Criterion",
   "skyblocker.config.eventNotifications.monologue": "can you pls log onto skyblock rq pls? that would be cool cuz like if you are seeing dis then it means that ur config either got cleared or that this is ur first time using the mod if so then thanks for choosing it and hopefully you enjoy it! so yea this is where you will be able to set reminders for all events in skyblock they will be added as you encounter so you first need to log onto skyblock so yea hope you enjoy the mod and all that",
   "skyblocker.config.eventNotifications.notificationSound": "Notification Sound",
   "skyblocker.config.eventNotifications.@Tooltip[0]": "Configure how much time before an event you will be reminded with a notification toast! For example if you set '5m' and '30s' in the list, you will receive a notification 5 minutes before and another 30 seconds before an event starts.",

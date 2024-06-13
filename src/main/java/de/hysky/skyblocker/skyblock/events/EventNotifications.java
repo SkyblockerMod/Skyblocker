@@ -10,6 +10,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -23,7 +24,10 @@ import net.minecraft.sound.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class EventNotifications {
@@ -140,7 +144,7 @@ public class EventNotifications {
             if (reminderTimes.isEmpty()) continue;
 
             for (Integer reminderTime : reminderTimes) {
-                if (currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
+                if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
                     MinecraftClient instance = MinecraftClient.getInstance();
                     if (eventName.equals(JACOBS)) {
                         instance.getToastManager().add(
@@ -159,6 +163,15 @@ public class EventNotifications {
             }
         }
         currentTime = newTime;
+    }
+
+    private static boolean criterionMet() {
+        return switch (SkyblockerConfigManager.get().eventNotifications.criterion) {
+            case NONE -> false;
+            case SKYBLOCK -> Utils.isOnSkyblock();
+            case HYPIXEL -> Utils.isOnHypixel();
+            case EVERYWHERE -> true;
+        };
     }
 
     public record SkyblockEvent(long start, int duration, String[] extras, @Nullable String warpCommand) {
