@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -226,11 +227,16 @@ public class UIAndVisualsCategory {
                         .option(Option.<Waypoint.Type>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
-                                        Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType")))
+                                        Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote")))
                                 .binding(defaults.uiAndVisuals.waypoints.waypointType,
                                         () -> config.uiAndVisuals.waypoints.waypointType,
                                         newValue -> config.uiAndVisuals.waypoints.waypointType = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .option(ButtonOption.createBuilder()
+                                .name(Text.translatable("skyblocker.waypoints.config"))
+                                .text(Text.translatable("text.skyblocker.open"))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WaypointsScreen(screen)))
                                 .build())
                         .build())
 

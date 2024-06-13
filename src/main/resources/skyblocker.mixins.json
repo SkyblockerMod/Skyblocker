@@ -39,6 +39,7 @@
     "YggdrasilMinecraftSessionServiceMixin",
     "YggdrasilServicesKeyInfoMixin",
     "accessors.BeaconBlockEntityRendererInvoker",
+    "accessors.CheckboxWidgetAccessor",
     "accessors.DrawContextInvoker",
     "accessors.EndermanEntityAccessor",
     "accessors.FrustumInvoker",

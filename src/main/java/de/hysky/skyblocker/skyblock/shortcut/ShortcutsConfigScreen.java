@@ -11,7 +11,6 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 public class ShortcutsConfigScreen extends Screen {
-
     private ShortcutsConfigListWidget shortcutsConfigListWidget;
     private ButtonWidget buttonDelete;
     private ButtonWidget buttonNew;
@@ -41,14 +40,14 @@ public class ShortcutsConfigScreen extends Screen {
             shortcutsConfigListWidget.setDimensions(width, height - 96);
             shortcutsConfigListWidget.updatePositions();
         } else {
-            shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32, 25);
+            shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32, 24);
             initialized = true;
         }
         addDrawableChild(shortcutsConfigListWidget);
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().marginX(5).marginY(2);
         GridWidget.Adder adder = gridWidget.createAdder(2);
-        buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.delete"), button -> {
+        buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
             if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
                 scrollAmount = shortcutsConfigListWidget.getScrollAmount();
                 client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
@@ -57,16 +56,10 @@ public class ShortcutsConfigScreen extends Screen {
         adder.add(buttonDelete);
         buttonNew = ButtonWidget.builder(Text.translatable("skyblocker.shortcuts.new"), buttonNew -> shortcutsConfigListWidget.addShortcutAfterSelected()).build();
         adder.add(buttonNew);
-        adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> {
-            if (client != null) {
-                close();
-            }
-        }).build());
+        adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).build());
         buttonDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
             shortcutsConfigListWidget.saveShortcuts();
-            if (client != null) {
-                close();
-            }
+            close();
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.shortcuts.commandSuggestionTooltip"))).build();
         adder.add(buttonDone);
         gridWidget.refreshPositions();
