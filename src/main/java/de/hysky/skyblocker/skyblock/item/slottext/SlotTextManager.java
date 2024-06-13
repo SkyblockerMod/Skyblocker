@@ -25,7 +25,8 @@ public class SlotTextManager {
 			new AttributeShardAdder(),
 			new PrehistoricEggAdder(),
 			new PotionLevelAdder(),
-			new CollectionAdder()
+			new CollectionAdder(),
+			new CommunityShopAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 
