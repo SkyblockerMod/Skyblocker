@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -210,6 +211,15 @@ public class HelperCategory {
 		                                 newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
                                  .controller(ConfigUtils::createBooleanController)
                                  .build())
+		                .option(Option.<BazaarHelper.HighlightingScheme>createBuilder()
+				                .name(Text.translatable("skyblocker.config.helpers.bazaar.highlightingScheme"))
+				                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.highlightingScheme.@Tooltip")))
+				                .binding(defaults.helpers.bazaar.highlightingScheme,
+					                () -> config.helpers.bazaar.highlightingScheme,
+					                newValue -> config.helpers.bazaar.highlightingScheme = newValue)
+				                .controller(ConfigUtils::createEnumCyclingListController)
+				                .build()
+		                )
 		                .build())
 
                 .build();
