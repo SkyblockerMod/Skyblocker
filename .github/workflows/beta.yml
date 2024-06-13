@@ -1,10 +1,12 @@
 name: Build Beta
 
 on:
+  workflow_dispatch:
   merge_group:
   push:
     branches:
       - master
+      - bleeding-edge
     paths-ignore:
       - 'src/main/resources/assets/skyblocker/lang/**'
       - 'CHANGELOG.md'
@@ -16,6 +18,10 @@ on:
       - 'CHANGELOG.md'
       - 'FEATURES.md'
       - 'README.md'
+env:
+  REF_NAME: ${{ github.ref_name }}
+  PR_NUMBER: ${{ github.event.number }}
+  PR_SHA: ${{ github.event.pull_request.head.sha }}
 
 jobs:
   # This workflow contains a single job called "build"
@@ -25,15 +31,28 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/github-script@v7
+      - name: Set jar name
+        uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |
+            let buildType;
+            let commitSha;
+            buildType = process.env.REF_NAME === "master" || process.env.REF_NAME === "main" ? "beta" : "alpha";
+            if (process.env.PR_NUMBER) {
+              buildType += `-pr-${process.env.PR_NUMBER}`;
+              commitSha = process.env.PR_SHA;
+            } else {
+              commitSha = process.env.GITHUB_SHA;
+            }
+            console.log(`Set build type to ${buildType} and commit sha to ${commitSha}`);
+
             const fs = require("fs");
             let file = fs.readFileSync("./gradle.properties");
-            file = file.toString().split("\n").map(e => e.trim().startsWith("mod_version") ? `${e}-beta-${process.env.GITHUB_SHA.substring(0, 7)}` : e).join("\n");
+            file = file.toString().split("\n").map(e => e.trim().startsWith("mod_version") ? `${e}-${buildType}-${commitSha.substring(0, 7)}` : e).join("\n");
             fs.writeFileSync("./gradle.properties", file);
 
       - name: Set up JDK 21
@@ -68,7 +87,8 @@ jobs:
             **/build/reports/
             **/build/test-results/
 
-      - uses: actions/github-script@v7
+      - name: Process artifacts
+        uses: actions/github-script@v7
         id: fname
         with:
           result-encoding: string
@@ -76,7 +96,8 @@ jobs:
             const fs = require("fs")
             return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0].replace(".jar", "");
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.fname.outputs.result }}
           path: build/libs/
