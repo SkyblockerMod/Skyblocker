@@ -1,12 +1,18 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,6 +40,13 @@ public class TooltipManager {
 	}
 
 	public static void init() {
+		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
+			if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen<?> handledScreen) {
+				addToTooltip(((HandledScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
+			} else {
+				addToTooltip(null, stack, lines);
+			}
+		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
 			onScreenChange(screen);
 			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
@@ -42,6 +55,7 @@ public class TooltipManager {
 
 	private static void onScreenChange(Screen screen) {
 		final String title = screen.getTitle().getString();
+		currentScreenAdders.clear();
 		for (TooltipAdder adder : adders) {
 			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
 				currentScreenAdders.add(adder);
@@ -56,16 +70,17 @@ public class TooltipManager {
 	 *
 	 * <p>If you want to add info to the tooltips of multiple items, consider using a switch statement with {@code focusedSlot.getIndex()}</p>
 	 *
-	 * @param lines The tooltip lines of the focused item. This includes the display name, as it's a part of the tooltip (at index 0).
 	 * @param focusedSlot The slot that is currently focused by the cursor.
+	 * @param stack       The stack to render the tooltip for.
+	 * @param lines       The tooltip lines of the focused item. This includes the display name, as it's a part of the tooltip (at index 0).
 	 * @return The lines list itself after all adders have added their text.
 	 * @deprecated This method is public only for the sake of the mixin. Don't call directly, not that there is any point to it.
 	 */
 	@Deprecated
-	public static List<Text> addToTooltip(List<Text> lines, Slot focusedSlot) {
+	public static List<Text> addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		if (!Utils.isOnSkyblock()) return lines;
 		for (TooltipAdder adder : currentScreenAdders) {
-			adder.addToTooltip(lines, focusedSlot);
+			adder.addToTooltip(focusedSlot, stack, lines);
 		}
 		return lines;
 	}

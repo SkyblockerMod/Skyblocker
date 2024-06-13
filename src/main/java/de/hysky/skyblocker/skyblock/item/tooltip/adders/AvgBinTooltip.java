@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -18,10 +19,9 @@ public class AvgBinTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		final ItemStack itemStack = focusedSlot.getStack();
-		String neuName = itemStack.getNeuName();
-		String internalID = itemStack.getSkyblockId();
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		String neuName = stack.getNeuName();
+		String internalID = stack.getSkyblockId();
 		if (neuName == null || internalID == null) return;
 
 		if (SkyblockerConfigManager.get().general.itemTooltip.enableAvgBIN) {
@@ -42,7 +42,7 @@ public class AvgBinTooltip extends TooltipAdder {
 								    .formatted(Formatting.GOLD)
 								    .append(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName) == null
 										    ? Text.literal("No data").formatted(Formatting.RED)
-										    : ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), itemStack.getCount())
+										    : ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), stack.getCount())
 								    )
 						);
 					}
@@ -52,7 +52,7 @@ public class AvgBinTooltip extends TooltipAdder {
 								    .formatted(Formatting.GOLD)
 								    .append(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName) == null
 										    ? Text.literal("No data").formatted(Formatting.RED)
-										    : ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), itemStack.getCount())
+										    : ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().get(neuName).getAsDouble(), stack.getCount())
 								    )
 						);
 					}

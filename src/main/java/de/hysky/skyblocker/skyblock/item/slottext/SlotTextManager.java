@@ -23,7 +23,9 @@ public class SlotTextManager {
 			new CatacombsLevelAdder.ReadyUp(),
 			new RancherBootsSpeedAdder(),
 			new AttributeShardAdder(),
-			new PrehistoricEggAdder()
+			new PrehistoricEggAdder(),
+			new PotionLevelAdder(),
+			new CollectionAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 

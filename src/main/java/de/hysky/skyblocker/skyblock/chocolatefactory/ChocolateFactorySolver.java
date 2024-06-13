@@ -18,6 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -255,8 +256,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		@Override
-		public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper) return;
+		public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper || focusedSlot == null) return;
 
 			int lineIndex = lines.size();
 			//This boolean is used to determine if we should add a smooth line to separate the added information from the rest of the tooltip.

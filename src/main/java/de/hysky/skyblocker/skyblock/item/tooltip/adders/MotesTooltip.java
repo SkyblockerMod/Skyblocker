@@ -8,6 +8,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -18,13 +19,12 @@ public class MotesTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
-		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = itemStack.getSkyblockId();
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		final String internalID = stack.getSkyblockId();
 		if (internalID != null && TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
 			              .formatted(Formatting.LIGHT_PURPLE)
-			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), itemStack.getCount())));
+			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), stack.getCount())));
 		}
 	}
 

@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.mixins;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -17,7 +16,6 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -38,7 +36,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -187,12 +188,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "LOAD", ordinal = 0))
 	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
 		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
-	}
-
-	@SuppressWarnings("deprecation")
-	@ModifyReturnValue(method = "getTooltipFromItem", at = @At("RETURN"))
-	private List<Text> skyblocker$tooltips$addToTooltip(List<Text> tooltip) {
-		return TooltipManager.addToTooltip(tooltip, focusedSlot);
 	}
 
 	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)

@@ -141,6 +141,9 @@ public class GeneralConfig {
 
     public static class ItemInfoDisplay {
         @SerialEntry
+        public boolean slotText = true;
+
+        @SerialEntry
         public boolean attributeShardInfo = true;
 
         @SerialEntry

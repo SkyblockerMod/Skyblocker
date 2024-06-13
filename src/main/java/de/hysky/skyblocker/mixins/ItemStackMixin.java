@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.TooltipAppender;
@@ -28,7 +29,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin implements SkyblockerStack {
+public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack {
 
 	@Shadow
 	public abstract int getDamage();
@@ -51,7 +52,7 @@ public abstract class ItemStackMixin implements SkyblockerStack {
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
 	private Text skyblocker$customItemNames(Text original) {
 		if (Utils.isOnSkyblock()) {
-			return SkyblockerConfigManager.get().general.customItemNames.getOrDefault(ItemUtils.getItemUuid((ItemStack) (Object) this), original);
+			return SkyblockerConfigManager.get().general.customItemNames.getOrDefault(ItemUtils.getItemUuid(this), original);
 		}
 
 		return original;

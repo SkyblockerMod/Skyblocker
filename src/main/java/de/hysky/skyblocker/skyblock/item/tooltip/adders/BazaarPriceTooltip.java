@@ -9,6 +9,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -20,12 +21,11 @@ public class BazaarPriceTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(List<Text> lines, Slot focusedSlot) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		bazaarExist = false;
-		final ItemStack itemStack = focusedSlot.getStack();
-		final String internalID = itemStack.getSkyblockId();
+		final String internalID = stack.getSkyblockId();
 		if (internalID == null) return;
-		String name = itemStack.getSkyblockApiId();
+		String name = stack.getSkyblockApiId();
 		if (name == null) return;
 
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;
@@ -36,9 +36,9 @@ public class BazaarPriceTooltip extends TooltipAdder {
 				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V
 				//Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
 				String line = lines.get(3).getSiblings().get(1).getString().replace(",", "");
-				amount = NumberUtils.isParsable(line) && !line.equals("0") ? Integer.parseInt(line) : itemStack.getCount();
+				amount = NumberUtils.isParsable(line) && !line.equals("0") ? Integer.parseInt(line) : stack.getCount();
 			} else {
-				amount = itemStack.getCount();
+				amount = stack.getCount();
 			}
 			JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(name);
 			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
