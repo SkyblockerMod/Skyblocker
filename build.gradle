@@ -61,6 +61,8 @@ dependencies {
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
+	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
+
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
 	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)

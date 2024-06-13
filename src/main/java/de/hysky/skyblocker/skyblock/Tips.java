@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -67,11 +68,11 @@ public class Tips {
 
     private static boolean sentTip = false;
 
-    private static Supplier<Text> getTipFactory(String key) {
+    private static Supplier<Text> getTipFactory(@Translatable String key) {
         return () -> Text.translatable(key);
     }
 
-    private static Supplier<Text> getTipFactory(String key, ClickEvent.Action clickAction, String value) {
+    private static Supplier<Text> getTipFactory(@Translatable String key, ClickEvent.Action clickAction, String value) {
         return () -> Text.translatable(key).styled(style -> style.withClickEvent(new ClickEvent(clickAction, value)));
     }
 
