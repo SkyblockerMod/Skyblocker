@@ -37,7 +37,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected void init() {
         super.init();
         waypointsListWidget = addDrawableChild(new WaypointsListWidget(client, this, width, height - 96, 32, 24));
-        islandWidget = addDrawableChild(new DropdownWidget<>(client, width - 160, 8, 150, Arrays.asList(Location.values()), this::islandChanged, Location.from(island)));
+        islandWidget = addDrawableChild(new DropdownWidget<>(client, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, Location.from(island)));
     }
 
     @Override
@@ -48,6 +48,14 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
         boolean mouseClicked = super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         return mouseClicked;
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if (islandWidget.isMouseOver(mouseX, mouseY) && islandWidget.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
     protected void islandChanged(Location location) {

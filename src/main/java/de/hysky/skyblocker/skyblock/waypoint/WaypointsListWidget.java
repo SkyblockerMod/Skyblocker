@@ -239,7 +239,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
         private boolean checkInt(String string) {
             try {
-                Integer.parseInt(string);
+                parseEmptiableInt(string);
                 return true;
             } catch (NumberFormatException e) {
                 return false;
@@ -261,7 +261,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private void updateInt(String newValueString, int currentValue, Int2ObjectFunction<NamedWaypoint> wither) {
             try {
                 int index = category.category.waypoints().indexOf(waypoint);
-                int newValue = Integer.parseInt(newValueString);
+                int newValue = parseEmptiableInt(newValueString);
                 if (newValue == currentValue) return;
                 waypoint = wither.apply(newValue);
                 if (index >= 0) {
@@ -275,7 +275,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private void updateColor(String colorString) {
             try {
                 int index = category.category.waypoints().indexOf(waypoint);
-                int colorInt = Integer.parseInt(colorString, 16);
+                int colorInt = parseEmptiableInt(colorString, 16);
                 float[] colorComponents = {((colorInt & 0x00FF0000) >> 16) / 255f, ((colorInt & 0x0000FF00) >> 8) / 255f, (colorInt & 0x000000FF) / 255f};
                 float alpha = ((colorInt & 0xFF000000) >>> 24) / 255f;
                 if (Arrays.equals(waypoint.getColorComponents(), colorComponents) && waypoint.alpha == alpha) return;
@@ -286,6 +286,15 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             } catch (NumberFormatException e) {
                 Waypoints.LOGGER.warn("[Skyblocker Waypoints] Failed to parse color: {}", colorString, e);
             }
+        }
+
+        private int parseEmptiableInt(String value) throws NumberFormatException {
+            return value.isEmpty() || value.equals("-") ? 0 : Integer.parseInt(value);
+        }
+
+        @SuppressWarnings("SameParameterValue")
+        private int parseEmptiableInt(String value, int radix) throws NumberFormatException {
+            return value.isEmpty() || value.equals("-") ? 0 : Integer.parseInt(value, radix);
         }
 
         @Override

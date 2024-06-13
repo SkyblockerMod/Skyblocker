@@ -20,8 +20,8 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
     protected T selected;
     protected boolean open;
 
-    public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, List<T> entries, Consumer<T> selectCallback, T selected) {
-        super(minecraftClient, width, (entries.size() + 1) * ENTRY_HEIGHT + 8, y, ENTRY_HEIGHT);
+    public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
+        super(minecraftClient, width, Math.min((entries.size() + 1) * ENTRY_HEIGHT + 8, maxHeight), y, ENTRY_HEIGHT);
         setX(x);
         this.entries = entries;
         this.selectCallback = selectCallback;
@@ -58,29 +58,44 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, 100);
 
-        context.fill(getX(), getY(), getX() + width, getY() + headerHeight, 0xFF000000);
-        context.drawHorizontalLine(getX(), getX() + width, getY(), 0xFFFFFFFF);
-        context.drawHorizontalLine(getX(), getX() + width, getY() + headerHeight, 0xFFFFFFFF);
-        context.drawVerticalLine(getX(), getY(), getY() + headerHeight, 0xFFFFFFFF);
-        context.drawVerticalLine(getX() + width, getY(), getY() + headerHeight, 0xFFFFFFFF);
+        int y = getY() - (int) getScrollAmount();
+        int height = getMaxPosition();
+
+        context.fill(getX(), y, getX() + width, y + headerHeight, 0xFF000000);
+        context.drawHorizontalLine(getX(), getX() + width, y, 0xFFFFFFFF);
+        context.drawHorizontalLine(getX(), getX() + width, y + headerHeight, 0xFFFFFFFF);
+        context.drawVerticalLine(getX(), y, y + headerHeight, 0xFFFFFFFF);
+        context.drawVerticalLine(getX() + width, y, y + headerHeight, 0xFFFFFFFF);
 
         if (open) {
-            context.fill(getX(), getY() + headerHeight + 1, getX() + width, getY() + height, 0xFF000000);
-            context.drawHorizontalLine(getX(), getX() + width, getY() + height, 0xFFFFFFFF);
-            context.drawVerticalLine(getX(), getY() + headerHeight, getY() + height, 0xFFFFFFFF);
-            context.drawVerticalLine(getX() + width, getY() + headerHeight, getY() + height, 0xFFFFFFFF);
+            context.fill(getX(), y + headerHeight + 1, getX() + width, y + height, 0xFF000000);
+            context.drawHorizontalLine(getX(), getX() + width, y + height, 0xFFFFFFFF);
+            context.drawVerticalLine(getX(), y + headerHeight, y + height, 0xFFFFFFFF);
+            context.drawVerticalLine(getX() + width, y + headerHeight, y + height, 0xFFFFFFFF);
 
             super.renderWidget(context, mouseX, mouseY, delta);
         } else {
-            renderHeader(context, getRowLeft(), getY() + 4 - (int) getScrollAmount());
+            renderHeader(context, getRowLeft(), y + 4);
         }
 
         context.getMatrices().pop();
     }
 
+    @Override
+    protected void drawMenuListBackground(DrawContext context) {}
+
+    @Override
+    protected void drawHeaderAndFooterSeparators(DrawContext context) {}
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        return open && super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    }
+
     protected void select(T entry) {
         selected = entry;
         open = false;
+        setScrollAmount(0);
         if (selected != prevSelected) {
             selectCallback.accept(entry);
             prevSelected = selected;
