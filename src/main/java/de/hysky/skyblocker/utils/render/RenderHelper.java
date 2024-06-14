@@ -46,7 +46,7 @@ public class RenderHelper {
     private static final MethodHandle SCHEDULE_DEFERRED_RENDER_TASK = getDeferredRenderTaskHandle();
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
-    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final BufferAllocator ALLOCATOR = new BufferAllocator(1536);
 
     public static void init() {
@@ -287,14 +287,14 @@ public class RenderHelper {
         Matrix4f positionMatrix = new Matrix4f();
         Camera camera = context.camera();
         Vec3d cameraPos = camera.getPos();
-        TextRenderer textRenderer = client.textRenderer;
+        TextRenderer textRenderer = CLIENT.textRenderer;
 
         scale *= 0.025f;
 
         positionMatrix
         .translate((float) (pos.getX() - cameraPos.getX()), (float) (pos.getY() - cameraPos.getY()), (float) (pos.getZ() - cameraPos.getZ()))
         .rotate(camera.getRotation())
-        .scale(-scale, -scale, scale);
+        .scale(scale, -scale, scale);
 
         float xOffset = -textRenderer.getWidth(text) / 2f;
 
@@ -356,8 +356,8 @@ public class RenderHelper {
     }
 
     private static void playNotificationSound() {
-        if (client.player != null) {
-            client.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
+        if (CLIENT.player != null) {
+            CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
         }
     }
 
