@@ -9,12 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EventNotificationsConfig {
+    @SerialEntry
+    public Criterion criterion = Criterion.SKYBLOCK;
 
     @SerialEntry
     public Sound reminderSound = Sound.PLING;
 
     @SerialEntry
     public Map<String, IntList> eventsReminderTimes = new HashMap<>();
+
+    public enum Criterion {
+        NONE,
+        SKYBLOCK,
+        HYPIXEL,
+        EVERYWHERE
+    }
 
     public enum Sound {
         NONE(null),
