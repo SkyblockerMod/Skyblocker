@@ -12,16 +12,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,56 +29,56 @@ public class MetalDetector {
     private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
     private static final Pattern TREASURE_PATTERN = Pattern.compile("(§3§lTREASURE: §b)(\\d+\\.?\\d?)m");
     private static final Pattern KEEPER_PATTERN = Pattern.compile("Keeper of (\\w+)");
-    private static final HashMap<String, Vec3i> keeperOffsets = Util.make(new HashMap<>(), map -> {
-        map.put("Diamond", new Vec3i(33, 0, 3));
-        map.put("Lapis", new Vec3i(-33, 0, -3));
-        map.put("Emerald", new Vec3i(-3, 0, 33));
-        map.put("Gold", new Vec3i(3, 0, -33));
-    });
-    private static final HashSet<Vec3i> knownChestOffsets = Util.make(new HashSet<>(), set -> {
-        set.add(new Vec3i(-38, -22, 26));  // -38, -22, 26
-        set.add(new Vec3i(38, -22, -26)); // 38, -22, -26
-        set.add(new Vec3i(-40, -22, 18)); // -40, -22, 18
-        set.add(new Vec3i(-41, -20, 22)); // -41, -20, 22
-        set.add(new Vec3i(-5, -21, 16)); // -5, -21, 16
-        set.add(new Vec3i(40, -22, -30)); // 40, -22, -30
-        set.add(new Vec3i(-42, -20, -28));  // -42, -20, -28
-        set.add(new Vec3i(-43, -22, -40));  // -43, -22, -40
-        set.add(new Vec3i(42, -19, -41)); // 42, -19, -41
-        set.add(new Vec3i(43, -21, -16)); // 43, -21, -16
-        set.add(new Vec3i(-1, -22, -20)); // -1, -22, -20
-        set.add(new Vec3i(6, -21, 28));   // 6, -21, 28
-        set.add(new Vec3i(7, -21, 11));   // 7, -21, 11
-        set.add(new Vec3i(7, -21, 22));   // 7, -21, 22
-        set.add(new Vec3i(-12, -21, -44));  // -12, -21, -44
-        set.add(new Vec3i(12, -22, 31));   // 12, -22, 31
-        set.add(new Vec3i(12, -22, -22));   // 12, -22, -22
-        set.add(new Vec3i(12, -21, 7));   // 12, -21, 7
-        set.add(new Vec3i(12, -21, -43));   // 12, -21, -43
-        set.add(new Vec3i(-14, -21, 43));  // -14, -21, 43
-        set.add(new Vec3i(-14, -21, 22));  // -14, -21, 22
-        set.add(new Vec3i(-17, -21, 20));  // -17, -21, 20
-        set.add(new Vec3i(-20, -22, 0));  // -20, -22, 0
-        set.add(new Vec3i(1, -21, 20));   // 1, -21, 20
-        set.add(new Vec3i(19, -22, 29));   // 19, -22, 29
-        set.add(new Vec3i(20, -22, 0));   // 20, -22, 0
-        set.add(new Vec3i(20, -21, -26));   // 20, -21, -26
-        set.add(new Vec3i(-23, -22, 40));  // -23, -22, 40
-        set.add(new Vec3i(22, -21, -14));   // 22, -21, -14
-        set.add(new Vec3i(-24, -22, 12));  // -24, -22, 12
-        set.add(new Vec3i(23, -22, 26));   // 23, -22, 26
-        set.add(new Vec3i(23, -22, -39));   // 23, -22, -39
-        set.add(new Vec3i(24, -22, 27));   // 24, -22, 27
-        set.add(new Vec3i(25, -22, 17));   // 25, -22, 17
-        set.add(new Vec3i(29, -21, -44));   // 29, -21, -44
-        set.add(new Vec3i(-31, -21, -12));  // -31, -21, -12
-        set.add(new Vec3i(-31, -21, -40));  // -31, -21, -40
-        set.add(new Vec3i(30, -21, -25));   // 30, -21, -25
-        set.add(new Vec3i(-32, -21, -40));  // -32, -21, -40
-        set.add(new Vec3i(-36, -20, 42));  // -36, -20, 42
-        set.add(new Vec3i(-37, -21, -14));  // -37, -21, -14
-        set.add(new Vec3i(-37, -21, -22));   // -37, -21, -22
-    });
+    private static final Map<String, Vec3i> keeperOffsets = Map.of(
+            "Diamond", new Vec3i(33, 0, 3),
+            "Lapis", new Vec3i(-33, 0, -3),
+            "Emerald", new Vec3i(-3, 0, 33),
+            "Gold", new Vec3i(3, 0, -33)
+    );
+    private static final Set<Vec3i> knownChestOffsets = Set.of(
+            new Vec3i(-38, -22, 26), // -38, -22, 26
+            new Vec3i(38, -22, -26), // 38, -22, -26
+            new Vec3i(-40, -22, 18), // -40, -22, 18
+            new Vec3i(-41, -20, 22), // -41, -20, 22
+            new Vec3i(-5, -21, 16), // -5, -21, 16
+            new Vec3i(40, -22, -30), // 40, -22, -30
+            new Vec3i(-42, -20, -28), // -42, -20, -28
+            new Vec3i(-43, -22, -40), // -43, -22, -40
+            new Vec3i(42, -19, -41), // 42, -19, -41
+            new Vec3i(43, -21, -16), // 43, -21, -16
+            new Vec3i(-1, -22, -20), // -1, -22, -20
+            new Vec3i(6, -21, 28), // 6, -21, 28
+            new Vec3i(7, -21, 11), // 7, -21, 11
+            new Vec3i(7, -21, 22), // 7, -21, 22
+            new Vec3i(-12, -21, -44), // -12, -21, -44
+            new Vec3i(12, -22, 31), // 12, -22, 31
+            new Vec3i(12, -22, -22), // 12, -22, -22
+            new Vec3i(12, -21, 7), // 12, -21, 7
+            new Vec3i(12, -21, -43), // 12, -21, -43
+            new Vec3i(-14, -21, 43), // -14, -21, 43
+            new Vec3i(-14, -21, 22), // -14, -21, 22
+            new Vec3i(-17, -21, 20), // -17, -21, 20
+            new Vec3i(-20, -22, 0), // -20, -22, 0
+            new Vec3i(1, -21, 20), // 1, -21, 20
+            new Vec3i(19, -22, 29), // 19, -22, 29
+            new Vec3i(20, -22, 0), // 20, -22, 0
+            new Vec3i(20, -21, -26), // 20, -21, -26
+            new Vec3i(-23, -22, 40), // -23, -22, 40
+            new Vec3i(22, -21, -14), // 22, -21, -14
+            new Vec3i(-24, -22, 12), // -24, -22, 12
+            new Vec3i(23, -22, 26), // 23, -22, 26
+            new Vec3i(23, -22, -39), // 23, -22, -39
+            new Vec3i(24, -22, 27), // 24, -22, 27
+            new Vec3i(25, -22, 17), // 25, -22, 17
+            new Vec3i(29, -21, -44), // 29, -21, -44
+            new Vec3i(-31, -21, -12), // -31, -21, -12
+            new Vec3i(-31, -21, -40), // -31, -21, -40
+            new Vec3i(30, -21, -25), // 30, -21, -25
+            new Vec3i(-32, -21, -40), // -32, -21, -40
+            new Vec3i(-36, -20, 42), // -36, -20, 42
+            new Vec3i(-37, -21, -14), // -37, -21, -14
+            new Vec3i(-37, -21, -22) // -37, -21, -22
+    );
 
     protected static Vec3i minesCenter = null;
     private static double previousDistance;
@@ -107,7 +106,7 @@ public class MetalDetector {
         }
         //in the mines of divan
         Matcher treasureDistanceMature = TREASURE_PATTERN.matcher(text.getString());
-        if (!treasureDistanceMature.matches()) {
+        if (!treasureDistanceMature.find()) {
             return;
         }
         //find new values
@@ -164,7 +163,7 @@ public class MetalDetector {
      * Works out the possible locations the treasure could be using the distance the treasure is from the player and
      * narrows down possible locations until there is one left.
      *
-     * @param distance the distance the treasure is from the player squared
+     * @param distance  the distance the treasure is from the player squared
      * @param playerPos the position of the player
      */
     protected static void updatePossibleBlocks(double distance, Vec3d playerPos) {
@@ -232,6 +231,7 @@ public class MetalDetector {
 
     /**
      * Renders waypoints for the location of treasure or possible treasure.
+     *
      * @param context world render context
      */
     private static void render(WorldRenderContext context) {
