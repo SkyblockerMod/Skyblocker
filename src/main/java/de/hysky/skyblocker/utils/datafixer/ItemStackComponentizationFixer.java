@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.command.argument.ItemStringReader.ItemResult;
 import net.minecraft.component.ComponentType;
@@ -33,7 +34,7 @@ public class ItemStackComponentizationFixer {
 	private static final WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
 
 	public static ItemStack fixUpItem(NbtCompound nbt) {
-		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(LOOKUP.getOps(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
+		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(getRegistryLookup().getOps(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
 
 		return ItemStack.CODEC.parse(dynamic).getOrThrow();
 	}
@@ -44,7 +45,7 @@ public class ItemStackComponentizationFixer {
 	 * @return The {@link ItemStack}'s components as a string which is in the format that the {@code /give} command accepts.
 	 */
 	public static String componentsAsString(ItemStack stack) {
-		RegistryOps<NbtElement> nbtRegistryOps = LOOKUP.getOps(NbtOps.INSTANCE);
+		RegistryOps<NbtElement> nbtRegistryOps = getRegistryLookup().getOps(NbtOps.INSTANCE);
 
 		return Arrays.toString(stack.getComponentChanges().entrySet().stream().map(entry -> {
 			@SuppressWarnings("unchecked")
@@ -66,7 +67,7 @@ public class ItemStackComponentizationFixer {
 	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
 	 */
 	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
-		ItemStringReader reader = new ItemStringReader(LOOKUP);
+		ItemStringReader reader = new ItemStringReader(getRegistryLookup());
 
 		try {
 			ItemResult result = reader.consume(new StringReader(itemId + componentsString));
@@ -80,4 +81,12 @@ public class ItemStackComponentizationFixer {
 
 		return ItemStack.EMPTY;
 	}
+
+	/**
+	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
+	 */
+	public static WrapperLookup getRegistryLookup() {
+		MinecraftClient client = MinecraftClient.getInstance();
+        return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+    }
 }

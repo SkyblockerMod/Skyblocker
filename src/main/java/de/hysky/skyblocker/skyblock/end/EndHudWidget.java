@@ -37,7 +37,7 @@ public class EndHudWidget extends Widget {
 
     static {
         ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
-        POPPY.addEnchantment(BuiltinRegistries.createWrapperLookup().getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOptional(Enchantments.INFINITY).get(), 1);
+        POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 
         INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
         INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);

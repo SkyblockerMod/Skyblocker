@@ -17,19 +17,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.Util;
 
 public class ItemStackComponentizationFixerTest {
-	/*private final WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
 	private final NbtCompound NBT = convertToNbt("{id:\"minecraft:diamond_sword\",Count:1,tag:{ExtraAttributes:{id:\"TEST\"}}}");
 	private final Gson GSON = new Gson();
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
 		ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
 
-		builder.add(LOOKUP.getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+		builder.add(ItemStackComponentizationFixer.getRegistryLookup().getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
 		item.set(DataComponentTypes.ENCHANTMENTS, builder.build());
 	});
 
@@ -47,7 +44,7 @@ public class ItemStackComponentizationFixerTest {
 	@Test
 	void testDataFixer() {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
-		JsonElement stackJson = ItemStack.CODEC.encodeStart(LOOKUP.getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
+		JsonElement stackJson = ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
 
 		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}
@@ -89,5 +86,5 @@ public class ItemStackComponentizationFixerTest {
 		} catch (Exception e) {
 			return new NbtCompound();
 		}
-	}*/
+	}
 }

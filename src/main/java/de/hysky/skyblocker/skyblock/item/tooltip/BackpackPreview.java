@@ -101,9 +101,8 @@ public class BackpackPreview {
     }
 
     private static RegistryOps<NbtElement> getOps() {
-        ClientPlayNetworkHandler handler = MinecraftClient.getInstance().player != null ? MinecraftClient.getInstance().player.networkHandler : null;
-
-        return handler != null ? handler.getRegistryManager().getOps(NbtOps.INSTANCE) : BuiltinRegistries.createWrapperLookup().getOps(NbtOps.INSTANCE);
+        MinecraftClient client = MinecraftClient.getInstance();
+        return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager().getOps(NbtOps.INSTANCE) : BuiltinRegistries.createWrapperLookup().getOps(NbtOps.INSTANCE);
     }
 
     private static void saveStorages() {

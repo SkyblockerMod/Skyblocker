@@ -47,14 +47,14 @@ public class CustomArmorTrims {
 	}
 
 	private static void initializeTrimCache() {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		MinecraftClient client = MinecraftClient.getInstance();
 		FabricLoader loader = FabricLoader.getInstance();
-		if (trimsInitialized || (player == null && !Debug.debugEnabled())) {
+		if (trimsInitialized || (client == null && !Debug.debugEnabled())) {
 			return;
 		}
 		try {
 			TRIMS_CACHE.clear();
-			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, player); 
+			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, client);
 			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
 				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);
@@ -70,8 +70,8 @@ public class CustomArmorTrims {
 		}
 	}
 
-	private static RegistryWrapper.WrapperLookup getWrapperLookup(FabricLoader loader, ClientPlayerEntity player) {
-		return !Debug.debugEnabled() ? player.networkHandler.getRegistryManager() : BuiltinRegistries.createWrapperLookup();
+	private static RegistryWrapper.WrapperLookup getWrapperLookup(FabricLoader loader, MinecraftClient client) {
+		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : BuiltinRegistries.createWrapperLookup();
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -140,8 +140,8 @@ public class CustomArmorTrims {
 
 	public record ArmorTrimId(@SerialEntry Identifier material, @SerialEntry Identifier pattern) implements Pair<Identifier, Identifier> {
 		public static final Codec<ArmorTrimId> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
-				Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))
+						Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
+						Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))
 				.apply(instance, ArmorTrimId::new));
 
 		@Override

@@ -154,6 +154,11 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         public void clearCraftingSlots() {}
 
         @Override
+        public boolean matches(RecipeEntry<CraftingRecipe> recipe) {
+            return false;
+        }
+
+        @Override
         public int getCraftingResultSlotIndex() {
             return 0;
         }
@@ -192,10 +197,5 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         public boolean canUse(PlayerEntity player) {
             return false;
         }
-
-		@Override
-		public boolean matches(RecipeEntry<CraftingRecipe> recipe) {
-		    return false;
-		}
     }
 }
