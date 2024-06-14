@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.end;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -117,7 +118,7 @@ public class EnderNodes {
         private long lastConfirmed;
 
         private EnderNode(BlockPos pos) {
-            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, DyeColor.CYAN.getColorComponents(), false);
+            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, ColorUtils.getFloatComponents(DyeColor.CYAN), false);
         }
 
         private void updateParticles() {

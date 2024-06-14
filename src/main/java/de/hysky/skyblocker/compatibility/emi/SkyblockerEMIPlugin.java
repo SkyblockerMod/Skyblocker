@@ -16,9 +16,9 @@ import net.minecraft.util.Identifier;
  * EMI integration
  */
 public class SkyblockerEMIPlugin implements EmiPlugin {
-    public static final Identifier SIMPLIFIED_TEXTURES = new Identifier("emi", "textures/gui/widgets.png");
+    public static final Identifier SIMPLIFIED_TEXTURES = Identifier.of("emi", "textures/gui/widgets.png");
     // TODO: Custom simplified texture for Skyblock
-    public static final EmiRecipeCategory SKYBLOCK = new EmiRecipeCategory(new Identifier(SkyblockerMod.NAMESPACE, "skyblock"), EmiStack.of(ItemUtils.getSkyblockerStack()), new EmiTexture(SIMPLIFIED_TEXTURES, 240, 240, 16, 16));
+    public static final EmiRecipeCategory SKYBLOCK = new EmiRecipeCategory(Identifier.of(SkyblockerMod.NAMESPACE, "skyblock"), EmiStack.of(ItemUtils.getSkyblockerStack()), new EmiTexture(SIMPLIFIED_TEXTURES, 240, 240, 16, 16));
 
     @Override
     public void register(EmiRegistry registry) {

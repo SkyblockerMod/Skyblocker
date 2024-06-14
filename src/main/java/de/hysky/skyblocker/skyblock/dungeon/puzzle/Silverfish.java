@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -19,17 +20,14 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Silverfish extends DungeonPuzzle {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Silverfish.class);
     public static final Silverfish INSTANCE = new Silverfish();
-    private static final float[] RED_COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
+    private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
     final boolean[][] silverfishBoard = new boolean[17][17];
     Vector2ic silverfishPos;
     final List<Vector2ic> silverfishPath = new ArrayList<>();

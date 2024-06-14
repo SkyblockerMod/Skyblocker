@@ -94,7 +94,7 @@ public class QuickNavButton extends ClickableWidget {
         RenderSystem.disableDepthTest();
 
         // Construct the texture identifier based on the index and toggled state
-        Identifier tabTexture = new Identifier("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled ? "selected" : "unselected") + "_" + (index % 7 + 1));
+        Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
         // Render the button texture
         context.drawGuiTexture(tabTexture, this.getX(), this.getY(), this.width, this.height);

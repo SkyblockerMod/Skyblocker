@@ -85,7 +85,7 @@ public class TeleportOverlay {
             render(wrc, blockHitResult);
         } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE).getValue()) {
             @SuppressWarnings("DataFlowIssue")
-            HitResult result = client.player.raycast(range, wrc.tickDelta(), false);
+            HitResult result = client.player.raycast(range, wrc.tickCounter().getTickDelta(true), false);
             if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {
                 render(wrc, blockHitResult);
             }

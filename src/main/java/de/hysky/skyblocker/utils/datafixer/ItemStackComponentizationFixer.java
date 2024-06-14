@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.datafixer;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -10,16 +9,17 @@ import com.mojang.serialization.Dynamic;
 
 import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.command.argument.ItemStringReader.ItemResult;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.Identifier;
 
 /**
@@ -30,10 +30,10 @@ import net.minecraft.util.Identifier;
 public class ItemStackComponentizationFixer {
 	private static final int ITEM_NBT_DATA_VERSION = 3817;
 	private static final int ITEM_COMPONENTS_DATA_VERSION = 3825;
-	private static final DynamicRegistryManager REGISTRY_MANAGER = new DynamicRegistryManager.ImmutableImpl(List.of(Registries.ITEM, Registries.DATA_COMPONENT_TYPE));
+	private static final WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
 
 	public static ItemStack fixUpItem(NbtCompound nbt) {
-		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
+		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(LOOKUP.getOps(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
 
 		return ItemStack.CODEC.parse(dynamic).getOrThrow();
 	}
@@ -44,11 +44,11 @@ public class ItemStackComponentizationFixer {
 	 * @return The {@link ItemStack}'s components as a string which is in the format that the {@code /give} command accepts.
 	 */
 	public static String componentsAsString(ItemStack stack) {
-		RegistryOps<NbtElement> nbtRegistryOps = REGISTRY_MANAGER.getOps(NbtOps.INSTANCE);
+		RegistryOps<NbtElement> nbtRegistryOps = LOOKUP.getOps(NbtOps.INSTANCE);
 
 		return Arrays.toString(stack.getComponentChanges().entrySet().stream().map(entry -> {
 			@SuppressWarnings("unchecked")
-			DataComponentType<Object> dataComponentType = (DataComponentType<Object>) entry.getKey();
+			ComponentType<Object> dataComponentType = (ComponentType<Object>) entry.getKey();
 			Identifier componentId = Registries.DATA_COMPONENT_TYPE.getId(dataComponentType);
 			Optional<NbtElement> encodedComponent = dataComponentType.getCodec().encodeStart(nbtRegistryOps, entry.getValue().orElseThrow()).result();
 
@@ -66,13 +66,14 @@ public class ItemStackComponentizationFixer {
 	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
 	 */
 	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
-		ItemStringReader reader = new ItemStringReader(REGISTRY_MANAGER);
+		ItemStringReader reader = new ItemStringReader(LOOKUP);
 
 		try {
 			ItemResult result = reader.consume(new StringReader(itemId + componentsString));
 			ItemStack stack = new ItemStack(result.item(), count);
 
-			stack.applyComponentsFrom(result.components());
+			//Vanilla skips validation with /give so we will too
+			stack.applyUnvalidatedChanges(result.components());
 
 			return stack;
 		} catch (Exception ignored) {}

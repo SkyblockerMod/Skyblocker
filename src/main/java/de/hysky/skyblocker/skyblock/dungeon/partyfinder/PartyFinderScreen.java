@@ -37,8 +37,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class PartyFinderScreen extends Screen {
     protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
-    protected static final Identifier BACKGROUND_TEXTURE = new Identifier("social_interactions/background");
-    protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
+    protected static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("social_interactions/background");
+    protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.ofVanilla("icon/search");
     protected static final Text SEARCH_TEXT = Text.translatable("gui.socialInteractions.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
     public static boolean isInKuudraPartyFinder = false;
 
@@ -110,7 +110,7 @@ public class PartyFinderScreen extends Screen {
             CompletableFuture.runAsync(() -> {
                 floorIconsNormal = new HashMap<>();
                 floorIconsMaster = new HashMap<>();
-                try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/catacombs/floorskulls.json"))) {
+                try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/catacombs/floorskulls.json"))) {
                     JsonObject json = SkyblockerMod.GSON.fromJson(skullTextureReader, JsonObject.class);
                     json.getAsJsonObject("normal").asMap().forEach((s, tex) -> floorIconsNormal.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));
                     json.getAsJsonObject("master").asMap().forEach((s, tex) -> floorIconsMaster.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));

@@ -37,7 +37,7 @@ public class ItemListWidget extends RecipeBookWidget {
     }
 
     @Override
-    public void initialize(int parentWidth, int parentHeight, MinecraftClient client, boolean narrow, AbstractRecipeScreenHandler<?> craftingScreenHandler) {
+    public void initialize(int parentWidth, int parentHeight, MinecraftClient client, boolean narrow, AbstractRecipeScreenHandler<?, ?> craftingScreenHandler) {
         super.initialize(parentWidth, parentHeight, client, narrow, craftingScreenHandler);
         this.parentWidth = parentWidth;
         this.parentHeight = parentHeight;

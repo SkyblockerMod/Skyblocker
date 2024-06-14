@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
@@ -73,7 +74,7 @@ public class TheEnd {
         });
 
 
-        HudRenderEvents.AFTER_MAIN_HUD.register((drawContext, tickDelta) -> {
+        HudRenderEvents.AFTER_MAIN_HUD.register((drawContext, tickCounter) -> {
             if (!Utils.isInTheEnd()) return;
             if (!SkyblockerConfigManager.get().otherLocations.end.hudEnabled) return;
 
@@ -268,7 +269,7 @@ public class TheEnd {
 
     public record ProtectorLocation(int x, int z, Text name, Waypoint waypoint) {
         public ProtectorLocation(int x, int z, Text name) {
-            this(x, z, name, new Waypoint(new BlockPos(x, 0, z), Waypoint.Type.WAYPOINT, DyeColor.MAGENTA.getColorComponents()));
+            this(x, z, name, new Waypoint(new BlockPos(x, 0, z), Waypoint.Type.WAYPOINT, ColorUtils.getFloatComponents(DyeColor.MAGENTA)));
         }
     }
 }

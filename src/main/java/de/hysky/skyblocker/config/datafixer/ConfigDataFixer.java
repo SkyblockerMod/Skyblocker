@@ -69,7 +69,7 @@ public class ConfigDataFixer {
 		Schema schema3 = builder.addSchema(3, Schema::new);
 		builder.addFixer(new ConfigFix2QuickNav(schema3, true));
 
-		return builder.buildUnoptimized();
+		return builder.build().fixer();
 	}
 
 	private static JsonObject loadConfig(Path path) {

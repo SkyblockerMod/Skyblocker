@@ -41,11 +41,11 @@ import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
-    private static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
-    private static final Identifier SCROLLER_TEXTURE = new Identifier("container/creative_inventory/scroller");
+    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
+    private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/creative_inventory/scroller");
 
-    private static final Identifier up_arrow_tex = new Identifier(SkyblockerMod.NAMESPACE, "up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
-    private static final Identifier down_arrow_tex = new Identifier(SkyblockerMod.NAMESPACE, "down_arrow_even");
+    private static final Identifier up_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
+    private static final Identifier down_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "down_arrow_even");
     public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(up_arrow_tex);
     public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
 

@@ -33,8 +33,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
-    private static final Identifier PARTY_CARD_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
-    private static final Identifier PARTY_CARD_TEXTURE_HOVER = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
+    private static final Identifier PARTY_CARD_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
+    private static final Identifier PARTY_CARD_TEXTURE_HOVER = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
     public static final Text JOIN_TEXT = Text.translatable("skyblocker.partyFinder.join");
     private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
     protected final PartyFinderScreen screen;

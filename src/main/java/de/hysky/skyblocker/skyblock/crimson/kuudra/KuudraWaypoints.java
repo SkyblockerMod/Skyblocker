@@ -17,7 +17,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -53,8 +52,8 @@ public class KuudraWaypoints {
     private static boolean loaded;
 
     static void load(MinecraftClient client) {
-        CompletableFuture<Void> safeSpots = loadWaypoints(client, new Identifier(SkyblockerMod.NAMESPACE, "crimson/kuudra/safe_spot_waypoints.json"), SAFE_SPOT_WAYPOINTS, SAFE_SPOT_COLOR);
-        CompletableFuture<Void> pearls = loadWaypoints(client, new Identifier(SkyblockerMod.NAMESPACE, "crimson/kuudra/pearl_waypoints.json"), PEARL_WAYPOINTS, PEARL_COLOR);
+        CompletableFuture<Void> safeSpots = loadWaypoints(client, Identifier.of(SkyblockerMod.NAMESPACE, "crimson/kuudra/safe_spot_waypoints.json"), SAFE_SPOT_WAYPOINTS, SAFE_SPOT_COLOR);
+        CompletableFuture<Void> pearls = loadWaypoints(client, Identifier.of(SkyblockerMod.NAMESPACE, "crimson/kuudra/pearl_waypoints.json"), PEARL_WAYPOINTS, PEARL_COLOR);
 
         CompletableFuture.allOf(safeSpots, pearls).whenComplete((_result, _throwable) -> loaded = true);
     }

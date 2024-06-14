@@ -41,7 +41,7 @@ public class SkyblockerScreen extends Screen {
 	static {
 		LocalDate date = LocalDate.now();
 
-		ICON = date.getMonthValue() == 4 && date.getDayOfMonth() == 1 ? new Identifier(SkyblockerMod.NAMESPACE, "icons.png") : new Identifier(SkyblockerMod.NAMESPACE, "icon.png");
+		ICON = date.getMonthValue() == 4 && date.getDayOfMonth() == 1 ? Identifier.of(SkyblockerMod.NAMESPACE, "icons.png") : Identifier.of(SkyblockerMod.NAMESPACE, "icon.png");
 	}
 
 	private SkyblockerScreen() {

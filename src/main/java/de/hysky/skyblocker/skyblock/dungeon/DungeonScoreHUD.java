@@ -14,7 +14,7 @@ public class DungeonScoreHUD {
 	}
 
 	public static void init() {
-		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> render(context));
+		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> render(context));
 	}
 
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen

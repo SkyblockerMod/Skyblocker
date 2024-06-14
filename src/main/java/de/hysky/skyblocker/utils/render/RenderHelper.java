@@ -18,6 +18,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.texture.Scaling;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
@@ -25,6 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
 import org.joml.Matrix3f;
@@ -40,11 +42,12 @@ import java.lang.invoke.MethodType;
 
 public class RenderHelper {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Identifier TRANSLUCENT_DRAW = new Identifier(SkyblockerMod.NAMESPACE, "translucent_draw");
+    private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
     private static final MethodHandle SCHEDULE_DEFERRED_RENDER_TASK = getDeferredRenderTaskHandle();
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final BufferAllocator ALLOCATOR = new BufferAllocator(1536);
 
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.addPhaseOrdering(Event.DEFAULT_PHASE, TRANSLUCENT_DRAW);
@@ -95,7 +98,7 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
 
-            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickDelta(), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, colorComponents);
+            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickCounter().getTickDelta(true), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, ColorHelper.Argb.fromFloats(1f, colorComponents[0], colorComponents[1], colorComponents[2]));
 
             matrices.pop();
         }
@@ -110,7 +113,6 @@ public class RenderHelper {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
-            BufferBuilder buffer = tessellator.getBuffer();
 
             RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -122,9 +124,9 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
-            buffer.begin(DrawMode.LINES, VertexFormats.LINES);
+            BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
             WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], 1f);
-            tessellator.draw();
+            BufferRenderer.drawWithGlobalProgram(buffer.end());
 
             matrices.pop();
             RenderSystem.lineWidth(1f);
@@ -156,7 +158,6 @@ public class RenderHelper {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
         Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
         Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
 
@@ -172,7 +173,7 @@ public class RenderHelper {
         RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
-        buffer.begin(DrawMode.LINE_STRIP, VertexFormats.LINES);
+        BufferBuilder buffer = tessellator.begin(DrawMode.LINE_STRIP, VertexFormats.LINES);
 
         for (int i = 0; i < points.length; i++) {
             Vec3d nextPoint = points[i + 1 == points.length ? i - 1 : i + 1];
@@ -180,11 +181,10 @@ public class RenderHelper {
             buffer
                     .vertex(positionMatrix, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ())
                     .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                    .normal(normalVec.x, normalVec.y, normalVec.z)
-                    .next();
+                    .normal(normalVec.x, normalVec.y, normalVec.z);
         }
 
-        tessellator.draw();
+        BufferRenderer.drawWithGlobalProgram(buffer.end());
 
         matrices.pop();
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
@@ -201,7 +201,6 @@ public class RenderHelper {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
         Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
 
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
@@ -219,22 +218,21 @@ public class RenderHelper {
         Vec3d offset = Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw());
         Vec3d cameraPoint = camera.add(offset);
 
-        buffer.begin(DrawMode.LINES, VertexFormats.LINES);
+        BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
+
         Vector3f normal = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
         buffer
                 .vertex(positionMatrix, (float) cameraPoint.x , (float) cameraPoint.y, (float) cameraPoint.z)
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                .normal(normal.x, normal.y, normal.z)
-                .next();
+                .normal(normal.x, normal.y, normal.z);
 
         buffer
                 .vertex(positionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                .normal(normal.x, normal.y, normal.z)
-                .next();
+                .normal(normal.x, normal.y, normal.z);
 
 
-        tessellator.draw();
+        BufferRenderer.drawWithGlobalProgram(buffer.end());
 
         matrices.pop();
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
@@ -250,7 +248,6 @@ public class RenderHelper {
         positionMatrix.translate((float) -camera.x, (float) -camera.y, (float) -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -259,11 +256,11 @@ public class RenderHelper {
         RenderSystem.disableCull();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
-        buffer.begin(DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = tessellator.begin(DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         for (int i = 0; i < 4; i++) {
-            buffer.vertex(positionMatrix, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).color(colorComponents[0], colorComponents[1], colorComponents[2], alpha).next();
+            buffer.vertex(positionMatrix, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).color(colorComponents[0], colorComponents[1], colorComponents[2], alpha);
         }
-        tessellator.draw();
+        BufferRenderer.drawWithGlobalProgram(buffer.end());
 
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
@@ -301,9 +298,7 @@ public class RenderHelper {
 
         float xOffset = -textRenderer.getWidth(text) / 2f;
 
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
-        VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(buffer);
+        VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(ALLOCATOR);
 
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 

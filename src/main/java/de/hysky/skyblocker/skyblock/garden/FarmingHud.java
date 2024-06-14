@@ -44,7 +44,7 @@ public class FarmingHud {
     private static float farmingXpPercentProgress;
 
     public static void init() {
-        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
+        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
             if (shouldRender()) {
                 if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
                     counter.poll();

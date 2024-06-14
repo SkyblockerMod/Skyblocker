@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 
 public class StatusBar implements Widget, Drawable, Element, Selectable {
 
-    private static final Identifier BAR_FILL = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = new Identifier(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
+    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
 
 
    /* public static final Codec<StatusBar> CODEC = RecordCodecBuilder.create(instance -> instance.group(

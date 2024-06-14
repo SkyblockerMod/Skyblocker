@@ -15,10 +15,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.recipe.book.RecipeBookCategory;
+import net.minecraft.recipe.input.CraftingRecipeInput;
 import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
@@ -28,14 +30,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingTableScreenHandler> {
-    private static final Identifier TEXTURE = new Identifier("textures/gui/container/crafting_table.png");
+    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/crafting_table.png");
     protected static final ButtonTextures MORE_CRAFTS_TEXTURES = new ButtonTextures(
-            new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button"),
-            new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button_disabled"),
-            new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/more_button_highlighted")
+            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button"),
+            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button_disabled"),
+            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button_highlighted")
     );
 
-    protected static final Identifier QUICK_CRAFT = new Identifier(SkyblockerMod.NAMESPACE, "quick_craft/quick_craft_overlay");
+    protected static final Identifier QUICK_CRAFT = Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/quick_craft_overlay");
     private final ItemListWidget recipeBook = new ItemListWidget();
     private boolean narrow;
     private TexturedButtonWidget moreCraftsButton;
@@ -139,7 +141,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     }
 
 
-    static class DummyRecipeScreenHandler extends AbstractRecipeScreenHandler<SimpleInventory> {
+    static class DummyRecipeScreenHandler extends AbstractRecipeScreenHandler<CraftingRecipeInput, CraftingRecipe> {
 
         public DummyRecipeScreenHandler() {
             super(ScreenHandlerType.GENERIC_9X6, -69);
@@ -150,11 +152,6 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
 
         @Override
         public void clearCraftingSlots() {}
-
-        @Override
-        public boolean matches(RecipeEntry<? extends Recipe<SimpleInventory>> recipe) {
-            return false;
-        }
 
         @Override
         public int getCraftingResultSlotIndex() {
@@ -195,5 +192,10 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         public boolean canUse(PlayerEntity player) {
             return false;
         }
+
+		@Override
+		public boolean matches(RecipeEntry<CraftingRecipe> recipe) {
+		    return false;
+		}
     }
 }

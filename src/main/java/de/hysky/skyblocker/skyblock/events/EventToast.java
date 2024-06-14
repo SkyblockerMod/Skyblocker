@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class EventToast implements Toast {
-    protected static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "notification");
+    protected static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "notification");
 
     private final long eventStartTime;
 

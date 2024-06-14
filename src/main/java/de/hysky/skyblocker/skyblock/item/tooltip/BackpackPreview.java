@@ -15,13 +15,17 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.nbt.visitor.StringNbtWriter;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +42,8 @@ import java.util.stream.Collectors;
 
 public class BackpackPreview {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
-    private static final Identifier ITEM_PROTECTION = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
-    private static final Identifier TEXTURE = new Identifier("textures/gui/container/generic_54.png");
+    private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
     private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
     private static final int STORAGE_SIZE = 27;
@@ -88,12 +92,18 @@ public class BackpackPreview {
             Path storageFile = saveDir.resolve(index + ".nbt");
             if (Files.isRegularFile(storageFile)) {
                 try (BufferedReader reader = Files.newBufferedReader(storageFile)) {
-                    storages[index] = Storage.CODEC.parse(NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining()))).getOrThrow();
+                    storages[index] = Storage.CODEC.parse(getOps(), StringNbtReader.parse(reader.lines().collect(Collectors.joining()))).getOrThrow();
                 } catch (Exception e) {
                     LOGGER.error("Failed to load backpack preview file: {}", storageFile.getFileName().toString(), e);
                 }
             }
         }
+    }
+
+    private static RegistryOps<NbtElement> getOps() {
+        ClientPlayNetworkHandler handler = MinecraftClient.getInstance().player != null ? MinecraftClient.getInstance().player.networkHandler : null;
+
+        return handler != null ? handler.getRegistryManager().getOps(NbtOps.INSTANCE) : BuiltinRegistries.createWrapperLookup().getOps(NbtOps.INSTANCE);
     }
 
     private static void saveStorages() {
@@ -107,7 +117,7 @@ public class BackpackPreview {
     private static void saveStorage(int index) {
         Path storageFile = saveDir.resolve(index + ".nbt");
         try (BufferedWriter writer = Files.newBufferedWriter(storageFile)) {
-            writer.write(new StringNbtWriter().apply(Storage.CODEC.encodeStart(NbtOps.INSTANCE, storages[index]).getOrThrow()));
+            writer.write(new StringNbtWriter().apply(Storage.CODEC.encodeStart(getOps(), storages[index]).getOrThrow()));
             storages[index].markClean();
         } catch (Exception e) {
             LOGGER.error("Failed to save backpack preview file: {}", storageFile.getFileName().toString(), e);

@@ -21,8 +21,8 @@ import java.util.Map;
 
 public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    protected static final Identifier MAP_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
-    private static final Identifier MAP_ICON = new Identifier("textures/map/decorations/player.png");
+    protected static final Identifier MAP_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
+    private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
     private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian");
 
 
@@ -34,13 +34,13 @@ public class CrystalsHud {
                         .then(ClientCommandManager.literal("crystals")
                                 .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
 
-        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
+        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
             if (!SkyblockerConfigManager.get().mining.crystalsHud.enabled
                     || CLIENT.player == null
                     || !visible) {
                 return;
             }
-            render(context, tickDelta, SkyblockerConfigManager.get().mining.crystalsHud.x,
+            render(context, SkyblockerConfigManager.get().mining.crystalsHud.x,
                     SkyblockerConfigManager.get().mining.crystalsHud.y);
         });
     }
@@ -54,11 +54,10 @@ public class CrystalsHud {
      * Renders the map to the players UI. renders the background image ({@link CrystalsHud#MAP_TEXTURE}) of the map then if enabled special locations on the map. then finally the player to the map.
      *
      * @param context DrawContext to draw map to
-     * @param tickDelta For interpolating the player's yaw for map marker
      * @param hudX Top left X coordinate of the map
      * @param hudY Top left Y coordinate of the map
      */
-    private static void render(DrawContext context, float tickDelta, int hudX, int hudY) {
+    private static void render(DrawContext context, int hudX, int hudY) {
         float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
         //make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)

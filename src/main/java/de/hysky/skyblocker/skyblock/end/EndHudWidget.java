@@ -9,6 +9,8 @@ import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -35,7 +37,7 @@ public class EndHudWidget extends Widget {
 
     static {
         ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
-        POPPY.addEnchantment(Enchantments.INFINITY, 1);
+        POPPY.addEnchantment(BuiltinRegistries.createWrapperLookup().getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOptional(Enchantments.INFINITY).get(), 1);
 
         INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
         INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);

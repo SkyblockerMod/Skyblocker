@@ -10,7 +10,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 public class CompactorPreviewTooltipComponent implements TooltipComponent {
-    private static final Identifier TEXTURE = new Identifier("textures/gui/container/generic_54.png");
+    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
     private static final ItemStack BLACK_STAINED_GLASS_PANE = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
     private final Iterable<IntObjectPair<ItemStack>> items;
     private final IntIntPair dimensions;

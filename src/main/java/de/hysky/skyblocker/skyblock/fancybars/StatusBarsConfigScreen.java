@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StatusBarsConfigScreen extends Screen {
-    private static final Identifier HOTBAR_TEXTURE = new Identifier("hud/hotbar");
+    private static final Identifier HOTBAR_TEXTURE = Identifier.ofVanilla("hud/hotbar");
 
     public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
 

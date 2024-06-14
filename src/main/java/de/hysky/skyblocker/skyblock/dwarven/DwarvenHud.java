@@ -62,7 +62,7 @@ public class DwarvenHud {
                 )
         ));
 
-        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> {
+        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
             if (!SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder
                     || CLIENT.options.playerListKey.isPressed()
                     || CLIENT.player == null
