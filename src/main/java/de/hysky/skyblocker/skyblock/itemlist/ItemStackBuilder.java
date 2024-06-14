@@ -41,7 +41,7 @@ public class ItemStackBuilder {
         List<Pair<String, String>> injectors = new ArrayList<>(petData(internalName));
 
         String legacyId = item.getMinecraftItemId();
-        Identifier itemId = Identifier.ofVanilla(ItemFixerUpper.convertItemId(legacyId, item.getDamage()));
+        Identifier itemId = Identifier.of(ItemFixerUpper.convertItemId(legacyId, item.getDamage()));
 
         ItemStack stack = new ItemStack(Registries.ITEM.get(itemId));
 
