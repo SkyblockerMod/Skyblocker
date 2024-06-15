@@ -284,9 +284,9 @@ information.
 |----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | [Ghost-3](https://github.com/Ghost-3)                                                              | [esteban4567890](https://github.com/esteban4567890)                                                                     | [Fluboxer](https://github.com/Fluboxer)                                                               | [VeritasDL](https://github.com/VeritasDL)                                                                |
      
-| [<img alt="TheDearbear" src="https://github.com/TheDearbear.png" width="100">](https://github.com/TheDearbear) |
-|----------------------------------------------------------------------------------------------------------------|
-| [TheDearbear](https://github.com/TheDearbear)                                                                  |
+| [<img alt="TheDearbear" src="https://github.com/TheDearbear.png" width="100">](https://github.com/TheDearbear) | [<img alt="BigloBot" src="https://github.com/BigloBot.png" width="100">](https://github.com/BigloBot) | [<img alt="f3shqt" src="https://github.com/f3shqt.png" width="100">](https://github.com/f3shqt) | [<img alt="UpFault" src="https://github.com/UpFault.png" width="100">](https://github.com/UpFault) |
+|----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| [TheDearbear](https://github.com/TheDearbear)                                                                  | [BigloBot](https://github.com/BigloBot)                                                               | [f3shqt](https://github.com/f3shqt)                                                             | [UpFault](https://github.com/UpFault)                                                              |
 
 ### Translators
 
@@ -294,9 +294,9 @@ German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](htt
 Indonesian ([null2264](https://github.com/null2264)) \
 Russian ([HyperSoop](https://github.com/HyperSoop) & [CrimsonIsle](https://github.com/CrimsonIsle) & [Ghost-3](https://github.com/Ghost-3) & [wilson-wtf](https://github.com/wilson-wtf) & [R2kip](https://github.com/R2kip) & [Kolobok125040](https://github.com/Kolobok125040))\
 French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat) & [Kiverty](https://github.com/Kiverty) & [maDU59](https://github.com/maDU59)) \
-Japanese ([hirochisan](https://github.com/hirochisan)) \
-Chinese ([catandA](https://github.com/catandA)) \
-Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD) & [user123321111](https://github.com/user123321111) & [sunnytia](https://github.com/sunnytia) & [AC19970](https://github.com/AC19970)) \
+Japanese ([hirochisan](https://github.com/hirochisan) & [AC19970](https://github.com/AC19970)) \
+Chinese ([catandA](https://github.com/catandA) & [AC19970](https://github.com/AC19970)) \
+Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD) & [user123321111](https://github.com/user123321111) & [sunnytia](https://github.com/sunnytia) & [AC19970](https://github.com/AC19970) & [x-yingcan-x](https://github.com/x-yingcan-x)) \
 Korean ([lantice3720](https://github.com/lantice3720)) \
 Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
 Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
@@ -305,4 +305,5 @@ Turkish ([Fix3dll](https://github.com/Fix3dll) & [Emirlol](https://github.com/Em
 Canadian English ([AzureAaron](https://github.com/AzureAaron)) \
 Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro) & [AurinVPK](https://github.com/AurinVPK) & [yFelipeMC](https://github.com/yFelipeMC)) \
 Dutch ([mitch030504](https://github.com/mitch030504)) \
-Italian ([Vricken](https://github.com/Vricken))
+Italian ([Vricken](https://github.com/Vricken)) \
+Polish ([danehcan](https://github.com/danehcan))
