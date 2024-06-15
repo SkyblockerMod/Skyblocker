@@ -1,0 +1,26 @@
+package de.hysky.skyblocker.mixins;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.llamalad7.mixinextras.sugar.Local;
+
+import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.BlockPos;
+
+@Mixin(ClientWorld.class)
+public class ClientWorldMixin {
+
+	/**
+	 * @implNote The {@code pos} can be mutable when this is called by chunk delta updates, so if you want to copy it into memory
+	 * (e.g. store it in a field/list/map) make sure to duplicate it via {@link BlockPos#BlockPos(net.minecraft.util.math.Vec3i)}.
+	 */
+	@Inject(method = "handleBlockUpdate", at = @At("HEAD"))
+	private void skyblocker$onBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state) {
+		SimonSays.onBlockUpdate(pos, state);
+	}
+}

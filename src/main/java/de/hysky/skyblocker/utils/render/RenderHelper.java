@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -19,6 +20,7 @@ import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.texture.Scaling;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
@@ -61,18 +63,22 @@ public class RenderHelper {
     }
 
     public static void renderFilled(WorldRenderContext context, BlockPos pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, throughWalls);
+    }
+
+    public static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
         if (throughWalls) {
             if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-                renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, true);
+            	renderFilledInternal(context, pos, dimensions, colorComponents, alpha, true);
             }
         } else {
             if (OcclusionCulling.getRegularCuller().isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-                renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, false);
+            	renderFilledInternal(context, pos, dimensions, colorComponents, alpha, false);
             }
         }
     }
 
-    private static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+    private static void renderFilledInternal(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
 
@@ -333,6 +339,14 @@ public class RenderHelper {
         } else { //Vanilla
             RenderSystem.recordRenderCall(runnable::run);
         }
+    }
+
+    public static Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
+        return getBlockBoundingBox(world, world.getBlockState(pos), pos);
+    }
+
+    public static Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
+        return state.getOutlineShape(world, pos).asCuboid().getBoundingBox().offset(pos);
     }
 
     /**
