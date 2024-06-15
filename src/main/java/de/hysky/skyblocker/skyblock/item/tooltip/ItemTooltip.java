@@ -23,16 +23,22 @@ public class ItemTooltip {
     public static final GeneralConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
 
+    /**
+     * Gets the NEU id from an id and an api id.
+     * @param id the id of the skyblock item, gotten from {@link de.hysky.skyblocker.utils.ItemUtils#getItemId(net.minecraft.item.ItemStack) ItemUtils#getItemId(ItemStack)} or {@link net.minecraft.item.ItemStack#getSkyblockId() ItemStack#getSkyblockId()}
+     * @param apiId the api id of the skyblock item, matching the id of the item on the Skyblocker api, gotten from {@link net.minecraft.item.ItemStack#getSkyblockApiId() ItemStack#getSkyblockApiId()}
+     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link net.minecraft.item.ItemStack#getNeuName() ItemStack#getNeuName()}
+     */
     @NotNull
-    public static String getNeuName(String internalID, String neuName) {
-        switch (internalID) {
+    public static String getNeuName(String id, String apiId) {
+        switch (id) {
             case "PET" -> {
-                neuName = neuName.replaceAll("LVL_\\d*_", "");
-                String[] parts = neuName.split("_");
+                apiId = apiId.replaceAll("LVL_\\d*_", "");
+                String[] parts = apiId.split("_");
                 String type = parts[0];
-                neuName = neuName.replaceAll(type + "_", "");
-                neuName = neuName + "-" + type;
-                neuName = neuName.replace("UNCOMMON", "1")
+                apiId = apiId.replaceAll(type + "_", "");
+                apiId = apiId + "-" + type;
+                apiId = apiId.replace("UNCOMMON", "1")
                         .replace("COMMON", "0")
                         .replace("RARE", "2")
                         .replace("EPIC", "3")
@@ -40,13 +46,13 @@ public class ItemTooltip {
                         .replace("MYTHIC", "5")
                         .replace("-", ";");
             }
-            case "RUNE" -> neuName = neuName.replaceAll("_(?!.*_)", ";");
-            case "POTION" -> neuName = "";
+            case "RUNE" -> apiId = apiId.replaceAll("_(?!.*_)", ";");
+            case "POTION" -> apiId = "";
             case "ATTRIBUTE_SHARD" ->
-                    neuName = internalID + "+" + neuName.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
-            default -> neuName = neuName.replace(":", "-");
+                    apiId = id + "+" + apiId.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
+            default -> apiId = apiId.replace(":", "-");
         }
-        return neuName;
+        return apiId;
     }
 
     public static void nullWarning() {
