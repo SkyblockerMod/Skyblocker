@@ -57,11 +57,11 @@ public class SearchOverManager {
     protected static int dungeonStars = 0;
 
     // Use non-final variables and swap them to prevent concurrent modification
-    private static HashSet<String> bazaarItems;
-    private static HashSet<String> auctionItems;
-    private static HashSet<String> auctionPets;
-    private static HashSet<String> starableItems;
-    private static HashMap<String, String> namesToId;
+    private static HashSet<String> bazaarItems = new HashSet<>();
+    private static HashSet<String> auctionItems = new HashSet<>();
+    private static HashSet<String> auctionPets = new HashSet<>();
+    private static HashSet<String> starableItems = new HashSet<>();
+    private static HashMap<String, String> namesToId = new HashMap<>();
 
     public static String[] suggestionsArray = {};
 
