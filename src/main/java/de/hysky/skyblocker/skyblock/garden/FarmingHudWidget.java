@@ -69,15 +69,7 @@ public class FarmingHudWidget extends Widget {
         addSimpleIcoText(cropStack, FarmingHud.counterText(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
         float cropsPerMinute = FarmingHud.cropsPerMinute();
         addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
-
-        DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId);
-
-        double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().get(cropItemId).getAsDouble() : Double.MIN_VALUE;
-        boolean shouldUseNpcPrice = itemNpcPrice > itemBazaarPrice.leftDouble();
-        double price = shouldUseNpcPrice ? itemNpcPrice : itemBazaarPrice.leftDouble();
-
-        addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, (shouldUseNpcPrice ? true : itemBazaarPrice.rightBoolean()) ? FarmingHud.NUMBER_FORMAT.format((int) (price * cropsPerMinute * 0.6) * 100) : "No Data"); // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6
-
+        addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
         addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
         //noinspection DataFlowIssue
         addComponent(new ProgressComponent(Ico.LANTERN, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
@@ -91,5 +83,19 @@ public class FarmingHudWidget extends Widget {
         if (LowerSensitivity.isSensitivityLowered()) {
             addComponent(new PlainTextComponent(Text.translatable("skyblocker.garden.hud.mouseLocked").formatted(Formatting.ITALIC)));
         }
+    }
+
+    /**
+     * Gets the price text of the given crop id, calculated with the given crops per minute and the npc price if it's higher than the bazaar sell price, or the bazaar sell price otherwise.
+     */
+    private String getPriceText(String cropItemId, float cropsPerMinute) {
+        DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.
+        double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().get(cropItemId).getAsDouble() : Double.MIN_VALUE; // Gets the npc sell price of the crop or set to the min double value if it doesn't exist.
+        boolean shouldUseNpcPrice = itemNpcPrice > itemBazaarPrice.leftDouble(); // Use the npc price if it's more than the bazaar sell price.
+        double price = shouldUseNpcPrice ? itemNpcPrice : itemBazaarPrice.leftDouble(); // same as above
+
+        // Return the formatted price if npc price is higher or bazaar price is present.
+        // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
+        return shouldUseNpcPrice || itemBazaarPrice.rightBoolean() ? FarmingHud.NUMBER_FORMAT.format((int) (price * cropsPerMinute * 0.6) * 100) : "No Data";
     }
 }
