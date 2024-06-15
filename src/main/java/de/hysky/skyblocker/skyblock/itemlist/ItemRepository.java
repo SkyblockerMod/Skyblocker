@@ -114,9 +114,12 @@ public class ItemRepository {
         return items.stream();
     }
 
+    /**
+     * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip#getNeuName(String, String) ItemTooltip#getNeuName(String, String)}
+     */
     @Nullable
-    public static ItemStack getItemStack(String internalName) {
-        return itemsMap.get(internalName);
+    public static ItemStack getItemStack(String neuId) {
+        return itemsMap.get(neuId);
     }
 
     public static Stream<SkyblockCraftingRecipe> getRecipesStream() {
