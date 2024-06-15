@@ -713,5 +713,7 @@
     "skyblocker.customAnimatedDyes.unableToSetDye": "§c无法设置自定义动态染料 :( （请检查自己是否在Skyblock中，以及是否持有物品）",
     "skyblocker.tips.customAnimatedDyes": "你可以使用 /skyblocker custom animatedDye 将自定义动态染料应用到你的皮革护甲上！",
     "skyblocker.tips.customDungeonSecretWaypoints": "你可以使用 /skyblocker dungeons secrets addWaypoint 将自定义秘密路径点添加到任何地牢房间。",
-    "skyblocker.config.general.itemInfoDisplay.slotText": "物品栏文本"
+    "skyblocker.config.general.itemInfoDisplay.slotText": "物品栏文本",
+    "skyblocker.shortcuts.commandArg.tooltip": "替换具有多个单词/参数的命令的一个或多个单词/参数，而不是匹配整个命令。",
+    "skyblocker.waypoints.ordered.export.success": "成功将路径点复制到剪贴板！"
 }
