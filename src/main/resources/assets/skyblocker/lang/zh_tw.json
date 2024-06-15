@@ -713,5 +713,7 @@
     "skyblocker.customAnimatedDyes.unableToSetDye": "§c無法設定自訂動態染料 :( （請檢查自己是否在Skyblock中，以及是否持有物品）",
     "skyblocker.config.slayer.vampireSlayer.enableManiaIndicator": "啟用Mania Block指示器",
     "skyblocker.tips.customAnimatedDyes": "你可以使用 /skyblocker custom animatedDye 將自訂動態染料應用到你的皮革護甲上！",
-    "skyblocker.tips.customDungeonSecretWaypoints": "你可以使用 /skyblocker dungeons secrets addWaypoint 將自訂秘密路徑點新增到任何地牢房間。"
+    "skyblocker.tips.customDungeonSecretWaypoints": "你可以使用 /skyblocker dungeons secrets addWaypoint 將自訂秘密路徑點新增到任何地牢房間。",
+    "skyblocker.waypoints.ordered.export.success": "成功將路徑點複製到剪貼簿！",
+    "skyblocker.shortcuts.commandArg.tooltip": "替換具有多個單字/參數的指令的一個或多個單字/參數，而不是匹配整個指令。"
 }
