@@ -122,7 +122,7 @@ public class EggFinder {
 		                                                                 .append(Text.literal("Chocolate " + eggType + " Egg")
 		                                                                             .withColor(eggType.color))
 		                                                                 .append(" at " + entity.getBlockPos().up(2).toShortString() + "!")
-		                                                                 .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + entity.getBlockX() + " " + entity.getBlockY() + 2 + " " + entity.getBlockZ() + " " + eggType))
+		                                                                 .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + entity.getBlockX() + " " + (entity.getBlockY() + 2) + " " + entity.getBlockZ() + " " + eggType))
 		                                                                                       .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))));
 	}
 
