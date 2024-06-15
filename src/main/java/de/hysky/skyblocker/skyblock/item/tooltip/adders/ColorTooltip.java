@@ -1,12 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
@@ -31,31 +29,24 @@ public class ColorTooltip extends TooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
-			String uuid = ItemUtils.getItemUuid(stack);
-			boolean hasCustomDye = SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) || SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid);
-			//DyedColorComponent#getColor returns ARGB so we mask out the alpha bits
-			int dyeColor = DyedColorComponent.getColor(stack, 0);
+			//DyedColorComponent#getColor can be ARGB so we mask out the alpha bits
+			int dyeColor = stack.get(DataComponentTypes.DYED_COLOR).rgb() & 0x00FFFFFF;
+			String colorHex = String.format("%06X", dyeColor);
+			String expectedHex = getExpectedHex(internalID);
 
-			// dyeColor will have alpha = 255 if it's dyed, and alpha = 0 if it's not dyed,
-			if (!hasCustomDye && dyeColor != 0) {
-				dyeColor = dyeColor & 0x00FFFFFF;
-				String colorHex = String.format("%06X", dyeColor);
-				String expectedHex = getExpectedHex(internalID);
+			boolean correctLine = false;
+			for (Text text : lines) {
+				String existingTooltip = text.getString() + " ";
+				if (existingTooltip.startsWith("Color: ")) {
+					correctLine = true;
 
-				boolean correctLine = false;
-				for (Text text : lines) {
-					String existingTooltip = text.getString() + " ";
-					if (existingTooltip.startsWith("Color: ")) {
-						correctLine = true;
-
-						addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, existingTooltip);
-						break;
-					}
+					addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, existingTooltip);
+					break;
 				}
+			}
 
-				if (!correctLine) {
-					addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, "");
-				}
+			if (!correctLine) {
+				addExoticTooltip(lines, internalID, ItemUtils.getCustomData(stack), colorHex, expectedHex, "");
 			}
 		}
 	}
