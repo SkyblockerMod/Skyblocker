@@ -161,9 +161,8 @@ public class ItemUtils {
      * @return if the item have a "Timestamp" it will be shown formated on the tooltip
      * @deprecated use {@link ObtainedDateTooltip#getTimestamp(ItemStack)} instead
      */
+    @Deprecated
     public static String getTimestamp(ItemStack stack) {
-        NbtCompound customData = getCustomData(stack);
-
         return ObtainedDateTooltip.getTimestamp(stack);
     }
 
