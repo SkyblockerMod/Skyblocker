@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
@@ -68,8 +69,14 @@ public class FarmingHudWidget extends Widget {
         addSimpleIcoText(cropStack, FarmingHud.counterText(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
         float cropsPerMinute = FarmingHud.cropsPerMinute();
         addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
-        DoubleBooleanPair itemPrice = ItemUtils.getItemPrice(cropItemId);
-        addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, itemPrice.rightBoolean() ? FarmingHud.NUMBER_FORMAT.format((int) (itemPrice.leftDouble() * cropsPerMinute * 0.6) * 100) : "No Data"); // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6
+
+        DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId);
+
+        double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().get(cropItemId).getAsDouble() : Double.MIN_VALUE;
+        boolean shouldUseNpcPrice = itemNpcPrice > itemBazaarPrice.leftDouble();
+        double price = shouldUseNpcPrice ? itemNpcPrice : itemBazaarPrice.leftDouble();
+
+        addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, (shouldUseNpcPrice ? true : itemBazaarPrice.rightBoolean()) ? FarmingHud.NUMBER_FORMAT.format((int) (price * cropsPerMinute * 0.6) * 100) : "No Data"); // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6
 
         addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
         //noinspection DataFlowIssue
