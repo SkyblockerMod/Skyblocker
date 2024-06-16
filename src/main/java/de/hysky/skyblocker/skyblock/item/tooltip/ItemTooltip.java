@@ -27,10 +27,12 @@ public class ItemTooltip {
      * Gets the NEU id from an id and an api id.
      * @param id the id of the skyblock item, gotten from {@link de.hysky.skyblocker.utils.ItemUtils#getItemId(net.minecraft.item.ItemStack) ItemUtils#getItemId(ItemStack)} or {@link net.minecraft.item.ItemStack#getSkyblockId() ItemStack#getSkyblockId()}
      * @param apiId the api id of the skyblock item, matching the id of the item on the Skyblocker api, gotten from {@link net.minecraft.item.ItemStack#getSkyblockApiId() ItemStack#getSkyblockApiId()}
-     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link net.minecraft.item.ItemStack#getNeuName() ItemStack#getNeuName()}
+     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link net.minecraft.item.ItemStack#getNeuName() ItemStack#getNeuName()},
+     * or an empty string if either id or apiId is null
      */
     @NotNull
     public static String getNeuName(String id, String apiId) {
+        if (id == null || apiId == null) return "";
         switch (id) {
             case "PET" -> {
                 apiId = apiId.replaceAll("LVL_\\d*_", "");
