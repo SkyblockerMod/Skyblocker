@@ -17,6 +17,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.SharedConstants;
@@ -33,15 +34,18 @@ public class Http {
 			.followRedirects(Redirect.NORMAL)
 			.build();
 
-	private static ApiResponse sendCacheableGetRequest(String url) throws IOException, InterruptedException {
-		HttpRequest request = HttpRequest.newBuilder()
+	private static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
+		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
 				.GET()
 				.header("Accept", "application/json")
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("User-Agent", USER_AGENT)
 				.version(Version.HTTP_2)
-				.uri(URI.create(url))
-				.build();
+				.uri(URI.create(url));
+
+		if (token != null) requestBuilder.header("Token", token);
+
+		HttpRequest request = requestBuilder.build();
 
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
 		InputStream decodedInputStream = getDecodedInputStream(response);
@@ -69,7 +73,7 @@ public class Http {
 	}
 	
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
-		return sendCacheableGetRequest(url).content();
+		return sendCacheableGetRequest(url, null).content();
 	}
 
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
@@ -84,8 +88,26 @@ public class Http {
 		return response.headers();
 	}
 
+	public static String sendPostRequest(String url, String requestBody, String contentType) throws IOException, InterruptedException {
+		HttpRequest request = HttpRequest.newBuilder()
+				.POST(BodyPublishers.ofString(requestBody))
+				.header("Accept-Encoding", "gzip, deflate")
+				.header("Content-Type", contentType)
+				.header("User-Agent", USER_AGENT)
+				.version(Version.HTTP_2)
+				.uri(URI.create(url))
+				.build();
+
+		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
+		InputStream decodedInputStream = getDecodedInputStream(response);
+
+		String responseBody = new String(decodedInputStream.readAllBytes());
+
+		return responseBody;
+	}
+
 	public static ApiResponse sendName2UuidRequest(String name) throws IOException, InterruptedException {
-		return sendCacheableGetRequest(NAME_2_UUID + name);
+		return sendCacheableGetRequest(NAME_2_UUID + name, null);
 	}
 
 	/**
@@ -96,7 +118,7 @@ public class Http {
 	 * @implNote the {@code v2} prefix is automatically added
 	 */
 	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
-		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query);
+		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query, ApiAuthentication.getToken());
 	}
 
 	private static InputStream getDecodedInputStream(HttpResponse<InputStream> response) {

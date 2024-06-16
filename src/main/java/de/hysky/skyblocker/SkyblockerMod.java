@@ -174,8 +174,8 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemRarityBackgrounds.init();
         MuseumItemCache.init();
         SecretsTracker.init();
+        ApiAuthentication.init();
         ApiUtils.init();
-        ProfileUtils.init();
         Debug.init();
         Kuudra.init();
         RenderHelper.init();
