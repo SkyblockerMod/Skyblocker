@@ -268,7 +268,7 @@
     "skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip": "路徑點：顯示高亮和信標光束。\n\n邊框路徑點：顯示路徑點和邊框。\n\n高亮：只顯示高亮。\n\n邊框高亮：顯示高亮和邊框。\n\n邊框：只顯示邊框。",
     "skyblocker.config.dungeons.secretWaypoints.waypointType.generalNote": "\n\n\n此選項不會對所有路徑點都生效。 地牢秘密路徑點等有它們自己的設定。",
     "skyblocker.config.dungeons.secretWaypoints.waypointType": "路徑點類型",
-    "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "開火凍結計時器（F3/M3）",
+    "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "Fire Freeze Staff計時器（F3/M3）",
     "skyblocker.config.otherLocations.spidersDen": "蜘蛛巢穴",
     "skyblocker.relics.markAllMissing": "§r將全部遺物標記為已忽略",
     "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "稀有地牢掉落效果",
@@ -351,7 +351,7 @@
     "skyblocker.config.dungeons.mimicMessage.mimicMessage": "Mimic訊息",
     "skyblocker.config.dungeons.livid": "提示真Livid的顏色",
     "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "殺死Mimic後將在聊天中發送的訊息。 建議保留預設值。",
-    "skyblocker.config.dungeons.professor.fireFreezeStaffTimer.@Tooltip": "在F3/M3的Boss戰中使用受到開火凍結影響的武器時顯示計時器。",
+    "skyblocker.config.dungeons.professor.fireFreezeStaffTimer.@Tooltip": "在F3/M3的Boss戰中顯示Fire Freeze Staff的計時器。",
     "skyblocker.config.mining": "矮人礦井",
     "skyblocker.config.chat.filter.hideDeath.@Tooltip": "過濾聊天欄中玩家死亡的訊息。",
     "skyblocker.config.chat.filter.hideDeath": "隱藏玩家死亡訊息",
@@ -715,5 +715,6 @@
     "skyblocker.tips.customAnimatedDyes": "你可以使用 /skyblocker custom animatedDye 將自訂動態染料應用到你的皮革護甲上！",
     "skyblocker.tips.customDungeonSecretWaypoints": "你可以使用 /skyblocker dungeons secrets addWaypoint 將自訂秘密路徑點新增到任何地牢房間。",
     "skyblocker.waypoints.ordered.export.success": "成功將路徑點複製到剪貼簿！",
-    "skyblocker.shortcuts.commandArg.tooltip": "替換具有多個單字/參數的指令的一個或多個單字/參數，而不是匹配整個指令。"
+    "skyblocker.shortcuts.commandArg.tooltip": "替換具有多個單字/參數的指令的一個或多個單字/參數，而不是匹配整個指令。",
+    "skyblocker.waypoints.ordered.export.fail": "§c路徑點匯出失敗，請檢查latest.log以取得更多資訊。"
 }
