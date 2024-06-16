@@ -147,7 +147,7 @@
     "skyblocker.config.general.wikiLookup.enableWikiLookup": "启用wiki查阅功能",
     "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "指针悬停于物品上，按F4键打开wiki中的条目。",
     "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual助手",
-    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "开启Mythological Ritual助手",
+    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "启用Mythological Ritual助手",
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "启用珍珠路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "启用AOTV路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableFairySoulWaypoints": "启用仙女之魂路径点",
