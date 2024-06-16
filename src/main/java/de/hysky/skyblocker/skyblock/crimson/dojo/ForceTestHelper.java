@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ZombieEntity;
@@ -11,7 +14,6 @@ import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ForceTestHelper {
@@ -19,7 +21,7 @@ public class ForceTestHelper {
     private static final DecimalFormat FORMATTER = new DecimalFormat("0.0");
     private static final int ZOMBIE_LIFE_TIME = 10100;
 
-    private static final Map<ZombieEntity, Long> zombies = new HashMap<>();
+    private static final Object2LongOpenHashMap<ZombieEntity> zombies = new Object2LongOpenHashMap<>();
 
     protected static void reset() {
         zombies.clear();
@@ -56,14 +58,14 @@ public class ForceTestHelper {
 
     protected static void onEntityDespawn(Entity entity) {
         if (entity instanceof ZombieEntity zombie) {
-            zombies.remove(zombie);
+            zombies.removeLong(zombie);
         }
     }
 
     protected static void render(WorldRenderContext context) {
         //render times
         long currentTime = System.currentTimeMillis();
-        for (Map.Entry<ZombieEntity, Long> zombie : zombies.entrySet()) {
+        for (Map.Entry<ZombieEntity, Long> zombie : zombies.object2LongEntrySet()) {
             float secondsTime = Math.max((zombie.getValue() - currentTime) / 1000f, 0);
 
             MutableText text = Text.literal(FORMATTER.format(secondsTime));

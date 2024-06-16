@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -23,7 +26,7 @@ public class MasteryTestHelper {
     private static final int BLOCK_LIFE_TIME = 6550;
 
     private static final List<BlockPos> blockOrder = new ArrayList<>();
-    private static final Map<BlockPos, Long> endTimes = new HashMap<>();
+    private static final Object2LongOpenHashMap<BlockPos> endTimes = new Object2LongOpenHashMap<>();
 
     protected static void reset() {
         blockOrder.clear();
@@ -43,7 +46,7 @@ public class MasteryTestHelper {
         }
         if (state.isAir()) {
             blockOrder.remove(pos);
-            endTimes.remove(pos);
+            endTimes.removeLong(pos);
         }
     }
 
@@ -59,7 +62,7 @@ public class MasteryTestHelper {
         //render times
         long currentTime = System.currentTimeMillis();
         for (BlockPos pos : blockOrder) {
-            long blockEndTime = endTimes.get(pos);
+            long blockEndTime = endTimes.getLong(pos);
             float secondsTime = Math.max((blockEndTime - currentTime) / 1000f, 0);
             RenderHelper.renderText(context, Text.literal(FORMATTER.format(secondsTime)), pos.add(0, 1, 0).toCenterPos(), 3, true);
         }

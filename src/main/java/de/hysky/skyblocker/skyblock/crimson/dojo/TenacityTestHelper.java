@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -17,8 +18,8 @@ import java.util.*;
 public class TenacityTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
-    private static final Map<ArmorStandEntity, Vec3d> fireBallsWithStartPos = new HashMap<>();
-    private static final Map<ArmorStandEntity, Vec3d> particleOffsets = new HashMap<>();
+    private static final Object2ObjectOpenHashMap<ArmorStandEntity, Vec3d> fireBallsWithStartPos = new Object2ObjectOpenHashMap<>();
+    private static final Object2ObjectOpenHashMap<ArmorStandEntity, Vec3d> particleOffsets = new Object2ObjectOpenHashMap<>();
 
     protected static void reset() {
         fireBallsWithStartPos.clear();

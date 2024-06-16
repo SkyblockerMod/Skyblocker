@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -21,10 +24,10 @@ public class StaminaTestHelper {
 
     private static final List<Box> wallHoles = new ArrayList<>();
     private static final List<Box> lastHoles = new ArrayList<>();
-    private static final Map<Box, holeDirection> holeDirections = new HashMap<>();
+    private static final Map<Box, HoleDirection> holeDirections = new HashMap<>();
     private static BlockPos middleBase;
 
-    private enum holeDirection {
+    private enum HoleDirection {
         POSITIVE_X,
         POSITIVE_Z,
         NEGATIVE_X,
@@ -59,11 +62,11 @@ public class StaminaTestHelper {
             wallHoles.addAll(findHolesInBox(wall));
         }
         // get direction for the holes
-        Map<Box, holeDirection> lastHoleDirections = new HashMap<>(holeDirections);
+        Map<Box, HoleDirection> lastHoleDirections = new HashMap<>(holeDirections);
         holeDirections.clear();
         for (Box hole : wallHoles) {
-            holeDirection holeDirection = getWholeDirection(hole);
-            if (holeDirection == StaminaTestHelper.holeDirection.UNCHANGED) {
+            HoleDirection holeDirection = getWholeDirection(hole);
+            if (holeDirection == HoleDirection.UNCHANGED) {
                 holeDirections.put(hole, lastHoleDirections.get(hole));
                 continue;
             }
@@ -112,8 +115,8 @@ public class StaminaTestHelper {
     }
 
     private static List<Box> findWalls(List<BlockPos> currentBottomWallLocations) {
-        Map<Integer, List<BlockPos>> possibleWallsX = new HashMap<>();
-        Map<Integer, List<BlockPos>> possibleWallsZ = new HashMap<>();
+        Int2ObjectOpenHashMap<List<BlockPos>> possibleWallsX = new Int2ObjectOpenHashMap<>();
+        Int2ObjectOpenHashMap<List<BlockPos>> possibleWallsZ = new Int2ObjectOpenHashMap<>();
         for (BlockPos block : currentBottomWallLocations) {
             //add to the x walls
             int x = block.getX();
@@ -224,30 +227,30 @@ public class StaminaTestHelper {
         return holes;
     }
 
-    private static holeDirection getWholeDirection(Box hole) {
+    private static HoleDirection getWholeDirection(Box hole) {
         //the value has not changed since last time
         if (lastHoles.contains(hole)) {
-            return holeDirection.UNCHANGED;
+            return HoleDirection.UNCHANGED;
         }
         //check each direction to work out which way the whole is going
         Box posX = hole.offset(1, 0, 0);
         if (lastHoles.contains(posX)) {
-            return holeDirection.POSITIVE_X;
+            return HoleDirection.POSITIVE_X;
         }
         Box negX = hole.offset(-1, 0, 0);
         if (lastHoles.contains(negX)) {
-            return holeDirection.NEGATIVE_X;
+            return HoleDirection.NEGATIVE_X;
         }
         Box posZ = hole.offset(0, 0, 1);
         if (lastHoles.contains(posZ)) {
-            return holeDirection.POSITIVE_Z;
+            return HoleDirection.POSITIVE_Z;
         }
         Box negZ = hole.offset(0, 0, -1);
         if (lastHoles.contains(negZ)) {
-            return holeDirection.NEGATIVE_Z;
+            return HoleDirection.NEGATIVE_Z;
         }
         // if pos can not be found mark as new
-        return holeDirection.NEW;
+        return HoleDirection.NEW;
 
     }
 
@@ -262,7 +265,7 @@ public class StaminaTestHelper {
         }
     }
 
-    private static boolean isHoleIncoming(Box holePos, holeDirection holeDirection, BlockPos playerPos) {
+    private static boolean isHoleIncoming(Box holePos, HoleDirection holeDirection, BlockPos playerPos) {
         return switch (holeDirection) {
             case POSITIVE_X -> playerPos.getX() < holePos.minX;
             case POSITIVE_Z -> playerPos.getZ() < holePos.minZ;
