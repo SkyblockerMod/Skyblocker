@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
-import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -89,7 +88,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+	protected List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		updateFactoryInfo(slots);
 		List<ColorHighlight> highlights = new ArrayList<>();
 
@@ -252,7 +251,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return highlights;
 	}
 
-	private record Rabbit(double cpsIncrease, int cost, int slot) { }
+	private record Rabbit(double cpsIncrease, int cost, int slot) {
+	}
 
 	public static final class Tooltip extends TooltipAdder {
 		public Tooltip() {

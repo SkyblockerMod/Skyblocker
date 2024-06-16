@@ -214,6 +214,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 *
 	 * @implNote This runs before {@link ScreenHandler#onSlotClick(int, int, SlotActionType, net.minecraft.entity.player.PlayerEntity)}
 	 */
+	@SuppressWarnings("unchecked") //Umm ackshually, it's a checked cast. Poor intellij just doesn't know.
 	@Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
 	private void skyblocker$onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
 		if (!Utils.isOnSkyblock()) return;
@@ -231,9 +232,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
 
 		// Prevent clicks on filler items
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+		// This is not always false like intellij says. It assumes the cast will fail, so the method will return false.
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips
+				&& FILLER_ITEMS.contains(stack.getName().getString())
 				// Allow clicks in Ultrasequencer and Superpairs
-				(!UltrasequencerSolver.INSTANCE.getName().matcher(title).matches() || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
+				&& (!UltrasequencerSolver.INSTANCE.test((HandledScreen<T>) (Object) this) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();
 			return;
 		}

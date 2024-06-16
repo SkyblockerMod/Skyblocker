@@ -7,7 +7,6 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -41,6 +40,7 @@ public class TooltipManager {
 
 	public static void init() {
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
+			if (!Utils.isOnSkyblock()) return;
 			if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen<?> handledScreen) {
 				addToTooltip(((HandledScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
 			} else {
@@ -48,16 +48,17 @@ public class TooltipManager {
 			}
 		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			onScreenChange(screen);
-			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
+			if (screen instanceof HandledScreen<?> handledScreen && Utils.isOnSkyblock()) {
+				onScreenChange(handledScreen);
+				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
+			}
 		});
 	}
 
-	private static void onScreenChange(Screen screen) {
-		final String title = screen.getTitle().getString();
+	private static void onScreenChange(HandledScreen<?> screen) {
 		currentScreenAdders.clear();
 		for (TooltipAdder adder : adders) {
-			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
+			if (adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}

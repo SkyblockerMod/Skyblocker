@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
@@ -35,18 +34,16 @@ public class SlotTextManager {
 
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if (screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) {
-				onScreenChange(screen);
+			if (screen instanceof HandledScreen<?> handledScreen && Utils.isOnSkyblock()) {
+				onScreenChange(handledScreen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
 		});
 	}
 
-	private static void onScreenChange(Screen screen) {
-		final String title = screen.getTitle().getString();
+	private static void onScreenChange(HandledScreen<?> screen) {
 		for (SlotTextAdder adder : adders) {
-			if (!adder.isEnabled()) continue;
-			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
+			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}

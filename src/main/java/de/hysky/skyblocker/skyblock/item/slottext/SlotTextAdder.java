@@ -2,17 +2,23 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.gui.AbstractContainerMatcher;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
  * Extend this class and add it to {@link SlotTextManager#adders} to add text to any arbitrary slot.
  */
 public abstract class SlotTextAdder extends AbstractContainerMatcher {
+	protected SlotTextAdder(@NotNull Predicate<HandledScreen<?>> screenPredicate) {
+		super(screenPredicate);
+	}
+
 	/**
 	 * Utility constructor that will compile the given string into a pattern.
 	 *
@@ -49,6 +55,7 @@ public abstract class SlotTextAdder extends AbstractContainerMatcher {
 
 	/**
 	 * Override this method to add conditions to enable or disable this adder.
+	 *
 	 * @return Whether this adder is enabled.
 	 * @implNote The slot text adders only work while in skyblock, so no need to check for that again.
 	 */

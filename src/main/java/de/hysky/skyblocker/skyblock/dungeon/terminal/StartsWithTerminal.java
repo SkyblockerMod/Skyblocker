@@ -27,7 +27,7 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 	}
 
 	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+	protected List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		trimEdges(slots, 6);
 		setupState(slots);
 
@@ -50,9 +50,9 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 	}
 
 	@Override
-	protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+	protected boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		//Some random glass pane was clicked or something
-		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
+		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty() || groups == null) return false;
 
 		ItemState state = trackedItemStates.get(slot);
 		String prefix = groups[0];

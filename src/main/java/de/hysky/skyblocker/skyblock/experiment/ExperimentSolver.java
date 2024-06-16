@@ -7,54 +7,55 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
+import org.intellij.lang.annotations.Language;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public sealed abstract class ExperimentSolver extends ContainerSolver permits ChronomatronSolver, SuperpairsSolver, UltrasequencerSolver {
-    public enum State {
-        REMEMBER, WAIT, SHOW, END
-    }
+public abstract sealed class ExperimentSolver extends ContainerSolver permits ChronomatronSolver, SuperpairsSolver, UltrasequencerSolver {
+	public enum State {
+		REMEMBER, WAIT, SHOW, END
+	}
 
-    private State state = State.REMEMBER;
-    private final Map<Integer, ItemStack> slots = new HashMap<>();
+	private State state = State.REMEMBER;
+	private final Map<Integer, ItemStack> slots = new HashMap<>();
 
-    protected ExperimentSolver(String containerName) {
-        super(containerName);
-    }
+	protected ExperimentSolver(@Language("RegExp") String titlePattern) {
+		super(titlePattern);
+	}
 
-    public State getState() {
-        return state;
-    }
+	public State getState() {
+		return state;
+	}
 
-    public void setState(State state) {
-        this.state = state;
-    }
+	public void setState(State state) {
+		this.state = state;
+	}
 
-    public Map<Integer, ItemStack> getSlots() {
-        return slots;
-    }
+	public Map<Integer, ItemStack> getSlots() {
+		return slots;
+	}
 
-    @Override
-    protected final boolean isEnabled() {
-        return isEnabled(SkyblockerConfigManager.get().helpers.experiments);
-    }
+	@Override
+	protected final boolean isEnabled() {
+		return isEnabled(SkyblockerConfigManager.get().helpers.experiments);
+	}
 
-    protected abstract boolean isEnabled(HelperConfig.Experiments experimentsConfig);
+	protected abstract boolean isEnabled(HelperConfig.Experiments experimentsConfig);
 
-    @Override
-    protected void start(GenericContainerScreen screen) {
-        super.start(screen);
-        state = State.REMEMBER;
-        ScreenEvents.afterTick(screen).register(this::tick);
-    }
+	@Override
+	protected void start(GenericContainerScreen screen) {
+		super.start(screen);
+		state = State.REMEMBER;
+		ScreenEvents.afterTick(screen).register(this::tick);
+	}
 
-    @Override
-    protected void reset() {
-        super.reset();
-        state = State.REMEMBER;
-        slots.clear();
-    }
+	@Override
+	protected void reset() {
+		super.reset();
+		state = State.REMEMBER;
+		slots.clear();
+	}
 
-    protected abstract void tick(Screen screen);
+	protected abstract void tick(Screen screen);
 }
