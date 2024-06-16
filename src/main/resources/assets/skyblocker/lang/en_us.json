@@ -661,6 +661,11 @@
   "skyblocker.updateRepository.failed": "§cUpdating the local repository failed. See logs for details.",
   "skyblocker.updateRepository.error":  "§cEncountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
 
+  "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
+  "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! Note that you can only do this once every two days.",
+  "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
+  "skyblocker.museum.resyncFailure": "Failed to resync your museum item donations!",
+
   "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
   "skyblocker.dungeons.secrets.markSecretFound": "§rMarked secret #%d as found.",
   "skyblocker.dungeons.secrets.markSecretMissing": "§rMarked secret #%d as missing.",

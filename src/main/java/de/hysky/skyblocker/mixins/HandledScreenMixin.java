@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -248,17 +249,27 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			ci.cancel();
 			return;
 		}
-		if (this.handler instanceof GenericContainerScreenHandler genericContainerScreenHandler && genericContainerScreenHandler.getRows() == 6) {
-			VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13).getStack());
 
-			// Prevent selling to NPC shops
-			ItemStack sellStack = this.handler.slots.get(49).getStack();
-			if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
-				if (slotId != 49 && ItemProtection.isItemProtected(stack)) {
-					ci.cancel();
-					return;
+		switch (this.handler) {
+			case GenericContainerScreenHandler genericContainerScreenHandler when genericContainerScreenHandler.getRows() == 6 -> {
+				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13).getStack());
+
+				// Prevent selling to NPC shops
+				ItemStack sellStack = this.handler.slots.get(49).getStack();
+				if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
+					if (slotId != 49 && ItemProtection.isItemProtected(stack)) {
+						ci.cancel();
+						return;
+					}
 				}
 			}
+
+			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> {
+				//Museum Item Cache donation tracking
+				MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
+			}
+
+			case null, default -> {}
 		}
 
 		if (currentSolver != null) {
