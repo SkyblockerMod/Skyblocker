@@ -146,8 +146,8 @@
     "text.skyblocker.open": "打开",
     "skyblocker.config.general.wikiLookup.enableWikiLookup": "启用wiki查阅功能",
     "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "指针悬停于物品上，按F4键打开wiki中的条目。",
-    "skyblocker.config.helpers.mythologicalRitual": "神话仪式助手",
-    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "开启神话仪式助手",
+    "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual 助手",
+    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "开启 Mythological Ritual 助手",
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "启用珍珠路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "启用AOTV路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableFairySoulWaypoints": "启用仙女之魂路径点",
@@ -715,5 +715,6 @@
     "skyblocker.tips.customDungeonSecretWaypoints": "你可以使用 /skyblocker dungeons secrets addWaypoint 将自定义秘密路径点添加到任何地牢房间。",
     "skyblocker.config.general.itemInfoDisplay.slotText": "物品栏文本",
     "skyblocker.shortcuts.commandArg.tooltip": "替换具有多个单词/参数的命令的一个或多个单词/参数，而不是匹配整个命令。",
-    "skyblocker.waypoints.ordered.export.success": "成功将路径点复制到剪贴板！"
+    "skyblocker.waypoints.ordered.export.success": "成功将路径点复制到剪贴板！",
+    "skyblocker.waypoints.ordered.export.fail": "§c路径点导出失败，请检查 Latest.log 以获取更多信息。"
 }
