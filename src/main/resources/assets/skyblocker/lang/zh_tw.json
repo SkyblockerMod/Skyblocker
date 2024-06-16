@@ -462,7 +462,6 @@
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "箭毒耗盡警告",
     "skyblocker.config.farming.garden.enableHud": "啟用耕作HUD",
     "skyblocker.config.farming.garden.farmingHud": "耕作HUD設定…",
-    "skyblocker.config.farming.garden.visitorHelper": "訪客助手",
     "skyblocker.config.dungeons.puzzle.solveIceFill": "冰塊填充謎題助手",
     "skyblocker.config.mining.dwarvenHud": "矮人礦井HUD",
     "skyblocker.config.otherLocations.end.hudEnabled": "啟用HUD",
@@ -1022,5 +1021,6 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip": "對Aspect of the Leech生效。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "平滑的Wither Impact",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "對Necron's Blade、Hyperion、Astraea、Scylla、Valkyrie生效。",
-    "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "傳送迷宮助手"
+    "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "傳送迷宮助手",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
