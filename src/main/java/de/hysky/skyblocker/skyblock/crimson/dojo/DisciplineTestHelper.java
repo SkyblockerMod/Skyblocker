@@ -43,7 +43,7 @@ public class DisciplineTestHelper {
         if (CLIENT == null || CLIENT.player == null) {
             return false;
         }
-        String heldId = ItemTooltip.getInternalNameFromNBT(CLIENT.player.getMainHandStack(), true);
+        String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
         if (SWORD_TO_NAME_LOOKUP.containsKey(heldId)) {
 
             return SWORD_TO_NAME_LOOKUP.get(heldId).equals(name);
@@ -60,7 +60,7 @@ public class DisciplineTestHelper {
         if (DojoManager.currentChallenge != DojoManager.DojoChallenges.DISCIPLINE || CLIENT == null || CLIENT.player == null) {
             return 0;
         }
-        String heldId = ItemTooltip.getInternalNameFromNBT(CLIENT.player.getMainHandStack(), true);
+        String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
         if (SWORD_TO_COLOR_LOOKUP.containsKey(heldId)) {
             return SWORD_TO_COLOR_LOOKUP.getInt(heldId);
         }
