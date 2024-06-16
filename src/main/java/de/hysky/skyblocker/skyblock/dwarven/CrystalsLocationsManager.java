@@ -51,7 +51,7 @@ public class CrystalsLocationsManager {
      * A look-up table to convert between location names and waypoint in the {@link MiningLocationLabel.CrystalHollowsLocationsCategory} values.
      */
     private static final Map<String, MiningLocationLabel.CrystalHollowsLocationsCategory> WAYPOINT_LOCATIONS = Arrays.stream(MiningLocationLabel.CrystalHollowsLocationsCategory.values()).collect(Collectors.toMap(MiningLocationLabel.CrystalHollowsLocationsCategory::getName, Function.identity()));
-    private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
+    private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]).*([0-9][0-9][0-9]?).*([0-9][0-9][0-9])");
 
     protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
 
@@ -64,7 +64,7 @@ public class CrystalsLocationsManager {
     }
 
     private static void extractLocationFromMessage(Text message, Boolean overlay) {
-        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows()) {
+        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay) {
             return;
         }
 
@@ -74,10 +74,8 @@ public class CrystalsLocationsManager {
             Matcher matcher = TEXT_CWORDS_PATTERN.matcher(value);
             //if there are coordinates in the message try to get them and what they are talking about
             if (matcher.find()) {
-                String location = matcher.group();
-                int[] coordinates = Arrays.stream(location.split(" ", 3)).mapToInt(Integer::parseInt).toArray();
-                BlockPos blockPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
-
+                BlockPos blockPos = new BlockPos(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
+                String location = blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
                 //if position is not in the hollows do not add it
                 if (!checkInCrystals(blockPos)) {
                     return;
@@ -85,7 +83,7 @@ public class CrystalsLocationsManager {
 
                 //see if there is a name of a location to add to this
                 for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
-                    if (value.toLowerCase().contains(waypointLocation.toLowerCase())) { //todo be more lenient
+                    if (Arrays.stream(waypointLocation.toLowerCase().split(" ")).anyMatch(word -> value.toLowerCase().contains(word)) ) { //check if contains a word of location
                         //all data found to create waypoint
                         addCustomWaypoint(waypointLocation, blockPos);
                         return;
