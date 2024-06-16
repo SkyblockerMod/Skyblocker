@@ -239,7 +239,7 @@ public class MuseumItemCache {
 
 	private record ProfileMuseumData(long lastResync, ObjectOpenHashSet<String> collectedItemIds) {
 		private static final ProfileMuseumData EMPTY = new ProfileMuseumData(0L, null);
-		private static final long TIME_BETWEEN_RESYNCING_ALLOWED = 172_800_000L;
+		private static final long TIME_BETWEEN_RESYNCING_ALLOWED = 600_000L;
 		private static final Codec<ProfileMuseumData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.LONG.fieldOf("lastResync").forGetter(ProfileMuseumData::lastResync),
 				Codec.STRING.listOf()
