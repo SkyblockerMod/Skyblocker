@@ -110,7 +110,7 @@ public class MuseumItemCache {
 					String profileId = Utils.getProfileId();
 
 					if (!itemId.isEmpty() && !profileId.isEmpty()) {
-						String uuid = getUndashedUuid(MinecraftClient.getInstance());
+						String uuid = Utils.getUndashedUuid();
 						//Be safe about access to avoid NPEs
 						Map<String, ProfileMuseumData> playerData =  MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
 						playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY);
@@ -203,7 +203,7 @@ public class MuseumItemCache {
 	}
 
 	private static boolean tryResync(FabricClientCommandSource source) {
-		String uuid = getUndashedUuid(source.getClient());
+		String uuid = Utils.getUndashedUuid();
 		String profileId = Utils.getProfileId();
 
 		//Only allow resyncing if the data is actually present yet, otherwise the player needs to swap servers for the tick method to be called
@@ -220,7 +220,7 @@ public class MuseumItemCache {
 	 * The cache is ticked upon switching Skyblock servers. Only loads from the API if the profile wasn't cached yet.
 	 */
 	public static void tick(String profileId) {
-		String uuid = getUndashedUuid(MinecraftClient.getInstance());
+		String uuid = Utils.getUndashedUuid();
 
 		if (loaded.isDone() && (!MUSEUM_ITEM_CACHE.containsKey(uuid) || !MUSEUM_ITEM_CACHE.getOrDefault(uuid, new Object2ObjectOpenHashMap<>()).containsKey(profileId))) {
 			Map<String, ProfileMuseumData> playerData = MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
@@ -231,14 +231,10 @@ public class MuseumItemCache {
 	}
 
 	public static boolean hasItemInMuseum(String id) {
-		String uuid = getUndashedUuid(MinecraftClient.getInstance());
+		String uuid = Utils.getUndashedUuid();
 		ObjectOpenHashSet<String> collectedItemIds = (!MUSEUM_ITEM_CACHE.containsKey(uuid) || Utils.getProfileId().isBlank() || !MUSEUM_ITEM_CACHE.get(uuid).containsKey(Utils.getProfileId())) ? null : MUSEUM_ITEM_CACHE.get(uuid).get(Utils.getProfileId()).collectedItemIds();
 
 		return collectedItemIds != null && collectedItemIds.contains(id);
-	}
-
-	private static String getUndashedUuid(MinecraftClient client) {
-		return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
 	}
 
 	private record ProfileMuseumData(long lastResync, ObjectOpenHashSet<String> collectedItemIds) {

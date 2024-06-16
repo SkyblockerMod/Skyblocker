@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import com.google.gson.JsonElement;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.PetCache;
+import de.hysky.skyblocker.skyblock.PetCache.PetInfo;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.ProfileUtils;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.BlockState;
@@ -36,8 +36,8 @@ public class ItemCooldowns {
             561700, 611700, 666700, 726700, 791700, 861700, 936700, 1016700, 1101700, 1191700,
             1286700, 1386700, 1496700, 1616700, 1746700, 1886700
     };
-    public static int monkeyLevel = 1;
-    public static double monkeyExp = 0;
+    private static int monkeyLevel = 1;
+    private static double monkeyExp = 0;
 
     public static void init() {
         ClientPlayerBlockBreakEvents.AFTER.register(ItemCooldowns::afterBlockBreak);
@@ -45,30 +45,24 @@ public class ItemCooldowns {
     }
 
     public static void updateCooldown() {
-        ProfileUtils.updateProfile().thenAccept(player -> {
-            for (JsonElement pet : player.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
-                if (!pet.getAsJsonObject().get("type").getAsString().equals("MONKEY")) continue;
-                if (!pet.getAsJsonObject().get("active").getAsString().equals("true")) continue;
-                if (pet.getAsJsonObject().get("tier").getAsString().equals("LEGENDARY")) {
-                    monkeyExp = Double.parseDouble(pet.getAsJsonObject().get("exp").getAsString());
-                    monkeyLevel = 0;
-                    for (int xpLevel : EXPERIENCE_LEVELS) {
-                        if (monkeyExp < xpLevel) {
-                            break;
-                        } else {
-                            monkeyExp -= xpLevel;
-                            monkeyLevel++;
-                        }
-                    }
+        PetInfo pet = PetCache.getCurrentPet();
+
+        if (pet.tier().equals("LEGENDARY")) {
+            monkeyExp = pet.exp();
+
+            monkeyLevel = 0;
+            for (int xpLevel : EXPERIENCE_LEVELS) {
+                if (monkeyExp < xpLevel) {
+                    break;
+                } else {
+                    monkeyExp -= xpLevel;
+                    monkeyLevel++;
                 }
             }
-        }).exceptionally(e -> {
-            ProfileUtils.LOGGER.error("[Skyblocker Item Cooldown] Failed to get Player Pet Data, is the API Down/Limited?", e);
-            return null;
-        });
+        }
     }
 
-    private static int getCooldown() {
+    private static int getCooldown4Foraging() {
         int baseCooldown = 2000;
         int monkeyPetCooldownReduction = baseCooldown * monkeyLevel / 200;
         return baseCooldown - monkeyPetCooldownReduction;
@@ -82,7 +76,7 @@ public class ItemCooldowns {
             if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
                 updateCooldown();
                 if (!isOnCooldown(JUNGLE_AXE_ID) || !isOnCooldown(TREECAPITATOR_ID)) {
-                    ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(getCooldown()));
+                    ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(getCooldown4Foraging()));
                 }
             }
         }

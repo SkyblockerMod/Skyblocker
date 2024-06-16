@@ -2,6 +2,8 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.util.UndashedUuid;
+
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -506,5 +508,9 @@ public class Utils {
         client.inGameHud.getChatHud().addMessage(message);
         ((MessageHandlerAccessor) client.getMessageHandler()).invokeAddToChatLog(message, Instant.now());
         client.getNarratorManager().narrateSystemMessage(message);
+    }
+
+    public static String getUndashedUuid() {
+        return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
     }
 }
