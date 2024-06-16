@@ -716,5 +716,5 @@
     "skyblocker.config.general.itemInfoDisplay.slotText": "物品栏文本",
     "skyblocker.shortcuts.commandArg.tooltip": "替换具有多个单词/参数的命令的一个或多个单词/参数，而不是匹配整个命令。",
     "skyblocker.waypoints.ordered.export.success": "成功将路径点复制到剪贴板！",
-    "skyblocker.waypoints.ordered.export.fail": "§c路径点导出失败，请检查 Latest.log 以获取更多信息。"
+    "skyblocker.waypoints.ordered.export.fail": "§c路径点导出失败，请检查latest.log以获取更多信息。"
 }
