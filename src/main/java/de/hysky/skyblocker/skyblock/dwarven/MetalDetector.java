@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class MetalDetector {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
+    private static final float[] LIGHT_GRAY = {192 / 255f, 192 / 255f, 192 / 255f};
     private static final Pattern TREASURE_PATTERN = Pattern.compile("(§3§lTREASURE: §b)(\\d+\\.?\\d?)m");
     private static final Pattern KEEPER_PATTERN = Pattern.compile("Keeper of (\\w+)");
     private static final Map<String, Vec3i> keeperOffsets = Map.of(
@@ -242,15 +244,20 @@ public class MetalDetector {
         //only one location render just that and guiding line to it
         if (possibleBlocks.size() == 1) {
             Vec3i block = possibleBlocks.getFirst().add(0, -1, 0); //the block you are taken to is one block above the chest
-            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure"), new BlockPos(block.getX(), block.getY(), block.getZ()));
+            Waypoint waypoint = new Waypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, Color.yellow.getColorComponents(null));
+            MiningLocationLabel label = new MiningLocationLabel(MiningLocationLabel.CrystalHollowsOtherCategory.TREASURE, new Vec3d(block.getX() + 0.5, block.getY() + 1, block.getZ() + 0.5));
             waypoint.render(context);
+            label.render(context);
             RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
             return;
         }
 
         for (Vec3i block : possibleBlocks) {
-            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), new BlockPos(block.getX(), block.getY(), block.getZ()));
+
+            Waypoint waypoint = new Waypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, Color.white.getColorComponents(null));
+            MiningLocationLabel label = new MiningLocationLabel(MiningLocationLabel.CrystalHollowsOtherCategory.POSSIBLE_TREASURE, new Vec3d(block.getX() + 0.5, block.getY() + 1, block.getZ() + 0.5));
             waypoint.render(context);
+            label.render(context);
         }
     }
 }

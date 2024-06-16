@@ -6,9 +6,12 @@ import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import java.awt.*;
 
 public record MiningLocationLabel(Category category, Vec3d centerPos) implements Renderable {
     public MiningLocationLabel(Category category, BlockPos pos) {
@@ -152,6 +155,64 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
         @Override
         public int getColor() {
             return color;
+        }
+    }
+
+    /**
+     * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
+     */
+    enum CrystalHollowsLocationsCategory implements Category {
+        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor())),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor())),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN),
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW),
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK),
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK),
+        CORLEONE("Corleone", Color.WHITE),
+        KING_YOLKAR("King Yolkar", Color.RED),
+        ODAWA("Odawa", Color.MAGENTA),
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY);
+
+        public final Color color;
+        private final String name;
+
+        CrystalHollowsLocationsCategory(String name, Color color) {
+            this.name = name;
+            this.color = color;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int getColor() {
+            return this.color.getRGB();
+        }
+    }
+
+    enum CrystalHollowsOtherCategory implements Category {
+        TREASURE(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure") , Color.YELLOW),
+        POSSIBLE_TREASURE(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), Color.WHITE);
+
+        public final Color color;
+        private final String name;
+
+        CrystalHollowsOtherCategory(Text name, Color color) {
+            this.name = name.getString();
+            this.color = color;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int getColor() {
+            return this.color.getRGB();
         }
     }
 }

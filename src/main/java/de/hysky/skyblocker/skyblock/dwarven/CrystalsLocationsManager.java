@@ -25,6 +25,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 
 import java.awt.*;
@@ -52,12 +53,12 @@ public class CrystalsLocationsManager {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     /**
-     * A look-up table to convert between location names and waypoint in the {@link CrystalsWaypoint.Category} values.
+     * A look-up table to convert between location names and waypoint in the {@link MiningLocationLabel.CrystalHollowsLocationsCategory} values.
      */
-    private static final Map<String, CrystalsWaypoint.Category> WAYPOINT_LOCATIONS = Arrays.stream(CrystalsWaypoint.Category.values()).collect(Collectors.toMap(CrystalsWaypoint.Category::toString, Function.identity()));
+    private static final Map<String, MiningLocationLabel.CrystalHollowsLocationsCategory> WAYPOINT_LOCATIONS = Arrays.stream(MiningLocationLabel.CrystalHollowsLocationsCategory.values()).collect(Collectors.toMap(MiningLocationLabel.CrystalHollowsLocationsCategory::getName, Function.identity()));
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
 
-    protected static Map<String, CrystalsWaypoint> activeWaypoints = new HashMap<>();
+    protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
 
     public static void init() {
         // Crystal Hollows Waypoints
@@ -141,8 +142,8 @@ public class CrystalsLocationsManager {
     protected static Text getSetLocationMessage(String location, BlockPos blockPos) {
         MutableText text = Constants.PREFIX.get();
         text.append(Text.literal("Added waypoint for "));
-        Color locationColor = WAYPOINT_LOCATIONS.get(location).color;
-        text.append(Text.literal(location).withColor(locationColor.getRGB()));
+        int locationColor = WAYPOINT_LOCATIONS.get(location).getColor();
+        text.append(Text.literal(location).withColor(locationColor));
         text.append(Text.literal(" at : " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + "."));
 
         return text;
@@ -152,8 +153,8 @@ public class CrystalsLocationsManager {
         MutableText text = Constants.PREFIX.get();
 
         for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
-            Color locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).color;
-            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor.getRGB()).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints " + location + " " + waypointLocation))));
+            int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
+            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints " + location + " " + waypointLocation))));
         }
 
         return text;
@@ -178,7 +179,7 @@ public class CrystalsLocationsManager {
 
     public static int shareWaypoint(String place) {
         if (activeWaypoints.containsKey(place)) {
-            BlockPos pos = activeWaypoints.get(place).pos;
+            Vec3d pos = activeWaypoints.get(place).centerPos();
             MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
         } else {
             //send fail message
@@ -193,17 +194,16 @@ public class CrystalsLocationsManager {
 
 
     private static void addCustomWaypoint(String waypointName, BlockPos pos) {
-        CrystalsWaypoint.Category category = WAYPOINT_LOCATIONS.get(waypointName);
-        CrystalsWaypoint waypoint = new CrystalsWaypoint(category, Text.literal(waypointName), pos);
+        MiningLocationLabel.CrystalHollowsLocationsCategory category = WAYPOINT_LOCATIONS.get(waypointName);
+        MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         activeWaypoints.put(waypointName, waypoint);
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
-            for (CrystalsWaypoint crystalsWaypoint : activeWaypoints.values()) {
-                if (crystalsWaypoint.shouldRender()) {
-                    crystalsWaypoint.render(context);
-                }
+            for (MiningLocationLabel crystalsWaypoint : activeWaypoints.values()) {
+                crystalsWaypoint.render(context);
+
             }
         }
     }
