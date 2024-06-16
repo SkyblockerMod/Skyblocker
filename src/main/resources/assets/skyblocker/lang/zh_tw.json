@@ -88,7 +88,7 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip": "過濾器是否可以匹配部分聊天訊息。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.outputs": "輸出：",
     "skyblocker.config.helpers.mythologicalRitual": "神話儀式助手",
-    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "開啟神話儀式助手",
+    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "啟用Mythological Ritual助手",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "從聊天中移除這則訊息。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.finish": "完成",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds": "播放音效：",
