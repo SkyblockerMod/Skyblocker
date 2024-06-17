@@ -22,8 +22,10 @@ public class MotesTooltip extends TooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
 		if (internalID != null && TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
-			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
-			              .formatted(Formatting.LIGHT_PURPLE)
+			lines.add(Text.empty()
+			              .append(Text.literal("@align(100)"))
+			              .append(Text.literal("Motes Price:").formatted(Formatting.LIGHT_PURPLE)));
+			lines.add(Text.empty()
 			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), stack.getCount())));
 		}
 	}

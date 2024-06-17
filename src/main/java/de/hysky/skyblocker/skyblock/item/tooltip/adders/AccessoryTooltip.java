@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
@@ -25,9 +24,11 @@ public class AccessoryTooltip extends TooltipAdder {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 
 			if (report.left() != AccessoriesHelper.AccessoryReport.INELIGIBLE) {
-				MutableText title = Text.literal(String.format("%-19s", "Accessory: ")).withColor(0xf57542);
+				lines.add(Text.empty()
+				              .append(Text.literal("@align(100)"))
+				              .append(Text.literal("Accessory:").withColor(0xf57542)));
 
-				Text stateText = switch (report.left()) {
+				lines.add(switch (report.left()) {
 					case HAS_HIGHEST_TIER -> Text.literal("✔ Collected").formatted(Formatting.GREEN);
 					case IS_GREATER_TIER -> Text.literal("✦ Upgrade ").withColor(0x218bff).append(Text.literal(report.right()).withColor(0xf8f8ff));
 					case HAS_GREATER_TIER -> Text.literal("↑ Upgradable ").withColor(0xf8d048).append(Text.literal(report.right()).withColor(0xf8f8ff));
@@ -36,9 +37,7 @@ public class AccessoryTooltip extends TooltipAdder {
 
 					//Should never be the case
 					default -> Text.literal("? Unknown").formatted(Formatting.GRAY);
-				};
-
-				lines.add(title.append(stateText));
+				});
 			}
 		}
 	}

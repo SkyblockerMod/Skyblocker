@@ -23,24 +23,19 @@ public class MuseumTooltip extends TooltipAdder {
 		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
-			String format = switch (itemCategory) {
-				case "Weapons" -> "%-18s";
-				case "Armor" -> "%-19s";
-				default -> "%-20s";
-			};
 
 			//Special case the special category so that it doesn't always display not donated
 			if (itemCategory.equals("Special")) {
-				lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
-				              .formatted(Formatting.LIGHT_PURPLE));
+				lines.add(Text.literal("Museum: (" + itemCategory + ")").formatted(Formatting.LIGHT_PURPLE));
 			} else {
 				NbtCompound customData = ItemUtils.getCustomData(stack);
 				boolean isInMuseum = (customData.contains("donated_museum") && customData.getBoolean("donated_museum")) || MuseumItemCache.hasItemInMuseum(internalID);
 
 				Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
-
-				lines.add(Text.literal(String.format(format, "Museum (" + itemCategory + "):"))
-				              .formatted(Formatting.LIGHT_PURPLE)
+				lines.add(Text.empty()
+				              .append(Text.literal("@align(100)"))
+				              .append(Text.literal("Museum (" + itemCategory + "):")).formatted(Formatting.LIGHT_PURPLE));
+				lines.add(Text.empty()
 				              .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
 				              .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
 			}

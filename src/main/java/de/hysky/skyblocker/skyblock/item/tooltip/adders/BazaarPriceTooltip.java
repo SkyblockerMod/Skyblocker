@@ -41,15 +41,19 @@ public class BazaarPriceTooltip extends TooltipAdder {
 				amount = stack.getCount();
 			}
 			JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(name);
-			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
-			              .formatted(Formatting.GOLD)
+			lines.add(Text.empty()
+			              .append(Text.literal("@align(100)"))
+			              .append(Text.literal("Bazaar buy Price:").formatted(Formatting.GOLD)));
+			lines.add(Text.empty()
 			              .append(getItem.get("buyPrice").isJsonNull()
-					             ? Text.literal("No data").formatted(Formatting.RED)
+					              ? Text.literal("No data").formatted(Formatting.RED)
 					              : ItemTooltip.getCoinsMessage(getItem.get("buyPrice").getAsDouble(), amount)));
-			lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
-			              .formatted(Formatting.GOLD)
+			lines.add(Text.empty()
+			              .append(Text.literal("@align(100)"))
+			              .append(Text.literal("Bazaar sell Price:").formatted(Formatting.GOLD)));
+			lines.add(Text.empty()
 			              .append(getItem.get("sellPrice").isJsonNull()
-					             ? Text.literal("No data").formatted(Formatting.RED)
+					              ? Text.literal("No data").formatted(Formatting.RED)
 					              : ItemTooltip.getCoinsMessage(getItem.get("sellPrice").getAsDouble(), amount)));
 			bazaarExist = true;
 		}
