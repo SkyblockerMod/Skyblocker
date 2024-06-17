@@ -27,6 +27,7 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
 
     /**
      * Renders the name and distance to the label scaled so can be seen at a distance
+     *
      * @param context render context
      */
     @Override
@@ -162,24 +163,26 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
      * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
      */
     enum CrystalHollowsLocationsCategory implements Category {
-        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor())),
-        MINES_OF_DIVAN("Mines of Divan", Color.GREEN),
-        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor())),
-        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN),
-        KHAZAD_DUM("Khazad-dûm", Color.YELLOW),
-        FAIRY_GROTTO("Fairy Grotto", Color.PINK),
-        DRAGONS_LAIR("Dragon's Lair", Color.BLACK),
-        CORLEONE("Corleone", Color.WHITE),
-        KING_YOLKAR("King Yolkar", Color.RED),
-        ODAWA("Odawa", Color.MAGENTA),
-        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY);
+        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal"),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "    Sapphire Crystal"),
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal"),
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null),
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null),
+        CORLEONE("Corleone", Color.WHITE, null),
+        KING_YOLKAR("King Yolkar", Color.RED, "[NPC] King Yolkar:"),
+        ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, null);
 
         public final Color color;
         private final String name;
+        private final String linkedMessage;
 
-        CrystalHollowsLocationsCategory(String name, Color color) {
+        CrystalHollowsLocationsCategory(String name, Color color, String linkedMessage) {
             this.name = name;
             this.color = color;
+            this.linkedMessage = linkedMessage;
         }
 
         @Override
@@ -190,6 +193,10 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
         @Override
         public int getColor() {
             return this.color.getRGB();
+        }
+
+        public String getLinkedMessage() {
+            return this.linkedMessage;
         }
     }
 
