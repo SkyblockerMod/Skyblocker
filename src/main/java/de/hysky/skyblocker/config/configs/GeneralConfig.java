@@ -115,6 +115,9 @@ public class GeneralConfig {
         public boolean enableBazaarPrice = true;
 
         @SerialEntry
+        public boolean enableCraftingCost = false;
+
+        @SerialEntry
         public boolean enableObtainedDate = true;
 
         @SerialEntry

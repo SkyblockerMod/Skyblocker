@@ -156,6 +156,13 @@ public class GeneralCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableCraftingCost"))
+                                .binding(defaults.general.itemTooltip.enableCraftingCost,
+                                        () -> config.general.itemTooltip.enableCraftingCost,
+                                        newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemTooltip.enableObtainedDate"))
                                 .binding(defaults.general.itemTooltip.enableObtainedDate,
                                         () -> config.general.itemTooltip.enableObtainedDate,
