@@ -16,8 +16,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 public class CraftPriceTooltip extends TooltipAdder {
+    private final Map<String, Double> cachedCraftCosts = new HashMap<>();
+    private static final int MAX_RECURSION_DEPTH = 10;
+
     public CraftPriceTooltip(int priority) {
         super(priority);
     }
@@ -30,7 +34,7 @@ public class CraftPriceTooltip extends TooltipAdder {
         String internalID = stack.getSkyblockId();
         if (neuName == null || internalID == null) return;
 
-        if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.BAZAAR.getData() == null) {
+        if (TooltipInfoType.LOWEST_BINS.getData() == null || TooltipInfoType.BAZAAR.getData() == null) {
             ItemTooltip.nullWarning();
             return;
         }
@@ -41,30 +45,51 @@ public class CraftPriceTooltip extends TooltipAdder {
         List<NEURecipe> neuRecipes = neuItem.getRecipes();
         if (neuRecipes.isEmpty()) return;
 
-        double totalCraftCost = 0.0;
-
-        for (NEUIngredient input : neuRecipes.getFirst().getAllInputs()) {
-            String inputItemName = input.getItemId();
-            double inputItemCount = input.getAmount();
-
-            double inputItemCost = getItemCost(inputItemName);
-            totalCraftCost += inputItemCost * inputItemCount;
-        }
+        double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
 
         if (totalCraftCost == 0) return;
 
         lines.add(Text.literal(String.format("%-18s", "Crafting Cost:"))
                 .formatted(Formatting.GOLD)
-                .append(ItemTooltip.getCoinsMessage(totalCraftCost, 1)));
+                .append(ItemTooltip.getCoinsMessage(totalCraftCost, stack.getCount())));
     }
 
-    private double getItemCost(String itemName) {
-        if (TooltipInfoType.BAZAAR.getData().has(itemName)) {
-            return TooltipInfoType.BAZAAR.getData().getAsJsonObject(itemName).get("sellPrice").getAsDouble();
-        } else if (TooltipInfoType.LOWEST_BINS.getData().has(itemName)) {
-            return TooltipInfoType.LOWEST_BINS.getData().get(itemName).getAsDouble();
-        } else {
-            return 0.0;  // No data available
+    private double getItemCost(NEURecipe recipe, int depth) {
+        if (depth >= MAX_RECURSION_DEPTH) return -1;
+
+        double totalCraftCost = 0;
+        for (NEUIngredient input : recipe.getAllInputs()) {
+            String inputItemName = input.getItemId();
+            double inputItemCount = input.getAmount();
+            if (cachedCraftCosts.containsKey(inputItemName)) {
+                totalCraftCost += cachedCraftCosts.get(inputItemName) * inputItemCount;
+                continue;
+            }
+
+            double itemCost = 0;
+
+            if (TooltipInfoType.BAZAAR.getData().has(inputItemName)) {
+                itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(inputItemName).get("sellPrice").getAsDouble();
+            } else if (TooltipInfoType.LOWEST_BINS.getData().has(inputItemName)) {
+                itemCost = TooltipInfoType.LOWEST_BINS.getData().get(inputItemName).getAsDouble();
+            }
+
+            if (itemCost > 0) {
+                cachedCraftCosts.put(inputItemName, itemCost);
+            }
+
+            NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(inputItemName);
+            if (neuItem != null) {
+                List<NEURecipe> neuRecipes = neuItem.getRecipes();
+                if (!neuRecipes.isEmpty()) {
+                    double craftCost = getItemCost(neuRecipes.getFirst(), depth + 1);
+                    if (craftCost != -1) itemCost = Math.min(itemCost, craftCost);
+                    cachedCraftCosts.put(inputItemName, itemCost);
+                }
+            }
+
+            totalCraftCost += itemCost * inputItemCount;
         }
+        return totalCraftCost;
     }
 }
