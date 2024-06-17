@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -244,20 +245,15 @@ public class MetalDetector {
         //only one location render just that and guiding line to it
         if (possibleBlocks.size() == 1) {
             Vec3i block = possibleBlocks.getFirst().add(0, -1, 0); //the block you are taken to is one block above the chest
-            Waypoint waypoint = new Waypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, Color.yellow.getColorComponents(null));
-            MiningLocationLabel label = new MiningLocationLabel(MiningLocationLabel.CrystalHollowsOtherCategory.TREASURE, new Vec3d(block.getX() + 0.5, block.getY() + 1, block.getZ() + 0.5));
+            NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure").getString(), Color.yellow.getColorComponents(null));
             waypoint.render(context);
-            label.render(context);
             RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
             return;
         }
 
         for (Vec3i block : possibleBlocks) {
-
-            Waypoint waypoint = new Waypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, Color.white.getColorComponents(null));
-            MiningLocationLabel label = new MiningLocationLabel(MiningLocationLabel.CrystalHollowsOtherCategory.POSSIBLE_TREASURE, new Vec3d(block.getX() + 0.5, block.getY() + 1, block.getZ() + 0.5));
+            NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible").getString(), Color.white.getColorComponents(null));
             waypoint.render(context);
-            label.render(context);
         }
     }
 }
