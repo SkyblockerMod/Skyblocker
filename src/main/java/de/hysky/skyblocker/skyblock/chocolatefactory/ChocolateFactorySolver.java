@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
-import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -197,7 +196,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
 		String coachLore = getConcatenatedLore(coachItem);
 
-		if (totalCpsMultiplier == -1.0) return Optional.empty(); //We need the total multiplier to calculate the increase in cps.
+		if (totalCps < 0 || totalCpsMultiplier < 0) return Optional.empty(); //We need these 2 to calculate the increase in cps.
 
 		Matcher multiplierIncreaseMatcher = MULTIPLIER_INCREASE_PATTERN.matcher(coachLore);
 		OptionalDouble currentCpsMultiplier = RegexUtils.getDoubleFromMatcher(multiplierIncreaseMatcher);
@@ -230,7 +229,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot));
+		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt())*(totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsInt(), slot));
 	}
 
 	private static Optional<ColorHighlight> getPrestigeHighlight() {
