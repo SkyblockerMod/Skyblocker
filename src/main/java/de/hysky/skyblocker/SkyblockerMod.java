@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;
 import de.hysky.skyblocker.skyblock.chat.ChatRuleAnnouncementScreen;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
+import de.hysky.skyblocker.skyblock.chocolatefactory.RabbitCollection;
 import de.hysky.skyblocker.skyblock.chocolatefactory.TimeTowerReminder;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.dungeon.*;
@@ -192,6 +193,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SkyblockTime.init();
         TooltipManager.init();
         SlotTextManager.init();
+        RabbitCollection.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
