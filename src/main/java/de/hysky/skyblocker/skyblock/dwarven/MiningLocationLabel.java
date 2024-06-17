@@ -193,26 +193,4 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
         }
     }
 
-    enum CrystalHollowsOtherCategory implements Category {
-        TREASURE(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure") , Color.YELLOW),
-        POSSIBLE_TREASURE(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), Color.WHITE);
-
-        public final Color color;
-        private final String name;
-
-        CrystalHollowsOtherCategory(Text name, Color color) {
-            this.name = name.getString();
-            this.color = color;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public int getColor() {
-            return this.color.getRGB();
-        }
-    }
 }
