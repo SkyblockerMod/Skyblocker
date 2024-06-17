@@ -41,6 +41,6 @@ public class AlignedTooltipComponent implements TooltipComponent {
 	@Override
 	public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
 		textRenderer.draw(left, x, y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
-		textRenderer.draw(right, x + xOffset, y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+		textRenderer.draw(right, x + Math.max(textRenderer.getWidth(left), xOffset), y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
 	}
 }
