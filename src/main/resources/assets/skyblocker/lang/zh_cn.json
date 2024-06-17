@@ -234,7 +234,7 @@
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "地牢 %d 分消息",
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "当在地牢中达到%d分时，在聊天栏内发送信息。字符串“[score]”将替换为地牢分数（%d）。",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "价格数据不完整时显示的颜色。",
-    "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "不完整的颜色",
+    "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "存在物品价格信息缺失时的颜色",
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "启用分数状态栏",
     "skyblocker.config.mining.dwarvenHud.enabledCommissions": "启用任务栏",
     "skyblocker.config.mining.dwarvenHud.enabledPowder": "启用粉末栏",
