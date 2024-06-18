@@ -29,6 +29,6 @@ public class PrehistoricEggAdder extends SlotTextAdder {
 		else if (walked < 10000) walkedstr = String.format("%.1fk", walked/1000.0f);
 		else walkedstr = walked / 1000 + "k";
 
-		return List.of(SlotText.bottomLeft(Text.literal(walkedstr).formatted(Formatting.GOLD)));
+		return List.of(SlotText.bottomLeft(Text.literal(walkedstr).withColor(0xFFDDC1)));
 	}
 }

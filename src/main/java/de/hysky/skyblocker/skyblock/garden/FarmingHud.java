@@ -135,7 +135,7 @@ public class FarmingHud {
     }
 
     public enum CounterType {
-        NONE("", "No Counter: "),
+        NONE("", "No Counter"),
         COUNTER("mined_crops", "Counter: "),
         CULTIVATING("farmed_cultivating", "Cultivating Counter: ");
 
@@ -145,6 +145,9 @@ public class FarmingHud {
         CounterType(String nbtKey, String text) {
             this.nbtKey = nbtKey;
             this.text = text;
+        }
+        public boolean matchesText(String textToMatch) {
+            return this.text.equals(textToMatch);
         }
     }
 }

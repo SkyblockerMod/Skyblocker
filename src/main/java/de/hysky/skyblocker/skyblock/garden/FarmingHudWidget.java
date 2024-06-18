@@ -66,7 +66,10 @@ public class FarmingHudWidget extends Widget {
         String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));
         ItemStack cropStack = ItemRepository.getItemStack(ItemTooltip.getNeuName(cropItemId, cropItemId)); // The cropItemId is being used as the api id in the second parameter because the skyblock id and api id are the same for all crops.
 
-        addSimpleIcoText(cropStack, FarmingHud.counterText(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter()));
+        String counterText = FarmingHud.counterText();
+        String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
+        if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
+        addSimpleIcoText(cropStack, counterText, Formatting.YELLOW, counterNumber);
         float cropsPerMinute = FarmingHud.cropsPerMinute();
         addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
         addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));

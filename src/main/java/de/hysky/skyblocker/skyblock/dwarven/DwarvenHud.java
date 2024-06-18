@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
@@ -164,7 +165,9 @@ public class DwarvenHud {
 
     public static void update() {
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null
-                || !SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions && !SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder
+                || !SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions
+                && !SkyblockerConfigManager.get().mining.dwarvenHud.enabledPowder
+                && SkyblockerConfigManager.get().mining.commissionWaypoints.mode == MiningConfig.CommissionWaypointMode.OFF
                 || !Utils.isInCrystalHollows() && !Utils.isInDwarvenMines()) {
             return;
         }

@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.stream.JsonReader;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -8,6 +11,7 @@ import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 
+import java.io.StringReader;
 import java.net.http.HttpHeaders;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -160,7 +164,12 @@ public enum TooltipInfoType implements Runnable {
                 if (this.hash == hash) return;
                 else this.hash = hash;
             }
-            data = SkyblockerMod.GSON.fromJson(Http.sendGetRequest(address), JsonObject.class);
+            String response = Http.sendGetRequest(address);
+            if (response.trim().startsWith("<!DOCTYPE") || response.trim().startsWith("<html")) {
+                ItemTooltip.LOGGER.warn("[Skyblocker] Received HTML content for " + this.name() + ". Expected JSON.");
+                return;
+            }
+            data = SkyblockerMod.GSON.fromJson(response, JsonObject.class);
 
             if (callback != null) callback.accept(data);
         } catch (Exception e) {

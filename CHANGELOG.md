@@ -4,6 +4,7 @@
 * Chocolate factory helper
 * Calendar Event Notifications
 * Glacite Tunnels Cold Overlay
+* Add onscreen info for specific items and menus like pet level (slot text)
 * Config reordering
 * Waypoints for commissions in dwarven mines and glacite
 * Sign calculator
@@ -11,7 +12,7 @@
 * Hide Soulweaver Skulls
 * Compact damage
 * 2 Extra Tabs in Quick Nav
-* Vanilla health/xp and fancy bar shown parallel now possible
+* Vanilla health/xp and fancy bar shown in parallel now possible
 * Highlight chest in three weirdos
 * Visitor helper copy amount to clipboard
 * Search overlay improvement (better pet search, dungeon stars)
