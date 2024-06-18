@@ -31,11 +31,8 @@ public class LBinTooltip extends TooltipAdder {
 		// bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
 
 		if (TooltipInfoType.LOWEST_BINS.isTooltipEnabledAndHasOrNullWarning(name) && !BazaarPriceTooltip.bazaarExist) {
-			lines.add(Text.empty()
-			              .append(Text.literal("@align(100)"))
-			              .append(Text.literal("Lowest BIN Price:").formatted(Formatting.GOLD)));
-			lines.add(Text.empty()
-			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), stack.getCount())));
+			lines.add(Text.literal("Lowest BIN Price:").formatted(Formatting.GOLD)
+			              .align(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), stack.getCount()), 100));
 			lbinExist = true;
 		}
 	}
