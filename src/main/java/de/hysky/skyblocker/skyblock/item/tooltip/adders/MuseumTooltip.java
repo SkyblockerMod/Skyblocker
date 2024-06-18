@@ -32,12 +32,10 @@ public class MuseumTooltip extends TooltipAdder {
 				boolean isInMuseum = (customData.contains("donated_museum") && customData.getBoolean("donated_museum")) || MuseumItemCache.hasItemInMuseum(internalID);
 
 				Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
-				lines.add(Text.empty()
-				              .append(Text.literal("@align(100)"))
-				              .append(Text.literal("Museum (" + itemCategory + "):")).formatted(Formatting.LIGHT_PURPLE));
-				lines.add(Text.empty()
-				              .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
-				              .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
+				lines.add(Text.literal("Museum (" + itemCategory + "):").formatted(Formatting.LIGHT_PURPLE)
+				              .align(Text.empty()
+				                         .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
+				                         .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)), 100));
 			}
 		}
 	}
