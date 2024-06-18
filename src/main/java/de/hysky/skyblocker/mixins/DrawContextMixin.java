@@ -9,6 +9,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.OrderedTextTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,23 +30,9 @@ public abstract class DrawContextMixin {
 		if (!Utils.isOnSkyblock()) return original;
 		List<TooltipComponent> result = new ArrayList<>();
 
-		for (int i = 0; i < list.size(); i++) {
-			Text text = list.get(i);
-			List<Text> siblings = text.getSiblings();
-			if (siblings.size() >= 2) {
-				String first = siblings.getFirst().getString();
-				if (first.startsWith("@align(") && first.endsWith(")") && i + 1 < list.size()) {
-					//Some sanity checks were skipped here for brevity. Should be made sure that the string is in the correct format.
-					int x = Integer.parseInt(first.substring(7, first.length() - 1));
-					siblings.removeFirst();
-					result.add(new AlignedTooltipComponent(text.copy().asOrderedText(), x, list.get(i + 1).asOrderedText()));
-					i++;
-				} else {
-					result.add(new OrderedTextTooltipComponent(text.asOrderedText()));
-				}
-			} else {
-				result.add(new OrderedTextTooltipComponent(text.asOrderedText()));
-			}
+		for (Text text : list) {
+			if (text instanceof MutableText mutableText && mutableText.getAlignedText() != null) result.add(new AlignedTooltipComponent(mutableText));
+			else result.add(new OrderedTextTooltipComponent(text.asOrderedText()));
 		}
 
 		return (R) result;

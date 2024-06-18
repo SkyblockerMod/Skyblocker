@@ -3,7 +3,8 @@ package de.hysky.skyblocker.utils.render.gui;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.text.OrderedText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 
 /**
@@ -18,14 +19,10 @@ import org.joml.Matrix4f;
  *
  */
 public class AlignedTooltipComponent implements TooltipComponent {
-	private final OrderedText left;
-	private final int xOffset;
-	private final OrderedText right;
+	private final MutableText text;
 
-	public AlignedTooltipComponent(OrderedText left, int xOffset, OrderedText right) {
-		this.left = left;
-		this.xOffset = xOffset;
-		this.right = right;
+	public AlignedTooltipComponent(MutableText text) {
+		this.text = text;
 	}
 
 	@Override
@@ -35,12 +32,24 @@ public class AlignedTooltipComponent implements TooltipComponent {
 
 	@Override
 	public int getWidth(TextRenderer textRenderer) {
-		return Math.max(textRenderer.getWidth(left), xOffset) + textRenderer.getWidth(right);
+		Text tmpText = this.text;
+		int width = 0;
+		while (tmpText != null) {
+			int offset = tmpText.getXOffset();
+			width += offset != Integer.MIN_VALUE ? Math.max(textRenderer.getWidth(tmpText), tmpText.getXOffset()) : textRenderer.getWidth(tmpText);
+			tmpText = tmpText.getAlignedText();
+		}
+		return width;
 	}
 
 	@Override
 	public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
-		textRenderer.draw(left, x, y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
-		textRenderer.draw(right, x + Math.max(textRenderer.getWidth(left), xOffset), y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+		MutableText tmpText = this.text;
+		int tmpX = x;
+		while (tmpText != null) {
+			textRenderer.draw(tmpText, tmpX, y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+			tmpX += Math.max(textRenderer.getWidth(tmpText), tmpText.getXOffset());
+			tmpText = tmpText.getAlignedText();
+		}
 	}
 }
