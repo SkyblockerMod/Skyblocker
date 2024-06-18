@@ -39,7 +39,6 @@
     "key.skyblocker.toggleA": "HUD auf Tab A umschalten",
     "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Superpairs Solver aktivieren",
     "skyblocker.config.helpers.experiments.enableUltrasequencerSolver": "Ultrasequencer Solver aktivieren",
-    "skyblocker.option.general.bars.barpositions": "Balkenposition Bearbeiten",
     "skyblocker.config.general.acceptReparty": "Automatische Annahme von Reparty",
     "skyblocker.config.quickNav.enableQuickNav": "Schnellnavigation aktivieren",
     "key.itemProtection": "Artikel schützen",
