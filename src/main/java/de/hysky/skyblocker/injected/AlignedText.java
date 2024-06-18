@@ -32,6 +32,7 @@ public interface AlignedText {
 	 *                relative to the start of the text object this method is called upon.
 	 * @return The text object this method is called upon, with the aligned text added
 	 * @see AlignedTooltipComponent
+	 * @see #chainAlign(MutableText, int)
 	 */
 	default @NotNull Text align(@NotNull MutableText text, int xOffset) {
 		return null; // Dummy return value
