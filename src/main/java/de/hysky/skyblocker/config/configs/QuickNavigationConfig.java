@@ -91,7 +91,7 @@ public class QuickNavigationConfig {
         }
 
         public ItemData(String item, int count, String components) {
-            this(Registries.ITEM.get(new Identifier(item)), count, components);
+            this(Registries.ITEM.get(Identifier.ofVanilla(item)), count, components);
         }
 
         public ItemData(Item item) {

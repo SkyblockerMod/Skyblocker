@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -13,11 +14,11 @@ public class ChatRuleAnnouncementScreen {
     private static Text text = null;
 
     public static void init() {
-        HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
+        HudRenderEvents.BEFORE_CHAT.register((context, tickCounter) -> {
             if (timer <= 0 || text == null) {
                 return;
             }
-            render(context, tickDelta);
+            render(context, tickCounter);
         });
     }
 
@@ -26,10 +27,10 @@ public class ChatRuleAnnouncementScreen {
      * @param context render context
      * @param tickDelta difference from last render to remove from timer
      */
-    private static void render(DrawContext context, float tickDelta) {
+    private static void render(DrawContext context, RenderTickCounter tickCounter) {
         int scale = SkyblockerConfigManager.get().chat.chatRuleConfig.announcementScale;
         //decrement timer
-        timer -= tickDelta;
+        timer -= tickCounter.getTickDelta(true);
         //scale text up and center
         MatrixStack matrices = context.getMatrices();
         matrices.push();

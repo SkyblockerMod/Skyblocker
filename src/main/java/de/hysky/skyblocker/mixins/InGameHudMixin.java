@@ -43,7 +43,7 @@ public abstract class InGameHudMixin {
     private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
 
     @Unique
-    private static final Identifier ITEM_PROTECTION = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+    private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
     @Unique
     private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
@@ -58,7 +58,7 @@ public abstract class InGameHudMixin {
     @Final
     private LayeredDrawer layeredDrawer;
 
-    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V", ordinal = 0))
+    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V", ordinal = 0))
     public void skyblocker$renderHotbarItemLockOrRarityBg(CallbackInfo ci, @Local(argsOnly = true) DrawContext context, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
         if (Utils.isOnSkyblock()) {
             // slot lock
@@ -141,17 +141,17 @@ public abstract class InGameHudMixin {
 
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2))
     private LayeredDrawer.Layer skyblocker$afterMainHud(LayeredDrawer.Layer mainHudLayer) {
-        return (context, tickDelta) -> {
-            mainHudLayer.render(context, tickDelta);
-            HudRenderEvents.AFTER_MAIN_HUD.invoker().onRender(context, tickDelta);
+        return (context, tickCounter) -> {
+            mainHudLayer.render(context, tickCounter);
+            HudRenderEvents.AFTER_MAIN_HUD.invoker().onRender(context, tickCounter);
         };
     }
 
     @ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 1)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
     private LayeredDrawer.Layer skyblocker$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
-        return (context, tickDelta) -> {
-            HudRenderEvents.BEFORE_CHAT.invoker().onRender(context, tickDelta);
-            beforeChatLayer.render(context, tickDelta);
+        return (context, tickCounter) -> {
+            HudRenderEvents.BEFORE_CHAT.invoker().onRender(context, tickCounter);
+            beforeChatLayer.render(context, tickCounter);
         };
     }
 

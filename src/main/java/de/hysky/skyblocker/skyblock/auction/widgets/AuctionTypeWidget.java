@@ -23,11 +23,11 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 
         private final Identifier texture;
         private static final String prefix = "textures/gui/auctions_gui/auction_type_widget/";
-        private static final Identifier HOVER_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, prefix + "hover.png");
-        private static final Identifier BACK_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, prefix + "back.png");
+        private static final Identifier HOVER_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, prefix + "hover.png");
+        private static final Identifier BACK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, prefix + "back.png");
 
         Option(String textureName) {
-            texture = new Identifier(SkyblockerMod.NAMESPACE, prefix + textureName);
+            texture = Identifier.of(SkyblockerMod.NAMESPACE, prefix + textureName);
         }
 
         private static final AuctionTypeWidget.Option[] values = values();

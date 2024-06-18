@@ -55,7 +55,7 @@ public class TicTacToe extends DungeonPuzzle {
 				char[][] board = new char[3][3];
 
 				for (ItemFrameEntity itemFrame : itemFramesThatHoldMaps) {
-					MapState mapState = client.world.getMapState(itemFrame.getMapId());
+					MapState mapState = client.world.getMapState(itemFrame.getMapId(itemFrame.getHeldItemStack()));
 
 					if (mapState == null) continue;
 

@@ -157,8 +157,8 @@ public class GeneralConfig {
     }
 
     public enum RarityBackgroundStyle {
-        CIRCULAR(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
-        SQUARE(new Identifier(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
+        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
 
         public final Identifier tex;
 
@@ -181,8 +181,8 @@ public class GeneralConfig {
     }
 
     public enum SlotLockStyle {
-        CLASSIC(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png")),
-        FANCY(new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/fancy_slot_lock.png"));
+        CLASSIC(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png")),
+        FANCY(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/fancy_slot_lock.png"));
 
         public final Identifier tex;
 

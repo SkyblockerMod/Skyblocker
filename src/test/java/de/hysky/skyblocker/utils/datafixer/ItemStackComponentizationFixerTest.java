@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Util;
 
 public class ItemStackComponentizationFixerTest {
@@ -25,7 +26,7 @@ public class ItemStackComponentizationFixerTest {
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
 		ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
 
-		builder.add(Enchantments.SHARPNESS, 1);
+		builder.add(ItemStackComponentizationFixer.getRegistryLookup().getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
 		item.set(DataComponentTypes.ENCHANTMENTS, builder.build());
 	});
 
@@ -43,7 +44,7 @@ public class ItemStackComponentizationFixerTest {
 	@Test
 	void testDataFixer() {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
-		JsonElement stackJson = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, fixedStack).getOrThrow();
+		JsonElement stackJson = ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
 
 		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}

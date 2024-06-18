@@ -12,13 +12,11 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.function.Consumer;
-
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
  */
 public class AbstractPopupScreen extends Screen {
-    private static final Identifier BACKGROUND_TEXTURE = new Identifier("popup/background");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("popup/background");
     private final Screen backgroundScreen;
 
     protected AbstractPopupScreen(Text title, Screen backgroundScreen) {

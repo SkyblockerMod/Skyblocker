@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
-    protected static final Identifier BACKGROUND_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background_view.png");
+    protected static final Identifier BACKGROUND_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background_view.png");
 
     public static final int BACK_BUTTON_SLOT = 49;
 

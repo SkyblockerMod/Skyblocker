@@ -72,7 +72,7 @@ public final class ColorTerminal extends ContainerSolver implements TerminalSolv
         itemColor = new HashMap<>();
         for (DyeColor color : DyeColor.values())
             for (String item : new String[]{"dye", "wool", "stained_glass", "terracotta"})
-                itemColor.put(Registries.ITEM.get(new Identifier(color.getName() + '_' + item)), color);
+                itemColor.put(Registries.ITEM.get(Identifier.ofVanilla(color.getName() + '_' + item)), color);
         itemColor.put(Items.BONE_MEAL, DyeColor.WHITE);
         itemColor.put(Items.LAPIS_LAZULI, DyeColor.BLUE);
         itemColor.put(Items.COCOA_BEANS, DyeColor.BROWN);

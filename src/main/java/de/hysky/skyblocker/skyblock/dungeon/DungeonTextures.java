@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 public class DungeonTextures {
     public static void init() {
         ResourceManagerHelper.registerBuiltinResourcePack(
-                new Identifier(SkyblockerMod.NAMESPACE, "recolored_dungeon_items"),
+                Identifier.of(SkyblockerMod.NAMESPACE, "recolored_dungeon_items"),
                 SkyblockerMod.SKYBLOCKER_MOD,
                 ResourcePackActivationType.NORMAL
         );

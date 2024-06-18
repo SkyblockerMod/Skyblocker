@@ -25,8 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchResultsWidget implements Drawable, Element {
-    private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_forward"), new Identifier("recipe_book/page_forward_highlighted"));
-    private static final ButtonTextures PAGE_BACKWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_backward"), new Identifier("recipe_book/page_backward_highlighted"));
+    private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(Identifier.ofVanilla("recipe_book/page_forward"), Identifier.ofVanilla("recipe_book/page_forward_highlighted"));
+    private static final ButtonTextures PAGE_BACKWARD_TEXTURES = new ButtonTextures(Identifier.ofVanilla("recipe_book/page_backward"), Identifier.ofVanilla("recipe_book/page_backward_highlighted"));
     private static final int COLS = 5;
     private static final int MAX_TEXT_WIDTH = 124;
     private static final String ELLIPSIS = "...";

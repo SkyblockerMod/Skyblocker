@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -23,11 +24,11 @@ import java.util.function.Supplier;
 public class MirrorverseWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
 	private static final Supplier<Waypoint.Type> WAYPOINT_TYPE = () -> Waypoint.Type.HIGHLIGHT;
-	private static final Identifier WAYPOINTS_JSON = new Identifier(SkyblockerMod.NAMESPACE, "rift/mirrorverse_waypoints.json");
+	private static final Identifier WAYPOINTS_JSON = Identifier.of(SkyblockerMod.NAMESPACE, "rift/mirrorverse_waypoints.json");
 	private static Waypoint[] LAVA_PATH_WAYPOINTS;
 	private static Waypoint[] UPSIDE_DOWN_WAYPOINTS;
 	private static Waypoint[] TURBULATOR_WAYPOINTS;
-	private static final float[] COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
+	private static final float[] COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
 
 	private static CompletableFuture<Void> waypointsLoaded;
 

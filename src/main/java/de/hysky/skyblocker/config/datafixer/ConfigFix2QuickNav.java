@@ -33,6 +33,6 @@ public class ConfigFix2QuickNav extends ConfigDataFix {
     }
 
     private <T> Dynamic<T> fixButton(Dynamic<T> button) {
-        return button.renameAndFixField("item", "itemData", itemData -> itemData.renameAndFixField("id", "item", id -> id.createString(new Identifier(id.asString().getOrThrow()).toString())));
+        return button.renameAndFixField("item", "itemData", itemData -> itemData.renameAndFixField("id", "item", id -> id.createString(Identifier.of(id.asString().getOrThrow()).toString())));
     }
 }

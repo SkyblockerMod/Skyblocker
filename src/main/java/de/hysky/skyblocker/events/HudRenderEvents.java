@@ -3,6 +3,7 @@ package de.hysky.skyblocker.events;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 
 /**
  * HUD render events that allow for proper layering between different HUD elements.
@@ -43,8 +44,8 @@ public class HudRenderEvents {
 		 * Called sometime during a specific HUD render stage.
 		 *
 		 * @param drawContext The {@link DrawContext} instance
-		 * @param tickDelta Progress for linearly interpolating between the previous and current game state
+		 * @param tickCounter The {@link RenderTickCounter} instance
 		 */
-		void onRender(DrawContext context, float tickDelta);
+		void onRender(DrawContext context, RenderTickCounter tickCounter);
 	}
 }

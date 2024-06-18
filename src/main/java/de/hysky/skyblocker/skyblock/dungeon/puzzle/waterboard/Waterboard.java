@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Cell.SwitchCell;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -71,7 +72,7 @@ public class Waterboard extends DungeonPuzzle {
             new BlockPos(10, 61, 10)
     };
     public static final BlockPos WATER_LEVER = new BlockPos(15, 60, 5);
-    private static final float[] LIME_COLOR_COMPONENTS = DyeColor.LIME.getColorComponents();
+    private static final float[] LIME_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.LIME);
 
     private CompletableFuture<Void> solve;
     private final Cell[][] cells = new Cell[19][19];

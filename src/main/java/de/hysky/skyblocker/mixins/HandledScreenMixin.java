@@ -60,7 +60,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	private static final int OUT_OF_BOUNDS_SLOT = -999;
 
 	@Unique
-	private static final Identifier ITEM_PROTECTION = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+	private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
 
 	@Unique
 	private static final Set<String> FILLER_ITEMS = Set.of(

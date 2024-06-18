@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class ResultButtonWidget extends ClickableWidget {
-    private static final Identifier BACKGROUND_TEXTURE = new Identifier("recipe_book/slot_craftable");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("recipe_book/slot_craftable");
 
     protected ItemStack itemStack = null;
 

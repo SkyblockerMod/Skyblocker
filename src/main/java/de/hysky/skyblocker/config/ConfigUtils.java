@@ -52,7 +52,7 @@ public class ConfigUtils {
 	public static OptionDescription withImage(Path imagePath, @Nullable Text... texts) {
 		return OptionDescription.createBuilder()
 				.text(ArrayUtils.isNotEmpty(texts) ? texts : new Text[] {})
-				.image(IMAGE_DIRECTORY.resolve(imagePath), new Identifier(SkyblockerMod.NAMESPACE, "config_image_" + FileUtils.normalizePath(imagePath)))
+				.image(IMAGE_DIRECTORY.resolve(imagePath), Identifier.of(SkyblockerMod.NAMESPACE, "config_image_" + FileUtils.normalizePath(imagePath)))
 				.build();
 	}
 }

@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -27,7 +28,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class IceFill extends DungeonPuzzle {
     public static final IceFill INSTANCE = new IceFill();
-    private static final float[] RED_COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
+    private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
     private static final BlockPos[] BOARD_ORIGINS = {
             new BlockPos(16, 70, 9),
             new BlockPos(17, 71, 16),

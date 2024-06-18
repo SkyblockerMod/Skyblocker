@@ -19,8 +19,8 @@ import java.util.Map;
 
 public class RarityWidget extends ClickableWidget {
 
-    private static final Identifier HOVER_TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/hover.png");
-    private static final Identifier TEXTURE = new Identifier(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/background.png");
+    private static final Identifier HOVER_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/hover.png");
+    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/background.png");
     private final SlotClickHandler onClick;
     private int slotId = -1;
 

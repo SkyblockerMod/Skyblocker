@@ -97,7 +97,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         return client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.getType() == HitResult.Type.BLOCK ? blockHitResult.getBlockPos() : client.player != null ? client.player.getBlockPos() : BlockPos.ORIGIN;
     }
 
-    protected abstract static class AbstractWaypointEntry extends Entry<AbstractWaypointEntry> {
+    protected abstract static class AbstractWaypointEntry extends ElementListWidget.Entry<AbstractWaypointEntry> {
     }
 
     protected class WaypointCategoryEntry extends AbstractWaypointEntry {

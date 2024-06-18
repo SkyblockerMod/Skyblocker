@@ -15,7 +15,7 @@ public class DungeonMapConfigScreen extends Screen {
 	private int mapY = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
 	private int scoreX = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 	private int scoreY = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
-	private static final Identifier MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
+	private static final Identifier MAP_BACKGROUND = Identifier.ofVanilla("textures/map/map_background.png");
 	private final Screen parent;
 
 	protected DungeonMapConfigScreen() {

@@ -295,7 +295,7 @@ public class DungeonManager {
             }));
         }
         dungeonFutures.add(CompletableFuture.runAsync(() -> {
-            try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
+            try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
                 loadJson(roomsReader, roomsJson);
                 loadJson(waypointsReader, waypointsJson);
                 LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon secret waypoints json");

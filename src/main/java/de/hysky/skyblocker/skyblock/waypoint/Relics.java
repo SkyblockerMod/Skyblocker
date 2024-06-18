@@ -8,6 +8,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -58,7 +59,7 @@ public class Relics {
 
     private static void loadRelics(MinecraftClient client) {
         relicsLoaded = CompletableFuture.runAsync(() -> {
-            try (BufferedReader reader = client.getResourceManager().openAsReader(new Identifier(SkyblockerMod.NAMESPACE, "spidersden/relics.json"))) {
+            try (BufferedReader reader = client.getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "spidersden/relics.json"))) {
                 for (Map.Entry<String, JsonElement> json : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     if (json.getKey().equals("total")) {
                         totalRelics = json.getValue().getAsInt();
@@ -66,7 +67,7 @@ public class Relics {
                         for (JsonElement locationJson : json.getValue().getAsJsonArray().asList()) {
                             JsonObject posData = locationJson.getAsJsonObject();
                             BlockPos pos = new BlockPos(posData.get("x").getAsInt(), posData.get("y").getAsInt(), posData.get("z").getAsInt());
-                            relics.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, DyeColor.YELLOW.getColorComponents(), DyeColor.BROWN.getColorComponents()));
+                            relics.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.YELLOW), ColorUtils.getFloatComponents(DyeColor.BROWN)));
                         }
                     }
                 }

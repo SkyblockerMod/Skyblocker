@@ -81,7 +81,7 @@ public class ScreenMaster {
         // WHY MUST IT ALWAYS BE SUCH NESTED GARBAGE MINECRAFT KEEP THAT IN DFU FFS
 
         ResourceManagerHelper.registerBuiltinResourcePack(
-                new Identifier(SkyblockerMod.NAMESPACE, "top_aligned"),
+                Identifier.of(SkyblockerMod.NAMESPACE, "top_aligned"),
                 SkyblockerMod.SKYBLOCKER_MOD,
                 ResourcePackActivationType.NORMAL
         );
@@ -91,7 +91,7 @@ public class ScreenMaster {
                 new SimpleSynchronousResourceReloadListener() {
                     @Override
                     public Identifier getFabricId() {
-                        return new Identifier("skyblocker", "tabhud");
+                        return Identifier.of(SkyblockerMod.NAMESPACE, "tabhud");
                     }
 
                     @Override

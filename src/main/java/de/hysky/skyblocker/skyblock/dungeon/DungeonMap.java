@@ -26,7 +26,7 @@ public class DungeonMap {
     private static MapIdComponent cachedMapIdComponent = null;
 
     public static void init() {
-    	HudRenderEvents.AFTER_MAIN_HUD.register((context, tickDelta) -> render(context));
+    	HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> render(context));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("dungeon")

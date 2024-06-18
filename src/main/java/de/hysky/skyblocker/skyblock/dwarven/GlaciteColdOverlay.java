@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GlaciteColdOverlay {
-    private static final Identifier POWDER_SNOW_OUTLINE = new Identifier("textures/misc/powder_snow_outline.png");
+    private static final Identifier POWDER_SNOW_OUTLINE = Identifier.ofVanilla("textures/misc/powder_snow_outline.png");
     private static final Pattern COLD_PATTERN = Pattern.compile("Cold: -(\\d+)❄");
     private static int cold = 0;
     private static long resetTime = System.currentTimeMillis();

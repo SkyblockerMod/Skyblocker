@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -18,17 +19,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Boulder extends DungeonPuzzle {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Boulder.class.getName());
     private static final Boulder INSTANCE = new Boulder();
-    private static final float[] RED_COLOR_COMPONENTS = DyeColor.RED.getColorComponents();
-    private static final float[] ORANGE_COLOR_COMPONENTS = DyeColor.ORANGE.getColorComponents();
+    private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
+    private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
     private static final int BASE_Y = 65;
     static Vec3d[] linePoints;
     static Box boundingBox;

@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.LinkedHashSet;
@@ -81,8 +82,8 @@ public class TitleContainer {
         titles.remove(title);
     }
 
-    private static void render(DrawContext context, float tickDelta) {
-        render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickDelta);
+    private static void render(DrawContext context, RenderTickCounter tickCounter) {
+        render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getTickDelta(true));
     }
 
     protected static void render(DrawContext context, Set<Title> titles, int xPos, int yPos, float tickDelta) {

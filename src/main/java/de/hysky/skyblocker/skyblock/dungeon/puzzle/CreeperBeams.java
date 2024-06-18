@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
@@ -28,13 +29,13 @@ public class CreeperBeams extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreeperBeams.class.getName());
 
     private static final float[][] COLORS = {
-            DyeColor.LIGHT_BLUE.getColorComponents(),
-            DyeColor.LIME.getColorComponents(),
-            DyeColor.YELLOW.getColorComponents(),
-            DyeColor.MAGENTA.getColorComponents(),
-            DyeColor.PINK.getColorComponents(),
+            ColorUtils.getFloatComponents(DyeColor.LIGHT_BLUE),
+            ColorUtils.getFloatComponents(DyeColor.LIME),
+            ColorUtils.getFloatComponents(DyeColor.YELLOW),
+            ColorUtils.getFloatComponents(DyeColor.MAGENTA),
+            ColorUtils.getFloatComponents(DyeColor.PINK),
     };
-    private static final float[] GREEN_COLOR_COMPONENTS = DyeColor.GREEN.getColorComponents();
+    private static final float[] GREEN_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.GREEN);
 
     private static final int FLOOR_Y = 68;
     private static final int BASE_Y = 74;

@@ -72,14 +72,16 @@ public class ItemListTab extends ItemListWidget.TabContainerWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!visible) return false;
-        if (this.searchField.mouseClicked(mouseX, mouseY, button)) {
+        if (this.searchField.mouseClicked(mouseX, mouseY, button) && this.results != null) {
             this.results.closeRecipeView();
             this.searchField.setFocused(true);
             return true;
-        } else {
+        } else if (results != null) {
             this.searchField.setFocused(false);
-            return this.results.mouseClicked(mouseX, mouseY, button);
+            this.results.mouseClicked(mouseX, mouseY, button);
         }
+
+        return false;
     }
 
     @Override

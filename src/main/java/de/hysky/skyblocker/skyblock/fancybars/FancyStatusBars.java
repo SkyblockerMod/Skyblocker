@@ -52,16 +52,16 @@ public class FancyStatusBars {
     }
 
     public static void init() {
-        statusBars.put("health", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/health"),
+        statusBars.put("health", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/health"),
                 new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)},
                 true, new Color(255, 85, 85), Text.translatable("skyblocker.bars.config.health")));
-        statusBars.put("intelligence", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/intelligence"),
+        statusBars.put("intelligence", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/intelligence"),
                 new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)},
                 true, new Color(85, 255, 255), Text.translatable("skyblocker.bars.config.intelligence")));
-        statusBars.put("defense", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/defense"),
+        statusBars.put("defense", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/defense"),
                 new Color[]{new Color(255, 255, 255)},
                 false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.defense")));
-        statusBars.put("experience", new StatusBar(new Identifier(SkyblockerMod.NAMESPACE, "bars/icons/experience"),
+        statusBars.put("experience", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/experience"),
                 new Color[]{new Color(100, 230, 70)},
                 false, new Color(128, 255, 32), Text.translatable("skyblocker.bars.config.experience")));
 
@@ -292,7 +292,7 @@ public class FancyStatusBars {
 
         Collection<StatusBar> barCollection = statusBars.values();
         for (StatusBar statusBar : barCollection) {
-            if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getLastFrameDuration());
+            if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getLastFrameDuration());
         }
         for (StatusBar statusBar : barCollection) {
             if (statusBar.anchor != null && statusBar.showText()) statusBar.renderText(context);

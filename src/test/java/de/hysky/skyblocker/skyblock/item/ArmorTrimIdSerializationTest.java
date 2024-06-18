@@ -14,7 +14,7 @@ public class ArmorTrimIdSerializationTest {
 
     @Test
     void serialize() {
-        ArmorTrimId armorTrimId = new ArmorTrimId(new Identifier("material_id"), new Identifier("pattern_id"));
+        ArmorTrimId armorTrimId = new ArmorTrimId(Identifier.ofVanilla("material_id"), Identifier.ofVanilla("pattern_id"));
         JsonElement json = ArmorTrimId.CODEC.encodeStart(JsonOps.INSTANCE, armorTrimId).getOrThrow();
         String expectedJson = "{\"material\":\"minecraft:material_id\",\"pattern\":\"minecraft:pattern_id\"}";
 
@@ -25,7 +25,7 @@ public class ArmorTrimIdSerializationTest {
     void deserialize() {
         String json = "{\"material\":\"minecraft:material_id\",\"pattern\":\"minecraft:pattern_id\"}";
         ArmorTrimId armorTrimId = ArmorTrimId.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(json, JsonElement.class)).getOrThrow();
-        ArmorTrimId expectedArmorTrimId = new ArmorTrimId(new Identifier("material_id"), new Identifier("pattern_id"));
+        ArmorTrimId expectedArmorTrimId = new ArmorTrimId(Identifier.ofVanilla("material_id"), Identifier.ofVanilla("pattern_id"));
 
         Assertions.assertEquals(expectedArmorTrimId, armorTrimId);
     }

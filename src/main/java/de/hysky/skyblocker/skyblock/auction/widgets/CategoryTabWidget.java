@@ -4,9 +4,10 @@ import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.item.TooltipType;
 import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
+
 import org.jetbrains.annotations.NotNull;
 
 public class CategoryTabWidget extends SideTabButtonWidget {

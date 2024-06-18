@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.rift;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -26,6 +27,7 @@ public class EffigyWaypoints {
             new BlockPos(240, 129, 118) //Effigy 6
     );
     private static final List<BlockPos> UNBROKEN_EFFIGIES = new ArrayList<>();
+    private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 
     protected static void updateEffigies() {
         if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château")) return;
@@ -57,13 +59,12 @@ public class EffigyWaypoints {
     protected static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getIslandArea().contains("Stillgore Château")) {
             for (BlockPos effigy : UNBROKEN_EFFIGIES) {
-                float[] colorComponents = DyeColor.RED.getColorComponents();
                 if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
-                    RenderHelper.renderFilledWithBeaconBeam(context, effigy.down(6), colorComponents, 0.5F, true);
+                    RenderHelper.renderFilledWithBeaconBeam(context, effigy.down(6), RED, 0.5F, true);
                 } else {
-                    RenderHelper.renderFilledWithBeaconBeam(context, effigy, colorComponents, 0.5F, true);
+                    RenderHelper.renderFilledWithBeaconBeam(context, effigy, RED, 0.5F, true);
                     for (int i = 1; i < 6; i++) {
-                        RenderHelper.renderFilled(context, effigy.down(i), colorComponents, 0.5F - (0.075F * i), true);
+                        RenderHelper.renderFilled(context, effigy.down(i), RED, 0.5F - (0.075F * i), true);
                     }
                 }
             }

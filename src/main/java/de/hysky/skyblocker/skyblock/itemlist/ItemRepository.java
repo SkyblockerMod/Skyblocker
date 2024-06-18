@@ -51,9 +51,13 @@ public class ItemRepository {
     }
 
     private static void loadItem(NEUItem item) {
-        ItemStack stack = ItemStackBuilder.fromNEUItem(item);
-        items.add(stack);
-        itemsMap.put(item.getSkyblockItemId(), stack);
+        try {
+            ItemStack stack = ItemStackBuilder.fromNEUItem(item);
+            items.add(stack);
+            itemsMap.put(item.getSkyblockItemId(), stack);
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker Item Repo Loader] Failed to load item, please report this! Skyblock Id: {}", item.getSkyblockItemId(), e);
+        }
     }
 
     private static void loadRecipes(NEUItem item) {

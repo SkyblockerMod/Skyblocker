@@ -18,8 +18,8 @@ import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 
 public class OverlayScreen extends Screen {
 
-    protected static final Identifier SEARCH_ICON_TEXTURE = new Identifier("icon/search");
-    private static final Identifier BACKGROUND_TEXTURE = new Identifier("social_interactions/background");
+    protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.ofVanilla("icon/search");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("social_interactions/background");
     private static final int rowHeight = 20;
     private TextFieldWidget searchField;
     private ButtonWidget finishedButton;
