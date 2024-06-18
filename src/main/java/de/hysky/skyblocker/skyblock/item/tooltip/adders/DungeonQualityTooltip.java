@@ -24,25 +24,16 @@ public class DungeonQualityTooltip extends TooltipAdder {
 		if (customData == null || !customData.contains("baseStatBoostPercentage")) return;
 		int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
 		boolean maxQuality = baseStatBoostPercentage == 50;
-		lines.add(Text.empty()
-		              .append(Text.literal("@align(100)"))
-		              .append(Text.literal("Item Quality:").formatted(Formatting.BLUE)));
-		if (maxQuality) {
-			lines.add(Text.literal(baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
-		} else {
-			lines.add(Text.literal(baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
-		}
-
+		lines.add(Text.literal("Item Quality:").formatted(Formatting.BLUE)
+		              .align(maxQuality
+				              ? Text.literal(baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD)
+				              : Text.literal(baseStatBoostPercentage + "/50").formatted(Formatting.BLUE), 100));
 		if (customData.contains("item_tier")) {     // sometimes it just isn't here?
 			int itemTier = customData.getInt("item_tier");
-			lines.add(Text.empty()
-			              .append(Text.literal("@align(100)"))
-			              .append(Text.literal("Floor Tier:").formatted(Formatting.BLUE)));
-			if (maxQuality) {
-				lines.add(Text.literal(itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
-			} else {
-				lines.add(Text.literal(itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.BLUE));
-			}
+			lines.add(Text.literal("Floor Tier:").formatted(Formatting.BLUE)
+			              .align(maxQuality
+					              ? Text.literal(itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD)
+					              : Text.literal(itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.BLUE), 100));
 		}
 	}
 
