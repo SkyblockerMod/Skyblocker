@@ -2,6 +2,7 @@ package de.hysky.skyblocker.injected;
 
 import de.hysky.skyblocker.utils.render.gui.AlignedTooltipComponent;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,7 +10,8 @@ public interface AlignedText {
 	/**
 	 * This is used to display text at a certain x offset after the current text in tooltips.
 	 * This allows for aligned text when used on multiple rows.
-	 * It's also chainable for a grid-like display.
+	 * <p>
+	 * This method allows chaining for a grid-like display.
 	 * @param text The text to render after this text
 	 * @param xOffset The x offset to apply to the given {@code text},
 	 *                relative to the start of the text object this method is called upon.
@@ -18,8 +20,21 @@ public interface AlignedText {
 	 *           of the chain when adding to a list of text, otherwise only the last added text will be rendered.
 	 * @see AlignedTooltipComponent
 	 */
-	default @NotNull MutableText alignWith(@NotNull MutableText text, int xOffset) {
+	default @NotNull MutableText chainAlign(@NotNull MutableText text, int xOffset) {
 		return text;
+	}
+
+	/**
+	 * This is used to display text at a certain x offset after the current text in tooltips.
+	 * This allows for aligned text when used on multiple rows.
+	 * @param text The text to render after this text
+	 * @param xOffset The x offset to apply to the given {@code text},
+	 *                relative to the start of the text object this method is called upon.
+	 * @return The text object this method is called upon, with the aligned text added
+	 * @see AlignedTooltipComponent
+	 */
+	default @NotNull Text align(@NotNull MutableText text, int xOffset) {
+		return null; // Dummy return value
 	}
 
 	default @Nullable MutableText getAlignedText() {

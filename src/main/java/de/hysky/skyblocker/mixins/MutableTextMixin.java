@@ -19,12 +19,19 @@ public abstract class MutableTextMixin implements AlignedText {
 	private MutableText firstOfChain = null;
 
 	@Override
-	public @NotNull MutableText alignWith(@NotNull MutableText text, int xOffset) {
+	public @NotNull MutableText chainAlign(@NotNull MutableText text, int xOffset) {
 		this.alignedWith = text;
 		this.xOffset = xOffset;
 		if (firstOfChain == null) text.setFirstOfChain((MutableText) (Object) this);
 		else text.setFirstOfChain(firstOfChain);
 		return text;
+	}
+
+	@Override
+	public @NotNull MutableText align(@NotNull MutableText text, int xOffset) {
+		this.alignedWith = text;
+		this.xOffset = xOffset;
+		return (MutableText) (Object) this;
 	}
 
 	@Override
