@@ -73,7 +73,7 @@
 * Switch colour check for exotic tooltip by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/773
 * YetAnotherChocoFactoFix by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/774
 * Use NPC price if its higher by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/775
-* Fix Search Overlay NPE by @AzureAaron in CHANGE_LINK_WHEN_PR_READY
+* Fix Search Overlay NPE by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/778
 
 ## New Contributors
 * @BigloBot made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/682
