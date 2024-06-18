@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.ProfileUtils;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -25,10 +26,13 @@ import java.util.List;
 public class RabbitCollection extends TooltipAdder {
 	private static final Object2ReferenceMap<String, RabbitRarity> RABBITS = new Object2ReferenceOpenHashMap<>(500); //There's roughly 460 rabbits so far
 	private static final Logger LOGGER = LoggerFactory.getLogger(RabbitCollection.class);
-	private static final byte HOPPITY_COLLECTION_SLOT = 50;
+	//The slot in chocolate factory screen
+	private static final byte CF_HOPPITY_COLLECTION_SLOT = 50;
+	//The slot in chocolate collection screen
+	private static final byte HC_HOPPITY_COLLECTION_SLOT = 4;
 
 	public RabbitCollection() {
-		super("^Chocolate Factory$", Integer.MIN_VALUE);
+		super("^Chocolate Factory|\\(\\d+/\\d+\\) Hoppity's Collection$", Integer.MIN_VALUE);
 	}
 
 	public static void init() {
@@ -90,14 +94,16 @@ public class RabbitCollection extends TooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (focusedSlot == null || focusedSlot.id != HOPPITY_COLLECTION_SLOT) return;
-		lines.add(LineSmoothener.createSmoothLine());
-		for (RabbitRarity entry : RabbitRarity.entries) {
-			lines.add(Text.literal(entry.toString()).formatted(entry.color)
-			              .align(Text.empty()
-			                         .append(Text.literal(String.valueOf(entry.getCollectedAmount())).formatted(Formatting.GREEN))
-			                         .append(Text.literal("/").formatted(Formatting.DARK_GRAY))
-			                         .append(Text.literal(String.valueOf(entry.getMaxAmount())).formatted(Formatting.GREEN)), 110));
+		if (focusedSlot == null) return;
+		if ((focusedSlot.id == CF_HOPPITY_COLLECTION_SLOT || focusedSlot.id == HC_HOPPITY_COLLECTION_SLOT) && stack.isOf(Items.PLAYER_HEAD)) {
+			lines.add(LineSmoothener.createSmoothLine());
+			for (RabbitRarity entry : RabbitRarity.entries) {
+				lines.add(Text.literal(entry.toString()).formatted(entry.color)
+				              .align(Text.empty()
+				                         .append(Text.literal(String.valueOf(entry.getCollectedAmount())).formatted(Formatting.GREEN))
+				                         .append(Text.literal("/").formatted(Formatting.DARK_GRAY))
+				                         .append(Text.literal(String.valueOf(entry.getMaxAmount())).formatted(Formatting.GREEN)), 110));
+			}
 		}
 	}
 
