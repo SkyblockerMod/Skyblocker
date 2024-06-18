@@ -93,12 +93,11 @@ public class RabbitCollection extends TooltipAdder {
 		if (focusedSlot == null || focusedSlot.id != HOPPITY_COLLECTION_SLOT) return;
 		lines.add(LineSmoothener.createSmoothLine());
 		for (RabbitRarity entry : RabbitRarity.entries) {
-			lines.add(Text.empty()
-			              .append(Text.literal("@align(110)"))
-			              .append(Text.literal(entry.toString()).formatted(entry.color)));
-			lines.add(Text.empty().append(Text.literal(String.valueOf(entry.getCollectedAmount())).formatted(Formatting.GREEN))
-			              .append(Text.literal("/").formatted(Formatting.DARK_GRAY))
-			              .append(Text.literal(String.valueOf(entry.getMaxAmount())).formatted(Formatting.GREEN)));
+			lines.add(Text.literal(entry.toString()).formatted(entry.color)
+			              .align(Text.empty()
+			                         .append(Text.literal(String.valueOf(entry.getCollectedAmount())).formatted(Formatting.GREEN))
+			                         .append(Text.literal("/").formatted(Formatting.DARK_GRAY))
+			                         .append(Text.literal(String.valueOf(entry.getMaxAmount())).formatted(Formatting.GREEN)), 110));
 		}
 	}
 
