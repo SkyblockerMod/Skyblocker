@@ -24,7 +24,7 @@ public class SkillLevelAdder extends SlotTextAdder {
 				if (lastIndex == -1) return List.of(SlotText.bottomLeft(Text.literal("0").formatted(Formatting.LIGHT_PURPLE))); //Skills without any levels don't display any roman numerals. Probably because 0 doesn't exist.
 				String romanNumeral = name.substring(lastIndex + 1); //+1 because we don't need the space itself
 				//The "romanNumeral" might be a latin numeral, too. There's a skyblock setting for this, so we have to do it this way V
-				return List.of(SlotText.bottomLeft(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).formatted(Formatting.LIGHT_PURPLE)));
+				return List.of(SlotText.bottomLeft(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).withColor(0xFFDDC1)));
 			}
 			default -> {
 				return List.of();

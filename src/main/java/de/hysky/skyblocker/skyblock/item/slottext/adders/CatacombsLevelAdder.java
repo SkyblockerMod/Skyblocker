@@ -44,7 +44,7 @@ public class CatacombsLevelAdder {
 						level = String.valueOf(RomanNumerals.romanToDecimal(roman));
 					}
 
-					return List.of(SlotText.bottomLeft(Text.literal(level).formatted(Formatting.RED)));
+					return List.of(SlotText.bottomLeft(Text.literal(level).withColor(0xFFDDC1)));
 				}
 				default -> {
 					return List.of();
@@ -65,7 +65,7 @@ public class CatacombsLevelAdder {
 				case 11, 12, 13, 14, 15 -> {
 					String level = getBracketedLevelFromName(slot.getStack());
 					if (!NumberUtils.isDigits(level)) return List.of();
-					return List.of(SlotText.bottomLeft(Text.literal(level).formatted(Formatting.RED)));
+					return List.of(SlotText.bottomLeft(Text.literal(level).withColor(0xFFDDC1)));
 				}
 				default -> {
 					return List.of();
@@ -86,7 +86,7 @@ public class CatacombsLevelAdder {
 				case 29, 30, 31, 32, 33 -> {
 					String level = getBracketedLevelFromName(slot.getStack());
 					if (!NumberUtils.isDigits(level)) return List.of();
-					return List.of(SlotText.bottomLeft(Text.literal(level).formatted(Formatting.RED)));
+					return List.of(SlotText.bottomLeft(Text.literal(level).withColor(0xFFDDC1)));
 				}
 				default -> {
 					return List.of();

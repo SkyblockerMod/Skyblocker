@@ -293,6 +293,7 @@ public class StatusBarsConfigScreen extends Screen {
         if (button == 0) {
             cursorBar = statusBar;
             cursorBar.inMouse = true;
+            currentInsertLocation = BarLocation.of(cursorBar);
             if (statusBar.anchor != null)
                 FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
             FancyStatusBars.updatePositions();
@@ -322,6 +323,7 @@ public class StatusBarsConfigScreen extends Screen {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (cursorBar != null) {
             cursorBar.inMouse = false;
+            currentInsertLocation = BarLocation.of(cursorBar);
             cursorBar = null;
             FancyStatusBars.updatePositions();
             checkNullAnchor(FancyStatusBars.statusBars.values());

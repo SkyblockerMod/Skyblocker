@@ -22,8 +22,8 @@ public class SkyblockLevelAdder extends SlotTextAdder {
 		if (lore.isEmpty()) return List.of();
 		List<Text> siblings = lore.getFirst().getSiblings();
 		if (siblings.size() < 3) return List.of();
-		Text levelText = siblings.get(2); //The 3rd child is the level text itself
-		if (!NumberUtils.isDigits(levelText.getString())) return List.of();
-		return List.of(SlotText.bottomLeft(levelText));
+		String levelText = siblings.get(2).getString(); //The 3rd child is the level text itself
+		if (!NumberUtils.isDigits(levelText)) return List.of();
+		return List.of(SlotText.bottomLeft(Text.literal(levelText).withColor(0xFFDDC1)));
 	}
 }

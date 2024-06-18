@@ -6,7 +6,6 @@ import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class CollectionAdder extends SlotTextAdder {
         Matcher matcher = COLLECTION.matcher(stack.getName().getString());
         if (matcher.matches()) {
             int level = RomanNumerals.romanToDecimal(matcher.group("level"));
-            return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).formatted(Formatting.YELLOW)));
+            return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
         }
         return List.of();
     }

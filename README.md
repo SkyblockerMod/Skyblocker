@@ -52,6 +52,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Resourcepack recoloring textures in dungeons**
 - **score title and sound**
 - **Prevent teammates glow during Livid**
+- **Block Incorrect Terminal Clicks**
+- **Hide Soulweaver Skulls**
 
 ### Kuudra Features
 - **Kuudra waypoints**
@@ -75,6 +77,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Mana*
   - *Defense*
   - *XP*
+- **Vanilla health/xp and fancy bar shown in parallel**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines Solver:**
@@ -89,6 +92,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Find locations in chat messages*
     - *Share waypoints*
   - Metal detector helper
+- **Glacite Tunnels**
+  - **Cold Overlay**
 - **Commission HUD**
   - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
@@ -115,12 +120,22 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### Garden Features:
 - **Farming HUD**
+  - Counter
+  - Crops/min
+  - Coins/h
+  - Blocks/s
+  - Farming Level
+  - Farming XP/h
+  - Yaw and Pitch
 - **Visitor Helper**
   - Buy items that visitors require from bazaar by clicking the text
+  - Copy amount to clipboard
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
 - **Basic garden mouse locking feature (set mouse sensitivity to 0)**
 
 ### Visual Enhancements:
+- **Compact damage**
+- **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable with a resource pack.
 - **1.8 Hitbox for Lever and Farmland**
 - **Hide Status Effect Overlay**
@@ -142,7 +157,22 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### User Interface Enhancements:
 - **Search overlays for bz and ah**
-- **Attribute Shard Info Display**
+- **Slot Text**
+  - **Attribute Shard Info Display**
+  - **Catacombs level**
+  - **Collection level**
+  - **Enchantment book level**
+  - **Minion level**
+  - **Pet level**
+  - **Potion level**
+  - **Prehistoric egg blocks walked**
+  - **Rancher's boots speed cap**
+  - **Skill level**
+  - **Skyblock level**
+  - **Essence Shop**
+  - **Your Essence**
+  - **Power Stone Guide**
+  - **Stats Tuning**
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -161,6 +191,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Fancy Crafting Table**
 - **Info Screen**
 - **Fancy Auctions Browser**
+- **Calendar Event Notifications**
+- **Sign calculator**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -187,6 +219,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Fishing rod timer (change color after 20 seconds)
   - Hide other rods
 - **Mythological Ritual Helper**
+- **Chocolate factory Helper**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) and [EMI](https://modrinth.com/mod/emi) Support**
@@ -284,9 +317,9 @@ information.
 |----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | [Ghost-3](https://github.com/Ghost-3)                                                              | [esteban4567890](https://github.com/esteban4567890)                                                                     | [Fluboxer](https://github.com/Fluboxer)                                                               | [VeritasDL](https://github.com/VeritasDL)                                                                |
      
-| [<img alt="TheDearbear" src="https://github.com/TheDearbear.png" width="100">](https://github.com/TheDearbear) |
-|----------------------------------------------------------------------------------------------------------------|
-| [TheDearbear](https://github.com/TheDearbear)                                                                  |
+| [<img alt="TheDearbear" src="https://github.com/TheDearbear.png" width="100">](https://github.com/TheDearbear) | [<img alt="BigloBot" src="https://github.com/BigloBot.png" width="100">](https://github.com/BigloBot) | [<img alt="f3shqt" src="https://github.com/f3shqt.png" width="100">](https://github.com/f3shqt) | [<img alt="UpFault" src="https://github.com/UpFault.png" width="100">](https://github.com/UpFault) |
+|----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| [TheDearbear](https://github.com/TheDearbear)                                                                  | [BigloBot](https://github.com/BigloBot)                                                               | [f3shqt](https://github.com/f3shqt)                                                             | [UpFault](https://github.com/UpFault)                                                              |
 
 ### Translators
 
@@ -294,9 +327,9 @@ German ([LifeIsAParadox](https://github.com/LifeIsAParadox) & [msg-programs](htt
 Indonesian ([null2264](https://github.com/null2264)) \
 Russian ([HyperSoop](https://github.com/HyperSoop) & [CrimsonIsle](https://github.com/CrimsonIsle) & [Ghost-3](https://github.com/Ghost-3) & [wilson-wtf](https://github.com/wilson-wtf) & [R2kip](https://github.com/R2kip) & [Kolobok125040](https://github.com/Kolobok125040))\
 French ([edgarogh](https://github.com/edgarogh) & [Julienraptor01](https://github.com/Julienraptor01) & [viciscat](https://github.com/viciscat) & [Kiverty](https://github.com/Kiverty) & [maDU59](https://github.com/maDU59)) \
-Japanese ([hirochisan](https://github.com/hirochisan)) \
-Chinese ([catandA](https://github.com/catandA)) \
-Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD) & [user123321111](https://github.com/user123321111) & [sunnytia](https://github.com/sunnytia) & [AC19970](https://github.com/AC19970)) \
+Japanese ([hirochisan](https://github.com/hirochisan) & [AC19970](https://github.com/AC19970)) \
+Chinese ([catandA](https://github.com/catandA) & [AC19970](https://github.com/AC19970)) \
+Chinese (Simplified) ([catandA](https://github.com/catandA) & [PumpkinXD](https://github.com/PumpkinXD) & [user123321111](https://github.com/user123321111) & [sunnytia](https://github.com/sunnytia) & [AC19970](https://github.com/AC19970) & [x-yingcan-x](https://github.com/x-yingcan-x)) \
 Korean ([lantice3720](https://github.com/lantice3720)) \
 Spanish ([IngeSebastian](https://github.com/IngeSebastian)) \
 Norwegian Bokmål ([KdGaming0](https://github.com/KdGaming0)) \
@@ -305,4 +338,5 @@ Turkish ([Fix3dll](https://github.com/Fix3dll) & [Emirlol](https://github.com/Em
 Canadian English ([AzureAaron](https://github.com/AzureAaron)) \
 Portuguese (Brazil) ([OhRetro](https://github.com/OhRetro) & [AurinVPK](https://github.com/AurinVPK) & [yFelipeMC](https://github.com/yFelipeMC)) \
 Dutch ([mitch030504](https://github.com/mitch030504)) \
-Italian ([Vricken](https://github.com/Vricken))
+Italian ([Vricken](https://github.com/Vricken)) \
+Polish ([danehcan](https://github.com/danehcan))

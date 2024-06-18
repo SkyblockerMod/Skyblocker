@@ -85,8 +85,8 @@ public class AttributeShardAdder extends SlotTextAdder {
 		String attributeInitials = ID_2_SHORT_NAME.getOrDefault(attributeId, "");
 
 		return List.of(
-				SlotText.bottomRight(Text.literal(String.valueOf(attributeLevel)).withColor(0x34eb77)),
-				SlotText.topLeft(Text.literal(attributeInitials).formatted(Formatting.AQUA))
+				SlotText.bottomRight(Text.literal(String.valueOf(attributeLevel)).withColor(0xFFDDC1)),
+				SlotText.topLeft(Text.literal(attributeInitials).withColor(0xCFF8F8))
 		);
 	}
 

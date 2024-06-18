@@ -23,6 +23,7 @@ public class PetLevelAdder extends SlotTextAdder {
 		if (!itemStack.isOf(Items.PLAYER_HEAD)) return List.of();
 		String level = CatacombsLevelAdder.getBracketedLevelFromName(itemStack);
 		if (!NumberUtils.isDigits(level)) return List.of();
-		return List.of(SlotText.topLeft(Text.literal(level).formatted(Formatting.GOLD)));
+		if ("100".equals(level) || "200".equals(level)) return List.of();
+		return List.of(SlotText.topLeft(Text.literal(level).withColor(0xFFDDC1)));
 	}
 }

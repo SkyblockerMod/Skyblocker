@@ -29,6 +29,6 @@ public class MinionLevelAdder extends SlotTextAdder {
 		String romanNumeral = matcher.group(1);
 		if (!RomanNumerals.isValidRomanNumeral(romanNumeral)) return List.of();
 		int level = RomanNumerals.romanToDecimal(romanNumeral);
-		return List.of(SlotText.topRight(Text.literal(String.valueOf(level)).formatted(Formatting.AQUA)));
+		return List.of(SlotText.topRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
 	}
 }

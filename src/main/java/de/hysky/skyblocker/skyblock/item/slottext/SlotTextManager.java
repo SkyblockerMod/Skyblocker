@@ -13,6 +13,7 @@ import java.util.List;
 
 public class SlotTextManager {
 	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
+			new EssenceShopAdder(),
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
@@ -26,7 +27,10 @@ public class SlotTextManager {
 			new PrehistoricEggAdder(),
 			new PotionLevelAdder(),
 			new CollectionAdder(),
-			new CommunityShopAdder()
+			new CommunityShopAdder(),
+			new YourEssenceAdder(),
+			new PowerStonesGuideAdder(),
+			new StatsTuningAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 

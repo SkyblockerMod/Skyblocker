@@ -1,3 +1,87 @@
+# Release 1.21.0
+
+## Highlight
+* Chocolate factory helper
+* Calendar Event Notifications
+* Glacite Tunnels Cold Overlay
+* Add onscreen info for specific items and menus like pet level (slot text)
+* Config reordering
+* Waypoints for commissions in dwarven mines and glacite
+* Sign calculator
+* Block Incorrect Terminal Clicks
+* Hide Soulweaver Skulls
+* Compact damage
+* 2 Extra Tabs in Quick Nav
+* Vanilla health/xp and fancy bar shown in parallel now possible
+* Highlight chest in three weirdos
+* Visitor helper copy amount to clipboard
+* Search overlay improvement (better pet search, dungeon stars)
+* Farming hud improvement (coins per hour)
+* Waypoints UI config
+
+## What's Changed
+* Fixes and things by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/675
+* Fixes to Garden UI by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/682
+* 1.20.5 & 1.20.6 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/669
+* Ultimate config reconfiguration by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/697
+* Nothing to see here, part 2 by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/698
+* ??? by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/699
+* Add a way to show all ordered waypoints at once by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/688
+* Adds Mines Slayer starter commission and deprecates the classic hud for removal by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/692
+* Fix accessories helper not working with only 1 accessory bag page by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/693
+* Config Data Fixer by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/701
+* Fix quite important AH bug by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/689
+* add waypoints for commissions in dwarven mines and glacite. by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/690
+* Add line smoothener by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/711
+* Sign calculator by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/686
+* Block Incorrect Terminal Clicks by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/710
+* Hide Soulweaver Skulls by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/702
+* Add compact damage by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/696
+* Clarify the regex in CompactDamage by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/712
+* Internal Staging by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/715
+* Add LOCATION_CHANGE event, fired upon parsing /locraw by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/716
+* Quick Nav Refactor and Clean Up, 2 Extra Tabs, Config Version 3, Config Data Fixer Refactor, Debug Dump Hovered Item Tool by @VeritasDL in https://github.com/SkyblockerMod/Skyblocker/pull/643
+* Fancy status bars bits and pieces by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/704
+* Migrate ThreeWeirdos to DungeonPuzzle and highlight chest by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/705
+* fix bugs by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/720
+* Make TerminalSolver interface & ExperimentSolver class sealed by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/722
+* Add chocolate factory helper by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/683
+* Glacite Overlay (Oops) by @f3shqt in https://github.com/SkyblockerMod/Skyblocker/pull/703
+* chat rules - fix bugs + refactor  by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/719
+* Remove extended quicknav string by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/725
+* Debug class? More like Rebug class lmao gottem by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/730
+* Update chocolate factory for chocolate factory 2 by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/734
+* Fix egg found message being sent twice by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/729
+* Fix off-by-one on cf by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/741
+* Fix entrance (0) not being in the map by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/732
+* VisitorHelper Tweak by @UpFault in https://github.com/SkyblockerMod/Skyblocker/pull/736
+* Improve search overlay by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/739
+* Calendar Event Notifications by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/691
+* add locations to egg hunt by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/746
+* Farming hud improvements by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/685
+* Tooltip refactors by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/735
+* Misc Changes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/755
+* Refactor Tooltips and Slot Texts by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/750
+* Update jar name and add build type by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/757
+* Fix CatacombsLevelAdder not working at max class levels by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/756
+* A couple of chocolate factory fixes by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/749
+* Waypoints by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/713
+* Add event notifications criterion by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/763
+* Fix egg finder sharing nonsense by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/771
+* Switch metal detector regex from matches to find by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/767
+* Add docs to ItemTooltip#getNeuName and ItemRepository#getItemStack and fix farming hud icon stack id by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/772
+* Switch colour check for exotic tooltip by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/773
+* YetAnotherChocoFactoFix by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/774
+* Use NPC price if its higher by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/775
+* Fix Search Overlay NPE by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/778
+
+## New Contributors
+* @BigloBot made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/682
+* @f3shqt made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/703
+* @UpFault made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/736
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.20.2...v1.21.0
+___
 # Release 1.20.2
 
 ## Highlight

@@ -32,6 +32,8 @@
 - **Resourcepack recoloring textures in dungeons**
 - **score title and sound**
 - **Prevent teammates glow during Livid**
+- **Block Incorrect Terminal Clicks**
+- **Hide Soulweaver Skulls**
 
 ### Kuudra Features
 - **Kuudra waypoints**
@@ -55,6 +57,7 @@
   - *Mana*
   - *Defense*
   - *XP*
+- **Vanilla health/xp and fancy bar shown in parallel**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines Solver:**
@@ -69,6 +72,8 @@
     - *Find locations in chat messages*
     - *Share waypoints*
   - Metal detector helper
+- **Glacite Tunnels**
+  - **Cold Overlay**
 - **Commission HUD**
   - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
@@ -95,12 +100,22 @@
 
 ### Garden Features:
 - **Farming HUD**
+  - Counter
+  - Crops/min
+  - Coins/h
+  - Blocks/s
+  - Farming Level
+  - Farming XP/h
+  - Yaw and Pitch
 - **Visitor Helper**
   - Buy items that visitors require from bazaar by clicking the text
+  - Copy amount to clipboard
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
 - **Basic garden mouse locking feature (set mouse sensitivity to 0)**
 
 ### Visual Enhancements:
+- **Compact damage**
+- **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable with a resource pack.
 - **1.8 Hitbox for Lever and Farmland**
 - **Hide Status Effect Overlay**
@@ -122,7 +137,22 @@
 
 ### User Interface Enhancements:
 - **Search overlays for bz and ah**
-- **Attribute Shard Info Display**
+- **Slot Text**
+  - **Attribute Shard Info Display**
+  - **Catacombs level**
+  - **Collection level**
+  - **Enchantment book level**
+  - **Minion level**
+  - **Pet level**
+  - **Potion level**
+  - **Prehistoric egg blocks walked**
+  - **Rancher's boots speed cap**
+  - **Skill level**
+  - **Skyblock level**
+  - **Essence Shop**
+  - **Your Essence**
+  - **Power Stone Guide**
+  - **Stats Tuning**
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -141,6 +171,8 @@
 - **Fancy Crafting Table**
 - **Info Screen**
 - **Fancy Auctions Browser**
+- **Calendar Event Notifications**
+- **Sign calculator**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -167,6 +199,7 @@
   - Fishing rod timer (change color after 20 seconds)
   - Hide other rods
 - **Mythological Ritual Helper**
+- **Chocolate factory Helper**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) and [EMI](https://modrinth.com/mod/emi) Support**
