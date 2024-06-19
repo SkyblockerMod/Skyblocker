@@ -69,33 +69,39 @@ public class CrystalsLocationsManager {
             return;
         }
         try {
-            //get the message text
-            Matcher matcher = TEXT_CWORDS_PATTERN.matcher(text);
-            //if there are coordinates in the message try to get them and what they are talking about
-            if (matcher.find()) {
-                BlockPos blockPos = new BlockPos(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
-                String location = blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
-                //if position is not in the hollows do not add it
-                if (!checkInCrystals(blockPos)) {
-                    return;
-                }
+            //make sure that it is only reading user messages and not from skyblocker
+            if (text.contains(":") && !text.startsWith(Constants.PREFIX.get().getString())) {
+                String userMessage = text.split(":",2)[1];
 
-                //see if there is a name of a location to add to this
-                for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
-                    if (Arrays.stream(waypointLocation.toLowerCase().split(" ")).anyMatch(word -> text.toLowerCase().contains(word))) { //check if contains a word of location
-                        //all data found to create waypoint
-                        addCustomWaypoint(waypointLocation, blockPos);
+                //get the message text
+                Matcher matcher = TEXT_CWORDS_PATTERN.matcher(userMessage);
+                //if there are coordinates in the message try to get them and what they are talking about
+                if (matcher.find()) {
+                    BlockPos blockPos = new BlockPos(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
+                    String location = blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
+                    //if position is not in the hollows do not add it
+                    if (!checkInCrystals(blockPos)) {
                         return;
                     }
-                }
 
-                //if the location is not found ask the user for the location (could have been in a previous chat message)
-                if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
-                    return;
-                }
+                    //see if there is a name of a location to add to this
+                    for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
+                        if (Arrays.stream(waypointLocation.toLowerCase().split(" ")).anyMatch(word -> userMessage.toLowerCase().contains(word))) { //check if contains a word of location
+                            //all data found to create waypoint
+                            addCustomWaypoint(waypointLocation, blockPos);
+                            return;
+                        }
+                    }
 
-                CLIENT.player.sendMessage(getLocationInputText(location), false);
+                    //if the location is not found ask the user for the location (could have been in a previous chat message)
+                    if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
+                        return;
+                    }
+
+                    CLIENT.player.sendMessage(getLocationInputText(location), false);
+                }
             }
+
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Crystals Locations Manager] Encountered an exception while extracing a location from a chat message!", e);
         }
@@ -192,7 +198,7 @@ public class CrystalsLocationsManager {
     }
 
 
-    private static void addCustomWaypoint(String waypointName, BlockPos pos) {
+    protected static void addCustomWaypoint(String waypointName, BlockPos pos) {
         MiningLocationLabel.CrystalHollowsLocationsCategory category = WAYPOINT_LOCATIONS.get(waypointName);
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         activeWaypoints.put(waypointName, waypoint);

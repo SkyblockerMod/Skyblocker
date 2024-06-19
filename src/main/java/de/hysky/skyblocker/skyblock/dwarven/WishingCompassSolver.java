@@ -15,6 +15,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -225,6 +226,9 @@ public class WishingCompassSolver {
                             .append(Text.literal(location.getName()).withColor(location.getColor()))
                             .append(Text.literal(": " + (int) targetLocation.getX() + " " + (int) targetLocation.getY() + " " + (int) targetLocation.getZ())),
                     false);
+
+            //add waypoint
+            CrystalsLocationsManager.addCustomWaypoint(location.getName(), BlockPos.ofFloored(targetLocation));
         }
 
         //reset ready for another go
