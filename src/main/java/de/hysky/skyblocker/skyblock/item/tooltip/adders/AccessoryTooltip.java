@@ -21,7 +21,7 @@ public class AccessoryTooltip extends TooltipAdder {
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+		if (TooltipInfoType.ACCESSORIES.hasOrNullWarning(internalID)) {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 
 			if (report.left() != AccessoriesHelper.AccessoryReport.INELIGIBLE) {
@@ -41,5 +41,10 @@ public class AccessoryTooltip extends TooltipAdder {
 				lines.add(title.append(stateText));
 			}
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.ACCESSORIES.isTooltipEnabled();
 	}
 }

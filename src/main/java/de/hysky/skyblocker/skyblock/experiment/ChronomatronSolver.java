@@ -103,7 +103,7 @@ public final class ChronomatronSolver extends ExperimentSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+    public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         if (getState() == State.SHOW && chronomatronSlots.size() > chronomatronCurrentOrdinal) {
             for (Int2ObjectMap.Entry<ItemStack> indexStack : slots.int2ObjectEntrySet()) {
@@ -119,8 +119,7 @@ public final class ChronomatronSolver extends ExperimentSolver {
     }
 
     @Override
-    protected void reset() {
-        super.reset();
+    public void reset() {
         chronomatronSlots.clear();
         chronomatronChainLengthCount = 0;
         chronomatronCurrentSlot = 0;

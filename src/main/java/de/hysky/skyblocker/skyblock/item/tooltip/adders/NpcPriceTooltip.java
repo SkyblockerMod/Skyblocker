@@ -17,9 +17,14 @@ public class NpcPriceTooltip extends TooltipAdder {
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.NPC.isTooltipEnabled();
+	}
+
+	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (internalID != null && TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+		if (internalID != null && TooltipInfoType.NPC.hasOrNullWarning(internalID)) {
 			lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
 			              .formatted(Formatting.YELLOW)
 			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.NPC.getData().get(internalID).getAsDouble(), stack.getCount())));

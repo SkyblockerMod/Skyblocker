@@ -1,24 +1,18 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.stream.JsonReader;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.StringReader;
 import java.net.http.HttpHeaders;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
-import org.jetbrains.annotations.Nullable;
 
 public enum TooltipInfoType implements Runnable {
     NPC("https://hysky.de/api/npcprice", itemTooltip -> itemTooltip.enableNPCPrice, true),
@@ -120,16 +114,6 @@ public enum TooltipInfoType implements Runnable {
             ItemTooltip.nullWarning();
             return false;
         } else return data.has(memberName);
-    }
-
-    /**
-     * Checks if the tooltip is enabled and the data has the given member name and sends a warning message if data is null.
-     *
-     * @param memberName the member name to check
-     * @return whether the tooltip is enabled and the data has the given member name or not
-     */
-    public boolean isTooltipEnabledAndHasOrNullWarning(String memberName) {
-        return isTooltipEnabled() && hasOrNullWarning(memberName);
     }
 
     /**

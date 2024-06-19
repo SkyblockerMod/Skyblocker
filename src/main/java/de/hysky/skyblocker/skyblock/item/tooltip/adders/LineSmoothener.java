@@ -17,6 +17,11 @@ public class LineSmoothener extends TooltipAdder {
 		return Text.literal("                    ").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH, Formatting.BOLD);
 	}
 
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
 	public LineSmoothener() {
 		super(Integer.MIN_VALUE);
 	}

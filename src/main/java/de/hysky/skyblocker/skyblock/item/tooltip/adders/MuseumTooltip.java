@@ -19,9 +19,14 @@ public class MuseumTooltip extends TooltipAdder {
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.MOTES.isTooltipEnabled();
+	}
+
+	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (TooltipInfoType.MUSEUM.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+		if (TooltipInfoType.MUSEUM.hasOrNullWarning(internalID)) {
 			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
 			String format = switch (itemCategory) {
 				case "Weapons" -> "%-18s";

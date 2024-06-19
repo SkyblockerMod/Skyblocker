@@ -19,7 +19,6 @@ public class DungeonQualityTooltip extends TooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (!SkyblockerConfigManager.get().general.itemTooltip.dungeonQuality) return;
 		NbtCompound customData = ItemUtils.getCustomData(stack);
 		if (customData == null || !customData.contains("baseStatBoostPercentage")) return;
 		int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
@@ -40,7 +39,7 @@ public class DungeonQualityTooltip extends TooltipAdder {
 		}
 	}
 
-	final String getItemTierFloor(int tier) {
+	private String getItemTierFloor(int tier) {
 		return switch (tier) {
 			case 0 -> "E";
 			case 1 -> "F1";
@@ -55,5 +54,10 @@ public class DungeonQualityTooltip extends TooltipAdder {
 			case 10 -> "M7";
 			default -> "Unknown";
 		};
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return SkyblockerConfigManager.get().general.itemTooltip.dungeonQuality;
 	}
 }
