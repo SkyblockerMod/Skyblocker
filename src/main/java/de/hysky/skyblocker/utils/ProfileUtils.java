@@ -100,7 +100,6 @@ public class ProfileUtils {
                     boolean selected = profile.getAsJsonPrimitive("selected").getAsBoolean();
                     JsonObject profileJson = profile.getAsJsonObject("members").getAsJsonObject(uuid);
                     long lastUpdate = System.currentTimeMillis();
-                    LOGGER.info("[Skyblocker Profile Utils] Updated Player Profile Data for player {} with profile {}, selected: {}", name, profileUuid.getAsString(), selected);
                     profiles.add(new Profile(profileUuid.getAsString(), profileJson, selected, lastUpdate));
                 }
                 players.put(name, profiles);
