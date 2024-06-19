@@ -194,6 +194,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TooltipManager.init();
         SlotTextManager.init();
         RabbitCollection.init();
+        ProfileUtils.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

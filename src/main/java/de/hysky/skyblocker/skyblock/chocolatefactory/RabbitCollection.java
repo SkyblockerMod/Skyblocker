@@ -41,33 +41,46 @@ public class RabbitCollection extends TooltipAdder {
 		super("^Chocolate Factory|\\(\\d+/\\d+\\) Hoppity's Collection$", Integer.MIN_VALUE);
 	}
 
+	private static void reset() {
+		RabbitRarity.resetCounts();
+		lastRarity = null;
+	}
+
 	public static void init() {
 		readJson();
+		SkyblockEvents.PROFILE_CHANGE.register(() -> {
+			reset();
+			apiRequest();
+		});
 		SkyblockEvents.JOIN.register(RabbitCollection::apiRequest);
-		//These 2 messages are sent one after the other when a rabbit is found
-		//The found rabbit can also be a duplicate rabbit, so we have to check if the next message says "NEW RABBIT!"
-		ClientReceiveMessageEvents.GAME.register(((message, overlay) -> {
-			String str = message.getString();
-			Matcher matcher = RABBIT_FOUND_PATTERN.matcher(str);
-			if (matcher.matches()) {
-				try {
-					lastRarity = RabbitRarity.fromString(matcher.group(2).toLowerCase(Locale.ROOT));
-				} catch (IllegalArgumentException e) {
-					LOGGER.warn("[Skyblocker Rabbit Collection] Unknown rabbit rarity: {} - report this to Skyblocker!", matcher.group(1));
-					lastRarity = null;
-				}
-				return;
-			}
-			if (str.startsWith("§d§lNEW RABBIT!") && lastRarity != null) {
-				lastRarity.incrementCollected();
+		ClientReceiveMessageEvents.GAME.register(RabbitCollection::onMessage);
+//		ApiAuthentication.TOKEN_REQUEST_CALLBACK.register(RabbitCollection::apiRequest);
+	}
+
+	//These 2 messages are sent one after the other when a rabbit is found
+	//The found rabbit can also be a duplicate rabbit, so we have to check if the next message says "NEW RABBIT!"
+	private static void onMessage(Text message, boolean overlay) {
+		if (overlay) return;
+		String str = message.getString();
+		Matcher matcher = RABBIT_FOUND_PATTERN.matcher(str);
+		if (matcher.matches()) {
+			try {
+				lastRarity = RabbitRarity.fromString(matcher.group(2).toLowerCase(Locale.ROOT));
+			} catch (IllegalArgumentException e) {
+				LOGGER.warn("[Skyblocker Rabbit Collection] Unknown rabbit rarity: {} - report this to Skyblocker!", matcher.group(1));
 				lastRarity = null;
 			}
-		}));
-//		ApiAuthentication.TOKEN_REQUEST_CALLBACK.register(RabbitCollection::apiRequest);
+			return;
+		}
+		if (str.startsWith("§d§lNEW RABBIT!") && lastRarity != null) {
+			lastRarity.incrementCollected();
+			lastRarity = null;
+		}
 	}
 
 	private static void apiRequest() {
 		ProfileUtils.updateProfile().thenAccept(profile -> {
+			if (profile == null) return;
 			if (!profile.has("events")) return;
 			JsonObject events = profile.getAsJsonObject("events");
 			if (!events.has("easter")) return;
@@ -192,6 +205,12 @@ public class RabbitCollection extends TooltipAdder {
 				case "divine"    -> DIVINE;
 				default          -> throw new IllegalArgumentException("Invalid rarity key: " + key);
 			};
+		}
+
+		public static void resetCounts() {
+			for (RabbitRarity rarity : entries) {
+				rarity.collectedAmount = 0;
+			}
 		}
 	}
 }
