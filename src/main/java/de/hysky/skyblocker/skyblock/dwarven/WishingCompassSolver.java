@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -134,7 +135,7 @@ public class WishingCompassSolver {
 
         //make sure the data is in tab and if not tell the user
         if (displayNameStream.noneMatch(entry -> entry.equals("Crystals:"))) {
-            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Enable crystals in /tab so the compass can know what has been found")), false);
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
             return false;
         }
 
@@ -188,7 +189,7 @@ public class WishingCompassSolver {
                 if (particleUsedCountOne >= PARTICLES_PER_LINE) {
                     currentState = SolverStates.WAITING_FOR_SECOND;
                     if (CLIENT.player != null) {
-                        CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Wishing compass used. Move to another location and use another compass to triangulate target").formatted(Formatting.GREEN)), false);
+                        CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage").formatted(Formatting.GREEN)), false);
                     }
                 }
             }
@@ -212,7 +213,7 @@ public class WishingCompassSolver {
         }
         Vec3d targetLocation = solve(startPosOne, startPosTwo, directionOne, directionTwo);
         if (targetLocation == null) {
-            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Something went wrong. lines do not cross. please try again").formatted(Formatting.RED)), false);
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage").formatted(Formatting.RED)), false);
         } else {
             //send message to player with location and name
             MiningLocationLabel.CrystalHollowsLocationsCategory location = getTargetLocation(getZoneOfLocation(startPosOne));
@@ -222,7 +223,7 @@ public class WishingCompassSolver {
             }
 
             CLIENT.player.sendMessage(Constants.PREFIX.get()
-                            .append(Text.literal("Wishing compass solver found ").formatted(Formatting.GREEN))
+                            .append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.foundMessage").formatted(Formatting.GREEN))
                             .append(Text.literal(location.getName()).withColor(location.getColor()))
                             .append(Text.literal(": " + (int) targetLocation.getX() + " " + (int) targetLocation.getY() + " " + (int) targetLocation.getZ())),
                     false);
@@ -262,7 +263,7 @@ public class WishingCompassSolver {
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
-        if (!Utils.isInCrystalHollows() || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.WishingCompassSolver || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
             return ActionResult.PASS;
         }
         if (useCompass()) {
@@ -278,7 +279,7 @@ public class WishingCompassSolver {
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
-        if (!Utils.isInCrystalHollows() || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.WishingCompassSolver || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
             return TypedActionResult.pass(stack);
         }
         if (useCompass()) {
@@ -304,7 +305,7 @@ public class WishingCompassSolver {
             case NOT_STARTED -> {
                 //do not start if the player is in nucleus as this does not work well
                 if (currentZone == ZONE.CRYSTAL_NUCLEUS) {
-                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Use compass outside of nucleus for better results")), false);
+                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.useOutsideNucleusMessage")), false);
                     return true;
                 }
                 startNewState(SolverStates.PROCESSING_FIRST_USE);
@@ -313,12 +314,12 @@ public class WishingCompassSolver {
             case WAITING_FOR_SECOND -> {
                 //only continue if the player is far enough away from the first position to get a better reading
                 if (startPosOne.distanceTo(playerPos) < DISTANCE_BETWEEN_USES) {
-                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Move further away from the first use before using again")), false);
+                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage")), false);
                     return true;
                 } else {
                     //make sure the player is in the same zone as they used to first or restart
                     if (currentZone != getZoneOfLocation(startPosOne)) {
-                        CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Changed zone. Restarting...")), false);
+                        CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage")), false);
                         startNewState(SolverStates.PROCESSING_FIRST_USE);
                     } else {
                         startNewState(SolverStates.PROCESSING_SECOND_USE);
@@ -330,10 +331,10 @@ public class WishingCompassSolver {
                 //if still looking for particles for line tell the user to wait
                 //else tell the use something went wrong and its starting again
                 if (System.currentTimeMillis() - particleLastUpdate < PARTICLES_MAX_DELAY) {
-                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Wait a little before using another wishing compass").formatted(Formatting.RED)), false);
+                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.waitLongerMessage").formatted(Formatting.RED)), false);
                     return true;
                 } else {
-                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Could not detect last use. Restarting...").formatted(Formatting.RED)), false);
+                    CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.couldNotDetectLastUseMessage").formatted(Formatting.RED)), false);
                     startNewState(SolverStates.PROCESSING_FIRST_USE);
                 }
             }

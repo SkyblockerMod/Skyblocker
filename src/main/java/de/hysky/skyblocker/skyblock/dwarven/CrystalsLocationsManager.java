@@ -116,7 +116,7 @@ public class CrystalsLocationsManager {
         }
 
         //move waypoint to be more accurate based on locational chat messages
-        if (CLIENT.player != null) {
+        if (CLIENT.player != null && SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
             for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : WAYPOINT_LOCATIONS.values()) {
                 String waypointLinkedMessage = waypointLocation.getLinkedMessage();
                 if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage)) {
