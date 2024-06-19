@@ -77,7 +77,7 @@ public class ForceTestHelper {
                 text = text.formatted(Formatting.RED);
             }
 
-            Vec3d labelPos = zombie.getKey().getCameraPosVec(context.tickDelta());
+            Vec3d labelPos = zombie.getKey().getCameraPosVec(context.tickCounter().getTickDelta(false));
             RenderHelper.renderText(context, text, labelPos, 1.5f, true);
         }
     }
