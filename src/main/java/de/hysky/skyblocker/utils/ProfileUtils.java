@@ -19,18 +19,10 @@ public class ProfileUtils {
     public static Map<String, ObjectLongPair<JsonObject>> players = new HashMap<>();
 
     public static CompletableFuture<JsonObject> updateProfile() {
-        return updateProfile(false);
-    }
-
-    public static CompletableFuture<JsonObject> updateProfile(boolean profileChanged) {
-        return updateProfile(MinecraftClient.getInstance().getSession().getUsername(), profileChanged);
+        return updateProfile(MinecraftClient.getInstance().getSession().getUsername());
     }
 
     public static CompletableFuture<JsonObject> updateProfile(String name) {
-        return updateProfile(name, false);
-    }
-
-    public static CompletableFuture<JsonObject> updateProfile(String name, boolean profileChanged) {
         ObjectLongPair<JsonObject> playerCache = players.get(name);
         if (playerCache != null && playerCache.rightLong() + HYPIXEL_API_COOLDOWN > System.currentTimeMillis()) {
             return CompletableFuture.completedFuture(playerCache.left());
