@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -34,7 +35,9 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
     public void render(WorldRenderContext context) {
         Vec3d posUp = centerPos.add(0, 1, 0);
         double distance = context.camera().getPos().distanceTo(centerPos);
-        float scale = (float) (SkyblockerConfigManager.get().mining.commissionWaypoints.textScale * (distance / 10));
+        //set scale config based on if in crystals or not
+        float textScale = Utils.isInCrystalHollows() ? SkyblockerConfigManager.get().mining.crystalsWaypoints.textScale : SkyblockerConfigManager.get().mining.commissionWaypoints.textScale;
+        float scale = (float) (textScale * (distance / 10));
         RenderHelper.renderText(context, getName(), posUp, scale, true);
         RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
     }
