@@ -71,7 +71,7 @@ public class CrystalsLocationsManager {
         try {
             //make sure that it is only reading user messages and not from skyblocker
             if (text.contains(":") && !text.startsWith(Constants.PREFIX.get().getString())) {
-                String userMessage = text.split(":",2)[1];
+                String userMessage = text.split(":", 2)[1];
 
                 //get the message text
                 Matcher matcher = TEXT_CWORDS_PATTERN.matcher(userMessage);
@@ -127,16 +127,23 @@ public class CrystalsLocationsManager {
     private static void registerWaypointLocationCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
                 .then(literal("crystalWaypoints")
-                        .then(argument("pos", BlockPosArgumentType.blockPos())
-                                .then(argument("place", StringArgumentType.greedyString())
-                                        .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
-                                        .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
-                                )
-                        )
+                        .then(literal("add")
+                                .then(argument("pos", BlockPosArgumentType.blockPos())
+                                        .then(argument("place", StringArgumentType.greedyString())
+                                                .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
+                                                .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
+                                        )
+                                ))
                         .then(literal("share")
                                 .then(argument("place", StringArgumentType.greedyString())
                                         .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
                                         .executes(context -> shareWaypoint(getString(context, "place")))
+                                )
+                        )
+                        .then(literal("remove")
+                                .then(argument("place", StringArgumentType.greedyString())
+                                        .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
+                                        .executes(context -> removeWaypoint(getString(context, "place")))
                                 )
                         )
                 )
@@ -145,10 +152,11 @@ public class CrystalsLocationsManager {
 
     protected static Text getSetLocationMessage(String location, BlockPos blockPos) {
         MutableText text = Constants.PREFIX.get();
-        text.append(Text.literal("Added waypoint for "));
+        text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint"));
         int locationColor = WAYPOINT_LOCATIONS.get(location).getColor();
         text.append(Text.literal(location).withColor(locationColor));
-        text.append(Text.literal(" at : " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + "."));
+        text.append(Text.literal(" ").append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint.at")));
+        text.append(Text.literal(" : " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + "."));
 
         return text;
     }
@@ -158,7 +166,7 @@ public class CrystalsLocationsManager {
 
         for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
             int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
-            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints " + location + " " + waypointLocation))));
+            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints add" + waypointLocation + " " + location))));
         }
 
         return text;
@@ -192,6 +200,21 @@ public class CrystalsLocationsManager {
                 return 0;
             }
             CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.shareFail").formatted(Formatting.RED)), false);
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int removeWaypoint(String place) {
+        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
+            return 0;
+        }
+        if (activeWaypoints.containsKey(place)) {
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.removeSuccess").formatted(Formatting.GREEN)).append(Text.literal(place).withColor(WAYPOINT_LOCATIONS.get(place).getColor())), false);
+            activeWaypoints.remove(place);
+        } else {
+            //send fail message
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.removeFail").formatted(Formatting.RED)), false);
         }
 
         return Command.SINGLE_SUCCESS;

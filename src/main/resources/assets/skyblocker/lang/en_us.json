@@ -443,7 +443,11 @@
   "skyblocker.config.mining.crystalsWaypoints.enabled.@Tooltip": "Show a waypoint (waypoint selected in general/waypoints) at important areas in the crystal hollows e.g. Jungle Temple and Fairy Grotto. ",
   "skyblocker.config.mining.crystalsWaypoints.findInChat": "Find Waypoints In Chat",
   "skyblocker.config.mining.crystalsWaypoints.findInChat.@Tooltip": "When in crystal hollows read the chat to see if coordinates are sent and extract these to show as waypoint or on the map",
+  "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "Added waypoint for ",
+  "skyblocker.config.mining.crystalsWaypoints.addedWaypoint.at": "at",
   "skyblocker.config.mining.crystalsWaypoints.shareFail": "Can only share waypoints you have found.",
+  "skyblocker.config.mining.crystalsWaypoints.removeSuccess": "Removed waypoint for ",
+  "skyblocker.config.mining.crystalsWaypoints.removeFail": "Can only remove waypoints you have found.",
 
   "skyblocker.config.mining.dwarvenHud": "Dwarven HUD",
   "skyblocker.config.mining.dwarvenHud.enabledCommissions": "Enable Commissions",
