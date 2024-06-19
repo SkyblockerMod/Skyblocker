@@ -163,6 +163,7 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
      * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
      */
     enum CrystalHollowsLocationsCategory implements Category {
+        UNKNOWN("Unknown", Color.WHITE, null), //used when a location is known but what's at the location is not known
         JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
         MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
         GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal"),
