@@ -27,15 +27,17 @@ public class ObtainedDateTooltip extends TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (TooltipInfoType.OBTAINED.isTooltipEnabled()) {
-			String timestamp = getTimestamp(stack);
+	public boolean isEnabled() {
+		return TooltipInfoType.OBTAINED.isTooltipEnabled();
+	}
 
-			if (!timestamp.isEmpty()) {
-				lines.add(Text.empty()
-				              .append(Text.literal(String.format("%-21s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE))
-				              .append(Text.literal(timestamp).formatted(Formatting.RED)));
-			}
+	@Override
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		String timestamp = getTimestamp(stack);
+		if (!timestamp.isEmpty()) {
+			lines.add(Text.empty()
+			              .append(Text.literal(String.format("%-21s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE))
+			              .append(Text.literal(timestamp).formatted(Formatting.RED)));
 		}
 	}
 

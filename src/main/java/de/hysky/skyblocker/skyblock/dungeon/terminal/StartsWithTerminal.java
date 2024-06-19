@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.container.AbstractContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -22,13 +23,13 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 	}
 
 	@Override
-	protected boolean isEnabled() {
+	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().dungeons.terminals.solveStartsWith;
 	}
 
 	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
-		trimEdges(slots, 6);
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+		AbstractContainerSolver.trimEdges(slots, 6);
 		setupState(slots);
 
 		String prefix = groups[0];
@@ -50,7 +51,7 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 	}
 
 	@Override
-	protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		//Some random glass pane was clicked or something
 		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
 
@@ -74,7 +75,7 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 		return false;
 	}
 
-	//We only setup the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
+	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
 	private void setupState(Int2ObjectMap<ItemStack> usefulSlots) {
 		Predicate<Int2ObjectMap.Entry<ItemStack>> notNullOrEmpty = e -> e.getValue() != null && !e.getValue().isEmpty();
 

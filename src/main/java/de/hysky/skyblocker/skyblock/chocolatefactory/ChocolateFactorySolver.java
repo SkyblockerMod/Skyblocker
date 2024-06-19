@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -89,12 +89,12 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	@Override
-	protected boolean isEnabled() {
+	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper;
 	}
 
 	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		updateFactoryInfo(slots);
 		List<ColorHighlight> highlights = new ArrayList<>();
 
@@ -240,7 +240,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	@Override
-	protected void reset() {
+	public void reset() {
 		cpsIncreaseFactors.clear();
 		totalChocolate = -1L;
 		totalCps = -1.0;
@@ -264,6 +264,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private record Rabbit(double cpsIncrease, long cost, int slot) {}
 
+	//Todo: Merge this into the outer class once #786 is merged
 	public static final class Tooltip extends TooltipAdder {
 		public Tooltip() {
 			super("^Chocolate Factory$", 0); //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
@@ -393,6 +394,11 @@ public class ChocolateFactorySolver extends ContainerSolver {
 				builder.append((int) seconds).append("s");
 			}
 			return Text.literal(builder.toString()).formatted(Formatting.GOLD);
+		}
+
+		@Override
+		public boolean isEnabled() {
+			return SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper;
 		}
 	}
 }

@@ -30,7 +30,7 @@ public class BazaarPriceTooltip extends TooltipAdder {
 
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;
 
-		if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name)) {
+		if (TooltipInfoType.BAZAAR.hasOrNullWarning(name)) {
 			int amount;
 			if (lines.get(1).getString().endsWith("Sack")) {
 				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V
@@ -53,5 +53,10 @@ public class BazaarPriceTooltip extends TooltipAdder {
 					              : ItemTooltip.getCoinsMessage(getItem.get("sellPrice").getAsDouble(), amount)));
 			bazaarExist = true;
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.BAZAAR.isTooltipEnabled();
 	}
 }

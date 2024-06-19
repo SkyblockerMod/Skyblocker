@@ -26,9 +26,14 @@ public class ColorTooltip extends TooltipAdder {
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.COLOR.isTooltipEnabled();
+	}
+
+	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (TooltipInfoType.COLOR.isTooltipEnabledAndHasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
+		if (TooltipInfoType.COLOR.hasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
 			//DyedColorComponent#getColor can be ARGB so we mask out the alpha bits
 			int dyeColor = stack.get(DataComponentTypes.DYED_COLOR).rgb() & 0x00FFFFFF;
 			String colorHex = String.format("%06X", dyeColor);

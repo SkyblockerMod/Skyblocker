@@ -33,14 +33,12 @@ public final class SuperpairsSolver extends ExperimentSolver {
     }
 
     @Override
-    protected void start(GenericContainerScreen screen) {
-        super.start(screen);
+    public void start(GenericContainerScreen screen) {
         setState(State.SHOW);
     }
 
     @Override
-    protected void reset() {
-        super.reset();
+    public void reset() {
         superpairsPrevClickedSlot = 0;
         superpairsCurrentSlot = null;
         superpairsDuplicatedSlots.clear();
@@ -63,7 +61,7 @@ public final class SuperpairsSolver extends ExperimentSolver {
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> displaySlots) {
+    public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> displaySlots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         if (getState() == State.SHOW) {
             for (Int2ObjectMap.Entry<ItemStack> indexStack : displaySlots.int2ObjectEntrySet()) {

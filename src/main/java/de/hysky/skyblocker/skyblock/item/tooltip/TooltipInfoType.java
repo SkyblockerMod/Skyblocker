@@ -118,16 +118,6 @@ public enum TooltipInfoType implements Runnable {
     }
 
     /**
-     * Checks if the tooltip is enabled and the data has the given member name and sends a warning message if data is null.
-     *
-     * @param memberName the member name to check
-     * @return whether the tooltip is enabled and the data has the given member name or not
-     */
-    public boolean isTooltipEnabledAndHasOrNullWarning(String memberName) {
-        return isTooltipEnabled() && hasOrNullWarning(memberName);
-    }
-
-    /**
      * Downloads the data if it is enabled.
      *
      * @param futureList the list to add the future to

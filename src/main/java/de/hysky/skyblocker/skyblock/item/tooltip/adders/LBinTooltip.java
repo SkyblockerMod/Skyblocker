@@ -19,6 +19,11 @@ public class LBinTooltip extends TooltipAdder {
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.LOWEST_BINS.isTooltipEnabled();
+	}
+
+	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		lbinExist = false;
 		final String internalID = stack.getSkyblockId();
@@ -30,7 +35,7 @@ public class LBinTooltip extends TooltipAdder {
 
 		// bazaarOpened & bazaarExist check for lbin, because Skytils keeps some bazaar item data in lbin api
 
-		if (TooltipInfoType.LOWEST_BINS.isTooltipEnabledAndHasOrNullWarning(name) && !BazaarPriceTooltip.bazaarExist) {
+		if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(name) && !BazaarPriceTooltip.bazaarExist) {
 			lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
 			              .formatted(Formatting.GOLD)
 			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().get(name).getAsDouble(), stack.getCount())));

@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -12,18 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CroesusHelper extends ContainerSolver {
-
     public CroesusHelper() {
         super("^Croesus$");
     }
 
     @Override
-    protected boolean isEnabled() {
+    public boolean isEnabled() {
         return SkyblockerConfigManager.get().dungeons.croesusHelper;
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+    public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();

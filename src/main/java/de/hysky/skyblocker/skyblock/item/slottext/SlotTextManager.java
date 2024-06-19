@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.AbstractSlotTextAdder;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SlotTextManager {
-	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
+	private static final AbstractSlotTextAdder[] adders = new AbstractSlotTextAdder[]{
 			new EssenceShopAdder(),
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
@@ -34,25 +34,24 @@ public class SlotTextManager {
 			new BazaarHelper(),
 			new StatsTuningAdder()
 	};
-	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
+	private static final ArrayList<AbstractSlotTextAdder> currentScreenAdders = new ArrayList<>();
 
 	private SlotTextManager() {
 	}
 
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if (screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) {
-				onScreenChange(screen);
+			if (screen instanceof HandledScreen<?> handledScreen && Utils.isOnSkyblock()) {
+				onScreenChange(handledScreen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
 		});
 	}
 
-	private static void onScreenChange(Screen screen) {
-		final String title = screen.getTitle().getString();
-		for (SlotTextAdder adder : adders) {
+	private static void onScreenChange(HandledScreen<?> screen) {
+		for (AbstractSlotTextAdder adder : adders) {
 			if (!adder.isEnabled()) continue;
-			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
+			if (adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
@@ -68,7 +67,7 @@ public class SlotTextManager {
 	@NotNull
 	public static List<SlotText> getText(Slot slot) {
 		if (currentScreenAdders.isEmpty()) return List.of();
-		for (SlotTextAdder adder : currentScreenAdders) {
+		for (AbstractSlotTextAdder adder : currentScreenAdders) {
 			List<SlotText> text = adder.getText(slot);
 			if (!text.isEmpty()) return text;
 		}

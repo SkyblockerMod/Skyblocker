@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.container.AbstractContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,20 +28,20 @@ public final class ColorTerminal extends ContainerSolver implements TerminalSolv
     }
 
     @Override
-    protected boolean isEnabled() {
+    public boolean isEnabled() {
         targetColor = null;
         return SkyblockerConfigManager.get().dungeons.terminals.solveColor;
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
-        trimEdges(slots, 6);
+    public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+        AbstractContainerSolver.trimEdges(slots, 6);
         List<ColorHighlight> highlights = new ArrayList<>();
         String colorString = groups[0];
         if (targetColor == null) {
             targetColor = colorFromName.get(colorString);
             if (targetColor == null) {
-                LOGGER.error("[Skyblocker] Couldn't find dye color corresponding to \"" + colorString + "\"");
+                LOGGER.error("[Skyblocker] Couldn't find dye color corresponding to \"{}\"", colorString);
                 return Collections.emptyList();
             }
         }
@@ -54,7 +55,7 @@ public final class ColorTerminal extends ContainerSolver implements TerminalSolv
     }
 
     @Override
-    protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+    public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
         if (stack.hasGlint() || !targetColor.equals(itemColor.get(stack.getItem()))) {
             return shouldBlockIncorrectClicks();
         }

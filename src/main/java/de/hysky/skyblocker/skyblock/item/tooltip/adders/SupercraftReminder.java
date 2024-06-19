@@ -29,4 +29,9 @@ public class SupercraftReminder extends TooltipAdder {
 		if (lines.get(lines.size() - 2).getString().equals("Recipe not unlocked!")) index--; //Place it right below the "Right-Click to set amount" line
 		lines.add(index, Text.literal("Shift-Click to maximize the amount!").formatted(Formatting.GOLD));
 	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

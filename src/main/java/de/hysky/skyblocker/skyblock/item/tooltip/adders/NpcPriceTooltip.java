@@ -18,9 +18,14 @@ public class NpcPriceTooltip extends TooltipAdder {
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.NPC.isTooltipEnabled();
+	}
+
+	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (internalID != null && TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+		if (internalID != null && TooltipInfoType.NPC.hasOrNullWarning(internalID)) {
 			int amount;
 			if (lines.get(1).getString().endsWith("Sack")) {
 				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V
