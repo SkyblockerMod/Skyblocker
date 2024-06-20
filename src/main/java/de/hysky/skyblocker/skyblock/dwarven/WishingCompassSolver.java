@@ -57,11 +57,15 @@ public class WishingCompassSolver {
     /**
      * how many particles to use to get direction of a line
      */
-    private static final long PARTICLES_PER_LINE = 50;
+    private static final long PARTICLES_PER_LINE = 25;
     /**
      * the amount of milliseconds to wait for the next particle until assumed failed
      */
     private static final long PARTICLES_MAX_DELAY = 500;
+    /**
+     * The maximum distance a particle can be from the last to be considered part of the line
+     */
+    private static final double PARTICLES_MAX_DISTANCE = 0.9;
     /**
      * the distance the player has to be from where they used the first compass to where they use the second
      */
@@ -75,6 +79,7 @@ public class WishingCompassSolver {
     private static long particleUsedCountOne = 0;
     private static long particleUsedCountTwo = 0;
     private static long particleLastUpdate = System.currentTimeMillis();
+    private static Vec3d particleLastPos = Vec3d.ZERO;
 
 
     public static void init() {
@@ -92,6 +97,7 @@ public class WishingCompassSolver {
         particleUsedCountOne = 0;
         particleUsedCountTwo = 0;
         particleLastUpdate = System.currentTimeMillis();
+        Vec3d particleLastPos = Vec3d.ZERO;
     }
 
     private static boolean isKingsScentPresent() {
@@ -187,6 +193,11 @@ public class WishingCompassSolver {
         Vec3d particlePos = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
         //update particle used time
         particleLastUpdate = System.currentTimeMillis();
+        //ignore particle not in the line
+        if (particlePos.distanceTo(particleLastPos) > PARTICLES_MAX_DISTANCE) {
+            return;
+        }
+        particleLastPos = particlePos;
 
         switch (currentState) {
             case PROCESSING_FIRST_USE -> {
@@ -333,6 +344,7 @@ public class WishingCompassSolver {
                     //make sure the player is in the same zone as they used to first or restart
                     if (currentZone != getZoneOfLocation(startPosOne)) {
                         CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage")), false);
+                        reset();
                         startNewState(SolverStates.PROCESSING_FIRST_USE);
                     } else {
                         startNewState(SolverStates.PROCESSING_SECOND_USE);
@@ -348,6 +360,7 @@ public class WishingCompassSolver {
                     return true;
                 } else {
                     CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.couldNotDetectLastUseMessage").formatted(Formatting.RED)), false);
+                    reset();
                     startNewState(SolverStates.PROCESSING_FIRST_USE);
                 }
             }
@@ -360,16 +373,19 @@ public class WishingCompassSolver {
         if (CLIENT.player == null) {
             return;
         }
-        Vec3d playerPos = CLIENT.player.getEyePos();
+        //get where eye pos independent of if player is crouching
+        Vec3d playerPos = CLIENT.player.getPos().add(0, 1.62, 0);
 
         if (newState == SolverStates.PROCESSING_FIRST_USE) {
             currentState = SolverStates.PROCESSING_FIRST_USE;
             startPosOne = playerPos;
             particleLastUpdate = System.currentTimeMillis();
+            particleLastPos = playerPos;
         } else if (newState == SolverStates.PROCESSING_SECOND_USE) {
             currentState = SolverStates.PROCESSING_SECOND_USE;
             startPosTwo = playerPos;
             particleLastUpdate = System.currentTimeMillis();
+            particleLastPos = playerPos;
         }
     }
 }
