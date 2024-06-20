@@ -135,7 +135,7 @@ public class PetCache {
 	}
 
 	public record PetInfo(String type, double exp, String tier, String uuid) {
-		private static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		public static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("type").forGetter(PetInfo::type),
 				Codec.DOUBLE.fieldOf("exp").forGetter(PetInfo::exp),
 				Codec.STRING.fieldOf("tier").forGetter(PetInfo::tier),
