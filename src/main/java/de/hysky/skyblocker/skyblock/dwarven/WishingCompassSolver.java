@@ -57,7 +57,7 @@ public class WishingCompassSolver {
     /**
      * how many particles to use to get direction of a line
      */
-    private static final long PARTICLES_PER_LINE = 25;
+    private static final long PARTICLES_PER_LINE = 50;
     /**
      * the amount of milliseconds to wait for the next particle until assumed failed
      */
@@ -65,7 +65,7 @@ public class WishingCompassSolver {
     /**
      * the distance the player has to be from where they used the first compass to where they use the second
      */
-    private static final long DISTANCE_BETWEEN_USES = 32;
+    private static final long DISTANCE_BETWEEN_USES = 8;
 
     private static SolverStates currentState = SolverStates.NOT_STARTED;
     private static Vec3d startPosOne = Vec3d.ZERO;
