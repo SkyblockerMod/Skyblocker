@@ -57,6 +57,7 @@ public class CrystalsLocationsManager {
      */
     private static final Map<String, MiningLocationLabel.CrystalHollowsLocationsCategory> WAYPOINT_LOCATIONS = Arrays.stream(MiningLocationLabel.CrystalHollowsLocationsCategory.values()).collect(Collectors.toMap(MiningLocationLabel.CrystalHollowsLocationsCategory::getName, Function.identity()));
     private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9])\\D*([0-9][0-9][0-9]?)\\D*([0-9][0-9][0-9])");
+    private static final int REMOVE_UNKNOWN_DISTANCE = 50;
 
     protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
 
@@ -230,9 +231,25 @@ public class CrystalsLocationsManager {
 
 
     protected static void addCustomWaypoint(String waypointName, BlockPos pos) {
+        removeUnknownNear(pos);
         MiningLocationLabel.CrystalHollowsLocationsCategory category = WAYPOINT_LOCATIONS.get(waypointName);
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         activeWaypoints.put(waypointName, waypoint);
+    }
+
+    /**
+     * Removes unknown waypoint from active waypoints if it's close to a location
+     * @param location center location
+     */
+    private static void removeUnknownNear(BlockPos location) {
+        String name = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName();
+        MiningLocationLabel unknownWaypoint =  activeWaypoints.getOrDefault(name, null);
+        if (unknownWaypoint != null) {
+            double distance = unknownWaypoint.centerPos().distanceTo(location.toCenterPos());
+            if (distance < REMOVE_UNKNOWN_DISTANCE) {
+                activeWaypoints.remove(name);
+            }
+        }
     }
 
     public static void render(WorldRenderContext context) {
