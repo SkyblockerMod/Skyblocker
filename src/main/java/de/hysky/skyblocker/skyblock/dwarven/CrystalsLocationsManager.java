@@ -167,7 +167,7 @@ public class CrystalsLocationsManager {
 
         for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
             int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
-            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints add" + waypointLocation + " " + location))));
+            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints add " + location + " " + waypointLocation))));
         }
 
         return text;
