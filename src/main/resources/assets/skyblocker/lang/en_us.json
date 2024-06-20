@@ -460,7 +460,7 @@
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage": "Move further away from the first use before using again",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage": "Changed zone. Restarting...",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.waitLongerMessage": "Wait a little before using another wishing compass",
-  "": "Could not detect last use. Restarting...",
+  "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.couldNotDetectLastUseMessage": "Could not detect last use. Restarting...",
 
   "skyblocker.config.mining.dwarvenHud": "Dwarven HUD",
   "skyblocker.config.mining.dwarvenHud.enabledCommissions": "Enable Commissions",
