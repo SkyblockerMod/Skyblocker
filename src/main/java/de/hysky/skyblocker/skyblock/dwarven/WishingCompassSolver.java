@@ -135,7 +135,7 @@ public class WishingCompassSolver {
 
         //make sure the data is in tab and if not tell the user
         if (displayNameStream.noneMatch(entry -> entry.equals("Crystals:"))) {
-            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.literal("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
             return false;
         }
 
