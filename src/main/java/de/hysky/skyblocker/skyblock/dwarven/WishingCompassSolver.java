@@ -169,6 +169,15 @@ public class WishingCompassSolver {
         };
     }
 
+    /**
+     * Verify that a location could be correct and not to far out of zone. This is a problem when areas sometimes do not exist and is not a perfect solution
+     * @param startingZone zone player is searching in
+     * @param pos location where the area should be
+     * @return corrected location
+     */
+    private static Boolean verifyLocation(ZONE startingZone, Vec3d pos) {
+        return ZONE_BOUNDING_BOXES.get(startingZone).expand(100, 0, 100).contains(pos);
+    }
 
     public static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParameters().getType())) {
@@ -216,7 +225,11 @@ public class WishingCompassSolver {
             CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage").formatted(Formatting.RED)), false);
         } else {
             //send message to player with location and name
-            MiningLocationLabel.CrystalHollowsLocationsCategory location = getTargetLocation(getZoneOfLocation(startPosOne));
+            ZONE playerZone = getZoneOfLocation(startPosOne);
+            MiningLocationLabel.CrystalHollowsLocationsCategory location = getTargetLocation(playerZone);
+            if (!verifyLocation(playerZone, targetLocation)) {
+                location = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN;
+            }
             //offset the jungle location to its doors
             if (location == MiningLocationLabel.CrystalHollowsLocationsCategory.JUNGLE_TEMPLE) {
                 targetLocation = targetLocation.add(JUNGLE_TEMPLE_DOOR_OFFSET);
