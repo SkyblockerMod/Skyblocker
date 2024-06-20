@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -113,7 +114,7 @@ public class PetCache {
 				Object2ObjectOpenHashMap<String, PetInfo> playerData = CACHED_PETS.computeIfAbsent(Utils.getUndashedUuid(), _uuid -> new Object2ObjectOpenHashMap<>());
 
 				//Handle deselecting pets
-				if (clicked && getCurrentPet() != null && getCurrentPet().uuid().equals(petInfo.uuid())) {
+				if (clicked && getCurrentPet() != null && getCurrentPet().uuid().orElse("").equals(petInfo.uuid().orElse(""))) {
 					playerData.remove(profileId);
 				} else {
 					playerData.put(profileId, petInfo);
@@ -134,12 +135,12 @@ public class PetCache {
 		return CACHED_PETS.containsKey(uuid) && CACHED_PETS.get(uuid).containsKey(profileId) ? CACHED_PETS.get(uuid).get(profileId) : null;
 	}
 
-	public record PetInfo(String type, double exp, String tier, String uuid) {
+	public record PetInfo(String type, double exp, String tier, Optional<String> uuid) {
 		public static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("type").forGetter(PetInfo::type),
 				Codec.DOUBLE.fieldOf("exp").forGetter(PetInfo::exp),
 				Codec.STRING.fieldOf("tier").forGetter(PetInfo::tier),
-				Codec.STRING.fieldOf("uuid").forGetter(PetInfo::uuid))
+				Codec.STRING.optionalFieldOf("uuid").forGetter(PetInfo::uuid))
 				.apply(instance, PetInfo::new));
 		private static final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, PetInfo>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING,
 				Codec.unboundedMap(Codec.STRING, CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new)
