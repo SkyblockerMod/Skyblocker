@@ -306,6 +306,11 @@
   "skyblocker.config.general.wikiLookup.officialWiki": "Use Official Wiki",
   "skyblocker.config.general.wikiLookup.officialWiki.@Tooltip": "Use the official wiki instead of the Fandom wiki.",
 
+  "skyblocker.config.general.bazaarLookup": "Bazaar Lookup",
+  "skyblocker.config.general.bazaarLookup.enableBazaarLookup": "Enable Bazaar Lookup",
+  "skyblocker.config.general.bazaarLookup.enableBazaarLookup.@Tooltip": "Searches the Bazaar for the current hovered item with the F3 key.",
+  "skyblocker.config.general.bazaarLookup.failedBazaarLookup": "Failed to find item in the Bazaar",
+
   "skyblocker.config.helpers": "Helpers",
 
   "skyblocker.config.helpers.bazaar": "Bazaar",
@@ -550,6 +555,16 @@
   "skyblocker.config.misc.richPresence.info.BITS": "BITS",
   "skyblocker.config.misc.richPresence.info.LOCATION": "LOCATION",
   "skyblocker.config.misc.richPresence.info.PURSE": "PURSE",
+
+  "skyblocker.config.misc.debugOptions": "Debug Options",
+  "skyblocker.config.misc.debugOptions.enableDebugHitboxes": "Debug Hitboxes",
+  "skyblocker.config.misc.debugOptions.enableDebugHitboxes.@Tooltip": "Sets Debug Hitboxes to always be on",
+  "skyblocker.config.misc.debugOptions.BazaarRefresh": "Bazaar Refresh",
+  "skyblocker.config.misc.debugOptions.enableBazaarRefresh": "Enable Bazaar Refresh",
+  "skyblocker.config.misc.debugOptions.enableBazaarRefresh.@Tooltip": "Refresh the Bazaar prices with the Z key.",
+  "skyblocker.config.misc.debugOptions.yesBazaarRefresh": "Bazaar Refreshed",
+  "skyblocker.config.misc.debugOptions.noBazaarRefresh": "Bazaar Refresh Failed",
+
 
   "skyblocker.config.otherLocations": "Other Locations",
   "skyblocker.config.otherLocations.barn": "Barn",

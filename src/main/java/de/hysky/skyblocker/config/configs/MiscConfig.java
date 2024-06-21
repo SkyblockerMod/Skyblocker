@@ -8,6 +8,12 @@ public class MiscConfig {
     @SerialEntry
     public RichPresence richPresence = new RichPresence();
 
+    @SerialEntry
+    public BazaarRefresh bazaarRefresh = new BazaarRefresh();
+
+    @SerialEntry
+    public DebugOptions debugOptions = new DebugOptions();
+
     public static class RichPresence {
         @SerialEntry
         public boolean enableRichPresence = false;
@@ -20,6 +26,16 @@ public class MiscConfig {
 
         @SerialEntry
         public String customMessage = "Playing Skyblock";
+    }
+
+    public static class BazaarRefresh {
+        @SerialEntry
+        public boolean enableBazaarRefresh = false;
+    }
+
+    public static class DebugOptions {
+        @SerialEntry
+        public boolean enableDebugHitboxes = false;
     }
 
     public enum Info {
