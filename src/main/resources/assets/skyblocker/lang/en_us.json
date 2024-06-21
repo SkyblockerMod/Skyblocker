@@ -276,7 +276,19 @@
   "skyblocker.config.general.wikiLookup.officialWiki": "Use Official Wiki",
   "skyblocker.config.general.wikiLookup.officialWiki.@Tooltip": "Use the official wiki instead of the Fandom wiki.",
 
+  "skyblocker.config.general.bazaarLookup": "Bazaar Lookup",
+  "skyblocker.config.general.bazaarLookup.enableBazaarLookup": "Enable Bazaar Lookup",
+  "skyblocker.config.general.bazaarLookup.enableBazaarLookup.@Tooltip": "Opens the Bazaar of current hovered item with the F3 key.",
+  "skyblocker.config.general.bazaarLookup.enableBazaarRefresh": "Enable Bazaar Refresh",
+  "skyblocker.config.general.bazaarLookup.enableBazaarRefresh.@Tooltip": "Refresh the Bazaar prices with the Z key.",
+  "skyblocker.config.general.bazaarLookup.yesBazaarRefresh": "Bazaar Refreshed",
+  "skyblocker.config.general.bazaarLookup.noBazaarRefresh": "Bazaar Refresh Failed",
+
   "skyblocker.config.helpers": "Helpers",
+
+  "skyblocker.config.helpers.bazaar": "Bazaar",
+  "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
+  "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Highlights orders with items or coins to claim.",
 
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",

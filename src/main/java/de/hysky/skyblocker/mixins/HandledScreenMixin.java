@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -114,19 +115,26 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "keyPressed")
-	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-		if (this.client != null && this.focusedSlot != null && keyCode != 256) {
-			//wiki lookup
-			if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode) && client.player != null) {
-				WikiLookup.openWiki(this.focusedSlot, client.player);
-			}
-			//item protection
-			if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
-				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
-			}
-		}
-	}
+    @Inject(at = @At("HEAD"), method = "keyPressed")
+    public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+        if (this.client != null && this.focusedSlot != null && keyCode != 256) {
+            //wiki lookup
+            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode) && client.player != null) {
+                WikiLookup.openWiki(this.focusedSlot, client.player);
+            }
+            //Bazaar Lookup
+            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && BazaarHelper.BazaarLookup.matchesKey(keyCode, scanCode) && client.player != null) {
+                BazaarHelper.BazaarLookup(this.focusedSlot);
+            }
+            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && BazaarHelper.BazaarRefresh.matchesKey(keyCode, scanCode) && client.player != null) {
+                BazaarHelper.BazaarRefresh();
+            }
+            //item protection
+            if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
+                ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
+            }
+        }
+    }
 
 	@Inject(at = @At("HEAD"), method = "mouseClicked")
 	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
