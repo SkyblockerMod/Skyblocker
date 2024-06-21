@@ -47,26 +47,30 @@ public abstract class BazaarHelper extends ContainerSolver {
 	}
 
 	public static void BazaarLookup(@NotNull Slot slot) {
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.itemTooltip.enableBazaarLookup) return;
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.bazaarLookup.enableBazaarLookup) return;
 		String itemText = String.valueOf(ItemUtils.getItemId(slot.getStack()));
 		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(itemText);
-		if (neuItem != null) {
+		if (neuItem != null && TooltipInfoType.BAZAAR.getData() != null) {
 			itemName = Formatting.strip(neuItem.getDisplayName());
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName);
 		}
-		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName);
-
+		else {
+            assert MinecraftClient.getInstance().player != null;
+            MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.general.bazaarLookup.failedBazaarLookup")));
+		}
 	}
 
 	//maybe rename to ItemTooltipPriceRefresh? since updating more than BZ?
 	public static void BazaarRefresh() {
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.itemTooltip.enableBazaarRefresh) return;
+		assert MinecraftClient.getInstance().player != null;
+		assert MinecraftClient.getInstance().currentScreen != null;
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().misc.bazaarRefresh.enableBazaarRefresh) return;
 		List<CompletableFuture<Void>> futureList = new ArrayList<>();
 		TooltipInfoType.NPC.downloadIfEnabled(futureList);
 		TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
 		TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
 		TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
 		TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
-        assert MinecraftClient.getInstance().player != null;
-        MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.general.itemTooltip.yesBazaarRefresh")));
+        MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.misc.debugOptions.yesBazaarRefresh")));
 	}
 }

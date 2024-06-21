@@ -43,6 +43,9 @@ public class GeneralConfig {
     public WikiLookup wikiLookup = new WikiLookup();
 
     @SerialEntry
+    public BazaarLookup bazaarLookup = new BazaarLookup();
+
+    @SerialEntry
     public SpecialEffects specialEffects = new SpecialEffects();
 
     @SerialEntry
@@ -113,12 +116,6 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean enableBazaarPrice = true;
-
-        @SerialEntry
-        public boolean enableBazaarLookup = true;
-
-        @SerialEntry
-        public boolean enableBazaarRefresh = true;
 
         @SerialEntry
         public boolean enableObtainedDate = true;
@@ -211,6 +208,11 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean officialWiki = true;
+    }
+
+    public static class BazaarLookup {
+        @SerialEntry
+        public boolean enableBazaarLookup = true;
     }
 
     public static class SpecialEffects {
