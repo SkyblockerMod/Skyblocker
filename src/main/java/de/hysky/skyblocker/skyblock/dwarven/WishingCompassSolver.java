@@ -276,7 +276,7 @@ public class WishingCompassSolver {
         Vector3D intersection = line.intersection(lineTwo);
 
         //return final target location
-        if (intersection == null) {
+        if (intersection == null || intersection.equals(new Vector3D(0, 0, 0))) {
             return null;
         }
         return new Vec3d(intersection.getX(), intersection.getY(), intersection.getZ());
