@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * Simple implementation of a tooltip adder.
  * Extend this class and add it to {@link TooltipManager#adders} to add additional text to tooltips.
  */
-public abstract class TooltipAdder extends RegexContainerMatcher implements AbstractTooltipAdder {
+public abstract class SimpleTooltipAdder extends RegexContainerMatcher implements AbstractTooltipAdder {
 	/**
 	 * The priority of this adder. Lower priority means it will be applied first.
 	 * @apiNote Consider adding this as a parameter to your class' constructor and
@@ -22,9 +22,9 @@ public abstract class TooltipAdder extends RegexContainerMatcher implements Abst
 	/**
 	 * Utility constructor that will compile the given string into a pattern.
 	 *
-	 * @see #TooltipAdder(Pattern, int)
+	 * @see #SimpleTooltipAdder(Pattern, int)
 	 */
-	protected TooltipAdder(@NotNull @Language("RegExp") String titlePattern, int priority) {
+	protected SimpleTooltipAdder(@NotNull @Language("RegExp") String titlePattern, int priority) {
 		super(titlePattern);
 		this.priority = priority;
 	}
@@ -35,7 +35,7 @@ public abstract class TooltipAdder extends RegexContainerMatcher implements Abst
 	 * @param titlePattern The pattern to match the screen title against.
 	 * @param priority The priority of this adder. Lower priority means it will be applied first.
 	 */
-	protected TooltipAdder(@NotNull Pattern titlePattern, int priority) {
+	protected SimpleTooltipAdder(@NotNull Pattern titlePattern, int priority) {
 		super(titlePattern);
 		this.priority = priority;
 	}
@@ -45,7 +45,7 @@ public abstract class TooltipAdder extends RegexContainerMatcher implements Abst
 	 *
 	 * @param priority The priority of this adder. Lower priority means it will be applied first.
 	 */
-	protected TooltipAdder(int priority) {
+	protected SimpleTooltipAdder(int priority) {
 		super();
 		this.priority = priority;
 	}

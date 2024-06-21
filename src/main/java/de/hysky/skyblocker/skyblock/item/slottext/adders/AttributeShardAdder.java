@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class AttributeShardAdder extends SlotTextAdder {
+public class AttributeShardAdder extends SimpleSlotTextAdder {
 	private static final Object2ObjectMap<String, String> ID_2_SHORT_NAME = new Object2ObjectOpenHashMap<>();
 
 	static {

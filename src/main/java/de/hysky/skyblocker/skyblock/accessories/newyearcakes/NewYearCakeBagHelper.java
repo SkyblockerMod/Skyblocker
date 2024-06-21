@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.accessories.newyearcakes;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -10,7 +10,7 @@ import net.minecraft.screen.slot.Slot;
 
 import java.util.List;
 
-public class NewYearCakeBagHelper extends ContainerSolver {
+public class NewYearCakeBagHelper extends SimpleContainerSolver {
     public NewYearCakeBagHelper() {
         super("New Year Cake Bag");
     }

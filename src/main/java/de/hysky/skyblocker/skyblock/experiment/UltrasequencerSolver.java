@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.experiment;
 
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.container.AbstractContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -56,7 +56,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
                 case WAIT -> {
                     if (genericContainerScreen.getScreenHandler().getInventory().getStack(49).getName().getString().startsWith("Timer: ")) {
                         setState(State.SHOW);
-                        AbstractContainerSolver.markHighlightsDirty();
+                        ContainerSolver.markHighlightsDirty();
                     }
                 }
                 case END -> {

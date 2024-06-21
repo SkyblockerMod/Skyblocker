@@ -19,7 +19,7 @@ import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.container.AbstractContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -198,7 +198,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Unique
 	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
-		AbstractContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
+		ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
 		if ((currentSolver instanceof SuperpairsSolver || currentSolver instanceof UltrasequencerSolver) && ((ExperimentSolver) currentSolver).getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
 			ItemStack itemStack = ((ExperimentSolver) currentSolver).getSlots().get(slot.getIndex());
 			return itemStack == null ? stack : itemStack;
@@ -226,7 +226,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (slot == null) return;
 		String title = getTitle().getString();
 		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack());
-		AbstractContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
+		ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
 
 		// Prevent clicks on filler items
 		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&

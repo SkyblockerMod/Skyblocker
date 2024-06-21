@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class YourEssenceAdder extends SlotTextAdder {
+public class YourEssenceAdder extends SimpleSlotTextAdder {
     private static final Pattern ESSENCE = Pattern.compile("You currently own (?<essence>[\\d,]+)");
 
     public YourEssenceAdder() {

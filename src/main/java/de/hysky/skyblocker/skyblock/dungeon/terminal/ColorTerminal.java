@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.container.AbstractContainerSolver;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
-public final class ColorTerminal extends ContainerSolver implements TerminalSolver {
+public final class ColorTerminal extends SimpleContainerSolver implements TerminalSolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
     private static final Map<String, DyeColor> colorFromName;
     private DyeColor targetColor;
@@ -35,7 +35,7 @@ public final class ColorTerminal extends ContainerSolver implements TerminalSolv
 
     @Override
     public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-        AbstractContainerSolver.trimEdges(slots, 6);
+        ContainerSolver.trimEdges(slots, 6);
         List<ColorHighlight> highlights = new ArrayList<>();
         String colorString = groups[0];
         if (targetColor == null) {

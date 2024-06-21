@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class PetLevelAdder extends SlotTextAdder {
+public class PetLevelAdder extends SimpleSlotTextAdder {
 	public PetLevelAdder() {
 		super();
 	}

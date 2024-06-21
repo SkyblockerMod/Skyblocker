@@ -3,7 +3,7 @@ package de.hysky.skyblocker.utils.container;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import org.jetbrains.annotations.NotNull;
 
-public interface AbstractContainerMatcher {
+public interface ContainerMatcher {
     /**
      * Tests if the given screen should be handled by this matcher.
      * @return {@code true} if this matcher should apply to the given screen, {@code false} otherwise

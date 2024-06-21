@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class PrehistoricEggAdder extends SlotTextAdder {
+public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 	@Override
 	public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.PLAYER_HEAD) || !StringUtils.equals(stack.getSkyblockId(), "PREHISTORIC_EGG")) return List.of();

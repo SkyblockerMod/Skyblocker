@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class DungeonQualityTooltip extends TooltipAdder {
+public class DungeonQualityTooltip extends SimpleTooltipAdder {
 	public DungeonQualityTooltip(int priority) {
 		super(priority);
 	}

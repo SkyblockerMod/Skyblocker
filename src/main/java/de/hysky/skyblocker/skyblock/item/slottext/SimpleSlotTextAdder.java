@@ -12,13 +12,13 @@ import java.util.regex.Pattern;
  * Simple implementation of a slot text adder.
  * Extend this class and add it to {@link SlotTextManager#adders} to add text to any arbitrary slot.
  */
-public abstract class SlotTextAdder extends RegexContainerMatcher implements AbstractSlotTextAdder {
+public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implements AbstractSlotTextAdder {
 	/**
 	 * Utility constructor that will compile the given string into a pattern.
 	 *
-	 * @see #SlotTextAdder(Pattern)
+	 * @see #SimpleSlotTextAdder(Pattern)
 	 */
-	protected SlotTextAdder(@NotNull @Language("RegExp") String titlePattern) {
+	protected SimpleSlotTextAdder(@NotNull @Language("RegExp") String titlePattern) {
 		super(titlePattern);
 	}
 
@@ -27,14 +27,14 @@ public abstract class SlotTextAdder extends RegexContainerMatcher implements Abs
 	 *
 	 * @param titlePattern The pattern to match the screen title against.
 	 */
-	protected SlotTextAdder(@NotNull Pattern titlePattern) {
+	protected SimpleSlotTextAdder(@NotNull Pattern titlePattern) {
 		super(titlePattern);
 	}
 
 	/**
 	 * Creates a SlotTextAdder that will be applied to all screens.
 	 */
-	protected SlotTextAdder() {
+	protected SimpleSlotTextAdder() {
 		super();
 	}
 

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CommunityShopAdder extends SlotTextAdder {
+public class CommunityShopAdder extends SimpleSlotTextAdder {
 	private static final byte CATEGORIES_START = 10;
 	private static final byte CATEGORIES_END = 14; //Inclusive
 	private static byte currentScreen = -1; // 0 = city projects, 1 = upgrades, 2 = booster cookie, 3 = bits shop, 4 = fire sales, any other number = invalid
