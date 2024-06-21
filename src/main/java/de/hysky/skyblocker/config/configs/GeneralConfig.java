@@ -43,6 +43,9 @@ public class GeneralConfig {
     public WikiLookup wikiLookup = new WikiLookup();
 
     @SerialEntry
+    public BazaarLookup bazaarLookup = new BazaarLookup();
+
+    @SerialEntry
     public SpecialEffects specialEffects = new SpecialEffects();
 
     @SerialEntry
@@ -205,6 +208,11 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean officialWiki = true;
+    }
+
+    public static class BazaarLookup {
+        @SerialEntry
+        public boolean enableBazaarLookup = true;
     }
 
     public static class SpecialEffects {

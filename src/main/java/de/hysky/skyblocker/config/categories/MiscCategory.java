@@ -21,6 +21,7 @@ public class MiscCategory {
                 //Discord RPC
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.misc.richPresence"))
+                        .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.misc.richPresence.enableRichPresence"))
                                 .binding(defaults.misc.richPresence.enableRichPresence,
@@ -49,6 +50,28 @@ public class MiscCategory {
                                         () -> config.misc.richPresence.customMessage,
                                         newValue -> config.misc.richPresence.customMessage = newValue)
                                 .controller(StringControllerBuilder::create)
+                                .build())
+                        .build())
+
+                //Debug Options
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.misc.debugOptions"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.misc.debugOptions.enableDebugHitboxes"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.misc.debugOptions.enableDebugHitboxes.@Tooltip")))
+                                .binding(defaults.misc.debugOptions.enableDebugHitboxes,
+                                        () -> config.misc.debugOptions.enableDebugHitboxes,
+                                        newValue -> config.misc.debugOptions.enableDebugHitboxes = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.misc.debugOptions.enableBazaarRefresh"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.misc.debugOptions.enableBazaarRefresh.@Tooltip")))
+                                .binding(defaults.misc.bazaarRefresh.enableBazaarRefresh,
+                                        () -> config.misc.bazaarRefresh.enableBazaarRefresh,
+                                        newValue -> config.misc.bazaarRefresh.enableBazaarRefresh = newValue)
+                                .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
                 .build();
