@@ -175,14 +175,6 @@ public class GeneralCategory {
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableBazaarRefresh"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableBazaarRefresh.@Tooltip")))
-                                .binding(defaults.general.itemTooltip.enableBazaarRefresh,
-                                        () -> config.general.itemTooltip.enableBazaarRefresh,
-                                        newValue -> config.general.itemTooltip.enableBazaarRefresh = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemTooltip.enableObtainedDate"))
                                 .binding(defaults.general.itemTooltip.enableObtainedDate,
                                         () -> config.general.itemTooltip.enableObtainedDate,
@@ -327,6 +319,20 @@ public class GeneralCategory {
                                 .binding(defaults.general.wikiLookup.officialWiki,
                                         () -> config.general.wikiLookup.officialWiki,
                                         newValue -> config.general.wikiLookup.officialWiki = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
+                //Bazaar Lookup
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.general.bazaarLookup"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.bazaarLookup.enableBazaarLookup"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.bazaarLookup.enableBazaarLookup.@Tooltip")))
+                                .binding(defaults.general.bazaarLookup.enableBazaarLookup,
+                                        () -> config.general.bazaarLookup.enableBazaarLookup,
+                                        newValue -> config.general.bazaarLookup.enableBazaarLookup = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
