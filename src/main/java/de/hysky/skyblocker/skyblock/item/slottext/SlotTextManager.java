@@ -1,17 +1,22 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +44,8 @@ public class SlotTextManager {
 			new StatsTuningAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
+	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
+	private static boolean keyHeld = false;
 
 	private SlotTextManager() {
 	}
@@ -49,13 +56,23 @@ public class SlotTextManager {
 				onScreenChange(handledScreen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
+			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
+				if (keyBinding.matchesKey(key, scancode)) {
+					SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextToggled = !SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextToggled;
+					keyHeld = true;
+				}
+			});
+			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
+				if (keyBinding.matchesKey(key, scancode)) {
+					keyHeld = false;
+				}
+			});
 		});
 	}
 
 	private static void onScreenChange(HandledScreen<?> screen) {
 		for (SlotTextAdder adder : adders) {
-			if (!adder.isEnabled()) continue;
-			if (adder.test(screen)) {
+			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
@@ -70,7 +87,7 @@ public class SlotTextManager {
 	 */
 	@NotNull
 	public static List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
-		if (currentScreenAdders.isEmpty()) return List.of();
+		if (currentScreenAdders.isEmpty() || !isEnabled()) return List.of();
 		for (SlotTextAdder adder : currentScreenAdders) {
 			List<SlotText> text = adder.getText(itemStack, slotId);
 			if (!text.isEmpty()) return text;
@@ -83,7 +100,7 @@ public class SlotTextManager {
 	}
 
 	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, ItemStack itemStack, int slotId, int x, int y) {
-		List<SlotText> textList = SlotTextManager.getText(itemStack, slotId);
+		List<SlotText> textList = getText(itemStack, slotId);
 		if (textList.isEmpty()) return;
 		MatrixStack matrices = context.getMatrices();
 
@@ -108,5 +125,15 @@ public class SlotTextManager {
 			context.drawText(textRenderer, slotText.text(), x, y, 0xFFFFFF, true);
 			matrices.pop();
 		}
+	}
+
+	public static boolean isEnabled() {
+		return switch (SkyblockerConfigManager.get().general.itemInfoDisplay.slotText) {
+			case ENABLED -> true;
+			case DISABLED -> false;
+			case PRESS_TO_TOGGLE -> SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextToggled;
+			case HOLD_TO_HIDE -> !keyHeld;
+			case HOLD_TO_SHOW -> keyHeld;
+		};
 	}
 }

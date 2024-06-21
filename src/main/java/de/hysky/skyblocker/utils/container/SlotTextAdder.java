@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.utils.container;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextState;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,4 +20,9 @@ public interface SlotTextAdder extends ContainerMatcher {
 	 */
 	@NotNull
 	List<SlotText> getText(@NotNull ItemStack itemStack, int slotId);
+
+	@Override
+	default boolean isEnabled() {
+		return SkyblockerConfigManager.get().general.itemInfoDisplay.slotText != SlotTextState.DISABLED;
+	}
 }

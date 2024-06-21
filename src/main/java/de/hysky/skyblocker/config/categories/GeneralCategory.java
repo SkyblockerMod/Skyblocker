@@ -5,10 +5,12 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextState;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.option.KeybindsScreen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -234,13 +236,18 @@ public class GeneralCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
                         .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
+                        .option(Option.<SlotTextState>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip")))
                                 .binding(defaults.general.itemInfoDisplay.slotText,
                                         () -> config.general.itemInfoDisplay.slotText,
                                         newValue -> config.general.itemInfoDisplay.slotText = newValue)
-                                .controller(ConfigUtils::createBooleanController)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .option(ButtonOption.createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText.shortcutToKeybindsSettings"))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new KeybindsScreen(screen, MinecraftClient.getInstance().options)))
+                                .text(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText.shortcutToKeybindsSettings.@Text"))
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeShardInfo"))
@@ -300,6 +307,11 @@ public class GeneralCategory {
                                         () -> config.general.wikiLookup.enableWikiLookup,
                                         newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
                                 .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(ButtonOption.createBuilder()
+                                .name(Text.translatable("skyblocker.config.shortcutToKeybindsSettings"))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new KeybindsScreen(screen, MinecraftClient.getInstance().options)))
+                                .text(Text.translatable("skyblocker.config.shortcutToKeybindsSettings.@Text"))
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.wikiLookup.officialWiki"))

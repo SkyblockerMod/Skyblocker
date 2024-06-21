@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.configs;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextState;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -164,7 +165,10 @@ public class GeneralConfig {
 
     public static class ItemInfoDisplay {
         @SerialEntry
-        public boolean slotText = true;
+        public SlotTextState slotText = SlotTextState.ENABLED;
+
+        @SerialEntry
+        public boolean slotTextToggled = true;
 
         @SerialEntry
         public boolean attributeShardInfo = true;

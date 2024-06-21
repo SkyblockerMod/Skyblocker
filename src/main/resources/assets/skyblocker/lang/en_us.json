@@ -10,6 +10,7 @@
   "key.skyblocker.toggleA": "Toggle tab HUD to screen A",
   "key.wikiLookup": "Wiki Lookup",
   "key.itemProtection": "Protect Item",
+  "key.skyblocker.slottext": "Slot Text",
 
   "text.skyblocker.open": "Open",
   "text.skyblocker.quit_config": "Changes Not Saved",
@@ -224,6 +225,8 @@
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
   "skyblocker.config.general.itemInfoDisplay.slotText": "Slot Text",
   "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
+  "skyblocker.config.general.itemInfoDisplay.slotText.shortcutToKeybindsSettings": "Slot Text Keybind",
+  "skyblocker.config.general.itemInfoDisplay.slotText.shortcutToKeybindsSettings.@Text": "Click... (opens up keybinds settings)",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
