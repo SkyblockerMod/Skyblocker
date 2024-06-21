@@ -4,10 +4,10 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -48,20 +48,21 @@ public class TooltipManager {
 			}
 		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			onScreenChange(screen);
+			if (screen instanceof HandledScreen<?> handledScreen) {
+				onScreenChange(handledScreen);
+			}
 			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 		});
 	}
 
-	private static void onScreenChange(Screen screen) {
-		final String title = screen.getTitle().getString();
+	private static void onScreenChange(HandledScreen<?> screen) {
 		currentScreenAdders.clear();
 		for (TooltipAdder adder : adders) {
-			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
+			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
-		currentScreenAdders.sort(Comparator.comparingInt(adder -> adder.priority));
+		currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
 	}
 
 	/**

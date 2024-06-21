@@ -1,28 +1,25 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class EnchantmentLevelAdder extends SlotTextAdder {
+public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 	public EnchantmentLevelAdder() {
 		super();
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(Slot slot) {
-		final ItemStack itemStack = slot.getStack();
+	public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
 		if (!itemStack.isOf(Items.ENCHANTED_BOOK)) return List.of();
 		String name = itemStack.getName().getString();
 		if (name.equals("Enchanted Book")) {

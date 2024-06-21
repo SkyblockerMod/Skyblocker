@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -11,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -93,15 +93,15 @@ public class Utils {
     }
 
     public static boolean isInDungeons() {
-        return location == Location.DUNGEON || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DUNGEON;
     }
 
     public static boolean isInCrystalHollows() {
-        return location == Location.CRYSTAL_HOLLOWS || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.CRYSTAL_HOLLOWS;
     }
 
     public static boolean isInDwarvenMines() {
-        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT;
     }
 
     public static boolean isInTheRift() {
@@ -213,9 +213,8 @@ public class Utils {
     public static void updatePlayerPresenceFromScoreboard(MinecraftClient client) {
         List<String> sidebar = STRING_SCOREBOARD;
 
-        FabricLoader fabricLoader = FabricLoader.getInstance();
         if (client.world == null || client.isInSingleplayer() || sidebar.isEmpty()) {
-            if (fabricLoader.isDevelopmentEnvironment()) {
+            if (Debug.debugEnabled()) {
                 sidebar = Collections.emptyList();
             } else {
                 isOnSkyblock = false;
@@ -223,13 +222,13 @@ public class Utils {
             }
         }
 
-        if (sidebar.isEmpty() && !fabricLoader.isDevelopmentEnvironment()) return;
+        if (sidebar.isEmpty() && !Debug.debugEnabled()) return;
 
-        if (fabricLoader.isDevelopmentEnvironment() || isConnectedToHypixel(client)) {
+        if (Debug.debugEnabled() || isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
-            if (fabricLoader.isDevelopmentEnvironment() || sidebar.getFirst().contains("SKYBLOCK") || sidebar.getFirst().contains("SKIBLOCK")) {
+            if (Debug.debugEnabled() || sidebar.getFirst().contains("SKYBLOCK") || sidebar.getFirst().contains("SKIBLOCK")) {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;

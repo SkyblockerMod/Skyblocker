@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChocolateFactorySolver extends ContainerSolver {
+public class ChocolateFactorySolver extends SimpleContainerSolver {
 	//Patterns
 	private static final Pattern CPS_PATTERN = Pattern.compile("([\\d,.]+) Chocolate per second");
 	private static final Pattern CPS_INCREASE_PATTERN = Pattern.compile("\\+([\\d,]+) Chocolate per second");
@@ -52,7 +52,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
 	@Override
-	protected void reset() {
+	public void reset() {
 		cpsIncreaseFactors.clear();
 		totalChocolate = -1L;
 		totalCps = -1.0;
@@ -83,12 +83,12 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	@Override
-	protected boolean isEnabled() {
+	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper;
 	}
 
 	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		updateFactoryInfo(slots);
 		List<ColorHighlight> highlights = new ArrayList<>();
 
@@ -253,7 +253,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private record Rabbit(double cpsIncrease, int cost, int slot) { }
 
-	public static final class Tooltip extends TooltipAdder {
+	//Todo: Merge this into the outer class once #786 is merged
+	public static final class Tooltip extends SimpleTooltipAdder {
 		public Tooltip() {
 			super("^Chocolate Factory$", 0); //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
 		}
@@ -382,6 +383,11 @@ public class ChocolateFactorySolver extends ContainerSolver {
 				builder.append((int) seconds).append("s");
 			}
 			return Text.literal(builder.toString()).formatted(Formatting.GOLD);
+		}
+
+		@Override
+		public boolean isEnabled() {
+			return SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper;
 		}
 	}
 }
