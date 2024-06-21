@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -387,6 +388,9 @@ public class Utils {
 
     public static void onClientWorldJoin(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
         clientWorldJoinTime = System.currentTimeMillis();
+        if (SkyblockerConfigManager.get().misc.debugOptions.enableDebugHitboxes) {
+            client.getEntityRenderDispatcher().setRenderHitboxes(true);
+        }
         resetLocRawInfo();
     }
 
