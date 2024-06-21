@@ -5,9 +5,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,11 +21,10 @@ public class RancherBootsSpeedAdder extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(Slot slot) {
-		final ItemStack itemStack = slot.getStack();
+	public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
 		//                                                          V null-safe equals.
 		if (!itemStack.isOf(Items.LEATHER_BOOTS) && !StringUtils.equals(itemStack.getSkyblockId(), "RANCHERS_BOOTS")) return List.of();
-		Matcher matcher = ItemUtils.getLoreLineIfMatch(slot.getStack(), SPEED_PATTERN);
+		Matcher matcher = ItemUtils.getLoreLineIfMatch(itemStack, SPEED_PATTERN);
 		if (matcher == null) return List.of();
 		String speed = matcher.group(2);
 		if (speed == null) speed = matcher.group(1); //2nd group only matches when the speed cap is set to a number beyond the player's actual speed cap.
