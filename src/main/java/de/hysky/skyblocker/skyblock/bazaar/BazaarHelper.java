@@ -6,16 +6,13 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -25,8 +22,6 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public abstract class BazaarHelper extends ContainerSolver {
 	public BazaarHelper() {
@@ -52,7 +47,7 @@ public abstract class BazaarHelper extends ContainerSolver {
 	}
 
 	public static void BazaarLookup(@NotNull Slot slot) {
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.bazaarLookup.enableBazaarLookup) return;
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.itemTooltip.enableBazaarLookup) return;
 		String itemText = String.valueOf(ItemUtils.getItemId(slot.getStack()));
 		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(itemText);
 		if (neuItem != null) {
@@ -64,13 +59,14 @@ public abstract class BazaarHelper extends ContainerSolver {
 
 	//maybe rename to ItemTooltipPriceRefresh? since updating more than BZ?
 	public static void BazaarRefresh() {
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.bazaarLookup.enableBazaarRefresh) return;
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.itemTooltip.enableBazaarRefresh) return;
 		List<CompletableFuture<Void>> futureList = new ArrayList<>();
 		TooltipInfoType.NPC.downloadIfEnabled(futureList);
 		TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
 		TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
 		TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
 		TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
-		MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.general.bazaarLookup.yesBazaarRefresh")));
+        assert MinecraftClient.getInstance().player != null;
+        MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.general.itemTooltip.yesBazaarRefresh")));
 	}
 }

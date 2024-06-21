@@ -237,6 +237,12 @@
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "You don't own any accessory from this family.",
   "skyblocker.config.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
   "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
+  "skyblocker.config.general.itemTooltip.enableBazaarLookup": "Enable Bazaar Lookup",
+  "skyblocker.config.general.itemTooltip.enableBazaarLookup.@Tooltip": "Opens the Bazaar of current hovered item with the F3 key.",
+  "skyblocker.config.general.itemTooltip.enableBazaarRefresh": "Enable Bazaar Refresh",
+  "skyblocker.config.general.itemTooltip.enableBazaarRefresh.@Tooltip": "Refresh the Bazaar prices with the Z key.",
+  "skyblocker.config.general.itemTooltip.yesBazaarRefresh": "Bazaar Refreshed",
+  "skyblocker.config.general.itemTooltip.noBazaarRefresh": "Bazaar Refresh Failed",
   "skyblocker.config.general.itemTooltip.enableExoticTooltip": "Enable Exotic Tooltip",
   "skyblocker.config.general.itemTooltip.enableExoticTooltip.@Tooltip": "Displays the type of exotic below the item's name if an armor piece is exotic.",
   "skyblocker.config.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
@@ -276,19 +282,7 @@
   "skyblocker.config.general.wikiLookup.officialWiki": "Use Official Wiki",
   "skyblocker.config.general.wikiLookup.officialWiki.@Tooltip": "Use the official wiki instead of the Fandom wiki.",
 
-  "skyblocker.config.general.bazaarLookup": "Bazaar Lookup",
-  "skyblocker.config.general.bazaarLookup.enableBazaarLookup": "Enable Bazaar Lookup",
-  "skyblocker.config.general.bazaarLookup.enableBazaarLookup.@Tooltip": "Opens the Bazaar of current hovered item with the F3 key.",
-  "skyblocker.config.general.bazaarLookup.enableBazaarRefresh": "Enable Bazaar Refresh",
-  "skyblocker.config.general.bazaarLookup.enableBazaarRefresh.@Tooltip": "Refresh the Bazaar prices with the Z key.",
-  "skyblocker.config.general.bazaarLookup.yesBazaarRefresh": "Bazaar Refreshed",
-  "skyblocker.config.general.bazaarLookup.noBazaarRefresh": "Bazaar Refresh Failed",
-
   "skyblocker.config.helpers": "Helpers",
-
-  "skyblocker.config.helpers.bazaar": "Bazaar",
-  "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
-  "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Highlights orders with items or coins to claim.",
 
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
