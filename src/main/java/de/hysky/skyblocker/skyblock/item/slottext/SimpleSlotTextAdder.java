@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.container.RegexContainerMatcher;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,10 +35,5 @@ public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implemen
 	 */
 	protected SimpleSlotTextAdder() {
 		super();
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().general.itemInfoDisplay.slotText;
 	}
 }
