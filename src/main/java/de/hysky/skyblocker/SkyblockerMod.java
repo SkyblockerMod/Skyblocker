@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;
 import de.hysky.skyblocker.skyblock.chat.ChatRuleAnnouncementScreen;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
@@ -201,7 +200,6 @@ public class SkyblockerMod implements ClientModInitializer {
         JerryTimer.init();
         TooltipManager.init();
         SlotTextManager.init();
-        BazaarHelper.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
