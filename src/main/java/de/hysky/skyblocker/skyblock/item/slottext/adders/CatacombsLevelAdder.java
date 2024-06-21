@@ -4,7 +4,6 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -27,10 +26,10 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<SlotText> getText(Slot slot) {
-			switch (slot.id) {
+		public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
+			switch (slotId) {
 				case 12, 29, 30, 31, 32, 33 -> {
-					Matcher matcher = LEVEL_PATTERN.matcher(slot.getStack().getName().getString());
+					Matcher matcher = LEVEL_PATTERN.matcher(itemStack.getName().getString());
 					if (!matcher.matches()) return List.of();
 					String arabic = matcher.group("arabic");
 					String roman = matcher.group("roman");
@@ -60,10 +59,10 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<SlotText> getText(Slot slot) {
-			switch (slot.id) {
+		public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
+			switch (slotId) {
 				case 11, 12, 13, 14, 15 -> {
-					String level = getBracketedLevelFromName(slot.getStack());
+					String level = getBracketedLevelFromName(itemStack);
 					if (!NumberUtils.isDigits(level)) return List.of();
 					return List.of(SlotText.bottomLeft(Text.literal(level).withColor(0xFFDDC1)));
 				}
@@ -81,10 +80,10 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<SlotText> getText(Slot slot) {
-			switch (slot.id) {
+		public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
+			switch (slotId) {
 				case 29, 30, 31, 32, 33 -> {
-					String level = getBracketedLevelFromName(slot.getStack());
+					String level = getBracketedLevelFromName(itemStack);
 					if (!NumberUtils.isDigits(level)) return List.of();
 					return List.of(SlotText.bottomLeft(Text.literal(level).withColor(0xFFDDC1)));
 				}

@@ -8,9 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -70,8 +68,7 @@ public class AttributeShardAdder extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(Slot slot) {
-		final ItemStack stack = slot.getStack();
+	public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
 
 		if (!ItemUtils.getItemId(stack).equals("ATTRIBUTE_SHARD")) return List.of();

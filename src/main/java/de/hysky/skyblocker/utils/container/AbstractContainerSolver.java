@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 public interface AbstractContainerSolver extends AbstractContainerMatcher {
-
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
 	default void start(GenericContainerScreen screen) {}

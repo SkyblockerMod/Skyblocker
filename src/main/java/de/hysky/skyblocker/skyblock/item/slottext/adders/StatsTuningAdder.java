@@ -4,7 +4,6 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +20,7 @@ public class StatsTuningAdder extends SlotTextAdder {
     }
 
     @Override
-    public @NotNull List<SlotText> getText(Slot slot) {
-        final ItemStack stack = slot.getStack();
-
+    public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
         Matcher statMatcher = ItemUtils.getLoreLineIfMatch(stack, STATHAS);
         Matcher unassignedMatcher = ItemUtils.getLoreLineIfMatch(stack, UNASSIGNEDPOINTS);
 

@@ -4,7 +4,6 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,18 +19,13 @@ public class PowerStonesGuideAdder extends SlotTextAdder {
     }
 
     @Override
-    public @NotNull List<SlotText> getText(Slot slot) {
-        final ItemStack stack = slot.getStack();
-
+    public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
         Matcher match = ItemUtils.getLoreLineIfMatch(stack, LEARNED);
         if (match == null) return List.of();
         String symbol = match.group("symbol");
-        Text text;
-        if (symbol.equals("✖")) {
-            text = Text.literal("✖").withColor(0xFF7276);
-        } else {
-            text = Text.literal("✔").withColor(0x90ee90);
-        }
+        Text text = symbol.equals("✖")
+                ? Text.literal("✖").withColor(0xFF7276)
+                : Text.literal("✔").withColor(0x90ee90);
 
         return List.of(SlotText.bottomRight(text));
     }

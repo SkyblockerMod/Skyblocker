@@ -4,7 +4,6 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +19,7 @@ public class CollectionAdder extends SlotTextAdder {
     }
 
     @Override
-    public @NotNull List<SlotText> getText(Slot slot) {
-        final ItemStack stack = slot.getStack();
+    public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
         Matcher matcher = COLLECTION.matcher(stack.getName().getString());
         if (matcher.matches()) {
             int level = RomanNumerals.romanToDecimal(matcher.group("level"));
