@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.container.AbstractTooltipAdder;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TooltipManager {
-	private static final AbstractTooltipAdder[] adders = new AbstractTooltipAdder[]{
+	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(), // Applies before anything else
 			new SupercraftReminder(),
 			new ChocolateFactorySolver.Tooltip(),
@@ -39,7 +39,7 @@ public class TooltipManager {
 			new ColorTooltip(11),
 			new AccessoryTooltip(12),
 	};
-	private static final ArrayList<AbstractTooltipAdder> currentScreenAdders = new ArrayList<>();
+	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
 	private TooltipManager() {
 	}
@@ -62,12 +62,12 @@ public class TooltipManager {
 
 	private static void onScreenChange(HandledScreen<?> screen) {
 		currentScreenAdders.clear();
-		for (AbstractTooltipAdder adder : adders) {
+		for (TooltipAdder adder : adders) {
 			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
-		currentScreenAdders.sort(Comparator.comparingInt(AbstractTooltipAdder::getPriority));
+		currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class TooltipManager {
 	@Deprecated
 	public static List<Text> addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		if (!Utils.isOnSkyblock()) return lines;
-		for (AbstractTooltipAdder adder : currentScreenAdders) {
+		for (TooltipAdder adder : currentScreenAdders) {
 			adder.addToTooltip(focusedSlot, stack, lines);
 		}
 		return lines;

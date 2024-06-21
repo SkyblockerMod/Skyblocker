@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface AbstractTooltipAdder extends ContainerMatcher {
+public interface TooltipAdder extends ContainerMatcher {
 	/**
 	 * @implNote The first element of the lines list holds the item's display name,
 	 * as it's a list of all lines that will be displayed in the tooltip.
