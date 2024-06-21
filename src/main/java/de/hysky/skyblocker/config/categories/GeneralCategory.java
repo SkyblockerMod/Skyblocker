@@ -175,10 +175,11 @@ public class GeneralCategory {
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.bazaarLookup.enableBazaarRefresh"))
-                                .binding(defaults.general.bazaarLookup.enableBazaarRefresh,
-                                        () -> config.general.bazaarLookup.enableBazaarRefresh,
-                                        newValue -> config.general.bazaarLookup.enableBazaarRefresh = newValue)
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableBazaarRefresh"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableBazaarRefresh.@Tooltip")))
+                                .binding(defaults.general.itemTooltip.enableBazaarRefresh,
+                                        () -> config.general.itemTooltip.enableBazaarRefresh,
+                                        newValue -> config.general.itemTooltip.enableBazaarRefresh = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
