@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -17,7 +18,6 @@ import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket;
 import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
 import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -239,9 +239,8 @@ public class Utils {
     public static void updatePlayerPresenceFromScoreboard(MinecraftClient client) {
         List<String> sidebar = STRING_SCOREBOARD;
 
-        FabricLoader fabricLoader = FabricLoader.getInstance();
         if (client.world == null || client.isInSingleplayer() || sidebar.isEmpty()) {
-            if (fabricLoader.isDevelopmentEnvironment()) {
+            if (Debug.debugEnabled()) {
                 sidebar = Collections.emptyList();
             } else {
                 isOnSkyblock = false;
@@ -249,13 +248,13 @@ public class Utils {
             }
         }
 
-        if (sidebar.isEmpty() && !fabricLoader.isDevelopmentEnvironment()) return;
+        if (sidebar.isEmpty() && !Debug.debugEnabled()) return;
 
-        if (fabricLoader.isDevelopmentEnvironment() || isConnectedToHypixel(client)) {
+        if (Debug.debugEnabled() || isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
-            if (fabricLoader.isDevelopmentEnvironment() || sidebar.getFirst().contains("SKYBLOCK") || sidebar.getFirst().contains("SKIBLOCK")) {
+            if (Debug.debugEnabled() || sidebar.getFirst().contains("SKYBLOCK") || sidebar.getFirst().contains("SKIBLOCK")) {
                 if (!isOnSkyblock) {
                     if (!isInjected) {
                         isInjected = true;
