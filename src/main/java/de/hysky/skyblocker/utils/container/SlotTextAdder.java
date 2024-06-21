@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface AbstractSlotTextAdder extends ContainerMatcher {
+public interface SlotTextAdder extends ContainerMatcher {
 
 	/**
 	 * This method will be called for each rendered slot. Consider using a switch statement on {@code slotId} if you wish to limit the text to specific slots.

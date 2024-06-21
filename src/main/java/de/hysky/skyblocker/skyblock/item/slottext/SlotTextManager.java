@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.container.AbstractSlotTextAdder;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SlotTextManager {
-	private static final AbstractSlotTextAdder[] adders = new AbstractSlotTextAdder[]{
+	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
 			new EssenceShopAdder(),
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
@@ -36,7 +36,7 @@ public class SlotTextManager {
 			new PowerStonesGuideAdder(),
 			new StatsTuningAdder()
 	};
-	private static final ArrayList<AbstractSlotTextAdder> currentScreenAdders = new ArrayList<>();
+	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 
 	private SlotTextManager() {
 	}
@@ -51,7 +51,7 @@ public class SlotTextManager {
 	}
 
 	private static void onScreenChange(HandledScreen<?> screen) {
-		for (AbstractSlotTextAdder adder : adders) {
+		for (SlotTextAdder adder : adders) {
 			if (!adder.isEnabled()) continue;
 			if (adder.test(screen)) {
 				currentScreenAdders.add(adder);
@@ -69,7 +69,7 @@ public class SlotTextManager {
 	@NotNull
 	public static List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
 		if (currentScreenAdders.isEmpty()) return List.of();
-		for (AbstractSlotTextAdder adder : currentScreenAdders) {
+		for (SlotTextAdder adder : currentScreenAdders) {
 			List<SlotText> text = adder.getText(itemStack, slotId);
 			if (!text.isEmpty()) return text;
 		}
