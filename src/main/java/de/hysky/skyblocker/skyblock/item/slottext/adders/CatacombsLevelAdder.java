@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -19,7 +19,7 @@ public class CatacombsLevelAdder {
 	private CatacombsLevelAdder() {
 	}
 
-	public static class Dungeoneering extends SlotTextAdder {
+	public static class Dungeoneering extends SimpleSlotTextAdder {
 		private static final Pattern LEVEL_PATTERN = Pattern.compile(".*?(?:(?<arabic>\\d+)|(?<roman>\\S+))? ?✯?");
 		public Dungeoneering() {
 			super("^Dungeoneering");
@@ -52,7 +52,7 @@ public class CatacombsLevelAdder {
 		}
 	}
 
-	public static class DungeonClasses extends SlotTextAdder {
+	public static class DungeonClasses extends SimpleSlotTextAdder {
 
 		public DungeonClasses() {
 			super("^Dungeon Classes"); //Applies to both screens as they are same in both the placement and the style of the level text.
@@ -73,7 +73,7 @@ public class CatacombsLevelAdder {
 		}
 	}
 
-	public static class ReadyUp extends SlotTextAdder {
+	public static class ReadyUp extends SimpleSlotTextAdder {
 
 		public ReadyUp() {
 			super("^Ready Up");

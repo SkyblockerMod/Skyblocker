@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class PotionLevelAdder extends SlotTextAdder {
+public class PotionLevelAdder extends SimpleSlotTextAdder {
     @Override
     public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
         NbtCompound customData = ItemUtils.getCustomData(stack);

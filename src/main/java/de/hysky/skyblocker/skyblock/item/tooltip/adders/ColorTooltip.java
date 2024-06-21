@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class ColorTooltip extends TooltipAdder {
+public class ColorTooltip extends SimpleTooltipAdder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorTooltip.class);
 
 	public ColorTooltip(int priority) {

@@ -10,9 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A regex implementation of {@link AbstractContainerMatcher} that matches the title of the screen.
+ * A regex implementation of {@link ContainerMatcher} that matches the title of the screen.
  */
-public abstract class RegexContainerMatcher implements AbstractContainerMatcher {
+public abstract class RegexContainerMatcher implements ContainerMatcher {
 	/**
 	 * The title of the screen must match this pattern for this to be applied. Null means it will be applied to all screens.
 	 *

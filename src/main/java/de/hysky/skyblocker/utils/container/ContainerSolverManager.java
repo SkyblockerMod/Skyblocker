@@ -29,11 +29,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Manager class for {@link ContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link ContainerSolver} and register it in {@link #ContainerSolverManager()}.
+ * Manager class for {@link SimpleContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link SimpleContainerSolver} and register it in {@link #ContainerSolverManager()}.
  */
 public class ContainerSolverManager {
-	private final AbstractContainerSolver[] solvers;
-	private AbstractContainerSolver currentSolver = null;
+	private final ContainerSolver[] solvers;
+	private ContainerSolver currentSolver = null;
 	private List<ColorHighlight> highlights;
 	/**
 	 * Useful for keeping track of a solver's state in a Screen instance, such as if Hypixel closes & reopens a screen after every click (as they do with terminals).
@@ -41,7 +41,7 @@ public class ContainerSolverManager {
 	private int screenId = 0;
 
 	public ContainerSolverManager() {
-		solvers = new AbstractContainerSolver[]{
+		solvers = new ContainerSolver[]{
 				new ColorTerminal(),
 				new OrderTerminal(),
 				new StartsWithTerminal(),
@@ -57,7 +57,7 @@ public class ContainerSolverManager {
 		};
 	}
 
-	public AbstractContainerSolver getCurrentSolver() {
+	public ContainerSolver getCurrentSolver() {
 		return currentSolver;
 	}
 
@@ -81,9 +81,9 @@ public class ContainerSolverManager {
 
 	public void onSetScreen(@NotNull GenericContainerScreen screen) {
 		String screenName = screen.getTitle().getString();
-		for (AbstractContainerSolver solver : solvers) {
+		for (ContainerSolver solver : solvers) {
 			if (solver.isEnabled()) {
-				if (solver instanceof ContainerSolver containerSolver && containerSolver.test(screenName)) {
+				if (solver instanceof SimpleContainerSolver containerSolver && containerSolver.test(screenName)) {
 					++screenId;
 					currentSolver = containerSolver;
 					currentSolver.start(screen);

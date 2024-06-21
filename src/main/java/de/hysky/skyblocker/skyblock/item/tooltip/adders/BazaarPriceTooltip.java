@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BazaarPriceTooltip extends TooltipAdder {
+public class BazaarPriceTooltip extends SimpleTooltipAdder {
 	public static boolean bazaarExist = false;
 
 	public BazaarPriceTooltip(int priority) {

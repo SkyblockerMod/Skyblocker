@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
-import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.ItemStack;
@@ -13,7 +13,7 @@ import java.util.List;
  * 
  * This doesn't solve the terminal because you don't need a solver for it, but rather to simply allow for click blocking.
  */
-public final class LightsOnTerminal extends ContainerSolver implements TerminalSolver {
+public final class LightsOnTerminal extends SimpleContainerSolver implements TerminalSolver {
 	private static final List<ColorHighlight> EMPTY = List.of();
 
 	public LightsOnTerminal() {
