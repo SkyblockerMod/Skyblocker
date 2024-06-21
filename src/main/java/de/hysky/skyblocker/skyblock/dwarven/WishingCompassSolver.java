@@ -20,6 +20,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Line;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -264,21 +266,22 @@ public class WishingCompassSolver {
      * using the stating locations and line direction solve for where the location must be
      */
     protected static Vec3d solve(Vec3d startPosOne, Vec3d startPosTwo, Vec3d directionOne, Vec3d directionTwo) {
-        Vec3d crossProduct = directionOne.crossProduct(directionTwo);
-        if (crossProduct.equals(Vec3d.ZERO)) {
-            //lines are parallel or coincident
+        //convert format to get lines for the intersection solving
+        Vector3D lineOneStart = new Vector3D(startPosOne.x, startPosOne.y, startPosOne.z);
+        Vector3D lineOneEnd = new Vector3D(directionOne.x, directionOne.y, directionOne.z).add(lineOneStart);
+        Vector3D lineTwoStart = new Vector3D(startPosTwo.x, startPosTwo.y, startPosTwo.z);
+        Vector3D lineTwoEnd = new Vector3D(directionTwo.x, directionTwo.y, directionTwo.z).add(lineTwoStart);
+        Line line = new Line(lineOneStart, lineOneEnd, 1);
+        Line lineTwo = new Line(lineTwoStart, lineTwoEnd, 1);
+        Vector3D intersection = line.intersection(lineTwo);
+
+        //return final target location
+        if (intersection == null) {
             return null;
         }
-        // Calculate the difference vector between startPosTwo and startPosOne
-        Vec3d diff = startPosTwo.subtract(startPosOne);
-        // projecting 'diff' onto the plane defined by 'directionTwo' and 'crossProduct'. then scaling by the inverse squared length of 'crossProduct'
-        double intersectionScalar = diff.dotProduct(directionTwo.crossProduct(crossProduct)) / crossProduct.lengthSquared();
-        // if intersectionScalar is a negative number the lines are meeting in the opposite direction and giving incorrect cords
-        if (intersectionScalar < 0) {
-            return null;
-        }
-        //get final target location
-        return startPosOne.add(directionOne.multiply(intersectionScalar));
+        return new Vec3d(intersection.getX(), intersection.getY(), intersection.getZ());
+
+
     }
 
     private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
