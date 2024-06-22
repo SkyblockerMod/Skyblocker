@@ -31,34 +31,20 @@ public abstract class WidgetPositioner {
         int startX;
         int startY;
         if (rule.parent().equals("screen")) {
-            startX = switch (rule.parentPoint().horizontalPoint()) {
-                case LEFT -> 0;
-                case CENTER -> screenWidth / 2;
-                case RIGHT -> screenWidth;
-            };
-            startY = switch (rule.parentPoint().verticalPoint()) {
-                case TOP -> 0;
-                case CENTER -> screenHeight / 2;
-                case BOTTOM -> screenHeight;
-            };
+            startX = (int) (rule.parentPoint().horizontalPoint().getPercentage() * screenWidth);
+            startY = (int) (rule.parentPoint().verticalPoint().getPercentage() * screenHeight);
+
         } else {
             HudWidget parentWidget = ScreenMaster.widgetInstances.get(rule.parent());
             if (parentWidget == null) return;
             if (!parentWidget.isPositioned()) applyRuleToWidget(parentWidget, screenWidth, screenHeight, ruleProvider);
 
-            startX = switch (rule.parentPoint().horizontalPoint()) {
-                case LEFT -> parentWidget.getX();
-                case CENTER -> parentWidget.getX() + parentWidget.getWidth() / 2;
-                case RIGHT -> parentWidget.getX() + parentWidget.getWidth();
-            };
-            startY = switch (rule.parentPoint().verticalPoint()) {
-                case TOP -> parentWidget.getY();
-                case CENTER -> parentWidget.getY() + parentWidget.getHeight() / 2;
-                case BOTTOM -> parentWidget.getY() + parentWidget.getHeight();
-            };
+            startX = parentWidget.getX() + (int) (rule.parentPoint().horizontalPoint().getPercentage() * parentWidget.getWidth());
+            startY = parentWidget.getY() + (int) (rule.parentPoint().verticalPoint().getPercentage() * parentWidget.getHeight());
 
         }
 
+        // TODO: adapt to use getPercentage()
         final int relativeX = rule.relativeX();
         widget.setX(switch (rule.thisPoint().horizontalPoint()) {
             case LEFT -> startX + relativeX;

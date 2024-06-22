@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -14,10 +15,13 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.util.Map;
 
 public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerListener {
+
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     private GenericContainerScreenHandler handler;
     private String titleLowercase;
@@ -103,7 +107,12 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
                 .replace("widgets on", "")
                 .trim();
 
-        currentLocation = nameToLocation.getOrDefault(trim, Utils.getLocation());
+        if (nameToLocation.containsKey(trim)) {
+            currentLocation = nameToLocation.get(trim);
+        } else {
+            currentLocation = Utils.getLocation();
+            LOGGER.warn("[Skyblocker] Couldn't find location for {} (trimmed: {})", this.titleLowercase, trim);
+        }
         widgetsOrderingTab.updateHandler(handler);
     }
 
