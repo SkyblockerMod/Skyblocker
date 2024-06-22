@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -278,6 +279,20 @@ public abstract class HudWidget implements Element, Widget {
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY <= getY() + getHeight();
+    }
+
+    /**
+     *
+     * @param object the other HudWidget
+     * @return true if they are the same instance or the internal id is the same.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        HudWidget widget = (HudWidget) object;
+        return Objects.equals(getInternalID(), widget.getInternalID());
     }
 
     @Override

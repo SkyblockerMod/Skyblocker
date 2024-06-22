@@ -152,6 +152,11 @@ public class ScreenBuilder {
         return positioning.get(widgetInternalId);
     }
 
+    public void setPositionRule(String widgetInternalId, @Nullable PositionRule newPositionRule) {
+        if (newPositionRule == null) positioning.remove(widgetInternalId);
+        else positioning.put(widgetInternalId, newPositionRule);
+    }
+
     /**
      * Lookup Widget instance from alias name
      */
@@ -184,11 +189,24 @@ public class ScreenBuilder {
         // TODO check things and stuff
         mainTabScreen.addAll(PlayerListMgr.tabWidgetsToShow);
 
+        // Auto positioning
         for (HudWidget widget : mainTabScreen) {
-            newPositioner.positionWidget(widget);
-            widget.setPositioned(true);
+            System.out.println(widget.getInternalID());
+            if (getPositionRule(widget.getInternalID()) != null) {
+                widget.setPositioned(false);
+            } else {
+                newPositioner.positionWidget(widget);
+                widget.setPositioned(true);
+            }
         }
         newPositioner.finalizePositioning();
+        // Custom positioning
+        for (HudWidget widget : mainTabScreen) {
+            if (!widget.isPositioned()) {
+                WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
+            }
+        }
+
         for (HudWidget widget : hudScreen) {
             if (!widget.isPositioned()) {
                 WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
@@ -232,6 +250,7 @@ public class ScreenBuilder {
         if (positionsNeedsUpdating) {
             positionsNeedsUpdating = false;
             positionWidgets(screenW, screenH);
+            System.out.println(location);
         }
 
         renderWidgets(context, Layer.MAIN_TAB);
