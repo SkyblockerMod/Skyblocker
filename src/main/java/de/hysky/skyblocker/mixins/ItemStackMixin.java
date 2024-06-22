@@ -252,6 +252,18 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 					return customDataString + "-LIFELINE-MANA_POOL";
 				}
 			}
+
+			case "MIDAS_SWORD" -> {
+				if (customData.getInt("winning_bid") >= 50000000) {
+					return customDataString + "_50M";
+				}
+			}
+
+			case "MIDAS_STAFF" -> {
+				if (customData.getInt("winning_bid") >= 100000000) {
+					return customDataString + "_100M";
+				}
+			}
 		}
 		return customDataString;
 	}
