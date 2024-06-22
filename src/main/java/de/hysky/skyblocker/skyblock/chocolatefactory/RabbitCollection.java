@@ -143,7 +143,7 @@ public class RabbitCollection extends TooltipAdder {
 				              .align(Text.empty()
 				                         .append(Text.literal(String.valueOf(entry.getCollectedAmount())).formatted(Formatting.GREEN))
 				                         .append(Text.literal("/").formatted(Formatting.DARK_GRAY))
-				                         .append(Text.literal(String.valueOf(entry.getMaxAmount())).formatted(Formatting.GREEN)), 110));
+				                         .append(Text.literal(String.valueOf(entry.getMaxAmount())).formatted(Formatting.GREEN)), 100));
 			}
 		}
 	}

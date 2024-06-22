@@ -317,16 +317,16 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			if (totalCps < 0.0 || totalCpsMultiplier < 0.0 || timeTowerMultiplier < 0.0) return false;
 			lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
 			lines.add(Text.literal("  CPS Increase").formatted(Formatting.GRAY)
-			              .align(Text.literal(DECIMAL_FORMAT.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD), 97));
+			              .align(Text.literal(DECIMAL_FORMAT.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD), 95));
 			lines.add(Text.literal("  CPS when active:").formatted(Formatting.GRAY)
-			              .align(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD), 97));
+			              .align(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD), 95));
 			if (!isTimeTowerMaxed) {
 				lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
 				lines.add(Text.literal("  CPS Increase").formatted(Formatting.GRAY)
-				              .align(Text.literal(DECIMAL_FORMAT.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD), 97));
+				              .align(Text.literal(DECIMAL_FORMAT.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD), 95));
 
 				lines.add(Text.literal("  CPS when active:").formatted(Formatting.GRAY)
-				              .align(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD), 97));
+				              .align(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD), 95));
 			}
 			return true;
 		}
@@ -336,9 +336,9 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			for (Rabbit rabbit : cpsIncreaseFactors) {
 				if (rabbit.slot == slot) {
 					lines.add(Text.literal("CPS Increase:").formatted(Formatting.GRAY)
-					              .align(Text.literal(DECIMAL_FORMAT.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD), 97));
+					              .align(Text.literal(DECIMAL_FORMAT.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD), 75));
 					lines.add(Text.literal("Cost per CPS:").formatted(Formatting.GRAY)
-					              .align(Text.literal(DECIMAL_FORMAT.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD), 97));
+					              .align(Text.literal(DECIMAL_FORMAT.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD), 75));
 
 					if (rabbit.slot == bestUpgrade) {
 						if (rabbit.cost <= totalChocolate) {
