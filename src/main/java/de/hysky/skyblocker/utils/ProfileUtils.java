@@ -18,10 +18,6 @@ public class ProfileUtils {
 
     public static Map<String, ObjectLongPair<JsonObject>> players = new HashMap<>();
 
-    public static void init() {
-        updateProfile();
-    }
-
     public static CompletableFuture<JsonObject> updateProfile() {
         return updateProfile(MinecraftClient.getInstance().getSession().getUsername());
     }

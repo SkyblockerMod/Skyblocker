@@ -52,6 +52,11 @@ public class ItemTooltip {
             case "POTION" -> apiId = "";
             case "ATTRIBUTE_SHARD" ->
                     apiId = id + "+" + apiId.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
+            case "NEW_YEAR_CAKE" -> apiId = id + "+" + apiId.replace("NEW_YEAR_CAKE_", "");
+            case "PARTY_HAT_CRAB_ANIMATED" -> apiId = "PARTY_HAT_CRAB_" + apiId.replace("PARTY_HAT_CRAB_ANIMATED_", "") + "_ANIMATED";
+            case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS",
+            "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS",
+            "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> apiId = id;
             default -> apiId = apiId.replace(":", "-");
         }
         return apiId;

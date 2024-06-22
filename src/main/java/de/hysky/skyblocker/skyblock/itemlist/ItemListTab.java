@@ -78,7 +78,8 @@ public class ItemListTab extends ItemListWidget.TabContainerWidget {
             return true;
         } else if (results != null) {
             this.searchField.setFocused(false);
-            this.results.mouseClicked(mouseX, mouseY, button);
+
+            return this.results.mouseClicked(mouseX, mouseY, button);
         }
 
         return false;
