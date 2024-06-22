@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.ProfileUtils;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ShortArrayMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -38,6 +39,7 @@ public class RabbitCollection extends TooltipAdder {
 	//The slot in chocolate collection screen
 	private static final byte HC_HOPPITY_COLLECTION_SLOT = 4;
 	private static final Pattern RABBIT_FOUND_PATTERN = Pattern.compile("§D§LHOPPITY'S HUNT §7You found (?:§\\S)+(.*?) (?:§\\S)+\\((?:§\\S)+([^§]+).*");
+	private static final ObjectArrayList<String> profilesRead = new ObjectArrayList<>(5);
 	private static RabbitRarity lastRarity = null;
 
 	public RabbitCollection() {
@@ -52,7 +54,7 @@ public class RabbitCollection extends TooltipAdder {
 		readHoppityJson();
 		SkyblockEvents.PROFILE_CHANGE.register(profile -> {
 			reset();
-			readProfileJson(profile.jsonData); //No need to send another api request as we already have the profile json
+			readProfileJson(profile); //No need to send another api request as we already have the profile json
 		});
 		ClientReceiveMessageEvents.GAME.register(RabbitCollection::onMessage);
 		ApiAuthentication.TOKEN_REQUEST_CALLBACK.register(() -> ProfileUtils.updateProfile().thenAccept(RabbitCollection::readProfileJson));
@@ -79,10 +81,12 @@ public class RabbitCollection extends TooltipAdder {
 		}
 	}
 
-	private static void readProfileJson(JsonObject profile) {
-		if (profile == null) return;
-		if (!profile.has("events")) return;
-		JsonObject events = profile.getAsJsonObject("events");
+	private static void readProfileJson(Profile profile) {
+		if (profile == null || profilesRead.contains(profile.uuid)) return;
+		profilesRead.add(profile.uuid); //Prevents reading the same profile multiple times, which would cause the collected amount to be increased by one fold each time it's switched to
+		JsonObject profileJson = profile.jsonData;
+		if (!profileJson.has("events")) return;
+		JsonObject events = profileJson.getAsJsonObject("events");
 		if (!events.has("easter")) return;
 		JsonObject easter = events.getAsJsonObject("easter");
 		if (!easter.has("rabbits")) return;
@@ -94,7 +98,7 @@ public class RabbitCollection extends TooltipAdder {
 				LOGGER.warn("[Skyblocker Rabbit Collection] Unknown rabbit: {}", rabbit);
 				continue;
 			}
-			rarity.incrementCollected();
+			rarity.incrementCollected(profile);
 		}
 	}
 
@@ -125,7 +129,7 @@ public class RabbitCollection extends TooltipAdder {
 			}
 			//No need to read the rest, we only care about the rabbits
 		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Rabbit Collection] Failed to read rabbits from json!", e);
+			LOGGER.error("[Skyblocker Rabbit Collection] Failed to read rabbits from hoppity.json!", e);
 		}
 	}
 
@@ -165,7 +169,10 @@ public class RabbitCollection extends TooltipAdder {
 		}
 
 		public void incrementCollected() {
-			Profile profile = ProfileUtils.getSelectedProfile();
+			incrementCollected(ProfileUtils.getSelectedProfile());
+		}
+
+		public void incrementCollected(Profile profile) {
 			if (profile != null) uuid2collected.put(profile.uuid, (short) (uuid2collected.getOrDefault(profile.uuid, (short) 0) + 1));
 		}
 

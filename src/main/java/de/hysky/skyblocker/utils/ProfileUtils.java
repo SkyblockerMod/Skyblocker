@@ -82,7 +82,7 @@ public class ProfileUtils {
 	 *
 	 * @see #updateProfile(String)
 	 */
-	public static CompletableFuture<JsonObject> updateProfile() {
+	public static @NotNull CompletableFuture<@Nullable Profile> updateProfile() {
 		return updateProfile(getUsername());
 	}
 
@@ -91,11 +91,11 @@ public class ProfileUtils {
 	 * The data is cached for 5 minutes.
 	 *
 	 * @param name The player name to get the profile data for
-	 * @return A CompletableFuture that will be completed with either the profile's json data or null if the data couldn't be fetched
+	 * @return A CompletableFuture that will be completed with either the profile or null if the data couldn't be fetched
 	 */
-	public static @NotNull CompletableFuture<@Nullable JsonObject> updateProfile(String name) {
+	public static @NotNull CompletableFuture<@Nullable Profile> updateProfile(String name) {
 		if (selectedProfile != null && selectedProfile.lastUpdate + HYPIXEL_API_COOLDOWN > System.currentTimeMillis()) {
-			return CompletableFuture.completedFuture(selectedProfile.jsonData);
+			return CompletableFuture.completedFuture(selectedProfile);
 		}
 
 		return CompletableFuture.supplyAsync(() -> {
@@ -119,8 +119,7 @@ public class ProfileUtils {
 				}
 				players.put(name, profiles); //Overwrites the old value of the key, if it exists
 
-				assert selectedProfile != null;
-				return selectedProfile.jsonData;
+				return selectedProfile;
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Profile Utils] Failed to get Player Profile Data for players {}, is the API Down/Limited?", name, e);
 			}
