@@ -5,10 +5,13 @@ import com.google.gson.stream.JsonReader;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
+import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Profile;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ShortArrayMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -42,19 +45,17 @@ public class RabbitCollection extends TooltipAdder {
 	}
 
 	private static void reset() {
-		RabbitRarity.resetCounts();
 		lastRarity = null;
 	}
 
 	public static void init() {
-		readJson();
-		SkyblockEvents.PROFILE_CHANGE.register(() -> {
+		readHoppityJson();
+		SkyblockEvents.PROFILE_CHANGE.register(profile -> {
 			reset();
-			apiRequest();
+			readProfileJson(profile.jsonData); //No need to send another api request as we already have the profile json
 		});
-		SkyblockEvents.JOIN.register(RabbitCollection::apiRequest);
 		ClientReceiveMessageEvents.GAME.register(RabbitCollection::onMessage);
-//		ApiAuthentication.TOKEN_REQUEST_CALLBACK.register(RabbitCollection::apiRequest);
+		ApiAuthentication.TOKEN_REQUEST_CALLBACK.register(() -> ProfileUtils.updateProfile().thenAccept(RabbitCollection::readProfileJson));
 	}
 
 	//These 2 messages are sent one after the other when a rabbit is found
@@ -78,28 +79,26 @@ public class RabbitCollection extends TooltipAdder {
 		}
 	}
 
-	private static void apiRequest() {
-		ProfileUtils.updateProfile().thenAccept(profile -> {
-			if (profile == null) return;
-			if (!profile.has("events")) return;
-			JsonObject events = profile.getAsJsonObject("events");
-			if (!events.has("easter")) return;
-			JsonObject easter = events.getAsJsonObject("easter");
-			if (!easter.has("rabbits")) return;
-			JsonObject rabbits = easter.getAsJsonObject("rabbits");
-			for (String rabbit : rabbits.keySet()) {
-				if (rabbit.equals("collected_eggs") || rabbit.equals("collected_locations")) continue;
-				RabbitRarity rarity = RABBITS.get(rabbit);
-				if (rarity == null) {
-					LOGGER.warn("[Skyblocker Rabbit Collection] Unknown rabbit: {}", rabbit);
-					continue;
-				}
-				rarity.incrementCollected();
+	private static void readProfileJson(JsonObject profile) {
+		if (profile == null) return;
+		if (!profile.has("events")) return;
+		JsonObject events = profile.getAsJsonObject("events");
+		if (!events.has("easter")) return;
+		JsonObject easter = events.getAsJsonObject("easter");
+		if (!easter.has("rabbits")) return;
+		JsonObject rabbits = easter.getAsJsonObject("rabbits");
+		for (String rabbit : rabbits.keySet()) {
+			if (rabbit.equals("collected_eggs") || rabbit.equals("collected_locations")) continue;
+			RabbitRarity rarity = RABBITS.get(rabbit);
+			if (rarity == null) {
+				LOGGER.warn("[Skyblocker Rabbit Collection] Unknown rabbit: {}", rabbit);
+				continue;
 			}
-		});
+			rarity.incrementCollected();
+		}
 	}
 
-	private static void readJson() {
+	private static void readHoppityJson() {
 		try (JsonReader reader = new JsonReader(new InputStreamReader(NEURepoManager.NEU_REPO.file("constants/hoppity.json").stream()))) {
 			reader.beginObject(); // Begin reading the json object
 			reader.nextName(); // Skip the `hoppity` key
@@ -155,15 +154,19 @@ public class RabbitCollection extends TooltipAdder {
 		DIVINE(Formatting.AQUA);
 
 		public final Formatting color;
-		private short collectedAmount = 0;
+		//Holds the collected amount for each profile UUID
+		private final Object2ShortArrayMap<String> uuid2collected = new Object2ShortArrayMap<>();
 		private short maxAmount = 0;
+		// This is to avoid creating a new array every time we iterate over the values
+		static final @Unmodifiable List<RabbitRarity> entries = Arrays.asList(values());
 
 		RabbitRarity(Formatting color) {
 			this.color = color;
 		}
 
 		public void incrementCollected() {
-			collectedAmount++;
+			Profile profile = ProfileUtils.getSelectedProfile();
+			if (profile != null) uuid2collected.put(profile.uuid, (short) (uuid2collected.getOrDefault(profile.uuid, (short) 0) + 1));
 		}
 
 		public void incrementMax() {
@@ -171,7 +174,8 @@ public class RabbitCollection extends TooltipAdder {
 		}
 
 		public short getCollectedAmount() {
-			return collectedAmount;
+			Profile profile = ProfileUtils.getSelectedProfile();
+			return profile == null ? 0 : uuid2collected.getOrDefault(profile.uuid, (short) 0);
 		}
 
 		public short getMaxAmount() {
@@ -191,9 +195,6 @@ public class RabbitCollection extends TooltipAdder {
 			};
 		}
 
-		// This is to avoid creating a new array every time we iterate over the values
-		public static final @Unmodifiable List<RabbitRarity> entries = Arrays.asList(values());
-
 		public static RabbitRarity fromString(String key) {
 			return switch (key) { // @formatter:off
 				case "common"    -> COMMON;
@@ -205,12 +206,6 @@ public class RabbitCollection extends TooltipAdder {
 				case "divine"    -> DIVINE;
 				default          -> throw new IllegalArgumentException("Invalid rarity key: " + key);
 			};
-		}
-
-		public static void resetCounts() {
-			for (RabbitRarity rarity : entries) {
-				rarity.collectedAmount = 0;
-			}
 		}
 	}
 }
