@@ -40,8 +40,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4,4)
             .xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
-    private static final Identifier SLOT_TEXTURE = new Identifier("container/slot");
-    private static final Identifier EMPTY_SLOT = new Identifier(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
+    private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
+    private static final Identifier EMPTY_SLOT = Identifier.of(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
 
     public static void initEquipment() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client1 -> {
