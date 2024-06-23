@@ -91,6 +91,7 @@ public class Http {
 	public static String sendPostRequest(String url, String requestBody, String contentType) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.POST(BodyPublishers.ofString(requestBody))
+				.header("Accept", contentType)
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("Content-Type", contentType)
 				.header("User-Agent", USER_AGENT)

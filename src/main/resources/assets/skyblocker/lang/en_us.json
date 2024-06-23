@@ -686,7 +686,7 @@
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %d seconds old.",
   "skyblocker.api.cache.MISS": "This data wasn't cached!",
   "skyblocker.api.token.authFailure": "Failed to refresh your Skyblocker API token, some features may not work temporarily!",
-  "skyblocker.api.token.noProfileKeys": "Failed to get your profile keys! Some features of the mod may not work temporarily :( (Has your game been open for more than 24 hours?)",
+  "skyblocker.api.token.noProfileKeys": "Failed to get your profile keys! Some features of the mod may not work temporarily :( (Has your game been open for more than 24 hours?). To reactivate these features restart the game.",
 
   "skyblocker.exotic.crystal": "CRYSTAL",
   "skyblocker.exotic.fairy": "FAIRY",

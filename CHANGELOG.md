@@ -1,4 +1,17 @@
+# Release 1.21.0 for 1.21.0
+
+## Highlight
+- Updated to mc 1.21.0
+
+## What's Changed
+* 1.21 by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/769
+* Api changes the Aaron of the Azure color made by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/783
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.21.0...v1.21.0+1.21.0
+___
 # Release 1.21.0
+mc version 1.20.6
 
 ## Highlight
 * Chocolate factory helper
