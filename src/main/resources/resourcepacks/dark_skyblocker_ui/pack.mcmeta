@@ -1,0 +1,10 @@
+{
+    "pack": {
+      "pack_format": 15,
+      "supported_formats": {
+        "min_inclusive": 15,
+        "max_inclusive": 2147483647
+      },
+      "description": "Skyblocker dark mode compatible with Default Dark"
+    }
+}
