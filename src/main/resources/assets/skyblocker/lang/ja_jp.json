@@ -208,5 +208,6 @@
     "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Stonkの使用ポイントを表示",
     "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Superboom TNTの使用ポイントを表示",
     "skyblocker.config.dungeons.secretWaypoints.enableWitherWaypoints": "Wither Essenceの位置を表示",
-    "skyblocker.config.dungeons.starredMobGlow": "星付きモブを発光させる"
+    "skyblocker.config.dungeons.starredMobGlow": "星付きモブを発光させる",
+    "skyblocker.config.foraging": "Foraging"
 }
