@@ -678,5 +678,6 @@
     "skyblocker.config.mining.commissionWaypoints": "Точки приёма комиссий",
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[0]": "Выкл: Не показывает точки приёма комиссий.",
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[3]": "\nBoth: Показывает точки приёма и в шахтах Дварфов, и в ледяных шахтах.",
-    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]": "\n(изменения вступят в силу, когда обновятся комиссии)"
+    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]": "\n(изменения вступят в силу, когда обновятся комиссии)",
+    "skyblocker.config.dungeons.hideSoulweaverSkulls": "Скрыть черепа от Soulweaver Gloves"
 }
