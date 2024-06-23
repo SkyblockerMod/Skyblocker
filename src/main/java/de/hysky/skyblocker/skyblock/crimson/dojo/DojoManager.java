@@ -21,6 +21,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -127,7 +128,7 @@ public class DojoManager {
     private static void getPing() {
         ClientPlayNetworkHandler networkHandler = CLIENT.getNetworkHandler();
         if (networkHandler != null) {
-            networkHandler.sendPacket(new QueryPingC2SPacket(System.currentTimeMillis()));
+            networkHandler.sendPacket(new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
         }
     }
     public static void onPingResult(long ping) {
