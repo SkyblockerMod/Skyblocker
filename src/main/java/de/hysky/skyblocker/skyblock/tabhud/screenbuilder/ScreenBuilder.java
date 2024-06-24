@@ -6,17 +6,12 @@ import java.util.function.BiFunction;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.*;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
-import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 import de.hysky.skyblocker.skyblock.tabhud.widget.*;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ScreenBuilder {
@@ -179,7 +174,7 @@ public class ScreenBuilder {
         WidgetPositioner newPositioner = DefaultPositioner.CENTERED.getNewPositioner(screenW, screenH);
 
         for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
-            if (widget.shouldRender(location)) {
+            if (widget.shouldRender(location)) { // TabHudWidget has this at false
                 hudScreen.add(widget);
                 widget.update();
                 widget.setPositioned(false);
@@ -189,9 +184,10 @@ public class ScreenBuilder {
         // TODO check things and stuff
         mainTabScreen.addAll(PlayerListMgr.tabWidgetsToShow);
 
+        System.out.println(positioning);
         // Auto positioning
         for (HudWidget widget : mainTabScreen) {
-            System.out.println(widget.getInternalID());
+
             if (getPositionRule(widget.getInternalID()) != null) {
                 widget.setPositioned(false);
             } else {
@@ -219,16 +215,16 @@ public class ScreenBuilder {
         }
     }
 
-    public void renderWidgets(DrawContext context, Layer layer) {
-        List<HudWidget> widgetsToRender = getHudWidgets(layer);
+    public void renderWidgets(DrawContext context, ScreenLayer screenLayer) {
+        List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
         for (HudWidget widget : widgetsToRender) {
             widget.render(context);
         }
     }
 
-    public List<HudWidget> getHudWidgets(Layer layer) {
-        return switch (layer) {
+    public List<HudWidget> getHudWidgets(ScreenLayer screenLayer) {
+        return switch (screenLayer) {
             case MAIN_TAB -> mainTabScreen;
             case SECONDARY_TAB -> secondaryTabScreen;
             case HUD -> hudScreen;
@@ -253,10 +249,10 @@ public class ScreenBuilder {
             System.out.println(location);
         }
 
-        renderWidgets(context, Layer.MAIN_TAB);
+        renderWidgets(context, ScreenLayer.MAIN_TAB);
     }
 
-    public enum Layer {
+    public enum ScreenLayer {
         MAIN_TAB,
         SECONDARY_TAB,
         HUD
