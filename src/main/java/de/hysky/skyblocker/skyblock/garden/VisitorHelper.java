@@ -36,6 +36,7 @@ import java.util.Map;
 //TODO: check inventory items, sum all repeated items into one
 public class VisitorHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Visitor Helper");
+	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 
 	// The pair contains the name of the visitor and the texture if the icon is a player head
 	private static final Map<Pair<String, String>, Object2IntMap<String>> itemMap = new HashMap<>();
@@ -131,7 +132,7 @@ public class VisitorHelper {
 		String itemName = splitItemText[0].trim();
 		if (itemName.isEmpty()) return;
 		try {
-			int amount = splitItemText.length == 2 ? NumberFormat.getInstance(Locale.US).parse(splitItemText[1].trim()).intValue() : 1;
+			int amount = splitItemText.length == 2 ? NUMBER_FORMAT.parse(splitItemText[1].trim()).intValue() : 1;
 			Pair<String, String> key = Pair.of(visitorName, visitorTexture);
 			Object2IntMap<String> visitorMap = itemMap.computeIfAbsent(key, _key -> new Object2IntOpenHashMap<>());
 			visitorMap.put(itemName, amount);

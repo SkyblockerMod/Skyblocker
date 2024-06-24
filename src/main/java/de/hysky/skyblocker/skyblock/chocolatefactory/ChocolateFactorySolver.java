@@ -23,8 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +42,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(8);
 
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
+
 	//Slots, for ease of maintenance rather than using magic numbers everywhere.
 	private static final byte RABBITS_START = 28;
 	private static final byte RABBITS_END = 34;
@@ -66,8 +66,14 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static boolean isTimeTowerActive = false;
 	private static int bestUpgrade = -1;
 	private static int bestAffordableUpgrade = -1;
+
 	private static StraySound ding = StraySound.NONE;
 	private static int dingTick = 0;
+
+	static {
+		DECIMAL_FORMAT.setMinimumFractionDigits(0);
+		DECIMAL_FORMAT.setMaximumFractionDigits(1);
+	}
 
 	public ChocolateFactorySolver() {
 		super("^Chocolate Factory$"); //There are multiple screens that fit the pattern `^Chocolate Factory`, so the $ is required

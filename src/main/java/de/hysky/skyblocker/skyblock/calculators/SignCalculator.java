@@ -8,10 +8,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class SignCalculator {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final NumberFormat FORMATTER = NumberFormat.getInstance();
+	private static final NumberFormat FORMATTER = NumberFormat.getInstance(Locale.US);
 
 	private static String lastInput;
 	private static double output;

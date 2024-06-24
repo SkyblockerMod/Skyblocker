@@ -14,16 +14,21 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Optional;
 
 public class EndHudWidget extends Widget {
 	private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
 	public static final EndHudWidget INSTANCE = new EndHudWidget(TITLE, Formatting.DARK_PURPLE.getColorValue());
+	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final ItemStack ENDERMAN_HEAD = new ItemStack(Items.PLAYER_HEAD);
 	private static final ItemStack POPPY = new ItemStack(Items.POPPY);
 
 	static {
+		DECIMAL_FORMAT.setMinimumFractionDigits(0);
+		DECIMAL_FORMAT.setMaximumFractionDigits(2);
+
 		ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
 		POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 
@@ -45,10 +50,7 @@ public class EndHudWidget extends Widget {
 			addComponent(new IcoTextComponent(ENDERMAN_HEAD, Text.literal("Zealots").formatted(Formatting.BOLD)));
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsSinceLastEye", TheEnd.zealotsSinceLastEye)));
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsTotalKills", TheEnd.zealotsKilled)));
-			NumberFormat instance = NumberFormat.getInstance();
-			instance.setMinimumFractionDigits(0);
-			instance.setMaximumFractionDigits(2);
-			String avg = TheEnd.eyes == 0 ? "???" : instance.format((float) TheEnd.zealotsKilled / TheEnd.eyes);
+			String avg = TheEnd.eyes == 0 ? "???" : DECIMAL_FORMAT.format((float) TheEnd.zealotsKilled / TheEnd.eyes);
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
 		}
 
