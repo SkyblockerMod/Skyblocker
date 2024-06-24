@@ -8,11 +8,13 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
@@ -55,14 +57,18 @@ public class Debug {
 			)));
 			ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 				if (screen instanceof HandledScreen<?> handledScreen) {
-                    ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
-                        Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
-                        if (key == GLFW.GLFW_KEY_U && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
-                            client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow())));
-                        }
-                    });
-                }
-            });
+					ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
+						Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
+						if (key == GLFW.GLFW_KEY_U && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
+							if (!Screen.hasShiftDown()) {
+								client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow())));
+							} else {
+								client.player.sendMessage(Text.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow())));
+							}
+						}
+					});
+				}
+			});
 		}
 	}
 

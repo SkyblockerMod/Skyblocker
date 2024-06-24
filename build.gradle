@@ -77,6 +77,9 @@ dependencies {
 	// NEU RepoParser
 	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
 
+	// Networth Calculator
+	include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
+
 	// JGit used pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")
 

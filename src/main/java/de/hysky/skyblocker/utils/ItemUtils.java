@@ -15,6 +15,7 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -63,6 +64,13 @@ public final class ItemUtils {
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
             context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            return Command.SINGLE_SUCCESS;
+        });
+    }
+
+    public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemNetworthCalculationsCommand() {
+        return literal("dumpHeldItemNetworthCalcs").executes(context -> {
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(context.getSource().getPlayer().getMainHandStack()).calculations()).getOrThrow())));
             return Command.SINGLE_SUCCESS;
         });
     }
@@ -268,7 +276,14 @@ public final class ItemUtils {
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
     public static @NotNull DoubleBooleanPair getItemPrice(@NotNull ItemStack stack) {
-        return getItemPrice(stack.getSkyblockApiId());
+        return getItemPrice(stack.getSkyblockApiId(), false);
+    }
+
+    /**
+     * @see #getItemPrice(String, boolean)
+     */
+    public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
+        return getItemPrice(skyblockApiId, false);
     }
 
     /**
@@ -277,16 +292,16 @@ public final class ItemUtils {
      * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
-    public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
+    public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice) {
         JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
         JsonObject lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
         if (skyblockApiId == null || skyblockApiId.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
 
         if (bazaarPrices.has(skyblockApiId)) {
-            JsonElement sellPrice = bazaarPrices.get(skyblockApiId).getAsJsonObject().get("sellPrice");
-            boolean isPriceNull = sellPrice.isJsonNull();
-            return DoubleBooleanPair.of(isPriceNull ? 0 : sellPrice.getAsDouble(), !isPriceNull);
+            JsonElement price = bazaarPrices.get(skyblockApiId).getAsJsonObject().get(useBazaarBuyPrice ? "buyPrice" : "sellPrice");
+            boolean isPriceNull = price.isJsonNull();
+            return DoubleBooleanPair.of(isPriceNull ? 0 : price.getAsDouble(), !isPriceNull);
         }
 
         if (lowestBinPrices.has(skyblockApiId)) {
