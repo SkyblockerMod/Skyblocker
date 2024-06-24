@@ -19,8 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,34 +37,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final Pattern TIME_TOWER_MULTIPLIER_PATTERN = Pattern.compile("by \\+([\\d.]+)x for \\dh\\.");
 
 	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(8);
-	private static long totalChocolate = -1L;
-	private static double totalCps = -1.0;
-	private static double totalCpsMultiplier = -1.0;
-	private static long requiredUntilNextPrestige = -1L;
-	private static boolean canPrestige = false;
-	private static boolean reachedMaxPrestige = false;
-	private static double timeTowerMultiplier = -1.0;
-	private static boolean isTimeTowerMaxed = false;
-	private static boolean isTimeTowerActive = false;
-	private static int bestUpgrade = -1;
-	private static int bestAffordableUpgrade = -1;
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-
-	@Override
-	protected void reset() {
-		cpsIncreaseFactors.clear();
-		totalChocolate = -1L;
-		totalCps = -1.0;
-		totalCpsMultiplier = -1.0;
-		requiredUntilNextPrestige = -1L;
-		canPrestige = false;
-		reachedMaxPrestige = false;
-		timeTowerMultiplier = -1.0;
-		isTimeTowerMaxed = false;
-		isTimeTowerActive = false;
-		bestUpgrade = -1;
-		bestAffordableUpgrade = -1;
-	}
+	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
 
 	//Slots, for ease of maintenance rather than using magic numbers everywhere.
 	private static final byte RABBITS_START = 28;
@@ -78,41 +50,25 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final byte STRAY_RABBIT_START = 0;
 	private static final byte STRAY_RABBIT_END = 26;
 
+	private static long totalChocolate = -1L;
+	private static double totalCps = -1.0;
+	private static double totalCpsMultiplier = -1.0;
+	private static long requiredUntilNextPrestige = -1L;
+	private static boolean canPrestige = false;
+	private static boolean reachedMaxPrestige = false;
+	private static double timeTowerMultiplier = -1.0;
+	private static boolean isTimeTowerMaxed = false;
+	private static boolean isTimeTowerActive = false;
+	private static int bestUpgrade = -1;
+	private static int bestAffordableUpgrade = -1;
+
+	static {
+		DECIMAL_FORMAT.setMinimumFractionDigits(0);
+		DECIMAL_FORMAT.setMaximumFractionDigits(1);
+	}
+
 	public ChocolateFactorySolver() {
 		super("^Chocolate Factory$"); //There are multiple screens that fit the pattern `^Chocolate Factory`, so the $ is required
-	}
-
-	@Override
-	protected boolean isEnabled() {
-		return SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper;
-	}
-
-	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
-		updateFactoryInfo(slots);
-		List<ColorHighlight> highlights = new ArrayList<>();
-
-		getPrestigeHighlight().ifPresent(highlights::add);
-		highlights.addAll(getStrayRabbitHighlight(slots));
-
-		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return highlights; //Something went wrong or there's nothing we can afford.
-		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
-		bestUpgrade = bestRabbit.slot;
-		if (bestRabbit.cost <= totalChocolate) {
-			highlights.add(ColorHighlight.green(bestRabbit.slot));
-			return highlights;
-		}
-		highlights.add(ColorHighlight.yellow(bestRabbit.slot));
-
-		for (Rabbit rabbit : cpsIncreaseFactors.subList(1, cpsIncreaseFactors.size())) {
-			if (rabbit.cost <= totalChocolate) {
-				bestAffordableUpgrade = rabbit.slot;
-				highlights.add(ColorHighlight.green(rabbit.slot));
-				break;
-			}
-		}
-
-		return highlights;
 	}
 
 	private static void updateFactoryInfo(Int2ObjectMap<ItemStack> slots) {
@@ -196,7 +152,8 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
 		String coachLore = getConcatenatedLore(coachItem);
 
-		if (totalCps < 0 || totalCpsMultiplier < 0) return Optional.empty(); //We need these 2 to calculate the increase in cps.
+		if (totalCps < 0 || totalCpsMultiplier < 0)
+			return Optional.empty(); //We need these 2 to calculate the increase in cps.
 
 		Matcher multiplierIncreaseMatcher = MULTIPLIER_INCREASE_PATTERN.matcher(coachLore);
 		OptionalDouble currentCpsMultiplier = RegexUtils.getDoubleFromMatcher(multiplierIncreaseMatcher);
@@ -229,7 +186,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt())*(totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsInt(), slot));
+		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt()) * (totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsInt(), slot));
 	}
 
 	private static Optional<ColorHighlight> getPrestigeHighlight() {
@@ -251,52 +208,69 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return highlights;
 	}
 
-	private record Rabbit(double cpsIncrease, int cost, int slot) { }
+	@Override
+	protected void reset() {
+		cpsIncreaseFactors.clear();
+		totalChocolate = -1L;
+		totalCps = -1.0;
+		totalCpsMultiplier = -1.0;
+		requiredUntilNextPrestige = -1L;
+		canPrestige = false;
+		reachedMaxPrestige = false;
+		timeTowerMultiplier = -1.0;
+		isTimeTowerMaxed = false;
+		isTimeTowerActive = false;
+		bestUpgrade = -1;
+		bestAffordableUpgrade = -1;
+	}
+
+	@Override
+	protected boolean isEnabled() {
+		return SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper;
+	}
+
+	@Override
+	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+		updateFactoryInfo(slots);
+		List<ColorHighlight> highlights = new ArrayList<>();
+
+		getPrestigeHighlight().ifPresent(highlights::add);
+		highlights.addAll(getStrayRabbitHighlight(slots));
+
+		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty())
+			return highlights; //Something went wrong or there's nothing we can afford.
+		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
+		bestUpgrade = bestRabbit.slot;
+		if (bestRabbit.cost <= totalChocolate) {
+			highlights.add(ColorHighlight.green(bestRabbit.slot));
+			return highlights;
+		}
+		highlights.add(ColorHighlight.yellow(bestRabbit.slot));
+
+		for (Rabbit rabbit : cpsIncreaseFactors.subList(1, cpsIncreaseFactors.size())) {
+			if (rabbit.cost <= totalChocolate) {
+				bestAffordableUpgrade = rabbit.slot;
+				highlights.add(ColorHighlight.green(rabbit.slot));
+				break;
+			}
+		}
+
+		return highlights;
+	}
+
+	private record Rabbit(double cpsIncrease, int cost, int slot) {
+	}
 
 	public static final class Tooltip extends TooltipAdder {
 		public Tooltip() {
 			super("^Chocolate Factory$", 0); //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
 		}
 
-		@Override
-		public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper || focusedSlot == null) return;
-
-			int lineIndex = lines.size();
-			//This boolean is used to determine if we should add a smooth line to separate the added information from the rest of the tooltip.
-			//It should be set to true if there's any information added, false otherwise.
-			boolean shouldAddLine = false;
-
-			String lore = concatenateLore(lines);
-			Matcher costMatcher = COST_PATTERN.matcher(lore);
-			OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
-			//Available on all items with a chocolate cost
-			if (cost.isPresent()) shouldAddLine |= addUpgradeTimerToLore(lines, cost.getAsLong());
-
-			int index = focusedSlot.id;
-
-			//Prestige item
-			if (index == PRESTIGE_SLOT) {
-				shouldAddLine |= addPrestigeTimerToLore(lines);
-			}
-			//Time tower
-			else if (index == TIME_TOWER_SLOT) {
-				shouldAddLine |= addTimeTowerStatsToLore(lines);
-			}
-			//Rabbits
-			else if (index == COACH_SLOT || (index >= RABBITS_START && index <= RABBITS_END)) {
-				shouldAddLine |= addRabbitStatsToLore(lines, index);
-			}
-
-			//This is an ArrayList, so this operation is probably not very efficient, but logically it's pretty much the only way I can think of
-			if (shouldAddLine) lines.add(lineIndex, LineSmoothener.createSmoothLine());
-		}
-
 		private static boolean addUpgradeTimerToLore(List<Text> lines, long cost) {
 			if (totalChocolate < 0L || totalCps < 0.0) return false;
 			lines.add(Text.empty()
-			              .append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
-			              .append(formatTime((cost - totalChocolate) / totalCps)));
+					.append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
+					.append(formatTime((cost - totalChocolate) / totalCps)));
 			return true;
 		}
 
@@ -304,12 +278,12 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			if (totalCps < 0.0 || reachedMaxPrestige) return false;
 			if (requiredUntilNextPrestige > 0 && !canPrestige) {
 				lines.add(Text.empty()
-				              .append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
-				              .append(Text.literal(DECIMAL_FORMAT.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
+						.append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
+						.append(Text.literal(DECIMAL_FORMAT.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
 			}
 			lines.add(Text.empty() //Keep this outside of the `if` to match the format of the upgrade tooltips, that say "Time until upgrade: Now" when it's possible
-			              .append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
-			              .append(formatTime(requiredUntilNextPrestige / totalCps)));
+					.append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
+					.append(formatTime(requiredUntilNextPrestige / totalCps)));
 			return true;
 		}
 
@@ -317,19 +291,19 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			if (totalCps < 0.0 || totalCpsMultiplier < 0.0 || timeTowerMultiplier < 0.0) return false;
 			lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
 			lines.add(Text.empty()
-			              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-			              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
+					.append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+					.append(Text.literal(DECIMAL_FORMAT.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
 			lines.add(Text.empty()
-			              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-			              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+					.append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+					.append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
 			if (!isTimeTowerMaxed) {
 				lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
 				lines.add(Text.empty()
-				              .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-				              .append(Text.literal(DECIMAL_FORMAT.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
+						.append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+						.append(Text.literal(DECIMAL_FORMAT.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
 				lines.add(Text.empty()
-				              .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-				              .append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+						.append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+						.append(Text.literal(DECIMAL_FORMAT.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
 			}
 			return true;
 		}
@@ -339,12 +313,12 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			for (Rabbit rabbit : cpsIncreaseFactors) {
 				if (rabbit.slot == slot) {
 					lines.add(Text.empty()
-					              .append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
-					              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+							.append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
+							.append(Text.literal(DECIMAL_FORMAT.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
 
 					lines.add(Text.empty()
-					              .append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
-					              .append(Text.literal(DECIMAL_FORMAT.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+							.append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
+							.append(Text.literal(DECIMAL_FORMAT.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
 
 					if (rabbit.slot == bestUpgrade) {
 						if (rabbit.cost <= totalChocolate) {
@@ -382,6 +356,41 @@ public class ChocolateFactorySolver extends ContainerSolver {
 				builder.append((int) seconds).append("s");
 			}
 			return Text.literal(builder.toString()).formatted(Formatting.GOLD);
+		}
+
+		@Override
+		public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper || focusedSlot == null)
+				return;
+
+			int lineIndex = lines.size();
+			//This boolean is used to determine if we should add a smooth line to separate the added information from the rest of the tooltip.
+			//It should be set to true if there's any information added, false otherwise.
+			boolean shouldAddLine = false;
+
+			String lore = concatenateLore(lines);
+			Matcher costMatcher = COST_PATTERN.matcher(lore);
+			OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
+			//Available on all items with a chocolate cost
+			if (cost.isPresent()) shouldAddLine |= addUpgradeTimerToLore(lines, cost.getAsLong());
+
+			int index = focusedSlot.id;
+
+			//Prestige item
+			if (index == PRESTIGE_SLOT) {
+				shouldAddLine |= addPrestigeTimerToLore(lines);
+			}
+			//Time tower
+			else if (index == TIME_TOWER_SLOT) {
+				shouldAddLine |= addTimeTowerStatsToLore(lines);
+			}
+			//Rabbits
+			else if (index == COACH_SLOT || (index >= RABBITS_START && index <= RABBITS_END)) {
+				shouldAddLine |= addRabbitStatsToLore(lines, index);
+			}
+
+			//This is an ArrayList, so this operation is probably not very efficient, but logically it's pretty much the only way I can think of
+			if (shouldAddLine) lines.add(lineIndex, LineSmoothener.createSmoothLine());
 		}
 	}
 }
