@@ -72,8 +72,12 @@ public class ItemTooltip {
     }
 
     public static Text getCoinsMessage(double price, int count) {
+        return getCoinsMessage(price, count, false);
+    }
+
+    public static Text getCoinsMessage(double price, int count, boolean preCounted) {
         // Format the price string once
-        String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
+        String priceString = String.format(Locale.ENGLISH, "%1$,.1f", preCounted ? price / count : price);
 
         // If count is 1, return a simple message
         if (count == 1) {
@@ -81,7 +85,7 @@ public class ItemTooltip {
         }
 
         // If count is greater than 1, include the "each" information
-        String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", price * count);
+        String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", preCounted ? price : price * count);
 
         return Text.literal(priceStringTotal + " Coins ").formatted(Formatting.DARK_AQUA)
                    .append(Text.literal("(" + priceString + " each)").formatted(Formatting.GRAY));

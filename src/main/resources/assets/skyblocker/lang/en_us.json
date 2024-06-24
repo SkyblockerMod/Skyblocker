@@ -252,6 +252,8 @@
   "skyblocker.config.general.itemTooltip.enableMotesPrice.@Tooltip": "Displays the Motes sell price of an item while in The Rift.",
   "skyblocker.config.general.itemTooltip.enableMuseumInfo": "Enable Museum Info",
   "skyblocker.config.general.itemTooltip.enableMuseumInfo.@Tooltip": "If this item is donatable to the museum, then the item's category in the musuem is displayed. It also displays a marker indicating whether you've donated that item to your musuem or not (freebies not yet supported).\n\nMake sure to enable your Museum API for accurate information!",
+  "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "Enable Estimated Item Value",
+  "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Displays an estimation of the item's total value in the tooltip, §lmight not be 100% accurate all the time.§r\n\nWhen selling items always do a manual check of the item price!",
   "skyblocker.config.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "skyblocker.config.general.itemTooltip.enableObtainedDate": "Enable Obtained Date",
 

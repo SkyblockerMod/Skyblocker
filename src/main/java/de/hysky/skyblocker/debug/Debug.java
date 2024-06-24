@@ -7,11 +7,14 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
@@ -43,19 +46,24 @@ public class Debug {
 			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 					.then(dumpPlayersCommand())
 					.then(ItemUtils.dumpHeldItemCommand())
+					.then(ItemUtils.dumpHeldItemNetworthCalculationsCommand())
 					.then(toggleShowingInvisibleArmorStands())
 					.then(dumpArmorStandHeadTextures())
 			)));
 			ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 				if (screen instanceof HandledScreen<?> handledScreen) {
-                    ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
-                        Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
-                        if (key == GLFW.GLFW_KEY_U && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
-                            client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, focusedSlot.getStack()))));
-                        }
-                    });
-                }
-            });
+					ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
+						Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
+						if (key == GLFW.GLFW_KEY_U && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
+							if (!Screen.hasShiftDown()) {
+								client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, focusedSlot.getStack()))));
+							} else {
+								client.player.sendMessage(Text.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow())));
+							}
+						}
+					});
+				}
+			});
 		}
 	}
 
@@ -75,7 +83,7 @@ public class Debug {
 					return Command.SINGLE_SUCCESS;
 				});
 	}
-	
+
 	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpArmorStandHeadTextures() {
 		return literal("dumpArmorStandHeadTextures")
 				.executes(context -> {
