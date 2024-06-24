@@ -9,9 +9,13 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -49,6 +53,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static boolean isTimeTowerActive = false;
 	private static int bestUpgrade = -1;
 	private static int bestAffordableUpgrade = -1;
+	private static StrayDing ding = StrayDing.NONE;
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
 	@Override
@@ -65,6 +70,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		isTimeTowerActive = false;
 		bestUpgrade = -1;
 		bestAffordableUpgrade = -1;
+		ding = StrayDing.NONE;
 	}
 
 	//Slots, for ease of maintenance rather than using magic numbers everywhere.
@@ -78,8 +84,20 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final byte STRAY_RABBIT_START = 0;
 	private static final byte STRAY_RABBIT_END = 26;
 
+	private static int dingTick = 0;
+
 	public ChocolateFactorySolver() {
 		super("^Chocolate Factory$"); //There are multiple screens that fit the pattern `^Chocolate Factory`, so the $ is required
+		ClientTickEvents.START_CLIENT_TICK.register(ChocolateFactorySolver::onTick);
+	}
+
+	private static void onTick(MinecraftClient client) {
+		if (ding != StrayDing.NONE) {
+			dingTick = (++dingTick) %  (ding == StrayDing.NORMAL ? 5 : 3);
+			if (dingTick == 0) {
+				client.getSoundManager().play(PositionedSoundInstance.master(ding == StrayDing.NORMAL ? SoundEvents.BLOCK_NOTE_BLOCK_PLING.value() : SoundEvents.BLOCK_NOTE_BLOCK_HAT.value(), 1.f, 1.f));
+			}
+		}
 	}
 
 	@Override
@@ -239,12 +257,14 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static List<ColorHighlight> getStrayRabbitHighlight(Int2ObjectMap<ItemStack> slots) {
+		ding = StrayDing.NONE;
 		final List<ColorHighlight> highlights = new ArrayList<>();
 		for (byte i = STRAY_RABBIT_START; i <= STRAY_RABBIT_END; i++) {
 			ItemStack item = slots.get(i);
 			if (!item.isOf(Items.PLAYER_HEAD)) continue;
 			String name = item.getName().getString();
 			if (name.equals("CLICK ME!") || name.startsWith("Golden Rabbit - ")) {
+				ding = name.contains("Golden") ? StrayDing.GOLDEN : StrayDing.NORMAL;
 				highlights.add(ColorHighlight.green(i));
 			}
 		}
@@ -252,6 +272,12 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private record Rabbit(double cpsIncrease, long cost, int slot) { }
+
+	private enum StrayDing {
+		NONE,
+		NORMAL,
+		GOLDEN
+	}
 
 	public static final class Tooltip extends TooltipAdder {
 		public Tooltip() {
