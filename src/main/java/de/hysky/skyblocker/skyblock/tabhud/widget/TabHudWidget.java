@@ -23,6 +23,11 @@ public abstract class TabHudWidget extends HudWidget {
     }
 
     @Override
+    public String getNiceName() {
+        return getHypixelWidgetName();
+    }
+
+    @Override
     public void updateContent() {
         cachedComponents.forEach(super::addComponent);
     }

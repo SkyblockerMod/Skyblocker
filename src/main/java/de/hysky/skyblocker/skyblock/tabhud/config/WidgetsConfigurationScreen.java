@@ -69,8 +69,9 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     public WidgetsConfigurationScreen(GenericContainerScreenHandler handler, String titleLowercase) {
         super(Text.literal("Widgets Configuration"));
         this.handler = handler;
-        handler.addListener(this);
         this.titleLowercase = titleLowercase;
+        this.handler.addListener(this);
+        parseLocation();
     }
 
     @Override
@@ -102,6 +103,11 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         handler = newHandler;
         handler.addListener(this);
         this.titleLowercase = titleLowercase;
+        parseLocation();
+        widgetsOrderingTab.updateHandler(handler);
+    }
+
+    private void parseLocation() {
         String trim = this.titleLowercase
                 .replace("widgets in", "")
                 .replace("widgets on", "")
@@ -110,10 +116,10 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         if (nameToLocation.containsKey(trim)) {
             currentLocation = nameToLocation.get(trim);
         } else {
-            currentLocation = Utils.getLocation();
+            //currentLocation = Utils.getLocation();
             LOGGER.warn("[Skyblocker] Couldn't find location for {} (trimmed: {})", this.titleLowercase, trim);
         }
-        widgetsOrderingTab.updateHandler(handler);
+        System.out.println("Curent location: " + currentLocation);
     }
 
     public GenericContainerScreenHandler getHandler() {

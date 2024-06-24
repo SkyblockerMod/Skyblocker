@@ -304,6 +304,10 @@ public abstract class HudWidget implements Element, Widget {
         return internalID;
     }
 
+    public String getNiceName() {
+        return getInternalID();
+    }
+
     private boolean positioned = false;
 
 
