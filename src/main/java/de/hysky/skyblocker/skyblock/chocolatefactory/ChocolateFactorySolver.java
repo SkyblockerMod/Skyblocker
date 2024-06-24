@@ -244,7 +244,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			ItemStack item = slots.get(i);
 			if (!item.isOf(Items.PLAYER_HEAD)) continue;
 			String name = item.getName().getString();
-			if (name.equals("CLICK ME!") || name.startsWith("GOLDEN RABBIT")) {
+			if (name.equals("CLICK ME!") || name.startsWith("Golden Rabbit - ")) {
 				highlights.add(ColorHighlight.green(i));
 			}
 		}
