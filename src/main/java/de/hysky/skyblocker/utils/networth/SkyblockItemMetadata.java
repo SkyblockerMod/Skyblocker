@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.networth;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.utils.CodecUtils;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.azureaaron.networth.item.AccessoryUpgrades;
@@ -25,7 +27,10 @@ import net.azureaaron.networth.item.MiscModifiers;
 import net.azureaaron.networth.item.PetInfo;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.util.Util;
 
 public record SkyblockItemMetadata(Object2IntMap<String> enchantments, int rarityUpgrades, Optional<String> reforge, int upgradeLevel, DungeonUpgrades dungeonUpgrades,
@@ -52,6 +57,29 @@ public record SkyblockItemMetadata(Object2IntMap<String> enchantments, int rarit
 				Cosmetics.CODEC.parse(NbtOps.INSTANCE, customData).getOrThrow(),
 				customData.contains("petInfo") ? PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow() : null,
 				LimitedEditionInfo.CODEC.parse(NbtOps.INSTANCE, customData).getOrThrow(),
-				itemId.equals("NEW_YEAR_CAKE_BAG") ? IntList.of() : IntList.of());
+				getCakeBagCakeYears(customData, itemId));
+	}
+
+	private static IntList getCakeBagCakeYears(NbtCompound customData, String itemId) {
+		if (itemId.equals("NEW_YEAR_CAKE_BAG") && customData.contains("new_year_cake_bag_data")) {
+			try {
+				NbtCompound uncompressed = NbtIo.readCompressed(new ByteArrayInputStream(customData.getByteArray("new_year_cake_bag_data")), NbtSizeTracker.ofUnlimitedBytes());
+				NbtList items = uncompressed.getList("i", NbtElement.COMPOUND_TYPE);
+				IntList cakeYears = new IntArrayList();
+
+				for (NbtElement element : items) {
+					if (element instanceof NbtCompound compound && compound.getCompound("tag").contains("ExtraAttributes")) {
+						NbtCompound extraAttributes = compound.getCompound("tag").getCompound("ExtraAttributes");
+						int cakeYear = extraAttributes.getInt("new_years_cake"); //You can only put new year cakes in the bag so we don't need to check for it being one
+
+						cakeYears.add(cakeYear);
+					}
+				}
+
+				return cakeYears;
+			} catch (Exception ignored) {}
+		}
+
+		return new IntArrayList();
 	}
 }
