@@ -69,9 +69,9 @@ public class WishingCompassSolver {
      */
     private static final double PARTICLES_MAX_DISTANCE = 0.9;
     /**
-     * the distance the player has to be from where they used the first compass to where they use the second
+     * the distance squared the player has to be from where they used the first compass to where they use the second
      */
-    private static final long DISTANCE_BETWEEN_USES = 8;
+    private static final long DISTANCE_BETWEEN_USES = 64;
 
     private static SolverStates currentState = SolverStates.NOT_STARTED;
     private static Vec3d startPosOne = Vec3d.ZERO;
@@ -340,7 +340,7 @@ public class WishingCompassSolver {
 
             case WAITING_FOR_SECOND -> {
                 //only continue if the player is far enough away from the first position to get a better reading
-                if (startPosOne.distanceTo(playerPos) < DISTANCE_BETWEEN_USES) {
+                if (startPosOne.squaredDistanceTo(playerPos) < DISTANCE_BETWEEN_USES) {
                     CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage")), false);
                     return true;
                 } else {
@@ -357,7 +357,7 @@ public class WishingCompassSolver {
 
             case PROCESSING_FIRST_USE, PROCESSING_SECOND_USE -> {
                 //if still looking for particles for line tell the user to wait
-                //else tell the use something went wrong and its starting again
+                //else tell the user something went wrong and its starting again
                 if (System.currentTimeMillis() - particleLastUpdate < PARTICLES_MAX_DELAY) {
                     CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.waitLongerMessage").formatted(Formatting.RED)), false);
                     return true;
