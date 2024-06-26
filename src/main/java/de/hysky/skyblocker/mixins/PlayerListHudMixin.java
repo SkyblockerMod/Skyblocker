@@ -43,8 +43,6 @@ public class PlayerListHudMixin {
         w = (int) (w / scale);
         h = (int) (h / scale);
 
-        PlayerListMgr.updateFooter(footer);
-
         try {
             ScreenMaster.render(context, w,h);
             // Screen screen = Screen.getCorrect(w, h, footer);
