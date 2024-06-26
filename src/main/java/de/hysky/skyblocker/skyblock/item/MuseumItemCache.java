@@ -10,7 +10,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
@@ -44,6 +43,7 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
@@ -113,7 +113,7 @@ public class MuseumItemCache {
 						String uuid = Utils.getUndashedUuid();
 						//Be safe about access to avoid NPEs
 						Map<String, ProfileMuseumData> playerData =  MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
-						playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY);
+						playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY.get());
 
 						playerData.get(profileId).collectedItemIds().add(itemId);
 						save();
@@ -224,7 +224,7 @@ public class MuseumItemCache {
 
 		if (loaded.isDone() && (!MUSEUM_ITEM_CACHE.containsKey(uuid) || !MUSEUM_ITEM_CACHE.getOrDefault(uuid, new Object2ObjectOpenHashMap<>()).containsKey(profileId))) {
 			Map<String, ProfileMuseumData> playerData = MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
-			playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY);
+			playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY.get());
 
 			updateData4ProfileMember(uuid, profileId);
 		}
@@ -238,7 +238,7 @@ public class MuseumItemCache {
 	}
 
 	private record ProfileMuseumData(long lastResync, ObjectOpenHashSet<String> collectedItemIds) {
-		private static final ProfileMuseumData EMPTY = new ProfileMuseumData(0L, null);
+		private static final Supplier<ProfileMuseumData> EMPTY = () -> new ProfileMuseumData(0L, new ObjectOpenHashSet<>());
 		private static final long TIME_BETWEEN_RESYNCING_ALLOWED = 600_000L;
 		private static final Codec<ProfileMuseumData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.LONG.fieldOf("lastResync").forGetter(ProfileMuseumData::lastResync),
