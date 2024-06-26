@@ -29,7 +29,7 @@ public class CollectionAdder extends SlotTextAdder {
             if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Progress to ")) != null) {
                 return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
             } else {
-                return List.of(SlotText.bottomRight(Text.literal("Max").withColor(0xE5B80B)));
+                return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xE5B80B)));
             }
         }
         return List.of();
