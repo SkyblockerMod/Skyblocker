@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class CraftPriceTooltip extends TooltipAdder {
     private final Map<String, Double> cachedCraftCosts = new HashMap<>();
-    private static final int MAX_RECURSION_DEPTH = 10;
+    private static final int MAX_RECURSION_DEPTH = 15;
 
     public CraftPriceTooltip(int priority) {
         super(priority);
