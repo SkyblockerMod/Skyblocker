@@ -119,7 +119,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
-        // Age check so we don't check every entity every time its updated. A bit more leeway on Bosses because A) it's checked second and B) It's more important we don't miss it
+        // Don't want to waste resources, so if the entities been in the world a while we ignore it. Slightly more lenience on Boss' age because it's more important we don't miss it
         if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW  && entity.age < 30 && SlayerMobs.isSlayerMiniMob(armorStandEntity)
         || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && entity.age < 40 && SlayerMobs.isSlayer(armorStandEntity)) {
             SlayerMobs.setSlayerMobGlow(armorStandEntity);

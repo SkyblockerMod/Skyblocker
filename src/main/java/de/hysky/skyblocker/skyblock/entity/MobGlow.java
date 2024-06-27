@@ -22,7 +22,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-import java.awt.*;
 import java.util.List;
 
 public class MobGlow {

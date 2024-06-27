@@ -49,7 +49,7 @@ public class SlayerMobs {
 
     private static Set<UUID> mobsToGlow = new HashSet<>();
 
-    public static boolean shouldGlow(UUID entityUUID){
+    public static boolean shouldGlow(UUID entityUUID) {
         return mobsToGlow.contains(entityUUID);
     }
 
@@ -98,8 +98,9 @@ public class SlayerMobs {
     /**
      * <p> Finds the closest matching MobEntity for the armorStand using entityClass and armorStand age difference to filter
      * out impossible candidates, returning the closest mob of those remaining in the search box by block distance </p>
+     *
      * @param entityClass the mob type of the Slayer (i.e. ZombieEntity.class)
-     * @param armorStand the entity that contains the display name of the Slayer (mini)boss
+     * @param armorStand  the entity that contains the display name of the Slayer (mini)boss
      */
     private static MobEntity findClosestMobEntity(Class<? extends MobEntity> entityClass, ArmorStandEntity armorStand) {
         return armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null).getBoxAt(armorStand.getPos()).expand(1.5), entity -> !entity.isDead() && entity.age > armorStand.age - 4 && entity.age < armorStand.age + 4)
@@ -110,6 +111,7 @@ public class SlayerMobs {
 
     /**
      * <p> Adds the Entity UUID to the Hashset of Slayer Mobs to glow </p>
+     *
      * @param armorStand the entity that contains the display name of the Slayer (mini)boss
      */
     public static void setSlayerMobGlow(ArmorStandEntity armorStand) {
