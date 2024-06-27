@@ -20,7 +20,7 @@ public class BazaarHelper extends ContainerSolver {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");
 
 	public BazaarHelper() {
-		super("Your Bazaar Orders");
+		super("(?:Co-op|Your) Bazaar Orders");
 	}
 
 	@Override
