@@ -39,7 +39,7 @@ public class ForceTestHelper {
     }
 
     protected static int getColor() {
-        return Color.RED.getRGB();
+        return 0x0000ff;
     }
 
     protected static void onEntitySpawn(Entity entity) {
