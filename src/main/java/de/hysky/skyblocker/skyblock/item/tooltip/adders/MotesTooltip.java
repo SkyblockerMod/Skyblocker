@@ -22,13 +22,12 @@ public class MotesTooltip extends TooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
 		if (internalID != null && TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
-			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
-			              .formatted(Formatting.LIGHT_PURPLE)
-			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), stack.getCount())));
+			lines.add(Text.literal("Motes Price:").formatted(Formatting.LIGHT_PURPLE)
+			              .align(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), stack.getCount()), 100));
 		}
 	}
 
-	private static Text getMotesMessage(int price, int count) {
+	private static MutableText getMotesMessage(int price, int count) {
 		float motesMultiplier = SkyblockerConfigManager.get().otherLocations.rift.mcGrubberStacks * 0.05f + 1;
 
 		// Calculate the total price

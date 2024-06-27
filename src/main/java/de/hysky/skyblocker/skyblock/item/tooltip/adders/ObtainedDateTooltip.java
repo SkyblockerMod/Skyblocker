@@ -32,9 +32,8 @@ public class ObtainedDateTooltip extends TooltipAdder {
 			String timestamp = getTimestamp(stack);
 
 			if (!timestamp.isEmpty()) {
-				lines.add(Text.empty()
-				              .append(Text.literal(String.format("%-21s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE))
-				              .append(Text.literal(timestamp).formatted(Formatting.RED)));
+				lines.add(Text.literal("Obtained:").formatted(Formatting.LIGHT_PURPLE)
+				              .align(Text.literal(timestamp).formatted(Formatting.RED), 100));
 			}
 		}
 	}

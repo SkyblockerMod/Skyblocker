@@ -1,9 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -304,7 +302,7 @@ public class DungeonScore {
 			if (s.equals("You")) return MinecraftClient.getInstance().getSession().getUsername(); //This will be wrong if the dead player is called 'You' but that's unlikely
 			else return s;
 		});
-		ProfileUtils.updateProfile(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
+		ProfileUtils.updateProfile(whoDied).thenAccept(profile -> firstDeathHasSpiritPet = profile != null && hasSpiritPet(profile.jsonData, whoDied));
 	}
 
 	private static void checkMessageForWatcher(String message) {

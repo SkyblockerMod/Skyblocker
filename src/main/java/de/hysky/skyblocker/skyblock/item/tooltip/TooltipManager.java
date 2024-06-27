@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.chocolatefactory.RabbitCollection;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -23,6 +24,7 @@ public class TooltipManager {
 			new LineSmoothener(), // Applies before anything else
 			new SupercraftReminder(),
 			new ChocolateFactorySolver.Tooltip(),
+			new RabbitCollection(),
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),

@@ -6,6 +6,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +71,7 @@ public class ItemTooltip {
         }
     }
 
-    public static Text getCoinsMessage(double price, int count) {
+    public static MutableText getCoinsMessage(double price, int count) {
         // Format the price string once
         String priceString = String.format(Locale.ENGLISH, "%1$,.1f", price);
 
