@@ -1,35 +1,44 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.google.common.reflect.ClassPath;
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.StringIdentifiable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ScreenMaster {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private static final int VERSION = 1;
+    private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
-    private static final HashMap<String, ScreenBuilder> standardMap = new HashMap<>();
-    private static final HashMap<String, ScreenBuilder> screenAMap = new HashMap<>();
-    private static final HashMap<String, ScreenBuilder> screenBMap = new HashMap<>();
-    private static final Map<Location, ScreenBuilder> builderMap = new HashMap<>();
+    private static final Map<Location, ScreenBuilder> builderMap = new EnumMap<>(Location.class);
 
     public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
 
@@ -54,25 +63,30 @@ public class ScreenMaster {
      * Calls the appropriate ScreenBuilder with the screen's dimensions
      */
     public static void render(DrawContext context, int w, int h) {
-        String location = PlayerLocator.getPlayerLocation().internal;
-        HashMap<String, ScreenBuilder> lookup;
-        if (TabHud.toggleA.isPressed()) {
-            lookup = screenAMap;
-        } else if (TabHud.toggleB.isPressed()) {
-            lookup = screenBMap;
+        MinecraftClient client = MinecraftClient.getInstance();
+        ScreenLayer screenLayer;
+        if (client.options.playerListKey.isPressed()) {
+            if (TabHud.defaultTgl.isPressed()) return;
+            if (TabHud.toggleA.isPressed()) {
+                screenLayer = ScreenLayer.SECONDARY_TAB;
+            } else {
+                screenLayer = ScreenLayer.MAIN_TAB;
+            }
         } else {
-            lookup = standardMap;
+            screenLayer = ScreenLayer.HUD;
         }
 
-        ScreenBuilder sb = lookup.get(location);
-        // seems suboptimal, maybe load the default first into all possible values
-        // and then override?
-        if (sb == null) {
-            sb = lookup.get("default");
+        getScreenBuilder(Utils.getLocation()).run(context, w, h, screenLayer);
+    }
+
+    public static void loadConfig() {
+        try (BufferedReader reader = Files.newBufferedReader(FILE)) {
+            
+        } catch (NoSuchFileException e) {
+            LOGGER.warn("[Skyblocker] No status bar config file found, using defaults");
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker] Failed to load hud widgets config", e);
         }
-
-        getScreenBuilder(Utils.getLocation()).run(context, w, h);
-
     }
 
     @Init
@@ -80,8 +94,14 @@ public class ScreenMaster {
 
         SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
 
+        HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            Window window = client.getWindow();
+            float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
+            render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale));
+        });
+
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            System.out.println(Object.class);
             try {
                 ClassPath.from(TabHudWidget.class.getClassLoader()).getTopLevelClasses("de.hysky.skyblocker.skyblock.tabhud.widget").iterator().forEachRemaining(classInfo -> {
                     try {
@@ -89,7 +109,8 @@ public class ScreenMaster {
                         if (!load.getSuperclass().equals(TabHudWidget.class)) return;
                         TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
                         PlayerListMgr.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
-                    } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                    } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                             IllegalAccessException | ClassNotFoundException e) {
                         LOGGER.error("[Skyblocker] Failed to load {} hud widget", classInfo.getName(), e);
                     }
 
@@ -97,6 +118,7 @@ public class ScreenMaster {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
             }
+
         });
 
         for (Location value : Location.values()) {
@@ -164,6 +186,25 @@ public class ScreenMaster {
                 });
 
          */
+    }
+
+    public enum ScreenLayer {
+        MAIN_TAB,
+        SECONDARY_TAB,
+        HUD;
+
+        public static final Codec<ScreenLayer> CODEC_NULLABLE = Codec.STRING.xmap(
+                s -> s.equals("null") ? null : ScreenLayer.valueOf(s),
+                screenLayer -> screenLayer == null ? "null": screenLayer.name());
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case MAIN_TAB -> "Main Tab";
+                case SECONDARY_TAB -> "Secondary Tab";
+                case HUD -> "HUD";
+            };
+        }
     }
 
 }
