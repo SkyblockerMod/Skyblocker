@@ -65,7 +65,7 @@ public class SlayerMobs {
     public static boolean isSlayerMiniMob(LivingEntity entity) {
         if (entity.getCustomName() == null) return false;
         String entityName = entity.getCustomName().getString();
-        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName -> entityName.contains(slayerMobName) && SlayerUtils.isInSlayerType(SLAYER_MINI_NAMES.get(slayerMobName)));
+        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName -> entityName.contains(slayerMobName) && SlayerUtils.isInSlayerQuestType(SLAYER_MINI_NAMES.get(slayerMobName)));
     }
 
     public static Box getSlayerMobBoundingBox(LivingEntity entity) {
@@ -84,7 +84,7 @@ public class SlayerMobs {
     private static MobEntity findClosestEntity(Class<? extends MobEntity> entityClass, ArmorStandEntity armorStand) {
         return armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null).getBoxAt(armorStand.getPos()).expand(0.9), entity -> !entity.isDead())
                 .stream()
-                .min(Comparator.comparingDouble((MobEntity e) -> e.squaredDistanceTo(armorStand)))
+                .min(Comparator.comparingDouble((MobEntity e) -> e.distanceTo(armorStand)))
                 .orElse(null);
     }
 

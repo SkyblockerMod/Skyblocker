@@ -53,7 +53,7 @@ public class SlayerUtils {
         return false;
     }
 
-    public static boolean isInSlayerType(String slayer) {
+    public static boolean isInSlayerQuestType(String slayer) {
         try {
             boolean quest = false;
             boolean type = false;

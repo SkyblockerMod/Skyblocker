@@ -22,6 +22,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
+import java.awt.*;
 import java.util.List;
 
 public class MobGlow {
@@ -71,9 +72,9 @@ public class MobGlow {
 				case WolfEntity wolf -> SlayerMobs.MOBS_TO_GLOW.contains(wolf.getUuid());
 				case BlazeEntity blaze -> SlayerMobs.MOBS_TO_GLOW.contains(blaze.getUuid());
 				case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
-						SlayerUtils.isInSlayer() && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
+						SlayerUtils.isInSlayerQuestType("Inferno Demonlord") && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
 				case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
-						SlayerUtils.isInSlayer() && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
+						SlayerUtils.isInSlayerQuestType("Inferno Demonlord") && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
 				default -> false;
 			};
 		}
@@ -128,8 +129,9 @@ public class MobGlow {
 			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 
-			// Blaze Slayer
-			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerType("Demonlord") -> SlayerMobs.getColour(armorStand);
+
+			// Slayer (Mini)Boss Highlights
+			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType("Demonlord") -> SlayerMobs.getColour(armorStand);
 			case BlazeEntity blaze when SlayerUtils.isInSlayer() -> SlayerMobs.getColour(blaze);
 			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() -> SlayerMobs.getColour(piglin);
 			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() -> SlayerMobs.getColour(wSkelly);
