@@ -25,6 +25,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -86,67 +87,88 @@ public class MythologicalRitual {
 
     public static void onParticle(ParticleS2CPacket packet) {
         if (isActive()) {
-            if (ParticleTypes.CRIT.equals(packet.getParameters().getType()) || ParticleTypes.ENCHANT.equals(packet.getParameters().getType())) {
-                BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ()).down();
-                if (MinecraftClient.getInstance().world == null || !MinecraftClient.getInstance().world.getBlockState(pos).isOf(Blocks.GRASS_BLOCK)) {
-                    return;
-                }
-                GriffinBurrow burrow = griffinBurrows.computeIfAbsent(pos, GriffinBurrow::new);
-                if (ParticleTypes.CRIT.equals(packet.getParameters().getType())) burrow.critParticle++;
-                if (ParticleTypes.ENCHANT.equals(packet.getParameters().getType())) burrow.enchantParticle++;
-                if (burrow.critParticle >= 5 && burrow.enchantParticle >= 5 && burrow.confirmed == TriState.FALSE) {
-                    griffinBurrows.get(pos).init();
-                }
-            } else if (ParticleTypes.DUST.equals(packet.getParameters().getType())) {
-                BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ());
-                GriffinBurrow burrow = griffinBurrows.get(pos.down(2));
-                if (burrow == null) {
-                    return;
-                }
-                burrow.regression.addData(packet.getX(), packet.getZ());
-                double slope = burrow.regression.getSlope();
-                if (Double.isNaN(slope)) {
-                    return;
-                }
-                Vec3d nextBurrowDirection = new Vec3d(100, 0, slope * 100).normalize();
-
-                // Save the line of the next burrow and try to estimate the next burrow
-                Vector2D pos2D = new Vector2D(pos.getX() + 0.5, pos.getZ() + 0.5);
-                burrow.nextBurrowLineEstimation = new Line(pos2D, pos2D.add(new Vector2D(nextBurrowDirection.x, nextBurrowDirection.z)), 0.0001);
-                estimateNextBurrow(burrow);
-
-                // Fill line in the direction of the next burrow
-                if (burrow.nextBurrowLine == null) {
-                    burrow.nextBurrowLine = new Vec3d[1001];
-                }
-                fillLine(burrow.nextBurrowLine, Vec3d.ofCenter(pos.up()), nextBurrowDirection);
-            } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType()) && packet.getCount() == 2) {
-                if (System.currentTimeMillis() > lastEchoTime + 10_000) {
-                    return;
-                }
-                if (previousBurrow.echoBurrowDirection == null) {
-                    previousBurrow.echoBurrowDirection = new Vec3d[2];
-                }
-                previousBurrow.echoBurrowDirection[0] = previousBurrow.echoBurrowDirection[1];
-                previousBurrow.echoBurrowDirection[1] = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
-                if (previousBurrow.echoBurrowDirection[0] == null || previousBurrow.echoBurrowDirection[1] == null) {
-                    return;
-                }
-
-                // Save the line of the echo burrow and try to estimate the next burrow
-                Vector2D pos1 = new Vector2D(previousBurrow.echoBurrowDirection[0].x, previousBurrow.echoBurrowDirection[0].z);
-                Vector2D pos2 = new Vector2D(previousBurrow.echoBurrowDirection[1].x, previousBurrow.echoBurrowDirection[1].z);
-                previousBurrow.echoBurrowLineEstimation = new Line(pos1, pos2, 0.0001);
-                estimateNextBurrow(previousBurrow);
-
-                // Fill line in the direction of the echo burrow
-                Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize();
-                if (previousBurrow.echoBurrowLine == null) {
-                    previousBurrow.echoBurrowLine = new Vec3d[1001];
-                }
-                fillLine(previousBurrow.echoBurrowLine, previousBurrow.echoBurrowDirection[0], echoBurrowDirection);
+            switch (packet.getParameters().getType()) {
+                case ParticleType<?> type when ParticleTypes.CRIT.equals(type) || ParticleTypes.ENCHANT.equals(type) -> handleBurrowParticle(packet);
+                case ParticleType<?> type when ParticleTypes.DUST.equals(type) -> handleNextBurrowParticle(packet);
+                case ParticleType<?> type when ParticleTypes.DRIPPING_LAVA.equals(type) && packet.getCount() == 2 -> handleEchoBurrowParticle(packet);
+                case null, default -> {}
             }
         }
+    }
+
+    /**
+     * Updates the crit and enchant particle counts and initializes the burrow if both counts are greater or equal to 5.
+     */
+    private static void handleBurrowParticle(ParticleS2CPacket packet) {
+        BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ()).down();
+        if (MinecraftClient.getInstance().world == null || !MinecraftClient.getInstance().world.getBlockState(pos).isOf(Blocks.GRASS_BLOCK)) {
+            return;
+        }
+        GriffinBurrow burrow = griffinBurrows.computeIfAbsent(pos, GriffinBurrow::new);
+        if (ParticleTypes.CRIT.equals(packet.getParameters().getType())) burrow.critParticle++;
+        if (ParticleTypes.ENCHANT.equals(packet.getParameters().getType())) burrow.enchantParticle++;
+        if (burrow.critParticle >= 5 && burrow.enchantParticle >= 5 && burrow.confirmed == TriState.FALSE) {
+            griffinBurrows.get(pos).init();
+        }
+    }
+
+    /**
+     * Updates the regression of the burrow (if a burrow exists), tries to {@link #estimateNextBurrow(GriffinBurrow) estimate the next burrow}, and updates the line in the direction of the next burrow.
+     */
+    private static void handleNextBurrowParticle(ParticleS2CPacket packet) {
+        BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ());
+        GriffinBurrow burrow = griffinBurrows.get(pos.down(2));
+        if (burrow == null) {
+            return;
+        }
+        burrow.regression.addData(packet.getX(), packet.getZ());
+        double slope = burrow.regression.getSlope();
+        if (Double.isNaN(slope)) {
+            return;
+        }
+        Vec3d nextBurrowDirection = new Vec3d(100, 0, slope * 100).normalize();
+
+        // Save the line of the next burrow and try to estimate the next burrow
+        Vector2D pos2D = new Vector2D(pos.getX() + 0.5, pos.getZ() + 0.5);
+        burrow.nextBurrowLineEstimation = new Line(pos2D, pos2D.add(new Vector2D(nextBurrowDirection.x, nextBurrowDirection.z)), 0.0001);
+        estimateNextBurrow(burrow);
+
+        // Fill line in the direction of the next burrow
+        if (burrow.nextBurrowLine == null) {
+            burrow.nextBurrowLine = new Vec3d[1001];
+        }
+        fillLine(burrow.nextBurrowLine, Vec3d.ofCenter(pos.up()), nextBurrowDirection);
+    }
+
+    /**
+     * Saves the echo particle in {@link GriffinBurrow#echoBurrowDirection}, if the player used echo within 10 seconds.
+     * Tries to {@link #estimateNextBurrow(GriffinBurrow) estimate the next burrow} and updates the line through the two echo burrow particles if there is already a particle saved in {@link GriffinBurrow#echoBurrowDirection}.
+     */
+    private static void handleEchoBurrowParticle(ParticleS2CPacket packet) {
+        if (System.currentTimeMillis() > lastEchoTime + 10_000) {
+            return;
+        }
+        if (previousBurrow.echoBurrowDirection == null) {
+            previousBurrow.echoBurrowDirection = new Vec3d[2];
+        }
+        previousBurrow.echoBurrowDirection[0] = previousBurrow.echoBurrowDirection[1];
+        previousBurrow.echoBurrowDirection[1] = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
+        if (previousBurrow.echoBurrowDirection[0] == null || previousBurrow.echoBurrowDirection[1] == null) {
+            return;
+        }
+
+        // Save the line of the echo burrow and try to estimate the next burrow
+        Vector2D pos1 = new Vector2D(previousBurrow.echoBurrowDirection[0].x, previousBurrow.echoBurrowDirection[0].z);
+        Vector2D pos2 = new Vector2D(previousBurrow.echoBurrowDirection[1].x, previousBurrow.echoBurrowDirection[1].z);
+        previousBurrow.echoBurrowLineEstimation = new Line(pos1, pos2, 0.0001);
+        estimateNextBurrow(previousBurrow);
+
+        // Fill line in the direction of the echo burrow
+        Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize();
+        if (previousBurrow.echoBurrowLine == null) {
+            previousBurrow.echoBurrowLine = new Vec3d[1001];
+        }
+        fillLine(previousBurrow.echoBurrowLine, previousBurrow.echoBurrowDirection[0], echoBurrowDirection);
     }
 
     /**
@@ -259,14 +281,23 @@ public class MythologicalRitual {
         private final SimpleRegression regression = new SimpleRegression();
         @Nullable
         private Vec3d[] nextBurrowLine;
+        /**
+         * The positions of the last two echo burrow particles.
+         */
         @Nullable
         private Vec3d[] echoBurrowDirection;
         @Nullable
         private Vec3d[] echoBurrowLine;
         @Nullable
         private BlockPos nextBurrowEstimatedPos;
+        /**
+         * The line in the direction of the next burrow estimated by the previous burrow particles.
+         */
         @Nullable
         private Line nextBurrowLineEstimation;
+        /**
+         * The line in the direction of the next burrow estimated by the echo ability.
+         */
         @Nullable
         private Line echoBurrowLineEstimation;
 
