@@ -16,21 +16,103 @@ repositories {
 	flatDir {
 		dirs 'libs'
 	}
-	maven { url "https://maven.terraformersmc.com/releases" }
-	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.isxander.dev/releases" }
-	maven { url "https://maven.isxander.dev/snapshots" } //For minecraft snapshots
+
 	maven {
-		url 'https://repo.maven.apache.org/maven2'
 		name 'Maven Central'
+		url 'https://repo.maven.apache.org/maven2'
 	}
+
+	// For ModMenu and EMI
+	exclusiveContent {
+		forRepository {
+			maven { url "https://maven.terraformersmc.com/releases" }
+		}
+
+		filter {
+			includeGroup "com.terraformersmc"
+			includeGroup "dev.emi"
+		}
+	}
+
+	// For REI
+	exclusiveContent {
+		forRepository {
+			maven { url "https://maven.shedaniel.me/" }
+		}
+
+		filter {
+			includeGroup "me.shedaniel"
+			includeGroup "me.shedaniel.cloth"
+			includeGroup "dev.architectury"
+		}
+	}
+
+	// YACL
 	maven {
-		name = "meteor-maven"
-		url = "https://maven.meteordev.org/releases"
+		url "https://maven.isxander.dev/releases"
+
+		content {
+			includeGroup "dev.isxander"
+			includeGroup "org.quiltmc.parsers"
+		}
 	}
-	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
-	maven { url "https://repo.nea.moe/releases" } // For neu repoparser
-	maven { url "https://maven.azureaaron.net/snapshots" } // For Networth Calculator
+
+	// For Minecraft snapshots
+	maven {
+		url "https://maven.isxander.dev/snapshots"
+
+		content {
+			includeGroup "dev.isxander"
+		}
+	}
+
+	// For Discord RPC
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "meteor-maven"
+				url = "https://maven.meteordev.org/releases"
+			}
+		}
+
+		filter {
+			includeGroup "meteordevelopment"
+		}
+	}
+
+	// For Occlusion Culling library
+	exclusiveContent {
+		forRepository {
+			maven { url "https://repo.codemc.io/repository/maven-public/" }
+		}
+
+		filter {
+			includeGroup "com.logisticscraft"
+		}
+	}
+
+	// For NEU repo parser
+	exclusiveContent {
+		forRepository {
+			maven { url "https://repo.nea.moe/releases" }
+		}
+
+		filter {
+			includeGroup "moe.nea"
+		}
+	}
+
+	// For Networth Calculator
+	exclusiveContent {
+		forRepository {
+			maven { url "https://maven.azureaaron.net/releases" }
+			maven { url "https://maven.azureaaron.net/snapshots" }
+		}
+
+		filter {
+			includeGroup "net.azureaaron"
+		}
+	}
 }
 
 dependencies {
