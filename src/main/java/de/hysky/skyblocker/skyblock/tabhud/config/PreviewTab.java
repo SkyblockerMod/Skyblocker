@@ -15,6 +15,7 @@ import net.minecraft.client.gui.tab.Tab;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -39,7 +40,7 @@ public class PreviewTab implements Tab {
     private final PreviewWidget previewWidget;
     private final WidgetsConfigurationScreen parent;
     private final WidgetOptionsScrollable widgetOptions;
-    private ScreenBuilder.ScreenLayer currentScreenLayer = ScreenBuilder.ScreenLayer.MAIN_TAB;
+    private ScreenMaster.ScreenLayer currentScreenLayer = ScreenMaster.ScreenLayer.MAIN_TAB;
     private final ButtonWidget[] layerButtons;
 
     public PreviewTab(MinecraftClient client, WidgetsConfigurationScreen parent) {
@@ -50,10 +51,10 @@ public class PreviewTab implements Tab {
         widgetOptions = new WidgetOptionsScrollable();
         widgetOptions.setWidth(RIGHT_SIDE_WIDTH - 10);
 
-        ScreenBuilder.ScreenLayer[] values = ScreenBuilder.ScreenLayer.values();
+        ScreenMaster.ScreenLayer[] values = ScreenMaster.ScreenLayer.values();
         layerButtons = new ButtonWidget[values.length];
         for (int i = 0; i < values.length; i++) {
-            ScreenBuilder.ScreenLayer screenLayer = values[i];
+            ScreenMaster.ScreenLayer screenLayer = values[i];
             layerButtons[i] = ButtonWidget.builder(Text.literal(screenLayer.toString()), button -> {
                         this.currentScreenLayer = screenLayer;
                         for (ButtonWidget layerButton : this.layerButtons) {
@@ -135,6 +136,9 @@ public class PreviewTab implements Tab {
         ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
         PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
         int width = widgetOptions.getWidth() - widgetOptions.getScrollerWidth();
+        // TODO localization
+
+        widgetOptions.addWidget(new TextWidget(width, 9, Text.literal(hudWidget.getNiceName()).formatted(Formatting.BOLD, Formatting.UNDERLINE), client.textRenderer));
         if (positionRule == null) {
             widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Positioning: Auto"), button -> {
                         screenBuilder.setPositionRule(hudWidget.getInternalID(), PositionRule.DEFAULT);
@@ -151,6 +155,38 @@ public class PreviewTab implements Tab {
                     })
                     .width(width)
                     .build());
+
+            String ye = "Layer: " + (positionRule.screenLayer() == null ? "Default" : positionRule.screenLayer().toString());
+
+            widgetOptions.addWidget(ButtonWidget.builder(Text.literal(ye), button -> {
+                ScreenBuilder builder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+                PositionRule rule = builder.getPositionRuleOrDefault(hudWidget.getInternalID());
+                ScreenMaster.ScreenLayer[] values = ScreenMaster.ScreenLayer.values();
+                ScreenMaster.ScreenLayer newLayer;
+                if (rule.screenLayer() == null) {
+                    newLayer = values[0];
+                } else if (rule.screenLayer().ordinal() == values.length - 1) {
+                    newLayer = null;
+                } else {
+                    newLayer = values[rule.screenLayer().ordinal() + 1];
+                }
+
+                PositionRule newRule = new PositionRule(
+                        rule.parent(),
+                        rule.parentPoint(),
+                        rule.thisPoint(),
+                        rule.relativeX(),
+                        rule.relativeY(),
+                        newLayer
+                );
+                builder.setPositionRule(hudWidget.getInternalID(), newRule);
+                button.setMessage(Text.literal("Layer: " + (newRule.screenLayer() == null ? "Default" : newRule.screenLayer().toString())));
+                updateWidgets();
+                if (newLayer != null) {
+                    layerButtons[newLayer.ordinal()].onPress();
+                }
+
+            }).width(width).build());
 
             String parentName = positionRule.parent().equals("screen") ? "Screen" : ScreenMaster.widgetInstances.get(positionRule.parent()).getNiceName();
 
@@ -257,20 +293,39 @@ public class PreviewTab implements Tab {
                     int thisAnchorX = (int) (selectedWidget.getX() + rule.thisPoint().horizontalPoint().getPercentage() * selectedWidget.getWidth());
                     int thisAnchorY = (int) (selectedWidget.getY() + rule.thisPoint().verticalPoint().getPercentage() * selectedWidget.getHeight());
 
-                    context.drawCenteredTextWithShadow(client.textRenderer, String.valueOf(relativeX + rule.relativeX()), thisAnchorX - (relativeX + rule.relativeX()) / 2, thisAnchorY + 2, Colors.LIGHT_RED);
-                    context.drawText(client.textRenderer, String.valueOf(rule.relativeY() + relativeY), thisAnchorX - rule.relativeX() - relativeX + 2, thisAnchorY - rule.relativeY() - relativeY + 2, Colors.LIGHT_RED, true);
+                    int translatedX = Math.min(thisAnchorX - rule.relativeX() - relativeX, parent.width - 2);
+                    int translatedY = Math.min(thisAnchorY - rule.relativeY() - relativeY, parent.height - 2);
 
-                    context.drawHorizontalLine(thisAnchorX - rule.relativeX() - relativeX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
-                    context.drawVerticalLine(thisAnchorX - rule.relativeX() - relativeX + 1, thisAnchorY - rule.relativeY() - relativeY, thisAnchorY, 0xAAAA0000);
+                    renderUnits(context, relativeX, rule, thisAnchorX, thisAnchorY, relativeY, translatedX, translatedY);
+
+                    context.drawHorizontalLine(translatedX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
+                    context.drawVerticalLine(translatedX + 1, translatedY, thisAnchorY, 0xAAAA0000);
 
 
-                    context.drawHorizontalLine(thisAnchorX - rule.relativeX() - relativeX, thisAnchorX, thisAnchorY, Colors.RED);
-                    context.drawVerticalLine(thisAnchorX - rule.relativeX() - relativeX, thisAnchorY - rule.relativeY() - relativeY, thisAnchorY, Colors.RED);
+                    context.drawHorizontalLine(translatedX, thisAnchorX, thisAnchorY, Colors.RED);
+                    context.drawVerticalLine(translatedX, translatedY, thisAnchorY, Colors.RED);
                 }
             }
 
             matrices.pop();
             context.disableScissor();
+        }
+
+        private void renderUnits(DrawContext context, int relativeX, PositionRule rule, int thisAnchorX, int thisAnchorY, int relativeY, int translatedX, int translatedY) {
+            boolean xUnitOnTop = rule.relativeY() > 0;
+            if (xUnitOnTop && thisAnchorY < 10) xUnitOnTop = false;
+            if (!xUnitOnTop && thisAnchorY > parent.height - 10) xUnitOnTop = true;
+
+            String yUnitText = String.valueOf(rule.relativeY() + relativeY);
+            int yUnitTextWidth = client.textRenderer.getWidth(yUnitText);
+            boolean yUnitOnRight = rule.relativeX() > 0;
+            if (yUnitOnRight && translatedX + 2 + yUnitTextWidth >= parent.width) yUnitOnRight = false;
+            if (!yUnitOnRight && translatedX - 2 - yUnitTextWidth <= 0) yUnitOnRight = true;
+
+            // X
+            context.drawCenteredTextWithShadow(client.textRenderer, String.valueOf(relativeX + rule.relativeX()), thisAnchorX - (relativeX + rule.relativeX()) / 2,  xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, Colors.LIGHT_RED);
+            // Y
+            context.drawText(client.textRenderer, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (relativeY + rule.relativeY() - 9) / 2, Colors.LIGHT_RED, true);
         }
 
         @Override
@@ -316,7 +371,8 @@ public class PreviewTab implements Tab {
                         oldRule.parentPoint(),
                         oldRule.thisPoint(),
                         oldRule.relativeX() + relativeX,
-                        oldRule.relativeY() + relativeY));
+                        oldRule.relativeY() + relativeY,
+                        oldRule.screenLayer()));
                 updateWidgets();
             }
 
@@ -343,7 +399,8 @@ public class PreviewTab implements Tab {
                         PositionRule.Point.DEFAULT,
                         oldRule.thisPoint(),
                         thisAnchorX - otherAnchorX,
-                        thisAnchorY - otherAnchorY
+                        thisAnchorY - otherAnchorY,
+                        oldRule.screenLayer()
                 );
                 screenBuilder.setPositionRule(selectedWidget.getInternalID(), newRule);
                 updateWidgets();
@@ -488,14 +545,16 @@ public class PreviewTab implements Tab {
                             hoveredPoint,
                             oldRule.thisPoint(),
                             oldRule.relativeX(),
-                            oldRule.relativeY()));
+                            oldRule.relativeY(),
+                            oldRule.screenLayer()));
                 } else {
                     screenBuilder.setPositionRule(internalID, new PositionRule(
                             oldRule.parent(),
                             oldRule.parentPoint(),
                             hoveredPoint,
                             oldRule.relativeX(),
-                            oldRule.relativeY()));
+                            oldRule.relativeY(),
+                            oldRule.screenLayer()));
                 }
             }
             updateWidgets();

@@ -147,6 +147,11 @@ public class ScreenBuilder {
         return positioning.get(widgetInternalId);
     }
 
+    public PositionRule getPositionRuleOrDefault(String widgetInternalId) {
+        PositionRule positionRule = getPositionRule(widgetInternalId);
+        return positionRule == null ? PositionRule.DEFAULT : positionRule;
+    }
+
     public void setPositionRule(String widgetInternalId, @Nullable PositionRule newPositionRule) {
         if (newPositionRule == null) positioning.remove(widgetInternalId);
         else positioning.put(widgetInternalId, newPositionRule);
@@ -175,16 +180,36 @@ public class ScreenBuilder {
 
         for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
             if (widget.shouldRender(location)) { // TabHudWidget has this at false
-                hudScreen.add(widget);
+                // TODO maybe behavior to change? (having no position rule on a normal hud widget shouldn't quite be possible)
+                PositionRule rule = getPositionRule(widget.getInternalID());
+                if (rule == null) {
+                    hudScreen.add(widget);
+                } else {
+                    switch (rule.screenLayer()) {
+                        case MAIN_TAB -> mainTabScreen.add(widget);
+                        case SECONDARY_TAB -> secondaryTabScreen.add(widget);
+                        case null, default -> hudScreen.add(widget);
+                    }
+                }
                 widget.update();
                 widget.setPositioned(false);
             }
         }
 
-        // TODO check things and stuff
-        mainTabScreen.addAll(PlayerListMgr.tabWidgetsToShow);
+        for (TabHudWidget widget : PlayerListMgr.tabWidgetsToShow) {
+            PositionRule rule = getPositionRule(widget.getInternalID());
+            if (rule == null) {
+                mainTabScreen.add(widget);
+            } else {
+                widget.setPositioned(false);
+                switch (rule.screenLayer()) {
+                    case HUD -> hudScreen.add(widget);
+                    case SECONDARY_TAB -> secondaryTabScreen.add(widget);
+                    case null, default -> mainTabScreen.add(widget);
+                }
+            }
+        }
 
-        System.out.println(positioning);
         // Auto positioning
         for (HudWidget widget : mainTabScreen) {
 
@@ -215,7 +240,7 @@ public class ScreenBuilder {
         }
     }
 
-    public void renderWidgets(DrawContext context, ScreenLayer screenLayer) {
+    public void renderWidgets(DrawContext context, ScreenMaster.ScreenLayer screenLayer) {
         List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
         for (HudWidget widget : widgetsToRender) {
@@ -223,7 +248,7 @@ public class ScreenBuilder {
         }
     }
 
-    public List<HudWidget> getHudWidgets(ScreenLayer screenLayer) {
+    public List<HudWidget> getHudWidgets(ScreenMaster.ScreenLayer screenLayer) {
         return switch (screenLayer) {
             case MAIN_TAB -> mainTabScreen;
             case SECONDARY_TAB -> secondaryTabScreen;
@@ -235,13 +260,13 @@ public class ScreenBuilder {
     /**
      * Run the pipeline to build a Screen
      */
-    public void run(DrawContext context, int screenW, int screenH) {
+    public void run(DrawContext context, int screenW, int screenH, ScreenMaster.ScreenLayer screenLayer) {
 
-        int i = 0;
+        /*int i = 0;
         for (TabHudWidget value : PlayerListMgr.tabWidgetInstances.values()) {
             context.drawText(MinecraftClient.getInstance().textRenderer, value.getHypixelWidgetName(), 0, i, PlayerListMgr.tabWidgetsToShow.contains(value) ? Colors.LIGHT_YELLOW : -1, true);
             i += 9;
-        }
+        }*/
 
         if (positionsNeedsUpdating) {
             positionsNeedsUpdating = false;
@@ -249,14 +274,10 @@ public class ScreenBuilder {
             System.out.println(location);
         }
 
-        renderWidgets(context, ScreenLayer.MAIN_TAB);
+        renderWidgets(context, screenLayer);
     }
 
-    public enum ScreenLayer {
-        MAIN_TAB,
-        SECONDARY_TAB,
-        HUD
-    }
+
 
     private enum DefaultPositioner {
         TOP(TopAlignedWidgetPositioner::new),
