@@ -107,18 +107,15 @@ public class MythologicalRitual {
                     return;
                 }
                 Vec3d nextBurrowDirection = new Vec3d(100, 0, slope * 100).normalize();
+
+                // Save the line of the next burrow and try to estimate the next burrow
+                Vector2D pos2D = new Vector2D(pos.getX() + 0.5, pos.getZ() + 0.5);
+                burrow.nextBurrowLineEstimation = new Line(pos2D, pos2D.add(new Vector2D(nextBurrowDirection.x, nextBurrowDirection.z)), 0.0001);
+                estimateNextBurrow(burrow);
+
+                // Fill line in the direction of the next burrow
                 if (burrow.nextBurrowLine == null) {
                     burrow.nextBurrowLine = new Vec3d[1001];
-                }
-                if (burrow.echoBurrowDirection != null && burrow.echoBurrowDirection[0] != null && burrow.echoBurrowDirection[1] != null) {
-                    Vector2D p = new Vector2D(pos.getX() + 0.5, pos.getZ() + 0.5);
-                    burrow.nextLine = new Line(p, p.add(new Vector2D(nextBurrowDirection.x, nextBurrowDirection.z)), 0.0001);
-                    Line line = new Line(
-                            new Vector2D(burrow.echoBurrowDirection[0].x, burrow.echoBurrowDirection[0].z),
-                            new Vector2D(burrow.echoBurrowDirection[1].x, burrow.echoBurrowDirection[1].z),
-                            0.0001);
-                    Vector2D intersection = line.intersection(burrow.nextLine);
-                    burrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 5, intersection.getY());
                 }
                 fillLine(burrow.nextBurrowLine, Vec3d.ofCenter(pos.up()), nextBurrowDirection);
             } else if (ParticleTypes.DRIPPING_LAVA.equals(packet.getParameters().getType()) && packet.getCount() == 2) {
@@ -133,24 +130,43 @@ public class MythologicalRitual {
                 if (previousBurrow.echoBurrowDirection[0] == null || previousBurrow.echoBurrowDirection[1] == null) {
                     return;
                 }
+
+                // Save the line of the echo burrow and try to estimate the next burrow
+                Vector2D pos1 = new Vector2D(previousBurrow.echoBurrowDirection[0].x, previousBurrow.echoBurrowDirection[0].z);
+                Vector2D pos2 = new Vector2D(previousBurrow.echoBurrowDirection[1].x, previousBurrow.echoBurrowDirection[1].z);
+                previousBurrow.echoBurrowLineEstimation = new Line(pos1, pos2, 0.0001);
+                estimateNextBurrow(previousBurrow);
+
+                // Fill line in the direction of the echo burrow
                 Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize();
                 if (previousBurrow.echoBurrowLine == null) {
                     previousBurrow.echoBurrowLine = new Vec3d[1001];
-                }
-                if (previousBurrow.nextLine != null) {
-                    Vector2D intersection = previousBurrow.nextLine.intersection(new Line(
-                            new Vector2D(previousBurrow.echoBurrowDirection[0].x, previousBurrow.echoBurrowDirection[0].z),
-                            new Vector2D(previousBurrow.echoBurrowDirection[1].x, previousBurrow.echoBurrowDirection[1].z),
-                            0.0001
-                    ));
-                    previousBurrow.estimatedPos = BlockPos.ofFloored(intersection.getX(), 5, intersection.getY());
-
                 }
                 fillLine(previousBurrow.echoBurrowLine, previousBurrow.echoBurrowDirection[0], echoBurrowDirection);
             }
         }
     }
 
+    /**
+     * Tries to estimate the position of the next burrow
+     * by intersecting the line of the next burrow and
+     * the line of the echo burrow and saves the result in the burrow.
+     * @param burrow The burrow to estimate the next burrow for
+     */
+    private static void estimateNextBurrow(GriffinBurrow burrow) {
+        if (burrow.nextBurrowLineEstimation == null || burrow.echoBurrowLineEstimation == null) {
+            return;
+        }
+        Vector2D intersection = burrow.nextBurrowLineEstimation.intersection(burrow.echoBurrowLineEstimation);
+        burrow.nextBurrowEstimatedPos = BlockPos.ofFloored(intersection.getX(), 5, intersection.getY());
+    }
+
+    /**
+     * Fills the {@link Vec3d} array to form a line centered on {@code start} with step sizes of {@code direction}
+     * @param line The line to fill
+     * @param start The center of the line
+     * @param direction The step size of the line
+     */
     static void fillLine(Vec3d[] line, Vec3d start, Vec3d direction) {
         assert line.length % 2 == 1;
         int middle = line.length / 2;
@@ -174,8 +190,8 @@ public class MythologicalRitual {
                     if (burrow.echoBurrowLine != null) {
                         RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
-                    if (burrow.estimatedPos != null && !burrow.shouldRender()) {
-                        RenderHelper.renderFilledWithBeaconBeam(context, burrow.estimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
+                    if (burrow.nextBurrowEstimatedPos != null && !burrow.shouldRender()) {
+                        RenderHelper.renderFilledWithBeaconBeam(context, burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
                     }
                 }
             }
@@ -217,7 +233,7 @@ public class MythologicalRitual {
     private static boolean isActive() {
         return SkyblockerConfigManager.get().helpers.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocationRaw().equals("hub");
     }
-    
+
     private static void reset() {
         griffinBurrows.clear();
         lastDugBurrowPos = null;
@@ -231,6 +247,12 @@ public class MythologicalRitual {
     private static class GriffinBurrow extends Waypoint {
         private int critParticle;
         private int enchantParticle;
+        /**
+         * The state of the burrow where {@link TriState#FALSE} means the burrow has been dug, is not the last dug burrow, and should not be rendered,
+         * {@link TriState#DEFAULT} means the burrow is not confirmed by particles or
+         * has been dug but is the last dug burrow and has to render the line pointing to the next burrow and the line from echo burrow, and
+         * {@link TriState#TRUE} means the burrow is confirmed by particles and is waiting to be dug.
+         */
         private TriState confirmed = TriState.FALSE;
         private final SimpleRegression regression = new SimpleRegression();
         @Nullable
@@ -240,9 +262,11 @@ public class MythologicalRitual {
         @Nullable
         private Vec3d[] echoBurrowLine;
         @Nullable
-        private BlockPos estimatedPos;
+        private BlockPos nextBurrowEstimatedPos;
         @Nullable
-        private Line nextLine; // The echo line could be stored, but it is easily computed so eh
+        private Line nextBurrowLineEstimation;
+        @Nullable
+        private Line echoBurrowLineEstimation;
 
         private GriffinBurrow(BlockPos pos) {
             super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);
@@ -253,6 +277,9 @@ public class MythologicalRitual {
             regression.clear();
         }
 
+        /**
+         * @return {@code true} only if the burrow is confirmed by particles and is waiting to be dug
+         */
         @Override
         public boolean shouldRender() {
             return super.shouldRender() && confirmed == TriState.TRUE;
