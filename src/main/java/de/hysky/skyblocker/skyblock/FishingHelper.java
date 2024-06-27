@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -14,13 +15,18 @@ import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Random;
+
 public class FishingHelper {
     private static final Title title = new Title("skyblocker.fishing.reelNow", Formatting.GREEN);
+    private static final Random RANDOM = new Random();
     private static long startTime;
     private static long startTimeFish;
     private static Vec3d normalYawVector;
@@ -67,6 +73,21 @@ public class FishingHelper {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
                 if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.getPos().squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
                     RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
+                    int randReelTime = 20000;
+                    while (randReelTime > 0) {
+                        randReelTime--;
+                        if (randReelTime == 0) {
+                            Hand hand = Hand.MAIN_HAND;
+                            assert MinecraftClient.getInstance().interactionManager != null;
+                            ActionResult actionResult = MinecraftClient.getInstance().interactionManager.interactItem(player, hand);
+                            if (!actionResult.isAccepted()) {
+                                actionResult = MinecraftClient.getInstance().interactionManager.interactItem(player, hand);
+                            }
+                            if (actionResult.isAccepted() && actionResult.shouldSwingHand()) {
+                                player.swingHand(hand);
+                            }
+                        }
+                    }
                     resetFish();
                 }
             } else {
