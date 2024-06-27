@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
     private static final Identifier EMPTY_SLOT = Identifier.of(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
 
+    private final Slot[] equipmentSlots = new Slot[4];
+
     public static void initEquipment() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client1 -> {
             Path resolve = SkyblockerMod.CONFIG_DIR.resolve("equipment.nbt");
@@ -51,6 +55,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
                                 NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining())))
                         .getOrThrow();
                 System.arraycopy(array, 0, equipment, 0, Math.min(array.length, 4));
+            } catch (NoSuchFileException ignored) {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to load Equipment data", e);
             }
@@ -73,16 +78,44 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         Slot slot = handler.slots.get(45);
         ((SlotAccessor) slot).setX(slot.x + 21);
         for (int i = 0; i < 4; i++) {
-            handler.slots.add(new EquipmentSlot(inventory, i, 77, 8 + i * 18));
+            equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
         }
     }
 
     @Override
-    protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
-        if (slot instanceof EquipmentSlot && handler.getCursorStack().isEmpty()) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment");
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (Slot equipmentSlot : equipmentSlots) {
+            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment");
+                return true;
+            }
         }
-        super.onMouseClick(slot, slotId, button, actionType);
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.translate(this.x, this.y, 0.0F);
+        for (Slot equipmentSlot : equipmentSlots) {
+            drawSlot(context, equipmentSlot);
+            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) drawSlotHighlight(context, equipmentSlot.x, equipmentSlot.y, 0);
+        }
+        matrices.pop();
+    }
+
+    @Override
+    protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
+        super.drawMouseoverTooltip(context, x, y);
+        if (!handler.getCursorStack().isEmpty()) return;
+        for (Slot equipmentSlot : equipmentSlots) {
+            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y)) {
+                ItemStack itemStack = equipmentSlot.getStack();
+                context.drawTooltip(this.textRenderer, this.getTooltipFromItem(itemStack), itemStack.getTooltipData(), x, y);
+            }
+        }
     }
 
     @Override
@@ -91,7 +124,6 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         // put the handler back how it was, the handler is the same while the player is alive/in the same world
         Slot slot = handler.slots.get(45);
         ((SlotAccessor) slot).setX(slot.x - 21);
-        handler.slots.removeIf(slot1 -> slot1 instanceof EquipmentSlot);
     }
 
     @Override
