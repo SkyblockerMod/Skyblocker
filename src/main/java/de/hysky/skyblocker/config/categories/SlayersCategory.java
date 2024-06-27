@@ -33,7 +33,8 @@ public class SlayersCategory {
                         .description(OptionDescription.of(
                                 Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[0]"),
                                 Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[1]"),
-                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[2]")))
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[2]"),
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[3]")))
                         .binding(defaults.slayers.highlightBosses,
                                 () -> config.slayers.highlightBosses,
                                 newValue -> config.slayers.highlightBosses = newValue)

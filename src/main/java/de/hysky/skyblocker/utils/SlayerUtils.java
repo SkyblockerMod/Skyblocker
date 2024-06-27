@@ -7,10 +7,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //TODO Slayer Packet system that can provide information about the current slayer boss, abstract so that different bosses can have different info
 public class SlayerUtils {
+    public static final String REVENANT = "Revenant Horror";
+    public static final String TARA = "Tarantula Broodfather";
+    public static final String SVEN = "Sven Packmaster";
+    public static final String VOIDGLOOM = "Voidgloom Seraph";
+    public static final String VAMPIRE = "Riftstalker Bloodfiend";
+    public static final String DEMONLORD = "Inferno Demonlord";
     private static final Logger LOGGER = LoggerFactory.getLogger(SlayerUtils.class);
+    private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
 
     //TODO: Cache this, probably included in Packet system
     public static List<Entity> getEntityArmorStands(Entity entity) {
@@ -21,16 +30,15 @@ public class SlayerUtils {
     public static Entity getSlayerEntity() {
         if (MinecraftClient.getInstance().world != null) {
             for (Entity entity : MinecraftClient.getInstance().world.getEntities()) {
-                //Check if entity is Bloodfiend
-                if (entity.hasCustomName() && entity.getCustomName().getString().contains("Bloodfiend") ||
-                        entity.hasCustomName() && entity.getCustomName().getString().contains("Demonlord")) {
-                    //Grab the players username
-                    String username = MinecraftClient.getInstance().getSession().getUsername();
-                    //Check all armor stands around the boss
-                    for (Entity armorStand : getEntityArmorStands(entity)) {
-                        //Check if the display name contains the players username
-                        if (armorStand.getDisplayName().getString().contains(username)) {
-                            return entity;
+                if (entity.hasCustomName()) {
+                    String entityName = entity.getCustomName().getString();
+                    Matcher matcher = SLAYER_PATTERN.matcher(entityName);
+                    if (matcher.find()) {
+                        String username = MinecraftClient.getInstance().getSession().getUsername();
+                        for (Entity armorStand : getEntityArmorStands(entity)) {
+                            if (armorStand.getDisplayName().getString().contains(username)) {
+                                return entity;
+                            }
                         }
                     }
                 }
@@ -41,15 +49,12 @@ public class SlayerUtils {
 
     public static boolean isInSlayer() {
         try {
-            for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
-                String line = Utils.STRING_SCOREBOARD.get(i);
-
+            for (String line : Utils.STRING_SCOREBOARD) {
                 if (line.contains("Slay the boss!")) return true;
             }
         } catch (NullPointerException e) {
             LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
         }
-
         return false;
     }
 
@@ -57,33 +62,26 @@ public class SlayerUtils {
         try {
             boolean quest = false;
             boolean type = false;
-            for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
-                String line = Utils.STRING_SCOREBOARD.get(i);
-
+            for (String line : Utils.STRING_SCOREBOARD) {
                 if (line.contains("Slayer Quest")) quest = true;
                 if (line.contains(slayer)) type = true;
                 if (quest && type) return true;
             }
         } catch (NullPointerException e) {
-            LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
+            LOGGER.error("[Skyblocker] Error while checking if player is in slayer quest type", e);
         }
-
         return false;
     }
 
     public static String getSlayerType() {
         try {
-            for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
-                if (Utils.STRING_SCOREBOARD.get(i).contains("Revenant Horror")) return Utils.STRING_SCOREBOARD.get(i);
-                if (Utils.STRING_SCOREBOARD.get(i).contains("Tarantula Broodfather")) return Utils.STRING_SCOREBOARD.get(i);
-                if (Utils.STRING_SCOREBOARD.get(i).contains("Sven Packmaster")) return Utils.STRING_SCOREBOARD.get(i);
-                if (Utils.STRING_SCOREBOARD.get(i).contains("Voidgloom Seraph")) return Utils.STRING_SCOREBOARD.get(i);
-                if (Utils.STRING_SCOREBOARD.get(i).contains("Inferno Demonlord")) return Utils.STRING_SCOREBOARD.get(i);
+            for (String line : Utils.STRING_SCOREBOARD) {
+                Matcher matcher = SLAYER_PATTERN.matcher(line);
+                if (matcher.find()) return matcher.group();
             }
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             LOGGER.error("[Skyblocker] Error while checking slayer type", e);
         }
         return "";
     }
-
 }

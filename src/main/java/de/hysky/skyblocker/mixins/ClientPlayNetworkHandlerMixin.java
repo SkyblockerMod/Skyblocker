@@ -119,8 +119,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
-        if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW  && SlayerMobs.isSlayerMiniMob(armorStandEntity)) SlayerMobs.setSlayerMobGlow(armorStandEntity);
-        if (SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerMobs.isSlayer(armorStandEntity)) SlayerMobs.setSlayerMobGlow(armorStandEntity);
+        // Age check so we don't check every entity every time its updated. A bit more leeway on Bosses because A) it's checked second and B) It's more important we don't miss it
+        if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW  && entity.age < 30 && SlayerMobs.isSlayerMiniMob(armorStandEntity)
+        || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && entity.age < 40 && SlayerMobs.isSlayer(armorStandEntity)) {
+            SlayerMobs.setSlayerMobGlow(armorStandEntity);
+        }
 
         EggFinder.checkIfEgg(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers

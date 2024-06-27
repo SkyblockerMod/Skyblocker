@@ -11,53 +11,65 @@ import net.minecraft.util.math.Box;
 
 import java.awt.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SlayerMobs {
     private static final Map<String, String> SLAYER_MINI_NAMES = Stream.of(new String[][]{
-            {"Revenant Sycophant", "Revenant"},
-            {"Revenant Champion", "Revenant"},
-            {"Deformed Revenant", "Revenant"},
-            {"Atoned Champion", "Revenant"},
-            {"Atoned Revenant", "Revenant"},
-            {"Tarantula Vermin", "Tarantula"},
-            {"Tarantula Beast", "Tarantula"},
-            {"Mutant Tarantula", "Tarantula"},
-            {"Pack Enforcer", "Sven"},
-            {"Sven Follower", "Sven"},
-            {"Sven Alpha", "Sven"},
-            {"Voidling Devotee", "Voidgloom"},
-            {"Voidling Radical", "Voidgloom"},
-            {"Voidcrazed Maniac", "Voidgloom"},
-            {"Flare Demon", "Demonlord"},
-            {"Kindleheart Demon", "Demonlord"},
-            {"Burningsoul Demon", "Demonlord"}
+            {"Revenant Sycophant", SlayerUtils.REVENANT},
+            {"Revenant Champion", SlayerUtils.REVENANT},
+            {"Deformed Revenant", SlayerUtils.REVENANT},
+            {"Atoned Champion", SlayerUtils.REVENANT},
+            {"Atoned Revenant", SlayerUtils.REVENANT},
+            {"Tarantula Vermin", SlayerUtils.TARA},
+            {"Tarantula Beast", SlayerUtils.TARA},
+            {"Mutant Tarantula", SlayerUtils.TARA},
+            {"Pack Enforcer", SlayerUtils.SVEN},
+            {"Sven Follower", SlayerUtils.SVEN},
+            {"Sven Alpha", SlayerUtils.SVEN},
+            {"Voidling Devotee", SlayerUtils.VOIDGLOOM},
+            {"Voidling Radical", SlayerUtils.VOIDGLOOM},
+            {"Voidcrazed Maniac", SlayerUtils.VOIDGLOOM},
+            {"Flare Demon", SlayerUtils.DEMONLORD},
+            {"Kindleheart Demon", SlayerUtils.DEMONLORD},
+            {"Burningsoul Demon", SlayerUtils.DEMONLORD}
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 
-    private static final Map<String, Class<? extends MobEntity>> SLAYER_TYPE_TO_ENTITY_CLASS = new HashMap<>();
-    static {
-        SLAYER_TYPE_TO_ENTITY_CLASS.put("Revenant", ZombieEntity.class);
-        SLAYER_TYPE_TO_ENTITY_CLASS.put("Tarantula", SpiderEntity.class);
-        SLAYER_TYPE_TO_ENTITY_CLASS.put("Sven", WolfEntity.class);
-        SLAYER_TYPE_TO_ENTITY_CLASS.put("Voidgloom", EndermanEntity.class);
-        SLAYER_TYPE_TO_ENTITY_CLASS.put("Inferno", BlazeEntity.class);
-    }
+    private static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
+            SlayerUtils.REVENANT, ZombieEntity.class,
+            SlayerUtils.TARA, SpiderEntity.class,
+            SlayerUtils.SVEN, WolfEntity.class,
+            SlayerUtils.VOIDGLOOM, EndermanEntity.class,
+            SlayerUtils.DEMONLORD, BlazeEntity.class
+    );
 
-    public static Set<UUID> MOBS_TO_GLOW = new HashSet<>();
+    private static final Pattern COLOUR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC");
+
+    private static Set<UUID> mobsToGlow = new HashSet<>();
+
+    public static boolean shouldGlow(UUID entityUUID){
+        return mobsToGlow.contains(entityUUID);
+    }
 
     public static boolean isSlayer(LivingEntity e) {
         return SlayerUtils.isInSlayer() && SlayerUtils.getEntityArmorStands(e).stream().anyMatch(entity -> entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
     }
 
-
     public static int getColour(LivingEntity e) {
         for (Entity entity : SlayerUtils.getEntityArmorStands(e)) {
-            String name = entity.getDisplayName().getString();
-            if (name.contains("ASHEN")) return Color.DARK_GRAY.getRGB();
-            if (name.contains("SPIRIT")) return Color.WHITE.getRGB();
-            if (name.contains("CRYSTAL")) return Color.CYAN.getRGB();
-            if (name.contains("AURIC")) return Color.YELLOW.getRGB();
+            Matcher matcher = COLOUR_PATTERN.matcher(entity.getDisplayName().getString());
+            if (matcher.find()) {
+                String matchedColour = matcher.group();
+                return switch (matchedColour) {
+                    case "ASHEN" -> Color.DARK_GRAY.getRGB();
+                    case "SPIRIT" -> Color.WHITE.getRGB();
+                    case "CRYSTAL" -> Color.CYAN.getRGB();
+                    case "AURIC" -> Color.YELLOW.getRGB();
+                    default -> Color.RED.getRGB();
+                };
+            }
         }
         return Color.RED.getRGB();
     }
@@ -69,35 +81,47 @@ public class SlayerMobs {
     }
 
     public static Box getSlayerMobBoundingBox(LivingEntity entity) {
-        String type = SlayerUtils.getSlayerType();
-        if (type.contains("Revenant"))
-            return new Box(entity.getX() - 0.4, entity.getY()-0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
-        if (type.contains("Tarantula"))
-            return new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
-        if (type.contains("Voidgloom"))
-            return new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
-        if (type.contains("Sven"))
-            return new Box(entity.getX() - 0.5, entity.getY() - 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 1, entity.getZ() + 0.5);
-        return new Box(entity.getX() - 0.5, entity.getY() + 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 2.2, entity.getZ() + 0.5);
+        return switch (SlayerUtils.getSlayerType()) {
+            case SlayerUtils.REVENANT ->
+                    new Box(entity.getX() - 0.4, entity.getY() - 0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
+            case SlayerUtils.TARA ->
+                    new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
+            case SlayerUtils.VOIDGLOOM ->
+                    new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
+            case SlayerUtils.SVEN ->
+                    new Box(entity.getX() - 0.5, entity.getY() - 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 1, entity.getZ() + 0.5);
+            default ->
+                    new Box(entity.getX() - 0.5, entity.getY() + 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 2.2, entity.getZ() + 0.5);
+        };
     }
 
-    private static MobEntity findClosestEntity(Class<? extends MobEntity> entityClass, ArmorStandEntity armorStand) {
-        return armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null).getBoxAt(armorStand.getPos()).expand(0.9), entity -> !entity.isDead())
+    /**
+     * <p> Finds the closest matching MobEntity for the armorStand using entityClass and armorStand age difference to filter
+     * out impossible candidates, returning the closest mob of those remaining in the search box by block distance </p>
+     * @param entityClass the mob type of the Slayer (i.e. ZombieEntity.class)
+     * @param armorStand the entity that contains the display name of the Slayer (mini)boss
+     */
+    private static MobEntity findClosestMobEntity(Class<? extends MobEntity> entityClass, ArmorStandEntity armorStand) {
+        return armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null).getBoxAt(armorStand.getPos()).expand(1.5), entity -> !entity.isDead() && entity.age > armorStand.age - 4 && entity.age < armorStand.age + 4)
                 .stream()
                 .min(Comparator.comparingDouble((MobEntity e) -> e.distanceTo(armorStand)))
                 .orElse(null);
     }
 
+    /**
+     * <p> Adds the Entity UUID to the Hashset of Slayer Mobs to glow </p>
+     * @param armorStand the entity that contains the display name of the Slayer (mini)boss
+     */
     public static void setSlayerMobGlow(ArmorStandEntity armorStand) {
-    String slayerType = SlayerUtils.getSlayerType().split(" ")[0];
-    Class<? extends MobEntity> entityClass = SLAYER_TYPE_TO_ENTITY_CLASS.get(slayerType);
-    if (entityClass != null) {
-        MobEntity closestEntity = findClosestEntity(entityClass, armorStand);
-        if (closestEntity != null) MOBS_TO_GLOW.add(closestEntity.getUuid());
+        String slayerType = SlayerUtils.getSlayerType();
+        Class<? extends MobEntity> entityClass = SLAYER_MOB_TYPE.get(slayerType);
+        if (entityClass != null) {
+            MobEntity closestEntity = findClosestMobEntity(entityClass, armorStand);
+            if (closestEntity != null) mobsToGlow.add(closestEntity.getUuid());
         }
     }
 
     public static void onEntityDeath(Entity entity) {
-        MOBS_TO_GLOW.remove(entity.getUuid());
+        mobsToGlow.remove(entity.getUuid());
     }
 }
