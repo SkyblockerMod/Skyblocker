@@ -17,6 +17,6 @@ public class PingMeasuererMixin {
         if (Utils.isInCrimson()) {
             DojoManager.onPingResult(ping);
         }
-        operation.call(new Object[]{log, ping});
+        operation.call(log, ping);
     }
 }

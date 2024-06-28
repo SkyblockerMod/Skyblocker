@@ -46,11 +46,11 @@ public class ControlTestHelper {
             //smoothly adjust the ping throughout the test
             if (lastPos != null) {
                 lastPingOffset = pingOffset;
-                double ping = (double) DojoManager.ping / 1000;
+                double ping = DojoManager.ping / 1000d;
                 //find distance between last position and current position of skeleton
                 Vec3d movementVector = correctWitherSkeleton.getPos().subtract(lastPos).multiply(1, 0.1, 1);
-                //adjust the vector to current ping
-                pingOffset = movementVector.multiply((double) 23 / 20 + ping);
+                //adjust the vector to current ping (multiply by 1 + time in second until the next update offset by the players ping)
+                pingOffset = movementVector.multiply(1 + 3 / 20d + ping);
             }
             lastPos = correctWitherSkeleton.getPos();
             lastUpdate = System.currentTimeMillis();
