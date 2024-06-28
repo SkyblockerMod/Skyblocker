@@ -1,4 +1,20 @@
-# Release 1.21.0 for 1.21.0
+# Release 1.21.1
+
+## Highlight
+- Fix Museum donating Crash
+- Fix EventNotification Crash
+- Fix Golden Stray Rabbits not getting highlighted
+
+## What's Changed
+* Fix Golden Stray Rabbits not getting highlighted by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/790
+* Fix museum cache by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/commit/9a59ee74d4e61aa2d31076a587fbf9ed2d6c6a64
+* Fix EventNotification NullPointerException by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/commit/1884bdf9e879d009e09cfd7b5b5123691ea81856
+* Fix Skyblocker Api Auth No Chat report Compatibility by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/commit/4064dec28cea7a4d47140e08a5c1df097d891563
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.21.0...v1.21.0+1.21.0
+___
+# Release 1.21.0 for 1.21
 
 ## Highlight
 - Updated to mc 1.21.0
@@ -10,7 +26,7 @@
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.21.0...v1.21.0+1.21.0
 ___
-# Release 1.21.0
+# Release 1.21.0 for 1.20.6
 mc version 1.20.6
 
 ## Highlight
