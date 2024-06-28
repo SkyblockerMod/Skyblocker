@@ -45,6 +45,7 @@
     "accessors.FrustumInvoker",
     "accessors.HandledScreenAccessor",
     "accessors.MessageHandlerAccessor",
+    "accessors.MinecraftClientAccessor",
     "accessors.PlayerListHudAccessor",
     "accessors.RecipeBookWidgetAccessor",
     "accessors.ScreenAccessor",
