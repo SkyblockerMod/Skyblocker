@@ -27,10 +27,10 @@ public class DisciplineTestHelper {
      * Stores a color related to the color of the sword: wood = brown, iron = silver, gold = gold, diamond = cyan
      */
     private static final Object2IntMap<String> SWORD_TO_COLOR_LOOKUP = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
-            "WOOD_SWORD", 0x2a2aa5,
+            "WOOD_SWORD", 0xa52a2a,
             "IRON_SWORD", 0xc0c0c0,
-            "GOLD_SWORD", 0x00d7ff,
-            "DIAMOND_SWORD", 0xffff00
+            "GOLD_SWORD", 0xffd700,
+            "DIAMOND_SWORD", 0x00ffff
     )));
 
     /**
