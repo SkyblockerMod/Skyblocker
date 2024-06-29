@@ -66,7 +66,21 @@ public class SlayersConfig {
         public FirePillar FirePillarCountdown = FirePillar.SOUND_AND_VISUAL;
 
         public enum FirePillar {
-            OFF, VISUAL, SOUND_AND_VISUAL
+            OFF("Off"),
+            VISUAL("Visual Indicator"),
+            SOUND_AND_VISUAL("Sound and Visual Indicator");
+
+            private final String description;
+
+            FirePillar(String description) {
+                this.description = description;
+            }
+
+            @Override
+            public String toString() {
+                return description;
+            }
         }
+
     }
 }

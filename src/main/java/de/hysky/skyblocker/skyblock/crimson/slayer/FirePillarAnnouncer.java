@@ -20,11 +20,11 @@ public class FirePillarAnnouncer {
     private static final Pattern FIRE_PILLAR_PATTERN = Pattern.compile("(\\d+)s \\d+ hits");
 
     /**
-     *  checkFirePillar is called whenever an entity has been updated (i.e. name change). This triggers twice with
+     *  Checks if an entity is the fire pillar when it has been updated (i.e. name change). This triggers twice on
      *  seven seconds remaining, so it's rounded down to announce the last 5 seconds until explosion.
      * <p>
-     *  There's not a great way to detect ownership of the firepillar, so a range calculation is used to try and prevent other
-     *  player's FirePillars appearing on the user's HUD.
+     *  There's not a great way to detect ownership of the firepillar, so a crude range calculation is used to try and
+     *  prevent other player's FirePillars appearing on the user's HUD.
      *
      * @param entity The updated entity that is checked to be a fire pillar
      */
