@@ -12,6 +12,9 @@ public class HelperConfig {
     public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
     @SerialEntry
+    public Jerry jerry = new Jerry();
+
+    @SerialEntry
     public Experiments experiments = new Experiments();
 
     @SerialEntry
@@ -26,6 +29,11 @@ public class HelperConfig {
     public static class MythologicalRitual {
         @SerialEntry
         public boolean enableMythologicalRitualHelper = true;
+    }
+
+    public static class Jerry {
+        @SerialEntry
+        public boolean enableJerryTimer = false;
     }
 
     public static class Experiments {
