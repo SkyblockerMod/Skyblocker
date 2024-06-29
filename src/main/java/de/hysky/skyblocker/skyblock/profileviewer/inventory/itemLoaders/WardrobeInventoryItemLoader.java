@@ -23,7 +23,7 @@ public class WardrobeInventoryItemLoader extends ItemLoader {
         try {
             itemList.addAll(super.loadItems(data));
             if (activeSlot != -1) {
-                List<ItemStack> activeArmour = super.loadItems(activeArmorSet);
+                List<ItemStack> activeArmour = super.loadItems(activeArmorSet).reversed();
                 for (int i = 0; i < 4; i++) {
                     int baseIndex = activeSlot % 9;
                     int page = activeSlot / 9;
