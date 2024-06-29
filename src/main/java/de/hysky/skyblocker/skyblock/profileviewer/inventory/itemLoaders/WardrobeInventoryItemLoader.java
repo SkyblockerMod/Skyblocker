@@ -23,11 +23,12 @@ public class WardrobeInventoryItemLoader extends ItemLoader {
         try {
             itemList.addAll(super.loadItems(data));
             if (activeSlot != -1) {
+                List<ItemStack> activeArmour = super.loadItems(activeArmorSet);
                 for (int i = 0; i < 4; i++) {
                     int baseIndex = activeSlot % 9;
                     int page = activeSlot / 9;
                     int slotIndex = (page * 36) + (i * 9) + baseIndex - 1;
-                    itemList.set(slotIndex, super.loadItems(activeArmorSet).reversed().get(i));
+                    itemList.set(slotIndex, activeArmour.get(i));
                 }
             }
         } catch (Exception e) {

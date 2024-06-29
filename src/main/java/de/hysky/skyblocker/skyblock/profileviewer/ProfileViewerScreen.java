@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.SkullBlockEntityAccessor;
 import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
@@ -187,26 +188,7 @@ public class ProfileViewerScreen extends Screen {
         fetchCollectionsData(); // caching on launch
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(
-                    ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-                            .then(ClientCommandManager.literal("pv")
-                                    .then(ClientCommandManager.argument("username", StringArgumentType.string())
-                                            .executes(context -> {
-                                                String username = StringArgumentType.getString(context, "username");
-                                                Command<FabricClientCommandSource> cmd = Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(username));
-                                                return cmd.run(context);
-                                            })
-                                    )
-                                    .executes(context -> {
-                                        String username = MinecraftClient.getInstance().getSession().getUsername();
-                                        Command<FabricClientCommandSource> cmd = Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(username));
-                                        return cmd.run(context);
-                                    })
-                            )
-            );
-
-            dispatcher.register(
-                    ClientCommandManager.literal("pv")
+            LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder =  ClientCommandManager.literal("pv")
                             .then(ClientCommandManager.argument("username", StringArgumentType.string())
                                     .executes(context -> {
                                         String username = StringArgumentType.getString(context, "username");
@@ -218,8 +200,9 @@ public class ProfileViewerScreen extends Screen {
                                 String username = MinecraftClient.getInstance().getSession().getUsername();
                                 Command<FabricClientCommandSource> cmd = Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(username));
                                 return cmd.run(context);
-                            })
-            );
+                            });
+            dispatcher.register(literalArgumentBuilder);
+            dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(literalArgumentBuilder));
         });
     }
 
