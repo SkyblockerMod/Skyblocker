@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class InventoryItemLoader extends ItemLoader {
