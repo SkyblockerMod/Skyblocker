@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -190,17 +189,9 @@ public class ProfileViewerScreen extends Screen {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder =  ClientCommandManager.literal("pv")
                             .then(ClientCommandManager.argument("username", StringArgumentType.string())
-                                    .executes(context -> {
-                                        String username = StringArgumentType.getString(context, "username");
-                                        Command<FabricClientCommandSource> cmd = Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(username));
-                                        return cmd.run(context);
-                                    })
+                                    .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
                             )
-                            .executes(context -> {
-                                String username = MinecraftClient.getInstance().getSession().getUsername();
-                                Command<FabricClientCommandSource> cmd = Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(username));
-                                return cmd.run(context);
-                            });
+                            .executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
             dispatcher.register(literalArgumentBuilder);
             dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(literalArgumentBuilder));
         });
