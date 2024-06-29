@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
@@ -141,21 +142,13 @@ public class SlayersCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.slayer.blazeSlayer"))
                         .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
+                        .option(Option.<SlayersConfig.BlazeSlayer.FirePillar>createBuilder()
                                 .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip")))
-                                .binding(defaults.slayers.blazeSlayer.enableFirePillarCountdownAnnouncer,
-                                        () -> config.slayers.blazeSlayer.enableFirePillarCountdownAnnouncer,
-                                        newValue -> config.slayers.blazeSlayer.enableFirePillarCountdownAnnouncer = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarSoundIndicator"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarSoundIndicator.@Tooltip")))
-                                .binding(defaults.slayers.blazeSlayer.enableFirePillarCountdownSoundIndicator,
-                                        () -> config.slayers.blazeSlayer.enableFirePillarCountdownSoundIndicator,
-                                        newValue -> config.slayers.blazeSlayer.enableFirePillarCountdownSoundIndicator = newValue)
-                                .controller(ConfigUtils::createBooleanController)
+                                .binding(defaults.slayers.blazeSlayer.FirePillarCountdown,
+                                        () -> config.slayers.blazeSlayer.FirePillarCountdown,
+                                        newValue -> config.slayers.blazeSlayer.FirePillarCountdown = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .build())
                 .build();

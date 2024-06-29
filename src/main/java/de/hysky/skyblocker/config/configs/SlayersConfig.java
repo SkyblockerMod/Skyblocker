@@ -63,9 +63,10 @@ public class SlayersConfig {
 
     public static class BlazeSlayer {
         @SerialEntry
-        public boolean enableFirePillarCountdownAnnouncer = true;
+        public FirePillar FirePillarCountdown = FirePillar.SOUND_AND_VISUAL;
 
-        @SerialEntry
-        public boolean enableFirePillarCountdownSoundIndicator = true;
+        public enum FirePillar {
+            OFF, VISUAL, SOUND_AND_VISUAL
+        }
     }
 }
