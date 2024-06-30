@@ -26,12 +26,10 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 
-import java.awt.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,12 +51,14 @@ public class CrystalsLocationsManager {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     /**
-     * A look-up table to convert between location names and waypoint in the {@link CrystalsWaypoint.Category} values.
+     * A look-up table to convert between location names and waypoint in the {@link MiningLocationLabel.CrystalHollowsLocationsCategory} values.
      */
-    private static final Map<String, CrystalsWaypoint.Category> WAYPOINT_LOCATIONS = Arrays.stream(CrystalsWaypoint.Category.values()).collect(Collectors.toMap(CrystalsWaypoint.Category::toString, Function.identity()));
-    private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9]) ([0-9][0-9][0-9]?) ([0-9][0-9][0-9])");
+    private static final Map<String, MiningLocationLabel.CrystalHollowsLocationsCategory> WAYPOINT_LOCATIONS = Arrays.stream(MiningLocationLabel.CrystalHollowsLocationsCategory.values()).collect(Collectors.toMap(MiningLocationLabel.CrystalHollowsLocationsCategory::getName, Function.identity()));
+    private static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("([0-9][0-9][0-9])\\D*([0-9][0-9][0-9]?)\\D*([0-9][0-9][0-9])");
+    private static final int REMOVE_UNKNOWN_DISTANCE = 50;
 
-    protected static Map<String, CrystalsWaypoint> activeWaypoints = new HashMap<>();
+    protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
+    protected static List<String> verifiedWaypoints = new ArrayList<>();
 
     public static void init() {
         // Crystal Hollows Waypoints
@@ -73,43 +73,58 @@ public class CrystalsLocationsManager {
     }
 
     private static void extractLocationFromMessage(Text message, Boolean overlay) {
-        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows()) {
+        String text = Formatting.strip(message.getString());
+        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay || text == null) {
             return;
         }
-
         try {
-            //get the message text
-            String value = message.getString();
-            Matcher matcher = TEXT_CWORDS_PATTERN.matcher(value);
-            //if there are coordinates in the message try to get them and what they are talking about
-            if (matcher.find()) {
-                String location = matcher.group();
-                int[] coordinates = Arrays.stream(location.split(" ", 3)).mapToInt(Integer::parseInt).toArray();
-                BlockPos blockPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
+            //make sure that it is only reading user messages and not from skyblocker
+            if (text.contains(":") && !text.startsWith(Constants.PREFIX.get().getString())) {
+                String userMessage = text.split(":", 2)[1];
 
-                //if position is not in the hollows do not add it
-                if (!checkInCrystals(blockPos)) {
-                    return;
-                }
-
-                //see if there is a name of a location to add to this
-                for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
-                    if (value.toLowerCase().contains(waypointLocation.toLowerCase())) { //todo be more lenient
-                        //all data found to create waypoint
-                        addCustomWaypoint(waypointLocation, blockPos);
+                //get the message text
+                Matcher matcher = TEXT_CWORDS_PATTERN.matcher(userMessage);
+                //if there are coordinates in the message try to get them and what they are talking about
+                if (matcher.find()) {
+                    BlockPos blockPos = new BlockPos(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
+                    String location = blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
+                    //if position is not in the hollows do not add it
+                    if (!checkInCrystals(blockPos)) {
                         return;
                     }
-                }
 
-                //if the location is not found ask the user for the location (could have been in a previous chat message)
-                if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
-                    return;
-                }
+                    //see if there is a name of a location to add to this
+                    for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
+                        if (Arrays.stream(waypointLocation.toLowerCase().split(" ")).anyMatch(word -> userMessage.toLowerCase().contains(word))) { //check if contains a word of location
+                            //all data found to create waypoint
+                            addCustomWaypoint(waypointLocation, blockPos);
+                            return;
+                        }
+                    }
 
-                CLIENT.player.sendMessage(getLocationInputText(location), false);
+                    //if the location is not found ask the user for the location (could have been in a previous chat message)
+                    if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
+                        return;
+                    }
+
+                    CLIENT.player.sendMessage(getLocationInputText(location), false);
+                }
             }
+
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Crystals Locations Manager] Encountered an exception while extracing a location from a chat message!", e);
+        }
+
+        //move waypoint to be more accurate based on locational chat messages if not already verifed
+        if (CLIENT.player != null && SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
+            for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : WAYPOINT_LOCATIONS.values()) {
+                String waypointLinkedMessage = waypointLocation.getLinkedMessage();
+                String waypointName = waypointLocation.getName();
+                if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage) && !verifiedWaypoints.contains(waypointName)) {
+                    addCustomWaypoint(waypointLocation.getName(), CLIENT.player.getBlockPos());
+                    verifiedWaypoints.add(waypointName);
+                }
+            }
         }
     }
 
@@ -123,16 +138,23 @@ public class CrystalsLocationsManager {
     private static void registerWaypointLocationCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
                 .then(literal("crystalWaypoints")
-                        .then(argument("pos", BlockPosArgumentType.blockPos())
-                                .then(argument("place", StringArgumentType.greedyString())
-                                        .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
-                                        .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
-                                )
-                        )
+                        .then(literal("add")
+                                .then(argument("pos", BlockPosArgumentType.blockPos())
+                                        .then(argument("place", StringArgumentType.greedyString())
+                                                .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
+                                                .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
+                                        )
+                                ))
                         .then(literal("share")
                                 .then(argument("place", StringArgumentType.greedyString())
                                         .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
                                         .executes(context -> shareWaypoint(getString(context, "place")))
+                                )
+                        )
+                        .then(literal("remove")
+                                .then(argument("place", StringArgumentType.greedyString())
+                                        .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
+                                        .executes(context -> removeWaypoint(getString(context, "place")))
                                 )
                         )
                 )
@@ -141,10 +163,11 @@ public class CrystalsLocationsManager {
 
     protected static Text getSetLocationMessage(String location, BlockPos blockPos) {
         MutableText text = Constants.PREFIX.get();
-        text.append(Text.literal("Added waypoint for "));
-        Color locationColor = WAYPOINT_LOCATIONS.get(location).color;
-        text.append(Text.literal(location).withColor(locationColor.getRGB()));
-        text.append(Text.literal(" at : " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + "."));
+        text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint"));
+        int locationColor = WAYPOINT_LOCATIONS.get(location).getColor();
+        text.append(Text.literal(location).withColor(locationColor));
+        text.append(Text.literal(" ").append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint.at")));
+        text.append(Text.literal(" : " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + "."));
 
         return text;
     }
@@ -153,8 +176,8 @@ public class CrystalsLocationsManager {
         MutableText text = Constants.PREFIX.get();
 
         for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
-            Color locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).color;
-            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor.getRGB()).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints " + location + " " + waypointLocation))));
+            int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
+            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints add " + location + " " + waypointLocation))));
         }
 
         return text;
@@ -180,8 +203,8 @@ public class CrystalsLocationsManager {
 
     public static int shareWaypoint(String place) {
         if (activeWaypoints.containsKey(place)) {
-            BlockPos pos = activeWaypoints.get(place).pos;
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+            Vec3d pos = activeWaypoints.get(place).centerPos();
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + (int) pos.getX() + ", " + (int) pos.getY() + ", " + (int) pos.getZ());
         } else {
             //send fail message
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
@@ -193,25 +216,56 @@ public class CrystalsLocationsManager {
         return Command.SINGLE_SUCCESS;
     }
 
+    public static int removeWaypoint(String place) {
+        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
+            return 0;
+        }
+        if (activeWaypoints.containsKey(place)) {
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.removeSuccess").formatted(Formatting.GREEN)).append(Text.literal(place).withColor(WAYPOINT_LOCATIONS.get(place).getColor())), false);
+            activeWaypoints.remove(place);
+            verifiedWaypoints.remove(place);
+        } else {
+            //send fail message
+            CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.removeFail").formatted(Formatting.RED)), false);
+        }
 
-    private static void addCustomWaypoint(String waypointName, BlockPos pos) {
-        CrystalsWaypoint.Category category = WAYPOINT_LOCATIONS.get(waypointName);
-        CrystalsWaypoint waypoint = new CrystalsWaypoint(category, Text.literal(waypointName), pos);
+        return Command.SINGLE_SUCCESS;
+    }
+
+
+    protected static void addCustomWaypoint(String waypointName, BlockPos pos) {
+        removeUnknownNear(pos);
+        MiningLocationLabel.CrystalHollowsLocationsCategory category = WAYPOINT_LOCATIONS.get(waypointName);
+        MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         activeWaypoints.put(waypointName, waypoint);
+    }
+
+    /**
+     * Removes unknown waypoint from active waypoints if it's close to a location
+     * @param location center location
+     */
+    private static void removeUnknownNear(BlockPos location) {
+        String name = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName();
+        MiningLocationLabel unknownWaypoint =  activeWaypoints.getOrDefault(name, null);
+        if (unknownWaypoint != null) {
+            double distance = unknownWaypoint.centerPos().distanceTo(location.toCenterPos());
+            if (distance < REMOVE_UNKNOWN_DISTANCE) {
+                activeWaypoints.remove(name);
+            }
+        }
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
-            for (CrystalsWaypoint crystalsWaypoint : activeWaypoints.values()) {
-                if (crystalsWaypoint.shouldRender()) {
-                    crystalsWaypoint.render(context);
-                }
+            for (MiningLocationLabel crystalsWaypoint : activeWaypoints.values()) {
+                crystalsWaypoint.render(context);
             }
         }
     }
 
     private static void reset() {
         activeWaypoints.clear();
+        verifiedWaypoints.clear();
     }
 
     public static void update() {
