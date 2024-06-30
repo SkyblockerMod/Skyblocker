@@ -112,7 +112,10 @@ public class DungeonsConfig {
 
     public static class Livid {
         @SerialEntry
-        public boolean enableLividColorGlow = true;
+        public boolean enableLividColorGlow = false;
+
+        @SerialEntry
+        public boolean enableLividColorBoundingBox = true;
 
         @SerialEntry
         public boolean enableLividColorText = true;

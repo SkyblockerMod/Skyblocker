@@ -210,6 +210,14 @@ public class DungeonsCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorBoundingBox"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip")))
+                                .binding(defaults.dungeons.livid.enableLividColorBoundingBox,
+                                        () -> config.dungeons.livid.enableLividColorBoundingBox,
+                                        newValue -> config.dungeons.livid.enableLividColorBoundingBox = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorText"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip")))
                                 .binding(defaults.dungeons.livid.enableLividColorText,
