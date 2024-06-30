@@ -116,7 +116,8 @@ public class EggFinder {
 	private static void handleFoundEgg(ArmorStandEntity entity, EggType eggType) {
 		eggType.egg = new Egg(entity, new Waypoint(entity.getBlockPos().up(2), SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(eggType.color)));
 
-		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages) return;
+		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages || System.currentTimeMillis() - eggType.messageLastSent < 1000) return;
+		eggType.messageLastSent = System.currentTimeMillis();
 		MinecraftClient.getInstance().player.sendMessage(
 				Constants.PREFIX.get()
 				                .append("Found a ")
@@ -150,8 +151,7 @@ public class EggFinder {
 		matcher.usePattern(newEggPattern);
 		if (matcher.find()) {
 			try {
-				Egg egg = EggType.valueOf(matcher.group(1).toUpperCase()).egg;
-				if (egg != null) egg.waypoint.setFound();
+				EggType.valueOf(matcher.group(1).toUpperCase()).egg = null;
 			} catch (IllegalArgumentException e) {
 				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg spawn message. Tried to match against: " + matcher.group(0), e);
 			}
@@ -169,6 +169,14 @@ public class EggFinder {
 		private Egg egg = null;
 		public final int color;
 		public final String texture;
+		/*
+			When a new egg spawns in the player's range, the order of packets/messages goes like this:
+			set_equipment -> new egg message -> set_entity_data
+			We have to set the egg to null to prevent the highlight from staying where it was before the new egg spawned,
+			and doing so causes the found message to get sent twice. This is the reason for the existence of this field, so that we can not send the 2nd message.
+			This doesn't fix the field being set twice, but that's not an issue anyway. It'd be much harder to fix the highlight issue mentioned above if it wasn't being set twice.
+		 */
+		private long messageLastSent = 0;
 
 		//This is to not create an array each time we iterate over the values
 		public static final ObjectImmutableList<EggType> entries = ObjectImmutableList.of(BREAKFAST, LUNCH, DINNER);
