@@ -1,28 +1,35 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.google.common.reflect.ClassPath;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -35,24 +42,20 @@ public class ScreenMaster {
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
-    private static final Map<Location, ScreenBuilder> builderMap = new EnumMap<>(Location.class);
+    private static Map<Location, ScreenBuilder> createBuilderMap() {
+        EnumMap<Location, ScreenBuilder> map = new EnumMap<>(Location.class);
+        for (Location value : Location.values()) {
+            map.put(value, new ScreenBuilder(value));
+        }
+        return map;
+    }
+
+    private static final Map<Location, ScreenBuilder> builderMap = createBuilderMap();
 
     public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
-
-    /**
-     * Load a screen mapping from an identifier
-     */
-    public static void load(Identifier ident) {
-
-        String path = ident.getPath();
-        String[] parts = path.split("/");
-        String screenType = parts[parts.length - 2];
-        String location = parts[parts.length - 1];
-        location = location.replace(".json", "");
-    }
 
     public static ScreenBuilder getScreenBuilder(Location location) {
         return builderMap.get(location);
@@ -81,12 +84,74 @@ public class ScreenMaster {
 
     public static void loadConfig() {
         try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-            
+            JsonObject object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
+            JsonObject positions = object.getAsJsonObject("positions");
+            for (Map.Entry<Location, ScreenBuilder> builderEntry : builderMap.entrySet()) {
+                Location location = builderEntry.getKey();
+                ScreenBuilder screenBuilder = builderEntry.getValue();
+                if (positions.has(location.id())) {
+                    JsonObject locationObject = positions.getAsJsonObject(location.id());
+                    for (Map.Entry<String, JsonElement> entry : locationObject.entrySet()) {
+                        PositionRule.CODEC.decode(JsonOps.INSTANCE, entry.getValue())
+                                .ifSuccess(pair -> screenBuilder.setPositionRule(entry.getKey(), pair.getFirst()))
+                                .ifError(pairError -> LOGGER.error("[Skyblocker] Failed to parse position rule: {}", pairError.messageSupplier().get()));
+                    }
+                }
+            }
         } catch (NoSuchFileException e) {
-            LOGGER.warn("[Skyblocker] No status bar config file found, using defaults");
+            LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
         } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to load hud widgets config", e);
         }
+    }
+
+    public static void saveConfig() {
+        JsonObject output = new JsonObject();
+        JsonObject positions = new JsonObject();
+        for (Map.Entry<Location, ScreenBuilder> builderEntry : builderMap.entrySet()) {
+            Location location = builderEntry.getKey();
+            ScreenBuilder screenBuilder = builderEntry.getValue();
+            JsonObject locationObject = new JsonObject();
+            screenBuilder.forEachPositionRuleEntry((s, positionRule) -> locationObject.add(s, PositionRule.CODEC.encodeStart(JsonOps.INSTANCE, positionRule).getOrThrow()));
+            if (locationObject.isEmpty()) continue;
+            positions.add(location.id(), locationObject);
+        }
+        output.add("positions", positions);
+        try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
+            SkyblockerMod.GSON.toJson(output, writer);
+            LOGGER.info("[Skyblocker] Saved hud widget config");
+        } catch (IOException e) {
+            LOGGER.error("[Skyblocker] Failed to save hud widget config", e);
+        }
+    }
+
+    // All non-tab HUDs should have a position rule initialised here, because they don't have an auto positioning
+    private static void fillDefaultConfig() {
+        ScreenBuilder screenBuilder = getScreenBuilder(Location.THE_END);
+        screenBuilder.setPositionRule(
+                "hud_end",
+                new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, ScreenMaster.ScreenLayer.HUD)
+        );
+
+        screenBuilder = getScreenBuilder(Location.GARDEN);
+        screenBuilder.setPositionRule(
+                "hud_farming",
+                new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, ScreenMaster.ScreenLayer.HUD)
+        );
+
+        for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
+            screenBuilder = getScreenBuilder(loc);
+            screenBuilder.setPositionRule(
+                    "commissions",
+                    new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.HUD)
+            );
+            screenBuilder.setPositionRule(
+                    "powders",
+                    new PositionRule("commissions", new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
+            );
+
+        }
+
     }
 
     @Init
@@ -107,8 +172,15 @@ public class ScreenMaster {
                     try {
                         Class<?> load = Class.forName(classInfo.getName());
                         if (!load.getSuperclass().equals(TabHudWidget.class)) return;
-                        TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
-                        PlayerListMgr.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
+                        if (load.equals(DungeonPlayerWidget.class)) {
+                            for (int i = 1; i < 6; i++) {
+                                DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
+                                PlayerListMgr.tabWidgetInstances.put(widget.getHypixelWidgetName(), widget);
+                            }
+                        } else {
+                            TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
+                            PlayerListMgr.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
+                        }
                     } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                              IllegalAccessException | ClassNotFoundException e) {
                         LOGGER.error("[Skyblocker] Failed to load {} hud widget", classInfo.getName(), e);
@@ -118,12 +190,14 @@ public class ScreenMaster {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
             }
+            fillDefaultConfig();
+            loadConfig();
 
         });
 
-        for (Location value : Location.values()) {
-            builderMap.put(value, new ScreenBuilder(value));
-        }
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+
+
         /*
 
 
@@ -188,14 +262,19 @@ public class ScreenMaster {
          */
     }
 
+    /**
+     * @implNote !! The 3 first ones shouldn't be moved, ordinal is used in some places
+     */
     public enum ScreenLayer {
         MAIN_TAB,
         SECONDARY_TAB,
-        HUD;
+        HUD,
+        /**
+         * Default is only present for config and isn't used anywhere else
+         */
+        DEFAULT;
 
-        public static final Codec<ScreenLayer> CODEC_NULLABLE = Codec.STRING.xmap(
-                s -> s.equals("null") ? null : ScreenLayer.valueOf(s),
-                screenLayer -> screenLayer == null ? "null": screenLayer.name());
+        public static final Codec<ScreenLayer> CODEC = Codec.STRING.xmap(ScreenLayer::valueOf, ScreenLayer::name);
 
         @Override
         public String toString() {
@@ -203,6 +282,7 @@ public class ScreenMaster {
                 case MAIN_TAB -> "Main Tab";
                 case SECONDARY_TAB -> "Secondary Tab";
                 case HUD -> "HUD";
+                case DEFAULT -> "You shouldn't be seeing this...";
             };
         }
     }
