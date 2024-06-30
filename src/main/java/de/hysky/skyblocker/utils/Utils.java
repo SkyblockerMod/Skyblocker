@@ -95,15 +95,15 @@ public class Utils {
     }
 
     public static boolean isInDungeons() {
-        return location == Location.DUNGEON || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DUNGEON;
     }
 
     public static boolean isInCrystalHollows() {
-        return location == Location.CRYSTAL_HOLLOWS || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.CRYSTAL_HOLLOWS;
     }
 
     public static boolean isInDwarvenMines() {
-        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT;
     }
 
     public static boolean isInTheRift() {
