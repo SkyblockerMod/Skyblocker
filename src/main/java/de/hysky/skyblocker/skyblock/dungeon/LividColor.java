@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -16,7 +15,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
@@ -50,14 +48,12 @@ public class LividColor {
     public static final DungeonsConfig.Livid CONFIG = SkyblockerConfigManager.get().dungeons.livid;
     private static Formatting color;
     private static Block lastColor = Blocks.AIR;
-    private static boolean inBoss = false;
 
     private static boolean isInitialized = false;
     private static final long OFFSET_DURATION = 2000;
     private static long toggleTime = 0;
 
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(LividColor::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> LividColor.reset());
         WorldRenderEvents.AFTER_ENTITIES.register(LividColor::update);
     }
@@ -68,7 +64,7 @@ public class LividColor {
 
         MinecraftClient client = MinecraftClient.getInstance();
 
-        if (!(Utils.isInDungeons() && inBoss && client.player != null && client.world != null)) return;
+        if (!(Utils.isInDungeons() && DungeonManager.isInBoss() && client.player != null && client.world != null)) return;
 
         Block currentColor = client.world.getBlockState(new BlockPos(5, 110, 42)).getBlock();
         if (!(WOOL_TO_FORMATTING.containsKey(currentColor) && !currentColor.equals(lastColor))) return;
@@ -117,18 +113,8 @@ public class LividColor {
     }
 
     private static void reset() {
-        inBoss = false;
         lastColor = Blocks.AIR;
         toggleTime = 0;
         isInitialized = false;
-    }
-
-    private static void onChatMessage(Text text, boolean overlay) {
-        DungeonsConfig.Livid config = SkyblockerConfigManager.get().dungeons.livid;
-        if (Utils.isInDungeons() && (config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow || config.enableLividColorBoundingBox) && !inBoss) {
-            String unformatted = Formatting.strip(text.getString());
-
-            inBoss = unformatted.equals("[BOSS] Livid: Welcome, you've arrived right on time. I am Livid, the Master of Shadows.");
-        }
     }
 }
