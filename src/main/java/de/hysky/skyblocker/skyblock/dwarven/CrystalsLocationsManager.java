@@ -42,6 +42,12 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.minecraft.command.CommandSource.suggestMatching;
 
+/**
+ * Manager for Crystal Hollows waypoints that handles {@link #update() location detection},
+ * {@link #extractLocationFromMessage(Text, Boolean) waypoints receiving}, {@link #shareWaypoint(String) sharing},
+ * {@link #registerWaypointLocationCommands(CommandDispatcher, CommandRegistryAccess) commands}, and
+ * {@link #render(WorldRenderContext) rendering}.
+ */
 public class CrystalsLocationsManager {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -55,11 +61,15 @@ public class CrystalsLocationsManager {
     protected static Map<String, CrystalsWaypoint> activeWaypoints = new HashMap<>();
 
     public static void init() {
+        // Crystal Hollows Waypoints
         Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
         ClientReceiveMessageEvents.GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+
+        // Nucleus Waypoints
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
     }
 
     private static void extractLocationFromMessage(Text message, Boolean overlay) {

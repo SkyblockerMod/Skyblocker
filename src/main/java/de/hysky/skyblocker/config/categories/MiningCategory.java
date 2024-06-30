@@ -95,7 +95,15 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalHollows.metalDetectorHelper = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                        .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.crystalHollows.nucleusWaypoints"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalHollows.nucleusWaypoints.@Tooltip")))
+                                .binding(defaults.mining.crystalHollows.nucleusWaypoints,
+                                        () -> config.mining.crystalHollows.nucleusWaypoints,
+                                        newValue -> config.mining.crystalHollows.nucleusWaypoints = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                .build())
 
                 //Crystal Hollows Map
                 .group(OptionGroup.createBuilder()
