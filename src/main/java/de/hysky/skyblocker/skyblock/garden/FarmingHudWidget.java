@@ -53,8 +53,8 @@ public class FarmingHudWidget extends HudWidget {
 
     public FarmingHudWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue(), "hud_farming");
-        setX(SkyblockerConfigManager.get().farming.garden.farmingHud.x);
-        setY(SkyblockerConfigManager.get().farming.garden.farmingHud.y);
+        //setX(SkyblockerConfigManager.get().farming.garden.farmingHud.x);
+        //setY(SkyblockerConfigManager.get().farming.garden.farmingHud.y);
         update();
     }
 
@@ -106,5 +106,10 @@ public class FarmingHudWidget extends HudWidget {
     @Override
     public boolean shouldRender(Location location) {
         return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
+    }
+
+    @Override
+    public String getNiceName() {
+        return "Farming Hud";
     }
 }
