@@ -557,6 +557,10 @@
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency": "Steak Stake Indicator Update Frequency (Ticks)",
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
 
+  "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer" : "Fire Pillar Countdown Notifications",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
+
   "skyblocker.config.uiAndVisuals": "UI & Visuals",
 
   "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
