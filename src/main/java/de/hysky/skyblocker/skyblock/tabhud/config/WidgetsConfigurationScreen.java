@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -14,6 +15,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -25,6 +27,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     private GenericContainerScreenHandler handler;
     private String titleLowercase;
+    public final boolean noHandler;
+    private String widgetsLayer = null;
 
     private boolean tabPreview = false;
     private PreviewTab previewTab;
@@ -66,24 +70,49 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     private boolean switchingToPopup = false;
 
-    public WidgetsConfigurationScreen(GenericContainerScreenHandler handler, String titleLowercase) {
+    /**
+     * Creates the screen to configure, putting the handler at null will hide the first tab. Putting it to null is used in the config
+     * @param handler the container handler
+     * @param titleLowercase the title in lowercase
+     */
+    private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable String widgetLayerToGoTo) {
         super(Text.literal("Widgets Configuration"));
         this.handler = handler;
         this.titleLowercase = titleLowercase;
-        this.handler.addListener(this);
-        parseLocation();
+        this.noHandler = handler == null;
+        if (!noHandler) {
+            this.handler.addListener(this);
+            parseLocation();
+        } else {
+            currentLocation = targetLocation;
+            widgetsLayer = widgetLayerToGoTo;
+        }
+    }
+    // TODO java doc this
+    public WidgetsConfigurationScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
+        this(handler, titleLowercase, Location.UNKNOWN, null);
+    }
+    public WidgetsConfigurationScreen(Location targetLocation, String widgetLayerToGoTo) {
+        this(null, "", targetLocation, widgetLayerToGoTo);
     }
 
     @Override
     protected void init() {
-        widgetsOrderingTab = new WidgetsOrderingTab(this.client, this.handler);
         previewTab = new PreviewTab(this.client, this);
-        this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-                .tabs(this.widgetsOrderingTab, this.previewTab)
-                .build();
+        if (noHandler)  {
+            this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
+                    .tabs(this.previewTab)
+                    .build();
+            previewTab.goToLayer(ScreenMaster.getScreenBuilder(currentLocation).getPositionRuleOrDefault(widgetsLayer).screenLayer());
+        } else {
+            widgetsOrderingTab = new WidgetsOrderingTab(this.client, this.handler);
+            this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
+                    .tabs(this.widgetsOrderingTab, this.previewTab)
+                    .build();
+        }
         this.tabNavigation.selectTab(0, false);
-        this.addDrawableChild(tabNavigation);
         switchingToPopup = false;
+        this.addDrawableChild(tabNavigation);
         this.initTabNavigation();
     }
 
@@ -99,6 +128,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     }
 
     public void updateHandler(GenericContainerScreenHandler newHandler, String titleLowercase) {
+        if (noHandler) return;
         handler.removeListener(this);
         handler = newHandler;
         handler.addListener(this);
@@ -130,6 +160,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+        if (noHandler) return;
         if (slotId == 4) {
             tabPreview = stack.isOf(Items.PLAYER_HEAD);
         }
@@ -152,6 +183,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     @Override
     public void tick() {
         super.tick();
+        if (noHandler) return;
         if (slotThirteenBacklog != null && widgetsOrderingTab != null) {
             widgetsOrderingTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
             slotThirteenBacklog = null;
@@ -163,7 +195,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     public void close() {
-        this.client.player.closeHandledScreen();
+        if (!noHandler) this.client.player.closeHandledScreen();
         super.close();
     }
 
@@ -172,6 +204,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     public void removed() {
+        if (noHandler) return;
         if (!switchingToPopup && this.client != null && this.client.player != null) {
             this.handler.onClosed(this.client.player);
         }

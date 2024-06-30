@@ -3,8 +3,10 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -52,8 +54,8 @@ public class PreviewTab implements Tab {
         widgetOptions.setWidth(RIGHT_SIDE_WIDTH - 10);
 
         ScreenMaster.ScreenLayer[] values = ScreenMaster.ScreenLayer.values();
-        layerButtons = new ButtonWidget[values.length];
-        for (int i = 0; i < values.length; i++) {
+        layerButtons = new ButtonWidget[3];
+        for (int i = 0; i < 3; i++) {
             ScreenMaster.ScreenLayer screenLayer = values[i];
             layerButtons[i] = ButtonWidget.builder(Text.literal(screenLayer.toString()), button -> {
                         this.currentScreenLayer = screenLayer;
@@ -65,6 +67,11 @@ public class PreviewTab implements Tab {
                     .build();
             if (screenLayer == currentScreenLayer) layerButtons[i].active = false;
         }
+    }
+
+    public void goToLayer(ScreenMaster.ScreenLayer layer) {
+        if (layer == ScreenMaster.ScreenLayer.DEFAULT) layer = ScreenMaster.ScreenLayer.HUD;
+        layerButtons[layer.ordinal()].onPress();
     }
 
     @Override
@@ -100,7 +107,7 @@ public class PreviewTab implements Tab {
         widgetOptions.setPosition(tabArea.width() - widgetOptions.getWidth() - 5, optionsY);
         widgetOptions.setHeight(tabArea.height() - optionsY - 5);
 
-        forEachChild(clickableWidget -> clickableWidget.visible = parent.isPreviewVisible());
+        forEachChild(clickableWidget -> clickableWidget.visible = parent.isPreviewVisible() || parent.noHandler);
     }
 
     private void updatePlayerListFromPreview() {
@@ -136,6 +143,13 @@ public class PreviewTab implements Tab {
         ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
         PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
         int width = widgetOptions.getWidth() - widgetOptions.getScrollerWidth();
+
+        // Normal hud widgets don't have auto.
+        if (positionRule == null && !(hudWidget instanceof TabHudWidget)) {
+            screenBuilder.setPositionRule(hudWidget.getInternalID(), PositionRule.DEFAULT);
+            positionRule = PositionRule.DEFAULT;
+        }
+
         // TODO localization
 
         widgetOptions.addWidget(new TextWidget(width, 9, Text.literal(hudWidget.getNiceName()).formatted(Formatting.BOLD, Formatting.UNDERLINE), client.textRenderer));
@@ -148,28 +162,24 @@ public class PreviewTab implements Tab {
                     .width(width)
                     .build());
         } else {
-            widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Positioning: Custom"), button -> {
-                        screenBuilder.setPositionRule(hudWidget.getInternalID(), null);
-                        updateWidgets();
-                        onHudWidgetSelected(hudWidget);
-                    })
-                    .width(width)
-                    .build());
+            // Normal hud widgets don't have auto.
+            if (hudWidget instanceof TabHudWidget) {
+                widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Positioning: Custom"), button -> {
+                            screenBuilder.setPositionRule(hudWidget.getInternalID(), null);
+                            updateWidgets();
+                            onHudWidgetSelected(hudWidget);
+                        })
+                        .width(width)
+                        .build());
+            }
 
-            String ye = "Layer: " + (positionRule.screenLayer() == null ? "Default" : positionRule.screenLayer().toString());
+            String ye = "Layer: " + positionRule.screenLayer().toString();
 
             widgetOptions.addWidget(ButtonWidget.builder(Text.literal(ye), button -> {
                 ScreenBuilder builder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
                 PositionRule rule = builder.getPositionRuleOrDefault(hudWidget.getInternalID());
                 ScreenMaster.ScreenLayer[] values = ScreenMaster.ScreenLayer.values();
-                ScreenMaster.ScreenLayer newLayer;
-                if (rule.screenLayer() == null) {
-                    newLayer = values[0];
-                } else if (rule.screenLayer().ordinal() == values.length - 1) {
-                    newLayer = null;
-                } else {
-                    newLayer = values[rule.screenLayer().ordinal() + 1];
-                }
+                ScreenMaster.ScreenLayer newLayer = values[(rule.screenLayer().ordinal() + 1) % values.length];
 
                 PositionRule newRule = new PositionRule(
                         rule.parent(),
@@ -180,9 +190,9 @@ public class PreviewTab implements Tab {
                         newLayer
                 );
                 builder.setPositionRule(hudWidget.getInternalID(), newRule);
-                button.setMessage(Text.literal("Layer: " + (newRule.screenLayer() == null ? "Default" : newRule.screenLayer().toString())));
+                button.setMessage(Text.literal("Layer: " + newRule.screenLayer().toString()));
                 updateWidgets();
-                if (newLayer != null) {
+                if (newLayer != ScreenMaster.ScreenLayer.DEFAULT) {
                     layerButtons[newLayer.ordinal()].onPress();
                 }
 
@@ -534,26 +544,36 @@ public class PreviewTab implements Tab {
 
         @Override
         public void onClick(double mouseX, double mouseY) {
-            if (hoveredPoint != null && previewWidget.selectedWidget != null) {
+            HudWidget affectedWidget = previewWidget.selectedWidget;
+            if (hoveredPoint != null && affectedWidget != null) {
                 ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
-                String internalID = previewWidget.selectedWidget.getInternalID();
-                PositionRule oldRule = screenBuilder.getPositionRule(internalID);
-                if (oldRule == null) oldRule = PositionRule.DEFAULT;
+                String internalID = affectedWidget.getInternalID();
+                PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(internalID);
+                // Get the x, y of the parent's point
+                ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), parent.width, parent.height, other ? hoveredPoint: oldRule.parentPoint());
+                if (startPos == null) startPos = new ScreenPos(0, 0);
+                // Same but for the affected widget
+                PositionRule.Point thisPoint = other ? oldRule.thisPoint() : hoveredPoint;
+                ScreenPos endPos = new ScreenPos(
+                        (int) (affectedWidget.getX() + thisPoint.horizontalPoint().getPercentage() * affectedWidget.getWidth()),
+                        (int) (affectedWidget.getY() + thisPoint.verticalPoint().getPercentage() * affectedWidget.getHeight())
+                );
+
                 if (other) {
                     screenBuilder.setPositionRule(internalID, new PositionRule(
                             oldRule.parent(),
                             hoveredPoint,
                             oldRule.thisPoint(),
-                            oldRule.relativeX(),
-                            oldRule.relativeY(),
+                            endPos.x() - startPos.x(),
+                            endPos.y() - startPos.y(),
                             oldRule.screenLayer()));
                 } else {
                     screenBuilder.setPositionRule(internalID, new PositionRule(
                             oldRule.parent(),
                             oldRule.parentPoint(),
                             hoveredPoint,
-                            oldRule.relativeX(),
-                            oldRule.relativeY(),
+                            endPos.x() - startPos.x(),
+                            endPos.y() - startPos.y(),
                             oldRule.screenLayer()));
                 }
             }

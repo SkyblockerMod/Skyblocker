@@ -73,4 +73,5 @@ public class HudCommsWidget extends HudWidget {
     public boolean shouldRender(Location location) {
         return location.equals(Location.DWARVEN_MINES) || location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.dwarvenHud.enabledCommissions;
     }
+
 }

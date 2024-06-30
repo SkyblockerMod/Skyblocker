@@ -76,12 +76,12 @@ public class TheEnd {
         });
 
 
-        HudRenderEvents.AFTER_MAIN_HUD.register((drawContext, tickCounter) -> {
+        /*HudRenderEvents.AFTER_MAIN_HUD.register((drawContext, tickCounter) -> {
             if (!Utils.isInTheEnd()) return;
             if (!SkyblockerConfigManager.get().otherLocations.end.hudEnabled) return;
 
             EndHudWidget.INSTANCE.render(drawContext, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
-        });
+        });*/
 
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
             String lowerCase = Utils.getIslandArea().toLowerCase();

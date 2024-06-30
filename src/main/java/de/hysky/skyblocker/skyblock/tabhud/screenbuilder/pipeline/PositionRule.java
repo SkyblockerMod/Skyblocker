@@ -5,10 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import org.jetbrains.annotations.Nullable;
 
-public record PositionRule(String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY, @Nullable
+public record PositionRule(String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY,
 ScreenMaster.ScreenLayer screenLayer) {
 
-    public static final PositionRule DEFAULT = new PositionRule("screen", Point.DEFAULT, Point.DEFAULT, 0, 0, null);
+    public static final PositionRule DEFAULT = new PositionRule("screen", Point.DEFAULT, Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.DEFAULT);
 
     public static final Codec<PositionRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("parent").forGetter(PositionRule::parent),
@@ -16,7 +16,7 @@ ScreenMaster.ScreenLayer screenLayer) {
             Point.CODEC.fieldOf("this_anchor").forGetter(PositionRule::thisPoint),
             Codec.INT.fieldOf("relative_x").forGetter(PositionRule::relativeX),
             Codec.INT.fieldOf("relative_y").forGetter(PositionRule::relativeY),
-            ScreenMaster.ScreenLayer.CODEC_NULLABLE.fieldOf("layer").forGetter(PositionRule::screenLayer)
+            ScreenMaster.ScreenLayer.CODEC.fieldOf("layer").forGetter(PositionRule::screenLayer)
     ).apply(instance, PositionRule::new));
 
 
