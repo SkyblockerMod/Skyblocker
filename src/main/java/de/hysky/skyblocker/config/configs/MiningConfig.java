@@ -27,6 +27,9 @@ public class MiningConfig {
     @SerialEntry
     public Glacite glacite = new Glacite();
 
+    @SerialEntry
+    public boolean commissionHighlight = true;
+
     public static class DwarvenMines {
         @SerialEntry
         public boolean solveFetchur = true;

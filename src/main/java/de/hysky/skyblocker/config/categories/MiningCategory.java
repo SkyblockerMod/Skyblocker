@@ -30,6 +30,14 @@ public class MiningCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.mining.commissionHighlight"))
+                        .binding(defaults.mining.commissionHighlight,
+                                () -> config.mining.commissionHighlight,
+                                newValue -> config.mining.commissionHighlight = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+
                 //Dwarven Mines
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.mining.dwarvenMines"))
