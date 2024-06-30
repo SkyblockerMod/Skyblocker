@@ -49,6 +49,8 @@ import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
 import de.hysky.skyblocker.skyblock.waypoint.Relics;
 import de.hysky.skyblocker.skyblock.waypoint.Waypoints;
+import de.hysky.skyblocker.stp.SkyblockerArmorTextures;
+import de.hysky.skyblocker.stp.SkyblockerPredicateTypes;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
@@ -194,6 +196,8 @@ public class SkyblockerMod implements ClientModInitializer {
         SkyblockTime.init();
         TooltipManager.init();
         SlotTextManager.init();
+        SkyblockerPredicateTypes.init();
+        SkyblockerArmorTextures.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

@@ -1,5 +1,6 @@
 accessWidener v2 named
 
+# Rendering
 accessible class net/minecraft/client/render/RenderLayer$MultiPhase
 accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
 accessible class net/minecraft/client/render/RenderPhase$Transparency
@@ -18,3 +19,6 @@ accessible class net/minecraft/client/render/RenderPhase$LineWidth
 accessible class net/minecraft/client/render/RenderPhase$ColorLogic
 accessible class net/minecraft/client/render/RenderPhase$OffsetTexturing
 accessible class net/minecraft/client/render/RenderPhase$Textures
+
+# Skyblocker Texture Predicates
+accessible class net/minecraft/client/render/model/json/ModelOverrideList$BakedOverride

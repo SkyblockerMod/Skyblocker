@@ -52,7 +52,12 @@
     "accessors.SkullBlockEntityAccessor",
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
-    "discordipc.ConnectionMixin"
+    "discordipc.ConnectionMixin",
+    "stp.ArmorFeatureRendererMixin",
+    "stp.BakedModelManagerMixin",
+    "stp.ModelOverrideDeserializerMixin",
+    "stp.ModelOverrideListMixin",
+    "stp.ModelOverrideMixin"
   ],
   "injectors": {
     "defaultRequire": 1
