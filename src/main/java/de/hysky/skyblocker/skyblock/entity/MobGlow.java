@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -10,6 +11,7 @@ import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -27,6 +29,7 @@ public class MobGlow {
 
 		if (OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
 			String name = entity.getName().getString();
+
 
 			// Dungeons
 			if (Utils.isInDungeons() && !entity.isInvisible()) {
@@ -46,6 +49,7 @@ public class MobGlow {
 				};
 			}
 
+
 			return switch (entity) {
 				// Rift
 				case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
@@ -56,6 +60,9 @@ public class MobGlow {
 
 				// Special Zelot
 				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() -> TheEnd.isSpecialZealot(enderman);
+
+				//dojo
+				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmourStandName(zombie));
 
 				default -> false;
 			};
@@ -72,6 +79,13 @@ public class MobGlow {
 	public static boolean isStarred(Entity entity) {
 		List<ArmorStandEntity> armorStands = getArmorStands(entity);
 		return !armorStands.isEmpty() && armorStands.getFirst().getName().getString().contains("✯");
+	}
+	public static String  getArmourStandName(Entity entity) {
+		List<ArmorStandEntity> armorStands = getArmorStands(entity);
+		if (armorStands.isEmpty()) {
+			return null;
+		}
+		return armorStands.getFirst().getName().getString();
 	}
 
 	public static List<ArmorStandEntity> getArmorStands(Entity entity) {
@@ -94,6 +108,7 @@ public class MobGlow {
 
 			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
 			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
+			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 
 			default -> 0xf57738;
 		};
