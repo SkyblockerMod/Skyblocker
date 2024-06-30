@@ -61,20 +61,10 @@ jobs:
           distribution: 'microsoft'
           java-version: '21'
 
-      - name: Initialize caches
-        uses: actions/cache@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/loom-cache
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-build-external-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-build-external-
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
+          validate-wrappers: true
       - name: Build with Gradle
         run: ./gradlew build
 
