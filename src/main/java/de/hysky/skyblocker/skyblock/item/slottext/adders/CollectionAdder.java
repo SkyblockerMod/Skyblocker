@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -25,7 +26,11 @@ public class CollectionAdder extends SlotTextAdder {
         Matcher matcher = COLLECTION.matcher(stack.getName().getString());
         if (matcher.matches()) {
             int level = RomanNumerals.romanToDecimal(matcher.group("level"));
-            return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
+            if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Progress to ")) != null) {
+                return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
+            } else {
+                return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xE5B80B)));
+            }
         }
         return List.of();
     }
