@@ -11,4 +11,7 @@ public class DebugConfig {
 
 	@SerialEntry
 	public boolean webSocketDebug = false;
+
+	@SerialEntry
+	public boolean stpGlobal = false;
 }

@@ -211,6 +211,7 @@ base {
 processResources {
 	inputs.property "version", project.version
 
+	//Note: in order to use $s in the FMJ you need to use their unicode escape sequence otherwise Groovy will explode
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}

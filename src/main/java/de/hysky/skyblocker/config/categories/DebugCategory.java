@@ -34,6 +34,13 @@ public class DebugCategory {
 								newValue -> config.debug.webSocketDebug = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.debug.stpGlobal"))
+						.binding(defaults.debug.stpGlobal,
+								() -> config.debug.stpGlobal,
+								newValue -> config.debug.stpGlobal = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 				.build();
 	}
 }

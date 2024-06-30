@@ -2,10 +2,14 @@ package de.hysky.skyblocker.utils;
 
 import java.util.Arrays;
 
+import com.mojang.serialization.Codec;
+
+import net.minecraft.util.StringIdentifiable;
+
 /**
  * All Skyblock locations
  */
-public enum Location {
+public enum Location implements StringIdentifiable {
     /**
      * mode: dynamic
      */
@@ -100,6 +104,8 @@ public enum Location {
      */
     private final String id;
 
+    public static final Codec<Location> CODEC = StringIdentifiable.createCodec(Location::values);
+
     /**
      * @param id location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
      */
@@ -113,6 +119,11 @@ public enum Location {
     public String id() {
         return this.id;
     }
+
+	@Override
+	public String asString() {
+	    return id();
+	}
 
     /**
      * @param id location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>

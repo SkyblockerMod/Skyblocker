@@ -77,6 +77,44 @@ public class UIAndVisualsCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+                //STP
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.skyblockItemTextures"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.note")))
+                                .binding(defaults.uiAndVisuals.skyblockerTexturePredicates.skyblockItemTextures,
+                                        () -> config.uiAndVisuals.skyblockerTexturePredicates.skyblockItemTextures,
+                                        newValue -> config.uiAndVisuals.skyblockerTexturePredicates.skyblockItemTextures = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.universalItemTextures"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.note")))
+                                .binding(defaults.uiAndVisuals.skyblockerTexturePredicates.universalItemTextures,
+                                        () -> config.uiAndVisuals.skyblockerTexturePredicates.universalItemTextures,
+                                        newValue -> config.uiAndVisuals.skyblockerTexturePredicates.universalItemTextures = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.armorTextures"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.note")))
+                                .binding(defaults.uiAndVisuals.skyblockerTexturePredicates.armorTextures,
+                                        () -> config.uiAndVisuals.skyblockerTexturePredicates.armorTextures,
+                                        newValue -> config.uiAndVisuals.skyblockerTexturePredicates.armorTextures = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.blockTextures"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.note")))
+                                .binding(defaults.uiAndVisuals.skyblockerTexturePredicates.blockTextures,
+                                        () -> config.uiAndVisuals.skyblockerTexturePredicates.blockTextures,
+                                        newValue -> config.uiAndVisuals.skyblockerTexturePredicates.blockTextures = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue"))

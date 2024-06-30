@@ -20,3 +20,6 @@ extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget re
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshTabButtons (Z)V
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshSearchResults ()V
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget triggerPirateSpeakEasterEgg (Ljava/lang/String;)V
+
+# Skyblocker Texture Predicates
+accessible class net/minecraft/client/render/model/json/ModelOverrideList$BakedOverride
