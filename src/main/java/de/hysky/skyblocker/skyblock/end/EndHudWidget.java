@@ -33,8 +33,8 @@ public class EndHudWidget extends HudWidget {
         ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
         POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 
-        INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
-        INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);
+        //INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
+        //INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);
     }
 
     public EndHudWidget(MutableText title, Integer colorValue) {
@@ -74,4 +74,10 @@ public class EndHudWidget extends HudWidget {
             }
         }
     }
+
+    @Override
+    public String getNiceName() {
+        return "End Hud";
+    }
+
 }
