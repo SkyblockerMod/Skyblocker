@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
@@ -22,6 +23,9 @@ public class HelperConfig {
 
     @SerialEntry
     public ChocolateFactory chocolateFactory = new ChocolateFactory();
+
+    @SerialEntry
+    public Bazaar bazaar = new Bazaar();
 
     public static class MythologicalRitual {
         @SerialEntry
@@ -82,5 +86,12 @@ public class HelperConfig {
 
         @SerialEntry
         public boolean enableTimeTowerReminder = true;
+    }
+
+    public static class Bazaar {
+        @SerialEntry
+        public boolean enableBazaarHelper = true;
+        @SerialEntry
+        public BazaarHelper.HighlightingScheme highlightingScheme = BazaarHelper.HighlightingScheme.ORDER_TYPE;
     }
 }

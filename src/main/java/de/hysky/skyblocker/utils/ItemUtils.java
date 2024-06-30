@@ -43,7 +43,8 @@ import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class ItemUtils {
+public final class ItemUtils {
+    private ItemUtils() {}
     public static final String ID = "id";
     public static final String UUID = "uuid";
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
@@ -193,6 +194,10 @@ public class ItemUtils {
         return null;
     }
 
+    /**
+     * Gets the first line of the lore that matches the specified predicate.
+     * @return The first line of the lore that matches the predicate, or {@code null} if no line matches.
+     */
     @Nullable
     public static String getLoreLineIf(ItemStack item, Predicate<String> predicate) {
         for (Text line : getLore(item)) {
@@ -205,16 +210,35 @@ public class ItemUtils {
         return null;
     }
 
+    /**
+     * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#matches()}.
+     * @return A matcher that contains match results if the pattern was found in the lore, otherwise {@code null}.
+     */
     @Nullable
     public static Matcher getLoreLineIfMatch(ItemStack item, Pattern pattern) {
+        Matcher matcher = pattern.matcher("");
         for (Text line : getLore(item)) {
-            String string = line.getString();
-            Matcher matcher = pattern.matcher(string);
-            if (matcher.matches()) {
+            if (matcher.reset(line.getString()).matches()) {
                 return matcher;
             }
         }
+        return null;
+    }
 
+    /**
+     * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#find()}.
+     * @param pattern the pattern to search for
+     * @param item the item to search the lore of
+     * @return A {@link Matcher matcher} that contains match results if the pattern was found in the lore, otherwise {@code null}.
+     */
+    @Nullable
+    public static Matcher getLoreLineIfContainsMatch(ItemStack item, Pattern pattern) {
+        Matcher matcher = pattern.matcher("");
+        for (Text line : getLore(item)) {
+            if (matcher.reset(line.getString()).find()) {
+                return matcher;
+            }
+        }
         return null;
     }
 

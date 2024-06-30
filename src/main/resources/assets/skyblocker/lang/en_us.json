@@ -280,6 +280,12 @@
 
   "skyblocker.config.helpers": "Helpers",
 
+  "skyblocker.config.helpers.bazaar": "Bazaar",
+  "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
+  "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Highlights orders with items or coins to claim.",
+  "skyblocker.config.helpers.bazaar.highlightingScheme": "Highlighting Scheme",
+  "skyblocker.config.helpers.bazaar.highlightingScheme.@Tooltip": "Order Type: Highlight items based on whether you have coins or items to claim. Dark green when items, gold when coins.\n\nFulfillment: Highlight items based on the % of the order that is filled. Yellow for 0-99%, green at 100%.\n\n\nExpired orders are highlighted with red regardless of this setting.",
+
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
