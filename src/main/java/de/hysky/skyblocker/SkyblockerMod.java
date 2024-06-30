@@ -36,6 +36,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
@@ -105,6 +106,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Utils.init();
         SkyblockerConfigManager.init();
         SkyblockerScreen.initClass();
+        ProfileViewerScreen.initClass();
         Tips.init();
         NEURepoManager.init();
         //ImageRepoLoader.init();

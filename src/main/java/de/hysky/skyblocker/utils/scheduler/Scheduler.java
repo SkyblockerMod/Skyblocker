@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.scheduler;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -73,18 +75,56 @@ public class Scheduler {
         }
     }
 
+    /**
+     * Creates a command that queues a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
+     *
+     * @param screenFactory the factory of the screen to open
+     * @return the command
+     */
+    public static Command<FabricClientCommandSource> queueOpenScreenFactoryCommand(Function<CommandContext<FabricClientCommandSource>, Screen> screenFactory) {
+        return context -> queueOpenScreen(screenFactory.apply(context));
+    }
+
+    /**
+     * Creates a command that queues a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
+     *
+     * @param screenSupplier the supplier of the screen to open
+     * @return the command
+     */
     public static Command<FabricClientCommandSource> queueOpenScreenCommand(Supplier<Screen> screenSupplier) {
-        return context -> INSTANCE.queueOpenScreen(screenSupplier);
+        return context -> queueOpenScreen(screenSupplier.get());
+    }
+
+    /**
+     * Creates a command that queues a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
+     *
+     * @param screen the screen to open
+     * @return the command
+     */
+    public static Command<FabricClientCommandSource> queueOpenScreenCommand(Screen screen) {
+        return context -> queueOpenScreen(screen);
     }
 
     /**
      * Schedules a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
      *
+     * @deprecated Use {@link #queueOpenScreen(Screen)} instead
      * @param screenSupplier the supplier of the screen to open
      * @see #queueOpenScreenCommand(Supplier)
      */
-    public int queueOpenScreen(Supplier<Screen> screenSupplier) {
-        MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screenSupplier.get()));
+    @Deprecated(forRemoval = true)
+    public static int queueOpenScreen(Supplier<Screen> screenSupplier) {
+        return queueOpenScreen(screenSupplier.get());
+    }
+
+    /**
+     * Schedules a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
+     *
+     * @param screen the screen to open
+     * @see #queueOpenScreenFactoryCommand(Function)
+     */
+    public static int queueOpenScreen(Screen screen) {
+        MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
         return Command.SINGLE_SUCCESS;
     }
 

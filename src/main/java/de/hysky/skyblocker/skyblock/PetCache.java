@@ -1,22 +1,10 @@
 package de.hysky.skyblocker.skyblock;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.concurrent.CompletableFuture;
-import java.util.Optional;
-
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -26,6 +14,16 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Doesn't work with auto pet right now because thats complicated.
@@ -135,12 +133,13 @@ public class PetCache {
 		return CACHED_PETS.containsKey(uuid) && CACHED_PETS.get(uuid).containsKey(profileId) ? CACHED_PETS.get(uuid).get(profileId) : null;
 	}
 
-	public record PetInfo(String type, double exp, String tier, Optional<String> uuid) {
+	public record PetInfo(String type, double exp, String tier, Optional<String> uuid, Optional<String> item) {
 		public static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("type").forGetter(PetInfo::type),
 				Codec.DOUBLE.fieldOf("exp").forGetter(PetInfo::exp),
 				Codec.STRING.fieldOf("tier").forGetter(PetInfo::tier),
-				Codec.STRING.optionalFieldOf("uuid").forGetter(PetInfo::uuid))
+				Codec.STRING.optionalFieldOf("uuid").forGetter(PetInfo::uuid),
+				Codec.STRING.optionalFieldOf("heldItem").forGetter(PetInfo::item))
 				.apply(instance, PetInfo::new));
 		private static final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, PetInfo>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING,
 				Codec.unboundedMap(Codec.STRING, CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new)

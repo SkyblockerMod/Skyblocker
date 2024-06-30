@@ -32,10 +32,10 @@ public class ElectionWidget extends Widget {
 
     static {
         MAYOR_DATA.put("Aatrox", Ico.DIASWORD);
-        MAYOR_DATA.put("Cole", Ico.PICKAXE);
+        MAYOR_DATA.put("Cole", Ico.IRON_PICKAXE);
         MAYOR_DATA.put("Diana", Ico.BONE);
         MAYOR_DATA.put("Diaz", Ico.GOLD);
-        MAYOR_DATA.put("Finnegan", Ico.HOE);
+        MAYOR_DATA.put("Finnegan", Ico.IRON_HOE);
         MAYOR_DATA.put("Foxy", Ico.SUGAR);
         MAYOR_DATA.put("Paul", Ico.COMPASS);
         MAYOR_DATA.put("Scorpius", Ico.MOREGOLD);

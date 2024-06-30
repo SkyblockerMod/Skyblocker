@@ -82,14 +82,14 @@ public class GardenSkillsWidget extends Widget {
         Text speed = Widget.simpleEntryText(67, "SPD", Formatting.WHITE);
         IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
         Text farmfort = Widget.simpleEntryText(68, "FFO", Formatting.GOLD);
-        IcoTextComponent ffo = new IcoTextComponent(Ico.HOE, farmfort);
+        IcoTextComponent ffo = new IcoTextComponent(Ico.IRON_HOE, farmfort);
 
         TableComponent tc = new TableComponent(2, 1, Formatting.YELLOW.getColorValue());
         tc.addToCell(0, 0, spd);
         tc.addToCell(1, 0, ffo);
         this.addComponent(tc);
         
-        this.addComponent(new IcoTextComponent(Ico.HOE, PlayerListMgr.textAt(70)));
+        this.addComponent(new IcoTextComponent(Ico.IRON_HOE, PlayerListMgr.textAt(70)));
 
         ProgressComponent pc2;
         Matcher milestoneMatcher = PlayerListMgr.regexAt(69, MS_PATTERN);

@@ -1,16 +1,14 @@
 package de.hysky.skyblocker.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
-
 import de.hysky.skyblocker.utils.Http.ApiResponse;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Contains only basic helpers for using Http APIs
