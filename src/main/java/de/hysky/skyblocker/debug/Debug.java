@@ -34,6 +34,7 @@ public class Debug {
 
 	private static boolean showInvisibleArmorStands = false;
 	private static boolean webSocketDebug = false;
+	private static boolean stpGlobal = false;
 
 	public static boolean debugEnabled() {
 		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment();
@@ -47,6 +48,10 @@ public class Debug {
 		return webSocketDebug;
 	}
 
+	public static boolean stpGlobal() {
+		return stpGlobal;
+	}
+
 	@Init
 	public static void init() {
 		if (debugEnabled()) {
@@ -58,6 +63,7 @@ public class Debug {
 					.then(toggleShowingInvisibleArmorStands())
 					.then(dumpArmorStandHeadTextures())
 					.then(toggleWebSocketDebug())
+					.then(toggleSTPGlobal())
 			)));
 			ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 				if (screen instanceof HandledScreen<?> handledScreen) {
@@ -98,6 +104,14 @@ public class Debug {
 				.executes(context -> {
 					webSocketDebug = !webSocketDebug;
 					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledWebSocketDebug", webSocketDebug)));
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> toggleSTPGlobal() {
+		return literal("toggleSTPGlobal")
+				.executes(context -> {
+					stpGlobal = !stpGlobal;
 					return Command.SINGLE_SUCCESS;
 				});
 	}

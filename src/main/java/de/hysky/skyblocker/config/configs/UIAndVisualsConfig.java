@@ -32,6 +32,9 @@ public class UIAndVisualsConfig {
     public boolean showEquipmentInInventory = true;
 
     @SerialEntry
+    public STP skyblockerTexturePredicates = new STP();
+
+    @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
     @SerialEntry
@@ -66,6 +69,20 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public CompactDamage compactDamage = new CompactDamage();
+
+    public static class STP {
+        @SerialEntry
+        public boolean skyblockItemTextures = true;
+
+        @SerialEntry
+        public boolean universalItemTextures = true;
+
+        @SerialEntry
+        public boolean armorTextures = true;
+
+        @SerialEntry
+        public boolean blockTextures = true;
+    }
 
     public static class ChestValue {
         @SerialEntry

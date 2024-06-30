@@ -1,3 +1,7 @@
 accessWidener v2 named
 
+# Command Argument Types
 accessible field net/minecraft/command/argument/BlockPosArgumentType EXAMPLES Ljava/util/Collection;
+
+# Skyblocker Texture Predicates
+accessible class net/minecraft/client/render/model/json/ModelOverrideList$BakedOverride

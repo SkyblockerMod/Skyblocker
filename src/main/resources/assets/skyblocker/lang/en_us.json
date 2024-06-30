@@ -645,6 +645,8 @@
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
   "skyblocker.config.quickNav.enableQuickNav": "Enable Quick Navigation",
 
+  "skyblocker.pack.outdated": "(Made for an older version of Skyblocker)",
+
   "skyblocker.config.slayer": "Slayers",
 
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
@@ -764,6 +766,13 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip": "The maximum number of suggested items to show.",
 
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
+
+  "skyblocker.config.uiAndVisuals.skyblockerTexturePredicates": "Skyblocker Texture Predicates",
+  "skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.armorTextures": "Armor Re-texturing",
+  "skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.blockTextures": "Block Re-texturing",
+  "skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.skyblockItemTextures": "Skyblock Item Re-texturing",
+  "skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.universalItemTextures": "Universal Item Re-texturing",
+  "skyblocker.config.uiAndVisuals.skyblockerTexturePredicates.note": "Note: Texture Packs may require that this option be enabled.",
 
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy tab HUD (Temporarily disabled outside dungeons)",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",

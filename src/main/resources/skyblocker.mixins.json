@@ -57,7 +57,21 @@
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",
-    "jgit.SystemReaderMixin"
+    "jgit.SystemReaderMixin",
+    "stp.AbstractPackAccessor",
+    "stp.ArmorFeatureRendererMixin",
+    "stp.BlockModelsMixin",
+    "stp.ItemModelsMixin",
+    "stp.EntryListWidgetInvoker",
+    "stp.JsonUnbakedModelAccessor",
+    "stp.LivingEntityRendererMixin",
+    "stp.ModelOverrideDeserializerMixin",
+    "stp.ModelOverrideListMixin",
+    "stp.ModelOverrideMixin",
+    "stp.PackScreenMixin",
+    "stp.ResourcePackEntryMixin",
+    "stp.ResourcePackProfileMixin",
+    "stp.SodiumChunkBuilderMeshingTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1

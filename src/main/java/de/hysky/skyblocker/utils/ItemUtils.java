@@ -167,7 +167,7 @@ public final class ItemUtils {
                             + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
                 }
             }
-            case "RUNE" -> {
+            case "RUNE", "UNIQUE_RUNE" -> {
                 if (customData.contains("runes")) {
                     NbtCompound runes = customData.getCompound("runes");
                     String rune = runes.getKeys().stream().findFirst().orElse("");

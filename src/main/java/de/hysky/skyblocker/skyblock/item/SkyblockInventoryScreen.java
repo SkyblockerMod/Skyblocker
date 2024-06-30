@@ -8,6 +8,8 @@ import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -21,6 +23,8 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.nbt.visitor.StringNbtWriter;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +54,12 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             .xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
-    private static final Identifier EMPTY_SLOT = Identifier.of(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
+    private static final Int2ObjectMap<Identifier> SLOT_TEXTURES = Util.make(new Int2ObjectOpenHashMap<>(), map -> {
+        map.put(0, Identifier.of(SkyblockerMod.NAMESPACE, "equipment/necklace"));
+        map.put(1, Identifier.of(SkyblockerMod.NAMESPACE, "equipment/cloak"));
+        map.put(2, Identifier.of(SkyblockerMod.NAMESPACE, "equipment/belt"));
+        map.put(3, Identifier.of(SkyblockerMod.NAMESPACE, "equipment/gloves"));
+    });
     private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
     private final Slot[] equipmentSlots = new Slot[4];
@@ -110,8 +119,9 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
         Slot slot = handler.slots.get(45);
         ((SlotAccessor) slot).setX(slot.x + 21);
+
         for (int i = 0; i < 4; i++) {
-            equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
+            equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18, SLOT_TEXTURES.get(i));
         }
     }
 
@@ -171,15 +181,17 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawSlot(DrawContext context, Slot slot) {
         super.drawSlot(context, slot);
-        if (slot instanceof EquipmentSlot && !slot.hasStack()) {
-            context.drawGuiTexture(EMPTY_SLOT, slot.x, slot.y, 16, 16);
+        if (slot instanceof EquipmentSlot equipmentSlot && !slot.hasStack()) {
+            context.drawGuiTexture(equipmentSlot.slotTexture, slot.x, slot.y, 16, 16);
         }
     }
 
     private static class EquipmentSlot extends Slot {
+    	private final Identifier slotTexture;
 
-        public EquipmentSlot(Inventory inventory, int index, int x, int y) {
+        public EquipmentSlot(Inventory inventory, int index, int x, int y, Identifier texture) {
             super(inventory, index, x, y);
+            this.slotTexture = texture;
         }
 
         @Override

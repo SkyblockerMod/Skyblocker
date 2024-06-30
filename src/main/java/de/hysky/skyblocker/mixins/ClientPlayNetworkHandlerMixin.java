@@ -26,14 +26,17 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -137,6 +140,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
         EggFinder.checkIfEgg(armorStandEntity);
+        attachArmorStandRef(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
             CompactDamage.compactDamage(armorStandEntity);
         } catch (Exception e) {
@@ -146,6 +150,16 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
     private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-        EggFinder.checkIfEgg(entity);
+        if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
+
+        EggFinder.checkIfEgg(armorStandEntity);
+        attachArmorStandRef(armorStandEntity);
+    }
+
+    @Unique
+    private static void attachArmorStandRef(ArmorStandEntity armorStand) {
+        ItemStack equippedStack = armorStand.getEquippedStack(EquipmentSlot.MAINHAND);
+
+        if (!equippedStack.isEmpty()) equippedStack.setHolder(armorStand); //Retcon the vanilla system for our own uses
     }
 }
