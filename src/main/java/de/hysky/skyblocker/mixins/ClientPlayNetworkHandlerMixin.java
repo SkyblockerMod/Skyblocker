@@ -16,6 +16,7 @@ import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.slayers.SlayerMobs;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -112,6 +113,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
             DungeonScore.handleEntityDeath(entity);
             TheEnd.onEntityDeath(entity);
+            SlayerMobs.onEntityDeath(entity);
         }
         return entity;
     }
@@ -119,6 +121,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
+
+        // Don't want to waste resources, so if the entities been in the world a while we ignore it. Slightly more lenience on Boss' age because it's more important we don't miss it
+        if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW  && entity.age < 30 && SlayerMobs.isSlayerMiniMob(armorStandEntity)
+        || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && entity.age < 40 && SlayerMobs.isSlayer(armorStandEntity)) {
+            SlayerMobs.setSlayerMobGlow(armorStandEntity);
+        }
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.FirePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(armorStandEntity);
 

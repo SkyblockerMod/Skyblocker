@@ -4,6 +4,16 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 public class SlayersConfig {
     @SerialEntry
+    public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.OFF;
+
+    @SerialEntry
+    public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.OFF;
+
+    public enum HighlightSlayerEntities {
+        OFF, GLOW, HITBOX
+    }
+
+    @SerialEntry
     public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
     @SerialEntry
