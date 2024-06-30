@@ -66,14 +66,15 @@ Predicates are evaluated in the order in which they are defined, so if one predi
 ```
 
 ### Logical Predicates
-"Logical" predicates perform logical operations on *other* predicates, for example say you want to override a texture when it's Skyblock Item ID is either `POWER_WITHER_CHESTPLATE` or `POWER_WITHER_LEGGINGS`, due to the default behavior requiring a match for all specified predicates these overrides would need to be defined separately despite doing the same thing; logical predicates solve this issue by allowing you to perform "OR"s or "AND"s on a list of predicates.<br>
+"Logical" predicates perform logical operations on *other* predicates, for example say you want to override a texture when it's Skyblock Item ID is either `POWER_WITHER_CHESTPLATE` or `POWER_WITHER_LEGGINGS`, due to the default behavior requiring a match for all specified predicates these overrides would need to be defined separately despite doing the same thing; logical predicates solve this issue by allowing you to perform "OR"s, "AND"s, or "NOT"s on a list of predicates.<br>
 
 | Predicate ID   | Type           | Description                                           | Since  |
 |----------------|----------------|-------------------------------------------------------|--------|
 | skyblocker:or  | Predicate List | Performs a Logical OR on all predicates in the list.  | 1.22.0 |
-| skyblocker:and | Predicate List | Performs a Logical AND on all predicates in the list. | 1.22.0 |<br><br>
+| skyblocker:and | Predicate List | Performs a Logical AND on all predicates in the list. | 1.22.0 |
+| skyblocker:not | Predicate List | Performs a Logical NOT on all predicates in the list. | 1.22.0 |<br><br>
 
-When using a logical predicate, regular predicates must all be specified in an `Object` format with an `id` field representing the predicate's id. For predicates which are objects, the predicate's fields are simply specified normally alongside the predicate id field. For predicates which *are not* objects, their value must be specificed in a field named colloquially as `value`. Both the Logical AND and OR use the same format for listing predicates, see some examples below:
+When using a logical predicate, regular predicates must all be specified in an `Object` format with an `id` field representing the predicate's id. For predicates which are objects, the predicate's fields are simply specified normally alongside the predicate id field. For predicates which *are not* objects, their value must be specificed in a field named colloquially as `value`. The Logical AND, OR, and NOT predicates use the same format for listing predicates, see some examples below:
 
 #### Examples
 Say you wanted to perform a Logical OR on two `item_id` predicates, you can do this by:<br>
@@ -106,6 +107,18 @@ If you wanted to perform a Logical AND on an item's id and name, this can be don
 			"matchType": "CONTAINS",
 			"target": "NAME",
 			"string": "Withered"
+		}
+	]
+}
+```
+If you want to check whether a predicate or multiple predicates are false you can do this with the Logical NOT predicate like so:<br>
+
+```json
+"predicate": {
+	"skyblocker:not": [ //Returns true if the item id is not HYPERION
+		{
+			"id": "skyblocker:item_id",
+			"value": "HYPERION"
 		}
 	]
 }
@@ -168,6 +181,8 @@ As expected you will need to define a model file for your custom item, this mode
 
 ## Armor Re-texturing
 With Armor re-texturing you specify which armor layers you want to be used when the specified overrides (and predicates) match. You're also able to use a specific layer for an override avoiding the need to put more specific armor texture overrides for the same set in different files and hope that the load order is sufficient enough for it to work out. All overrides must be specified in the `assets/skyblocker/overrides/armor` folder, using subdirectories inside of there is also supported. The name of the file is up to you and doesn't matter.<br><br>
+
+Skyblocker also supports **re-texturing player heads** via this system!
 
 ### Layers
 For each armour layer you specify its `id`, optionally its `suffix`, and whether the layer should be `dyeable` which is whether its affected by the armor's current vanilla dye color (if applied). All texture files must go into the `assets/minecraft/textures/models/armor` folder.

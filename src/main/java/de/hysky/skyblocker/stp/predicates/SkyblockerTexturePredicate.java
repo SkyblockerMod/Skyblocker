@@ -8,6 +8,6 @@ import net.minecraft.item.ItemStack;
 /**
  * Interface implemented by all Skyblocker Texture Predicates.
  */
-public sealed interface SkyblockerTexturePredicate extends Predicate<ItemStack> permits AndPredicate, CustomDataPredicate, ItemIdPredicate, LocationPredicate, OrPredicate, PetInfoPredicate, RegexPredicate, StringPredicate {
+public sealed interface SkyblockerTexturePredicate extends Predicate<ItemStack> permits AndPredicate, CustomDataPredicate, ItemIdPredicate, LocationPredicate, NotPredicate, OrPredicate, PetInfoPredicate, RegexPredicate, StringPredicate {
 	SkyblockerPredicateType<?> getType();
 }
