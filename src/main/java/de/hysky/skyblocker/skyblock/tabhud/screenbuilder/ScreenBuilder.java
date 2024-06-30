@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import com.google.gson.JsonObject;
@@ -147,6 +148,10 @@ public class ScreenBuilder {
         return positioning.get(widgetInternalId);
     }
 
+    public void forEachPositionRuleEntry(BiConsumer<String, PositionRule> action) {
+        positioning.forEach(action);
+    }
+
     public PositionRule getPositionRuleOrDefault(String widgetInternalId) {
         PositionRule positionRule = getPositionRule(widgetInternalId);
         return positionRule == null ? PositionRule.DEFAULT : positionRule;
@@ -253,7 +258,7 @@ public class ScreenBuilder {
             case MAIN_TAB -> mainTabScreen;
             case SECONDARY_TAB -> secondaryTabScreen;
             case HUD -> hudScreen;
-            case null -> List.of();
+            case null, default -> List.of();
         };
     }
 

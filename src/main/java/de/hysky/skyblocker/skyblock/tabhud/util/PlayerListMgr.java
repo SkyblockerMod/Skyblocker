@@ -57,8 +57,19 @@ public class PlayerListMgr {
 			playerList = cpnwh.getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList();
 		}
 
-		// TODO DUNGEONS CHECK
-		if (!(MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible())) {
+		if (Utils.isInDungeons()) {
+			tabWidgetsToShow.clear();
+			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Buffs"));
+			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Deaths"));
+			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Downed"));
+			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Puzzles"));
+			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Discoveries"));
+			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Info"));
+			for (int i = 1; i < 6; i++) {
+				tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Player " + i));
+			}
+		}
+		else if (!(MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible())) {
 			updateWidgetsFrom(playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).toList());
 		}
 

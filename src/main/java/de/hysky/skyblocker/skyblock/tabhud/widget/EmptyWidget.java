@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.Text;
 
+// TODO remove this class
 public class EmptyWidget extends HudWidget {
     public EmptyWidget() {
         super(Text.empty(), 0, "empty");
@@ -15,4 +16,5 @@ public class EmptyWidget extends HudWidget {
     public boolean shouldRender(Location location) {
         return false;
     }
+
 }

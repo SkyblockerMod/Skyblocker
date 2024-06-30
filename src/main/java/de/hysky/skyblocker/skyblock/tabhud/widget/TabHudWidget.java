@@ -54,4 +54,5 @@ public abstract class TabHudWidget extends HudWidget {
     public final void addComponent(Component c) {
         cachedComponents.add(c);
     }
+
 }
