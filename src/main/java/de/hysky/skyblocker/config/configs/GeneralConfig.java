@@ -131,6 +131,9 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean dungeonQuality = true;
+
+        @SerialEntry
+        public boolean enableEstimatedItemValue = true;
     }
 
     public enum Average {

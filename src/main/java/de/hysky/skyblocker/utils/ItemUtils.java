@@ -11,11 +11,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
+import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentHolder;
@@ -58,7 +61,14 @@ public final class ItemUtils {
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
-            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            return Command.SINGLE_SUCCESS;
+        });
+    }
+
+    public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemNetworthCalculationsCommand() {
+        return literal("dumpHeldItemNetworthCalcs").executes(context -> {
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(context.getSource().getPlayer().getMainHandStack()).calculations()).getOrThrow())));
             return Command.SINGLE_SUCCESS;
         });
     }
@@ -121,19 +131,28 @@ public final class ItemUtils {
     }
 
     /**
-     * Gets the bazaar sell price or the lowest bin of the item with the specified id.
+     * Gets the bazaar sell price or the lowest bin based on the id of the item stack.
+     * 
+     * @see {@link #getItemPrice(String, boolean)}
+     */
+    public static DoubleBooleanPair getItemPrice(@Nullable String id) {
+        return getItemPrice(id, false);
+    }
+
+    /**
+     * Gets the bazaar sell or buy price, or the lowest bin of the item with the specified id.
      *
      * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
-    public static DoubleBooleanPair getItemPrice(@Nullable String id) {
+    public static DoubleBooleanPair getItemPrice(@Nullable String id, boolean useBazaarBuyPrice) {
         JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
         JsonObject lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
         if (id == null || id.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
 
         if (bazaarPrices.has(id)) {
-            JsonElement sellPrice = bazaarPrices.get(id).getAsJsonObject().get("sellPrice");
+            JsonElement sellPrice = bazaarPrices.get(id).getAsJsonObject().get(useBazaarBuyPrice ? "buyPrice" : "sellPrice");
             boolean isPriceNull = sellPrice.isJsonNull();
             return DoubleBooleanPair.of(isPriceNull ? 0 : sellPrice.getAsDouble(), !isPriceNull);
         }
