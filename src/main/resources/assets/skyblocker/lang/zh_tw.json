@@ -716,5 +716,19 @@
     "skyblocker.tips.customDungeonSecretWaypoints": "你可以使用 /skyblocker dungeons secrets addWaypoint 將自訂秘密路徑點新增到任何地下城房間。",
     "skyblocker.waypoints.ordered.export.success": "成功將路徑點複製到剪貼簿！",
     "skyblocker.shortcuts.commandArg.tooltip": "替換具有多個單字/參數的指令的一個或多個單字/參數，而不是匹配整個指令。",
-    "skyblocker.waypoints.ordered.export.fail": "§c路徑點匯出失敗，請檢查latest.log以取得更多資訊。"
+    "skyblocker.waypoints.ordered.export.fail": "§c路徑點匯出失敗，請檢查latest.log以取得更多資訊。",
+    "skyblocker.tips.contribute": "歡迎對模組做出貢獻！請參閱 https://github.com/SkyblockerMod/Skyblocker/wiki/contribute 以了解更多資訊。",
+    "skyblocker.museum.cannotResync": "無法重新同步你的博物館物品捐贈！請注意，此操作每兩天僅可執行一次。",
+    "skyblocker.museum.resyncSuccess": "已成功重新同步你的博物館物品捐贈！",
+    "skyblocker.museum.resyncFailure": "無法重新同步你的博物館物品捐贈！",
+    "skyblocker.api.token.authFailure": "無法刷新你的Skyblocker API令牌，某些功能可能暫時無法使用！",
+    "skyblocker.api.token.noProfileKeys": "無法取得你的個人資料密鑰！該模組的某些功能可能暫時無法使用 :(（你的遊戲已運行了24小時以上嗎？）。要重新啟動這些功能，請重新啟動遊戲。",
+    "skyblocker.config.eventNotifications.criterion": "通知層級",
+    "skyblocker.config.mining.crystalHollows.nucleusWaypoints": "Nucleus路徑點",
+    "skyblocker.config.mining.crystalHollows.nucleusWaypoints.@Tooltip": "顯示前往Nucleus的路徑點。",
+    "skyblocker.skyblockerScreen": "Skyblocker主介面",
+    "skyblocker.config.mining.commissionHighlight": "高亮顯示已完成的任務",
+    "skyblocker.tips.waypoints": "你可以使用 /skyblocker waypoints 指令在任何島嶼上匯入（包括skytils）、新增、刪除和切換路徑點。",
+    "skyblocker.tips.visitorHelper": "點擊訪客助手中的商品名稱即可從集市購買。點選[Copy Amount]可以將數量複製到剪貼簿。",
+    "skyblocker.tips.profileViewer": "你可以使用 /pv 查看其他玩家的個人檔案。"
 }
