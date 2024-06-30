@@ -4,6 +4,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -29,12 +30,13 @@ public class TooltipManager {
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),
 			new AvgBinTooltip(4),
-			new DungeonQualityTooltip(5),
-			new MotesTooltip(6),
-			new ObtainedDateTooltip(7),
-			new MuseumTooltip(8),
-			new ColorTooltip(9),
-			new AccessoryTooltip(10),
+			new CraftPriceTooltip(5),
+			new DungeonQualityTooltip(6),
+			new MotesTooltip(7),
+			new ObtainedDateTooltip(8),
+			new MuseumTooltip(9),
+			new ColorTooltip(10),
+			new AccessoryTooltip(11),
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
