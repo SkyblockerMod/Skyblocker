@@ -23,7 +23,7 @@ public class QuickNavButton extends ClickableWidget {
     private final String command;
     private final ItemStack icon;
 
-    private static final long TOGGLE_DURATION = 250;
+    private static final long TOGGLE_DURATION = 1000;
     private long toggleTime;
 
     private float alpha = 1.0f;
@@ -134,6 +134,5 @@ public class QuickNavButton extends ClickableWidget {
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-    }
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 }
