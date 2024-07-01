@@ -48,7 +48,7 @@ public class CommunityShopAdder extends SlotTextAdder {
 				String lastLine = lore.getLast().getString();
 				return List.of(SlotText.bottomLeft(switch (lastLine) {
 					case "Maxed out!" -> Text.literal("Max").withColor(0xfab387);
-					case "Currently upgrading!" -> Text.literal("⏰").withColor(0xf9e2af).formatted(Formatting.BOLD);
+					case "Currently upgrading!", "Click to instantly upgrade!" -> Text.literal("⏰").withColor(0xf9e2af).formatted(Formatting.BOLD);
 					case "Click to claim!" -> Text.literal("✅").withColor(0xa6e3a1).formatted(Formatting.BOLD);
 					default -> Text.literal(String.valueOf(RomanNumerals.romanToDecimal(roman))).withColor(0xcba6f7);
 				}));
