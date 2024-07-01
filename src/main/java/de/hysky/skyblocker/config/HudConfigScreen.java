@@ -56,13 +56,13 @@ public abstract class HudConfigScreen extends Screen {
     }
 
     /**
-     * Renders the widgets using the default {@link HudWidget#render(DrawContext, boolean)} method. Override to change the behavior.
+     * Renders the widgets using the default {@link HudWidget#render(DrawContext)} method. Override to change the behavior.
      * @param context the context to render in
      * @param widgets the widgets to render
      */
     protected void renderWidget(DrawContext context, List<HudWidget> widgets) {
         for (HudWidget widget : widgets) {
-            widget.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
+            widget.render(context);
         }
     }
 
