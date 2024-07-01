@@ -27,12 +27,13 @@ public class TooltipManager {
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),
 			new AvgBinTooltip(4),
-			new DungeonQualityTooltip(5),
-			new MotesTooltip(6),
-			new ObtainedDateTooltip(7),
-			new MuseumTooltip(8),
-			new ColorTooltip(9),
-			new AccessoryTooltip(10),
+			new EstimatedItemValueTooltip(5),
+			new DungeonQualityTooltip(6),
+			new MotesTooltip(7),
+			new ObtainedDateTooltip(8),
+			new MuseumTooltip(9),
+			new ColorTooltip(10),
+			new AccessoryTooltip(11),
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 

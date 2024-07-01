@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.item;
 
 import java.net.URI;
 import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -12,22 +11,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 
-import de.hysky.skyblocker.utils.Http;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public class PlayerHeadHashCache {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final IntOpenHashSet CACHE = new IntOpenHashSet();
 
-	public static void init() {
-		CompletableFuture.runAsync(PlayerHeadHashCache::loadSkins);
-	}
-
-	private static void loadSkins() {
+	static void loadSkins(JsonArray items) {
 		try {
-			String response = Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/items");
-			JsonArray items = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("items");
-
 			items.asList().stream()
 			.map(JsonElement::getAsJsonObject)
 			.filter(item -> item.get("material").getAsString().equals("SKULL_ITEM"))
