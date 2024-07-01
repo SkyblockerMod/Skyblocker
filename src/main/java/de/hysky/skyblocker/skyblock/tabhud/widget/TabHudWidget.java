@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TabHudWidget extends HudWidget {
+public abstract class TabHudWidget extends ComponentBasedWidget {
     private final String hypixelWidgetName;
     private final List<Component> cachedComponents = new ArrayList<>();
 

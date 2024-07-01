@@ -34,7 +34,7 @@ public class DungeonDownedWidget extends TabHudWidget {
             }
             int idx = down.indexOf(": ");
             Text downed = (idx == -1) ? null
-                    : HudWidget.simpleEntryText(down.substring(idx + 2), "Downed: ", format);
+                    : simpleEntryText(down.substring(idx + 2), "Downed: ", format);
             IcoTextComponent d = new IcoTextComponent(Ico.SKULL, downed);
             this.addComponent(d);
         }

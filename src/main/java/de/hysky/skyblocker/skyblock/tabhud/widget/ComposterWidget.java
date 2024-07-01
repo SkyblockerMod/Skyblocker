@@ -24,7 +24,6 @@ public class ComposterWidget extends TabHudWidget {
 
     @Override
     public void updateContent(List<Text> lines) {
-        int offset = (PlayerListMgr.strAt(46) != null) ? 1 : 0;
 
         for (Text line : lines) {
             switch (line.getString().toLowerCase()) {
@@ -35,10 +34,5 @@ public class ComposterWidget extends TabHudWidget {
                 default -> this.addComponent(new PlainTextComponent(line));
             }
         }
-
-        this.addSimpleIcoText(Ico.SAPLING, "Organic Matter:", Formatting.YELLOW, 48 + offset);
-        this.addSimpleIcoText(Ico.FURNACE, "Fuel:", Formatting.BLUE, 49 + offset);
-        this.addSimpleIcoText(Ico.CLOCK, "Time Left:", Formatting.RED, 50 + offset);
-        this.addSimpleIcoText(Ico.COMPOSTER, "Stored Compost:", Formatting.DARK_GREEN, 51 + offset);
     }
 }

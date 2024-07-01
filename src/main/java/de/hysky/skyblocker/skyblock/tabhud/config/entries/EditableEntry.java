@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
@@ -23,7 +24,7 @@ public class EditableEntry extends WidgetsListEntry {
         editButton = ButtonWidget.builder(Text.literal("EDIT"), button -> this.parent.clickAndWaitForServer(this.slotId, 0))
                 .size(32, 12)
                 .build();
-        this.locked = ItemUtils.getLoreLineIf(icon, s -> s.startsWith("Click to edit")) == null;
+        this.locked = ItemUtils.getLoreLineIf(icon, s -> s.startsWith("Click to edit")) == null || icon.isOf(Items.RED_STAINED_GLASS_PANE);
     }
 
     @Override
