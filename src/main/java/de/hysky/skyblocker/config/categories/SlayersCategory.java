@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
@@ -138,6 +139,18 @@ public class SlayersCategory {
                                 .build())
                         .build())
 
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.blazeSlayer"))
+                        .collapsed(true)
+                        .option(Option.<SlayersConfig.BlazeSlayer.FirePillar>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip")))
+                                .binding(defaults.slayers.blazeSlayer.FirePillarCountdown,
+                                        () -> config.slayers.blazeSlayer.FirePillarCountdown,
+                                        newValue -> config.slayers.blazeSlayer.FirePillarCountdown = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .build())
                 .build();
     }
 }
