@@ -18,12 +18,10 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -69,7 +67,7 @@ public class ScreenMaster {
         ScreenLayer screenLayer;
         if (client.options.playerListKey.isPressed()) {
             if (TabHud.defaultTgl.isPressed()) return;
-            if (TabHud.toggleA.isPressed()) {
+            if (TabHud.toggleSecondary.isPressed()) {
                 screenLayer = ScreenLayer.SECONDARY_TAB;
             } else {
                 screenLayer = ScreenLayer.MAIN_TAB;
@@ -280,7 +278,7 @@ public class ScreenMaster {
                 case MAIN_TAB -> "Main Tab";
                 case SECONDARY_TAB -> "Secondary Tab";
                 case HUD -> "HUD";
-                case DEFAULT -> "You shouldn't be seeing this...";
+                case DEFAULT -> "Default";
             };
         }
     }

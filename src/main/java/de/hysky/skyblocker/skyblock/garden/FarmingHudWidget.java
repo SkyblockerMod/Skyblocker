@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -21,7 +21,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 
-public class FarmingHudWidget extends HudWidget {
+public class FarmingHudWidget extends ComponentBasedWidget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
     public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
             Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
@@ -61,7 +61,10 @@ public class FarmingHudWidget extends HudWidget {
 
     @Override
     public void updateContent() {
-        if (client.player == null) return;
+        if (client.player == null) {
+            addComponent(new PlainTextComponent(Text.literal("Nothing to show :p")));
+            return;
+        }
         ItemStack farmingToolStack = client.player.getMainHandStack();
         if (farmingToolStack == null) return;
         String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));

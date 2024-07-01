@@ -15,8 +15,8 @@ import java.util.List;
 
 public abstract class WidgetsListEntry extends ElementListWidget.Entry<WidgetsListEntry> {
 
-    protected static final Text ENABLED_TEXT = Text.literal("ENABLED").formatted(Formatting.GREEN);
-    protected static final Text DISABLED_TEXT = Text.literal("DISABLED").formatted(Formatting.RED);
+    public static final Text ENABLED_TEXT = Text.literal("ENABLED").formatted(Formatting.GREEN);
+    public static final Text DISABLED_TEXT = Text.literal("DISABLED").formatted(Formatting.RED);
 
     protected final int slotId;
     protected final WidgetsOrderingTab parent;
