@@ -12,6 +12,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,8 +43,6 @@ public class PlayerListHudMixin {
         w = (int) (w / scale);
         h = (int) (h / scale);
 
-        PlayerListMgr.updateFooter(footer);
-
         try {
             ScreenMaster.render(context, w,h);
             // Screen screen = Screen.getCorrect(w, h, footer);
@@ -52,6 +51,11 @@ public class PlayerListHudMixin {
         } catch (Exception e) {
             TabHud.LOGGER.error("[Skyblocker] Encountered unknown exception while drawing default hud", e);
         }
+    }
+
+    @Inject(at = @At("HEAD"), method = "setFooter")
+    public void skblocker$updateFooter(@Nullable Text footer, CallbackInfo info) {
+        PlayerListMgr.updateFooter(footer);
     }
 
 }

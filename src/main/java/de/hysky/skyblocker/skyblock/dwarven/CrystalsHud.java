@@ -23,7 +23,7 @@ public class CrystalsHud {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
     private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
-    private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian");
+    private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
 
 
     public static boolean visible = false;
@@ -72,19 +72,19 @@ public class CrystalsHud {
 
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
-            Map<String,CrystalsWaypoint> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
+            Map<String,MiningLocationLabel> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
 
-            for (CrystalsWaypoint waypoint : ActiveWaypoints.values()) {
-                Color waypointColor = waypoint.category.color;
-                Vector2ic renderPos = transformLocation(waypoint.pos.getX(), waypoint.pos.getZ());
+            for (MiningLocationLabel waypoint : ActiveWaypoints.values()) {
+                int waypointColor = waypoint.category().getColor();
+                Vector2ic renderPos = transformLocation(waypoint.centerPos().getX(), waypoint.centerPos().getZ());
                 int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 
-                if (SMALL_LOCATIONS.contains(waypoint.name.getString())) {//if small location half the location size
+                if (SMALL_LOCATIONS.contains(waypoint.category().getName())) {//if small location half the location size
                     locationSize /= 2;
                 }
 
                 //fill square of size locationSize around the coordinates of the location
-                context.fill(renderPos.x() - locationSize / 2, renderPos.y() - locationSize / 2, renderPos.x() + locationSize / 2, renderPos.y() + locationSize / 2, waypointColor.getRGB());
+                context.fill(renderPos.x() - locationSize / 2, renderPos.y() - locationSize / 2, renderPos.x() + locationSize / 2, renderPos.y() + locationSize / 2, waypointColor);
             }
         }
 
@@ -92,7 +92,7 @@ public class CrystalsHud {
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
             return;
         }
-
+        
         //get player location
         double playerX = CLIENT.player.getX();
         double playerZ = CLIENT.player.getZ();
@@ -109,8 +109,6 @@ public class CrystalsHud {
 
         //draw marker on map
         context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
-
-        //todo add direction (can not work out how to rotate)
         matrices.pop();
     }
 
