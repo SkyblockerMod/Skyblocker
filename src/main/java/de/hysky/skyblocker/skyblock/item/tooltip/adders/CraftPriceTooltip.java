@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
@@ -14,9 +15,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 public class CraftPriceTooltip extends TooltipAdder {
     private final Map<String, Double> cachedCraftCosts = new HashMap<>();
@@ -28,11 +29,10 @@ public class CraftPriceTooltip extends TooltipAdder {
 
     @Override
     public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-        if (!SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost) return;
+        if (SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == GeneralConfig.Craft.OFF) return;
 
-        String neuName = stack.getNeuName();
         String internalID = stack.getSkyblockId();
-        if (neuName == null || internalID == null) return;
+        if (stack.getNeuName() == null || internalID == null) return;
 
         if (TooltipInfoType.LOWEST_BINS.getData() == null || TooltipInfoType.BAZAAR.getData() == null) {
             ItemTooltip.nullWarning();
@@ -43,15 +43,16 @@ public class CraftPriceTooltip extends TooltipAdder {
         if (neuItem == null) return;
 
         List<NEURecipe> neuRecipes = neuItem.getRecipes();
-        if (neuRecipes.isEmpty()) return;
+        if (neuRecipes.isEmpty() || neuRecipes.getFirst().getClass().equals(io.github.moulberry.repo.data.NEUKatUpgradeRecipe.class)) return;
 
         double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
+        cachedCraftCosts.clear();
 
         if (totalCraftCost == 0) return;
 
-        lines.add(Text.literal(String.format("%-18s", "Crafting Cost:"))
-                .formatted(Formatting.GOLD)
-                .append(ItemTooltip.getCoinsMessage(totalCraftCost, stack.getCount())));
+        neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(neuIngredient ->
+                lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
+                .append(ItemTooltip.getCoinsMessage(totalCraftCost / neuIngredient.getAmount(), stack.getCount()))));
     }
 
     private double getItemCost(NEURecipe recipe, int depth) {
@@ -69,7 +70,7 @@ public class CraftPriceTooltip extends TooltipAdder {
             double itemCost = 0;
 
             if (TooltipInfoType.BAZAAR.getData().has(inputItemName)) {
-                itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(inputItemName).get("sellPrice").getAsDouble();
+                itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(inputItemName).get(SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost.getOrder()).getAsDouble();
             } else if (TooltipInfoType.LOWEST_BINS.getData().has(inputItemName)) {
                 itemCost = TooltipInfoType.LOWEST_BINS.getData().get(inputItemName).getAsDouble();
             }
