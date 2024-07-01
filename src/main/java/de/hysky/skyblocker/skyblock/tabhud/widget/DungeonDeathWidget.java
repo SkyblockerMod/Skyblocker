@@ -34,7 +34,7 @@ public class DungeonDeathWidget extends TabHudWidget {
             this.addComponent(new IcoTextComponent());
         } else {
             Formatting f = (m.group("deathnum").equals("0")) ? Formatting.GREEN : Formatting.RED;
-            Text d = HudWidget.simpleEntryText(m.group("deathnum"), "Deaths: ", f);
+            Text d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
             IcoTextComponent deaths = new IcoTextComponent(Ico.SKULL, d);
             this.addComponent(deaths);
         }

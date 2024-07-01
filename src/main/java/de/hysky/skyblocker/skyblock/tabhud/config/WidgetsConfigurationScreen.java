@@ -2,9 +2,11 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tab.TabManager;
@@ -29,6 +31,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     private String titleLowercase;
     public final boolean noHandler;
     private String widgetsLayer = null;
+    private Screen parent = null;
 
     private boolean tabPreview = false;
     private PreviewTab previewTab;
@@ -88,26 +91,39 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
             widgetsLayer = widgetLayerToGoTo;
         }
     }
-    // TODO java doc this
+
+    /**
+     * Create the screen for when backed by hypixel's widgets menu
+     * @param handler the container handler
+     * @param titleLowercase the title in lowercase, to figure out where you are
+     */
     public WidgetsConfigurationScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
         this(handler, titleLowercase, Location.UNKNOWN, null);
     }
-    public WidgetsConfigurationScreen(Location targetLocation, String widgetLayerToGoTo) {
+
+    /**
+     * Create the screen specifically for the config screen, the widgets tab will be unavailable
+     * @param targetLocation open the preview to this location
+     * @param widgetLayerToGoTo go to this widget's layer
+     */
+    public WidgetsConfigurationScreen(Location targetLocation, String widgetLayerToGoTo, Screen parent) {
         this(null, "", targetLocation, widgetLayerToGoTo);
+        this.parent = parent;
     }
 
     @Override
     protected void init() {
-        previewTab = new PreviewTab(this.client, this);
+        previewTab = new PreviewTab(this.client, this, false);
+        PreviewTab previewDungeons = new PreviewTab(this.client, this, true);
         if (noHandler)  {
             this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-                    .tabs(this.previewTab)
+                    .tabs(this.previewTab, previewDungeons)
                     .build();
             previewTab.goToLayer(ScreenMaster.getScreenBuilder(currentLocation).getPositionRuleOrDefault(widgetsLayer).screenLayer());
         } else {
             widgetsOrderingTab = new WidgetsOrderingTab(this.client, this.handler);
             this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-                    .tabs(this.widgetsOrderingTab, this.previewTab)
+                    .tabs(this.widgetsOrderingTab, this.previewTab, previewDungeons)
                     .build();
         }
         this.tabNavigation.selectTab(0, false);
@@ -195,8 +211,12 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     public void close() {
-        if (!noHandler) this.client.player.closeHandledScreen();
-        super.close();
+        if (!noHandler) {
+            this.client.player.closeHandledScreen();
+            super.close();
+        } else {
+            client.setScreen(parent);
+        }
     }
 
     @Override
@@ -209,6 +229,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
             this.handler.onClosed(this.client.player);
         }
         handler.removeListener(this);
+        Scheduler.INSTANCE.schedule(PlayerListMgr::updateList, 1);
     }
 
     @Override

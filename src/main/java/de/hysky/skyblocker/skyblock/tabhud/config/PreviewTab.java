@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -8,6 +10,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
@@ -26,6 +29,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +46,19 @@ public class PreviewTab implements Tab {
     private final PreviewWidget previewWidget;
     private final WidgetsConfigurationScreen parent;
     private final WidgetOptionsScrollable widgetOptions;
+    private final boolean dungeon;
     private ScreenMaster.ScreenLayer currentScreenLayer = ScreenMaster.ScreenLayer.MAIN_TAB;
     private final ButtonWidget[] layerButtons;
+    private final TextWidget textWidget;
 
-    public PreviewTab(MinecraftClient client, WidgetsConfigurationScreen parent) {
+    public PreviewTab(MinecraftClient client, WidgetsConfigurationScreen parent, boolean dungeon) {
         this.client = client;
         this.parent = parent;
+        this.dungeon = dungeon;
+        this.textWidget = new TextWidget(
+                Text.literal("This tab is specifically for dungeons, as it currently doesn't have hypixel's system"),
+                client.textRenderer
+        );
 
         previewWidget = new PreviewWidget();
         widgetOptions = new WidgetOptionsScrollable();
@@ -76,7 +87,7 @@ public class PreviewTab implements Tab {
 
     @Override
     public Text getTitle() {
-        return Text.literal("Preview");
+        return Text.literal(dungeon ? "Dungeons Editing" : "Preview");
     }
 
     @Override
@@ -86,17 +97,19 @@ public class PreviewTab implements Tab {
             consumer.accept(layerButton);
         }
         consumer.accept(widgetOptions);
+        if (dungeon) consumer.accept(textWidget);
     }
 
     @Override
     public void refreshGrid(ScreenRect tabArea) {
-        float ratio = Math.min((tabArea.height() - 5) / (float) parent.height, (tabArea.width() - RIGHT_SIDE_WIDTH - 5) / (float) parent.width);
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+        float ratio = Math.min((tabArea.height() - 5) / (parent.height / scale), (tabArea.width() - RIGHT_SIDE_WIDTH - 5) / (parent.width / scale));
         previewWidget.setPosition(5, tabArea.getTop() + 5);
         previewWidget.setWidth((int) (parent.width * ratio));
         previewWidget.setHeight((int) (parent.height * ratio));
         previewWidget.ratio = ratio;
         updatePlayerListFromPreview();
-        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
         screenBuilder.positionWidgets(parent.width, parent.height);
 
         for (int i = 0; i < layerButtons.length; i++) {
@@ -106,13 +119,32 @@ public class PreviewTab implements Tab {
         int optionsY = tabArea.getTop() + 10 + layerButtons.length * 15 + 5;
         widgetOptions.setPosition(tabArea.width() - widgetOptions.getWidth() - 5, optionsY);
         widgetOptions.setHeight(tabArea.height() - optionsY - 5);
+        textWidget.setWidth(tabArea.width());
+        textWidget.setPosition(0, tabArea.getBottom() - 9);
 
         forEachChild(clickableWidget -> clickableWidget.visible = parent.isPreviewVisible() || parent.noHandler);
     }
 
     private void updatePlayerListFromPreview() {
+        if (dungeon) {
+            PlayerListMgr.updateDungeons(DungeonsTabPlaceholder.get());
+            return;
+        }
         if (!parent.isPreviewVisible()) return;
         List<Text> lines = new ArrayList<>();
+
+        // Preview doesn't include any players, so adding this as default
+        lines.add(Text.literal("Players (6)"));
+        lines.add(Text.literal("[PIG").formatted(Formatting.LIGHT_PURPLE)
+                .append(Text.literal("+++").formatted(Formatting.AQUA))
+                .append(Text.literal("] Technoblade").formatted(Formatting.LIGHT_PURPLE))
+        );
+        lines.add(Text.literal("Kevinthegreat1"));
+        lines.add(Text.literal("AzureAaron"));
+        lines.add(Text.literal("LifeIsAParadox"));
+        lines.add(Text.literal("Rime"));
+        lines.add(Text.literal("Vic is a Cat"));
+
         for (int i = 3; i <= 5; i++) {
             ItemStack stack = parent.getHandler().getSlot(i).getStack();
 
@@ -140,7 +172,7 @@ public class PreviewTab implements Tab {
     void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
         widgetOptions.clearWidgets();
         if (hudWidget == null) return;
-        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
         PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
         int width = widgetOptions.getWidth() - widgetOptions.getScrollerWidth();
 
@@ -176,7 +208,7 @@ public class PreviewTab implements Tab {
             String ye = "Layer: " + positionRule.screenLayer().toString();
 
             widgetOptions.addWidget(ButtonWidget.builder(Text.literal(ye), button -> {
-                ScreenBuilder builder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+                ScreenBuilder builder = ScreenMaster.getScreenBuilder(getCurrentLocation());
                 PositionRule rule = builder.getPositionRuleOrDefault(hudWidget.getInternalID());
                 ScreenMaster.ScreenLayer[] values = ScreenMaster.ScreenLayer.values();
                 ScreenMaster.ScreenLayer newLayer = values[(rule.screenLayer().ordinal() + 1) % values.length];
@@ -212,9 +244,13 @@ public class PreviewTab implements Tab {
     }
 
     void updateWidgets() {
-        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
         updatePlayerListFromPreview();
         screenBuilder.positionWidgets(parent.width, parent.height);
+    }
+
+    private Location getCurrentLocation() {
+        return dungeon ? Location.DUNGEON : parent.getCurrentLocation();
     }
 
     /**
@@ -246,7 +282,7 @@ public class PreviewTab implements Tab {
         protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
             hoveredWidget = null;
 
-            ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+            ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
             context.drawBorder(getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
             context.enableScissor(getX(), getY(), getRight(), getBottom());
             MatrixStack matrices = context.getMatrices();
@@ -371,7 +407,7 @@ public class PreviewTab implements Tab {
             // TODO releasing a widget outside of the area causes weird behavior, might wanna look into that
             // Update positioning real
             if (selectedWidget != null && selectedOriginalPos != null) {
-                ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+                ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
                 PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
                 if (oldRule == null) oldRule = PositionRule.DEFAULT;
                 int relativeX = selectedWidget.getX() - selectedOriginalPos.x();
@@ -393,7 +429,7 @@ public class PreviewTab implements Tab {
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+            ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
             if (pickParent && selectedWidget != null && !selectedWidget.equals(hoveredWidget)) {
                 PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
                 if (oldRule == null) oldRule = PositionRule.DEFAULT;
@@ -426,6 +462,33 @@ public class PreviewTab implements Tab {
                 selectedOriginalPos = new ScreenPos(selectedWidget.getX(), selectedWidget.getY());
             }
             return this.active && this.visible && isMouseOver(mouseX, mouseY);
+        }
+
+        @Override
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            if (hoveredWidget != null && hoveredWidget.equals(selectedWidget)) {
+                int multiplier = (modifiers & GLFW.GLFW_MOD_CONTROL) != 0 ? 5 : 1;
+                int x = 0, y = 0;
+                switch (keyCode) {
+                    case GLFW.GLFW_KEY_UP -> y = -multiplier;
+                    case GLFW.GLFW_KEY_DOWN -> y = multiplier;
+                    case GLFW.GLFW_KEY_LEFT -> x = -multiplier;
+                    case GLFW.GLFW_KEY_RIGHT -> x = multiplier;
+                }
+                ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
+                PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(selectedWidget.getInternalID());
+
+                screenBuilder.setPositionRule(selectedWidget.getInternalID(), new PositionRule(
+                        oldRule.parent(),
+                        oldRule.parentPoint(),
+                        oldRule.thisPoint(),
+                        oldRule.relativeX() + x,
+                        oldRule.relativeY() + y,
+                        oldRule.screenLayer()));
+                updateWidgets();
+                return true;
+            }
+            return super.keyPressed(keyCode, scanCode, modifiers);
         }
     }
 
@@ -518,7 +581,7 @@ public class PreviewTab implements Tab {
                     boolean selectedAnchor = false;
                     if (previewWidget.selectedWidget != null) {
                         String internalID = previewWidget.selectedWidget.getInternalID();
-                        PositionRule positionRule = ScreenMaster.getScreenBuilder(parent.getCurrentLocation()).getPositionRule(internalID);
+                        PositionRule positionRule = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(internalID);
                         if (positionRule != null) {
                             PositionRule.Point point = other ? positionRule.parentPoint() : positionRule.thisPoint();
                             selectedAnchor = point.horizontalPoint().ordinal() == i && point.verticalPoint().ordinal() == j;
@@ -546,7 +609,7 @@ public class PreviewTab implements Tab {
         public void onClick(double mouseX, double mouseY) {
             HudWidget affectedWidget = previewWidget.selectedWidget;
             if (hoveredPoint != null && affectedWidget != null) {
-                ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(parent.getCurrentLocation());
+                ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
                 String internalID = affectedWidget.getInternalID();
                 PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(internalID);
                 // Get the x, y of the parent's point

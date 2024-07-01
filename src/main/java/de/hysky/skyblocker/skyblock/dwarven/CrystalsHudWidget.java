@@ -4,6 +4,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -20,23 +22,28 @@ import org.joml.Vector2ic;
 import java.util.List;
 import java.util.Map;
 
-public class CrystalsHud {
+public class CrystalsHudWidget extends HudWidget {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
     private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
     private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
 
+    public static final CrystalsHudWidget INSTANCE = new CrystalsHudWidget();
 
     public static boolean visible = false;
 
+    public CrystalsHudWidget() {
+        super("hud_crystals");
+    }
+
     @Init
     public static void init() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
+        /*ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("crystals")
-                                .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));
+                                .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));*/
 
-        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
+        /*HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
             if (!SkyblockerConfigManager.get().mining.crystalsHud.enabled
                     || CLIENT.player == null
                     || !visible) {
@@ -44,7 +51,7 @@ public class CrystalsHud {
             }
             render(context, SkyblockerConfigManager.get().mining.crystalsHud.x,
                     SkyblockerConfigManager.get().mining.crystalsHud.y);
-        });
+        });*/
     }
 
     protected static int getDimensionsForConfig() {
@@ -53,21 +60,76 @@ public class CrystalsHud {
 
 
     /**
-     * Renders the map to the players UI. renders the background image ({@link CrystalsHud#MAP_TEXTURE}) of the map then if enabled special locations on the map. then finally the player to the map.
+     * Renders the map to the players UI. renders the background image ({@link CrystalsHudWidget#MAP_TEXTURE}) of the map then if enabled special locations on the map. then finally the player to the map.
      *
      * @param context DrawContext to draw map to
      * @param hudX    Top left X coordinate of the map
      * @param hudY    Top left Y coordinate of the map
      */
     private static void render(DrawContext context, int hudX, int hudY) {
+
+    }
+
+    /**
+     * Converts an X and Z coordinate in the crystal hollow to an X and Y coordinate on the map.
+     *
+     * @param x the world X coordinate
+     * @param z the world Z coordinate
+     * @return a vector representing the x and y values
+     */
+    protected static Vector2ic transformLocation(double x, double z) {
+        //converts an x and z to a location on the map
+        int transformedX = (int) ((x - 202) / 621 * 62);
+        int transformedY = (int) ((z - 202) / 621 * 62);
+        transformedX = Math.clamp(transformedX, 0, 62);
+        transformedY = Math.clamp(transformedY, 0, 62);
+
+        return new Vector2i(transformedX, transformedY);
+    }
+
+    /**
+     * Converts yaw to the cardinal directions that a player marker can be rotated towards on a map.
+     * The rotations of a marker follow this order: N, NNE, NE, ENE, E, ESE, SE, SSE, S, SSW, SW, WSW, W, WNW, NW, NNW.
+     * <br><br>
+     * Based off code from {@link net.minecraft.client.render.MapRenderer}
+     */
+    private static float yaw2Cardinal(float yaw) {
+        yaw += 180; //flip direction
+        byte clipped = (byte) ((yaw + (yaw < 0.0 ? -8.0 : 8.0)) * 16.0 / 360.0);
+
+        return (clipped * 360f) / 16f;
+    }
+
+    @Override
+    public boolean shouldRender(Location location) {
+        return location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.crystalsHud.enabled;
+    }
+
+    /**
+     * Works out if the crystals map should be rendered and sets {@link CrystalsHudWidget#visible} accordingly.
+     *
+     */
+    public void update() {
+        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) {
+            visible = false;
+            return;
+        }
+
+        //get if the player is in the crystals
+        visible = Utils.isInCrystalHollows();
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
         //make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
         //and set position and scale
         MatrixStack matrices = context.getMatrices();
         matrices.push();
-        matrices.translate(hudX, hudY, 0f);
+        matrices.translate(x, y, 0f);
         matrices.scale(scale, scale, 0f);
+        w = h = (int) (62 * scale);
 
         //draw map texture
         context.drawTexture(RenderLayer::getGuiTextured, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
@@ -90,6 +152,7 @@ public class CrystalsHud {
 
         //draw player on map
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
+            matrices.pop();
             return;
         }
         //get player location

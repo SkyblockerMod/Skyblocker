@@ -3,6 +3,9 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.garden.FarmingHudConfigScreen;
+import de.hysky.skyblocker.skyblock.garden.FarmingHudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -30,7 +33,7 @@ public class FarmingCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.farmingHud"))
                                 .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new FarmingHudConfigScreen(screen)))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.INSTANCE.getInternalID(), screen)))
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.dicerTitlePrevent"))

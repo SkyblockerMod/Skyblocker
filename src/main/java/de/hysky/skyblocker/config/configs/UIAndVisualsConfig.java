@@ -162,6 +162,9 @@ public class UIAndVisualsConfig {
         public boolean enableHudBackground = true;
 
         @SerialEntry
+        public boolean effectsFromFooter = false;
+
+        @SerialEntry
         public boolean plainPlayerNames = false;
 
         @SerialEntry

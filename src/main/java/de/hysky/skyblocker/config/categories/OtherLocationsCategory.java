@@ -130,7 +130,7 @@ public class OtherLocationsCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.end.screen"))
                                 .text(Text.translatable("text.skyblocker.open")) // Reusing again lol
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.THE_END, EndHudWidget.INSTANCE.getInternalID())))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.THE_END, EndHudWidget.INSTANCE.getInternalID(), screen)))
                                 .build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.end.resetName"))

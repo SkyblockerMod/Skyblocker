@@ -47,24 +47,18 @@ public class JacobsContestWidget extends TabHudWidget {
 
     @Override
     public void updateContent(List<Text> lines) {
-        if (!lines.getFirst().getString().contains("Starts")) {
-            this.addComponent(new IcoTextComponent(Ico.CLOCK, Text.literal("Ends in: ").append(lines.getFirst())));
-            for (int i = 1; i < lines.size(); i++) {
-                this.addComponent(new PlainTextComponent(lines.get(i)));
-            }
-        } else {
-            for (Text line : lines) {
-                String string = line.getString();
-                switch (string.toLowerCase()) {
-                    case String s when s.contains("ends") || s.contains("starts") ->
-                            this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
-                    case String s when s.contains("○") -> {
-                        String trim = string.replace("○", "").trim();
-                        this.addComponent(new IcoTextComponent(FARM_DATA.get(trim), Text.literal(trim)));
-                    }
-                    default -> this.addComponent(new PlainTextComponent(line));
+        for (Text line : lines) {
+            String string = line.getString();
+            switch (string.toLowerCase()) {
+                case String s when s.contains("left") || s.contains("starts") ->
+                        this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
+                case String s when s.contains("○") -> {
+                    String trim = string.replace("○", "").trim();
+                    this.addComponent(new IcoTextComponent(FARM_DATA.get(trim), Text.literal(trim)));
                 }
+                default -> this.addComponent(new PlainTextComponent(line));
             }
+
         }
     }
 }

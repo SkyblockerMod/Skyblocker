@@ -11,10 +11,10 @@ import java.util.Objects;
 
 public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 
-    static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = new Identifier("transferable_list/move_up_highlighted");
-    static final Identifier MOVE_UP_TEXTURE = new Identifier("transferable_list/move_up");
-    static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = new Identifier("transferable_list/move_down_highlighted");
-    static final Identifier MOVE_DOWN_TEXTURE = new Identifier("transferable_list/move_down");
+    static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_up_highlighted");
+    static final Identifier MOVE_UP_TEXTURE = Identifier.ofVanilla("transferable_list/move_up");
+    static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_down_highlighted");
+    static final Identifier MOVE_DOWN_TEXTURE = Identifier.ofVanilla("transferable_list/move_down");
     private final WidgetsOrderingTab parent;
     private boolean upArrowHovered = false;
     private boolean downArrowHovered = false;
