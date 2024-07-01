@@ -90,6 +90,12 @@ base {
 	archivesName = project.archives_base_name
 }
 
+idea {
+	module {
+		excludeDirs.add(file("run"))
+	}
+}
+
 processResources {
 	inputs.property "version", project.version
 
