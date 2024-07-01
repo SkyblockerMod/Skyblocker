@@ -1,22 +1,22 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
-
+import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerMobs;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
@@ -42,7 +42,7 @@ public class WorldRendererMixin {
 		boolean shouldShowBoundingBox = MobBoundingBoxes.shouldDrawMobBoundingBox(entity);
 
 		if (shouldShowBoundingBox) {
-			MobBoundingBoxes.submitBox2BeRendered(entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
+			MobBoundingBoxes.submitBox2BeRendered(entity instanceof ArmorStandEntity e ? SlayerMobs.getSlayerMobBoundingBox(e) : entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
 		}
 	}
 }
