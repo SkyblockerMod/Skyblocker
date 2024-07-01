@@ -9,7 +9,6 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -18,7 +17,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -106,7 +104,7 @@ public class Boulder extends DungeonPuzzle {
                     button = checkForButtonBlocksOnLine(client.world, point1, point2);
                     if (button != null) {
                         // If a button is found, calculate its bounding box
-                        boundingBox = getBlockBoundingBox(client.world, button);
+                        boundingBox = RenderHelper.getBlockBoundingBox(client.world, button);
                         break;
                     }
                 }
@@ -177,18 +175,6 @@ public class Boulder extends DungeonPuzzle {
 
         }
         return null;
-    }
-
-    /**
-     * Retrieves the bounding box of a block in the world.
-     *
-     * @param world The client world.
-     * @param pos   The position of the block.
-     * @return The bounding box of the block.
-     */
-    public static Box getBlockBoundingBox(BlockView world, BlockPos pos) {
-        BlockState blockState = world.getBlockState(pos);
-        return blockState.getOutlineShape(world, pos).getBoundingBox().offset(pos);
     }
 
     @Override
