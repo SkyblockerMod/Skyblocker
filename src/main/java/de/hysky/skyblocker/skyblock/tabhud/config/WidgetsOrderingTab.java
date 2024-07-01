@@ -1,13 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.BooleanEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.DefaultEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.EditableEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.*;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.tab.Tab;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
@@ -17,17 +15,20 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+// TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsOrderingTab implements Tab {
 
     private final WidgetsElementList widgetsElementList;
     private final ButtonWidget back;
     private final ButtonWidget previousPage;
     private final ButtonWidget nextPage;
+    private final ButtonWidget thirdColumnButton;
     private GenericContainerScreenHandler handler;
     private final MinecraftClient client;
     private boolean waitingForServer = false;
@@ -37,13 +38,17 @@ public class WidgetsOrderingTab implements Tab {
         this.client = client;
         this.handler = handler;
         back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
-                .size(64, 12)
+                .size(64, 15)
                 .build();
+        thirdColumnButton = ButtonWidget.builder(Text.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
+                .size(120, 15)
+                .build();
+        thirdColumnButton.setTooltip(Tooltip.of(Text.literal("It is recommended to have this enabled, to have more info be displayed!")));
         previousPage = ButtonWidget.builder(Text.literal("Previous Page"), button -> clickAndWaitForServer(45, 0))
-                .size(100, 12)
+                .size(100, 15)
                 .build();
         nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
-                .size(100, 12)
+                .size(100, 15)
                 .build();
     }
 
@@ -57,6 +62,7 @@ public class WidgetsOrderingTab implements Tab {
         consumer.accept(back);
         consumer.accept(previousPage);
         consumer.accept(nextPage);
+        consumer.accept(thirdColumnButton);
         consumer.accept(widgetsElementList);
     }
 
@@ -109,7 +115,7 @@ public class WidgetsOrderingTab implements Tab {
             String lowerCase = stack.getName().getString().trim().toLowerCase();
             List<Text> lore = ItemUtils.getLore(stack);
             String lastLowerCase = lore.getLast().getString().toLowerCase();
-            if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit")) {
+            if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {
                 widgetsElementList.addEntry(new EditableEntry(this, i, stack));
             } else if (lowerCase.endsWith("widget")) {
                 widgetsElementList.addEntry(new WidgetEntry(this, i, stack));
@@ -123,6 +129,13 @@ public class WidgetsOrderingTab implements Tab {
         widgetsElementList.setScrollAmount(widgetsElementList.getScrollAmount());
         previousPage.visible = handler.getRows() == 6 && handler.getSlot(45).getStack().isOf(Items.ARROW);
         nextPage.visible = handler.getRows() == 6 && handler.getSlot(53).getStack().isOf(Items.ARROW);
+        thirdColumnButton.visible = handler.getRows() == 6 && handler.getSlot(50).getStack().isOf(Items.BOOKSHELF);
+        if (thirdColumnButton.visible) {
+            if (ItemUtils.getLoreLineIf(handler.getSlot(50).getStack(), s -> s.contains("DISABLED")) == null)
+                thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListEntry.ENABLED_TEXT));
+            else
+                thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListEntry.DISABLED_TEXT));
+        }
     }
 
     @Override
@@ -132,5 +145,6 @@ public class WidgetsOrderingTab implements Tab {
         widgetsElementList.setDimensions(tabArea.width(), tabArea.height() - 20);
         previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
         nextPage.setPosition(widgetsElementList.getScrollbarX() - 100, widgetsElementList.getBottom() + 4);
+        thirdColumnButton.setPosition(widgetsElementList.getScrollbarX() + 5, widgetsElementList.getBottom() + 4);
     }
 }
