@@ -163,6 +163,13 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.enableBazaarPrice = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<GeneralConfig.Craft>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.craft"))
+                                .binding(defaults.general.itemTooltip.enableCraftingCost,
+                                        () -> config.general.itemTooltip.enableCraftingCost,
+                                        newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemTooltip.enableObtainedDate"))
                                 .binding(defaults.general.itemTooltip.enableObtainedDate,

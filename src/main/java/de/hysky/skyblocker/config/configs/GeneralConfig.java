@@ -115,6 +115,9 @@ public class GeneralConfig {
         public boolean enableBazaarPrice = true;
 
         @SerialEntry
+        public Craft enableCraftingCost = Craft.OFF;
+
+        @SerialEntry
         public boolean enableObtainedDate = true;
 
         @SerialEntry
@@ -136,6 +139,23 @@ public class GeneralConfig {
         @Override
         public String toString() {
             return I18n.translate("skyblocker.config.general.itemTooltip.avg." + name());
+        }
+    }
+
+    public enum Craft {
+        SELL_ORDER, BUY_ORDER, OFF;
+
+        @Override
+        public String toString() {
+            return I18n.translate("skyblocker.config.general.itemTooltip.craft." + name());
+        }
+
+        public String getOrder() {
+            return switch (this) {
+                case SELL_ORDER -> "sellPrice";
+                case BUY_ORDER -> "buyPrice";
+                case OFF -> null;
+            };
         }
     }
 
