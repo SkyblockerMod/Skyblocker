@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.slayers.SlayerMobs;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
@@ -33,8 +34,8 @@ public class MobBoundingBoxes {
 			String name = entity.getName().getString();
 
 			return switch (entity) {
-				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") ->
-						SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
+				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
+				case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldDrawBoundingBox(name);
 				case ArmorStandEntity _armorStand -> false;
 
 				// Regular Mobs
