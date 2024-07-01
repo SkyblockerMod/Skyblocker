@@ -494,7 +494,7 @@ public class Utils {
     private static void tickMayorCache() {
         CompletableFuture.supplyAsync(() -> {
             try {
-                Http.ApiResponse response = Http.sendCacheableGetRequest("https://api.hypixel.net/v2/resources/skyblock/election");
+                Http.ApiResponse response = Http.sendCacheableGetRequest("https://api.hypixel.net/v2/resources/skyblock/election", null); //Authentication is not required for this endpoint
                 if (!response.ok()) throw new HttpResponseException(response.statusCode(), response.content());
                 JsonObject json = JsonParser.parseString(response.content()).getAsJsonObject();
                 if (!json.get("success").getAsBoolean()) throw new RuntimeException("Request failed!"); //Can't find a more appropriate exception to throw here.
