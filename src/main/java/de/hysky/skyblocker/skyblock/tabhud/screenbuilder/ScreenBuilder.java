@@ -10,20 +10,12 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.*;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Colors;
 import org.jetbrains.annotations.Nullable;
 
 public class ScreenBuilder {
 
     public static boolean positionsNeedsUpdating = true;
-
-    // layout pipeline
-    private final ArrayList<PipelineStage> layoutPipeline = new ArrayList<>();
-
-    // all widget instances this builder knows
-    private final ArrayList<HudWidget> instances = new ArrayList<>();
     // maps alias -> widget instance
     private final HashMap<String, HudWidget> objectMap = new HashMap<>();
 
@@ -276,7 +268,6 @@ public class ScreenBuilder {
         if (positionsNeedsUpdating) {
             positionsNeedsUpdating = false;
             positionWidgets(screenW, screenH);
-            System.out.println(location);
         }
 
         renderWidgets(context, screenLayer);

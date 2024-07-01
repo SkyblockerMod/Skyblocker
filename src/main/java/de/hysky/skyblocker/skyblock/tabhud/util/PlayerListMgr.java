@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
 
+import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -71,21 +72,35 @@ public class PlayerListMgr {
 		}
 
 		if (Utils.isInDungeons()) {
-			tabWidgetsToShow.clear();
-			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Buffs"));
-			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Deaths"));
-			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Downed"));
-			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Puzzles"));
-			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Discoveries"));
-			tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Info"));
-			for (int i = 1; i < 6; i++) {
-				tabWidgetsToShow.add(tabWidgetInstances.get("Dungeon Player " + i));
-			}
+			updateDungeons(null);
 		}
 		else if (!(MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible())) {
 			updateWidgetsFrom(playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).toList());
 		}
 
+
+	}
+
+	public static void updateDungeons(List<Text> lines) {
+		if (lines != null) {
+			// This is so wack I hate this
+			playerList = new ArrayList<>();
+			for (int i = 0; i < lines.size(); i++) {
+				playerList.add(new PlayerListEntry(new GameProfile(UUID.randomUUID(), String.valueOf(i)), false));
+				playerList.getLast().setDisplayName(lines.get(i));
+			}
+		}
+
+		tabWidgetsToShow.clear();
+		tabWidgetsToShow.add(getTabHudWidget("Dungeon Buffs", List.of()));
+		tabWidgetsToShow.add(getTabHudWidget("Dungeon Deaths", List.of()));
+		tabWidgetsToShow.add(getTabHudWidget("Dungeon Downed", List.of()));
+		tabWidgetsToShow.add(getTabHudWidget("Dungeon Puzzles", List.of()));
+		tabWidgetsToShow.add(getTabHudWidget("Dungeon Discoveries", List.of()));
+		tabWidgetsToShow.add(getTabHudWidget("Dungeon Info", List.of()));
+		for (int i = 1; i < 6; i++) {
+			tabWidgetsToShow.add(getTabHudWidget("Dungeon Player " + i, List.of()));
+		}
 
 	}
 
@@ -122,7 +137,8 @@ public class PlayerListMgr {
 			} else {
 				if (infoColumnPredicate.test(string)) continue;
 				// New widget alert!!!!
-				if (!string.startsWith(" ")) {
+				// Now check for : because of the farming contest ACTIVE
+				if (!string.startsWith(" ") && string.contains(":")) {
 					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 					contents.clear();
 					Pair<String, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
@@ -135,6 +151,9 @@ public class PlayerListMgr {
 			contents.add(trim(displayName));
 		}
 		if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
+		if (!tabWidgetsToShow.contains(tabWidgetInstances.get("Active Effects")) && SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter) {
+			tabWidgetsToShow.add(getTabHudWidget("Active Effects", List.of()));
+		}
 		ScreenBuilder.positionsNeedsUpdating = true;
 	}
 
