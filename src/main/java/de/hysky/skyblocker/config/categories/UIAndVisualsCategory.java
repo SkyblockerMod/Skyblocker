@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
@@ -201,6 +202,14 @@ public class UIAndVisualsCategory {
                                         () -> config.uiAndVisuals.tabHud.effectsFromFooter,
                                         newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
                                 .build())
+                        .option(Option.<ScreenBuilder.DefaultPositioner>createBuilder()
+                                .name(Text.literal("Default positioning behavior"))
+                                .binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
+                                        () -> config.uiAndVisuals.tabHud.defaultPositioning,
+                                        newValue -> config.uiAndVisuals.tabHud.defaultPositioning = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build()
+                        )
                         // TODO Decide what to do with these options
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.plainPlayerNames"))

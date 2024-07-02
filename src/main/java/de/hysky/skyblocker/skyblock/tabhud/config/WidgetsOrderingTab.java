@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.*;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.tab.Tab;
@@ -13,9 +14,7 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -77,6 +76,8 @@ public class WidgetsOrderingTab implements Tab {
         if (waitingForServer) return;
         if (client.interactionManager == null || this.client.player == null) return;
         client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.QUICK_MOVE, this.client.player);
+        // When moving a widget down it gets stuck sometimes
+        Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 1);
         waitingForServer = true;
     }
 

@@ -8,7 +8,6 @@ import java.util.List;
 
 public class TopAlignedWidgetPositioner extends WidgetPositioner {
 
-    private static final int MAX_COLUMN_HEIGHT = 300;
     private static final int START_Y = 20;
 
     private int totalWidth = 0;
@@ -26,7 +25,7 @@ public class TopAlignedWidgetPositioner extends WidgetPositioner {
     public void positionWidget(HudWidget hudWidget) {
         widgets.add(hudWidget);
 
-        if (currentY + hudWidget.getHeight() > MAX_COLUMN_HEIGHT) {
+        if (currentY + hudWidget.getHeight() > screenHeight * 0.75f) {
             totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
             currentY = START_Y;
             currentWidth = 0;
@@ -39,7 +38,7 @@ public class TopAlignedWidgetPositioner extends WidgetPositioner {
 
     @Override
     public void finalizePositioning() {
-        int off = (screenWidth - totalWidth) / 2;
+        int off = (screenWidth - totalWidth - currentWidth) / 2;
         for (HudWidget widget : widgets) {
             widget.setX(widget.getX() + off);
         }

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
@@ -166,6 +167,9 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public boolean plainPlayerNames = false;
+
+        @SerialEntry
+        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.TOP;
 
         @SerialEntry
         public NameSorting nameSorting = NameSorting.DEFAULT;
