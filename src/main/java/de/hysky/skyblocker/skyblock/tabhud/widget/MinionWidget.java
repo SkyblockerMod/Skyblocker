@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 
@@ -98,6 +97,7 @@ public class MinionWidget extends TabHudWidget {
 
     @Override
     public void updateContent(List<Text> lines) {
+        addComponent(new PlainTextComponent(lines.getFirst().copy().append(Text.literal(" minions"))));
         for (int i = 1; i < lines.size(); i++) {
             String string = lines.get(i).getString();
             if (string.toLowerCase().contains("... and")) this.addComponent(new PlainTextComponent(lines.get(i)));

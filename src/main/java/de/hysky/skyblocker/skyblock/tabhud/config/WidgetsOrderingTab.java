@@ -130,9 +130,12 @@ public class WidgetsOrderingTab implements Tab {
         widgetsElementList.setScrollAmount(widgetsElementList.getScrollAmount());
         previousPage.visible = handler.getRows() == 6 && handler.getSlot(45).getStack().isOf(Items.ARROW);
         nextPage.visible = handler.getRows() == 6 && handler.getSlot(53).getStack().isOf(Items.ARROW);
-        thirdColumnButton.visible = handler.getRows() == 6 && handler.getSlot(50).getStack().isOf(Items.BOOKSHELF);
+        thirdColumnButton.visible = handler.getRows() == 6 && (handler.getSlot(50).getStack().isOf(Items.BOOKSHELF) || handler.getSlot(50).getStack().isOf(Items.STONE_BUTTON));
         if (thirdColumnButton.visible) {
-            if (ItemUtils.getLoreLineIf(handler.getSlot(50).getStack(), s -> s.contains("DISABLED")) == null)
+            ItemStack stack = handler.getSlot(50).getStack();
+            if (stack.isOf(Items.STONE_BUTTON))
+                thirdColumnButton.setMessage(Text.literal("Apply to all locations"));
+            else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("DISABLED")) == null)
                 thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListEntry.ENABLED_TEXT));
             else
                 thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListEntry.DISABLED_TEXT));
