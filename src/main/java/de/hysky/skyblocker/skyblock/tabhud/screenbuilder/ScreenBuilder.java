@@ -5,6 +5,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.*;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.*;
@@ -173,7 +174,7 @@ public class ScreenBuilder {
         mainTabScreen.clear();
         secondaryTabScreen.clear();
 
-        WidgetPositioner newPositioner = DefaultPositioner.CENTERED.getNewPositioner(screenW, screenH);
+        WidgetPositioner newPositioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(screenW, screenH);
 
         for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
             if (widget.shouldRender(location)) { // TabHudWidget has this at false
@@ -275,7 +276,7 @@ public class ScreenBuilder {
 
 
 
-    private enum DefaultPositioner {
+    public enum DefaultPositioner {
         TOP(TopAlignedWidgetPositioner::new),
         CENTERED(CenteredWidgetPositioner::new);
 
