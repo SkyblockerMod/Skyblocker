@@ -62,8 +62,12 @@ public class ItemUtils {
         });
     }
 
+    /**
+     * Gets the nbt in the custom data component of the item stack.
+     * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack, or an empty {@link NbtCompound} if the itemstack is missing
+     */
     @SuppressWarnings("deprecation")
-	public static NbtCompound getCustomData(@NotNull ComponentHolder stack) {
+	public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
         return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
     }
 
