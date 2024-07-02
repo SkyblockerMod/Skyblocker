@@ -156,6 +156,7 @@ public class ScreenMaster {
         SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
 
         HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
+            if (!Utils.isOnSkyblock()) return;
             MinecraftClient client = MinecraftClient.getInstance();
             Window window = client.getWindow();
             float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
