@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
@@ -87,7 +86,7 @@ public class ElectionWidget extends TabHudWidget {
 
         } else {
             // election is going on
-            this.addSimpleIcoText(Ico.CLOCK, "End in:", Formatting.GOLD, lines.getFirst().getString().trim());
+            this.addSimpleIcoText(Ico.CLOCK, "End in: ", Formatting.GOLD, lines.getFirst().getString().trim());
 
             for (int i = 1; i < lines.size(); i++) {
                 String string = lines.get(i).getString();
