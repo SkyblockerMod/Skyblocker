@@ -65,6 +65,7 @@ public class ItemUtils {
     /**
      * Gets the nbt in the custom data component of the item stack.
      * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack, or an empty {@link NbtCompound} if the itemstack is missing
+     * a custom data component
      */
     @SuppressWarnings("deprecation")
 	public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
