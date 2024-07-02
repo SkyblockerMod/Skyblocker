@@ -37,4 +37,9 @@ public record AndPredicate(List<SkyblockerTexturePredicate> predicates) implemen
 	public SkyblockerPredicateType<?> getType() {
 		return SkyblockerPredicateTypes.AND;
 	}
+
+	@Override
+	public boolean itemStackDependent() {
+		return false;
+	}
 }

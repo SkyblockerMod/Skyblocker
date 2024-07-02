@@ -365,6 +365,17 @@ public class RenderHelper {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
+    public static boolean pointIsInArea(int x, int y, int z, int x1, int y1, int z1, int x2, int y2, int z2) {
+        int actualMinX = Math.min(x1, x2);
+        int actualMinY = Math.min(y1, y2);
+        int actualMinZ = Math.min(z1, z2);
+        int actualMaxX = Math.max(x1, x2);
+        int actualMaxY = Math.max(y1, y2);
+        int actualMaxZ = Math.max(z1, z2);
+
+        return x >= actualMinX && x < actualMaxX && y >= actualMinY && y < actualMaxY && z >= actualMinZ && z < actualMaxZ;
+    }
+
     private static void drawSprite(DrawContext context, Sprite sprite, int i, int j, int k, int l, int x, int y, int z, int width, int height, float red, float green, float blue, float alpha) {
         if (width == 0 || height == 0) {
             return;

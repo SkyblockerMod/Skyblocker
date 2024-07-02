@@ -37,4 +37,9 @@ public record OrPredicate(List<SkyblockerTexturePredicate> predicates) implement
 	public SkyblockerPredicateType<?> getType() {
 		return SkyblockerPredicateTypes.OR;
 	}
+
+	@Override
+	public boolean itemStackDependent() {
+		return false;
+	}
 }

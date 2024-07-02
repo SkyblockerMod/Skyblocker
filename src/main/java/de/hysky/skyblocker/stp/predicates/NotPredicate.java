@@ -37,4 +37,9 @@ public record NotPredicate(List<SkyblockerTexturePredicate> predicates) implemen
 	public SkyblockerPredicateType<?> getType() {
 		return SkyblockerPredicateTypes.NOT;
 	}
+
+	@Override
+	public boolean itemStackDependent() {
+		return false;
+	}
 }

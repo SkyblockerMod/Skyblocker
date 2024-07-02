@@ -55,6 +55,7 @@
     "discordipc.ConnectionMixin",
     "stp.ArmorFeatureRendererMixin",
     "stp.BakedModelManagerMixin",
+    "stp.BlockModelsMixin",
     "stp.ModelOverrideDeserializerMixin",
     "stp.ModelOverrideListMixin",
     "stp.ModelOverrideMixin"

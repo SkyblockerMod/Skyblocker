@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.stp;
 
-
 import de.hysky.skyblocker.stp.predicates.AndPredicate;
+import de.hysky.skyblocker.stp.predicates.CoordinateRangePredicate;
 import de.hysky.skyblocker.stp.predicates.CustomDataPredicate;
 import de.hysky.skyblocker.stp.predicates.ItemIdPredicate;
 import de.hysky.skyblocker.stp.predicates.LocationPredicate;
@@ -16,6 +16,7 @@ import net.minecraft.util.Identifier;
 
 public interface SkyblockerPredicateTypes {
 	SkyblockerPredicateType<AndPredicate> AND = register(AndPredicate.ID, new SkyblockerPredicateType<>(AndPredicate.CODEC, AndPredicate.MAP_CODEC));
+	SkyblockerPredicateType<CoordinateRangePredicate> COORDINATE_RANGE = register(CoordinateRangePredicate.ID, new SkyblockerPredicateType<>(CoordinateRangePredicate.CODEC, CoordinateRangePredicate.MAP_CODEC));
 	SkyblockerPredicateType<CustomDataPredicate> CUSTOM_DATA = register(CustomDataPredicate.ID, new SkyblockerPredicateType<>(CustomDataPredicate.CODEC, CustomDataPredicate.MAP_CODEC));
 	SkyblockerPredicateType<ItemIdPredicate> ITEM_ID = register(ItemIdPredicate.ID, new SkyblockerPredicateType<>(ItemIdPredicate.CODEC, ItemIdPredicate.MAP_CODEC));
 	SkyblockerPredicateType<LocationPredicate> LOCATION = register(LocationPredicate.ID, new SkyblockerPredicateType<>(LocationPredicate.CODEC, LocationPredicate.MAP_CODEC));

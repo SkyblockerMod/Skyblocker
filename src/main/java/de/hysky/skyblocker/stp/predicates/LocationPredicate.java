@@ -30,4 +30,9 @@ public record LocationPredicate(Location location) implements SkyblockerTextureP
 	public SkyblockerPredicateType<?> getType() {
 		return SkyblockerPredicateTypes.LOCATION;
 	}
+
+	@Override
+	public boolean itemStackDependent() {
+		return false;
+	}
 }
