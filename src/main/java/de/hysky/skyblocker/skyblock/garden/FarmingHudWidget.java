@@ -5,11 +5,12 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 
-public class FarmingHudWidget extends Widget {
+public class FarmingHudWidget extends ComponentBasedWidget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
     public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
             Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
@@ -52,15 +53,18 @@ public class FarmingHudWidget extends Widget {
     private final MinecraftClient client = MinecraftClient.getInstance();
 
     public FarmingHudWidget() {
-        super(TITLE, Formatting.YELLOW.getColorValue());
-        setX(SkyblockerConfigManager.get().farming.garden.farmingHud.x);
-        setY(SkyblockerConfigManager.get().farming.garden.farmingHud.y);
+        super(TITLE, Formatting.YELLOW.getColorValue(), "hud_farming");
+        //setX(SkyblockerConfigManager.get().farming.garden.farmingHud.x);
+        //setY(SkyblockerConfigManager.get().farming.garden.farmingHud.y);
         update();
     }
 
     @Override
     public void updateContent() {
-        if (client.player == null) return;
+        if (client.player == null) {
+            addComponent(new PlainTextComponent(Text.literal("Nothing to show :p")));
+            return;
+        }
         ItemStack farmingToolStack = client.player.getMainHandStack();
         if (farmingToolStack == null) return;
         String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));
@@ -100,5 +104,15 @@ public class FarmingHudWidget extends Widget {
         // Return the formatted price if npc price is higher or bazaar price is present.
         // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
         return shouldUseNpcPrice || itemBazaarPrice.rightBoolean() ? FarmingHud.NUMBER_FORMAT.format((int) (price * cropsPerMinute * 0.6) * 100) : "No Data";
+    }
+
+    @Override
+    public boolean shouldRender(Location location) {
+        return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
+    }
+
+    @Override
+    public String getNiceName() {
+        return "Farming Hud";
     }
 }

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
@@ -158,12 +159,30 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
+                                .name(Text.literal("Effects from footer"))
+                                .description(OptionDescription.of(Text.literal("If on, will fetch current effects from the tab footer if the hypixel Effects widget is disabled")))
+                                .controller(ConfigUtils::createBooleanController)
+                                .binding(defaults.uiAndVisuals.tabHud.effectsFromFooter,
+                                        () -> config.uiAndVisuals.tabHud.effectsFromFooter,
+                                        newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
+                                .build())
+                        .option(Option.<ScreenBuilder.DefaultPositioner>createBuilder()
+                                .name(Text.literal("Default positioning behavior"))
+                                .binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
+                                        () -> config.uiAndVisuals.tabHud.defaultPositioning,
+                                        newValue -> config.uiAndVisuals.tabHud.defaultPositioning = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build()
+                        )
+                        // TODO Decide what to do with these options
+                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.plainPlayerNames"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.plainPlayerNames.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.tabHud.plainPlayerNames,
                                         () -> config.uiAndVisuals.tabHud.plainPlayerNames,
                                         newValue -> config.uiAndVisuals.tabHud.plainPlayerNames = newValue)
                                 .controller(ConfigUtils::createBooleanController)
+                                .available(false)
                                 .build())
                         .option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
@@ -172,6 +191,7 @@ public class UIAndVisualsCategory {
                                         () -> config.uiAndVisuals.tabHud.nameSorting,
                                         newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
+                                .available(false)
                                 .build())
                         .build())
 
@@ -403,7 +423,7 @@ public class UIAndVisualsCategory {
                                 .binding(defaults.uiAndVisuals.compactDamage.precision,
                                         () -> config.uiAndVisuals.compactDamage.precision,
                                         newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
-                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1,3).step(1))
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 3).step(1))
                                 .build())
                         .option(Option.<Color>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor"))

@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 
 public class StackStage extends PipelineStage {
@@ -76,7 +76,7 @@ public class StackStage extends PipelineStage {
 
     public void stackWidgetsVert(int screenH) {
         int compHeight = -ScreenConst.WIDGET_PAD;
-        for (Widget wid : primary) {
+        for (HudWidget wid : primary) {
             compHeight += wid.getHeight() + 5;
         }
 
@@ -87,7 +87,7 @@ public class StackStage extends PipelineStage {
             default -> (screenH - compHeight) / 2;
         };
 
-        for (Widget wid : primary) {
+        for (HudWidget wid : primary) {
             wid.setY(y);
             y += wid.getHeight() + ScreenConst.WIDGET_PAD;
         }
@@ -95,7 +95,7 @@ public class StackStage extends PipelineStage {
 
     public void stackWidgetsHoriz(int screenW) {
         int compWidth = -ScreenConst.WIDGET_PAD;
-        for (Widget wid : primary) {
+        for (HudWidget wid : primary) {
             compWidth += wid.getWidth() + ScreenConst.WIDGET_PAD;
         }
 
@@ -106,7 +106,7 @@ public class StackStage extends PipelineStage {
             default -> (screenW - compWidth) / 2;
         };
 
-        for (Widget wid : primary) {
+        for (HudWidget wid : primary) {
             wid.setX(x);
             x += wid.getWidth() + ScreenConst.WIDGET_PAD;
         }

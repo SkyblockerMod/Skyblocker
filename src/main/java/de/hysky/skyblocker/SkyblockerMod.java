@@ -126,9 +126,8 @@ public class SkyblockerMod implements ClientModInitializer {
         ItemCooldowns.init();
         TabHud.init();
         GlaciteColdOverlay.init();
-        DwarvenHud.init();
         CommissionLabels.init();
-        CrystalsHud.init();
+        CrystalsHudWidget.init();
         FarmingHud.init();
         LowerSensitivity.init();
         CrystalsLocationsManager.init();
@@ -199,8 +198,8 @@ public class SkyblockerMod implements ClientModInitializer {
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
         Scheduler.INSTANCE.scheduleCyclic(LividColor::update, 10);
         Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
-        Scheduler.INSTANCE.scheduleCyclic(DwarvenHud::update, 40);
-        Scheduler.INSTANCE.scheduleCyclic(CrystalsHud::update, 40);
+        //Scheduler.INSTANCE.scheduleCyclic(DwarvenHud::update, 40);
+        //Scheduler.INSTANCE.scheduleCyclic(CrystalsHudWidget::update, 40);
         Scheduler.INSTANCE.scheduleCyclic(PlayerListMgr::updateList, 20);
     }
 

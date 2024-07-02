@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
@@ -28,30 +29,12 @@ public class PlayerListHudMixin {
 
     @Inject(at = @At("HEAD"), method = "render", cancellable = true)
     public void skyblocker$renderTabHud(CallbackInfo info, @Local(argsOnly = true) DrawContext context, @Local(argsOnly = true) int w) {
-        if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed()) {
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.defaultTgl.isPressed() || MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
             return;
         }
-
-        ClientPlayNetworkHandler nwH = MinecraftClient.getInstance().getNetworkHandler();
-        if (nwH == null) {
-            return;
-        }
-
-        int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
-        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-        w = (int) (w / scale);
-        h = (int) (h / scale);
 
         PlayerListMgr.updateFooter(footer);
-
-        try {
-            ScreenMaster.render(context, w,h);
-            // Screen screen = Screen.getCorrect(w, h, footer);
-            // screen.render(context);
-            info.cancel();
-        } catch (Exception e) {
-            TabHud.LOGGER.error("[Skyblocker] Encountered unknown exception while drawing default hud", e);
-        }
+        info.cancel();
     }
 
 }
