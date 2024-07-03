@@ -202,6 +202,14 @@ public class DungeonsCategory {
                         .name(Text.translatable("skyblocker.config.dungeons.livid"))
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.livid.enableSolidColor"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip")))
+                                .binding(defaults.dungeons.livid.enableSolidColor,
+                                        () -> config.dungeons.livid.enableSolidColor,
+                                        newValue -> config.dungeons.livid.enableSolidColor = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorGlow"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip")))
                                 .binding(defaults.dungeons.livid.enableLividColorGlow,
