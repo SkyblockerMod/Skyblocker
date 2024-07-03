@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -35,7 +36,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
     static final int BORDER_SZE_S = 4;
     static final int BORDER_SZE_W = 4;
     static final int BORDER_SZE_E = 4;
-    static final int COL_BG_BOX = 0xc00c0c0c;
+    static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
 
     private final int color;
     private final Text title;
@@ -96,9 +97,11 @@ public abstract class ComponentBasedWidget extends HudWidget {
         // move above other UI elements
         ms.translate(0, 0, 200);
         if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
-            context.fill(x + 1, y, x + w - 1, y + h, COL_BG_BOX);
-            context.fill(x, y + 1, x + 1, y + h - 1, COL_BG_BOX);
-            context.fill(x + w - 1, y + 1, x + w, y + h - 1, COL_BG_BOX);
+            GameOptions options = MinecraftClient.getInstance().options;
+            int textBackgroundColor = options.getTextBackgroundColor(DEFAULT_COL_BG_BOX);
+            context.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
+            context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
+            context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
         }
         // move above background (if exists)
         ms.translate(0, 0, 100);
