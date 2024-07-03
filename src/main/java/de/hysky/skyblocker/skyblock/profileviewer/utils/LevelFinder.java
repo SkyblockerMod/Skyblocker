@@ -14,7 +14,8 @@ public class LevelFinder {
             this.level = level;
         }
 
-        public LevelInfo(int level, double fill) {
+        public LevelInfo(long xp, int level, double fill) {
+            this.xp = xp;
             this.level = level;
             this.fill = fill;
         }
@@ -264,7 +265,7 @@ public class LevelFinder {
                 } else {
                     fill = 1.0;
                 }
-                return new LevelInfo(boundaries.get(i).level, fill);
+                return new LevelInfo(xp, boundaries.get(i).level, fill);
             }
         }
         return new LevelInfo(0L, 0);

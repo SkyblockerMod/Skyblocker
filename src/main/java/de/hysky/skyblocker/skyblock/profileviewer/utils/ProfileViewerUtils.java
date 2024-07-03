@@ -8,10 +8,12 @@ import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SkullCreator {
+public class ProfileViewerUtils {
     public static ItemStack createSkull(String textureB64) {
         ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
         try {
@@ -24,4 +26,6 @@ public class SkullCreator {
         }
         return skull;
     }
+
+    public static final NumberFormat COMMA_FORMATTER = NumberFormat.getNumberInstance(Locale.US);
 }

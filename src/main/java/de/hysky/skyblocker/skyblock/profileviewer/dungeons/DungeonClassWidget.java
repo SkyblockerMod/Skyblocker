@@ -3,15 +3,20 @@ package de.hysky.skyblocker.skyblock.profileviewer.dungeons;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DungeonClassWidget {
@@ -48,7 +53,7 @@ public class DungeonClassWidget {
         }
     }
 
-    public void render(DrawContext context, int x, int y) {
+    public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
         context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
         context.drawItem(stack, x + 3, y + 5);
         if (active) context.drawTexture(ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
@@ -57,6 +62,12 @@ public class DungeonClassWidget {
         Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
         context.drawGuiTexture(BAR_BACK, x + 30, y + 15, 75, 6);
         RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
-    }
 
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){
+            List<Text> tooltipText = new ArrayList<>();
+            tooltipText.add(Text.literal(this.className).formatted(Formatting.GREEN));
+            tooltipText.add(Text.literal("XP: " + ProfileViewerUtils.COMMA_FORMATTER.format(this.classLevel.xp)).formatted(Formatting.GOLD));
+            context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+        }
+    }
 }

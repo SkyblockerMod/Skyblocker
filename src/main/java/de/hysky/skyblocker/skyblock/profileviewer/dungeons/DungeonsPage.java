@@ -30,10 +30,10 @@ public class DungeonsPage implements ProfileViewerPage {
 
     public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
         dungeonHeaderWidget.render(context, rootX, rootY);
-        dungeonFloorRunsWidget.render(context, rootX + 113, rootY + 56);
+        dungeonFloorRunsWidget.render(context, mouseX, mouseY, rootX + 113, rootY + 56);
         dungeonMiscStatsWidgets.render(context, rootX + 113, rootY);
         for (int i = 0; i < dungeonClassWidgetsList.size(); i++) {
-            dungeonClassWidgetsList.get(i).render(context, rootX, rootY + 28 + i * 28);
+            dungeonClassWidgetsList.get(i).render(context, mouseX, mouseY, rootX, rootY + 28 + i * 28);
         }
     }
 }

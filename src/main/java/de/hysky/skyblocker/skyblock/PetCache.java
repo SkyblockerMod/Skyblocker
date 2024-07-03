@@ -133,13 +133,14 @@ public class PetCache {
 		return CACHED_PETS.containsKey(uuid) && CACHED_PETS.get(uuid).containsKey(profileId) ? CACHED_PETS.get(uuid).get(profileId) : null;
 	}
 
-	public record PetInfo(String type, double exp, String tier, Optional<String> uuid, Optional<String> item) {
+	public record PetInfo(String type, double exp, String tier, Optional<String> uuid, Optional<String> item, Optional<String> skin) {
 		public static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("type").forGetter(PetInfo::type),
 				Codec.DOUBLE.fieldOf("exp").forGetter(PetInfo::exp),
 				Codec.STRING.fieldOf("tier").forGetter(PetInfo::tier),
 				Codec.STRING.optionalFieldOf("uuid").forGetter(PetInfo::uuid),
-				Codec.STRING.optionalFieldOf("heldItem").forGetter(PetInfo::item))
+				Codec.STRING.optionalFieldOf("heldItem").forGetter(PetInfo::item),
+				Codec.STRING.optionalFieldOf("skin").forGetter(PetInfo::skin))
 				.apply(instance, PetInfo::new));
 		private static final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, PetInfo>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING,
 				Codec.unboundedMap(Codec.STRING, CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new)

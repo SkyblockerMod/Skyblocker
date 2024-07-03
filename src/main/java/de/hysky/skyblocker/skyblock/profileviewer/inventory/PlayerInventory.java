@@ -49,7 +49,7 @@ public class PlayerInventory implements ProfileViewerPage {
             context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7);
         }
 
-        context.drawText(textRenderer, containerName, rootX + 7, rootY + 7, Color.DARK_GRAY.getRGB(), false);
+        context.drawText(textRenderer, Text.translatable("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootY + 7, Color.DARK_GRAY.getRGB(), false);
     }
 
     private void drawContainerItems(DrawContext context, int rootX, int rootY, IntIntPair dimensions, int startIndex, int endIndex, int mouseX, int mouseY) {

@@ -73,6 +73,7 @@ public class Ico {
     public static final ItemStack EXPERIENCE_BOTTLE = new ItemStack(Items.EXPERIENCE_BOTTLE);
     public static final ItemStack PINK_DYE = new ItemStack(Items.PINK_DYE);
     public static final ItemStack LIME_DYE = new ItemStack(Items.LIME_DYE);
+    public static final ItemStack GRAY_DYE = new ItemStack(Items.GRAY_DYE);
     public static final ItemStack ENCHANTED_BOOK = new ItemStack(Items.ENCHANTED_BOOK);
     public static final ItemStack SPIDER_EYE = new ItemStack(Items.SPIDER_EYE);
     public static final ItemStack BLUE_ICE = new ItemStack(Items.BLUE_ICE);

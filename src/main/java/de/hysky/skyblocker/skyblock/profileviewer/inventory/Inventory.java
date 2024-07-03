@@ -49,7 +49,7 @@ public class Inventory implements ProfileViewerPage {
         context.drawTexture(TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7);
         context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7);
 
-        context.drawText(textRenderer, containerName, rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
+        context.drawText(textRenderer, Text.translatable("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
 
         if (containerList.size() > itemsPerPage) {
             previousPage.setX(rootX + 44);
