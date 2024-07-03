@@ -109,6 +109,9 @@ public class DungeonsConfig {
 
     public static class Livid {
         @SerialEntry
+        public boolean enableSolidColor = false;
+
+        @SerialEntry
         public boolean enableLividColorGlow = false;
 
         @SerialEntry

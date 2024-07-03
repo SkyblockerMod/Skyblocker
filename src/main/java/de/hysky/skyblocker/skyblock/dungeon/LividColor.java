@@ -109,7 +109,9 @@ public class LividColor {
 
     @SuppressWarnings("DataFlowIssue")
     public static int getGlowColor(String name) {
-        return LIVID_TO_FORMATTING.containsKey(name) ? LIVID_TO_FORMATTING.get(name).getColorValue() : Formatting.WHITE.getColorValue();
+        if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return Formatting.RED.getColorValue();
+        if (LIVID_TO_FORMATTING.containsKey(name)) return LIVID_TO_FORMATTING.get(name).getColorValue();
+        return Formatting.WHITE.getColorValue();
     }
 
     private static void reset() {
