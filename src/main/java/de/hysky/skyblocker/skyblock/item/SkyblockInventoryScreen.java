@@ -2,10 +2,13 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,10 +27,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -44,29 +49,54 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
     private static final Identifier EMPTY_SLOT = Identifier.of(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
+    private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
     private final Slot[] equipmentSlots = new Slot[4];
 
-    public static void initEquipment() {
-        ClientLifecycleEvents.CLIENT_STARTED.register(client1 -> {
-            Path resolve = SkyblockerMod.CONFIG_DIR.resolve("equipment.nbt");
+    private static void save(String profileId) {
+        try {
+            Files.createDirectories(FOLDER);
+        } catch (IOException e) {
+            LOGGER.error("[Skyblocker] Failed to create folder for equipment!", e);
+        }
+        Path resolve = FOLDER.resolve(profileId + ".nbt");
+
+        try (BufferedWriter writer = Files.newBufferedWriter(resolve)) {
+            writer.write(new StringNbtWriter().apply(CODEC.encodeStart(NbtOps.INSTANCE, equipment).getOrThrow()));
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker] Failed to save Equipment data", e);
+        }
+    }
+
+    private static void load(String profileId) {
+        Path resolve = FOLDER.resolve(profileId + ".nbt");
+        CompletableFuture.supplyAsync(() -> {
             try (BufferedReader reader = Files.newBufferedReader(resolve)) {
-                ItemStack[] array = CODEC.parse(
+                return CODEC.parse(
                                 NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining())))
                         .getOrThrow();
-                System.arraycopy(array, 0, equipment, 0, Math.min(array.length, 4));
             } catch (NoSuchFileException ignored) {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to load Equipment data", e);
+
             }
-        });
+            return null;
+            // Schedule on main thread to avoid any async weirdness
+        }).thenAccept(itemStacks -> MinecraftClient.getInstance().execute(() -> System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4))));
+
+    }
+
+    public static void initEquipment() {
+
+        SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
+            if (!prevProfileId.isEmpty()) save(prevProfileId);
+            load(profileId);
+        }));
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
-            Path resolve = SkyblockerMod.CONFIG_DIR.resolve("equipment.nbt");
-            try (BufferedWriter writer = Files.newBufferedWriter(resolve)) {
-                writer.write(new StringNbtWriter().apply(CODEC.encodeStart(NbtOps.INSTANCE, equipment).getOrThrow()));
-            } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to save Equipment data", e);
+            String profileId = Utils.getProfileId();
+            if (!profileId.isBlank()) {
+                save(profileId);
             }
         });
     }
@@ -93,6 +123,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    private boolean canDrawTooltips = false;
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
@@ -104,10 +136,14 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) drawSlotHighlight(context, equipmentSlot.x, equipmentSlot.y, 0);
         }
         matrices.pop();
+        canDrawTooltips = true;
+        drawMouseoverTooltip(context, mouseX, mouseY);
+        canDrawTooltips = false;
     }
 
     @Override
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
+        if (!canDrawTooltips) return;
         super.drawMouseoverTooltip(context, x, y);
         if (!handler.getCursorStack().isEmpty()) return;
         for (Slot equipmentSlot : equipmentSlots) {
