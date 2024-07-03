@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class StaminaTestHelper {
         NEGATIVE_X,
         NEGATIVE_Z,
         NEW,
-        UNCHANGED;
+        UNCHANGED
     }
 
     protected static void reset() {

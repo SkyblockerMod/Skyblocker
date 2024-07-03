@@ -13,8 +13,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 
-import java.util.*;
-
 public class TenacityTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
@@ -72,7 +70,7 @@ public class TenacityTestHelper {
     }
 
     /**
-     * Uses the particles spawned with the fireballs to offset from the armour stand position to get a mor accurate guess of where its going
+     * Uses the particles spawned with the fireballs to offset from the armour stand position to get a more accurate guess of where it's going
      *
      * @param packet particle packet
      */

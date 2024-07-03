@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.entity.Entity;
@@ -34,7 +32,6 @@ public class ForceTestHelper {
      * @return if the zombie should glow
      */
     protected static boolean shouldGlow(String name) {
-        if (name == null) return false;
         return name.contains("-");
     }
 

@@ -131,6 +131,7 @@ public class DojoManager {
             networkHandler.sendPacket(new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
         }
     }
+
     public static void onPingResult(long ping) {
         DojoManager.ping = ping;
     }
@@ -139,10 +140,10 @@ public class DojoManager {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
-         switch (currentChallenge) {
+        switch (currentChallenge) {
             case STAMINA -> StaminaTestHelper.update();
             case CONTROL -> ControlTestHelper.update();
-        };
+        }
     }
 
     /**
@@ -198,8 +199,8 @@ public class DojoManager {
         if (!Utils.isInCrimson() || !inArena || CLIENT == null || CLIENT.player == null) {
             return;
         }
-        //check close by
-        if (entity.distanceTo(CLIENT.player) > 50 || Math.abs(entity.getBlockY() - CLIENT.player.getBlockY()) > 5) {
+        // Check if within 50 blocks and 5 blocks vertically
+        if (entity.squaredDistanceTo(CLIENT.player) > 2500 || Math.abs(entity.getBlockY() - CLIENT.player.getBlockY()) > 5) {
             return;
         }
         switch (currentChallenge) {

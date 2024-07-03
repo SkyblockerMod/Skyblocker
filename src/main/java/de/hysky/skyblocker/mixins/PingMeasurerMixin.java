@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(PingMeasurer.class)
-public class PingMeasuererMixin {
+public class PingMeasurerMixin {
 
-    @WrapOperation(method = "onPingResult", at = @At(value = "INVOKE", target =  "Lnet/minecraft/util/profiler/MultiValueDebugSampleLogImpl;push(J)V"))
+    @WrapOperation(method = "onPingResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/MultiValueDebugSampleLogImpl;push(J)V"))
     private void skyblocker$onPingResult(MultiValueDebugSampleLogImpl log, long ping, Operation<Void> operation) {
         if (Utils.isInCrimson()) {
             DojoManager.onPingResult(ping);

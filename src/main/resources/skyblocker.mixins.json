@@ -27,7 +27,7 @@
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "MouseMixin",
-    "PingMeasuererMixin",
+    "PingMeasurerMixin",
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",

@@ -62,7 +62,7 @@ public class MobGlow {
 				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() -> TheEnd.isSpecialZealot(enderman);
 
 				//dojo
-				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmourStandName(zombie));
+				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
 
 				default -> false;
 			};
@@ -73,6 +73,7 @@ public class MobGlow {
 
 	/**
 	 * Checks if an entity is starred by checking if its armor stand contains a star in its name.
+	 *
 	 * @param entity the entity to check.
 	 * @return true if the entity is starred, false otherwise
 	 */
@@ -80,10 +81,17 @@ public class MobGlow {
 		List<ArmorStandEntity> armorStands = getArmorStands(entity);
 		return !armorStands.isEmpty() && armorStands.getFirst().getName().getString().contains("✯");
 	}
-	public static String  getArmourStandName(Entity entity) {
+
+	/**
+	 * Returns name of entity by finding closed armor stand and getting name of that
+	 *
+	 * @param entity the entity to check
+	 * @return the name string of the entities  label
+	 */
+	public static String getArmorStandName(Entity entity) {
 		List<ArmorStandEntity> armorStands = getArmorStands(entity);
 		if (armorStands.isEmpty()) {
-			return null;
+			return "";
 		}
 		return armorStands.getFirst().getName().getString();
 	}

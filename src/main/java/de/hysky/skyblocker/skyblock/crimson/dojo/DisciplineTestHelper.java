@@ -1,13 +1,10 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class DisciplineTestHelper {
@@ -16,12 +13,12 @@ public class DisciplineTestHelper {
     /**
      * Stores what sword is needed for the name of a zombie
      */
-    private static final HashMap<String, String> SWORD_TO_NAME_LOOKUP = Util.make(new HashMap<>(), map -> {
-        map.put("WOOD_SWORD", "Wood");
-        map.put("IRON_SWORD", "Iron");
-        map.put("GOLD_SWORD", "Gold");
-        map.put("DIAMOND_SWORD", "Diamond");
-    });
+    private static final Map<String, String> SWORD_TO_NAME_LOOKUP = Map.of(
+            "WOOD_SWORD", "Wood",
+            "IRON_SWORD", "Iron",
+            "GOLD_SWORD", "Gold",
+            "DIAMOND_SWORD", "Diamond"
+    );
 
     /**
      * Stores a color related to the color of the sword: wood = brown, iron = silver, gold = gold, diamond = cyan
@@ -61,11 +58,6 @@ public class DisciplineTestHelper {
             return 0;
         }
         String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
-        if (SWORD_TO_COLOR_LOOKUP.containsKey(heldId)) {
-            return SWORD_TO_COLOR_LOOKUP.getInt(heldId);
-        }
-        return 0;
+        return SWORD_TO_COLOR_LOOKUP.getOrDefault(heldId, 0);
     }
-
-
 }

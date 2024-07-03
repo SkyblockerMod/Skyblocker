@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
@@ -14,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MasteryTestHelper {
@@ -41,7 +39,7 @@ public class MasteryTestHelper {
             blockOrder.add(pos);
             //add lifetime of a block to the time to get time when block expires
             // work out how long it will take between the player firing and arrow hitting the block and to subtract from time
-            long travelTime = (long) (CLIENT.player.getPos().distanceTo(pos.toCenterPos()) * (1000 / 60)); //an arrow speed is about 60 blocks a second from a full draw
+            long travelTime = (long) (CLIENT.player.getPos().distanceTo(pos.toCenterPos()) * 1000 / 60); //an arrow speed is about 60 blocks a second from a full draw
             endTimes.put(pos, System.currentTimeMillis() + BLOCK_LIFE_TIME - DojoManager.ping - travelTime);
         }
         if (state.isAir()) {
