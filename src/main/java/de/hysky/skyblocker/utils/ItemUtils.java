@@ -10,9 +10,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -64,8 +64,8 @@ public class ItemUtils {
 
     /**
      * Gets the nbt in the custom data component of the item stack.
-     * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack, or an empty {@link NbtCompound} if the itemstack is missing
-     * a custom data component
+     * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack,
+     *         or an empty {@link NbtCompound} if the itemstack is missing a custom data component
      */
     @SuppressWarnings("deprecation")
 	public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
@@ -78,7 +78,7 @@ public class ItemUtils {
      * @param stack the item stack to get the internal name from
      * @return an optional containing the internal name of the item stack
      */
-    public static Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
+    public static @NotNull Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
         return customData.contains(ID) ? Optional.of(customData.getString(ID)) : Optional.empty();
     }
@@ -89,7 +89,7 @@ public class ItemUtils {
      * @param stack the item stack to get the internal name from
      * @return the internal name of the item stack, or an empty string if the item stack is null or does not have an internal name
      */
-    public static String getItemId(@NotNull ItemStack stack) {
+    public static @NotNull String getItemId(@NotNull ItemStack stack) {
         return getCustomData(stack).getString(ID);
     }
 
@@ -99,7 +99,7 @@ public class ItemUtils {
      * @param stack the item stack to get the UUID from
      * @return an optional containing the UUID of the item stack
      */
-    public static Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
+    public static @NotNull Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
         return customData.contains(UUID) ? Optional.of(customData.getString(UUID)) : Optional.empty();
     }
@@ -110,7 +110,7 @@ public class ItemUtils {
      * @param stack the item stack to get the UUID from
      * @return the UUID of the item stack, or an empty string if the item stack is null or does not have a UUID
      */
-	public static String getItemUuid(@NotNull ComponentHolder stack) {
+	public static @NotNull String getItemUuid(@NotNull ComponentHolder stack) {
         return getCustomData(stack).getString(UUID);
     }
 
@@ -120,7 +120,7 @@ public class ItemUtils {
      * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
-    public static DoubleBooleanPair getItemPrice(@NotNull ItemStack stack) {
+    public static @NotNull DoubleBooleanPair getItemPrice(@NotNull ItemStack stack) {
         return getItemPrice(getItemId(stack));
     }
 
@@ -130,7 +130,7 @@ public class ItemUtils {
      * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
-    public static DoubleBooleanPair getItemPrice(@Nullable String id) {
+    public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String id) {
         JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
         JsonObject lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
@@ -173,15 +173,15 @@ public class ItemUtils {
 
     public static boolean hasCustomDurability(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
-        return customData != null && (customData.contains("drill_fuel") || customData.getString(ID).equals("PICKONIMBUS"));
+        return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getString(ID).equals("PICKONIMBUS"));
     }
 
     @Nullable
     public static IntIntPair getDurability(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
-        if (customData == null) return null;
+        if (customData.isEmpty()) return null;
 
-        // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
+	    // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
         // TODO Cache the max durability and only update the current durability on inventory tick
 
         int pickonimbusDurability = customData.getInt("pickonimbus_durability");
@@ -223,15 +223,15 @@ public class ItemUtils {
         return null;
     }
 
-    public static List<Text> getLore(ItemStack item) {
+    public static @NotNull List<Text> getLore(ItemStack item) {
         return item.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
     }
 
-    public static PropertyMap propertyMapWithTexture(String textureValue) {
+    public static @NotNull PropertyMap propertyMapWithTexture(String textureValue) {
         return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
     }
 
-    public static String getHeadTexture(ItemStack stack) {
+    public static @NotNull String getHeadTexture(@NotNull ItemStack stack) {
         if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
 
         ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
@@ -243,13 +243,13 @@ public class ItemUtils {
                 .orElse("");
     }
 
-    public static Optional<String> getHeadTextureOptional(ItemStack stack) {
+    public static @NotNull Optional<String> getHeadTextureOptional(ItemStack stack) {
         String texture = getHeadTexture(stack);
         if (texture.isBlank()) return Optional.empty();
         return Optional.of(texture);
     }
 
-    public static ItemStack getSkyblockerStack() {
+    public static @NotNull ItemStack getSkyblockerStack() {
         try {
             ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
             stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerStack"), Optional.of(java.util.UUID.randomUUID()), propertyMapWithTexture("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=")));
