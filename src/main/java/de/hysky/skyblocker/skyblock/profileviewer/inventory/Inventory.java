@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Inventory implements ProfileViewerPage {
@@ -67,6 +68,7 @@ public class Inventory implements ProfileViewerPage {
 
         int startIndex = activePage * itemsPerPage;
         int endIndex = Math.min(startIndex + itemsPerPage, containerList.size());
+        List<Text> tooltip = Collections.emptyList();
         for (int i = 0; i < endIndex - startIndex; i++) {
             if (containerList.get(startIndex + i) == ItemStack.EMPTY) continue;
             int column = i % dimensions.rightInt();
@@ -83,10 +85,11 @@ public class Inventory implements ProfileViewerPage {
             context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
 
             if (mouseX > x && mouseX < x + 16 && mouseY > y && mouseY < y + 16) {
-                List<Text> tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
-                context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+                tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
             }
         }
+
+        if (!tooltip.isEmpty()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
     }
 
     public void nextPage() {

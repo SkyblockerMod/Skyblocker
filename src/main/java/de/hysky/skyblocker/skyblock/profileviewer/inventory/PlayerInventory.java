@@ -16,12 +16,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerInventory implements ProfileViewerPage {
     private static final Identifier TEXTURE = Identifier.of("textures/gui/container/generic_54.png");
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private final List<ItemStack> containerList;
+    private List<Text> tooltip = Collections.emptyList();
 
     public PlayerInventory(JsonObject inventory) {
         this.containerList = new InventoryItemLoader().loadItems(inventory);
@@ -33,9 +35,11 @@ public class PlayerInventory implements ProfileViewerPage {
         drawContainerTextures(context, "Inventory", rootX, rootY + 2, IntIntPair.of(4, 9));
         drawContainerTextures(context, "Equipment", rootX + 90, rootY + 108, IntIntPair.of(1, 4));
 
+        tooltip.clear();
         drawContainerItems(context, rootX, rootY + 108, IntIntPair.of(1, 4), 36, 40, mouseX, mouseY);
         drawContainerItems(context, rootX, rootY + 2, IntIntPair.of(4, 9), 0, 36, mouseX, mouseY);
         drawContainerItems(context, rootX + 90, rootY + 108, IntIntPair.of(1, 4), 40, containerList.size(), mouseX, mouseY);
+        if (!tooltip.isEmpty()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
     }
 
     private void drawContainerTextures(DrawContext context, String containerName, int rootX, int rootY, IntIntPair dimensions) {
@@ -71,8 +75,7 @@ public class PlayerInventory implements ProfileViewerPage {
             context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
 
             if (mouseX > x && mouseX < x + 16 && mouseY > y && mouseY < y + 16) {
-                List<Text> tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
-                context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+                tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
             }
         }
     }
