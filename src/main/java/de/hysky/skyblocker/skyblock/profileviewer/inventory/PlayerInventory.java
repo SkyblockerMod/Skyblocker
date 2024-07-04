@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -60,6 +62,10 @@ public class PlayerInventory implements ProfileViewerPage {
 
             int x = rootX + 8 + column * 18;
             int y = (rootY + 18 + row * 18) + (dimensions.leftInt()  > 1 && row + 1 == dimensions.leftInt() ? 4 : 0);
+
+            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
+                ItemRarityBackgrounds.tryDraw(containerList.get(startIndex + i), context, x, y);
+            }
 
             context.drawItem(containerList.get(startIndex + i), x, y);
             context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);

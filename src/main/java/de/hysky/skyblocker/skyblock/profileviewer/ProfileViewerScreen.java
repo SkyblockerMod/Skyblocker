@@ -27,6 +27,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.SkinTextures;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.text.Text;
@@ -55,6 +56,7 @@ public class ProfileViewerScreen extends Screen {
     private String playerName;
     private JsonObject hypixelProfile;
     private JsonObject playerProfile;
+    private boolean profileNotFound = false;
 
     private int activePage = 0;
     private static final String[] PAGE_NAMES = {"Skills", "Slayers", "Dungeons", "Inventories", "Collections"};
@@ -73,6 +75,8 @@ public class ProfileViewerScreen extends Screen {
     }
 
     private void initialisePagesAndWidgets() {
+        if (profileNotFound) return;
+
         textWidget = new ProfileViewerTextWidget(hypixelProfile, playerProfile);
 
         CompletableFuture<Void> skillsFuture = CompletableFuture.runAsync(() -> profileViewerPages[0] = new SkillsPage(hypixelProfile, playerProfile));
@@ -105,6 +109,7 @@ public class ProfileViewerScreen extends Screen {
             button.render(context, mouseX, mouseY, delta);
         }
 
+
         if (textWidget != null) textWidget.render(context, textRenderer, rootX + 8, rootY + 120);
         drawPlayerEntity(context, playerName != null ? playerName : "Loading...", rootX, rootY, mouseX, mouseY);
 
@@ -112,7 +117,7 @@ public class ProfileViewerScreen extends Screen {
             profileViewerPages[activePage].markWidgetsAsVisible();
             profileViewerPages[activePage].render(context, mouseX, mouseY, delta, rootX + 93, rootY + 7);
         } else {
-            context.drawText(textRenderer, "Loading...", rootX + 180, rootY + 80, Color.WHITE.getRGB(), true);
+            context.drawText(textRenderer, profileNotFound ? "No Profile" : "Loading...", rootX + 180, rootY + 80, Color.WHITE.getRGB(), true);
         }
     }
 
@@ -120,18 +125,24 @@ public class ProfileViewerScreen extends Screen {
         if (entity != null)
             drawEntity(context, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625F, mouseX, mouseY, entity);
         context.drawCenteredTextWithShadow(textRenderer, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());
-
     }
 
     private CompletableFuture<Void> fetchPlayerData(String username) {
         CompletableFuture<Void> profileFuture = ProfileUtils.fetchFullProfile(username).thenAccept(profiles -> {
-            this.hypixelProfile = profiles.getAsJsonArray("profiles").asList().stream()
-                    .map(JsonElement::getAsJsonObject)
-                    .filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("No selected profile found!"));
+            try {
+                Optional<JsonObject> selectedProfile = profiles.getAsJsonArray("profiles").asList().stream()
+                        .map(JsonElement::getAsJsonObject)
+                        .filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
+                        .findFirst();
 
-            this.playerProfile = hypixelProfile.getAsJsonObject("members").get(ApiUtils.name2Uuid(username)).getAsJsonObject();
+                if (selectedProfile.isPresent()) {
+                    this.hypixelProfile = selectedProfile.get();
+                    this.playerProfile = hypixelProfile.getAsJsonObject("members").get(ApiUtils.name2Uuid(username)).getAsJsonObject();
+                }
+            } catch (Exception e) {
+                this.profileNotFound = true;
+                LOGGER.warn("[Skyblocker Profile Viewer] Error while looking for profile", e);
+            }
         });
 
         CompletableFuture<Void> minecraftProfileFuture = SkullBlockEntityAccessor.invokeFetchProfileByName(username).thenAccept(profile -> {
@@ -156,11 +167,13 @@ public class ProfileViewerScreen extends Screen {
             entity.setCustomNameVisible(false);
         }).exceptionally(ex -> {
             this.playerName = "User not found";
+            this.profileNotFound = true;
             return null;
         });
 
         return CompletableFuture.allOf(profileFuture, minecraftProfileFuture);
     }
+
 
     public void onNavButtonClick(ProfileViewerNavButton clickedButton) {
         if (profileViewerPages[activePage] != null) profileViewerPages[activePage].markWidgetsAsInvisible();
@@ -188,10 +201,11 @@ public class ProfileViewerScreen extends Screen {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder =  ClientCommandManager.literal("pv")
-                            .then(ClientCommandManager.argument("username", StringArgumentType.string())
-                                    .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
-                            )
-                            .executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
+                    .then(ClientCommandManager.argument("username", StringArgumentType.string())
+                            .suggests((source, builder) -> CommandSource.suggestMatching(getPlayerSuggestions(source.getSource()), builder))
+                            .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
+                    )
+                    .executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
             dispatcher.register(literalArgumentBuilder);
             dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(literalArgumentBuilder));
         });
@@ -226,5 +240,12 @@ public class ProfileViewerScreen extends Screen {
             LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
         }
         return Collections.emptyMap();
+    }
+
+    /**
+     * Ensures that "dummy" players aren't included in command suggestions
+     */
+    private static String[] getPlayerSuggestions(FabricClientCommandSource source) {
+        return source.getPlayerNames().stream().filter(playerName -> playerName.matches("[A-Za-z0-9_]+")).toArray(String[]::new);
     }
 }
