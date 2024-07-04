@@ -20,7 +20,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.nbt.visitor.StringNbtWriter;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +146,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         super.drawMouseoverTooltip(context, x, y);
         if (!handler.getCursorStack().isEmpty()) return;
         for (Slot equipmentSlot : equipmentSlots) {
-            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y)) {
+            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasStack()) {
                 ItemStack itemStack = equipmentSlot.getStack();
                 context.drawTooltip(this.textRenderer, this.getTooltipFromItem(itemStack), itemStack.getTooltipData(), x, y);
             }
