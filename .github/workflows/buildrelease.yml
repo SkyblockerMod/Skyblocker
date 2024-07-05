@@ -78,18 +78,12 @@ jobs:
             const fs = require("fs")
             return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0]
 
-      - name: Release
-        id: uploadrelease
-        uses: softprops/action-gh-release@v1
-        with:
-          body: ${{ steps.read_changelog.outputs.changelog }}
-          token: ${{ secrets.GH_RELEASE }}
-          files: build/libs/${{ steps.fname.outputs.result }}
-
       - name: Publish using mod-publish-plugin
         run: ./gradlew build publishMods
         env:
-          CHANGELOG: ${{ steps.read_changelog.outputs.changelog_highlight }}
+          CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
+          CHANGELOG_HIGHLIGHT: ${{ steps.read_changelog.outputs.changelog_highlight }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
