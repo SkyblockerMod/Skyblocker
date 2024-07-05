@@ -1,4 +1,16 @@
-# Release 1.21.0
+# Release 1.21.1 for 1.20.6
+
+## Highlight
+- Fix EventNotification Crash
+- Fix Golden Stray Rabbits not getting highlighted
+
+## What's Changed
+* Fix Golden Stray Rabbits not getting highlighted by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/790
+* Fix EventNotification NullPointerException by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/commit/a91d6ff7f5a9c3afa29fc99213a7337d1adc2e8c
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.21.0...v1.21.1+1.20.6
+___
+# Release 1.21.0 for 1.20.6
 
 ## Highlight
 * Chocolate factory helper
