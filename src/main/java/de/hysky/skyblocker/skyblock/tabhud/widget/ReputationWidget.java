@@ -44,7 +44,7 @@ public class ReputationWidget extends Widget {
             if (fname.equals("Mage")) {
                 faction = new IcoTextComponent(Ico.POTION, Text.literal(fname).formatted(Formatting.DARK_AQUA));
             } else {
-                faction = new IcoTextComponent(Ico.SWORD, Text.literal(fname).formatted(Formatting.RED));
+                faction = new IcoTextComponent(Ico.IRON_SWORD, Text.literal(fname).formatted(Formatting.RED));
             }
         }
         this.addComponent(faction);

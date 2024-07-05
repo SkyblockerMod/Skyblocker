@@ -1,7 +1,5 @@
 package de.hysky.skyblocker;
 
-import java.time.LocalDate;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -11,17 +9,15 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.MultilineTextWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
+
+import java.time.LocalDate;
 
 public class SkyblockerScreen extends Screen {
 	private static final int SPACING = 8;
@@ -36,7 +32,8 @@ public class SkyblockerScreen extends Screen {
 	private static final Text TRANSLATE_TEXT = Text.translatable("text.skyblocker.translate");
 	private static final Text MODRINTH_TEXT = Text.translatable("text.skyblocker.modrinth");
 	private static final Text DISCORD_TEXT = Text.translatable("text.skyblocker.discord");
-	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
+	private ThreePartsLayoutWidget layout;
+	private MultilineTextWidget tip;
 
 	static {
 		LocalDate date = LocalDate.now();
@@ -44,7 +41,7 @@ public class SkyblockerScreen extends Screen {
 		ICON = date.getMonthValue() == 4 && date.getDayOfMonth() == 1 ? Identifier.of(SkyblockerMod.NAMESPACE, "icons.png") : Identifier.of(SkyblockerMod.NAMESPACE, "icon.png");
 	}
 
-	private SkyblockerScreen() {
+	public SkyblockerScreen() {
 		super(TITLE);
 	}
 
@@ -57,6 +54,7 @@ public class SkyblockerScreen extends Screen {
 
 	@Override
 	protected void init() {
+		this.layout = new ThreePartsLayoutWidget(this, 50, 100);
 		this.layout.addHeader(new IconTextWidget(this.getTitle(), this.textRenderer, ICON));
 
 		GridWidget gridWidget = this.layout.addBody(new GridWidget()).setSpacing(SPACING);
@@ -72,17 +70,26 @@ public class SkyblockerScreen extends Screen {
 		adder.add(ButtonWidget.builder(DISCORD_TEXT, ConfirmLinkScreen.opening(this, "https://discord.gg/aNNJHQykck")).width(HALF_BUTTON_WIDTH).build());
 		adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> this.close()).width(BUTTON_WIDTH).build(), 2);
 
-		MultilineTextWidget tip = new MultilineTextWidget(Text.translatable("skyblocker.tips.tip", Tips.nextTipInternal()), this.textRenderer)
-		.setCentered(true)
-		.setMaxWidth((int) (this.width * 0.7));
+		GridWidget footerGridWidget = this.layout.addFooter(new GridWidget()).setSpacing(SPACING).setRowSpacing(0);
+		footerGridWidget.getMainPositioner().alignHorizontalCenter();
+		GridWidget.Adder footerAdder = footerGridWidget.createAdder(2);
+		footerAdder.add(tip = new MultilineTextWidget(Tips.nextTip(), this.textRenderer).setCentered(true).setMaxWidth((int) (this.width * 0.7)), 2);
+		footerAdder.add(ButtonWidget.builder(Text.translatable("skyblocker.tips.previous"), button -> {
+            tip.setMessage(Tips.previousTip());
+			layout.refreshPositions();
+        }).build());
+		footerAdder.add(ButtonWidget.builder(Text.translatable("skyblocker.tips.next"), button -> {
+            tip.setMessage(Tips.nextTip());
+			layout.refreshPositions();
+        }).build());
 
-		this.layout.addFooter(tip);
 		this.layout.refreshPositions();
 		this.layout.forEachChild(this::addDrawableChild);
 	}
 
 	@Override
 	protected void initTabNavigation() {
+		super.initTabNavigation();
 		this.layout.refreshPositions();
 	}
 

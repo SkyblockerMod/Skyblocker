@@ -13,7 +13,6 @@ import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
@@ -29,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventNotifications {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -39,21 +39,19 @@ public class EventNotifications {
 
     public static final IntList DEFAULT_REMINDERS = IntList.of(60, 60 * 5);
 
-    public static final Map<String, ItemStack> eventIcons = new Object2ObjectOpenHashMap<>();
-
-    static {
-        eventIcons.put("Dark Auction", new ItemStack(Items.NETHER_BRICK));
-        eventIcons.put("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD));
-        eventIcons.put("Bonus Mining Fiesta", new ItemStack(Items.IRON_PICKAXE));
-        eventIcons.put(JACOBS, new ItemStack(Items.IRON_HOE));
-        eventIcons.put("New Year Celebration", new ItemStack(Items.CAKE));
-        eventIcons.put("Election Over!", new ItemStack(Items.JUKEBOX));
-        eventIcons.put("Election Booth Opens", new ItemStack(Items.JUKEBOX));
-        eventIcons.put("Spooky Festival", new ItemStack(Items.JACK_O_LANTERN));
-        eventIcons.put("Season of Jerry", new ItemStack(Items.SNOWBALL));
-        eventIcons.put("Jerry's Workshop Opens", new ItemStack(Items.SNOW_BLOCK));
-        eventIcons.put("Traveling Zoo", new ItemStack(Items.HAY_BLOCK)); // change to the custom head one day
-    }
+    public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
+            Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
+            Map.entry("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD)),
+            Map.entry("Bonus Mining Fiesta", new ItemStack(Items.IRON_PICKAXE)),
+            Map.entry(JACOBS, new ItemStack(Items.IRON_HOE)),
+            Map.entry("New Year Celebration", new ItemStack(Items.CAKE)),
+            Map.entry("Election Over!", new ItemStack(Items.JUKEBOX)),
+            Map.entry("Election Booth Opens", new ItemStack(Items.JUKEBOX)),
+            Map.entry("Spooky Festival", new ItemStack(Items.JACK_O_LANTERN)),
+            Map.entry("Season of Jerry", new ItemStack(Items.SNOWBALL)),
+            Map.entry("Jerry's Workshop Opens", new ItemStack(Items.SNOW_BLOCK)),
+            Map.entry("Traveling Zoo", new ItemStack(Items.HAY_BLOCK)) // change to the custom head one day
+    );
 
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(EventNotifications::timeUpdate, 20);
@@ -85,7 +83,7 @@ public class EventNotifications {
         ));
     }
 
-    private static final Map<String, LinkedList<SkyblockEvent>> events = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, LinkedList<SkyblockEvent>> events = new ConcurrentHashMap<>();
 
     public static Map<String, LinkedList<SkyblockEvent>> getEvents() {
         return events;

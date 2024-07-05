@@ -27,6 +27,9 @@ public class MiningConfig {
     @SerialEntry
     public Glacite glacite = new Glacite();
 
+    @SerialEntry
+    public boolean commissionHighlight = true;
+
     public static class DwarvenMines {
         @SerialEntry
         public boolean solveFetchur = true;
@@ -61,6 +64,9 @@ public class MiningConfig {
     public static class CrystalHollows {
         @SerialEntry
         public boolean metalDetectorHelper = true;
+
+        @SerialEntry
+        public boolean nucleusWaypoints = false;
     }
 
     public static class CrystalsHud {

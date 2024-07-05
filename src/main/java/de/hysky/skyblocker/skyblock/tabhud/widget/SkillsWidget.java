@@ -58,13 +58,13 @@ public class SkillsWidget extends Widget {
         Text speed = Widget.simpleEntryText(67, "SPD", Formatting.WHITE);
         IcoTextComponent spd = new IcoTextComponent(Ico.SUGAR, speed);
         Text strength = Widget.simpleEntryText(68, "STR", Formatting.RED);
-        IcoTextComponent str = new IcoTextComponent(Ico.SWORD, strength);
+        IcoTextComponent str = new IcoTextComponent(Ico.IRON_SWORD, strength);
         Text critDmg = Widget.simpleEntryText(69, "CCH", Formatting.BLUE);
-        IcoTextComponent cdg = new IcoTextComponent(Ico.SWORD, critDmg);
+        IcoTextComponent cdg = new IcoTextComponent(Ico.IRON_SWORD, critDmg);
         Text critCh = Widget.simpleEntryText(70, "CDG", Formatting.BLUE);
-        IcoTextComponent cch = new IcoTextComponent(Ico.SWORD, critCh);
+        IcoTextComponent cch = new IcoTextComponent(Ico.IRON_SWORD, critCh);
         Text aSpeed = Widget.simpleEntryText(71, "ASP", Formatting.YELLOW);
-        IcoTextComponent asp = new IcoTextComponent(Ico.HOE, aSpeed);
+        IcoTextComponent asp = new IcoTextComponent(Ico.IRON_HOE, aSpeed);
 
         TableComponent tc = new TableComponent(2, 3, Formatting.YELLOW.getColorValue());
         tc.addToCell(0, 0, spd);

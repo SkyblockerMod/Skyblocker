@@ -38,7 +38,7 @@ public class DungeonDeathWidget extends Widget {
             this.addComponent(deaths);
         }
 
-        this.addSimpleIcoText(Ico.SWORD, "Damage Dealt:", Formatting.RED, 26);
+        this.addSimpleIcoText(Ico.IRON_SWORD, "Damage Dealt:", Formatting.RED, 26);
         this.addSimpleIcoText(Ico.POTION, "Healing Done:", Formatting.RED, 27);
         this.addSimpleIcoText(Ico.NTAG, "Milestone:", Formatting.YELLOW, 28);
 

@@ -2,6 +2,8 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.util.UndashedUuid;
+
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -93,15 +95,15 @@ public class Utils {
     }
 
     public static boolean isInDungeons() {
-        return location == Location.DUNGEON || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DUNGEON;
     }
 
     public static boolean isInCrystalHollows() {
-        return location == Location.CRYSTAL_HOLLOWS || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.CRYSTAL_HOLLOWS;
     }
 
     public static boolean isInDwarvenMines() {
-        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT;
     }
 
     public static boolean isInTheRift() {
@@ -117,6 +119,9 @@ public class Utils {
 
     public static boolean isInKuudra() {
         return location == Location.KUUDRAS_HOLLOW;
+    }
+    public static boolean isInCrimson() {
+        return location == Location.CRIMSON_ISLE;
     }
 
     public static boolean isInModernForagingIsland() {
@@ -506,5 +511,9 @@ public class Utils {
         client.inGameHud.getChatHud().addMessage(message);
         ((MessageHandlerAccessor) client.getMessageHandler()).invokeAddToChatLog(message, Instant.now());
         client.getNarratorManager().narrateSystemMessage(message);
+    }
+
+    public static String getUndashedUuid() {
+        return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
     }
 }

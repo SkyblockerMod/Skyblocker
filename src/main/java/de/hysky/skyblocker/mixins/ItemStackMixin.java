@@ -1,14 +1,18 @@
 package de.hysky.skyblocker.mixins;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import de.hysky.skyblocker.SkyblockerMod;
+import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.skyblock.PetCache.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.item.ItemStack;
@@ -106,8 +110,8 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	}
 
 	@Unique
-	private boolean skyblocker$shouldProcess() {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+	private boolean skyblocker$shouldProcess() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
+		return !(MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique
@@ -165,6 +169,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		}
 
 		// Transformation to API format.
+		//TODO future - remove this and just handle it directly for the NEU id conversion because this whole system is confusing and hard to follow
 		if (customData.contains("is_shiny")) {
 			return "ISSHINY_" + customDataString;
 		}
@@ -178,12 +183,14 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 					return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
 				}
 			}
+
 			case "PET" -> {
 				if (customData.contains("petInfo")) {
-					JsonObject petInfo = SkyblockerMod.GSON.fromJson(customData.getString("petInfo"), JsonObject.class);
-					return "LVL_1_" + petInfo.get("tier").getAsString() + "_" + petInfo.get("type").getAsString();
+					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+					return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
 				}
 			}
+
 			case "POTION" -> {
 				String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
 				String extended = customData.contains("extended") ? "_EXTENDED" : "";
@@ -193,6 +200,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
 				}
 			}
+
 			case "RUNE" -> {
 				if (customData.contains("runes")) {
 					NbtCompound runes = customData.getCompound("runes");
@@ -201,12 +209,61 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 					return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
 				}
 			}
+
 			case "ATTRIBUTE_SHARD" -> {
 				if (customData.contains("attributes")) {
 					NbtCompound shards = customData.getCompound("attributes");
 					Optional<String> firstShards = shards.getKeys().stream().findFirst();
 					String shard = firstShards.orElse("");
 					return customDataString + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
+				}
+			}
+
+			case "NEW_YEAR_CAKE" -> {
+				return customDataString + "_" + customData.getInt("new_years_cake");
+			}
+
+			case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
+				return customDataString + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
+			}
+
+			case "PARTY_HAT_SLOTH" -> {
+				return customDataString + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
+			}
+
+			case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
+				NbtCompound attributes = customData.getCompound("attributes");
+
+				if (attributes.contains("magic_find") && attributes.contains("veteran")) {
+					return customDataString + "-MAGIC_FIND-VETERAN";
+				}
+			}
+
+			case "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS" -> {
+				NbtCompound attributes = customData.getCompound("attributes");
+
+				if (attributes.contains("mana_pool") && attributes.contains("mana_regeneration")) {
+					return customDataString + "-MANA_POOL-MANA_REGENERATION";
+				}
+			}
+
+			case "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> {
+				NbtCompound attributes = customData.getCompound("attributes");
+
+				if (attributes.contains("lifeline") && attributes.contains("mana_pool")) {
+					return customDataString + "-LIFELINE-MANA_POOL";
+				}
+			}
+
+			case "MIDAS_SWORD" -> {
+				if (customData.getInt("winning_bid") >= 50000000) {
+					return customDataString + "_50M";
+				}
+			}
+
+			case "MIDAS_STAFF" -> {
+				if (customData.getInt("winning_bid") >= 100000000) {
+					return customDataString + "_100M";
 				}
 			}
 		}

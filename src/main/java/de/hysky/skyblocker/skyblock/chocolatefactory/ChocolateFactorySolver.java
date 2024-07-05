@@ -209,10 +209,10 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
-		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
+		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
 		if (cost.isEmpty()) return Optional.empty();
 
-		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), COACH_SLOT));
+		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsLong(), COACH_SLOT));
 	}
 
 	private static Optional<Rabbit> getRabbit(ItemStack item, int slot) {
@@ -227,9 +227,9 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
+		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt())*(totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsInt(), slot));
+		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt())*(totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsLong(), slot));
 	}
 
 	private static Optional<ColorHighlight> getPrestigeHighlight() {
@@ -244,14 +244,14 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			ItemStack item = slots.get(i);
 			if (!item.isOf(Items.PLAYER_HEAD)) continue;
 			String name = item.getName().getString();
-			if (name.equals("CLICK ME!") || name.startsWith("GOLDEN RABBIT")) {
+			if (name.equals("CLICK ME!") || name.startsWith("Golden Rabbit - ")) {
 				highlights.add(ColorHighlight.green(i));
 			}
 		}
 		return highlights;
 	}
 
-	private record Rabbit(double cpsIncrease, int cost, int slot) { }
+	private record Rabbit(double cpsIncrease, long cost, int slot) { }
 
 	public static final class Tooltip extends TooltipAdder {
 		public Tooltip() {
