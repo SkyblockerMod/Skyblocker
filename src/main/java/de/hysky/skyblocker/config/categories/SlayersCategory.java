@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
@@ -16,6 +17,28 @@ public class SlayersCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("skyblocker.config.slayer"))
+                .option(Option.<SlayersConfig.HighlightSlayerEntities>createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.highlightMinis"))
+                        .description(OptionDescription.of(
+                                        Text.translatable("skyblocker.config.slayer.highlightMinis.@Tooltip[0]"),
+                                        Text.translatable("skyblocker.config.slayer.highlightMinis.@Tooltip[1]"),
+                                        Text.translatable("skyblocker.config.slayer.highlightMinis.@Tooltip[2]")))
+                        .binding(defaults.slayers.highlightMinis,
+                                () -> config.slayers.highlightMinis,
+                                newValue -> config.slayers.highlightMinis = newValue)
+                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .build())
+                .option(Option.<SlayersConfig.HighlightSlayerEntities>createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.highlightBosses"))
+                        .description(OptionDescription.of(
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[0]"),
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[1]"),
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[2]")))
+                        .binding(defaults.slayers.highlightBosses,
+                                () -> config.slayers.highlightBosses,
+                                newValue -> config.slayers.highlightBosses = newValue)
+                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .build())
 
                 //Enderman Slayer
                 .group(OptionGroup.createBuilder()

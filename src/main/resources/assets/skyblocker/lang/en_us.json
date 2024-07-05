@@ -528,6 +528,16 @@
 
   "skyblocker.config.slayer": "Slayers",
 
+  "skyblocker.config.slayer.highlightMinis": "Highlight Minibosses",
+  "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "Off: Do not highlight Slayer Minibosses.",
+  "skyblocker.config.slayer.highlightMinis.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Minibosses. Due to technical limitations the Glow effect can spread to nearby mobs",
+  "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\nHITBOX: Display a Hitbox on Slayer Minibosses",
+
+  "skyblocker.config.slayer.highlightBosses": "Highlight Bosses",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "Off: Do not highlight Slayer Bosses.",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Bosses. Due to technical limitations the Glow effect can spread to nearby mobs",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX: Display a Hitbox on Slayer Bosses",
+
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",

@@ -22,7 +22,8 @@ public class SlayerUtils {
         if (MinecraftClient.getInstance().world != null) {
             for (Entity entity : MinecraftClient.getInstance().world.getEntities()) {
                 //Check if entity is Bloodfiend
-                if (entity.hasCustomName() && entity.getCustomName().getString().contains("Bloodfiend")) {
+                if (entity.hasCustomName() && entity.getCustomName().getString().contains("Bloodfiend") ||
+                        entity.hasCustomName() && entity.getCustomName().getString().contains("Demonlord")) {
                     //Grab the players username
                     String username = MinecraftClient.getInstance().getSession().getUsername();
                     //Check all armor stands around the boss
@@ -51,4 +52,38 @@ public class SlayerUtils {
 
         return false;
     }
+
+    public static boolean isInSlayerType(String slayer) {
+        try {
+            boolean quest = false;
+            boolean type = false;
+            for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
+                String line = Utils.STRING_SCOREBOARD.get(i);
+
+                if (line.contains("Slayer Quest")) quest = true;
+                if (line.contains(slayer)) type = true;
+                if (quest && type) return true;
+            }
+        } catch (NullPointerException e) {
+            LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
+        }
+
+        return false;
+    }
+
+    public static String getSlayerType() {
+        try {
+            for (int i = 0; i < Utils.STRING_SCOREBOARD.size(); i++) {
+                if (Utils.STRING_SCOREBOARD.get(i).contains("Revenant Horror")) return Utils.STRING_SCOREBOARD.get(i);
+                if (Utils.STRING_SCOREBOARD.get(i).contains("Tarantula Broodfather")) return Utils.STRING_SCOREBOARD.get(i);
+                if (Utils.STRING_SCOREBOARD.get(i).contains("Sven Packmaster")) return Utils.STRING_SCOREBOARD.get(i);
+                if (Utils.STRING_SCOREBOARD.get(i).contains("Voidgloom Seraph")) return Utils.STRING_SCOREBOARD.get(i);
+                if (Utils.STRING_SCOREBOARD.get(i).contains("Inferno Demonlord")) return Utils.STRING_SCOREBOARD.get(i);
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            LOGGER.error("[Skyblocker] Error while checking slayer type", e);
+        }
+        return "";
+    }
+
 }
