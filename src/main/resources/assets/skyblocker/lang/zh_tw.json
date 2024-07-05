@@ -730,5 +730,9 @@
     "skyblocker.config.mining.commissionHighlight": "高亮顯示已完成的任務",
     "skyblocker.tips.waypoints": "你可以使用 /skyblocker waypoints 指令在任何島嶼上匯入（包括skytils）、新增、刪除和切換路徑點。",
     "skyblocker.tips.visitorHelper": "點擊訪客助手中的商品名稱即可從集市購買。點選[Copy Amount]可以將數量複製到剪貼簿。",
-    "skyblocker.tips.profileViewer": "你可以使用 /pv 查看其他玩家的個人檔案。"
+    "skyblocker.tips.profileViewer": "你可以使用 /pv 查看其他玩家的個人檔案。",
+    "skyblocker.crimson.dojo": "道場",
+    "skyblocker.tips.next": "下一則提示",
+    "skyblocker.tips.clickPreviousTip": "§b[點擊查看上一則提示]",
+    "skyblocker.tips.previous": "上一則提示"
 }
