@@ -129,7 +129,7 @@ publishMods {
 		accessToken = System.getenv("GITHUB_TOKEN")
 		repository = "SkyblockerMod/Skyblocker"
 		commitish = System.getenv("REF_NAME")
-		tagName = version
+		tagName = publishMods.version
 		changelog = System.getenv("CHANGELOG")
 	}
 
