@@ -7,7 +7,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.slayers.SlayerMobs;
+import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -42,7 +42,7 @@ public class WorldRendererMixin {
 		boolean shouldShowBoundingBox = MobBoundingBoxes.shouldDrawMobBoundingBox(entity);
 
 		if (shouldShowBoundingBox) {
-			MobBoundingBoxes.submitBox2BeRendered(entity instanceof ArmorStandEntity e ? SlayerMobs.getSlayerMobBoundingBox(e) : entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
+			MobBoundingBoxes.submitBox2BeRendered(entity instanceof ArmorStandEntity e ? SlayerEntitiesGlow.getSlayerMobBoundingBox(e) : entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
 		}
 	}
 }

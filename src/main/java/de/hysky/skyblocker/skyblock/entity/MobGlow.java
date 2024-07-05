@@ -2,9 +2,10 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
+import de.hysky.skyblocker.skyblock.crimson.slayer.AttunementColours;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.slayers.SlayerMobs;
+import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -65,11 +66,11 @@ public class MobGlow {
 
 				// Special Zealot && Slayer (Mini)Boss
 				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() ->
-						TheEnd.isSpecialZealot(enderman) || SlayerMobs.shouldGlow(enderman.getUuid());
-				case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) -> SlayerMobs.shouldGlow(zombie.getUuid());
-				case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerMobs.shouldGlow(spider.getUuid());
-				case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN)-> SlayerMobs.shouldGlow(wolf.getUuid());
-				case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerMobs.shouldGlow(blaze.getUuid());
+						TheEnd.isSpecialZealot(enderman) || SlayerEntitiesGlow.shouldGlow(enderman.getUuid());
+				case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) -> SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
+				case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
+				case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN)-> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
+				case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
 				// Blaze Slayer's Demons
 				case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
 						SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
@@ -129,11 +130,11 @@ public class MobGlow {
 			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 
-			// Blazeslayer Attunement Colours
-			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(armorStand);
-			case BlazeEntity blaze when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(blaze) ;
-			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(piglin);
-			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(wSkelly);
+			// Blaze Slayer Attunement Colours
+			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.	getColour(armorStand);
+			case BlazeEntity blaze when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.getColour(blaze) ;
+			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.getColour(piglin);
+			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.getColour(wSkelly);
 
 			default -> 0xf57738;
 		};

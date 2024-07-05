@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.SlayerMobs;
+import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -42,7 +42,7 @@ public class MobBoundingBoxes {
 			};
 		}
 
-		if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.HITBOX && entity instanceof ArmorStandEntity le && SlayerMobs.isSlayerMiniMob(le)) return true;
+		if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.HITBOX && entity instanceof ArmorStandEntity le && SlayerEntitiesGlow.isSlayerMiniMob(le)) return true;
 
 		if (SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.HITBOX && entity instanceof ArmorStandEntity le) {
             return le.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()) ||

@@ -9,14 +9,11 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.util.math.Box;
 
-import java.awt.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SlayerMobs {
+public class SlayerEntitiesGlow {
     private static final Map<String, String> SLAYER_MINI_NAMES = Stream.of(new String[][]{
             {"Revenant Sycophant", SlayerUtils.REVENANT},
             {"Revenant Champion", SlayerUtils.REVENANT},
@@ -45,8 +42,6 @@ public class SlayerMobs {
             SlayerUtils.DEMONLORD, BlazeEntity.class
     );
 
-    private static final Pattern COLOUR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC");
-
     private static Set<UUID> mobsToGlow = new HashSet<>();
 
     public static boolean shouldGlow(UUID entityUUID) {
@@ -55,23 +50,6 @@ public class SlayerMobs {
 
     public static boolean isSlayer(LivingEntity e) {
         return SlayerUtils.isInSlayer() && SlayerUtils.getEntityArmorStands(e).stream().anyMatch(entity -> entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
-    }
-
-    public static int getColour(LivingEntity e) {
-        for (Entity entity : SlayerUtils.getEntityArmorStands(e)) {
-            Matcher matcher = COLOUR_PATTERN.matcher(entity.getDisplayName().getString());
-            if (matcher.find()) {
-                String matchedColour = matcher.group();
-                return switch (matchedColour) {
-                    case "ASHEN" -> Color.DARK_GRAY.getRGB();
-                    case "SPIRIT" -> Color.WHITE.getRGB();
-                    case "CRYSTAL" -> Color.CYAN.getRGB();
-                    case "AURIC" -> Color.YELLOW.getRGB();
-                    default -> Color.RED.getRGB();
-                };
-            }
-        }
-        return Color.RED.getRGB();
     }
 
     public static boolean isSlayerMiniMob(LivingEntity entity) {
