@@ -35,6 +35,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
@@ -200,6 +201,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Scheduler.INSTANCE.scheduleCyclic(DwarvenHud::update, 40);
         Scheduler.INSTANCE.scheduleCyclic(CrystalsHud::update, 40);
         Scheduler.INSTANCE.scheduleCyclic(PlayerListMgr::updateList, 20);
+        Scheduler.INSTANCE.scheduleCyclic(CraftPriceTooltip::clearCache, 600);
     }
 
     /**

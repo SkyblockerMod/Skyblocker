@@ -18,9 +18,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CraftPriceTooltip extends TooltipAdder {
-    private final Map<String, Double> cachedCraftCosts = new HashMap<>();
+    private final static Map<String, Double> cachedCraftCosts = new ConcurrentHashMap<>();
     private static final int MAX_RECURSION_DEPTH = 15;
 
     public CraftPriceTooltip(int priority) {
@@ -28,7 +29,7 @@ public class CraftPriceTooltip extends TooltipAdder {
     }
 
     @Override
-    public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+    public void addToTooltip(@Nullable Slot focusedSloFt, ItemStack stack, List<Text> lines) {
         if (SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == GeneralConfig.Craft.OFF) return;
 
         String internalID = stack.getSkyblockId();
@@ -46,7 +47,6 @@ public class CraftPriceTooltip extends TooltipAdder {
         if (neuRecipes.isEmpty() || neuRecipes.getFirst().getClass().equals(io.github.moulberry.repo.data.NEUKatUpgradeRecipe.class)) return;
 
         double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
-        cachedCraftCosts.clear();
 
         if (totalCraftCost == 0) return;
 
@@ -92,5 +92,9 @@ public class CraftPriceTooltip extends TooltipAdder {
             totalCraftCost += itemCost * inputItemCount;
         }
         return totalCraftCost;
+    }
+
+    public static void clearCache() {
+        cachedCraftCosts.clear();
     }
 }
