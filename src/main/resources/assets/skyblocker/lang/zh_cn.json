@@ -735,5 +735,6 @@
     "skyblocker.tips.profileViewer": "你可以使用 /pv 查看其他玩家的个人资料。",
     "skyblocker.tips.previous": "上一条提示",
     "skyblocker.tips.next": "下一条提示",
-    "skyblocker.tips.clickPreviousTip": "§b[点击查看上一条提示]"
+    "skyblocker.tips.clickPreviousTip": "§b[点击查看上一条提示]",
+    "skyblocker.crimson.dojo": "道场"
 }
