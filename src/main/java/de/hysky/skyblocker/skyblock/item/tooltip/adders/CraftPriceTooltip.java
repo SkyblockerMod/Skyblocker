@@ -14,6 +14,8 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CraftPriceTooltip extends TooltipAdder {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(CraftPriceTooltip.class.getName());
     private final static Map<String, Double> cachedCraftCosts = new ConcurrentHashMap<>();
     private static final int MAX_RECURSION_DEPTH = 15;
 
@@ -46,13 +49,18 @@ public class CraftPriceTooltip extends TooltipAdder {
         List<NEURecipe> neuRecipes = neuItem.getRecipes();
         if (neuRecipes.isEmpty() || neuRecipes.getFirst().getClass().equals(io.github.moulberry.repo.data.NEUKatUpgradeRecipe.class)) return;
 
-        double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
+        try {
+            double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
 
-        if (totalCraftCost == 0) return;
+            if (totalCraftCost == 0) return;
 
-        neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(neuIngredient ->
-                lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
-                .append(ItemTooltip.getCoinsMessage(totalCraftCost / neuIngredient.getAmount(), stack.getCount()))));
+            neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(neuIngredient ->
+                    lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
+                            .append(ItemTooltip.getCoinsMessage(totalCraftCost / neuIngredient.getAmount(), stack.getCount()))));
+
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + internalID, e);
+        }
     }
 
     private double getItemCost(NEURecipe recipe, int depth) {
