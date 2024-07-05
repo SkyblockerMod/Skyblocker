@@ -732,5 +732,8 @@
     "skyblocker.config.mining.crystalHollows.nucleusWaypoints.@Tooltip": "显示前往Nucleus的路径点。",
     "skyblocker.skyblockerScreen": "Skyblocker主界面",
     "skyblocker.tips.visitorHelper": "点击访客助手中的商品名称即可从集市购买。点击[Copy Amount]可以将数量复制到剪贴板。",
-    "skyblocker.tips.profileViewer": "你可以使用 /pv 查看其他玩家的个人资料。"
+    "skyblocker.tips.profileViewer": "你可以使用 /pv 查看其他玩家的个人资料。",
+    "skyblocker.tips.previous": "上一条提示",
+    "skyblocker.tips.next": "下一条提示",
+    "skyblocker.tips.clickPreviousTip": "§b[点击查看上一条提示]"
 }
