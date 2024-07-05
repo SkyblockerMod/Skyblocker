@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class DisciplineTestHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -41,11 +42,10 @@ public class DisciplineTestHelper {
             return false;
         }
         String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
-        if (SWORD_TO_NAME_LOOKUP.containsKey(heldId)) {
-
-            return SWORD_TO_NAME_LOOKUP.get(heldId).equals(name);
+        if (heldId == null) {
+            return false;
         }
-        return false;
+        return Objects.equals(SWORD_TO_NAME_LOOKUP.get(heldId), name);
     }
 
     /**
@@ -58,6 +58,9 @@ public class DisciplineTestHelper {
             return 0;
         }
         String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
+        if (heldId == null) {
+            return 0;
+        }
         return SWORD_TO_COLOR_LOOKUP.getOrDefault(heldId, 0);
     }
 }
