@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
+import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
@@ -97,6 +98,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onParticle", at = @At("RETURN"))
     private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
         MythologicalRitual.onParticle(packet);
+        DojoManager.onParticle(packet);
         EnderNodes.onParticle(packet);
     }
 

@@ -894,6 +894,22 @@
   "skyblocker.fancyAuctionHouse.yourAuction": "This is your auction!",
   "skyblocker.fancyAuctionHouse.youPay": "You pay: %s",
 
+  "skyblocker.crimson.dojo": "Dojo",
+  "skyblocker.crimson.dojo.forceHelper": "Enable Force Helper",
+  "skyblocker.crimson.dojo.forceHelper.@Tooltip": "Shows timer showing how long until a zombie despawns and outlines negative zombies.",
+  "skyblocker.crimson.dojo.staminaHelper": "Enable Stamina Helper",
+  "skyblocker.crimson.dojo.staminaHelper.@Tooltip": "Highlights the holes in the walls turning orange once you have been through a wall.",
+  "skyblocker.crimson.dojo.masteryHelper": "Enable Mastery Helper",
+  "skyblocker.crimson.dojo.masteryHelper.@Tooltip": "Shows count down to when to relase the bow and a path to follow.",
+  "skyblocker.crimson.dojo.disciplineHelper": "Enable Discipline Helper",
+  "skyblocker.crimson.dojo.disciplineHelper.@Tooltip": "Outlines the zombies to attack with currently held sword.",
+  "skyblocker.crimson.dojo.swiftnessHelper": "Enable Swiftness Helper",
+  "skyblocker.crimson.dojo.swiftnessHelper.@Tooltip": "highlights the newest wool block to go to.",
+  "skyblocker.crimson.dojo.controlHelper": "Enable Control Helper",
+  "skyblocker.crimson.dojo.controlHelper.@Tooltip": "enders an outline around where to aim.",
+  "skyblocker.crimson.dojo.tenacityHelper": "Enable Tenacity Helper",
+  "skyblocker.crimson.dojo.tenacityHelper.@Tooltip": "Shows a path for each fireball and predicted block they are going to hit.",
+
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
 
