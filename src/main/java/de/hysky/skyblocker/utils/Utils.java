@@ -110,6 +110,10 @@ public class Utils {
         return location == Location.THE_RIFT;
     }
 
+    public static boolean isInCrimsonIsle() {
+        return location == Location.CRIMSON_ISLE;
+    }
+
     /**
      * @return if the player is in the end island
      */

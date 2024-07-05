@@ -162,6 +162,27 @@ public class SlayersCategory {
                                 .build())
                         .build())
 
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.blazeSlayer"))
+                        .collapsed(true)
+                        .option(Option.<SlayersConfig.BlazeSlayer.FirePillar>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip")))
+                                .binding(defaults.slayers.blazeSlayer.firePillarCountdown,
+                                        () -> config.slayers.blazeSlayer.firePillarCountdown,
+                                        newValue -> config.slayers.blazeSlayer.firePillarCountdown = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.attunementHighlights"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip")))
+                                .binding(defaults.slayers.blazeSlayer.attunementHighlights,
+                                        () -> config.slayers.blazeSlayer.attunementHighlights,
+                                        newValue -> config.slayers.blazeSlayer.attunementHighlights = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
                 .build();
     }
 }

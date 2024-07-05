@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
+import de.hysky.skyblocker.skyblock.crimson.slayer.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
@@ -124,6 +125,8 @@ public abstract class ClientPlayNetworkHandlerMixin {
         || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && entity.age < 40 && SlayerMobs.isSlayer(armorStandEntity)) {
             SlayerMobs.setSlayerMobGlow(armorStandEntity);
         }
+
+        if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
         EggFinder.checkIfEgg(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers

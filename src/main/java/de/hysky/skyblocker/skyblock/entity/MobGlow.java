@@ -130,10 +130,10 @@ public class MobGlow {
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 
 			// Blazeslayer Attunement Colours
-			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerMobs.getColour(armorStand);
-			case BlazeEntity blaze when SlayerUtils.isInSlayer() -> SlayerMobs.getColour(blaze);
-			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() -> SlayerMobs.getColour(piglin);
-			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() -> SlayerMobs.getColour(wSkelly);
+			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(armorStand);
+			case BlazeEntity blaze when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(blaze) ;
+			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(piglin);
+			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> SlayerMobs.getColour(wSkelly);
 
 			default -> 0xf57738;
 		};

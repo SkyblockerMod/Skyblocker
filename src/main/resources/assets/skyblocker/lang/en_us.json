@@ -534,7 +534,7 @@
   "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\nHITBOX: Display a Hitbox on Slayer Minibosses",
 
   "skyblocker.config.slayer.highlightBosses": "Highlight Bosses",
-  "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "Highlights Slayer Bosses and displays Blaze Slayer attunement",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "Highlights Slayer Bosses",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nOFF: Do not highlight Slayer Bosses.",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nGLOW: Creates a glow effect on Slayer Bosses.Due to technical limitations, there is a small chance of this option making mistakes in mob detection",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "\nHITBOX: Display a Hitbox on Slayer Bosses",
@@ -561,6 +561,12 @@
   "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency": "Steak Stake Indicator Update Frequency (Ticks)",
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
+
+  "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer" : "Fire Pillar Countdown Notifications",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
+  "skyblocker.config.slayer.blazeSlayer.attunementHighlights" : "Attunement Highlights",
+  "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a color matching the current attunement to the selected effect.",
 
   "skyblocker.config.uiAndVisuals": "UI & Visuals",
 
