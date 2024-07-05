@@ -105,6 +105,7 @@ public class SlayerMobs {
     private static MobEntity findClosestMobEntity(Class<? extends MobEntity> entityClass, ArmorStandEntity armorStand) {
         return armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null).getBoxAt(armorStand.getPos()).expand(1.5), entity -> !entity.isDead() && entity.age > armorStand.age - 4 && entity.age < armorStand.age + 4)
                 .stream()
+                .filter(entity -> !(entity instanceof CaveSpiderEntity)) // CaveSpider extends Spider so filter out mob for BroodFather highlight
                 .min(Comparator.comparingDouble((MobEntity e) -> e.distanceTo(armorStand)))
                 .orElse(null);
     }
