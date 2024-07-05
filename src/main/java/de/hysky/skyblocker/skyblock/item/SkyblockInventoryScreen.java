@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -32,6 +31,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -41,9 +41,9 @@ import java.util.stream.Collectors;
  */
 public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
-
-    public static final ItemStack[] equipment = new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
-    private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4,4)
+    private static final Supplier<ItemStack[]> EMPTY_EQUIPMENT = () -> new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
+    public static final ItemStack[] equipment = EMPTY_EQUIPMENT.get();
+    private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4, 4)
             .xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
@@ -71,18 +71,14 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         Path resolve = FOLDER.resolve(profileId + ".nbt");
         CompletableFuture.supplyAsync(() -> {
             try (BufferedReader reader = Files.newBufferedReader(resolve)) {
-                return CODEC.parse(
-                                NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining())))
-                        .getOrThrow();
+                return CODEC.parse(NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining()))).getOrThrow();
             } catch (NoSuchFileException ignored) {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to load Equipment data", e);
-
             }
-            return null;
+            return EMPTY_EQUIPMENT.get();
             // Schedule on main thread to avoid any async weirdness
         }).thenAccept(itemStacks -> MinecraftClient.getInstance().execute(() -> System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4))));
-
     }
 
     public static void initEquipment() {
@@ -122,27 +118,22 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private boolean canDrawTooltips = false;
-
+    /**
+     * Draws the equipment slots in the foreground layer after vanilla slots are drawn
+     * in {@link net.minecraft.client.gui.screen.ingame.HandledScreen#render(DrawContext, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
+     */
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(this.x, this.y, 0.0F);
+    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         for (Slot equipmentSlot : equipmentSlots) {
             drawSlot(context, equipmentSlot);
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) drawSlotHighlight(context, equipmentSlot.x, equipmentSlot.y, 0);
         }
-        matrices.pop();
-        canDrawTooltips = true;
-        drawMouseoverTooltip(context, mouseX, mouseY);
-        canDrawTooltips = false;
+
+        super.drawForeground(context, mouseX, mouseY);
     }
 
     @Override
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
-        if (!canDrawTooltips) return;
         super.drawMouseoverTooltip(context, x, y);
         if (!handler.getCursorStack().isEmpty()) return;
         for (Slot equipmentSlot : equipmentSlots) {
