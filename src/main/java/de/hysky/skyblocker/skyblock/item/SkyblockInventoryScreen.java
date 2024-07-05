@@ -20,6 +20,7 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.nbt.visitor.StringNbtWriter;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
     private static final Supplier<ItemStack[]> EMPTY_EQUIPMENT = () -> new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
     public static final ItemStack[] equipment = EMPTY_EQUIPMENT.get();
-    private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4, 4)
+    public static final ItemStack[] equipment_rift = EMPTY_EQUIPMENT.get();
+    private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4, 8) // min size at 4 for backwards compat
             .xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
@@ -61,7 +63,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         Path resolve = FOLDER.resolve(profileId + ".nbt");
 
         try (BufferedWriter writer = Files.newBufferedWriter(resolve)) {
-            writer.write(new StringNbtWriter().apply(CODEC.encodeStart(NbtOps.INSTANCE, equipment).getOrThrow()));
+
+            writer.write(new StringNbtWriter().apply(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow()));
         } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to save Equipment data", e);
         }
@@ -78,27 +81,31 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             }
             return EMPTY_EQUIPMENT.get();
             // Schedule on main thread to avoid any async weirdness
-        }).thenAccept(itemStacks -> MinecraftClient.getInstance().execute(() -> System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4))));
+        }).thenAccept(itemStacks -> MinecraftClient.getInstance().execute(() -> {
+            System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4));
+            if (itemStacks.length <= 4) return;
+            System.arraycopy(itemStacks, 4, equipment_rift, 0, Math.clamp(itemStacks.length - 4, 0, 4));
+        }));
     }
 
     public static void initEquipment() {
 
         SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
-            if (!prevProfileId.isEmpty()) save(prevProfileId);
-            load(profileId);
+            if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
+            else load(profileId);
         }));
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
             String profileId = Utils.getProfileId();
             if (!profileId.isBlank()) {
-                save(profileId);
+                CompletableFuture.runAsync(() -> save(profileId));
             }
         });
     }
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
-        SimpleInventory inventory = new SimpleInventory(equipment);
+        SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
 
         Slot slot = handler.slots.get(45);
         ((SlotAccessor) slot).setX(slot.x + 21);

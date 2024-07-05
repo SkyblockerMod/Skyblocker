@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixins;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -33,7 +34,10 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
                 int line = slot/9;
                 if (line > 0 && line < 5 && slot % 9 == 1) {
                     boolean empty = stack.getName().getString().trim().toLowerCase().startsWith("empty");
-                    SkyblockInventoryScreen.equipment[line - 1] = empty ? ItemStack.EMPTY : stack;
+                    if (Utils.isInTheRift())
+                        SkyblockInventoryScreen.equipment_rift[line - 1] = empty ? ItemStack.EMPTY : stack;
+                    else
+                        SkyblockInventoryScreen.equipment[line - 1] = empty ? ItemStack.EMPTY : stack;
                 }
             }
             case null, default -> {}
