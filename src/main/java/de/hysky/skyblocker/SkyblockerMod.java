@@ -183,6 +183,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Kuudra.init();
         RenderHelper.init();
         FancyStatusBars.init();
+        SkyblockInventoryScreen.initEquipment();
         EventNotifications.init();
         containerSolverManager.init();
         statusBarTracker.init();
@@ -192,7 +193,6 @@ public class SkyblockerMod implements ClientModInitializer {
         EggFinder.init();
         TimeTowerReminder.init();
         SkyblockTime.init();
-        SkyblockInventoryScreen.initEquipment();
         TooltipManager.init();
         SlotTextManager.init();
 
