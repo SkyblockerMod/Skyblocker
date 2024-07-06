@@ -736,5 +736,6 @@
     "skyblocker.tips.previous": "上一条提示",
     "skyblocker.tips.next": "下一条提示",
     "skyblocker.tips.clickPreviousTip": "§b[点击查看上一条提示]",
-    "skyblocker.crimson.dojo": "道场"
+    "skyblocker.crimson.dojo": "道场",
+    "skyblocker.config.otherLocations.rift.blobbercystGlow.@Tooltip": "为 Bacte 战中的 Blobbercyst 施加发光效果。"
 }
