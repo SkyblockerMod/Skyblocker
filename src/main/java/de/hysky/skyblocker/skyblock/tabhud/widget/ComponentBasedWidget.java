@@ -91,9 +91,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
         RenderSystem.enableDepthTest();
         ms.push();
 
-        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-        ms.scale(scale, scale, 1);
-
         // move above other UI elements
         ms.translate(0, 0, 200);
         if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
