@@ -48,6 +48,7 @@
     "accessors.EndermanEntityAccessor",
     "accessors.FrustumInvoker",
     "accessors.HandledScreenAccessor",
+    "accessors.InGameHudInvoker",
     "accessors.MessageHandlerAccessor",
     "accessors.MinecraftClientAccessor",
     "accessors.PlayerListHudAccessor",
