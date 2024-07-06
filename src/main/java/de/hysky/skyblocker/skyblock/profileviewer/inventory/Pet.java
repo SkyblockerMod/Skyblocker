@@ -119,7 +119,7 @@ public class Pet {
      * the NBT Data into modern DataComponentTypes before returning the final ItemStack </p
      *
      * @param item The NEUItem representing the pet.
-     * @param heldItem The NEUItem representing the held item, if any.
+     * @param heldItem The ItemStack of the pet's held item, if any.
      * @return The ItemStack representing the pet with all its properties set.
      */
     private ItemStack fromNEUItem(NEUItem item, ItemStack heldItem) {
