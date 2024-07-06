@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -55,7 +56,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
             Map.entry("the rift", Location.THE_RIFT),
             Map.entry("jerry's workshop", Location.WINTER_ISLAND)
     );
-    private Location currentLocation = Location.HUB;
+    private Location currentLocation = Utils.getLocation();
 
     public Location getCurrentLocation() {
         return currentLocation;
@@ -90,6 +91,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
             currentLocation = targetLocation;
             widgetsLayer = widgetLayerToGoTo;
         }
+        ScreenMaster.getScreenBuilder(currentLocation).backupPositioning();
     }
 
     /**
@@ -138,7 +140,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
             this.tabNavigation.setWidth(this.width);
             this.tabNavigation.init();
             int i = this.tabNavigation.getNavigationFocus().getBottom();
-            ScreenRect screenRect = new ScreenRect(0, i, this.width, this.height - i - 20 /* A bit of a footer */);
+            ScreenRect screenRect = new ScreenRect(0, i, this.width, this.height - i - 5);
             this.tabManager.setTabArea(screenRect);
         }
     }
@@ -160,12 +162,16 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
                 .trim();
 
         if (nameToLocation.containsKey(trim)) {
+            Location old = currentLocation;
             currentLocation = nameToLocation.get(trim);
+            if (old != currentLocation) {
+                ScreenMaster.getScreenBuilder(currentLocation).backupPositioning();
+            }
         } else {
             //currentLocation = Utils.getLocation();
-            LOGGER.warn("[Skyblocker] Couldn't find location for {} (trimmed: {})", this.titleLowercase, trim);
+            if (this.titleLowercase.startsWith("widgets "))
+                LOGGER.warn("[Skyblocker] Couldn't find location for {} (trimmed: {})", this.titleLowercase, trim);
         }
-        System.out.println("Curent location: " + currentLocation);
     }
 
     public GenericContainerScreenHandler getHandler() {
