@@ -84,7 +84,6 @@ public class Pet {
     }
 
     private Optional<String> calculateSkinTexture() {
-        // This should also save: SkullOwner && pet skin name via item.getDisplayName()
         if (this.skin.isPresent()) {
             NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId("PET_SKIN_" + this.skin.get());
             if (item == null) return Optional.empty();
@@ -200,7 +199,7 @@ public class Pet {
         return roundedNum.stripTrailingZeros().toPlainString();
     }
 
-    private Boolean boosted() {
+    private boolean boosted() {
         return this.heldItem.isPresent() && this.heldItem.get().equals("PET_ITEM_TIER_BOOST");
     }
 }

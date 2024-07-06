@@ -131,7 +131,7 @@ public class GenericCategory implements ProfileViewerPage {
                     if (tierText.contains("/")) {
                         String[] parts = tierText.split("/");
                         int cTier = Integer.parseInt(parts[0].trim());
-                        Color colour = Boolean.TRUE.equals(itemStack.get(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE)) ? Color.MAGENTA : Color.darkGray;
+                        Color colour = itemStack.hasGlint() ? Color.MAGENTA : Color.darkGray;
                         context.drawText(textRenderer, Text.literal(toRomanNumerals(cTier)), x + 9 - (textRenderer.getWidth(toRomanNumerals(cTier)) / 2), y + 21, colour.getRGB(), false);
                     }
                     break;
