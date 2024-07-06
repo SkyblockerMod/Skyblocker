@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CraftPriceTooltip extends TooltipAdder {
     protected static final Logger LOGGER = LoggerFactory.getLogger(CraftPriceTooltip.class.getName());
-    private final static Map<String, Double> cachedCraftCosts = new ConcurrentHashMap<>();
+    private static final Map<String, Double> cachedCraftCosts = new ConcurrentHashMap<>();
     private static final int MAX_RECURSION_DEPTH = 15;
 
     public CraftPriceTooltip(int priority) {
@@ -47,16 +47,16 @@ public class CraftPriceTooltip extends TooltipAdder {
         if (neuItem == null) return;
 
         List<NEURecipe> neuRecipes = neuItem.getRecipes();
-        if (neuRecipes.isEmpty() || neuRecipes.getFirst().getClass().equals(io.github.moulberry.repo.data.NEUKatUpgradeRecipe.class)) return;
+        if (neuRecipes.isEmpty() || neuRecipes.getFirst() instanceof io.github.moulberry.repo.data.NEUKatUpgradeRecipe) return;
 
         try {
             double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
 
             if (totalCraftCost == 0) return;
 
-            neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(neuIngredient ->
+            neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
                     lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
-                            .append(ItemTooltip.getCoinsMessage(totalCraftCost / neuIngredient.getAmount(), stack.getCount()))));
+                            .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), stack.getCount()))));
 
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + internalID, e);

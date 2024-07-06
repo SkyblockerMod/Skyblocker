@@ -161,7 +161,7 @@ public class GeneralCategory {
                                 .binding(defaults.general.itemTooltip.enableCraftingCost,
                                         () -> config.general.itemTooltip.enableCraftingCost,
                                         newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
-                                .listener((Option<GeneralConfig.Craft> craft, GeneralConfig.Craft newCraft) -> CraftPriceTooltip.clearCache())
+                                .listener((Option<GeneralConfig.Craft> ignored, GeneralConfig.Craft ignored2) -> CraftPriceTooltip.clearCache())
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
