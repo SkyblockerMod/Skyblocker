@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +55,15 @@ public class CraftPriceTooltip extends TooltipAdder {
 
             if (totalCraftCost == 0) return;
 
+            int amountInStack;
+            if (lines.get(1).getString().endsWith("Sack")) {
+                String line = lines.get(3).getSiblings().get(1).getString().replace(",", "");
+                amountInStack = NumberUtils.isParsable(line) && !line.equals("0") ? Integer.parseInt(line) : stack.getCount();
+            } else amountInStack = stack.getCount();
+
             neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
                     lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
-                            .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), stack.getCount()))));
+                            .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), amountInStack))));
 
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + internalID, e);
