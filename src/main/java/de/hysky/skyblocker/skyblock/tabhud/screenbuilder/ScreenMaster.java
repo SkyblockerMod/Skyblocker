@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -162,7 +163,11 @@ public class ScreenMaster {
             MinecraftClient client = MinecraftClient.getInstance();
             Window window = client.getWindow();
             float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
+            MatrixStack matrices = context.getMatrices();
+            matrices.push();
+            matrices.scale(scale, scale, 1.F);
             render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale));
+            matrices.pop();
         });
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {

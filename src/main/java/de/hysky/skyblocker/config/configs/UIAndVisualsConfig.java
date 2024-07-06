@@ -169,7 +169,7 @@ public class UIAndVisualsConfig {
         public boolean plainPlayerNames = false;
 
         @SerialEntry
-        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.TOP;
+        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
 
         @SerialEntry
         public NameSorting nameSorting = NameSorting.DEFAULT;
