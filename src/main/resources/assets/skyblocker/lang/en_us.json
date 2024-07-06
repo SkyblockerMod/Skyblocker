@@ -937,7 +937,7 @@
   "skyblocker.waypoints.ordered.import.coleWeight.fail": "§cFailed to import waypoints from the Cole Weight format. Make sure to have the waypoint data copied to your clipboard!",
 
   "skyblocker.profileviewer.inventory.Inventory": "Inventory",
-  "skyblocker.profileviewer.inventory.Armour": "Armor",
+  "skyblocker.profileviewer.inventory.Armor": "Armor",
   "skyblocker.profileviewer.inventory.Equipment": "Equipment",
   "skyblocker.profileviewer.inventory.Enderchest": "Enderchest",
   "skyblocker.profileviewer.inventory.Backpack": "Backpack",
