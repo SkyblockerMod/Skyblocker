@@ -42,8 +42,8 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
     private int x, y, entryWidth, entryHeight;
 
     @Override
-    protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderList(context, mouseX, mouseY, delta);
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.renderWidget(context, mouseX, mouseY, delta);
         WidgetsListEntry hoveredEntry = getHoveredEntry();
         if (hoveredEntry != null) hoveredEntry.renderTooltip(context, x, y, entryWidth, entryHeight, mouseX, mouseY);
         if (rightUpArrowHovered || rightDownArrowHovered) {

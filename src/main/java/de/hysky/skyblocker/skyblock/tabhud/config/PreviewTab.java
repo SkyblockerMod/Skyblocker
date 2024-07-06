@@ -17,6 +17,7 @@ import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tab.Tab;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
@@ -47,6 +48,7 @@ public class PreviewTab implements Tab {
     private final WidgetsConfigurationScreen parent;
     private final WidgetOptionsScrollable widgetOptions;
     private final boolean dungeon;
+    private final ButtonWidget restorePositioning;
     private ScreenMaster.ScreenLayer currentScreenLayer = ScreenMaster.ScreenLayer.MAIN_TAB;
     private final ButtonWidget[] layerButtons;
     private final TextWidget textWidget;
@@ -78,6 +80,14 @@ public class PreviewTab implements Tab {
                     .build();
             if (screenLayer == currentScreenLayer) layerButtons[i].active = false;
         }
+
+        restorePositioning = ButtonWidget.builder(Text.literal("Restore Positioning"), button -> {
+                    ScreenMaster.getScreenBuilder(getCurrentLocation()).restorePositioningFromBackup();
+                    updateWidgets();
+                })
+                .width(100)
+                .tooltip(Tooltip.of(Text.literal("Reset positions to before you opened this screen!")))
+                .build();
     }
 
     public void goToLayer(ScreenMaster.ScreenLayer layer) {
@@ -97,20 +107,18 @@ public class PreviewTab implements Tab {
             consumer.accept(layerButton);
         }
         consumer.accept(widgetOptions);
+        consumer.accept(restorePositioning);
         if (dungeon) consumer.accept(textWidget);
     }
 
     @Override
     public void refreshGrid(ScreenRect tabArea) {
-        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-        float ratio = Math.min((tabArea.height() - 5) / (parent.height / scale), (tabArea.width() - RIGHT_SIDE_WIDTH - 5) / (parent.width / scale));
+        float ratio = Math.min((tabArea.height() - 35) / (float) (parent.height), (tabArea.width() - RIGHT_SIDE_WIDTH - 5) / (float) (parent.width));
         previewWidget.setPosition(5, tabArea.getTop() + 5);
         previewWidget.setWidth((int) (parent.width * ratio));
         previewWidget.setHeight((int) (parent.height * ratio));
         previewWidget.ratio = ratio;
-        updatePlayerListFromPreview();
-        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
-        screenBuilder.positionWidgets(parent.width, parent.height);
+        updateWidgets();
 
         for (int i = 0; i < layerButtons.length; i++) {
             ButtonWidget layerButton = layerButtons[i];
@@ -121,6 +129,7 @@ public class PreviewTab implements Tab {
         widgetOptions.setHeight(tabArea.height() - optionsY - 5);
         textWidget.setWidth(tabArea.width());
         textWidget.setPosition(0, tabArea.getBottom() - 9);
+        restorePositioning.setPosition(10, tabArea.getBottom() - 25);
 
         forEachChild(clickableWidget -> clickableWidget.visible = parent.isPreviewVisible() || parent.noHandler);
     }
@@ -246,7 +255,8 @@ public class PreviewTab implements Tab {
     void updateWidgets() {
         ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
         updatePlayerListFromPreview();
-        screenBuilder.positionWidgets(parent.width, parent.height);
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+        screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale));
     }
 
     private Location getCurrentLocation() {
@@ -259,6 +269,9 @@ public class PreviewTab implements Tab {
     public class PreviewWidget extends ClickableWidget {
 
         private float ratio = 1f;
+        private float scaledRatio = 1f;
+        private float scaledScreenWidth = parent.width;
+        private float scaledScreenHeight = parent.height;
         /**
          * The widget the user is hovering with the mouse
          */
@@ -281,6 +294,10 @@ public class PreviewTab implements Tab {
         @Override
         protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
             hoveredWidget = null;
+            float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+            scaledRatio = ratio * scale;
+            scaledScreenWidth = parent.width / scale;
+            scaledScreenHeight = parent.height / scale;
 
             ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
             context.drawBorder(getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
@@ -288,14 +305,12 @@ public class PreviewTab implements Tab {
             MatrixStack matrices = context.getMatrices();
             matrices.push();
             matrices.translate(getX(), getY(), 0f);
-            matrices.scale(ratio, ratio, 1f);
+            matrices.scale(scaledRatio, scaledRatio, 1f);
 
             screenBuilder.renderWidgets(context, PreviewTab.this.currentScreenLayer);
 
-            float localMouseX = (mouseX - getX()) / ratio;
-            float localMouseY = (mouseY - getY()) / ratio;
-
-            context.drawBorder((int) localMouseX, (int) localMouseY, 2, 2, Colors.RED);
+            float localMouseX = (mouseX - getX()) / scaledRatio;
+            float localMouseY = (mouseY - getY()) / scaledRatio;
 
             for (HudWidget hudWidget : screenBuilder.getHudWidgets(PreviewTab.this.currentScreenLayer)) {
                 if (hudWidget.isMouseOver(localMouseX, localMouseY)) {
@@ -339,8 +354,8 @@ public class PreviewTab implements Tab {
                     int thisAnchorX = (int) (selectedWidget.getX() + rule.thisPoint().horizontalPoint().getPercentage() * selectedWidget.getWidth());
                     int thisAnchorY = (int) (selectedWidget.getY() + rule.thisPoint().verticalPoint().getPercentage() * selectedWidget.getHeight());
 
-                    int translatedX = Math.min(thisAnchorX - rule.relativeX() - relativeX, parent.width - 2);
-                    int translatedY = Math.min(thisAnchorY - rule.relativeY() - relativeY, parent.height - 2);
+                    int translatedX = Math.min(thisAnchorX - rule.relativeX() - relativeX, (int) scaledScreenWidth - 2);
+                    int translatedY = Math.min(thisAnchorY - rule.relativeY() - relativeY, (int) scaledScreenHeight - 2);
 
                     renderUnits(context, relativeX, rule, thisAnchorX, thisAnchorY, relativeY, translatedX, translatedY);
 
@@ -360,12 +375,12 @@ public class PreviewTab implements Tab {
         private void renderUnits(DrawContext context, int relativeX, PositionRule rule, int thisAnchorX, int thisAnchorY, int relativeY, int translatedX, int translatedY) {
             boolean xUnitOnTop = rule.relativeY() > 0;
             if (xUnitOnTop && thisAnchorY < 10) xUnitOnTop = false;
-            if (!xUnitOnTop && thisAnchorY > parent.height - 10) xUnitOnTop = true;
+            if (!xUnitOnTop && thisAnchorY > scaledScreenHeight - 10) xUnitOnTop = true;
 
             String yUnitText = String.valueOf(rule.relativeY() + relativeY);
             int yUnitTextWidth = client.textRenderer.getWidth(yUnitText);
             boolean yUnitOnRight = rule.relativeX() > 0;
-            if (yUnitOnRight && translatedX + 2 + yUnitTextWidth >= parent.width) yUnitOnRight = false;
+            if (yUnitOnRight && translatedX + 2 + yUnitTextWidth >= scaledScreenWidth) yUnitOnRight = false;
             if (!yUnitOnRight && translatedX - 2 - yUnitTextWidth <= 0) yUnitOnRight = true;
 
             // X
@@ -383,8 +398,8 @@ public class PreviewTab implements Tab {
 
         @Override
         protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-            double localDeltaX = deltaX / ratio + bufferedDeltaX;
-            double localDeltaY = deltaY / ratio + bufferedDeltaY;
+            double localDeltaX = deltaX / scaledRatio + bufferedDeltaX;
+            double localDeltaY = deltaY / scaledRatio + bufferedDeltaY;
 
             bufferedDeltaX = localDeltaX - (int) localDeltaX;
             bufferedDeltaY = localDeltaY - (int) localDeltaY;
@@ -454,8 +469,8 @@ public class PreviewTab implements Tab {
                 return true;
             }
 
-            double localMouseX = (mouseX - getX()) / ratio;
-            double localMouseY = (mouseY - getY()) / ratio;
+            double localMouseX = (mouseX - getX()) / scaledRatio;
+            double localMouseY = (mouseY - getY()) / scaledRatio;
 
             if (selectedWidget != null && selectedWidget.isMouseOver(localMouseX, localMouseY) &&
                     screenBuilder.getPositionRule(selectedWidget.getInternalID()) != null) {
@@ -613,7 +628,8 @@ public class PreviewTab implements Tab {
                 String internalID = affectedWidget.getInternalID();
                 PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(internalID);
                 // Get the x, y of the parent's point
-                ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), parent.width, parent.height, other ? hoveredPoint: oldRule.parentPoint());
+                float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+                ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (parent.width / scale), (int) (parent.height / scale), other ? hoveredPoint: oldRule.parentPoint());
                 if (startPos == null) startPos = new ScreenPos(0, 0);
                 // Same but for the affected widget
                 PositionRule.Point thisPoint = other ? oldRule.thisPoint() : hoveredPoint;

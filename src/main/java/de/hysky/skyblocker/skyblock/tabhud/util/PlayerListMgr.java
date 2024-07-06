@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 public class PlayerListMgr {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
-	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s*)(Players \\(\\d+\\)|Island)(\\s*|$)");
+	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s*)(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))(\\s*|$)");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("(^|\\s*)Info(\\s*|$)");
 
 	/**
@@ -60,6 +60,7 @@ public class PlayerListMgr {
 	public static void updateList() {
 
 		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			if (!tabWidgetsToShow.isEmpty()) tabWidgetsToShow.clear();
 			return;
 		}
 
