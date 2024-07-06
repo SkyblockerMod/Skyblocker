@@ -296,5 +296,11 @@
     "text.skyblocker.translate": "Traduzir",
     "text.skyblocker.modrinth": "Modrinth",
     "text.skyblocker.discord": "Discord",
-    "text.skyblocker.confirm": "Confirmar"
+    "text.skyblocker.confirm": "Confirmar",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Limite de Alerta de Veneno de Flecha",
+    "skyblocker.config.crimsonIsle": "Ilha Carmesim",
+    "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
+    "text.skyblocker.config": "Abrir configurações...",
+    "skyblocker.skyblockerScreen": "Tela principal do Skyblocker",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Se a quantidade de Veneno de Flecha Tóxica que você tem em seu inventário estiver abaixo do limite definido, você receberá um aviso.\n\n16 é o mínimo absoluto.\nVocê necessita 32 para uma fase 'DPS' suave com pré-disparo."
 }
