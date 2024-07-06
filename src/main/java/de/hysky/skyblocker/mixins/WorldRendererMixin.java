@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -24,7 +25,7 @@ public class WorldRendererMixin {
 	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
 	private boolean skyblocker$shouldMobGlow(boolean original, @Local Entity entity, @Share("hasCustomGlow") LocalBooleanRef hasCustomGlow) {
 		boolean allowGlow = LividColor.allowGlow();
-		boolean shouldGlow = MobGlow.shouldMobGlow(entity);
+		boolean shouldGlow = MobGlow.shouldMobGlow(entity) && MinecraftClient.getInstance().player.canSee(entity);
 		hasCustomGlow.set(shouldGlow);
 		return allowGlow && original || shouldGlow;
 	}

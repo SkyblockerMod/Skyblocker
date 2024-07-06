@@ -28,59 +28,52 @@ import java.util.List;
 public class MobGlow {
 
 	public static boolean shouldMobGlow(Entity entity) {
-		Box box = entity.getBoundingBox();
+		String name = entity.getName().getString();
 
-		if (OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
-			String name = entity.getName().getString();
-
-
-			// Dungeons
-			if (Utils.isInDungeons() && !entity.isInvisible()) {
-				return switch (entity) {
-					// Minibosses
-					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
-					case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
-
-					// Bats
-					case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
-
-					// Armor Stands
-					case ArmorStandEntity _armorStand -> false;
-
-					// Regular Mobs
-					default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
-				};
-			}
-
-
+		// Dungeons
+		if (Utils.isInDungeons() && !entity.isInvisible()) {
 			return switch (entity) {
-				// Rift
-				case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
+				// Minibosses
+				case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
+				case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
 
-				// Enderman Slayer
-				// Highlights Nukekubi Heads
-				case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
+				// Bats
+				case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
 
-				//dojo
-				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
+				// Armor Stands
+				case ArmorStandEntity _armorStand -> false;
 
-				// Special Zealot && Slayer (Mini)Boss
-				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() ->
-						TheEnd.isSpecialZealot(enderman) || SlayerEntitiesGlow.shouldGlow(enderman.getUuid());
-				case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) -> SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
-				case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
-				case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN)-> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
-				case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
-				// Blaze Slayer's Demons
-				case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
-						SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
-				case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
-						SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
-				default -> false;
+				// Regular Mobs
+				default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
 			};
 		}
 
-		return false;
+
+		return switch (entity) {
+			// Rift
+			case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
+
+			// Enderman Slayer
+			// Highlights Nukekubi Heads
+			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
+
+			//dojo
+			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
+
+			// Special Zealot && Slayer (Mini)Boss
+			case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() ->
+					TheEnd.isSpecialZealot(enderman) || SlayerEntitiesGlow.shouldGlow(enderman.getUuid());
+			case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) -> SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
+			case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
+			case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN)-> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
+			case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
+			// Blaze Slayer's Demons
+			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
+					SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
+			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
+					SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
+			default -> false;
+		};
 	}
 
 	/**

@@ -169,7 +169,7 @@
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
-  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nWARNING: This feature is experimental and you may encounter issues with it.",
+  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nWARNING:WARNING: This feature utilises raycasting on a lot of entities which may have an impact on performance.",
 
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
