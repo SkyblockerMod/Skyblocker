@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.InGameHudInvoker;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -24,6 +24,11 @@ import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.ScoreHolder;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardCriterion;
+import net.minecraft.scoreboard.ScoreboardObjective;
+import net.minecraft.scoreboard.number.BlankNumberFormat;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -52,6 +57,7 @@ public class PreviewTab implements Tab {
     private ScreenMaster.ScreenLayer currentScreenLayer = ScreenMaster.ScreenLayer.MAIN_TAB;
     private final ButtonWidget[] layerButtons;
     private final TextWidget textWidget;
+    private final ScoreboardObjective placeHolderObjective;
 
     public PreviewTab(MinecraftClient client, WidgetsConfigurationScreen parent, boolean dungeon) {
         this.client = client;
@@ -88,6 +94,43 @@ public class PreviewTab implements Tab {
                 .width(100)
                 .tooltip(Tooltip.of(Text.literal("Reset positions to before you opened this screen!")))
                 .build();
+
+        placeHolderObjective = new ScoreboardObjective(
+                new Scoreboard(),
+                "temp",
+                ScoreboardCriterion.DUMMY,
+                Text.literal("SKYBLOCK"),
+                ScoreboardCriterion.RenderType.INTEGER,
+                true,
+                BlankNumberFormat.INSTANCE
+                );
+        Scoreboard scoreboard = placeHolderObjective.getScoreboard();
+        scoreboard.getOrCreateScore(createHolder(Text.literal("Random text!")), placeHolderObjective).setScore(0);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("To fill in")), placeHolderObjective).setScore(-1);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("The place!")), placeHolderObjective).setScore(-2);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("...")), placeHolderObjective).setScore(-3);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("yea")), placeHolderObjective).setScore(-4);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("so how's your")), placeHolderObjective).setScore(-5);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("day? great that's")), placeHolderObjective).setScore(-6);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("nice to hear.")), placeHolderObjective).setScore(-7);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("this should be")), placeHolderObjective).setScore(-8);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("enough lines bye")), placeHolderObjective).setScore(-9);
+        scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
+    }
+
+    private ScoreHolder createHolder(Text name) {
+        return new ScoreHolder() {
+            @Override
+            public String getNameForScoreboard() {
+                return name.getString().replace(' ', '_');
+            }
+
+            @Nullable
+            @Override
+            public Text getDisplayName() {
+                return name;
+            }
+        };
     }
 
     public void goToLayer(ScreenMaster.ScreenLayer layer) {
@@ -153,6 +196,10 @@ public class PreviewTab implements Tab {
         lines.add(Text.literal("LifeIsAParadox"));
         lines.add(Text.literal("Rime"));
         lines.add(Text.literal("Vic is a Cat"));
+        lines.add(Text.literal("that's right i "));
+        lines.add(Text.literal("don't care about"));
+        lines.add(Text.literal("spaces MWAHAHA"));
+        lines.add(Text.literal("[MVP--] sixteencharacter"));
 
         for (int i = 3; i <= 5; i++) {
             ItemStack stack = parent.getHandler().getSlot(i).getStack();
@@ -368,6 +415,11 @@ public class PreviewTab implements Tab {
                 }
             }
 
+            matrices.pop();
+            matrices.push();
+            matrices.translate(getX(), getY(), 0.f);
+            matrices.scale(ratio, ratio, 1.f);
+            ((InGameHudInvoker) MinecraftClient.getInstance().inGameHud).skyblocker$renderSidebar(context, placeHolderObjective);
             matrices.pop();
             context.disableScissor();
         }
