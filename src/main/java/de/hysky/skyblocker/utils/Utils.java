@@ -505,7 +505,7 @@ public class Utils {
         }).exceptionally(throwable -> {
             LOGGER.error("[Skyblocker] Failed to get mayor status!", throwable.getCause());
             if (mayorTickRetryAttempts < 5) {
-                int minutes = 5 * (mayorTickRetryAttempts == 0 ? 1 : 2 << mayorTickRetryAttempts - 1); //5, 10, 20, 40, 80 minutes
+                int minutes = 5 * 1 << mayorTickRetryAttempts; //5, 10, 20, 40, 80 minutes
                 mayorTickRetryAttempts++;
                 LOGGER.warn("[Skyblocker] Retrying in {} minutes.", minutes);
                 Scheduler.INSTANCE.schedule(Utils::tickMayorCache, minutes * 60 * 20);
