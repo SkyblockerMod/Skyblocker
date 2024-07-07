@@ -1,5 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -10,6 +16,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
@@ -112,7 +119,7 @@ public class PlayerListMgr {
 		tabWidgetsToShow.clear();
 		boolean doingPlayers = false;
 		boolean playersDone = false;
-		String hypixelWidgetName = "";
+		IntObjectPair<String> hypixelWidgetName = IntObjectPair.of(0xFFFF00, "");
 		List<Text> contents = new ArrayList<>();
 
 		for (Text displayName : lines) {
@@ -124,7 +131,8 @@ public class PlayerListMgr {
 				if (playersColumnPredicate.test(string)) {
 					if (!doingPlayers) {
 						doingPlayers = true;
-						hypixelWidgetName = "Players";
+						// noinspection DataFlowIssue
+						hypixelWidgetName = IntObjectPair.of(Formatting.AQUA.getColorValue(), "Players");
 					}
 					continue;
 				}
@@ -142,7 +150,7 @@ public class PlayerListMgr {
 				if (!string.startsWith(" ") && string.contains(":")) {
 					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
 					contents.clear();
-					Pair<String, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
+					Pair<IntObjectPair<String>, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
 					if (!nameAndInfo.right().getString().isBlank()) contents.add(trim(nameAndInfo.right()));
 					continue;
@@ -190,14 +198,14 @@ public class PlayerListMgr {
 		return out;
 	}
 
-	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Text> lines) {
-		if (tabWidgetInstances.containsKey(hypixelWidgetName)) {
-			TabHudWidget tabHudWidget = tabWidgetInstances.get(hypixelWidgetName);
+	private static TabHudWidget getTabHudWidget(IntObjectPair<String> hypixelWidgetName, List<Text> lines) {
+		if (tabWidgetInstances.containsKey(hypixelWidgetName.right())) {
+			TabHudWidget tabHudWidget = tabWidgetInstances.get(hypixelWidgetName.right());
 			tabHudWidget.updateFromTab(lines);
 			tabHudWidget.update();
 			return tabHudWidget;
 		} else {
-			DefaultTabHudWidget defaultTabHudWidget = new DefaultTabHudWidget(hypixelWidgetName, Text.literal(hypixelWidgetName).formatted(Formatting.BOLD));
+			DefaultTabHudWidget defaultTabHudWidget = new DefaultTabHudWidget(hypixelWidgetName.right(), Text.literal(hypixelWidgetName.right()).formatted(Formatting.BOLD), hypixelWidgetName.firstInt());
 			tabWidgetInstances.put(defaultTabHudWidget.getHypixelWidgetName(), defaultTabHudWidget);
 			defaultTabHudWidget.updateFromTab(lines);
 			defaultTabHudWidget.update();
@@ -205,9 +213,14 @@ public class PlayerListMgr {
 		}
 	}
 
-	private static Pair<String, ? extends Text> getNameAndInfo(Text text) {
+	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Text> lines) {
+		return getTabHudWidget(IntObjectPair.of(0xFFFF0000, hypixelWidgetName), lines);
+	}
+
+	private static Pair<IntObjectPair<String>, ? extends Text> getNameAndInfo(Text text) {
 		ObjectObjectMutablePair<String, MutableText> toReturn = new ObjectObjectMutablePair<>("", Text.empty());
 		AtomicBoolean inInfo = new AtomicBoolean(false);
+		AtomicInteger colorOutput = new AtomicInteger(0xFFFF00);
 		text.visit((style, asString) -> {
 			if (inInfo.get()) {
 				toReturn.right().append(Text.literal(asString).fillStyle(style));
@@ -217,6 +230,7 @@ public class PlayerListMgr {
 					String[] split = asString.split(":", 2);
 					toReturn.left(toReturn.left() + split[0]);
 					toReturn.right().append(Text.literal(split[1]).fillStyle(style));
+					if (style.getColor() != null) colorOutput.set(style.getColor().getRgb());
 				} else {
 					toReturn.left(toReturn.left() + asString);
 				}
@@ -224,7 +238,7 @@ public class PlayerListMgr {
 			return Optional.empty();
 		}, Style.EMPTY);
 
-		return toReturn;
+		return Pair.of(IntObjectPair.of(colorOutput.get(), toReturn.left()), toReturn.right());
 	}
 
 	/**
@@ -369,8 +383,8 @@ public class PlayerListMgr {
 	}
 
 	private static final class DefaultTabHudWidget extends TabHudWidget {
-		public DefaultTabHudWidget(String hypixelWidgetName, MutableText title) {
-			super(hypixelWidgetName, title, 0xFFFF00);
+		public DefaultTabHudWidget(String hypixelWidgetName, MutableText title, int color) {
+			super(hypixelWidgetName, title, color);
 		}
 
 		@Override
