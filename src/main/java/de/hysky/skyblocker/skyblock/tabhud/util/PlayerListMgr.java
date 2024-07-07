@@ -89,6 +89,10 @@ public class PlayerListMgr {
 
 	}
 
+	/**
+	 * Update specifically for dungeons cuz they don't use the new system I HATE THEM
+	 * @param lines used for the config screen
+	 */
 	public static void updateDungeons(List<Text> lines) {
 		if (lines != null) {
 			// This is so wack I hate this
@@ -112,6 +116,10 @@ public class PlayerListMgr {
 
 	}
 
+	/**
+	 * Update the tab widgets using a list of text representing the lines of the in-game TAB
+	 * @param lines in-game TAB
+	 */
 	public static void updateWidgetsFrom(List<Text> lines) {
 		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
 		final Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
@@ -217,6 +225,15 @@ public class PlayerListMgr {
 		return getTabHudWidget(IntObjectPair.of(0xFFFF0000, hypixelWidgetName), lines);
 	}
 
+	/**
+	 *
+	 * @param text a line of text that contains a : from the tab
+	 * @return a pair containing:
+	 * <ul>
+	 * <li> an int and string pair for the color and the widget name </li>
+	 * <li> a text with the extra info sometimes shown on the right of the : </li>
+	 * </ul>
+	 */
 	private static Pair<IntObjectPair<String>, ? extends Text> getNameAndInfo(Text text) {
 		ObjectObjectMutablePair<String, MutableText> toReturn = new ObjectObjectMutablePair<>("", Text.empty());
 		AtomicBoolean inInfo = new AtomicBoolean(false);
