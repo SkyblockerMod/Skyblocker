@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
@@ -31,9 +32,9 @@ public class PlayerInventory implements ProfileViewerPage {
 
     // Z-STACKING forces this nonsense of separating the Background texture and Item Drawing :(
     public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
-        drawContainerTextures(context, "Armor", rootX, rootY + 108, IntIntPair.of(1, 4));
-        drawContainerTextures(context, "Inventory", rootX, rootY + 2, IntIntPair.of(4, 9));
-        drawContainerTextures(context, "Equipment", rootX + 90, rootY + 108, IntIntPair.of(1, 4));
+        drawContainerTextures(context, "armor", rootX, rootY + 108, IntIntPair.of(1, 4));
+        drawContainerTextures(context, "inventory", rootX, rootY + 2, IntIntPair.of(4, 9));
+        drawContainerTextures(context, "equipment", rootX + 90, rootY + 108, IntIntPair.of(1, 4));
 
         tooltip.clear();
         drawContainerItems(context, rootX, rootY + 108, IntIntPair.of(1, 4), 36, 40, mouseX, mouseY);
@@ -43,7 +44,7 @@ public class PlayerInventory implements ProfileViewerPage {
     }
 
     private void drawContainerTextures(DrawContext context, String containerName, int rootX, int rootY, IntIntPair dimensions) {
-        if (containerName.equals("Inventory")) {
+        if (containerName.equals("inventory")) {
             context.drawTexture(TEXTURE, rootX, rootY + dimensions.leftInt() + 10, 0, 136, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17);
             context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY, 169, 0, 7, dimensions.leftInt() * 18 + 21);
             context.drawTexture(TEXTURE, rootX, rootY, 0, 0, dimensions.rightInt() * 18 + 7, 14);
@@ -54,8 +55,7 @@ public class PlayerInventory implements ProfileViewerPage {
             context.drawTexture(TEXTURE, rootX, rootY + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7);
             context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7);
         }
-
-        context.drawText(textRenderer, Text.translatable("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootY + 7, Color.DARK_GRAY.getRGB(), false);
+        context.drawText(textRenderer,  I18n.translate("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootY + 7, Color.DARK_GRAY.getRGB(), false);
     }
 
     private void drawContainerItems(DrawContext context, int rootX, int rootY, IntIntPair dimensions, int startIndex, int endIndex, int mouseX, int mouseY) {
