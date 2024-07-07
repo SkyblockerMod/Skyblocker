@@ -14,6 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ProfileViewerUtils {
+    public static final NumberFormat COMMA_FORMATTER = NumberFormat.getNumberInstance(Locale.US);
+
     public static ItemStack createSkull(String textureB64) {
         ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
         try {
@@ -27,5 +29,15 @@ public class ProfileViewerUtils {
         return skull;
     }
 
-    public static final NumberFormat COMMA_FORMATTER = NumberFormat.getNumberInstance(Locale.US);
+    public static String numLetterFormat(double amount) {
+        if (amount >= 1_000_000_000) {
+            return String.format("%.4gB", amount / 1_000_000_000);
+        } else if (amount >= 1_000_000) {
+            return String.format("%.4gM", amount / 1_000_000);
+        } else if (amount >= 1_000) {
+            return String.format("%.4gK", amount / 1_000);
+        } else {
+            return String.valueOf((int)(amount));
+        }
+    }
 }

@@ -25,13 +25,14 @@ import net.minecraft.util.Identifier;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.Normalizer;
 import java.util.*;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static de.hysky.skyblocker.skyblock.itemlist.ItemStackBuilder.SKULL_TEXTURE_PATTERN;
+import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
 
 public class Pet {
     private final String name;
@@ -41,6 +42,9 @@ public class Pet {
     private final Optional<String> skin;
     private final Optional<String> skinTexture;
     private final int level;
+    private final double perecentageToLevel;
+    private final long levelXP;
+    private final long nextLevelXP;
     private final ItemStack icon;
 
     private final Pattern statsMatcher = Pattern.compile("\\{[A-Za-z_]+}");
@@ -63,13 +67,17 @@ public class Pet {
     )));
 
     public Pet(PetCache.PetInfo petData) {
+        LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
         this.name = petData.type();
         this.xp = petData.exp();
         this.heldItem = petData.item();
         this.skin = petData.skin();
         this.skinTexture = calculateSkinTexture();
         this.tier = petData.tier();
-        this.level = LevelFinder.getLevelInfo(this.name.equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + this.tier, (long) xp).level;
+        this.level = info.level;
+        this.perecentageToLevel = info.fill;
+        this.levelXP = info.levelXP;
+        this.nextLevelXP = info.nextLevelXP;
         this.icon = createIcon();
     }
 
@@ -138,12 +146,7 @@ public class Pet {
         Identifier itemId = Identifier.of(ItemFixerUpper.convertItemId(item.getMinecraftItemId(), item.getDamage()));
         ItemStack petStack = new ItemStack(Registries.ITEM.get(itemId)).copy();
 
-        List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore( item.getLore()) : buildGoldenDragonEggLore( item.getLore());
-
-        if (heldItem != null) {
-            formattedLore.set(formattedLore.size() - 2, Text.of("§r§6Held Item: " + heldItem.getName().getString()));
-            formattedLore.add(formattedLore.size() - 1, Text.empty());
-        }
+        List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
 
         // Skin Head Texture
         if (skinTexture.isPresent()) {
@@ -172,10 +175,12 @@ public class Pet {
 
     /**
      * Iterates through a Pet's lore injecting interpolated stat numbers based on pet level
-     * @param lore the lore data stored in NEU Repo
+     *
+     * @param lore     the lore data stored in NEU Repo
+     * @param heldItem
      * @return Formatted lore with injected stats
      */
-    private List<Text> processLore(List<String> lore) {
+    private List<Text> processLore(List<String> lore, ItemStack heldItem) {
         Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.NEU_REPO.getConstants().getPetNumbers();
         Rarity rarity = Rarity.values()[getTier()];
         PetNumbers data = petNums.get(getName()).get(rarity);
@@ -204,6 +209,21 @@ public class Pet {
             }
 
             formattedLore.add(Text.of(formattedLine));
+        }
+
+
+        if (heldItem != null) {
+            formattedLore.set(formattedLore.size() - 2, Text.of("§r§6Held Item: " + heldItem.getName().getString()));
+            formattedLore.add(formattedLore.size() - 1, Text.empty());
+        }
+
+        if (level != 100 && level != 200) {
+            Style style = Style.EMPTY.withItalic(false);
+            String progress = "Progress to Level " + this.level + ": §e" + fixDecimals(this.perecentageToLevel * 100, true) + "%";
+            formattedLore.add(formattedLore.size() - 1, Text.literal(progress).setStyle(style).formatted(Formatting.GRAY));
+            String string = "§a§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
+            formattedLore.add(formattedLore.size() - 1, Text.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
+            formattedLore.add(formattedLore.size() - 1, Text.empty());
         }
 
         return formattedLore;
