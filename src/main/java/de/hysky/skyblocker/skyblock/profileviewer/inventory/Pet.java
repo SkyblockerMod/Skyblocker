@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.itemlist.ItemFixerUpper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -147,12 +148,16 @@ public class Pet {
         List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
 
         // Calculate and display XP for level
+        Style style = Style.EMPTY.withItalic(false);
         if (level != 100 && level != 200) {
-            Style style = Style.EMPTY.withItalic(false);
             String progress = "Progress to Level " + this.level + ": §e" + fixDecimals(this.perecentageToLevel * 100, true) + "%";
             formattedLore.add(formattedLore.size() - 1, Text.literal(progress).setStyle(style).formatted(Formatting.GRAY));
-            String string = "§a§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
+            String string = "§2§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
             formattedLore.add(formattedLore.size() - 1, Text.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
+            formattedLore.add(formattedLore.size() - 1, Text.empty());
+        } else {
+            formattedLore.add(formattedLore.size() - 1, Text.literal("MAX LEVEL").setStyle(style).formatted(Formatting.AQUA, Formatting.BOLD));
+            formattedLore.add(formattedLore.size() - 1, Text.literal("▸ " + ProfileViewerUtils.COMMA_FORMATTER.format((long) xp) + " XP").setStyle(style).formatted(Formatting.DARK_GRAY));
             formattedLore.add(formattedLore.size() - 1, Text.empty());
         }
 
@@ -171,8 +176,7 @@ public class Pet {
             }
         }
 
-        Style style = Style.EMPTY.withItalic(false);
-        formattedLore.set(formattedLore.size() - 1, Text.literal(Rarity.values()[getTier() + (boosted() ? 1 : 0)].toString()).setStyle(style).formatted(Formatting.BOLD, RARITY_COLOR_MAP.get(getTier() + (boosted() ? 1 : 0))));
+        if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(Rarity.values()[getTier() + 1].toString()).setStyle(style).formatted(Formatting.BOLD, RARITY_COLOR_MAP.get(getTier() + 1)));
 
         // Update the lore and name
         petStack.set(DataComponentTypes.LORE, new LoreComponent(formattedLore));
