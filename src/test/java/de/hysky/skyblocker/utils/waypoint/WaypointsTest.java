@@ -133,12 +133,12 @@ public class WaypointsTest {
     @Test
     void testFromSkytilsV1Gzip() {
         String waypointsSkytilsV1Gzip = "<Skytils-Waypoint-Data>(V1):H4sIAAAAAAAC/51STWuEMBD9KyHntJjJl7u3UugfsIdC2UOq6SKk0cZIaxf/e+OC4moL4i2TmXnvzby54FwHc658aRp8RK8X7PSHiS+ctXVtO5Tpd4OyugoNJvhLd3VVurAs/Wy1NzH/HaM7yinBXXwpSfDP8HNICDZOv1lTxDD41hCsi8IUDyHGVCp+4JLGPi57MoMN2gf07EvtznaCl+kCnQJsgGeRgfM5/BJ4UHkFVhNwukm34sD6E8FlY7UbKnHpmqBdHtvmhE+tsejRWLtpqaM8BPfJKDGlS4mMrSXmla38NSu4lDDYsVItEg5ws46XyT8QKxa5j4UBCEhuPN1xKluYIBVUsZt55oujbJxJTObu3BxPmAL51yGhkU2tL4nuJBMCgP57XKf+FzPhnyPAAwAA";
-        List<WaypointCategory> waypointCategories = Waypoints.fromSkytils(waypointsSkytilsV1Gzip, "hub");
-        List<WaypointCategory> expectedWaypointCategories = List.of(new WaypointCategory("Supply Safe Spots", "instanced", List.of(
+        List<WaypointCategory> waypointCategories = Waypoints.fromSkytils(waypointsSkytilsV1Gzip, "default_island");
+        List<WaypointCategory> expectedWaypointCategories = List.of(new WaypointCategory("Supply Safe Spots", "default_island", List.of(
                 new NamedWaypoint(new BlockPos(-141, 76, -90), "Square", new float[]{0, 1, 0}, 128 / 255f, true),
                 new NamedWaypoint(new BlockPos(-68, 76, -122), "Start Triangle", new float[]{0, 1, 0}, 128 / 255f, true),
                 new NamedWaypoint(new BlockPos(-90, 77, -128), "Triangle", new float[]{0, 1, 0}, 128 / 255f, true)
-        )), new WaypointCategory("Fuel Cell Safe Spots", "instanced", List.of(
+        )), new WaypointCategory("Fuel Cell Safe Spots", "default_island", List.of(
                 new NamedWaypoint(new BlockPos(-81, 77, -133), "Triangle 2.0", new float[]{20 / 255f, 0, 1}, 1, true),
                 new NamedWaypoint(new BlockPos(-125, 77, -136), "X", new float[]{20 / 255f, 0, 1}, 1, true),
                 new NamedWaypoint(new BlockPos(-141, 76, -90), "Square", new float[]{20 / 255f, 0, 1}, 1, true),

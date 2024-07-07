@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.WaypointCategory;
@@ -87,19 +88,21 @@ public class Waypoints {
         return Collections.emptyList();
     }
 
-    public static List<WaypointCategory> fromSkytilsJson(String waypointCategories, String defaultIsland) {
+    public static List<WaypointCategory> fromSkytilsJson(String waypointCategoriesString, String defaultIsland) {
         JsonArray waypointCategoriesJson;
         try {
-            waypointCategoriesJson = SkyblockerMod.GSON.fromJson(waypointCategories, JsonObject.class).getAsJsonArray("categories");
+            waypointCategoriesJson = SkyblockerMod.GSON.fromJson(waypointCategoriesString, JsonObject.class).getAsJsonArray("categories");
         } catch (JsonSyntaxException e) {
+            // Handle the case where there is only a single json list of waypoints and no category data.
             JsonObject waypointCategoryJson = new JsonObject();
             waypointCategoryJson.addProperty("name", "New Category");
             waypointCategoryJson.addProperty("island", defaultIsland);
-            waypointCategoryJson.add("waypoints", SkyblockerMod.GSON.fromJson(waypointCategories, JsonArray.class));
+            waypointCategoryJson.add("waypoints", SkyblockerMod.GSON.fromJson(waypointCategoriesString, JsonArray.class));
             waypointCategoriesJson = new JsonArray();
             waypointCategoriesJson.add(waypointCategoryJson);
         }
-        return SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointCategoriesJson).resultOrPartial(LOGGER::error).orElseThrow();
+        List<WaypointCategory> waypointCategories = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointCategoriesJson).resultOrPartial(LOGGER::error).orElseThrow();
+        return waypointCategories.stream().map(waypointCategory -> Location.from(waypointCategory.island()) == Location.UNKNOWN ? waypointCategory.withIsland(defaultIsland) : waypointCategory).toList();
     }
 
     public static String toSkytilsBase64(List<WaypointCategory> waypointCategories) {
