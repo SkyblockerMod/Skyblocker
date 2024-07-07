@@ -28,8 +28,6 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static de.hysky.skyblocker.skyblock.itemlist.ItemStackBuilder.SKULL_TEXTURE_PATTERN;
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
@@ -148,6 +146,16 @@ public class Pet {
 
         List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
 
+        // Calculate and display XP for level
+        if (level != 100 && level != 200) {
+            Style style = Style.EMPTY.withItalic(false);
+            String progress = "Progress to Level " + this.level + ": §e" + fixDecimals(this.perecentageToLevel * 100, true) + "%";
+            formattedLore.add(formattedLore.size() - 1, Text.literal(progress).setStyle(style).formatted(Formatting.GRAY));
+            String string = "§a§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
+            formattedLore.add(formattedLore.size() - 1, Text.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
+            formattedLore.add(formattedLore.size() - 1, Text.empty());
+        }
+
         // Skin Head Texture
         if (skinTexture.isPresent()) {
             formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(NEURepoManager.NEU_REPO.getItems().getItems().get("PET_SKIN_" + skin.get()).getDisplayName())));
@@ -176,9 +184,9 @@ public class Pet {
     /**
      * Iterates through a Pet's lore injecting interpolated stat numbers based on pet level
      *
-     * @param lore     the lore data stored in NEU Repo
-     * @param heldItem
-     * @return Formatted lore with injected stats
+     * @param lore the raw lore data stored in NEU Repo
+     * @param heldItem the pet's held item, if any
+     * @return Formatted lore with injected stats inserted into the tooltip
      */
     private List<Text> processLore(List<String> lore, ItemStack heldItem) {
         Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.NEU_REPO.getConstants().getPetNumbers();
@@ -214,15 +222,6 @@ public class Pet {
 
         if (heldItem != null) {
             formattedLore.set(formattedLore.size() - 2, Text.of("§r§6Held Item: " + heldItem.getName().getString()));
-            formattedLore.add(formattedLore.size() - 1, Text.empty());
-        }
-
-        if (level != 100 && level != 200) {
-            Style style = Style.EMPTY.withItalic(false);
-            String progress = "Progress to Level " + this.level + ": §e" + fixDecimals(this.perecentageToLevel * 100, true) + "%";
-            formattedLore.add(formattedLore.size() - 1, Text.literal(progress).setStyle(style).formatted(Formatting.GRAY));
-            String string = "§a§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
-            formattedLore.add(formattedLore.size() - 1, Text.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
             formattedLore.add(formattedLore.size() - 1, Text.empty());
         }
 
