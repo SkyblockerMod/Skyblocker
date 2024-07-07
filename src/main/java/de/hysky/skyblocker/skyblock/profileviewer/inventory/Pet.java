@@ -10,6 +10,9 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.ProfileComponent;
@@ -47,14 +50,14 @@ public class Pet {
             "COMMON", 0, "UNCOMMON", 1, "RARE", 2, "EPIC", 3, "LEGENDARY", 4, "MYTHIC", 5
     );
 
-    private static final Map<Integer, Formatting> RARITY_COLOR_MAP = Map.of(
+    private static final Int2ObjectMap<Formatting> RARITY_COLOR_MAP = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.of(
             0, Formatting.WHITE, // COMMON
             1, Formatting.GREEN, // UNCOMMON
             2, Formatting.BLUE, // RARE
             3, Formatting.DARK_PURPLE, // EPIC
             4, Formatting.GOLD, // LEGENDARY
             5, Formatting.LIGHT_PURPLE // MYTHIC
-    );
+    )));
 
     public Pet(PetCache.PetInfo petData) {
         this.name = petData.type();
