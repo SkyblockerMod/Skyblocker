@@ -23,9 +23,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.Normalizer;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -142,6 +145,9 @@ public class Pet {
         Rarity rarity = Rarity.values()[getTier()];
         PetNumbers data = petNums.get(getName()).get(rarity);
 
+        if (name.equals("GOLDEN_DRAGON") && level < 101) {
+            formattedLore = buildGoldenDragonLore(lore);
+        } else {
         for (String line : lore) {
             if (line.contains("Right-click to add this") || line.contains("pet menu!")) continue;
 
@@ -164,6 +170,7 @@ public class Pet {
             }
 
             formattedLore.add(Text.of(formattedLine));
+        }
         }
 
         if (heldItem != null) {
@@ -194,6 +201,22 @@ public class Pet {
         petStack.set(DataComponentTypes.CUSTOM_NAME, Text.of(item.getDisplayName().formatted(RARITY_COLOR_MAP.get(this.getTier() + (boosted() ? 1 : 0))).replace("{LVL}", String.valueOf(this.level))));
 
         return petStack;
+    }
+
+    private List<Text> buildGoldenDragonLore(List<String> lore) {
+        List<Text> formattedLore = new ArrayList<>();
+        Style style = Style.EMPTY.withItalic(false);
+
+        formattedLore.add(Text.of(lore.getFirst()));
+        formattedLore.add(Text.empty());
+        formattedLore.add(Text.literal("Perks:").setStyle(style).formatted(Formatting.GRAY));
+        formattedLore.add(Text.literal("???").setStyle(style).formatted(Formatting.RED, Formatting.BOLD));
+        formattedLore.add(Text.empty());
+        formattedLore.add(Text.literal("Hatches at level §b100").setStyle(style).formatted(Formatting.GRAY));
+        formattedLore.add(Text.empty());
+        formattedLore.add(Text.of("Legendary"));
+
+        return formattedLore;
     }
 
     private String fixDecimals(double num, boolean truncate) {
