@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -10,29 +12,27 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.util.math.Box;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SlayerEntitiesGlow {
-    private static final Map<String, String> SLAYER_MINI_NAMES = Stream.of(new String[][]{
-            {"Revenant Sycophant", SlayerUtils.REVENANT},
-            {"Revenant Champion", SlayerUtils.REVENANT},
-            {"Deformed Revenant", SlayerUtils.REVENANT},
-            {"Atoned Champion", SlayerUtils.REVENANT},
-            {"Atoned Revenant", SlayerUtils.REVENANT},
-            {"Tarantula Vermin", SlayerUtils.TARA},
-            {"Tarantula Beast", SlayerUtils.TARA},
-            {"Mutant Tarantula", SlayerUtils.TARA},
-            {"Pack Enforcer", SlayerUtils.SVEN},
-            {"Sven Follower", SlayerUtils.SVEN},
-            {"Sven Alpha", SlayerUtils.SVEN},
-            {"Voidling Devotee", SlayerUtils.VOIDGLOOM},
-            {"Voidling Radical", SlayerUtils.VOIDGLOOM},
-            {"Voidcrazed Maniac", SlayerUtils.VOIDGLOOM},
-            {"Flare Demon", SlayerUtils.DEMONLORD},
-            {"Kindleheart Demon", SlayerUtils.DEMONLORD},
-            {"Burningsoul Demon", SlayerUtils.DEMONLORD}
-    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+    private static final Map<String, String> SLAYER_MINI_NAMES = Map.ofEntries(
+            Map.entry("Revenant Sycophant", SlayerUtils.REVENANT),
+            Map.entry("Revenant Champion", SlayerUtils.REVENANT),
+            Map.entry("Deformed Revenant", SlayerUtils.REVENANT),
+            Map.entry("Atoned Champion", SlayerUtils.REVENANT),
+            Map.entry("Atoned Revenant", SlayerUtils.REVENANT),
+            Map.entry("Tarantula Vermin", SlayerUtils.TARA),
+            Map.entry("Tarantula Beast", SlayerUtils.TARA),
+            Map.entry("Mutant Tarantula", SlayerUtils.TARA),
+            Map.entry("Pack Enforcer", SlayerUtils.SVEN),
+            Map.entry("Sven Follower", SlayerUtils.SVEN),
+            Map.entry("Sven Alpha", SlayerUtils.SVEN),
+            Map.entry("Voidling Devotee", SlayerUtils.VOIDGLOOM),
+            Map.entry("Voidling Radical", SlayerUtils.VOIDGLOOM),
+            Map.entry("Voidcrazed Maniac", SlayerUtils.VOIDGLOOM),
+            Map.entry("Flare Demon", SlayerUtils.DEMONLORD),
+            Map.entry("Kindleheart Demon", SlayerUtils.DEMONLORD),
+            Map.entry("Burningsoul Demon", SlayerUtils.DEMONLORD)
+    );
 
     private static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
             SlayerUtils.REVENANT, ZombieEntity.class,
@@ -42,10 +42,10 @@ public class SlayerEntitiesGlow {
             SlayerUtils.DEMONLORD, BlazeEntity.class
     );
 
-    private static Set<UUID> mobsToGlow = new HashSet<>();
+    private static final Set<UUID> MOBS_TO_GLOW = new HashSet<>();
 
     public static boolean shouldGlow(UUID entityUUID) {
-        return mobsToGlow.contains(entityUUID);
+        return MOBS_TO_GLOW.contains(entityUUID);
     }
 
     public static boolean isSlayer(LivingEntity e) {
@@ -98,11 +98,19 @@ public class SlayerEntitiesGlow {
         Class<? extends MobEntity> entityClass = SLAYER_MOB_TYPE.get(slayerType);
         if (entityClass != null) {
             MobEntity closestEntity = findClosestMobEntity(entityClass, armorStand);
-            if (closestEntity != null) mobsToGlow.add(closestEntity.getUuid());
+            if (closestEntity != null) MOBS_TO_GLOW.add(closestEntity.getUuid());
         }
     }
 
     public static void onEntityDeath(Entity entity) {
-        mobsToGlow.remove(entity.getUuid());
+        MOBS_TO_GLOW.remove(entity.getUuid());
+    }
+
+    private static void clearGlow(Location location) {
+        MOBS_TO_GLOW.clear();
+    }
+
+    public static void init() {
+        SkyblockEvents.LOCATION_CHANGE.register(SlayerEntitiesGlow::clearGlow);
     }
 }
