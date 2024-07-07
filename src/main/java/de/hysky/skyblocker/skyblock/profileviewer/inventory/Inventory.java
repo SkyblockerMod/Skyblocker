@@ -85,7 +85,7 @@ public class Inventory implements ProfileViewerPage {
             context.drawItem(containerList.get(startIndex + i), x, y);
             context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
 
-            if (mouseX > x && mouseX < x + 16 && mouseY > y && mouseY < y + 16) {
+            if (mouseX > x -1 && mouseX < x + 16 && mouseY > y - 1 && mouseY < y + 16) {
                 tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
             }
         }

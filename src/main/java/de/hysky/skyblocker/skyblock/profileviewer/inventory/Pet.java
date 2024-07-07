@@ -23,7 +23,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.Normalizer;
@@ -59,7 +58,8 @@ public class Pet {
             2, Formatting.BLUE, // RARE
             3, Formatting.DARK_PURPLE, // EPIC
             4, Formatting.GOLD, // LEGENDARY
-            5, Formatting.LIGHT_PURPLE // MYTHIC
+            5, Formatting.LIGHT_PURPLE, // MYTHIC
+            6, Formatting.AQUA // DIVINE (future proofing, because why not)
     )));
 
     public Pet(PetCache.PetInfo petData) {
@@ -138,40 +138,7 @@ public class Pet {
         Identifier itemId = Identifier.of(ItemFixerUpper.convertItemId(item.getMinecraftItemId(), item.getDamage()));
         ItemStack petStack = new ItemStack(Registries.ITEM.get(itemId)).copy();
 
-        List<String> lore = item.getLore();
-        List<Text> formattedLore = new ArrayList<>();
-
-        Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.NEU_REPO.getConstants().getPetNumbers();
-        Rarity rarity = Rarity.values()[getTier()];
-        PetNumbers data = petNums.get(getName()).get(rarity);
-
-        if (name.equals("GOLDEN_DRAGON") && level < 101) {
-            formattedLore = buildGoldenDragonLore(lore);
-        } else {
-        for (String line : lore) {
-            if (line.contains("Right-click to add this") || line.contains("pet menu!")) continue;
-
-            String formattedLine = line;
-
-            Matcher stats = statsMatcher.matcher(formattedLine);
-            Matcher other = numberMatcher.matcher(formattedLine);
-            while (stats.find()) {
-                String placeholder = stats.group();
-                String statKey = placeholder.substring(1, placeholder.length() - 1);
-                String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getStatNumbers().get(statKey), true));
-                formattedLine = formattedLine.replace(placeholder, statValue);
-            }
-
-            while (other.find()) {
-                String placeholder = other.group();
-                int numberKey = Integer.parseInt(placeholder.substring(1, placeholder.length() - 1));
-                String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getOtherNumbers().get(numberKey), false));
-                formattedLine = formattedLine.replace(placeholder, statValue);
-            }
-
-            formattedLore.add(Text.of(formattedLine));
-        }
-        }
+        List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore( item.getLore()) : buildGoldenDragonEggLore( item.getLore());
 
         if (heldItem != null) {
             formattedLore.set(formattedLore.size() - 2, Text.of("§r§6Held Item: " + heldItem.getName().getString()));
@@ -194,16 +161,60 @@ public class Pet {
         }
 
         Style style = Style.EMPTY.withItalic(false);
-        formattedLore.set(formattedLore.size()-1, Text.literal(Rarity.values()[getTier() + (boosted() ? 1 : 0)].toString()).setStyle(style).formatted(Formatting.BOLD, RARITY_COLOR_MAP.get(getTier() + (boosted() ? 1 : 0))));
+        formattedLore.set(formattedLore.size() - 1, Text.literal(Rarity.values()[getTier() + (boosted() ? 1 : 0)].toString()).setStyle(style).formatted(Formatting.BOLD, RARITY_COLOR_MAP.get(getTier() + (boosted() ? 1 : 0))));
 
         // Update the lore and name
         petStack.set(DataComponentTypes.LORE, new LoreComponent(formattedLore));
-        petStack.set(DataComponentTypes.CUSTOM_NAME, Text.of(item.getDisplayName().formatted(RARITY_COLOR_MAP.get(this.getTier() + (boosted() ? 1 : 0))).replace("{LVL}", String.valueOf(this.level))));
-
+        String displayName = Formatting.strip(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
+        petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted(RARITY_COLOR_MAP.get(this.getTier() + (boosted() ? 1 : 0))));
         return petStack;
     }
 
-    private List<Text> buildGoldenDragonLore(List<String> lore) {
+    /**
+     * Iterates through a Pet's lore injecting interpolated stat numbers based on pet level
+     * @param lore the lore data stored in NEU Repo
+     * @return Formatted lore with injected stats
+     */
+    private List<Text> processLore(List<String> lore) {
+        Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.NEU_REPO.getConstants().getPetNumbers();
+        Rarity rarity = Rarity.values()[getTier()];
+        PetNumbers data = petNums.get(getName()).get(rarity);
+        List<Text> formattedLore = new ArrayList<>();
+
+        for (String line : lore) {
+            if (line.contains("Right-click to add this") || line.contains("pet menu!")) continue;
+
+            String formattedLine = line;
+
+            Matcher stats = statsMatcher.matcher(formattedLine);
+            Matcher other = numberMatcher.matcher(formattedLine);
+
+            while (stats.find()) {
+                String placeholder = stats.group();
+                String statKey = placeholder.substring(1, placeholder.length() - 1);
+                String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getStatNumbers().get(statKey), true));
+                formattedLine = formattedLine.replace(placeholder, statValue);
+            }
+
+            while (other.find()) {
+                String placeholder = other.group();
+                int numberKey = Integer.parseInt(placeholder.substring(1, placeholder.length() - 1));
+                String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getOtherNumbers().get(numberKey), false));
+                formattedLine = formattedLine.replace(placeholder, statValue);
+            }
+
+            formattedLore.add(Text.of(formattedLine));
+        }
+
+        return formattedLore;
+    }
+
+    /**
+     * NEU Repo doesn't distinguish between the Egg and the hatched GoldenDragon pet so hardcoded lore :eues:
+     * @param lore the existing lore
+     * @return Fully formatted GoldenDragonEgg Lore
+     */
+    private List<Text> buildGoldenDragonEggLore(List<String> lore) {
         List<Text> formattedLore = new ArrayList<>();
         Style style = Style.EMPTY.withItalic(false);
 
@@ -214,7 +225,7 @@ public class Pet {
         formattedLore.add(Text.empty());
         formattedLore.add(Text.literal("Hatches at level §b100").setStyle(style).formatted(Formatting.GRAY));
         formattedLore.add(Text.empty());
-        formattedLore.add(Text.of("Legendary"));
+        formattedLore.add(Text.of(lore.getLast()));
 
         return formattedLore;
     }

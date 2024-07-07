@@ -86,7 +86,7 @@ public class ApiAuthentication {
 				}
 			} else {
 				//The Minecraft Services API is probably down so we will retry in 5 minutes, either that or your access token has expired (game open for 24h) and you need to restart.
-				logErrorAndScheduleRetry(Text.translatable("skyblocker.api.token.noProfileKeys"), 300 * 20, "[Skyblocker Api Auth] Failed to fetch profile keys! Some features may not work temporarily :( (Has your game been open for more than 24 hours? If so restart.)");
+				logErrorAndScheduleRetry(Text.translatable("skyblocker.api.token.noProfileKeys"), 20, "[Skyblocker Api Auth] Failed to fetch profile keys! Some features may not work temporarily :( (Has your game been open for more than 24 hours? If so restart.)");
 			}
 		}).exceptionally(throwable -> {
 			//Try again in 1 minute
