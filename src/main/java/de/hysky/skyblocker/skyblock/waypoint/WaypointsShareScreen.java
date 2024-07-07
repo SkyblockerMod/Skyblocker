@@ -31,7 +31,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         GridWidget.Adder adder = gridWidget.createAdder(2);
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkytils"), buttonImport -> {
             try {
-                List<WaypointCategory> waypointCategories = Waypoints.fromSkytilsBase64(client.keyboard.getClipboard(), island);
+                List<WaypointCategory> waypointCategories = Waypoints.fromSkytils(client.keyboard.getClipboard(), island);
                 for (WaypointCategory waypointCategory : waypointCategories) {
                     selectedWaypoints.addAll(waypointCategory.waypoints());
                     waypoints.put(waypointCategory.island(), waypointCategory);

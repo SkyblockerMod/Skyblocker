@@ -21,11 +21,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -33,6 +36,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.zip.GZIPInputStream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -62,19 +66,22 @@ public class Waypoints {
         }
     }
 
-    public static List<WaypointCategory> fromSkytilsBase64(String base64, String defaultIsland) {
+    public static List<WaypointCategory> fromSkytils(String waypointsString, String defaultIsland) {
         try {
-            if (base64.startsWith("<Skytils-Waypoint-Data>(V")) {
-                int version = Integer.parseInt(base64.substring(26, base64.indexOf(')')));
+            if (waypointsString.startsWith("<Skytils-Waypoint-Data>(V")) {
+                int version = Integer.parseInt(waypointsString.substring(25, waypointsString.indexOf(')')));
+                waypointsString = waypointsString.substring(waypointsString.indexOf(':') + 1);
                 if (version == 1) {
-                    return fromSkytilsJson(new String(Base64.getDecoder().decode(base64.substring(base64.indexOf(':') + 1))), defaultIsland);
+                    try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString)))) {
+                        return fromSkytilsJson(IOUtils.toString(reader, StandardCharsets.UTF_8), defaultIsland);
+                    }
                 } else {
-                    LOGGER.error("[Skyblocker Waypoints] Unknown Skytils waypoint data version: " + version);
+                    LOGGER.error("[Skyblocker Waypoints] Unknown Skytils waypoint data version: {}", version);
                 }
-            } else return fromSkytilsJson(new String(Base64.getDecoder().decode(base64)), defaultIsland);
+            } else return fromSkytilsJson(new String(Base64.getDecoder().decode(waypointsString)), defaultIsland);
         } catch (NumberFormatException e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skytils waypoint data version", e);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while decoding Skytils waypoint data", e);
         }
         return Collections.emptyList();
