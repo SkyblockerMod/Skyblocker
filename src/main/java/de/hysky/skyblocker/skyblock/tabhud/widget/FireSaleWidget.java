@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
@@ -32,7 +31,6 @@ public class FireSaleWidget extends TabHudWidget {
         super("Fire Sales", TITLE, Formatting.DARK_AQUA.getColorValue());
     }
 
-    // TODO make it work (waiting for a fire sale to see the widget)
     @Override
     public void updateContent(List<Text> lines) {
         for (int i = 1; i < lines.size(); i++) {

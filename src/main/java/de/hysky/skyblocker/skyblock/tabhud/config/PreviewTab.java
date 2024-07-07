@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
@@ -103,7 +104,7 @@ public class PreviewTab implements Tab {
                 ScoreboardCriterion.RenderType.INTEGER,
                 true,
                 BlankNumberFormat.INSTANCE
-                );
+        );
         Scoreboard scoreboard = placeHolderObjective.getScoreboard();
         scoreboard.getOrCreateScore(createHolder(Text.literal("Random text!")), placeHolderObjective).setScore(0);
         scoreboard.getOrCreateScore(createHolder(Text.literal("To fill in")), placeHolderObjective).setScore(-1);
@@ -225,6 +226,13 @@ public class PreviewTab implements Tab {
         PlayerListMgr.updateWidgetsFrom(lines);
     }
 
+    void updateWidgets() {
+        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
+        updatePlayerListFromPreview();
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+        screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale));
+    }
+
     void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
         widgetOptions.clearWidgets();
         if (hudWidget == null) return;
@@ -296,14 +304,35 @@ public class PreviewTab implements Tab {
             widgetOptions.addWidget(new AnchorSelectionWidget(width, Text.literal("This anchor"), false));
             widgetOptions.addWidget(new AnchorSelectionWidget(width, Text.literal("Parent anchor"), true));
 
-        }
-    }
+            // apply to all locations
+            if (dungeon) return;
+            // padding thing
+            widgetOptions.addWidget(new ClickableWidget(0, 0, width, 20, Text.empty()) {
+                @Override
+                protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+                }
 
-    void updateWidgets() {
-        ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
-        updatePlayerListFromPreview();
-        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-        screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale));
+                @Override
+                protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+                }
+            });
+            widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Apply everywhere"), button -> {
+                if (this.previewWidget.selectedWidget == null) return;
+                PositionRule toCopy = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
+                if (toCopy == null) return;
+                for (Location value : Location.values()) {
+                    if (value == getCurrentLocation() || value == Location.DUNGEON) continue;
+                    ScreenMaster.getScreenBuilder(value).setPositionRule(
+                            this.previewWidget.selectedWidget.getInternalID(),
+                            toCopy
+                    );
+                }
+                button.setMessage(Text.literal("Applied!"));
+                Scheduler.INSTANCE.schedule(() -> button.setMessage(Text.literal("Apply everywhere")), 15);
+            }).width(width).tooltip(Tooltip.of(Text.literal("Apply positioning to all locations. This cannot be restored!"))).build()
+            );
+
+        }
     }
 
     private Location getCurrentLocation() {
@@ -436,7 +465,7 @@ public class PreviewTab implements Tab {
             if (!yUnitOnRight && translatedX - 2 - yUnitTextWidth <= 0) yUnitOnRight = true;
 
             // X
-            context.drawCenteredTextWithShadow(client.textRenderer, String.valueOf(relativeX + rule.relativeX()), thisAnchorX - (relativeX + rule.relativeX()) / 2,  xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, Colors.LIGHT_RED);
+            context.drawCenteredTextWithShadow(client.textRenderer, String.valueOf(relativeX + rule.relativeX()), thisAnchorX - (relativeX + rule.relativeX()) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, Colors.LIGHT_RED);
             // Y
             context.drawText(client.textRenderer, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (relativeY + rule.relativeY() - 9) / 2, Colors.LIGHT_RED, true);
         }
@@ -655,7 +684,7 @@ public class PreviewTab implements Tab {
                         }
                     }
 
-                    boolean hoveredAnchor = mouseX >= getX() + i * getWidth()/3 &&
+                    boolean hoveredAnchor = mouseX >= getX() + i * getWidth() / 3 &&
                             mouseX < getX() + (i + 1) * getWidth() / 3 &&
                             mouseY >= getY() + 10 + j * 10 &&
                             mouseY < getY() + 10 + (j + 1) * 10;
@@ -681,7 +710,7 @@ public class PreviewTab implements Tab {
                 PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(internalID);
                 // Get the x, y of the parent's point
                 float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-                ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (parent.width / scale), (int) (parent.height / scale), other ? hoveredPoint: oldRule.parentPoint());
+                ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (parent.width / scale), (int) (parent.height / scale), other ? hoveredPoint : oldRule.parentPoint());
                 if (startPos == null) startPos = new ScreenPos(0, 0);
                 // Same but for the affected widget
                 PositionRule.Point thisPoint = other ? oldRule.thisPoint() : hoveredPoint;
@@ -712,6 +741,7 @@ public class PreviewTab implements Tab {
         }
 
         @Override
-        protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+        protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+        }
     }
 }
