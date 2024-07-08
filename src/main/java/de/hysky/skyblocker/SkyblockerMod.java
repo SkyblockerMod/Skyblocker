@@ -25,6 +25,7 @@ import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.garden.FarmingHud;
@@ -196,6 +197,7 @@ public class SkyblockerMod implements ClientModInitializer {
         JerryTimer.init();
         TooltipManager.init();
         SlotTextManager.init();
+        MobGlow.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

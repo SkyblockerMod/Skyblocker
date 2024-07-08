@@ -9,7 +9,7 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -24,26 +24,50 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.random.RandomGenerator;
 
 public class MobGlow {
 
+	private static final long GLOW_CACHE_DURATION = 1000; // 1 seconds for glow computation cache
+	private static final long CAN_SEE_CACHE_DURATION = 100; // 100 milliseconds for canSee cache (every 2 ticks)
+	private static final ConcurrentHashMap<Entity, CacheEntry<Boolean>> glowCache = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<Entity, CacheEntry<Boolean>> canSeeCache = new ConcurrentHashMap<>();
+	private static final RandomGenerator generator = RandomGenerator.getDefault();
+
 	public static boolean shouldMobGlow(Entity entity) {
+		CacheEntry<Boolean> cachedCanSee = canSeeCache.get(entity);
+		long currentTime = System.currentTimeMillis();
+
+		if (cachedCanSee != null && (currentTime - cachedCanSee.timestamp) < CAN_SEE_CACHE_DURATION) return cachedCanSee.value;
+
+		CacheEntry<Boolean> cachedGlow = glowCache.get(entity);
+
+		if (cachedGlow != null && cachedGlow.value && (currentTime - cachedGlow.timestamp) < GLOW_CACHE_DURATION){
+			boolean canSee = MinecraftClient.getInstance().player.canSee(entity);
+			canSeeCache.put(entity, new CacheEntry<>(canSee, currentTime));
+			return canSee;
+		} else if (cachedGlow != null && (currentTime - cachedGlow.timestamp) < GLOW_CACHE_DURATION) return false;
+
+		boolean result = computeShouldMobGlow(entity);
+		glowCache.put(entity, new CacheEntry<>(result, currentTime + generator.nextLong(50)));
+		if (!result) return false;
+
+		boolean canSee = MinecraftClient.getInstance().player.canSee(entity);
+		canSeeCache.put(entity, new CacheEntry<>(canSee, currentTime));
+		return canSee;
+	}
+
+	private static boolean computeShouldMobGlow(Entity entity) {
 		String name = entity.getName().getString();
 
 		// Dungeons
 		if (Utils.isInDungeons() && !entity.isInvisible()) {
 			return switch (entity) {
-				// Minibosses
 				case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
 				case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
-
-				// Bats
 				case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
-
-				// Armor Stands
 				case ArmorStandEntity _armorStand -> false;
-
-				// Regular Mobs
 				default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
 			};
 		}
@@ -139,9 +163,29 @@ public class MobGlow {
 			// compare against it to exclusively find armorstands that are nukekubi heads
 			// get the texture of the nukekubi head item itself and compare it
 			String texture = ItemUtils.getHeadTexture(armorItem);
-
-			return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
+			if (texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=")) {
+				return true;
+			}
 		}
 		return false;
+	}
+
+	private static class CacheEntry<T> {
+		final T value;
+		final long timestamp;
+
+		CacheEntry(T value, long timestamp) {
+			this.value = value;
+			this.timestamp = timestamp;
+		}
+	}
+
+	public static void init() {
+		Scheduler.INSTANCE.scheduleCyclic(MobGlow::clearCache, 100*20);
+	}
+
+	private static void clearCache() {
+		canSeeCache.clear();
+		glowCache.clear();
 	}
 }

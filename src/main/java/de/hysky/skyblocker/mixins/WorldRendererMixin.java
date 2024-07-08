@@ -25,7 +25,7 @@ public class WorldRendererMixin {
 	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
 	private boolean skyblocker$shouldMobGlow(boolean original, @Local Entity entity, @Share("hasCustomGlow") LocalBooleanRef hasCustomGlow) {
 		boolean allowGlow = LividColor.allowGlow();
-		boolean shouldGlow = MobGlow.shouldMobGlow(entity) && MinecraftClient.getInstance().player.canSee(entity);
+		boolean shouldGlow = MobGlow.shouldMobGlow(entity);
 		hasCustomGlow.set(shouldGlow);
 		return allowGlow && original || shouldGlow;
 	}
