@@ -734,5 +734,20 @@
     "skyblocker.crimson.dojo": "道場",
     "skyblocker.tips.next": "下一則提示",
     "skyblocker.tips.clickPreviousTip": "§b[點擊查看上一則提示]",
-    "skyblocker.tips.previous": "上一則提示"
+    "skyblocker.tips.previous": "上一則提示",
+    "skyblocker.museum.attemptingResync": "正在嘗試重新同步你的博物館物品捐贈……",
+    "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "在背包介面顯示裝備",
+    "skyblocker.tips.skyblockerScreen": "你可以使用 /skyblocker 訪問Skyblocker主介面以開啟設定或查看該模組的相關連結。",
+    "skyblocker.config.general.itemTooltip.craft": "製作成本",
+    "skyblocker.config.general.itemTooltip.craft.@Tooltip": "你可以選擇在價格計算器中使用哪一種集市價格",
+    "skyblocker.config.general.itemTooltip.craft.OFF": "關",
+    "skyblocker.config.general.itemTooltip.craft.BUY_ORDER": "購入訂單",
+    "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "當隱藏的Jerry生成冷卻結束後發送一條訊息並播放音效。",
+    "skyblocker.config.otherLocations.rift.blobbercystGlow.@Tooltip": "為BACTE戰中的Blobbercyst添加發光效果。",
+    "skyblocker.tips.tipsClick": "點擊提示訊息即可運行其建議！",
+    "skyblocker.config.general.itemTooltip.craft.SELL_ORDER": "賣出訂單",
+    "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst發光",
+    "skyblocker.config.helpers.jerry": "Jerry",
+    "skyblocker.config.helpers.jerry.enableJerryTimer": "啟用Jerry計時器",
+    "skyblocker.tips.compactDamage": "在設定中的簡潔傷害數值可以自訂你造成的攻擊傷害。"
 }
