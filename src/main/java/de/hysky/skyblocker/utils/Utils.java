@@ -463,7 +463,11 @@ public class Utils {
             if (message.startsWith(PROFILE_MESSAGE_PREFIX)) {
                 profile = message.substring(PROFILE_MESSAGE_PREFIX.length()).split("§b")[0];
             } else if (message.startsWith(PROFILE_ID_PREFIX)) {
+                String prevProfileId = profileId;
                 profileId = message.substring(PROFILE_ID_PREFIX.length());
+                if (!prevProfileId.equals(profileId)) {
+                    SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
+                }
 
                 MuseumItemCache.tick(profileId);
             }

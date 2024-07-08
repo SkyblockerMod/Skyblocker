@@ -186,6 +186,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DojoManager.init();
         RenderHelper.init();
         FancyStatusBars.init();
+        SkyblockInventoryScreen.initEquipment();
         EventNotifications.init();
         containerSolverManager.init();
         statusBarTracker.init();

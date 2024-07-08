@@ -26,6 +26,16 @@ public final class SkyblockEvents {
         }
     });
 
+    /**
+     * Called when the player's Skyblock profile changes.
+     * @implNote This is called upon receiving the chat message for the profile change rather than the exact moment of profile change, so it may be delayed by a few seconds.
+     */
+    public static final Event<ProfileChange> PROFILE_CHANGE = EventFactory.createArrayBacked(ProfileChange.class, callbacks -> (prev, profile) -> {
+        for (ProfileChange callback : callbacks) {
+            callback.onSkyblockProfileChange(prev, profile);
+        }
+    });
+
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface SkyblockJoin {
@@ -42,5 +52,11 @@ public final class SkyblockEvents {
     @FunctionalInterface
     public interface SkyblockLocationChange {
         void onSkyblockLocationChange(Location location);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @FunctionalInterface
+    public interface ProfileChange {
+        void onSkyblockProfileChange(String prevProfileId, String profileId);
     }
 }

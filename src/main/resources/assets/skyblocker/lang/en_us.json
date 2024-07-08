@@ -615,6 +615,8 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions": "Maximum Suggestions",
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip": "The maximum number of suggested items to show.",
 
+  "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
+
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy tab HUD (Temporarily disabled outside dungeons)",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
