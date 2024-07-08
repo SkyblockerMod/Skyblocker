@@ -33,7 +33,7 @@ public class Http {
 			.followRedirects(Redirect.NORMAL)
 			.build();
 
-	private static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
+	public static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
 				.GET()
 				.header("Accept", "application/json")
@@ -66,9 +66,8 @@ public class Http {
 				.build();
 
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
-		InputStream decodedInputStream = getDecodedInputStream(response);
 
-		return decodedInputStream;
+		return getDecodedInputStream(response);
 	}
 	
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
@@ -125,16 +124,12 @@ public class Http {
 		String encoding = getContentEncoding(response.headers());
 
 		try {
-			switch (encoding) {
-				case "":
-					return response.body();
-				case "gzip":
-					return new GZIPInputStream(response.body());
-				case "deflate":
-					return new InflaterInputStream(response.body());
-				default:
-					throw new UnsupportedOperationException("The server sent content in an unexpected encoding: " + encoding);
-			}
+			return switch (encoding) {
+				case "" -> response.body();
+				case "gzip" -> new GZIPInputStream(response.body());
+				case "deflate" -> new InflaterInputStream(response.body());
+				default -> throw new UnsupportedOperationException("The server sent content in an unexpected encoding: " + encoding);
+			};
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
