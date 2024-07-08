@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.skyblock.dwarven.CommissionLabels;
 import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
@@ -26,6 +27,9 @@ public class CommsWidget extends TabHudWidget {
     // group 2: comm progress (without "%" for comms that show a percentage)
     private static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
+    private final List<Commission> commissions = new ArrayList<>(4);
+    private boolean oldDone = false;
+
     public CommsWidget() {
         super("Commissions", TITLE, Formatting.DARK_AQUA.getColorValue());
     }
@@ -36,6 +40,10 @@ public class CommsWidget extends TabHudWidget {
             this.addComponent(new IcoTextComponent());
             return;
         }
+        List<String> oldCommissionNames = commissions.stream().map(Commission::name).toList();
+        List<String> newCommissionsNames = new ArrayList<>(commissions.size());
+        commissions.clear();
+        boolean commissionDone = false;
         for (Text line : lines) {
             Matcher m = COMM_PATTERN.matcher(line.getString());
             if (m.matches()) {
@@ -43,9 +51,12 @@ public class CommsWidget extends TabHudWidget {
 
                 String name = m.group("name");
                 String progress = m.group("progress");
+                commissions.add(new Commission(name, progress));
+                newCommissionsNames.add(name);
 
                 if (progress.equals("DONE")) {
                     pc = new ProgressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f, Colors.pcntToCol(100));
+                    commissionDone = true;
                 } else {
                     float pcnt = Float.parseFloat(progress.substring(0, progress.length() - 1));
                     pc = new ProgressComponent(Ico.BOOK, Text.of(name), pcnt, Colors.pcntToCol(pcnt));
@@ -53,6 +64,12 @@ public class CommsWidget extends TabHudWidget {
                 this.addComponent(pc);
             }
         }
+        if (!oldCommissionNames.equals(newCommissionsNames) || oldDone != commissionDone) {
+            CommissionLabels.update(newCommissionsNames, commissionDone);
+        }
+        oldDone = commissionDone;
     }
+
+    record Commission(String name, String progress){}
 
 }

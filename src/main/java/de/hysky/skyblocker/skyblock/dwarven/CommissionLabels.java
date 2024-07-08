@@ -34,7 +34,7 @@ public class CommissionLabels {
      * @param newCommissions the new commissions to get the waypoints from
      * @param completed      if there is a commission completed
      */
-    protected static void update(List<String> newCommissions, boolean completed) {
+    public static void update(List<String> newCommissions, boolean completed) {
         MiningConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().mining.commissionWaypoints.mode;
         if (currentMode == MiningConfig.CommissionWaypointMode.OFF) {
             return;
