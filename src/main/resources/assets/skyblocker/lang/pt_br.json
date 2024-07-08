@@ -221,7 +221,7 @@
     "skyblocker.config.otherLocations.rift.mcGrubberStacks.@Tooltip": "Usado para calcular preço de venda de Motes.",
     "skyblocker.fairySouls.markAllMissing": "§rMarcada todas as almas de fadas na ilha atual como pendentes",
     "skyblocker.config.dungeons.starredMobGlow": "Brilho em Mobs com estrela",
-    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Aplicar o efeito de brilho para Mobs estrelados que estão visíveis.",
+    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Aplicar o efeito de brilho para Mobs estrelados que estão visíveis.\n\nAVISO: Este recurso é experimental e você pode encontrar problemas com ele.",
     "skyblocker.config.dungeons.puzzle.solveTicTacToe": "Guia para o Puzzle do jogo da velha",
     "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Mandar a cor do Livid no chat durante a luta contra Livid.",
     "skyblocker.config.otherLocations.spidersDen": "Covil da Aranha",
