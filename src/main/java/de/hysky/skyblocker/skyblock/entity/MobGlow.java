@@ -29,11 +29,10 @@ import java.util.random.RandomGenerator;
 
 public class MobGlow {
 
-	private static final long GLOW_CACHE_DURATION = 1000; // 1 seconds for glow computation cache
-	private static final long CAN_SEE_CACHE_DURATION = 100; // 100 milliseconds for canSee cache (every 2 ticks)
+	private static final long GLOW_CACHE_DURATION = 50; // 50 milliseconds for glow computation cache
+	private static final long CAN_SEE_CACHE_DURATION = 50; // 50 milliseconds for canSee cache (every tick)
 	private static final ConcurrentHashMap<Entity, CacheEntry<Boolean>> glowCache = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<Entity, CacheEntry<Boolean>> canSeeCache = new ConcurrentHashMap<>();
-	private static final RandomGenerator generator = RandomGenerator.getDefault();
 
 	public static boolean shouldMobGlow(Entity entity) {
 		CacheEntry<Boolean> cachedCanSee = canSeeCache.get(entity);
@@ -50,11 +49,12 @@ public class MobGlow {
 		} else if (cachedGlow != null && (currentTime - cachedGlow.timestamp) < GLOW_CACHE_DURATION) return false;
 
 		boolean result = computeShouldMobGlow(entity);
-		glowCache.put(entity, new CacheEntry<>(result, currentTime + generator.nextLong(50)));
+		glowCache.put(entity, new CacheEntry<>(result, currentTime));
 		if (!result) return false;
 
 		boolean canSee = MinecraftClient.getInstance().player.canSee(entity);
-		canSeeCache.put(entity, new CacheEntry<>(canSee, currentTime));
+		// If the mob can be seen, cache it for 2 ticks. It's not like it's going to get far off screen :D.
+		canSeeCache.put(entity, new CacheEntry<>(canSee, canSee ? currentTime + 50 : currentTime));
 		return canSee;
 	}
 
