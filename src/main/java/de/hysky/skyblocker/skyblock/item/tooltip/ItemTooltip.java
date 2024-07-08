@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -129,6 +130,8 @@ public class ItemTooltip {
                 LOGGER.error("Encountered unknown error while downloading tooltip data", e);
                 return null;
             });
+
+            CraftPriceTooltip.clearCache();
         }, 1200, true);
     }
 }

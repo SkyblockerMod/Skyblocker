@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerScreen;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
@@ -162,6 +163,14 @@ public class GeneralCategory {
                                         () -> config.general.itemTooltip.enableBazaarPrice,
                                         newValue -> config.general.itemTooltip.enableBazaarPrice = newValue)
                                 .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<GeneralConfig.Craft>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.craft"))
+                                .binding(defaults.general.itemTooltip.enableCraftingCost,
+                                        () -> config.general.itemTooltip.enableCraftingCost,
+                                        newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
+                                .listener((Option<GeneralConfig.Craft> ignored, GeneralConfig.Craft ignored2) -> CraftPriceTooltip.clearCache())
+                                .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemTooltip.enableObtainedDate"))
