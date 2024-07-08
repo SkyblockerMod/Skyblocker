@@ -147,7 +147,7 @@ publishMods {
 	discord {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
-		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version}\n" + it}
+		content = changelog.map { "<@&1134565945482948638>\n## ${displayName}\n" + it}
 	}
 }
 
