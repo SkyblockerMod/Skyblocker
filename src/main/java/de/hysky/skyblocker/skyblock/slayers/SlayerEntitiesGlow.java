@@ -10,6 +10,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.util.math.Box;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -102,8 +103,8 @@ public class SlayerEntitiesGlow {
         }
     }
 
-    public static void onEntityDeath(Entity entity) {
-        MOBS_TO_GLOW.remove(entity.getUuid());
+    public static void onEntityDeath(@Nullable Entity entity) {
+        if (entity != null && entity.getUuid() != null) MOBS_TO_GLOW.remove(entity.getUuid());
     }
 
     private static void clearGlow(Location location) {
