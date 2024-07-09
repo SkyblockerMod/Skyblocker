@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -34,6 +35,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	private static final Pattern CPS_INCREASE_PATTERN = Pattern.compile("\\+([\\d,]+) Chocolate per second");
 	private static final Pattern COST_PATTERN = Pattern.compile("Cost ([\\d,]+) Chocolate");
 	private static final Pattern LEVEL_PATTERN = Pattern.compile("\\[(\\d+)]");
+	private static final Pattern COACH_LEVEL_PATTERN = Pattern.compile("Coach Jackrabbit (\\w+) ");
 	private static final Pattern TOTAL_MULTIPLIER_PATTERN = Pattern.compile("Total Multiplier: ([\\d.]+)x");
 	private static final Pattern MULTIPLIER_INCREASE_PATTERN = Pattern.compile("\\+([\\d.]+)x Chocolate per second");
 	private static final Pattern CHOCOLATE_PATTERN = Pattern.compile("^([\\d,]+) Chocolate$");
@@ -182,6 +184,10 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
 	}
 
+    /**
+     * @param coachItem Represents the coach item.
+     * @return An optional containing the rabbit if the item is a coach, empty otherwise.
+     */
 	private Optional<Rabbit> getCoach(ItemStack coachItem) {
 		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
 		String coachLore = ItemUtils.getConcatenatedLore(coachItem);
@@ -199,10 +205,14 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
-		Matcher levelMatcher = LEVEL_PATTERN.matcher(coachLore);
+		Matcher levelMatcher = COACH_LEVEL_PATTERN.matcher(coachLore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
-		int level = RegexUtils.getIntFromMatcher(levelMatcher).orElse(0);
-		level--;
+		int level;
+		try {
+			level = RomanNumerals.romanToDecimal(String.valueOf(levelMatcher.find()));
+		} catch (IllegalArgumentException e) {
+			level = 0;
+		}
 		if (cost.isEmpty()) return Optional.empty();
 		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsLong(), COACH_SLOT, level));
 	}
