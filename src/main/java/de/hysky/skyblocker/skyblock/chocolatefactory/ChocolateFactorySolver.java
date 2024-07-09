@@ -33,6 +33,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	private static final Pattern CPS_PATTERN = Pattern.compile("([\\d,.]+) Chocolate per second");
 	private static final Pattern CPS_INCREASE_PATTERN = Pattern.compile("\\+([\\d,]+) Chocolate per second");
 	private static final Pattern COST_PATTERN = Pattern.compile("Cost ([\\d,]+) Chocolate");
+	private static final Pattern LEVEL_PATTERN = Pattern.compile("\\[(\\d+)]");
 	private static final Pattern TOTAL_MULTIPLIER_PATTERN = Pattern.compile("Total Multiplier: ([\\d.]+)x");
 	private static final Pattern MULTIPLIER_INCREASE_PATTERN = Pattern.compile("\\+([\\d.]+)x Chocolate per second");
 	private static final Pattern CHOCOLATE_PATTERN = Pattern.compile("^([\\d,]+) Chocolate$");
@@ -198,10 +199,16 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
+		Matcher levelMatcher = LEVEL_PATTERN.matcher(coachLore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
+		int level = RegexUtils.getIntFromMatcher(levelMatcher).orElse(0);
+		level--;
 		if (cost.isEmpty()) return Optional.empty();
+		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsLong(), COACH_SLOT, level));
+	}
 
-		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsLong(), COACH_SLOT));
+	public static List<Rabbit> getRabbits() {
+		return Collections.unmodifiableList(cpsIncreaseFactors);
 	}
 
 	private Optional<Rabbit> getRabbit(ItemStack item, int slot) {
@@ -217,8 +224,11 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
+		Matcher levelMatcher = LEVEL_PATTERN.matcher(lore);
+		int level = RegexUtils.getIntFromMatcher(levelMatcher).orElse(0);
+		level--;
 		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt()) * (totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsLong(), slot));
+		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt()) * (totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsLong(), slot, level));
 	}
 
 	private Optional<ColorHighlight> getPrestigeHighlight() {
@@ -400,5 +410,5 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		GOLDEN
 	}
 
-	private record Rabbit(double cpsIncrease, long cost, int slot) {}
+	public record Rabbit(double cpsIncrease, long cost, int slot, int level) {}
 }
