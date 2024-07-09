@@ -158,7 +158,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### User Interface Enhancements:
 - **Search overlays for bz and ah**
 - **Slot Text:**
-  - *Attribute Shard Info Display**
+  - *Attribute Shard Info Display*
   - *Catacombs level*
   - *Collection level*
   - *Enchantment book level*
@@ -170,9 +170,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - *Skill level*
   - *Skyblock level*
   - *Essence Shop*
-  - *Your Essence**
+  - *Your Essence*
   - *Power Stone Guide*
-  - *Stats Tuning**
+  - *Stats Tuning*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
