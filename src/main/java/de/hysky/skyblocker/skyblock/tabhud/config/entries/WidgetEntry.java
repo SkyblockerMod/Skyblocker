@@ -46,7 +46,7 @@ public class WidgetEntry extends WidgetsListEntry {
     public void renderTooltip(DrawContext context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
         if (mouseX >= x && mouseX <= x + entryWidth - 110 && mouseY >= y && mouseY <= y + entryHeight) {
             List<Text> lore = ItemUtils.getLore(icon);
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, state == State.LOCKED ? lore : lore.subList(0, lore.size() - 3), mouseX, mouseY);
+            context.drawTooltip(MinecraftClient.getInstance().textRenderer, state == State.LOCKED ? lore : lore.subList(0, Math.max(lore.size() - 3, 0)), mouseX, mouseY);
         }
     }
 
