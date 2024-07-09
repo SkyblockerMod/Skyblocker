@@ -31,7 +31,7 @@ public class EditableEntry extends WidgetsListEntry {
     public void renderTooltip(DrawContext context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
         if (mouseX >= x && mouseX <= x + entryWidth - 50 && mouseY >= y && mouseY <= y + entryHeight) {
             List<Text> lore = ItemUtils.getLore(icon);
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, locked ? lore : lore.subList(0, lore.size() - 2), mouseX, mouseY);
+            context.drawTooltip(MinecraftClient.getInstance().textRenderer, locked ? lore : lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
         }
     }
 

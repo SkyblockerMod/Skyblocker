@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
@@ -29,7 +28,7 @@ public class BooleanEntry extends WidgetsListEntry {
     public void renderTooltip(DrawContext context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
         if (mouseX >= x && mouseX <= x + entryWidth - 70 && mouseY >= y && mouseY <= y + entryHeight) {
             List<Text> lore = ItemUtils.getLore(icon);
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore.subList(0, lore.size() - 2), mouseX, mouseY);
+            context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
         }
     }
 
