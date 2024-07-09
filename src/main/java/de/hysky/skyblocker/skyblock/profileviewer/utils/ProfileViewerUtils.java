@@ -8,10 +8,14 @@ import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SkullCreator {
+public class ProfileViewerUtils {
+    public static final NumberFormat COMMA_FORMATTER = NumberFormat.getNumberInstance(Locale.US);
+
     public static ItemStack createSkull(String textureB64) {
         ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
         try {
@@ -23,5 +27,17 @@ public class SkullCreator {
             ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Failed to create skull", e);
         }
         return skull;
+    }
+
+    public static String numLetterFormat(double amount) {
+        if (amount >= 1_000_000_000) {
+            return String.format("%.4gB", amount / 1_000_000_000);
+        } else if (amount >= 1_000_000) {
+            return String.format("%.4gM", amount / 1_000_000);
+        } else if (amount >= 1_000) {
+            return String.format("%.4gK", amount / 1_000);
+        } else {
+            return String.valueOf((int)(amount));
+        }
     }
 }

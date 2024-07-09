@@ -3,15 +3,20 @@ package de.hysky.skyblocker.skyblock.profileviewer.slayers;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class SlayerWidget {
@@ -53,7 +58,7 @@ public class SlayerWidget {
         } catch (Exception ignored) {}
     }
 
-    public void render(DrawContext context, int x, int y) {
+    public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
         context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
         context.drawTexture(this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
         context.drawText(textRenderer, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
@@ -67,6 +72,13 @@ public class SlayerWidget {
         context.drawGuiTexture(BAR_BACK, x + 30, y + 15, 75, 6);
         Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
         RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
+
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){
+            List<Text> tooltipText = new ArrayList<>();
+            tooltipText.add(Text.literal(this.slayerName).formatted(Formatting.GREEN));
+            tooltipText.add(Text.literal("XP: " + ProfileViewerUtils.COMMA_FORMATTER.format(this.slayerLevel.xp)).formatted(Formatting.GOLD));
+            context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+        }
     }
 
     private int findTotalKills() {

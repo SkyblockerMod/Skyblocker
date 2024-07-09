@@ -12,10 +12,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.DyedColorComponent;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.datafixer.fix.ItemIdFix;
 import net.minecraft.datafixer.fix.ItemInstanceTheFlatteningFix;
 import net.minecraft.item.ItemStack;
@@ -44,9 +41,9 @@ public class ItemLoader {
             }
 
             NbtCompound nbttag = containerContent.getCompound(i).getCompound("tag");
-            String internalName = nbttag.getCompound("ExtraAttributes").getString("id");
+            NbtCompound extraAttributes = nbttag.getCompound("ExtraAttributes");
+            String internalName = extraAttributes.getString("id");
             if (internalName.equals("PET")) {
-                NbtCompound extraAttributes = nbttag .getCompound("ExtraAttributes");
                 PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(extraAttributes.getString("petInfo"))).getOrThrow();
                 Pet pet = new Pet(petInfo);
                 itemList.add(pet.getIcon());
@@ -113,6 +110,8 @@ public class ItemLoader {
 
             // Set Count
             stack.setCount(containerContent.getCompound(i).getInt("Count"));
+
+            stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(extraAttributes));
 
             itemList.add(stack);
         }

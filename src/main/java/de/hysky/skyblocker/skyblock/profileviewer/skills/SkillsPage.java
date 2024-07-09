@@ -41,7 +41,7 @@ public class SkillsPage implements ProfileViewerPage {
             int x = (i < 6) ? rootX : column2;
             int y = rootY + (i % 6) * ROW_GAP;
             context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-            skillWidgets.get(i).render(context, x, y + 3);
+            skillWidgets.get(i).render(context, mouseX, mouseY, x, y + 3);
         }
     }
 

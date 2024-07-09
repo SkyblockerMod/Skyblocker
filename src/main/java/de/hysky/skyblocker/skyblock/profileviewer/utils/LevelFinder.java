@@ -8,15 +8,20 @@ public class LevelFinder {
         public long xp;
         public int level;
         public double fill;
+        public long levelXP;
+        public long nextLevelXP;
 
         public LevelInfo(long xp, int level) {
             this.xp = xp;
             this.level = level;
         }
 
-        public LevelInfo(int level, double fill) {
+        public LevelInfo(long xp, int level, double fill, double levelXP, double nextLevelXP) {
+            this.xp = xp;
             this.level = level;
             this.fill = fill;
+            this.levelXP = (long) levelXP;
+            this.nextLevelXP = (long) nextLevelXP;
         }
     }
 
@@ -255,16 +260,20 @@ public class LevelFinder {
         for (int i = boundaries.size() - 1; i >= 0 ; i--) {
             if (xp >= boundaries.get(i).xp) {
                 double fill;
+                double xpInCurrentLevel;
+                double levelXPRange;
                 if (i < boundaries.getLast().level) {
                     double currentLevelXP = boundaries.get(i).xp;
                     double nextLevelXP = boundaries.get(i + 1).xp;
-                    double levelXPRange = nextLevelXP - currentLevelXP;
-                    double xpInCurrentLevel = xp - currentLevelXP;
+                    levelXPRange = nextLevelXP - currentLevelXP;
+                    xpInCurrentLevel = xp - currentLevelXP;
                     fill = xpInCurrentLevel / levelXPRange;
                 } else {
                     fill = 1.0;
+                    xpInCurrentLevel = xp - boundaries.getLast().xp;
+                    levelXPRange = boundaries.getLast().xp - boundaries.get(boundaries.size()-2).xp;
                 }
-                return new LevelInfo(boundaries.get(i).level, fill);
+                return new LevelInfo(xp, boundaries.get(i).level, fill, xpInCurrentLevel, levelXPRange);
             }
         }
         return new LevelInfo(0L, 0);

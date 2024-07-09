@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -36,20 +37,8 @@ public class ProfileViewerTextWidget {
 
         context.drawText(textRenderer, "§n"+PROFILE_NAME, root_x + 14, root_y + 3, Colors.WHITE, true);
         context.drawText(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, Colors.WHITE, true);
-        context.drawText(textRenderer, "§6Purse:§r " + formatCoins(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, Colors.WHITE, true);
-        context.drawText(textRenderer, "§6Bank:§r " + formatCoins(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, Colors.WHITE, true);
+        context.drawText(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, Colors.WHITE, true);
+        context.drawText(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, Colors.WHITE, true);
         context.drawText(textRenderer, "§6NW:§r " + "Soon™", root_x + 2, root_y + 6 + ROW_GAP * 4, Colors.WHITE, true );
-    }
-
-    private String formatCoins(double amount) {
-        if (amount >= 1_000_000_000) {
-            return String.format("%.4gB", amount / 1_000_000_000);
-        } else if (amount >= 1_000_000) {
-            return String.format("%.4gM", amount / 1_000_000);
-        } else if (amount >= 1_000) {
-            return String.format("%.4gK", amount / 1_000);
-        } else {
-            return String.valueOf((int)(amount));
-        }
     }
 }

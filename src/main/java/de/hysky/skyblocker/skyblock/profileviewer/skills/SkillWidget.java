@@ -2,16 +2,20 @@ package de.hysky.skyblocker.skyblock.profileviewer.skills;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.SkullCreator;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class SkillWidget {
@@ -33,7 +37,7 @@ public class SkillWidget {
             Map.entry("Alchemy", Ico.BREWING_STAND),
             Map.entry("Taming", Ico.SPAWN_EGG),
             Map.entry("Carpentry", Ico.CRAFTING_TABLE),
-            Map.entry("Catacombs", SkullCreator.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzliNTY4OTViOTY1OTg5NmFkNjQ3ZjU4NTk5MjM4YWY1MzJkNDZkYjljMWIwMzg5YjhiYmViNzA5OTlkYWIzM2QifX19")),
+            Map.entry("Catacombs", ProfileViewerUtils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzliNTY4OTViOTY1OTg5NmFkNjQ3ZjU4NTk5MjM4YWY1MzJkNDZkYjljMWIwMzg5YjhiYmViNzA5OTlkYWIzM2QifX19")),
             Map.entry("Runecraft", Ico.MAGMA_CREAM),
             Map.entry("Social", Ico.EMERALD)
     );
@@ -75,7 +79,7 @@ public class SkillWidget {
 
     }
 
-    public void render(DrawContext context, int x, int y) {
+    public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
         context.drawItem(this.stack, x + 3, y + 2);
         context.drawText(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
 
@@ -91,5 +95,12 @@ public class SkillWidget {
 
         context.drawGuiTexture(BAR_BACK, x + 30, y + 12, 75, 6);
         RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
+
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19){
+            List<Text> tooltipText = new ArrayList<>();
+            tooltipText.add(Text.literal(this.SKILL_NAME).formatted(Formatting.GREEN));
+            tooltipText.add(Text.literal("XP: " + ProfileViewerUtils.COMMA_FORMATTER.format(this.SKILL_LEVEL.xp)).formatted(Formatting.GOLD));
+            context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+        }
     }
 }

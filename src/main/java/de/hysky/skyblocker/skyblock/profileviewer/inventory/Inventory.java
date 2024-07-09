@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoader;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -8,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
@@ -16,6 +19,7 @@ import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Inventory implements ProfileViewerPage {
@@ -49,7 +53,7 @@ public class Inventory implements ProfileViewerPage {
         context.drawTexture(TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7);
         context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7);
 
-        context.drawText(textRenderer, containerName, rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
+        context.drawText(textRenderer,  I18n.translate("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
 
         if (containerList.size() > itemsPerPage) {
             previousPage.setX(rootX + 44);
@@ -65,6 +69,7 @@ public class Inventory implements ProfileViewerPage {
 
         int startIndex = activePage * itemsPerPage;
         int endIndex = Math.min(startIndex + itemsPerPage, containerList.size());
+        List<Text> tooltip = Collections.emptyList();
         for (int i = 0; i < endIndex - startIndex; i++) {
             if (containerList.get(startIndex + i) == ItemStack.EMPTY) continue;
             int column = i % dimensions.rightInt();
@@ -72,14 +77,20 @@ public class Inventory implements ProfileViewerPage {
 
             int x = rootX + 8 + column * 18;
             int y = rootYAdjusted + 18 + row * 18;
+
+            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
+                ItemRarityBackgrounds.tryDraw(containerList.get(startIndex + i), context, x, y);
+            }
+
             context.drawItem(containerList.get(startIndex + i), x, y);
             context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
 
-            if (mouseX > x && mouseX < x + 16 && mouseY > y && mouseY < y + 16) {
-                List<Text> tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
-                context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+            if (mouseX > x -1 && mouseX < x + 16 && mouseY > y - 1 && mouseY < y + 16) {
+                tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
             }
         }
+
+        if (!tooltip.isEmpty()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
     }
 
     public void nextPage() {

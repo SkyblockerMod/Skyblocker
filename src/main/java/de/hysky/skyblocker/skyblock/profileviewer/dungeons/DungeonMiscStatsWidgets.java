@@ -31,7 +31,7 @@ public class DungeonMiscStatsWidgets {
             secrets = DUNGEONS_DATA.get("secrets").getAsInt();
 
             for (String dungeon : DUNGEONS) {
-                JsonObject dungeonData = DUNGEONS_DATA.getAsJsonObject("dungeon_types").getAsJsonObject(dungeon).getAsJsonObject(dungeon.equals("catacombs") ? "times_played" : "tier_completions");
+                JsonObject dungeonData = DUNGEONS_DATA.getAsJsonObject("dungeon_types").getAsJsonObject(dungeon).getAsJsonObject("tier_completions");
                 int runs = 0;
                 for (Map.Entry<String, JsonElement> entry : dungeonData.entrySet()) {
                     String key = entry.getKey();
