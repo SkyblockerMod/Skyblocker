@@ -95,7 +95,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		if (ding != StraySound.NONE) {
 			dingTick = (++dingTick) %  (ding == StraySound.NORMAL ? 5 : 3);
 			if (dingTick == 0) {
-				client.getSoundManager().play(PositionedSoundInstance.master(ding == StraySound.NORMAL ? SoundEvents.BLOCK_NOTE_BLOCK_PLING.value() : SoundEvents.BLOCK_NOTE_BLOCK_HAT.value(), 1.f, 1.f));
+				client.getSoundManager().play(PositionedSoundInstance.master(ding == StraySound.NORMAL ? SoundEvents.BLOCK_NOTE_BLOCK_PLING.value() : SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), 1.f, 1.f));
 			}
 		}
 	}
