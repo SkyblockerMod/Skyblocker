@@ -477,6 +477,8 @@
   "skyblocker.config.mining.crystalsWaypoints.findInChat.@Tooltip": "When in crystal hollows read the chat to see if coordinates are sent and extract these to show as waypoint or on the map",
   "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "Added waypoint for ",
   "skyblocker.config.mining.crystalsWaypoints.addedWaypoint.at": "at",
+  "skyblocker.config.mining.crystalsWaypoints.noActive": "You have no active waypoints to share or remove.",
+  "skyblocker.config.mining.crystalsWaypoints.allActive": "You have no more waypoints left to create.",
   "skyblocker.config.mining.crystalsWaypoints.shareFail": "Can only share waypoints you have found.",
   "skyblocker.config.mining.crystalsWaypoints.removeSuccess": "Removed waypoint for ",
   "skyblocker.config.mining.crystalsWaypoints.removeFail": "Can only remove waypoints you have found.",

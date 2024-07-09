@@ -106,7 +106,7 @@ public class CrystalsLocationsManager {
                         return;
                     }
 
-                    CLIENT.player.sendMessage(getLocationInputText(location), false);
+                    CLIENT.player.sendMessage(getLocationMenu(location, false), false);
                 }
             }
 
@@ -138,6 +138,13 @@ public class CrystalsLocationsManager {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
                 .then(literal("crystalWaypoints")
                         .then(literal("add")
+                                .executes(context -> {
+                                    if (CLIENT.player == null) {
+                                        return 0;
+                                    }
+                                    CLIENT.player.sendMessage(getLocationMenu((int) CLIENT.player.getX() + " " + (int) CLIENT.player.getY() + " " + (int) CLIENT.player.getZ(), true), false);
+                                    return Command.SINGLE_SUCCESS;
+                                })
                                 .then(argument("pos", BlockPosArgumentType.blockPos())
                                         .then(argument("place", StringArgumentType.greedyString())
                                                 .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
@@ -145,12 +152,26 @@ public class CrystalsLocationsManager {
                                         )
                                 ))
                         .then(literal("share")
+                                .executes(context -> {
+                                    if (CLIENT.player == null) {
+                                        return 0;
+                                    }
+                                    CLIENT.player.sendMessage(getPlacesMenu("share"), false);
+                                    return Command.SINGLE_SUCCESS;
+                                })
                                 .then(argument("place", StringArgumentType.greedyString())
                                         .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
                                         .executes(context -> shareWaypoint(getString(context, "place")))
                                 )
                         )
                         .then(literal("remove")
+                                .executes(context -> {
+                                    if (CLIENT.player == null) {
+                                        return 0;
+                                    }
+                                    CLIENT.player.sendMessage(getPlacesMenu("remove"), false);
+                                    return Command.SINGLE_SUCCESS;
+                                })
                                 .then(argument("place", StringArgumentType.greedyString())
                                         .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
                                         .executes(context -> removeWaypoint(getString(context, "place")))
@@ -171,12 +192,51 @@ public class CrystalsLocationsManager {
         return text;
     }
 
-    private static Text getLocationInputText(String location) {
+    /**
+     * Creates a formated text with a list of possible places to add a waypoint for
+     *
+     * @param location       the location where the waypoint will be created
+     * @param excludeUnknown if the "Unknown" location should be available to add
+     * @return text for a message to send to the player
+     */
+    private static Text getLocationMenu(String location, boolean excludeUnknown) {
         MutableText text = Constants.PREFIX.get();
 
+        //if the user has all available waypoints active warn them instead of an empty list (excused unknown from check when disabled)
+        if (activeWaypoints.size() == WAYPOINT_LOCATIONS.size() || (excludeUnknown && WAYPOINT_LOCATIONS.size() - activeWaypoints.size() == 1 && !activeWaypoints.containsKey(MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName()))) {
+            return text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.allActive").formatted(Formatting.RED));
+        }
+
         for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
+            //do not show option to add waypoints for existing locations or unknown if its disabled
+            if (activeWaypoints.containsKey(waypointLocation) || (excludeUnknown && Objects.equals(waypointLocation, MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName()))) {
+                continue;
+            }
             int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
             text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints add " + location + " " + waypointLocation))));
+        }
+
+        return text;
+    }
+
+
+    /**
+     * Creates a formated text with a list of found places to remove / share a waypoint for
+     *
+     * @param action the action the command should perform (remove / share)
+     * @return text for a message to send to the player
+     */
+    private static Text getPlacesMenu(String action) {
+        MutableText text = Constants.PREFIX.get();
+
+        //if the user has no active warn them instead of an empty list
+        if (activeWaypoints.isEmpty()) {
+            return text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.noActive").formatted(Formatting.RED));
+        }
+
+        for (String waypointLocation : activeWaypoints.keySet()) {
+            int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
+            text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints " + action + " " + waypointLocation))));
         }
 
         return text;
@@ -240,11 +300,12 @@ public class CrystalsLocationsManager {
 
     /**
      * Removes unknown waypoint from active waypoints if it's close to a location
+     *
      * @param location center location
      */
     private static void removeUnknownNear(BlockPos location) {
         String name = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName();
-        MiningLocationLabel unknownWaypoint =  activeWaypoints.getOrDefault(name, null);
+        MiningLocationLabel unknownWaypoint = activeWaypoints.getOrDefault(name, null);
         if (unknownWaypoint != null) {
             double distance = unknownWaypoint.centerPos().distanceTo(location.toCenterPos());
             if (distance < REMOVE_UNKNOWN_DISTANCE) {
