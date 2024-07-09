@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactoryAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -14,6 +15,7 @@ import java.util.List;
 public class SlotTextManager {
 	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
 			new EssenceShopAdder(),
+			new ChocolateFactoryAdder(),
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
