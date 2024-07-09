@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
@@ -61,7 +60,6 @@ public class ContainerSolverManager {
                 new NewYearCakeBagHelper(),
                 NewYearCakesHelper.INSTANCE,
                 new ChocolateFactorySolver(),
-                new BazaarHelper(),
                 new ReorderHelper()
         };
     }

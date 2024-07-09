@@ -288,9 +288,7 @@
 
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
-  "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Highlights orders with items or coins to claim.",
-  "skyblocker.config.helpers.bazaar.highlightingScheme": "Highlighting Scheme",
-  "skyblocker.config.helpers.bazaar.highlightingScheme.@Tooltip": "Order Type: Highlight items based on whether you have coins or items to claim. Dark green when items, gold when coins.\n\nFulfillment: Highlight items based on the % of the order that is filled. Yellow for 0-99%, green at 100%.\n\n\nExpired orders are highlighted with red regardless of this setting.",
+  "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
 
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",

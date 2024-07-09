@@ -205,21 +205,12 @@ public class HelperCategory {
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                  .name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper"))
-                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip")))
+                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip", BazaarHelper.getExpiredIcon(false), BazaarHelper.getExpiredIcon(true), BazaarHelper.getFilledIcon(69), BazaarHelper.getFilledIcon(100))))
                                  .binding(defaults.helpers.bazaar.enableBazaarHelper,
 		                                 () -> config.helpers.bazaar.enableBazaarHelper,
 		                                 newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
                                  .controller(ConfigUtils::createBooleanController)
                                  .build())
-		                .option(Option.<BazaarHelper.HighlightingScheme>createBuilder()
-				                .name(Text.translatable("skyblocker.config.helpers.bazaar.highlightingScheme"))
-				                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.highlightingScheme.@Tooltip")))
-				                .binding(defaults.helpers.bazaar.highlightingScheme,
-					                () -> config.helpers.bazaar.highlightingScheme,
-					                newValue -> config.helpers.bazaar.highlightingScheme = newValue)
-				                .controller(ConfigUtils::createEnumCyclingListController)
-				                .build()
-		                )
 		                .build())
 
                 .build();

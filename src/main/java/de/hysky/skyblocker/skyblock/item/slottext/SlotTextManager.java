@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -30,6 +31,7 @@ public class SlotTextManager {
 			new CommunityShopAdder(),
 			new YourEssenceAdder(),
 			new PowerStonesGuideAdder(),
+			new BazaarHelper(),
 			new StatsTuningAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
