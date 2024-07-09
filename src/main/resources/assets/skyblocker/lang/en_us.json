@@ -228,7 +228,6 @@
   "skyblocker.config.general.itemTooltip.avg.BOTH": "Both",
   "skyblocker.config.general.itemTooltip.avg.ONE_DAY": "1 day price",
   "skyblocker.config.general.itemTooltip.avg.THREE_DAY": "3 day price",
-  "skyblocker.config.general.itemTooltip.avg": "Average Type",
   "skyblocker.config.general.itemTooltip.dungeonQuality": "Dungeon Quality",
   "skyblocker.config.general.itemTooltip.dungeonQuality.@Tooltip": "Displays quality and tier of dungeon drops from mobs.\n\n\nReminder:\nTier 1-3 dropped from F1-F3\nTier 4-7 dropped from F4-F7 or M1-M4\nTier 8-10 are dropped only from M5-M7",
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Enable Accessories Helper",
@@ -295,6 +294,8 @@
   "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Sends a message in chat when your Time Tower deactivates.",
   "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages": "Send Egg Found Messages",
   "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip": "Sends a message in chat when an egg is found in the current island.",
+  "skyblocker.config.helpers.chocolateFactory.straySound": "Stray Rabbit Sound",
+  "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Repeatedly plays a ding while a stray rabbit is present. If it is golden, the sound will be more frequent and different.",
   "skyblocker.config.helpers.chocolateFactory.waypointType": "Egg Waypoint Type",
   "skyblocker.config.helpers.chocolateFactory.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
 

@@ -53,7 +53,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static boolean isTimeTowerActive = false;
 	private static int bestUpgrade = -1;
 	private static int bestAffordableUpgrade = -1;
-	private static StrayDing ding = StrayDing.NONE;
+	private static StraySound ding = StraySound.NONE;
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
 	@Override
@@ -70,7 +70,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		isTimeTowerActive = false;
 		bestUpgrade = -1;
 		bestAffordableUpgrade = -1;
-		ding = StrayDing.NONE;
+		ding = StraySound.NONE;
 	}
 
 	//Slots, for ease of maintenance rather than using magic numbers everywhere.
@@ -92,10 +92,10 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static void onTick(MinecraftClient client) {
-		if (ding != StrayDing.NONE) {
-			dingTick = (++dingTick) %  (ding == StrayDing.NORMAL ? 5 : 3);
+		if (ding != StraySound.NONE) {
+			dingTick = (++dingTick) %  (ding == StraySound.NORMAL ? 5 : 3);
 			if (dingTick == 0) {
-				client.getSoundManager().play(PositionedSoundInstance.master(ding == StrayDing.NORMAL ? SoundEvents.BLOCK_NOTE_BLOCK_PLING.value() : SoundEvents.BLOCK_NOTE_BLOCK_HAT.value(), 1.f, 1.f));
+				client.getSoundManager().play(PositionedSoundInstance.master(ding == StraySound.NORMAL ? SoundEvents.BLOCK_NOTE_BLOCK_PLING.value() : SoundEvents.BLOCK_NOTE_BLOCK_HAT.value(), 1.f, 1.f));
 			}
 		}
 	}
@@ -257,14 +257,14 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static List<ColorHighlight> getStrayRabbitHighlight(Int2ObjectMap<ItemStack> slots) {
-		ding = StrayDing.NONE;
+		ding = StraySound.NONE;
 		final List<ColorHighlight> highlights = new ArrayList<>();
 		for (byte i = STRAY_RABBIT_START; i <= STRAY_RABBIT_END; i++) {
 			ItemStack item = slots.get(i);
 			if (!item.isOf(Items.PLAYER_HEAD)) continue;
 			String name = item.getName().getString();
 			if (name.equals("CLICK ME!") || name.startsWith("Golden Rabbit - ")) {
-				ding = name.contains("Golden") ? StrayDing.GOLDEN : StrayDing.NORMAL;
+				if (SkyblockerConfigManager.get().helpers.chocolateFactory.straySound) ding = name.startsWith("Golden") ? StraySound.GOLDEN : StraySound.NORMAL;
 				highlights.add(ColorHighlight.green(i));
 			}
 		}
@@ -273,7 +273,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private record Rabbit(double cpsIncrease, long cost, int slot) { }
 
-	private enum StrayDing {
+	private enum StraySound {
 		NONE,
 		NORMAL,
 		GOLDEN
