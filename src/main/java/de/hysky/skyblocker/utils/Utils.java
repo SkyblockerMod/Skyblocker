@@ -427,7 +427,7 @@ public class Utils {
                 SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
             }
 
-            case ErrorS2CPacket(var id, var error) when id == LocationUpdateS2CPacket.ID -> {
+            case ErrorS2CPacket(var id, var error) when id.equals(LocationUpdateS2CPacket.ID) -> {
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
                 if (player != null) {
