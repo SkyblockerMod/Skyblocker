@@ -6,21 +6,27 @@ import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.azureaaron.hmapi.data.server.Environment;
+import net.azureaaron.hmapi.events.HypixelPacketEvents;
+import net.azureaaron.hmapi.network.HypixelNetworking;
+import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket;
+import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket;
+import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
+import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
+
 import org.apache.http.client.HttpResponseException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -45,7 +51,7 @@ public class Utils {
     private static boolean isOnSkyblock = false;
     private static boolean isInjected = false;
     /**
-     * Current Skyblock location (from /locraw)
+     * Current Skyblock location (from the Mod API)
      */
     @NotNull
     private static Location location = Location.UNKNOWN;
@@ -60,9 +66,11 @@ public class Utils {
     @NotNull
     private static String profileId = "";
     /**
-     * The following fields store data returned from /locraw: {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
     @SuppressWarnings("JavadocDeclaration")
+    @NotNull
+    private static Environment environment = Environment.PRODUCTION;
     @NotNull
     private static String server = "";
     @NotNull
@@ -71,11 +79,6 @@ public class Utils {
     private static String locationRaw = "";
     @NotNull
     private static String map = "";
-    private static long clientWorldJoinTime = 0;
-    private static boolean sentLocRaw = false;
-    private static boolean canSendLocRaw = false;
-    //This is required to prevent the location change event from being fired twice.
-    private static boolean locationChanged = true;
     private static boolean mayorTickScheduled = false;
     private static int mayorTickRetryAttempts = 0;
     private static String mayor = "";
@@ -146,7 +149,7 @@ public class Utils {
     }
 
     /**
-     * @return the location parsed from /locraw.
+     * @return the location parsed from the Mod API.
      */
     @NotNull
     public static Location getLocation() {
@@ -154,7 +157,17 @@ public class Utils {
     }
 
     /**
-     * @return the server parsed from /locraw.
+     * Can be used to restrict features to being active only on the Alpha network.
+     * 
+     * @return the current environment parsed from the Mod API.
+     */
+    @NotNull
+    public static Environment getEnvironment() {
+        return environment;
+    }
+
+    /**
+     * @return the server parsed from the Mod API.
      */
     @NotNull
     public static String getServer() {
@@ -162,7 +175,7 @@ public class Utils {
     }
 
     /**
-     * @return the game type parsed from /locraw.
+     * @return the game type parsed from the Mod API.
      */
     @NotNull
     public static String getGameType() {
@@ -170,7 +183,7 @@ public class Utils {
     }
 
     /**
-     * @return the location raw parsed from /locraw.
+     * @return the location raw parsed from the the Mod API.
      */
     @NotNull
     public static String getLocationRaw() {
@@ -178,7 +191,7 @@ public class Utils {
     }
 
     /**
-     * @return the map parsed from /locraw.
+     * @return the map parsed from the Mod API.
      */
     @NotNull
     public static String getMap() {
@@ -201,20 +214,23 @@ public class Utils {
                 mayorTickScheduled = true;
             }
         });
-        ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
+
+        //Register Mod API stuff
+        HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
+        HypixelPacketEvents.HELLO.register(Utils::onPacket);
+        HypixelPacketEvents.LOCATION_UPDATE.register(Utils::onPacket);
     }
 
     /**
-     * Updates all the fields stored in this class from the sidebar, player list, and /locraw.
+     * Updates all the fields stored in this class from the sidebar, and player list.
      */
     public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
         updateScoreboard(client);
         updatePlayerPresenceFromScoreboard(client);
         updateFromPlayerList(client);
-        updateLocRaw();
     }
 
     /**
@@ -244,7 +260,7 @@ public class Utils {
                     if (!isInjected) {
                         isInjected = true;
                     }
-                    isOnSkyblock = true;
+                    isOnSkyblock = true; //TODO in the future we can probably replace these skyblock checks entirely with the Mod API
                     SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 }
             } else {
@@ -260,7 +276,7 @@ public class Utils {
         String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
         String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
 
-        return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
+        return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
     }
 
     private static void onLeaveSkyblock() {
@@ -395,25 +411,33 @@ public class Utils {
         }
     }
 
-    public static void onClientWorldJoin(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
-        clientWorldJoinTime = System.currentTimeMillis();
-        resetLocRawInfo();
-    }
-
-    /**
-     * Sends /locraw to the server if the player is on skyblock and on a new island.
-     */
-    private static void updateLocRaw() {
-        if (isOnSkyblock) {
-            long currentTime = System.currentTimeMillis();
-            if (!sentLocRaw && canSendLocRaw && currentTime > clientWorldJoinTime + 1000) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/locraw");
-                sentLocRaw = true;
-                canSendLocRaw = false;
-                locationChanged = true;
+    private static void onPacket(HypixelS2CPacket packet) {
+        switch (packet) {
+            case HelloS2CPacket(var environment) -> {
+                Utils.environment = environment;
             }
-        } else {
-            resetLocRawInfo();
+
+            case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var map) -> {
+                Utils.server = serverName;
+                Utils.gameType = serverType.orElse("");
+                Utils.locationRaw = mode.orElse("");
+                Utils.location = Location.from(locationRaw);
+                Utils.map = map.orElse("");
+
+                SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
+            }
+
+            case ErrorS2CPacket(var id, var error) when id == LocationUpdateS2CPacket.ID -> {
+                ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+                if (player != null) {
+                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.utils.locationUpdateError").formatted(Formatting.RED)));
+                }
+
+                LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
+            }
+
+            default -> {} //Do Nothing
         }
     }
 
@@ -423,6 +447,7 @@ public class Utils {
      *
      * @param message json message from chat
      */
+    @Deprecated
     private static void parseLocRaw(String message) {
         JsonObject locRaw = JsonParser.parseString(message).getAsJsonObject();
 
@@ -441,11 +466,6 @@ public class Utils {
         if (locRaw.has("map")) {
             map = locRaw.get("map").getAsString();
         }
-
-        if (locationChanged) {
-            SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
-            locationChanged = false;
-        }
     }
 
     /**
@@ -458,10 +478,6 @@ public class Utils {
 
         if (message.startsWith("{\"server\":") && message.endsWith("}")) {
             parseLocRaw(message);
-            boolean shouldFilter = !sentLocRaw;
-            sentLocRaw = false;
-
-            return shouldFilter;
         }
 
         if (isOnSkyblock) {
@@ -479,16 +495,6 @@ public class Utils {
         }
 
         return true;
-    }
-
-    private static void resetLocRawInfo() {
-        sentLocRaw = false;
-        canSendLocRaw = true;
-        server = "";
-        gameType = "";
-        locationRaw = "";
-        map = "";
-        location = Location.UNKNOWN;
     }
 
     private static void scheduleMayorTick() {
