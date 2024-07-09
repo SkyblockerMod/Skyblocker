@@ -23,7 +23,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Secrets Waypoint Highlight:** Fully customizable
 - **Minimap & Score**
 - **Starred Mob Glow**
-- **Croesus Helper**
+- **Croesus Helper:**
   - Highlight not opened chests
   - Profit calculator
 - **Puzzle Solver:**
@@ -55,8 +55,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Block Incorrect Terminal Clicks**
 - **Hide Soulweaver Skulls**
 
-### Kuudra Features
-- **Kuudra waypoints**
+### Kuudra Features:
+- **Kuudra waypoints:**
   - *Supplies*
   - *Supply Piles*
   - *Fuel Cells*
@@ -83,18 +83,18 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Dwarven Mines Solver:**
   - Fetchur
   - Puzzler
-- **Crystal Hollows**
-  - Crystal Hollows Map
+- **Crystal Hollows:**
+  - Crystal Hollows Map:
     - *Shows players location in Crystal Hollows*
     - *Highlights important waypoints in Crystal Hollows*
-  - Crystal Hollows Waypoints
+  - Crystal Hollows Waypoints:
     - *Shows waypoints for special locations*
     - *Find locations in chat messages*
     - *Share waypoints*
   - Metal detector helper
-- **Glacite Tunnels**
-  - **Cold Overlay**
-- **Commission HUD**
+- **Glacite Tunnels:**
+  - *Cold Overlay*
+- **Commission HUD:**
   - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
 - **Ordered Waypoints**
@@ -119,7 +119,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Nukekubi Head Highlighting
 
 ### Garden Features:
-- **Farming HUD**
+- **Farming HUD:**
   - Counter
   - Crops/min
   - Coins/h
@@ -127,7 +127,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
   - Farming Level
   - Farming XP/h
   - Yaw and Pitch
-- **Visitor Helper**
+- **Visitor Helper:**
   - Buy items that visitors require from bazaar by clicking the text
   - Copy amount to clipboard
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
@@ -141,38 +141,38 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Hide Status Effect Overlay**
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
-- **Item Rarity Backgrounds**
+- **Item Rarity Backgrounds:**
   - Circle or Square
 - **Item Cooldown Display**
 - **Configure Fire-Overlay Height**
-- **End HUD Widget**
-  - Zealots
+- **End HUD Widget:**
+  - Zealots:
     - *Since last eye*
     - *Total zealots kills*
     - *Avg kills per eye*
-  - Endstone Protector
+  - Endstone Protector:
     - *stage*
     - *Location*
 - **Ender Nodes Helper**
 
 ### User Interface Enhancements:
 - **Search overlays for bz and ah**
-- **Slot Text**
-  - **Attribute Shard Info Display**
-  - **Catacombs level**
-  - **Collection level**
-  - **Enchantment book level**
-  - **Minion level**
-  - **Pet level**
-  - **Potion level**
-  - **Prehistoric egg blocks walked**
-  - **Rancher's boots speed cap**
-  - **Skill level**
-  - **Skyblock level**
-  - **Essence Shop**
-  - **Your Essence**
-  - **Power Stone Guide**
-  - **Stats Tuning**
+- **Slot Text:**
+  - *Attribute Shard Info Display*
+  - *Catacombs level*
+  - *Collection level*
+  - *Enchantment book level*
+  - *Minion level*
+  - *Pet level*
+  - *Potion level*
+  - *Prehistoric egg blocks walked*
+  - *Rancher's boots speed cap*
+  - *Skill level*
+  - *Skyblock level*
+  - *Essence Shop*
+  - *Your Essence*
+  - *Power Stone Guide*
+  - *Stats Tuning*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
