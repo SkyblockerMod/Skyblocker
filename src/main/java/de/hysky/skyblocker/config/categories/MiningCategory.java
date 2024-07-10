@@ -169,9 +169,9 @@ public class MiningCategory {
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.@Tooltip")))
-                                .binding(defaults.mining.crystalsWaypoints.WishingCompassSolver,
-                                        () -> config.mining.crystalsWaypoints.WishingCompassSolver,
-                                        newValue -> config.mining.crystalsWaypoints.WishingCompassSolver = newValue)
+                                .binding(defaults.mining.crystalsWaypoints.wishingCompassSolver,
+                                        () -> config.mining.crystalsWaypoints.wishingCompassSolver,
+                                        newValue -> config.mining.crystalsWaypoints.wishingCompassSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
 

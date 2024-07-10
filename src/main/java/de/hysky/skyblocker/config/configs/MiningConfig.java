@@ -94,7 +94,7 @@ public class MiningConfig {
         public boolean findInChat = true;
 
         @SerialEntry
-        public boolean WishingCompassSolver = true;
+        public boolean wishingCompassSolver = true;
     }
 
     public static class CommissionWaypoints {

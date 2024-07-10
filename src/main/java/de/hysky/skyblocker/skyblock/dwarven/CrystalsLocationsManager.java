@@ -63,10 +63,11 @@ public class CrystalsLocationsManager {
     }
 
     private static void extractLocationFromMessage(Text message, Boolean overlay) {
-        String text = Formatting.strip(message.getString());
-        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay || text == null) {
+
+        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay) {
             return;
         }
+        String text = Formatting.strip(message.getString());
         try {
             //make sure that it is only reading user messages and not from skyblocker
             if (text.contains(":") && !text.startsWith(Constants.PREFIX.get().getString())) {

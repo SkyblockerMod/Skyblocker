@@ -98,6 +98,9 @@ public class WishingCompassSolver {
      * @param b overlay
      */
     private static void failMessageListener(Text text, boolean b) {
+        if (!Utils.isInCrystalHollows()){
+            return;
+        }
         if (Formatting.strip(text.getString()).equals("The Wishing Compass can't seem to locate anything!")) {
             currentState = SolverStates.NOT_STARTED;
         }
@@ -303,7 +306,7 @@ public class WishingCompassSolver {
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
-        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.WishingCompassSolver || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
             return ActionResult.PASS;
         }
         if (useCompass()) {
@@ -319,7 +322,7 @@ public class WishingCompassSolver {
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
-        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.WishingCompassSolver || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !Objects.equals(stack.getSkyblockId(), "WISHING_COMPASS")) {
             return TypedActionResult.pass(stack);
         }
         if (useCompass()) {
