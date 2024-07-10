@@ -54,8 +54,8 @@ public class CrystalsHud {
      * Renders the map to the players UI. renders the background image ({@link CrystalsHud#MAP_TEXTURE}) of the map then if enabled special locations on the map. then finally the player to the map.
      *
      * @param context DrawContext to draw map to
-     * @param hudX Top left X coordinate of the map
-     * @param hudY Top left Y coordinate of the map
+     * @param hudX    Top left X coordinate of the map
+     * @param hudY    Top left Y coordinate of the map
      */
     private static void render(DrawContext context, int hudX, int hudY) {
         float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
@@ -72,7 +72,7 @@ public class CrystalsHud {
 
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
-            Map<String,MiningLocationLabel> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
+            Map<String, MiningLocationLabel> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
 
             for (MiningLocationLabel waypoint : ActiveWaypoints.values()) {
                 int waypointColor = waypoint.category().getColor();
@@ -92,7 +92,6 @@ public class CrystalsHud {
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
             return;
         }
-        
         //get player location
         double playerX = CLIENT.player.getX();
         double playerZ = CLIENT.player.getZ();
@@ -144,7 +143,6 @@ public class CrystalsHud {
 
     /**
      * Works out if the crystals map should be rendered and sets {@link CrystalsHud#visible} accordingly.
-     *
      */
     public static void update() {
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) {
