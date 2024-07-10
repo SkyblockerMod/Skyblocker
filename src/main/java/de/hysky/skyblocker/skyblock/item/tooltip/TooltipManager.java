@@ -4,12 +4,12 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -53,14 +53,12 @@ public class TooltipManager {
 			}
 		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if (screen instanceof HandledScreen<?> handledScreen) {
-				onScreenChange(handledScreen);
-			}
+			onScreenChange(screen);
 			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 		});
 	}
 
-	private static void onScreenChange(HandledScreen<?> screen) {
+	private static void onScreenChange(Screen screen) {
 		currentScreenAdders.clear();
 		for (TooltipAdder adder : adders) {
 			if (adder.isEnabled() && adder.test(screen)) {

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.skyblock.ChestValue;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.Screen;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ public abstract class RegexContainerMatcher implements ContainerMatcher {
 	public String[] groups = null;
 
 	@Override
-	public boolean test(@NotNull HandledScreen<?> screen) {
+	public boolean test(@NotNull Screen screen) {
 		return test(screen.getTitle().getString());
 	}
 
