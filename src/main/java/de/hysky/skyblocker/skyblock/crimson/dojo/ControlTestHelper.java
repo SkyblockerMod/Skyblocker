@@ -67,7 +67,7 @@ public class ControlTestHelper {
             float tickDelta = context.tickCounter().getTickDelta(false);
             //how long until net update
             double updatePercent = (double) (System.currentTimeMillis() - lastUpdate) / 150;
-            Vec3d aimPos = correctWitherSkeleton.getEyePos().add(pingOffset.multiply(updatePercent)).add(lastPingOffset.multiply(1 - updatePercent));
+            Vec3d aimPos = correctWitherSkeleton.getCameraPosVec(tickDelta).add(pingOffset.multiply(updatePercent)).add(lastPingOffset.multiply(1 - updatePercent));
             Box targetBox = new Box(aimPos.add(-0.5, -0.5, -0.5), aimPos.add(0.5, 0.5, 0.5));
             boolean playerLookingAtBox = targetBox.raycast(CLIENT.player.getCameraPosVec(tickDelta), CLIENT.player.getCameraPosVec(tickDelta).add(CLIENT.player.getRotationVec(tickDelta).multiply(30))).isPresent();
             float[] boxColor = playerLookingAtBox ? Color.GREEN.getColorComponents(new float[]{0, 0, 0}) : Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0});
