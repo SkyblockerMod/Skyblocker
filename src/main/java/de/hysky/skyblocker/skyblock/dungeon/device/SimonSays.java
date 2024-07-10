@@ -9,8 +9,8 @@ import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -39,7 +39,7 @@ public class SimonSays {
 	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.LIME);
 	private static final float[] YELLOW = ColorUtils.getFloatComponents(DyeColor.YELLOW);
 	private static final ObjectSet<BlockPos> CLICKED_BUTTONS = new ObjectOpenHashSet<>();
-	private static final Int2ObjectRBTreeMap<BlockPos> SIMON_PATTERN = new Int2ObjectRBTreeMap<>();
+	private static final ObjectList<BlockPos> SIMON_PATTERN = new ObjectArrayList<>();
 
 	public static void init() {
 		UseBlockCallback.EVENT.register(SimonSays::onBlockInteract);
@@ -76,9 +76,7 @@ public class SimonSays {
 			Block block = state.getBlock();
 
 			if (BOARD_AREA.contains(posVec) && block.equals(Blocks.SEA_LANTERN)) {
-				int nextIndex = SIMON_PATTERN.size() + 1;
-
-				SIMON_PATTERN.put(nextIndex, new BlockPos(pos)); //Copy it because it can be mutable in chunk delta updates
+				SIMON_PATTERN.add(pos);
 			} else if (BUTTONS_AREA.contains(posVec) && block.equals(Blocks.AIR)) {
 				//Upon reaching the showing of the next sequence we need to reset the state so that we don't show old data
 				//Otherwise, the nextIndex will go beyond 5 and that can cause bugs, it also helps with the other case noted above
@@ -91,10 +89,9 @@ public class SimonSays {
 		if (shouldProcess()) {
 			int buttonsRendered = 0;
 
-			//Tree maps iterate in natural order of key - so it goes from the lowest to the highest int :)
-			for (Int2ObjectMap.Entry<BlockPos> entry : SIMON_PATTERN.int2ObjectEntrySet()) {
+			for (BlockPos pos : SIMON_PATTERN) {
 				//Offset to west (x - 1) to get the position of the button from the sea lantern block
-				BlockPos buttonPos = entry.getValue().west();
+				BlockPos buttonPos = pos.west();
 				ClientWorld world = Objects.requireNonNull(MinecraftClient.getInstance().world); //Should never be null here
 				BlockState state = world.getBlockState(buttonPos);
 

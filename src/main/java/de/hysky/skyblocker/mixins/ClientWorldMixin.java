@@ -18,13 +18,13 @@ public class ClientWorldMixin {
 
 	/**
 	 * @implNote The {@code pos} can be mutable when this is called by chunk delta updates, so if you want to copy it into memory
-	 * (e.g. store it in a field/list/map) make sure to duplicate it via {@link BlockPos#BlockPos(net.minecraft.util.math.Vec3i)}.
+	 * (e.g. store it in a field/list/map) make sure to duplicate it via {@link BlockPos#toImmutable()}.
 	 */
     @Inject(method = "handleBlockUpdate", at = @At("RETURN"))
     private void skyblocker$handleBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state) {
         if (Utils.isInCrimson()) {
             DojoManager.onBlockUpdate(pos.toImmutable(), state);
-            SimonSays.onBlockUpdate(pos, state);
+            SimonSays.onBlockUpdate(pos.toImmutable(), state);
         }
     }
 }
