@@ -196,6 +196,14 @@ public class HelperCategory {
                                         newValue -> config.helpers.chocolateFactory.enableTimeTowerReminder = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.chocolateFactory.straySound"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip")))
+                                .binding(defaults.helpers.chocolateFactory.straySound,
+                                        () -> config.helpers.chocolateFactory.straySound,
+                                        newValue -> config.helpers.chocolateFactory.straySound = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 .build();

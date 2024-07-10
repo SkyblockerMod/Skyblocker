@@ -90,5 +90,8 @@ public class HelperConfig {
 
         @SerialEntry
         public boolean enableTimeTowerReminder = true;
+
+        @SerialEntry
+        public boolean straySound = true;
     }
 }
