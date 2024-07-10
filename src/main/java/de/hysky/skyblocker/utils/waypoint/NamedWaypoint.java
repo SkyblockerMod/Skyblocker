@@ -6,11 +6,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Objects;
@@ -32,7 +34,7 @@ public class NamedWaypoint extends Waypoint {
             Codec.INT.fieldOf("y").forGetter(waypoint -> waypoint.pos.getY()),
             Codec.INT.fieldOf("z").forGetter(waypoint -> waypoint.pos.getZ()),
             Codec.either(Codec.STRING, Codec.INT).xmap(either -> either.map(str -> str, Object::toString), Either::left).fieldOf("name").forGetter(waypoint -> waypoint.name.getString()),
-            Codec.INT.fieldOf("color").forGetter(waypoint -> (int) (waypoint.alpha * 255) << 24 | (int) (waypoint.colorComponents[0] * 255) << 16 | (int) (waypoint.colorComponents[1] * 255) << 8 | (int) (waypoint.colorComponents[2] * 255)),
+            Codec.INT.optionalFieldOf("color", ColorHelper.Argb.getArgb(128, 0, 255, 0)).forGetter(waypoint -> (int) (waypoint.alpha * 255) << 24 | (int) (waypoint.colorComponents[0] * 255) << 16 | (int) (waypoint.colorComponents[1] * 255) << 8 | (int) (waypoint.colorComponents[2] * 255)),
             Codec.BOOL.fieldOf("enabled").forGetter(Waypoint::shouldRender)
     ).apply(instance, NamedWaypoint::fromSkytils));
     public final Text name;
@@ -69,7 +71,7 @@ public class NamedWaypoint extends Waypoint {
         if (alpha == 0) {
             alpha = DEFAULT_HIGHLIGHT_ALPHA;
         }
-        return new NamedWaypoint(new BlockPos(x, y, z), name, new float[]{((color & 0x00FF0000) >> 16) / 255f, ((color & 0x0000FF00) >> 8) / 255f, (color & 0x000000FF) / 255f}, alpha, enabled);
+        return new NamedWaypoint(new BlockPos(x, y, z), name, ColorUtils.getFloatComponents(color), alpha, enabled);
     }
 
     public NamedWaypoint copy() {

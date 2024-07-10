@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.WaypointCategory;
@@ -21,11 +22,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -33,6 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.zip.GZIPInputStream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -62,37 +67,42 @@ public class Waypoints {
         }
     }
 
-    public static List<WaypointCategory> fromSkytilsBase64(String base64, String defaultIsland) {
+    public static List<WaypointCategory> fromSkytils(String waypointsString, String defaultIsland) {
         try {
-            if (base64.startsWith("<Skytils-Waypoint-Data>(V")) {
-                int version = Integer.parseInt(base64.substring(26, base64.indexOf(')')));
+            if (waypointsString.startsWith("<Skytils-Waypoint-Data>(V")) {
+                int version = Integer.parseInt(waypointsString.substring(25, waypointsString.indexOf(')')));
+                waypointsString = waypointsString.substring(waypointsString.indexOf(':') + 1);
                 if (version == 1) {
-                    return fromSkytilsJson(new String(Base64.getDecoder().decode(base64.substring(base64.indexOf(':') + 1))), defaultIsland);
+                    try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString)))) {
+                        return fromSkytilsJson(IOUtils.toString(reader, StandardCharsets.UTF_8), defaultIsland);
+                    }
                 } else {
-                    LOGGER.error("[Skyblocker Waypoints] Unknown Skytils waypoint data version: " + version);
+                    LOGGER.error("[Skyblocker Waypoints] Unknown Skytils waypoint data version: {}", version);
                 }
-            } else return fromSkytilsJson(new String(Base64.getDecoder().decode(base64)), defaultIsland);
+            } else return fromSkytilsJson(new String(Base64.getDecoder().decode(waypointsString)), defaultIsland);
         } catch (NumberFormatException e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skytils waypoint data version", e);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while decoding Skytils waypoint data", e);
         }
         return Collections.emptyList();
     }
 
-    public static List<WaypointCategory> fromSkytilsJson(String waypointCategories, String defaultIsland) {
+    public static List<WaypointCategory> fromSkytilsJson(String waypointCategoriesString, String defaultIsland) {
         JsonArray waypointCategoriesJson;
         try {
-            waypointCategoriesJson = SkyblockerMod.GSON.fromJson(waypointCategories, JsonObject.class).getAsJsonArray("categories");
+            waypointCategoriesJson = SkyblockerMod.GSON.fromJson(waypointCategoriesString, JsonObject.class).getAsJsonArray("categories");
         } catch (JsonSyntaxException e) {
+            // Handle the case where there is only a single json list of waypoints and no category data.
             JsonObject waypointCategoryJson = new JsonObject();
             waypointCategoryJson.addProperty("name", "New Category");
             waypointCategoryJson.addProperty("island", defaultIsland);
-            waypointCategoryJson.add("waypoints", SkyblockerMod.GSON.fromJson(waypointCategories, JsonArray.class));
+            waypointCategoryJson.add("waypoints", SkyblockerMod.GSON.fromJson(waypointCategoriesString, JsonArray.class));
             waypointCategoriesJson = new JsonArray();
             waypointCategoriesJson.add(waypointCategoryJson);
         }
-        return SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointCategoriesJson).resultOrPartial(LOGGER::error).orElseThrow();
+        List<WaypointCategory> waypointCategories = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointCategoriesJson).resultOrPartial(LOGGER::error).orElseThrow();
+        return waypointCategories.stream().map(waypointCategory -> Location.from(waypointCategory.island()) == Location.UNKNOWN ? waypointCategory.withIsland(defaultIsland) : waypointCategory).toList();
     }
 
     public static String toSkytilsBase64(List<WaypointCategory> waypointCategories) {
