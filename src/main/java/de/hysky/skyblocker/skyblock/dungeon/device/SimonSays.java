@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Boxes;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -35,8 +36,8 @@ public class SimonSays {
 	private static final Box BOARD_AREA = Box.enclosing(new BlockPos(111, 123, 92), new BlockPos(111, 120, 95));
 	private static final Box BUTTONS_AREA = Box.enclosing(new BlockPos(110, 123, 92), new BlockPos(110, 120, 95));
 	private static final BlockPos START_BUTTON = new BlockPos(110, 121, 91);
-	private static final float[] GREEN = DyeColor.LIME.getColorComponents();
-	private static final float[] YELLOW = DyeColor.YELLOW.getColorComponents();
+	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.LIME);
+	private static final float[] YELLOW = ColorUtils.getFloatComponents(DyeColor.YELLOW);
 	private static final ObjectSet<BlockPos> CLICKED_BUTTONS = new ObjectOpenHashSet<>();
 	private static final Int2ObjectRBTreeMap<BlockPos> SIMON_PATTERN = new Int2ObjectRBTreeMap<>();
 
