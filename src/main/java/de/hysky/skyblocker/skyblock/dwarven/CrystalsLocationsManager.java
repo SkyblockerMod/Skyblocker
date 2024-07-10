@@ -97,7 +97,10 @@ public class CrystalsLocationsManager {
                     for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
                         if (Arrays.stream(waypointLocation.toLowerCase().split(" ")).anyMatch(word -> userMessage.toLowerCase().contains(word))) { //check if contains a word of location
                             //all data found to create waypoint
-                            addCustomWaypoint(waypointLocation, blockPos);
+                            //make sure the waypoint does not already exist in active waypoints, so waypoints can not get randomly moved
+                            if (!activeWaypoints.containsKey(waypointLocation)){
+                                addCustomWaypoint(waypointLocation, blockPos);
+                            }
                             return;
                         }
                     }
