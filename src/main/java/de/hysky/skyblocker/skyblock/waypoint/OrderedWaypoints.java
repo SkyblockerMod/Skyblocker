@@ -15,6 +15,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.CustomArmorDyeColors;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.ClientBlockPosArgumentType;
+import de.hysky.skyblocker.utils.command.argumenttypes.ClientPosArgument;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -30,9 +32,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.PosArgument;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -87,24 +86,24 @@ public class OrderedWaypoints {
 								.then(literal("add")
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
-												.then(argument("pos", BlockPosArgumentType.blockPos())
-														.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", PosArgument.class), Integer.MIN_VALUE, null))
+												.then(argument("pos", ClientBlockPosArgumentType.blockPos())
+														.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), Integer.MIN_VALUE, null))
 														.then(argument("hex", word())
-																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", PosArgument.class), Integer.MIN_VALUE, getString(context, "hex")))))))
+																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), Integer.MIN_VALUE, getString(context, "hex")))))))
 								.then(literal("addAt")
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
 												.then(argument("index", IntegerArgumentType.integer(0))
-														.then(argument("pos", BlockPosArgumentType.blockPos())
-																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", PosArgument.class), IntegerArgumentType.getInteger(context, "index"), null))
+														.then(argument("pos", ClientBlockPosArgumentType.blockPos())
+																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), IntegerArgumentType.getInteger(context, "index"), null))
 																.then(argument("hex", word())
-																		.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", PosArgument.class), IntegerArgumentType.getInteger(context, "index"), getString(context, "hex"))))))))
+																		.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), IntegerArgumentType.getInteger(context, "index"), getString(context, "hex"))))))))
 								.then(literal("remove")
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
 												.executes(context -> removeWaypointGroup(context.getSource(), getString(context, "groupName")))
-												.then(argument("pos", BlockPosArgumentType.blockPos())
-														.executes(context -> removeWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", PosArgument.class), Integer.MIN_VALUE)))))
+												.then(argument("pos", ClientBlockPosArgumentType.blockPos())
+														.executes(context -> removeWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), Integer.MIN_VALUE)))))
 								.then(literal("removeAt")
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
@@ -126,8 +125,8 @@ public class OrderedWaypoints {
 										.executes(context -> export(context.getSource()))))));
 	}
 
-	private static int addWaypoint(FabricClientCommandSource source, String groupName, PosArgument posArgument, int index, String hex) {
-		BlockPos pos = posArgument.toAbsoluteBlockPos(new ServerCommandSource(null, source.getPosition(), source.getRotation(), null, 0, null, null, null, null));
+	private static int addWaypoint(FabricClientCommandSource source, String groupName, ClientPosArgument posArgument, int index, String hex) {
+		BlockPos pos = posArgument.toAbsoluteBlockPos(source);
 
 		SEMAPHORE.acquireUninterruptibly();
 
@@ -175,13 +174,13 @@ public class OrderedWaypoints {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int removeWaypoint(FabricClientCommandSource source, String groupName, PosArgument posArgument, int index) {
+	private static int removeWaypoint(FabricClientCommandSource source, String groupName, ClientPosArgument posArgument, int index) {
 		if (WAYPOINTS.containsKey(groupName)) {
 			SEMAPHORE.acquireUninterruptibly();
 			OrderedWaypointGroup group = WAYPOINTS.get(groupName);
 
 			if (posArgument != null) {
-				BlockPos pos = posArgument.toAbsoluteBlockPos(new ServerCommandSource(null, source.getPosition(), source.getRotation(), null, 0, null, null, null, null));
+				BlockPos pos = posArgument.toAbsoluteBlockPos(source);
 
 				group.waypoints().removeIf(waypoint -> waypoint.getPos().equals(pos));
 				INDEX_STORE.removeInt(group.name());
