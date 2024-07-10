@@ -428,6 +428,12 @@ public class Utils {
             }
 
             case ErrorS2CPacket(var id, var error) when id.equals(LocationUpdateS2CPacket.ID) -> {
+                server = "";
+                gameType = "";
+                locationRaw = "";
+                location = Location.UNKNOWN;
+                map = "";
+
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
                 if (player != null) {
