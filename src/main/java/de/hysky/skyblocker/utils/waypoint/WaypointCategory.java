@@ -29,6 +29,10 @@ public record WaypointCategory(String name, String island, List<NamedWaypoint> w
         return new WaypointCategory(name, island(), waypoints());
     }
 
+    public WaypointCategory withIsland(String island) {
+        return new WaypointCategory(name(), island, waypoints());
+    }
+
     public WaypointCategory deepCopy() {
         return new WaypointCategory(name(), island(), waypoints().stream().map(NamedWaypoint::copy).collect(Collectors.toList()));
     }
