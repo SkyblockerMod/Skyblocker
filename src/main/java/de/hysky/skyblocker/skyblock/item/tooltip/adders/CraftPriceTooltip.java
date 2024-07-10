@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUIngredient;
@@ -18,12 +18,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CraftPriceTooltip extends TooltipAdder {
+public class CraftPriceTooltip extends SimpleTooltipAdder {
     protected static final Logger LOGGER = LoggerFactory.getLogger(CraftPriceTooltip.class.getName());
     private static final Map<String, Double> cachedCraftCosts = new ConcurrentHashMap<>();
     private static final int MAX_RECURSION_DEPTH = 15;
@@ -34,8 +33,6 @@ public class CraftPriceTooltip extends TooltipAdder {
 
     @Override
     public void addToTooltip(@Nullable Slot focusedSloFt, ItemStack stack, List<Text> lines) {
-        if (SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == GeneralConfig.Craft.OFF) return;
-
         String internalID = stack.getSkyblockId();
         if (stack.getNeuName() == null || internalID == null) return;
 
@@ -111,5 +108,10 @@ public class CraftPriceTooltip extends TooltipAdder {
 
     public static void clearCache() {
         cachedCraftCosts.clear();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost != GeneralConfig.Craft.OFF;
     }
 }
