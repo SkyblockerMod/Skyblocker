@@ -66,8 +66,6 @@ public class CrystalsChestHighlighter {
         } else if (state.isAir()) {
             activeChests.remove(pos);
         }
-
-
     }
 
     /**
@@ -83,6 +81,5 @@ public class CrystalsChestHighlighter {
         for (BlockPos chest : activeChests) {
             RenderHelper.renderOutline(context, Box.of(chest.toCenterPos().subtract(0, 0.0625, 0), 0.875, 0.875, 0.875), color, color[3], 3, true);
         }
-
     }
 }
