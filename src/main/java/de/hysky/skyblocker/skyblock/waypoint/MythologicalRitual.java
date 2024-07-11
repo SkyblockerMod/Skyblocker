@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.ClientPosArgument;
@@ -191,7 +192,7 @@ public class MythologicalRitual {
     }
 
     private static boolean isActive() {
-        return SkyblockerConfigManager.get().helpers.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocationRaw().equals("hub");
+        return SkyblockerConfigManager.get().helpers.mythologicalRitual.enableMythologicalRitualHelper && Utils.getLocation() == Location.HUB;
     }
     
     private static void reset() {
