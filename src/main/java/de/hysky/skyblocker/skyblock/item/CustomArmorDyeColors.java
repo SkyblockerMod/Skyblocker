@@ -39,7 +39,7 @@ public class CustomArmorDyeColors {
 			return Command.SINGLE_SUCCESS;
 		}
 
-	if (Utils.isOnSkyblock() && heldItem != null) {
+		if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.isIn(ItemTags.DYEABLE)) {
 				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
