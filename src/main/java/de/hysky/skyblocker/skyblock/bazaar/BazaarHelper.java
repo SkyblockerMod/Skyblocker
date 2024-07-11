@@ -18,6 +18,9 @@ import java.util.regex.Pattern;
 
 public class BazaarHelper extends SlotTextAdder {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");
+	private static final int RED = 0xe60b1e;
+	private static final int YELLOW = 0xe6ba0b;
+	private static final int GREEN = 0x1ee60b;
 
 	public BazaarHelper() {
 		super("(?:Co-op|Your) Bazaar Orders");
@@ -47,20 +50,24 @@ public class BazaarHelper extends SlotTextAdder {
 		}
 
 		if (ItemUtils.getLoreLineIf(item, str -> str.equals("Expired!")) != null) {
-			//Todo: Handle the case where the order is close to expiring but hasn't expired yet.
-			return SlotText.topLeftList(getExpiredIcon(true));
+			return SlotText.topLeftList(getExpiredIcon());
+		} else if (ItemUtils.getLoreLineIf(item, str -> str.startsWith("Expires in")) != null) {
+			return SlotText.topLeftList(getExpiringIcon());
 		}
 
 		return List.of();
 	}
 
-	public static @NotNull MutableText getExpiredIcon(boolean expired) {
-		if (expired) return Text.literal("⏰").withColor(0xe60b1e).formatted(Formatting.BOLD);
-		return Text.literal("⏰").withColor(0xe6ba0b).formatted(Formatting.BOLD);
+	public static @NotNull MutableText getExpiredIcon() {
+		return Text.literal("⏰").withColor(RED).formatted(Formatting.BOLD);
+	}
+
+	public static @NotNull MutableText getExpiringIcon() {
+		return Text.literal("⏰").withColor(YELLOW).formatted(Formatting.BOLD);
 	}
 
 	public static @NotNull MutableText getFilledIcon(int filled) {
-		if (filled < 100) return Text.literal("%").withColor(0xe6ba0b).formatted(Formatting.BOLD);
-		return Text.literal("✅").withColor(0x1ee60b).formatted(Formatting.BOLD);
+		if (filled < 100) return Text.literal("%").withColor(YELLOW).formatted(Formatting.BOLD);
+		return Text.literal("✅").withColor(GREEN).formatted(Formatting.BOLD);
 	}
 }
