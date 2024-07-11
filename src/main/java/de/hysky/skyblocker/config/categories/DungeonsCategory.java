@@ -281,6 +281,14 @@ public class DungeonsCategory {
                                         newValue -> config.dungeons.devices.solveSimonSays = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.devices.solveLightsOn"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip")))
+                                .binding(defaults.dungeons.devices.solveLightsOn,
+                                        () -> config.dungeons.devices.solveLightsOn,
+                                        newValue -> config.dungeons.devices.solveLightsOn = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 // Dungeon Secret Waypoints

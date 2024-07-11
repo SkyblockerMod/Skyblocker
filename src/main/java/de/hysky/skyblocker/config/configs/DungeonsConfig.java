@@ -141,6 +141,9 @@ public class DungeonsConfig {
     public static class Devices {
         @SerialEntry
         public boolean solveSimonSays = true;
+
+        @SerialEntry
+        public boolean solveLightsOn = true;
     }
 
     public static class SecretWaypoints {
