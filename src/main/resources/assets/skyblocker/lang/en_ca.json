@@ -45,5 +45,7 @@
     "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armour stands to %s",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "Crit Damage Gradient End Colour",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Crit Damage Gradient Start Colour",
-    "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Colour"
+    "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Colour",
+    "skyblocker.tips.fancierBars": "Customize the look of your health, mana, defence, and experience bars with /skyblocker bars. You can snap and resize bars too!",
+    "skyblocker.profileviewer.inventory.armor": "Armour"
 }
