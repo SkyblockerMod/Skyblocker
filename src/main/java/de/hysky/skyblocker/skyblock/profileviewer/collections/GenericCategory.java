@@ -132,6 +132,8 @@ public class GenericCategory implements ProfileViewerPage {
                         String[] parts = tierText.split("/");
                         int cTier = Integer.parseInt(parts[0].trim());
                         Color colour = itemStack.hasGlint() ? Color.MAGENTA : Color.darkGray;
+                        //DO NOT CHANGE THIS METHOD CALL! Aaron's Mod mixes in here to provide chroma text for max collections
+                        //and changing the method called here will break that! Consult Aaron before making any changes :)
                         context.drawText(textRenderer, Text.literal(toRomanNumerals(cTier)), x + 9 - (textRenderer.getWidth(toRomanNumerals(cTier)) / 2), y + 21, colour.getRGB(), false);
                     }
                     break;
