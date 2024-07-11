@@ -24,7 +24,8 @@ public class ClientWorldMixin {
     private void skyblocker$handleBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state) {
         if (Utils.isInCrimson()) {
             DojoManager.onBlockUpdate(pos.toImmutable(), state);
-            SimonSays.onBlockUpdate(pos.toImmutable(), state);
         }
+
+        SimonSays.onBlockUpdate(pos, state);
     }
 }

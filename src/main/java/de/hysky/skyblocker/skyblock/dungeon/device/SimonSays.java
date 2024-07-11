@@ -76,7 +76,7 @@ public class SimonSays {
 			Block block = state.getBlock();
 
 			if (BOARD_AREA.contains(posVec) && block.equals(Blocks.SEA_LANTERN)) {
-				SIMON_PATTERN.add(pos);
+				SIMON_PATTERN.add(pos.toImmutable()); //Convert to immutable because chunk delta updates use the mutable variant
 			} else if (BUTTONS_AREA.contains(posVec) && block.equals(Blocks.AIR)) {
 				//Upon reaching the showing of the next sequence we need to reset the state so that we don't show old data
 				//Otherwise, the nextIndex will go beyond 5 and that can cause bugs, it also helps with the other case noted above
