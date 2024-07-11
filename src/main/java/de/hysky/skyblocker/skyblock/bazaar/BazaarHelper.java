@@ -4,7 +4,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
@@ -38,22 +37,21 @@ public class BazaarHelper extends SlotTextAdder {
 		ItemStack item = slot.getStack();
 		if (item.isEmpty()) return List.of(); //We've skipped all invalid slots, so we can just check if it's not air here.
 
-		ObjectArrayList<SlotText> icons = new ObjectArrayList<>();
-		if (ItemUtils.getLoreLineIf(item, str -> str.equals("Expired!")) != null) {
-			//Todo: Handle the case where the order is close to expiring but hasn't expired yet.
-			icons.add(SlotText.topRight(getExpiredIcon(true)));
-		}
-
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(item, FILLED_PATTERN);
 		if (matcher != null) {
 			List<Text> lore = ItemUtils.getLore(item);
-			if (!lore.isEmpty() && lore.getLast().getString().equals("Click to claim!")) {
+			if (!lore.isEmpty() && lore.getLast().getString().equals("Click to claim!")) { //Only show the filled icon when there are items to claim
 				int filled = NumberUtils.toInt(matcher.group(1));
-				icons.add(SlotText.topLeft(getFilledIcon(filled)));
+				return SlotText.topLeftList(getFilledIcon(filled));
 			}
 		}
 
-		return icons;
+		if (ItemUtils.getLoreLineIf(item, str -> str.equals("Expired!")) != null) {
+			//Todo: Handle the case where the order is close to expiring but hasn't expired yet.
+			return SlotText.topLeftList(getExpiredIcon(true));
+		}
+
+		return List.of();
 	}
 
 	public static @NotNull MutableText getExpiredIcon(boolean expired) {
