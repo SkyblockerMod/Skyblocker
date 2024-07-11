@@ -4,6 +4,7 @@ import de.hysky.skyblocker.utils.render.gui.AbstractContainerMatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public abstract class TooltipAdder extends AbstractContainerMatcher {
 	 */
 	public final int priority;
 
-	protected TooltipAdder(String titlePattern, int priority) {
+	protected TooltipAdder(@Language("RegExp") String titlePattern, int priority) {
 		super(titlePattern);
 		this.priority = priority;
 	}

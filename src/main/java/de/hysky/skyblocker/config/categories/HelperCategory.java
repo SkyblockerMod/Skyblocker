@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -205,6 +206,20 @@ public class HelperCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+
+                //Bazaar
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.helpers.bazaar"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                 .name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper"))
+                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip", BazaarHelper.getExpiredIcon(false), BazaarHelper.getExpiredIcon(true), BazaarHelper.getFilledIcon(69), BazaarHelper.getFilledIcon(100))))
+                                 .binding(defaults.helpers.bazaar.enableBazaarHelper,
+		                                 () -> config.helpers.bazaar.enableBazaarHelper,
+		                                 newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
+                                 .controller(ConfigUtils::createBooleanController)
+                                 .build())
+		                .build())
 
                 .build();
     }
