@@ -202,11 +202,27 @@ public class DungeonsCategory {
                         .name(Text.translatable("skyblocker.config.dungeons.livid"))
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.livid.enableSolidColor"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip")))
+                                .binding(defaults.dungeons.livid.enableSolidColor,
+                                        () -> config.dungeons.livid.enableSolidColor,
+                                        newValue -> config.dungeons.livid.enableSolidColor = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorGlow"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip")))
                                 .binding(defaults.dungeons.livid.enableLividColorGlow,
                                         () -> config.dungeons.livid.enableLividColorGlow,
                                         newValue -> config.dungeons.livid.enableLividColorGlow = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorBoundingBox"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip")))
+                                .binding(defaults.dungeons.livid.enableLividColorBoundingBox,
+                                        () -> config.dungeons.livid.enableLividColorBoundingBox,
+                                        newValue -> config.dungeons.livid.enableLividColorBoundingBox = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
