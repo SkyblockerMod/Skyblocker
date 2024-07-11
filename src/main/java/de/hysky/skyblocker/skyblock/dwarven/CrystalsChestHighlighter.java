@@ -10,20 +10,31 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CrystalsChestHighlighter {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final String CHEST_SPAWN_MESSAGE = "You uncovered a treasure chest!";
+    private static final long MAX_PARTICLE_LIFE_TIME = 500;
+    private static final Vec3d LOCK_HIGHLIGHT_SIZE = new Vec3d(0.1, 0.1, 0.1);
 
     private static int waitingForChest = 0;
     private static final List<BlockPos> activeChests = new ArrayList<>();
+    private static final Map<Vec3d, Long> activeParticles = new HashMap<>();
 
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
@@ -34,6 +45,7 @@ public class CrystalsChestHighlighter {
     private static void reset() {
         waitingForChest = 0;
         activeChests.clear();
+        activeParticles.clear();
     }
 
     private static void extractLocationFromMessage(Text text, boolean b) {
@@ -68,8 +80,30 @@ public class CrystalsChestHighlighter {
         }
     }
 
+    public static void onParticle(ParticleS2CPacket packet) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
+            return;
+        }
+        if (ParticleTypes.CRIT.equals(packet.getParameters().getType())) {
+            activeParticles.put(new Vec3d(packet.getX(), packet.getY(), packet.getZ()), System.currentTimeMillis());
+        }
+    }
+
     /**
-     * Renders a box around active treasure chests if enabled. Taking the color from the config
+     * When sound is created to tell the user that they have done a stage of picking remove all old particles
+     *
+     * @param packet sound packet
+     */
+    public static void onSound(PlaySoundS2CPacket packet) {
+        String path = packet.getSound().value().getId().getPath();
+        if (path.equals("entity.experience_orb.pickup") || path.equals("entity.villager.no")) {
+            activeParticles.clear();
+        }
+    }
+
+
+    /**
+     * Renders a box around active treasure chests if enabled. Taking the color from the config. Also displaces highlight to where to lock pick chests
      *
      * @param context context
      */
@@ -77,9 +111,31 @@ public class CrystalsChestHighlighter {
         if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
             return;
         }
+        //render chest outline
         float[] color = SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getComponents(new float[]{0, 0, 0, 0});
         for (BlockPos chest : activeChests) {
             RenderHelper.renderOutline(context, Box.of(chest.toCenterPos().subtract(0, 0.0625, 0), 0.875, 0.875, 0.875), color, color[3], 3, true);
+        }
+
+        //render lock picking if player is looking at chest that is in the active chests list
+        if (CLIENT.player == null || activeParticles.isEmpty()) {
+            return;
+        }
+        HitResult target = CLIENT.crosshairTarget;
+        if (target instanceof BlockHitResult blockHitResult && activeChests.contains(blockHitResult.getBlockPos())) {
+            //the player is looking at a chest use active particle to highlight correct spot
+            Vec3d highlightSpot = Vec3d.ZERO;
+            //if to old remove particle
+            activeParticles.entrySet().removeIf(e -> System.currentTimeMillis() - e.getValue() > MAX_PARTICLE_LIFE_TIME);
+            //add up all particle within range of active block
+            for (Vec3d particlePos : activeParticles.keySet()) {
+                if (particlePos.squaredDistanceTo(blockHitResult.getBlockPos().toCenterPos()) <= 0.75) {
+                    highlightSpot = highlightSpot.add(particlePos);
+                }
+
+            }
+            highlightSpot = highlightSpot.multiply((double) 1 / activeParticles.size()).subtract(LOCK_HIGHLIGHT_SIZE.multiply(0.5));
+            RenderHelper.renderFilled(context, highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
         }
     }
 }
