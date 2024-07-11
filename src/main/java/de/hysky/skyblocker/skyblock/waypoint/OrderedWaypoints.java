@@ -12,11 +12,12 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.CustomArmorDyeColors;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -87,17 +88,17 @@ public class OrderedWaypoints {
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
 												.then(argument("pos", ClientBlockPosArgumentType.blockPos())
-														.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), Integer.MIN_VALUE, null))
-														.then(argument("hex", word())
-																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), Integer.MIN_VALUE, getString(context, "hex")))))))
+														.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), Integer.MIN_VALUE, Integer.MIN_VALUE))
+														.then(argument("hex", ColorArgumentType.hex())
+																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), Integer.MIN_VALUE, ColorArgumentType.getIntFromHex(context, "hex")))))))
 								.then(literal("addAt")
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
 												.then(argument("index", IntegerArgumentType.integer(0))
 														.then(argument("pos", ClientBlockPosArgumentType.blockPos())
-																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), IntegerArgumentType.getInteger(context, "index"), null))
-																.then(argument("hex", word())
-																		.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), IntegerArgumentType.getInteger(context, "index"), getString(context, "hex"))))))))
+																.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), IntegerArgumentType.getInteger(context, "index"), Integer.MIN_VALUE))
+																.then(argument("hex", ColorArgumentType.hex())
+																		.executes(context -> addWaypoint(context.getSource(), getString(context, "groupName"), context.getArgument("pos", ClientPosArgument.class), IntegerArgumentType.getInteger(context, "index"), ColorArgumentType.getIntFromHex(context, "hex"))))))))
 								.then(literal("remove")
 										.then(argument("groupName", word())
 												.suggests((source, builder) -> CommandSource.suggestMatching(WAYPOINTS.keySet(), builder))
@@ -125,20 +126,12 @@ public class OrderedWaypoints {
 										.executes(context -> export(context.getSource()))))));
 	}
 
-	private static int addWaypoint(FabricClientCommandSource source, String groupName, ClientPosArgument posArgument, int index, String hex) {
+	private static int addWaypoint(FabricClientCommandSource source, String groupName, ClientPosArgument posArgument, int index, int color) {
 		BlockPos pos = posArgument.toAbsoluteBlockPos(source);
 
 		SEMAPHORE.acquireUninterruptibly();
 
-		if (hex != null && !CustomArmorDyeColors.isHexadecimalColor(hex)) {
-			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.ordered.add.invalidHexColor")));
-			SEMAPHORE.release();
-
-			return Command.SINGLE_SUCCESS;
-		}
-
-		int rgb = hex != null ? Integer.decode("0x" + hex.replace("#", "")) : Integer.MIN_VALUE;
-		float[] colorComponents = rgb != Integer.MIN_VALUE ? new float[] { ((rgb >> 16) & 0xFF) / 255f, ((rgb >> 8) & 0xFF) / 255f, (rgb & 0xFF) / 255f } : new float[0];
+		float[] colorComponents = color != Integer.MIN_VALUE ? ColorUtils.getFloatComponents(color) : new float[0];
 
 		OrderedWaypointGroup group = WAYPOINTS.computeIfAbsent(groupName, name -> new OrderedWaypointGroup(name, true, new ObjectArrayList<>()));
 		OrderedWaypoint waypoint = new OrderedWaypoint(pos, colorComponents);

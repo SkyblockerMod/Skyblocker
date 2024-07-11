@@ -12,7 +12,7 @@ import net.minecraft.command.CommandSource;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-public class EggTypeArgumentType implements ArgumentType<EggFinder.EggType> {
+public final class EggTypeArgumentType implements ArgumentType<EggFinder.EggType> {
 	@Override
 	public EggFinder.EggType parse(StringReader reader) throws CommandSyntaxException {
 		String name = reader.readUnquotedString();
