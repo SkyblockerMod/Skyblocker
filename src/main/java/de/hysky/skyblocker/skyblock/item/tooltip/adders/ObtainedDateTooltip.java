@@ -72,4 +72,22 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 
 		return "";
 	}
+
+	/**
+	 * @see #getTimestamp(ItemStack)
+	 */
+	public static long getLongTimestamp(ItemStack stack) {
+		NbtCompound customData = ItemUtils.getCustomData(stack);
+
+		if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
+			return customData.getLong("timestamp");
+		}
+
+		if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
+			TemporalAccessor date = OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp"));
+			return Instant.from(date).toEpochMilli();
+		}
+
+		return 0L;
+	}
 }
