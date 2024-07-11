@@ -1,14 +1,18 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import java.awt.*;
 
 public record MiningLocationLabel(Category category, Vec3d centerPos) implements Renderable {
     public MiningLocationLabel(Category category, BlockPos pos) {
@@ -24,13 +28,16 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
 
     /**
      * Renders the name and distance to the label scaled so can be seen at a distance
+     *
      * @param context render context
      */
     @Override
     public void render(WorldRenderContext context) {
         Vec3d posUp = centerPos.add(0, 1, 0);
         double distance = context.camera().getPos().distanceTo(centerPos);
-        float scale = (float) (SkyblockerConfigManager.get().mining.commissionWaypoints.textScale * (distance / 10));
+        //set scale config based on if in crystals or not
+        float textScale = Utils.isInCrystalHollows() ? SkyblockerConfigManager.get().mining.crystalsWaypoints.textScale : SkyblockerConfigManager.get().mining.commissionWaypoints.textScale;
+        float scale = (float) (textScale * (distance / 10));
         RenderHelper.renderText(context, getName(), posUp, scale, true);
         RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
     }
@@ -154,4 +161,47 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
             return color;
         }
     }
+
+    /**
+     * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
+     */
+    enum CrystalHollowsLocationsCategory implements Category {
+        UNKNOWN("Unknown", Color.WHITE, null), //used when a location is known but what's at the location is not known
+        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal"),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "    Sapphire Crystal"),
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal"),
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null),
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null),
+        CORLEONE("Corleone", Color.WHITE, null),
+        KING_YOLKAR("King Yolkar", Color.RED, "[NPC] King Yolkar:"),
+        ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, null);
+
+        public final Color color;
+        private final String name;
+        private final String linkedMessage;
+
+        CrystalHollowsLocationsCategory(String name, Color color, String linkedMessage) {
+            this.name = name;
+            this.color = color;
+            this.linkedMessage = linkedMessage;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int getColor() {
+            return this.color.getRGB();
+        }
+
+        public String getLinkedMessage() {
+            return this.linkedMessage;
+        }
+    }
+
 }
