@@ -2,17 +2,20 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
+import de.hysky.skyblocker.skyblock.crimson.slayer.AttunementColours;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
@@ -21,54 +24,80 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.random.RandomGenerator;
 
 public class MobGlow {
 
+	private static final long GLOW_CACHE_DURATION = 50; // 50 milliseconds for glow computation cache
+	private static final long CAN_SEE_CACHE_DURATION = 50; // 50 milliseconds for canSee cache (every tick)
+	private static final ConcurrentHashMap<Entity, CacheEntry<Boolean>> glowCache = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<Entity, CacheEntry<Boolean>> canSeeCache = new ConcurrentHashMap<>();
+
 	public static boolean shouldMobGlow(Entity entity) {
-		Box box = entity.getBoundingBox();
+		CacheEntry<Boolean> cachedCanSee = canSeeCache.get(entity);
+		long currentTime = System.currentTimeMillis();
 
-		if (OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
-			String name = entity.getName().getString();
+		if (cachedCanSee != null && (currentTime - cachedCanSee.timestamp) < CAN_SEE_CACHE_DURATION) return cachedCanSee.value;
 
+		CacheEntry<Boolean> cachedGlow = glowCache.get(entity);
 
-			// Dungeons
-			if (Utils.isInDungeons() && !entity.isInvisible()) {
-				return switch (entity) {
-					// Minibosses
-					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
-					case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
+		if (cachedGlow != null && cachedGlow.value && (currentTime - cachedGlow.timestamp) < GLOW_CACHE_DURATION){
+			boolean canSee = MinecraftClient.getInstance().player.canSee(entity);
+			canSeeCache.put(entity, new CacheEntry<>(canSee, currentTime));
+			return canSee;
+		} else if (cachedGlow != null && (currentTime - cachedGlow.timestamp) < GLOW_CACHE_DURATION) return false;
 
-					// Bats
-					case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
+		boolean result = computeShouldMobGlow(entity);
+		glowCache.put(entity, new CacheEntry<>(result, currentTime));
+		if (!result) return false;
 
-					// Armor Stands
-					case ArmorStandEntity _armorStand -> false;
+		boolean canSee = MinecraftClient.getInstance().player.canSee(entity);
+		// If the mob can be seen, cache it for 2 ticks. It's not like it's going to get far off screen :D.
+		canSeeCache.put(entity, new CacheEntry<>(canSee, canSee ? currentTime + 50 : currentTime));
+		return canSee;
+	}
 
-					// Regular Mobs
-					default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
-				};
-			}
+	private static boolean computeShouldMobGlow(Entity entity) {
+		String name = entity.getName().getString();
 
-
+		// Dungeons
+		if (Utils.isInDungeons() && !entity.isInvisible()) {
 			return switch (entity) {
-				// Rift
-				case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
-
-				// Enderman Slayer
-				// Highlights Nukekubi Heads
-				case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
-
-				// Special Zelot
-				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() -> TheEnd.isSpecialZealot(enderman);
-
-				//dojo
-				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
-
-				default -> false;
+				case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
+				case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
+				case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
+				case ArmorStandEntity _armorStand -> false;
+				default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
 			};
 		}
 
-		return false;
+
+		return switch (entity) {
+			// Rift
+			case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
+
+			// Enderman Slayer
+			// Highlights Nukekubi Heads
+			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
+
+			//dojo
+			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
+
+			// Special Zealot && Slayer (Mini)Boss
+			case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() ->
+					TheEnd.isSpecialZealot(enderman) || SlayerEntitiesGlow.shouldGlow(enderman.getUuid());
+			case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) -> SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
+			case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
+			case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN)-> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
+			case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
+			// Blaze Slayer's Demons
+			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
+					SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
+			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
+					SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
+			default -> false;
+		};
 	}
 
 	/**
@@ -118,6 +147,12 @@ public class MobGlow {
 			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 
+			// Blaze Slayer Attunement Colours
+			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.	getColour(armorStand);
+			case BlazeEntity blaze when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.getColour(blaze) ;
+			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.getColour(piglin);
+			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() && SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights -> AttunementColours.getColour(wSkelly);
+
 			default -> 0xf57738;
 		};
 	}
@@ -128,9 +163,29 @@ public class MobGlow {
 			// compare against it to exclusively find armorstands that are nukekubi heads
 			// get the texture of the nukekubi head item itself and compare it
 			String texture = ItemUtils.getHeadTexture(armorItem);
-
-			return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
+			if (texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=")) {
+				return true;
+			}
 		}
 		return false;
+	}
+
+	private static class CacheEntry<T> {
+		final T value;
+		final long timestamp;
+
+		CacheEntry(T value, long timestamp) {
+			this.value = value;
+			this.timestamp = timestamp;
+		}
+	}
+
+	public static void init() {
+		Scheduler.INSTANCE.scheduleCyclic(MobGlow::clearCache, 100*20);
+	}
+
+	private static void clearCache() {
+		canSeeCache.clear();
+		glowCache.clear();
 	}
 }
