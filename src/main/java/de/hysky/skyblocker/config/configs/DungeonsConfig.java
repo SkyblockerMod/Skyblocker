@@ -42,6 +42,9 @@ public class DungeonsConfig {
     public Terminals terminals = new Terminals();
 
     @SerialEntry
+    public Devices devices = new Devices();
+
+    @SerialEntry
     public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
     @SerialEntry
@@ -133,6 +136,14 @@ public class DungeonsConfig {
 
         @SerialEntry
         public boolean blockIncorrectClicks = false;
+    }
+
+    public static class Devices {
+        @SerialEntry
+        public boolean solveSimonSays = true;
+
+        @SerialEntry
+        public boolean solveLightsOn = true;
     }
 
     public static class SecretWaypoints {
