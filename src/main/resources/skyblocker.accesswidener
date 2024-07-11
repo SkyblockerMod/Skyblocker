@@ -18,3 +18,4 @@ accessible class net/minecraft/client/render/RenderPhase$LineWidth
 accessible class net/minecraft/client/render/RenderPhase$ColorLogic
 accessible class net/minecraft/client/render/RenderPhase$OffsetTexturing
 accessible class net/minecraft/client/render/RenderPhase$Textures
+accessible field net/minecraft/command/argument/BlockPosArgumentType EXAMPLES Ljava/util/Collection;

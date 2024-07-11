@@ -4,46 +4,39 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
-public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgument> {
-	private static final Collection<String> EXAMPLES = Arrays.asList("0 0 0", "~ ~ ~", "^ ^ ^", "^1 ^ ^-5", "~0.5 ~1 ~-5");
-	public static final SimpleCommandExceptionType UNLOADED_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("argument.pos.unloaded"));
-	public static final SimpleCommandExceptionType OUT_OF_WORLD_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("argument.pos.outofworld"));
-	public static final SimpleCommandExceptionType OUT_OF_BOUNDS_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("argument.pos.outofbounds"));
+import static net.minecraft.command.argument.BlockPosArgumentType.*;
 
+// Uses the static fields of BlockPosArgumentType to not create the same field twice
+public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgument> {
 	public static ClientBlockPosArgumentType blockPos() {
 		return new ClientBlockPosArgumentType();
 	}
 
 	public static BlockPos getLoadedBlockPos(CommandContext<FabricClientCommandSource> context, String name) throws CommandSyntaxException {
-		ClientWorld clientWorld = context.getSource().getWorld();
-		return getLoadedBlockPos(context, clientWorld, name);
+		return getLoadedBlockPos(context, context.getSource().getWorld(), name);
 	}
 
 	public static BlockPos getLoadedBlockPos(CommandContext<FabricClientCommandSource> context, ClientWorld world, String name) throws CommandSyntaxException {
 		BlockPos blockPos = getBlockPos(context, name);
-		if (!world.isChunkLoaded(blockPos)) {
-			throw UNLOADED_EXCEPTION.create();
-		} else if (!world.isInBuildLimit(blockPos)) {
-			throw OUT_OF_WORLD_EXCEPTION.create();
-		} else {
-			return blockPos;
-		}
+		if (!world.isChunkLoaded(blockPos)) throw UNLOADED_EXCEPTION.create();
+		if (!world.isInBuildLimit(blockPos)) throw OUT_OF_WORLD_EXCEPTION.create();
+
+		return blockPos;
+
 	}
 
 	public static BlockPos getBlockPos(CommandContext<FabricClientCommandSource> context, String name) {
@@ -65,23 +58,16 @@ public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgumen
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		if (!(context.getSource() instanceof CommandSource)) {
-			return Suggestions.empty();
-		} else {
-			String string = builder.getRemaining();
-			Collection<CommandSource.RelativePosition> collection;
-			if (!string.isEmpty() && string.charAt(0) == '^') {
-				collection = Collections.singleton(CommandSource.RelativePosition.ZERO_LOCAL);
-			} else {
-				collection = ((CommandSource)context.getSource()).getBlockPositionSuggestions();
-			}
+		if (!(context.getSource() instanceof CommandSource commandSource)) return Suggestions.empty();
 
-			return CommandSource.suggestPositions(string, collection, builder, CommandManager.getCommandValidator(this::parse));
-		}
+		String string = builder.getRemaining();
+		Collection<CommandSource.RelativePosition> collection = !string.isEmpty() && string.charAt(0) == '^' ? Collections.singleton(CommandSource.RelativePosition.ZERO_LOCAL) : commandSource.getBlockPositionSuggestions();
+
+		return CommandSource.suggestPositions(string, collection, builder, CommandManager.getCommandValidator(this::parse));
 	}
 
 	@Override
 	public Collection<String> getExamples() {
-		return EXAMPLES;
+		return BlockPosArgumentType.EXAMPLES;
 	}
 }
