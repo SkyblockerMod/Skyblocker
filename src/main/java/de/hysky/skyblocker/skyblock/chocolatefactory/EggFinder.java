@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.ClientBlockPosArgumentType;
-import de.hysky.skyblocker.utils.command.argumenttypes.ClientPosArgument;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -55,7 +54,7 @@ public class EggFinder {
 				.then(literal("eggFinder")
 						.then(literal("shareLocation")
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
-										.then(argument("eggType", new EggTypeArgumentType())
+										.then(argument("eggType", EggTypeArgumentType.eggType())
 												.executes(context -> {
 													MessageScheduler.INSTANCE.sendMessageAfterCooldown("[Skyblocker] Chocolate " + context.getArgument("eggType", EggType.class) + " Egg found at " + context.getArgument("blockPos", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource()).toShortString() + "!");
 													return Command.SINGLE_SUCCESS;

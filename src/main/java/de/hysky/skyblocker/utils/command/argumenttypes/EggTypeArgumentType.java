@@ -33,4 +33,8 @@ public class EggTypeArgumentType implements ArgumentType<EggFinder.EggType> {
 	public Collection<String> getExamples() {
 		return EggFinder.EggType.entries.stream().map(EggFinder.EggType::name).map(String::toLowerCase).toList();
 	}
+
+	public static EggTypeArgumentType eggType() {
+		return new EggTypeArgumentType();
+	}
 }
