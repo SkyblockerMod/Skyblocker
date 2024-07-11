@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.state.property.Properties;
@@ -35,9 +36,8 @@ public class LightsOn {
 			for (BlockPos lever : LEVERS) {
 				ClientWorld world = CLIENT.world;
 				BlockState state = world.getBlockState(lever);
-				boolean powered = state.get(Properties.POWERED);
 
-				if (!powered) {
+				if (state.getBlock().equals(Blocks.LEVER) && state.contains(Properties.POWERED) && !state.get(Properties.POWERED)) {
 					RenderHelper.renderFilled(context, lever, RED, 0.5f, false);
 				}
 			}
