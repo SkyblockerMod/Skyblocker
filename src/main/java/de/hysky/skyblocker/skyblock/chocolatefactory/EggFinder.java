@@ -57,7 +57,7 @@ public class EggFinder {
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
 										.then(argument("eggType", new EggTypeArgumentType())
 												.executes(context -> {
-													MessageScheduler.INSTANCE.sendMessageAfterCooldown("[Skyblocker] Chocolate " + context.getArgument("eggType", EggType.class) + " Egg found at " + context.getArgument("blockPos", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource()) .toShortString() + "!");
+													MessageScheduler.INSTANCE.sendMessageAfterCooldown("[Skyblocker] Chocolate " + context.getArgument("eggType", EggType.class) + " Egg found at " + context.getArgument("blockPos", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource()).toShortString() + "!");
 													return Command.SINGLE_SUCCESS;
 												})))))));
 	}
