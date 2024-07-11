@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.command.argumenttypes;
+package de.hysky.skyblocker.utils.command.argumenttypes.blockpos;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -36,7 +36,6 @@ public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgumen
 		if (!world.isInBuildLimit(blockPos)) throw OUT_OF_WORLD_EXCEPTION.create();
 
 		return blockPos;
-
 	}
 
 	public static BlockPos getBlockPos(CommandContext<FabricClientCommandSource> context, String name) {

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.command.argumenttypes;
+package de.hysky.skyblocker.utils.command.argumenttypes.blockpos;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.util.math.BlockPos;

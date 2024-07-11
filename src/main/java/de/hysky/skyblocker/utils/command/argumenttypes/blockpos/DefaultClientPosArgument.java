@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.command.argumenttypes;
+package de.hysky.skyblocker.utils.command.argumenttypes.blockpos;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
