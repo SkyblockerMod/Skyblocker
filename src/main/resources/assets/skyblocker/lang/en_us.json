@@ -706,6 +706,11 @@
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
 
+  "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
+
+  "skyblocker.reparty.notInPartyOrNotLeader": "You must be in a party and be the leader of it in order to reparty!",
+  "skyblocker.reparty.error": "Failed to reparty, try again in a moment!",
+
   "skyblocker.itemTooltip.noData": "\u00a7cNo Data",
   "skyblocker.itemTooltip.nullMessage": "\u00a7cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
