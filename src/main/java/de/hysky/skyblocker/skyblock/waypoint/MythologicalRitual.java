@@ -6,6 +6,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.ClientBlockPosArgumentType;
+import de.hysky.skyblocker.utils.command.argumenttypes.ClientPosArgument;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -19,7 +21,6 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
@@ -67,8 +68,8 @@ public class MythologicalRitual {
                     return Command.SINGLE_SUCCESS;
                 }))
                 .then(literal("clearGriffinBurrow")
-                        .then(argument("pos", BlockPosArgumentType.blockPos()).executes(context -> {
-                            griffinBurrows.remove(context.getArgument("pos", BlockPos.class));
+                        .then(argument("position", ClientBlockPosArgumentType.blockPos()).executes(context -> {
+                            griffinBurrows.remove(context.getArgument("position", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource()));
                             return Command.SINGLE_SUCCESS;
                         }))
                 )
