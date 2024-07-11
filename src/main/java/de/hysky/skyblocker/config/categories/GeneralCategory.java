@@ -221,6 +221,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.dungeonQuality = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableEstimatedItemValue"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip")))
+                                .binding(defaults.general.itemTooltip.enableEstimatedItemValue,
+                                        () -> config.general.itemTooltip.enableEstimatedItemValue,
+                                        newValue -> config.general.itemTooltip.enableEstimatedItemValue = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Item Info Display

@@ -16,15 +16,16 @@ import java.util.function.Predicate;
 
 public enum TooltipInfoType implements Runnable {
     NPC("https://hysky.de/api/npcprice", itemTooltip -> itemTooltip.enableNPCPrice, true),
-    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false),
-    LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableLowestBIN, false),
+    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || itemTooltip.enableCraftingCost.getOrder() != null || itemTooltip.enableEstimatedItemValue || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false),
+    LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || itemTooltip.enableCraftingCost.getOrder() != null || itemTooltip.enableEstimatedItemValue || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableLowestBIN, false),
     ONE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/1day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     THREE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/3day.json", itemTooltip -> itemTooltip.enableAvgBIN || SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableAuctionHouse, itemTooltip -> itemTooltip.enableAvgBIN, false),
     MOTES("https://hysky.de/api/motesprice", itemTooltip -> itemTooltip.enableMotesPrice, itemTooltip -> itemTooltip.enableMotesPrice && Utils.isInTheRift(), true),
     OBTAINED(itemTooltip -> itemTooltip.enableObtainedDate),
     MUSEUM("https://hysky.de/api/museum", itemTooltip -> itemTooltip.enableMuseumInfo, true),
     COLOR("https://hysky.de/api/color", itemTooltip -> itemTooltip.enableExoticTooltip, true),
-    ACCESSORIES("https://hysky.de/api/accessories", itemTooltip -> itemTooltip.enableAccessoriesHelper, true, AccessoriesHelper::refreshData);
+    ACCESSORIES("https://hysky.de/api/accessories", itemTooltip -> itemTooltip.enableAccessoriesHelper, true, AccessoriesHelper::refreshData),
+    ESTIMATED_ITEM_VALUE(itemTooltip -> itemTooltip.enableEstimatedItemValue);
 
     private final String address;
     private final Predicate<GeneralConfig.ItemTooltip> dataEnabled;
