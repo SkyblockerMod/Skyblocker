@@ -2,6 +2,8 @@ package de.hysky.skyblocker.config.configs;
 
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
+import java.awt.*;
+
 public class MiningConfig {
     @SerialEntry
     public boolean enableDrillFuel = true;
@@ -67,6 +69,12 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean nucleusWaypoints = false;
+
+        @SerialEntry
+        public boolean chestHighlighter = true;
+
+        @SerialEntry
+        public Color chestHighlightColor = new Color(0, 0, 255, 128);
     }
 
     public static class CrystalsHud {

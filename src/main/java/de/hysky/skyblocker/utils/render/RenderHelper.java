@@ -147,6 +147,42 @@ public class RenderHelper {
     }
 
     /**
+     * Renders the outline of a box with the specified color components and line width.
+     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
+     *
+     * @param alpha the transparency of the lines for the box
+     */
+    public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
+        if (FrustumUtils.isVisible(box)) {
+            MatrixStack matrices = context.matrixStack();
+            Vec3d camera = context.camera().getPos();
+            Tessellator tessellator = RenderSystem.renderThreadTesselator();
+
+            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.enableBlend();
+            RenderSystem.lineWidth(lineWidth);
+            RenderSystem.disableCull();
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+
+            matrices.push();
+            matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
+
+            BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
+            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+            BufferRenderer.drawWithGlobalProgram(buffer.end());
+
+            matrices.pop();
+            RenderSystem.lineWidth(1f);
+            RenderSystem.enableCull();
+            RenderSystem.disableBlend();
+            RenderSystem.disableDepthTest();
+            RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        }
+    }
+
+    /**
      * Draws lines from point to point.<br><br>
      * <p>
      * Tip: To draw lines from the center of a block, offset the X, Y and Z each by 0.5

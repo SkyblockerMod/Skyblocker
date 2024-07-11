@@ -4,16 +4,15 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudConfigScreen;
-import dev.isxander.yacl3.api.ButtonOption;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+
+import java.awt.*;
 
 public class MiningCategory {
 
@@ -111,7 +110,23 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalHollows.nucleusWaypoints = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.crystalHollows.chestHighlighter"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip")))
+                                .binding(defaults.mining.crystalHollows.chestHighlighter,
+                                        () -> config.mining.crystalHollows.chestHighlighter,
+                                        newValue -> config.mining.crystalHollows.chestHighlighter = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.crystalHollows.chestHighlighter.color"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip")))
+                                .binding(defaults.mining.crystalHollows.chestHighlightColor,
+                                        () -> config.mining.crystalHollows.chestHighlightColor,
+                                        newValue -> config.mining.crystalHollows.chestHighlightColor = newValue)
+                                .controller(v -> ColorControllerBuilder.create(v).allowAlpha(true))
+                                .build())
+                        .build())
 
                 //Crystal Hollows Map
                 .group(OptionGroup.createBuilder()

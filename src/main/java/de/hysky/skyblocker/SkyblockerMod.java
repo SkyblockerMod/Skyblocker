@@ -134,6 +134,7 @@ public class SkyblockerMod implements ClientModInitializer {
         LowerSensitivity.init();
         CrystalsLocationsManager.init();
         WishingCompassSolver.init();
+        CrystalsChestHighlighter.init();
         MetalDetector.init();
         ChatMessageListener.init();
         Shortcuts.init();
