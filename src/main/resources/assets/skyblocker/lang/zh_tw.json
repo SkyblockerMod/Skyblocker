@@ -749,5 +749,10 @@
     "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst發光",
     "skyblocker.config.helpers.jerry": "Jerry",
     "skyblocker.config.helpers.jerry.enableJerryTimer": "啟用Jerry計時器",
-    "skyblocker.tips.compactDamage": "在設定中的簡潔傷害數值可以自訂你造成的攻擊傷害。"
+    "skyblocker.tips.compactDamage": "在設定中的簡潔傷害數值可以自訂你造成的攻擊傷害。",
+    "skyblocker.utils.locationUpdateError": "無法更新你的位置！模組的某些功能可能無法正常運作 :(",
+    "skyblocker.reparty.notInPartyOrNotLeader": "你必須在隊伍中並且是隊長才能重新組隊！",
+    "skyblocker.reparty.error": "重新組隊失敗，請稍後再試！",
+    "skyblocker.config.helpers.chocolateFactory.straySound": "野兔音效",
+    "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "當有野生兔子出現時，反覆發出叮叮聲。如果是金色的，聲音會更加頻繁且不同。"
 }
