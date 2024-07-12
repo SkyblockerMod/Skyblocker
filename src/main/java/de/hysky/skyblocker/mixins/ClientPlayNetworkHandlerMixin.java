@@ -118,6 +118,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         EggFinder.checkIfEgg(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
             CompactDamage.compactDamage(armorStandEntity);
+            FishingHelper.checkIfFishWasCaught(armorStandEntity);
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
         }
