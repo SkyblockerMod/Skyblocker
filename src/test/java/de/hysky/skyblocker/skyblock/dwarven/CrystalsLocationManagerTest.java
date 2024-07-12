@@ -6,7 +6,31 @@ import org.junit.jupiter.api.Test;
 
 import de.hysky.skyblocker.utils.Constants;
 
-public class CrystalsLocationManagerTest {
+class CrystalsLocationManagerTest {
+    boolean matches(String text) {
+        return CrystalsLocationsManager.TEXT_CWORDS_PATTERN.matcher(text).find();
+    }
+
+    @Test
+    void testRegex() {
+        Assertions.assertTrue(matches("x123 y12 z123"));
+        Assertions.assertTrue(matches("x123, y12, z123"));
+        Assertions.assertTrue(matches("Player: 123 12 123")); //This and the ones below fail when specified in the same format as those above, as the regex check assumes that the message is sent somewhere in a message and that it isn't the whole message
+        Assertions.assertTrue(matches("Player: 123 123 123"));
+        Assertions.assertTrue(matches("Player: 123, 12, 123"));
+        Assertions.assertTrue(matches("Player: 123, 123, 123"));
+        Assertions.assertTrue(matches("Player: 123,12,123"));
+        Assertions.assertTrue(matches("Player: 123,123,123"));
+
+        Assertions.assertFalse(matches("Player: 123 1234 123"));
+        Assertions.assertFalse(matches("Player: 1234 12 123"));
+        Assertions.assertFalse(matches("Player: 123 12 1234"));
+        Assertions.assertFalse(matches("Player: 12 12 123"));
+        Assertions.assertFalse(matches("Player: 123 1 123"));
+        Assertions.assertFalse(matches("Player: 123 12 12"));
+        Assertions.assertFalse(matches("Player: 12312123"));
+        Assertions.assertFalse(matches("Player: 123123123"));
+    }
 
     @Test
     void testLocationInCrystals() {
