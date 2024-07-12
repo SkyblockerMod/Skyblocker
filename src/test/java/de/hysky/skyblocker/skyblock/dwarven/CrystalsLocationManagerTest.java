@@ -13,9 +13,9 @@ class CrystalsLocationManagerTest {
 
     @Test
     void testRegex() {
-        Assertions.assertTrue(matches("x123 y12 z123"));
-        Assertions.assertTrue(matches("x123, y12, z123"));
-        Assertions.assertTrue(matches("Player: 123 12 123")); //This and the ones below fail when specified in the same format as those above, as the regex check assumes that the message is sent somewhere in a message and that it isn't the whole message
+        Assertions.assertTrue(matches("Player: x123 y12 z123"));
+        Assertions.assertTrue(matches("Player: x123, y12, z123"));
+        Assertions.assertTrue(matches("Player: 123 12 123"));
         Assertions.assertTrue(matches("Player: 123 123 123"));
         Assertions.assertTrue(matches("Player: 123, 12, 123"));
         Assertions.assertTrue(matches("Player: 123, 123, 123"));
