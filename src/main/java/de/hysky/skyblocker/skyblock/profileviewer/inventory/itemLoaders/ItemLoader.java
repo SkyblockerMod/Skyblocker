@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
@@ -10,6 +11,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.Pet;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.TextTransformer;
 import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
@@ -21,6 +23,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -79,13 +82,13 @@ public class ItemLoader {
 
 
             // Item Name
-            stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(nbttag.getCompound("display").getString("Name")));
+            stack.set(DataComponentTypes.CUSTOM_NAME, TextTransformer.fromLegacy(nbttag.getCompound("display").getString("Name")));
 
             // Lore
             NbtList loreList = nbttag.getCompound("display").getList("Lore", 8);
             stack.set(DataComponentTypes.LORE, new LoreComponent(loreList.stream()
                     .map(NbtElement::asString)
-                    .map(Text::literal)
+                    .map(TextTransformer::fromLegacy)
                     .collect(Collectors.toList())));
 
             // add skull texture
@@ -110,6 +113,9 @@ public class ItemLoader {
 
             // Set Count
             stack.setCount(containerContent.getCompound(i).getInt("Count"));
+
+            // Attach an override for Aaron's Mod so that these ItemStacks will work with the mod's features even when not in Skyblock
+            extraAttributes.put("aaron-mod", Util.make(new NbtCompound(), comp -> comp.putBoolean("alwaysDisplaySkyblockInfo", true)));
 
             stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(extraAttributes));
 

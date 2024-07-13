@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.TextTransformer;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
@@ -53,10 +54,10 @@ public class ItemStackBuilder {
 
         // Item Name
         String name = injectData(item.getDisplayName(), injectors);
-        stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(name));
+        stack.set(DataComponentTypes.CUSTOM_NAME, TextTransformer.fromLegacy(name));
 
         // Lore
-        stack.set(DataComponentTypes.LORE, new LoreComponent(item.getLore().stream().map(line -> Text.of(injectData(line, injectors))).toList()));
+        stack.set(DataComponentTypes.LORE, new LoreComponent(item.getLore().stream().map(line -> TextTransformer.fromLegacy(injectData(line, injectors))).map(Text.class::cast).toList()));
 
         String nbttag = item.getNbttag();
         // add skull texture
