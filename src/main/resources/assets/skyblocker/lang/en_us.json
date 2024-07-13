@@ -46,6 +46,12 @@
   "skyblocker.config.dungeons.croesusHelper": "Croesus Helper",
   "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
 
+  "skyblocker.config.dungeons.devices": "Device Solvers (F7/M7)",
+  "skyblocker.config.dungeons.devices.solveLightsOn": "Solve Lights On",
+  "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Highlights the correct levers to click in red",
+  "skyblocker.config.dungeons.devices.solveSimonSays": "Solve Simon Says",
+  "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Highlights the correct button to click in green, and highlights the next one in yellow.",
+
   "skyblocker.config.dungeons.doorHighlight": "Door Highlight",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Door Highlight Type",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Highlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
