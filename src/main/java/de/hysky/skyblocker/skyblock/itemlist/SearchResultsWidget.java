@@ -73,6 +73,8 @@ public class SearchResultsWidget implements Drawable, Element {
     }
 
     protected void updateSearchResult(String searchText) {
+        searchText = searchText.toLowerCase(Locale.ENGLISH);
+
         if (!searchText.equals(this.searchText)) {
             this.searchText = searchText;
             this.searchResults.clear();
