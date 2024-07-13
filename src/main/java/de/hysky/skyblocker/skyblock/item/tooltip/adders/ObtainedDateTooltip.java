@@ -12,6 +12,7 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -77,17 +78,6 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	 * @see #getTimestamp(ItemStack)
 	 */
 	public static long getLongTimestamp(ItemStack stack) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
-
-		if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
-			return customData.getLong("timestamp");
-		}
-
-		if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
-			TemporalAccessor date = OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp"));
-			return Instant.from(date).toEpochMilli();
-		}
-
-		return 0L;
+		return LocalDate.parse(getTimestamp(stack), OBTAINED_DATE_FORMATTER).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 	}
 }
