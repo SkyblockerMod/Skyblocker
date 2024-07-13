@@ -247,7 +247,18 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			return;
 		}
 		// Prevent salvaging
+		// TODO in future maybe also block clicking the salvage button if a protected item manages to get into the menu
 		if (title.equals("Salvage Items") && ItemProtection.isItemProtected(stack)) {
+			ci.cancel();
+			return;
+		}
+		// Prevent Trading
+		if (title.startsWith("You  ") && ItemProtection.isItemProtected(stack)) { //Terrible way to detect the trade menu lol
+			ci.cancel();
+			return;
+		}
+		// Prevent Auctioning
+		if ((title.equals("Create BIN Auction") || title.equals("Create Auction")) && ItemProtection.isItemProtected(stack)) {
 			ci.cancel();
 			return;
 		}
