@@ -745,7 +745,6 @@
   "skyblocker.events.tab.noMore": "No more this year!",
   "skyblocker.events.tab.startsIn": "Starts in %s",
 
-
   "skyblocker.garden.hud.mouseLocked": "Mouse locked.",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
@@ -893,6 +892,9 @@
   "skyblocker.partyFinder.yourParty": "Your party",
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
+
+  "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] You can copy the amount of items",
+  "skyblocker.reorderHelper.tooltip.line2": "by holding CTRL while clicking on the item!",
 
   "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
   "skyblocker.fancyAuctionHouse.price": "Price:",
