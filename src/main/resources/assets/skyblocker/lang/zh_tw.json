@@ -754,5 +754,22 @@
     "skyblocker.reparty.notInPartyOrNotLeader": "你必須在隊伍中並且是隊長才能重新組隊！",
     "skyblocker.reparty.error": "重新組隊失敗，請稍後再試！",
     "skyblocker.config.helpers.chocolateFactory.straySound": "野兔音效",
-    "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "當有野生兔子出現時，反覆發出叮叮聲。如果是金色的，聲音會更加頻繁且不同。"
+    "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "當有野生兔子出現時，反覆發出叮叮聲。如果是金色的，聲音會更加頻繁且不同。",
+    "skyblocker.config.dungeons.devices": "設備助手（F7/M7）",
+    "skyblocker.config.dungeons.devices.solveLightsOn": "Lights On助手",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "以紅色突出顯示要點選的正確拉桿",
+    "skyblocker.config.dungeons.devices.solveSimonSays": "Simon Says助手",
+    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "以綠色突出顯示要點的正確按鈕，並以黃色突出顯示下一個按鈕。",
+    "skyblocker.profileviewer.inventory.accessoryBag": "飾品包",
+    "skyblocker.profileviewer.inventory.inactive": "鎖定欄",
+    "skyblocker.waypoints.ordered.import.coleWeight.success": "已成功匯入Cole Weight格式的路徑點。",
+    "skyblocker.profileviewer.inventory.inventory": "倉庫",
+    "skyblocker.profileviewer.inventory.armor": "護甲",
+    "skyblocker.profileviewer.inventory.equipment": "裝備",
+    "skyblocker.profileviewer.inventory.wardrobe": "衣櫥",
+    "skyblocker.profileviewer.inventory.pets": "寵物",
+    "skyblocker.profileviewer.inventory.enderchest": "終界箱",
+    "skyblocker.profileviewer.inventory.backpack": "背包",
+    "skyblocker.profileviewer.inventory.inactive.description.backpack": "選定的背包",
+    "skyblocker.profileviewer.inventory.inactive.description.general": "不包含此欄"
 }
