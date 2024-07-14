@@ -57,7 +57,7 @@ public class QuickNavigationConfig {
     public QuickNavItem button11 = new QuickNavItem(new ItemData("player_head", 1, "[minecraft:profile={id:[I;1605800870,415127827,-1236127084,15358548],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}]"), "/warp dungeon_hub");
 
     @SerialEntry
-    public QuickNavItem button12 = new QuickNavItem(new ItemData("gold_block"), "/ah");
+    public QuickNavItem button12 = new QuickNavItem(new ItemData("gold_block"), "Auction House", "/ah");
 
     @SerialEntry
     public QuickNavItem button13 = new QuickNavItem(new ItemData("player_head", 1, "[minecraft:profile={id:[I;-562285948,532499670,-1705302742,775653035],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZlMmRjZGE0MWVjM2FmZjhhZjUwZjI3MmVjMmUwNmE4ZjUwOWUwZjgwN2YyMzU1YTFmNWEzM2MxYjY2ZTliNCJ9fX0=\"}]}]"), "Bazaar .*", "/bz");
