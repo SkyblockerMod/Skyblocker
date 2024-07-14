@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UIAndVisualsConfig {
+public class    UIAndVisualsConfig {
     @SerialEntry
     public boolean compactorDeletorPreview = true;
 
@@ -29,6 +29,9 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public boolean showEquipmentInInventory = true;
+
+    @SerialEntry
+    public boolean showEssenceCost = true;
 
     @SerialEntry
     public ChestValue chestValue = new ChestValue();

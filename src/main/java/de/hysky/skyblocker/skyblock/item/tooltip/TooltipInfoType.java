@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.EssenceShopPrice;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +17,7 @@ import java.util.function.Predicate;
 
 public enum TooltipInfoType implements Runnable {
     NPC("https://hysky.de/api/npcprice", itemTooltip -> itemTooltip.enableNPCPrice, true),
-    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false),
+    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false, EssenceShopPrice::refreshEssencePrices),
     LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableLowestBIN, false),
     ONE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/1day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     THREE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/3day.json", itemTooltip -> itemTooltip.enableAvgBIN || SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableAuctionHouse, itemTooltip -> itemTooltip.enableAvgBIN, false),

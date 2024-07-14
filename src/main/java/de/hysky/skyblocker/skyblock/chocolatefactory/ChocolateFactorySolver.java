@@ -5,7 +5,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -94,7 +93,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private static void onTick(MinecraftClient client) {
 		if (ding != StraySound.NONE) {
-			dingTick = (++dingTick) %  (ding == StraySound.NORMAL ? 5 : 3);
+			dingTick = (++dingTick) % (ding == StraySound.NORMAL ? 5 : 3);
 			if (dingTick == 0) {
 				client.getSoundManager().play(PositionedSoundInstance.master(ding == StraySound.NORMAL ? SoundEvents.BLOCK_NOTE_BLOCK_PLING.value() : SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), 1.f, 1.f));
 			}
@@ -151,14 +150,15 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		RegexUtils.getLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getName().getString())).ifPresent(l -> totalChocolate = l);
 
 		//Cps item (cocoa bean) is in slot 45
-		String cpsItemLore = Utils.getConcatenatedLore(slots.get(45));
+		String cpsItemLore = ItemUtils.getConcatenatedLore(slots.get(CPS_SLOT));
 		Matcher cpsMatcher = CPS_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(cpsMatcher).ifPresent(d -> totalCps = d);
 		Matcher multiplierMatcher = TOTAL_MULTIPLIER_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
 
 		//Prestige item is in slot 28
-		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(Utils.getConcatenatedLore(slots.get(28)));
+		String prestigeLore = ItemUtils.getConcatenatedLore(slots.get(PRESTIGE_SLOT));
+		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(prestigeLore);
 		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(prestigeMatcher);
 		if (currentChocolate.isPresent()) {
 			String requirement = prestigeMatcher.group(2); //If the first one matched, we can assume the 2nd one is also matched since it's one whole regex
@@ -177,9 +177,12 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		}
 
 		//Time Tower is in slot 39
-		timeTowerMultiplier = romanToDecimal(StringUtils.substringAfterLast(slots.get(39).getName().getString(), ' ')) / 10.0; //The name holds the level, which is multiplier * 10 in roman numerals
-		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(Utils.getConcatenatedLore(slots.get(39)));
-		if (timeTowerStatusMatcher.find()) {
+		isTimeTowerMaxed = StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ').equals("XV");
+		String timeTowerLore = ItemUtils.getConcatenatedLore(slots.get(TIME_TOWER_SLOT));
+		Matcher timeTowerMultiplierMatcher = TIME_TOWER_MULTIPLIER_PATTERN.matcher(timeTowerLore);
+		RegexUtils.getDoubleFromMatcher(timeTowerMultiplierMatcher).ifPresent(d -> timeTowerMultiplier = d);
+		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(timeTowerLore);
+		if (timeTowerStatusMatcher.find(timeTowerMultiplierMatcher.hasMatch() ? timeTowerMultiplierMatcher.end() : 0)) {
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
 
@@ -187,29 +190,9 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
 	}
 
-	/**
-	 * Utility method.
-	 */
-	private static String getConcatenatedLore(ItemStack item) {
-		return concatenateLore(ItemUtils.getLore(item));
-	}
-
-	/**
-	 * Concatenates the lore of an item into one string.
-	 * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
-	 */
-	private static String concatenateLore(List<Text> lore) {
-		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < lore.size(); i++) {
-			stringBuilder.append(lore.get(i).getString());
-			if (i != lore.size() - 1) stringBuilder.append(" ");
-		}
-		return stringBuilder.toString();
-	}
-
 	private static Optional<Rabbit> getCoach(ItemStack coachItem) {
 		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
-		String coachLore = getConcatenatedLore(coachItem);
+		String coachLore = ItemUtils.getConcatenatedLore(coachItem);
 
 		if (totalCps < 0 || totalCpsMultiplier < 0) return Optional.empty(); //We need these 2 to calculate the increase in cps.
 
@@ -231,7 +214,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private static Optional<Rabbit> getRabbit(ItemStack item, int slot) {
-		String lore = getConcatenatedLore(item);
+		String lore = ItemUtils.getConcatenatedLore(item);
 		Matcher cpsMatcher = CPS_INCREASE_PATTERN.matcher(lore);
 		OptionalInt currentCps = RegexUtils.getIntFromMatcher(cpsMatcher);
 		if (currentCps.isEmpty()) return Optional.empty();
@@ -244,7 +227,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt())*(totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsLong(), slot));
+		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt()) * (totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsLong(), slot));
 	}
 
 	private static Optional<ColorHighlight> getPrestigeHighlight() {
@@ -268,7 +251,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		return highlights;
 	}
 
-	private record Rabbit(double cpsIncrease, long cost, int slot) { }
+	private record Rabbit(double cpsIncrease, long cost, int slot) {}
 
 	private enum StraySound {
 		NONE,
@@ -290,11 +273,13 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			//It should be set to true if there's any information added, false otherwise.
 			boolean shouldAddLine = false;
 
-		String lore = Utils.concatenateLore(lines);
-		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
-		//Available on all items with a chocolate cost
-		if (cost.isPresent()) shouldAddLine = addUpgradeTimerToLore(lines, cost.getAsLong());
+			String lore = ItemUtils.concatenateLore(lines);
+			Matcher costMatcher = COST_PATTERN.matcher(lore);
+			OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
+			//Available on all items with a chocolate cost
+			if (cost.isPresent()) shouldAddLine |= addUpgradeTimerToLore(lines, cost.getAsLong());
+
+			int index = focusedSlot.id;
 
 			//Prestige item
 			if (index == PRESTIGE_SLOT) {
@@ -386,96 +371,23 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			seconds = Math.ceil(seconds);
 			if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
 
-		StringBuilder builder = new StringBuilder();
-		if (seconds >= 86400) {
-			builder.append((int) (seconds / 86400)).append("d ");
-			seconds %= 86400;
+			StringBuilder builder = new StringBuilder();
+			if (seconds >= 86400) {
+				builder.append((int) (seconds / 86400)).append("d ");
+				seconds %= 86400;
+			}
+			if (seconds >= 3600) {
+				builder.append((int) (seconds / 3600)).append("h ");
+				seconds %= 3600;
+			}
+			if (seconds >= 60) {
+				builder.append((int) (seconds / 60)).append("m ");
+				seconds %= 60;
+			}
+			if (seconds >= 1) {
+				builder.append((int) seconds).append("s");
+			}
+			return Text.literal(builder.toString()).formatted(Formatting.GOLD);
 		}
-		if (seconds >= 3600) {
-			builder.append((int) (seconds / 3600)).append("h ");
-			seconds %= 3600;
-		}
-		if (seconds >= 60) {
-			builder.append((int) (seconds / 60)).append("m ");
-			seconds %= 60;
-		}
-		if (seconds >= 1) {
-			builder.append((int) seconds).append("s");
-		}
-		return Text.literal(builder.toString()).formatted(Formatting.GOLD);
-	}
-
-	private static Optional<Rabbit> getCoach(ItemStack coachItem) {
-		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
-		String coachLore = Utils.getConcatenatedLore(coachItem);
-
-		if (totalCpsMultiplier == -1.0) return Optional.empty(); //We need the total multiplier to calculate the increase in cps.
-
-		Matcher multiplierIncreaseMatcher = MULTIPLIER_INCREASE_PATTERN.matcher(coachLore);
-		OptionalDouble currentCpsMultiplier = RegexUtils.getDoubleFromMatcher(multiplierIncreaseMatcher);
-		if (currentCpsMultiplier.isEmpty()) return Optional.empty();
-
-		OptionalDouble nextCpsMultiplier = RegexUtils.getDoubleFromMatcher(multiplierIncreaseMatcher);
-		if (nextCpsMultiplier.isEmpty()) { //This means that the coach isn't hired yet.
-			nextCpsMultiplier = currentCpsMultiplier; //So the first instance of the multiplier is actually the amount we'll get upon upgrading.
-			currentCpsMultiplier = OptionalDouble.of(0.0); //And so, we can re-assign values to the variables to make the calculation more readable.
-		}
-
-		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
-		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
-		if (cost.isEmpty()) return Optional.empty();
-
-		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsInt(), 42, coachItem));
-	}
-
-	private static Optional<Rabbit> getRabbit(ItemStack item, int slot) {
-		String lore = Utils.getConcatenatedLore(item);
-		Matcher cpsMatcher = CPS_INCREASE_PATTERN.matcher(lore);
-		OptionalInt currentCps = RegexUtils.getIntFromMatcher(cpsMatcher);
-		if (currentCps.isEmpty()) return Optional.empty();
-		OptionalInt nextCps = RegexUtils.getIntFromMatcher(cpsMatcher);
-		if (nextCps.isEmpty()) {
-			nextCps = currentCps; //This means that the rabbit isn't hired yet.
-			currentCps = OptionalInt.of(0); //So the first instance of the cps is actually the amount we'll get upon hiring.
-		}
-
-		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		OptionalInt cost = RegexUtils.getIntFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
-		if (cost.isEmpty()) return Optional.empty();
-		return Optional.of(new Rabbit(nextCps.getAsInt() - currentCps.getAsInt(), cost.getAsInt(), slot, item));
-	}
-
-	private static Optional<ColorHighlight> getPrestigeHighlight(ItemStack item) {
-		List<Text> loreList = ItemUtils.getLore(item);
-		if (loreList.isEmpty()) return Optional.empty();
-
-		String lore = loreList.getLast().getString(); //The last line holds the text we're looking for
-		if (lore.equals("Click to prestige!")) return Optional.of(ColorHighlight.green(28));
-		return Optional.of(ColorHighlight.red(28));
-	}
-
-	private record Rabbit(double cpsIncrease, int cost, int slot, ItemStack itemStack) {
-	}
-
-	//Perhaps the part below can go to a separate file later on, but I couldn't find a proper name for the class, so they're staying here.
-	private static final Map<Character, Integer> romanMap = Map.of(
-			'I', 1,
-			'V', 5,
-			'X', 10,
-			'L', 50,
-			'C', 100,
-			'D', 500,
-			'M', 1000
-	);
-
-	public static int romanToDecimal(String romanNumeral) {
-		int decimal = 0;
-		int lastNumber = 0;
-		for (int i = romanNumeral.length() - 1; i >= 0; i--) {
-			char ch = romanNumeral.charAt(i);
-			decimal = romanMap.get(ch) >= lastNumber ? decimal + romanMap.get(ch) : decimal - romanMap.get(ch);
-			lastNumber = romanMap.get(ch);
-		}
-		return decimal;
 	}
 }
