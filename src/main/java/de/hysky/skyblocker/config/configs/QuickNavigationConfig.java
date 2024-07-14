@@ -18,14 +18,14 @@ public class QuickNavigationConfig {
 
     /* REGEX Explanation
      * "Pets" : simple match on letters
-     * "(?: \\(\\d+\\/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
+     * "(?: \\(\\d+/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
      */
     @SerialEntry
     public QuickNavItem button3 = new QuickNavItem(new ItemData("bone"), "Pets(?: \\(\\d+/\\d+\\))?", "/pets");
 
     /* REGEX Explanation
      * "Wardrobe" : simple match on letters
-     * " \\([12]\\/2\\)" : match on the page either " (1/2)" or " (2/2)"
+     * " \\([12]/2\\)" : match on the page either " (1/2)" or " (2/2)"
      */
     @SerialEntry
     public QuickNavItem button4 = new QuickNavItem(new ItemData("leather_chestplate", 1, "[minecraft:dyed_color={rgb:8991416}]"), "Wardrobe \\([12]/2\\)", "/wardrobe");
@@ -39,7 +39,7 @@ public class QuickNavigationConfig {
     /* REGEX Explanation
      * "(?:Rift )?" : optional match on the non-capturing group "Rift "
      * "Storage" : simple match on letters
-     * "(?: \\([12]/2\\))?" : optional match on the non-capturing group " (1/2)" or " (2/2)"
+     * "(?: \\(\\d/\\d\\))?" : optional match on the non-capturing group " (1/2)" or " (2/2)"
      */
     @SerialEntry
     public QuickNavItem button7 = new QuickNavItem(new ItemData("ender_chest"), "(?:Rift )?Storage(?: \\(\\d/\\d\\))?", "/storage");
