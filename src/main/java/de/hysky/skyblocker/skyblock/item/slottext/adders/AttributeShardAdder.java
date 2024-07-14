@@ -27,7 +27,7 @@ public class AttributeShardAdder extends SlotTextAdder {
 		ID_2_SHORT_NAME.put("elite", "E");
 		ID_2_SHORT_NAME.put("ender", "EN");
 		ID_2_SHORT_NAME.put("ignition", "I");
-		ID_2_SHORT_NAME.put("life_recovery", "LR");
+		ID_2_SHORT_NAME.put("life_recovery", "HE"); //HE for Healing since LR should go to Life regen since thats more useful
 		ID_2_SHORT_NAME.put("mana_steal", "MS");
 		ID_2_SHORT_NAME.put("midas_touch", "MT");
 		ID_2_SHORT_NAME.put("undead", "U");
@@ -44,12 +44,12 @@ public class AttributeShardAdder extends SlotTextAdder {
 		ID_2_SHORT_NAME.put("ender_resistance", "ER");
 		ID_2_SHORT_NAME.put("experience", "XP");
 		ID_2_SHORT_NAME.put("fortitude", "F");
-		ID_2_SHORT_NAME.put("life_regeneration", "HR"); //Health regeneration
+		ID_2_SHORT_NAME.put("life_regeneration", "LR");
 		ID_2_SHORT_NAME.put("lifeline", "L");
 		ID_2_SHORT_NAME.put("magic_find", "MF");
 		ID_2_SHORT_NAME.put("mana_pool", "MP");
 		ID_2_SHORT_NAME.put("mana_regeneration", "MR");
-		ID_2_SHORT_NAME.put("mending", "V"); //Vitality
+		ID_2_SHORT_NAME.put("mending", "VI"); //Vitality
 		ID_2_SHORT_NAME.put("speed", "S");
 		ID_2_SHORT_NAME.put("undead_resistance", "UR");
 		ID_2_SHORT_NAME.put("veteran", "V");
