@@ -12,17 +12,15 @@ import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.Language;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SearchResultsWidget implements Drawable, Element {
     private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(new Identifier("recipe_book/page_forward"), new Identifier("recipe_book/page_forward_highlighted"));
@@ -30,7 +28,6 @@ public class SearchResultsWidget implements Drawable, Element {
     private static final int COLS = 5;
     private static final int MAX_TEXT_WIDTH = 124;
     private static final String ELLIPSIS = "...";
-    private static final Pattern FORMATTING_CODE_PATTERN = Pattern.compile("(?i)§[0-9A-FK-OR]");
 
     private final MinecraftClient client;
     private final int parentX;
@@ -134,11 +131,15 @@ public class SearchResultsWidget implements Drawable, Element {
 
             //Item name
             Text resultText = this.recipeResults.get(this.currentPage).getResult().getName();
-            if (textRenderer.getWidth(Formatting.strip(resultText.getString())) > MAX_TEXT_WIDTH) {
+            if (textRenderer.getWidth(resultText) > MAX_TEXT_WIDTH) {
             	drawTooltip(textRenderer, context, resultText, this.parentX + 11, this.parentY + 43, mouseX, mouseY);
-            	resultText = Text.literal(getLegacyFormatting(resultText.getString()) + textRenderer.trimToWidth(Formatting.strip(resultText.getString()), MAX_TEXT_WIDTH) + ELLIPSIS).setStyle(resultText.getStyle());
+            	StringVisitable trimmed = StringVisitable.concat(textRenderer.trimToWidth(resultText, MAX_TEXT_WIDTH), StringVisitable.plain(ELLIPSIS));
+            	OrderedText ordered = Language.getInstance().reorder(trimmed);
+
+            	context.drawTextWithShadow(textRenderer, ordered, this.parentX + 11, this.parentY + 43, 0xffffffff);
+            } else {
+            	context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
             }
-            context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
 
             //Arrow pointing to result item from the recipe
             context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
@@ -171,23 +172,6 @@ public class SearchResultsWidget implements Drawable, Element {
      */
     private void drawTooltip(TextRenderer textRenderer, DrawContext context, String text, int textX, int textY, int mouseX, int mouseY){
         drawTooltip(textRenderer, context, Text.of(text), textX, textY, mouseX, mouseY);
-    }
-
-    /**
-     * Retrieves the first occurrence of section symbol formatting in a string
-     * 
-     * @param string The string to fetch section symbol formatting from
-     * @return The section symbol and its formatting code or {@code null} if a match isn't found or if the {@code string} is null
-     */
-    private static String getLegacyFormatting(@Nullable String string) {
-        if (string == null) {
-            return null;
-        }
-        Matcher matcher = FORMATTING_CODE_PATTERN.matcher(string);
-        if (matcher.find()) {
-            return matcher.group(0);
-        }
-        return null;
     }
 
     public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
