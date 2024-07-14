@@ -205,8 +205,8 @@ public final class ItemUtils {
      * @return The first line of the lore that matches the predicate, or {@code null} if no line matches.
      */
     @Nullable
-    public static String getLoreLineIf(ItemStack item, Predicate<String> predicate) {
-        for (Text line : getLore(item)) {
+    public static String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
+        for (Text line : getLore(stack)) {
             String string = line.getString();
             if (predicate.test(string)) {
                 return string;
@@ -221,9 +221,9 @@ public final class ItemUtils {
      * @return A matcher that contains match results if the pattern was found in the lore, otherwise {@code null}.
      */
     @Nullable
-    public static Matcher getLoreLineIfMatch(ItemStack item, Pattern pattern) {
+    public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
         Matcher matcher = pattern.matcher("");
-        for (Text line : getLore(item)) {
+        for (Text line : getLore(stack)) {
             if (matcher.reset(line.getString()).matches()) {
                 return matcher;
             }
@@ -234,13 +234,13 @@ public final class ItemUtils {
 	/**
 	 * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#find()}.
 	 * @param pattern the pattern to search for
-	 * @param item the item to search the lore of
+	 * @param stack the stack to search the lore of
 	 * @return A {@link Matcher matcher} that contains match results if the pattern was found in the lore, otherwise {@code null}.
 	 */
 	@Nullable
-	public static Matcher getLoreLineIfContainsMatch(ItemStack item, Pattern pattern) {
+	public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
 		Matcher matcher = pattern.matcher("");
-		for (Text line : getLore(item)) {
+		for (Text line : getLore(stack)) {
 			if (matcher.reset(line.getString()).find()) {
 				return matcher;
 			}
@@ -248,8 +248,8 @@ public final class ItemUtils {
 		return null;
 	}
 
-    public static @NotNull List<Text> getLore(ItemStack item) {
-        return item.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
+    public static @NotNull List<Text> getLore(ItemStack stack) {
+        return stack.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
     }
 
     public static @NotNull PropertyMap propertyMapWithTexture(String textureValue) {
