@@ -8,6 +8,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -18,9 +20,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.PosArgument;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -123,10 +122,10 @@ public class CrystalsLocationsManager {
     private static void registerWaypointLocationCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal(SkyblockerMod.NAMESPACE)
                 .then(literal("crystalWaypoints")
-                        .then(argument("pos", BlockPosArgumentType.blockPos())
+                        .then(argument("pos", ClientBlockPosArgumentType.blockPos())
                                 .then(argument("place", StringArgumentType.greedyString())
                                         .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
-                                        .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", PosArgument.class)))
+                                        .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", ClientPosArgument.class)))
                                 )
                         )
                         .then(literal("share")
@@ -160,9 +159,8 @@ public class CrystalsLocationsManager {
         return text;
     }
 
-    public static int addWaypointFromCommand(FabricClientCommandSource source, String place, PosArgument location) {
-        // TODO Less hacky way with custom ClientBlockPosArgumentType
-        BlockPos blockPos = location.toAbsoluteBlockPos(new ServerCommandSource(null, source.getPosition(), source.getRotation(), null, 0, null, null, null, null));
+    public static int addWaypointFromCommand(FabricClientCommandSource source, String place, ClientPosArgument location) {
+        BlockPos blockPos = location.toAbsoluteBlockPos(source);
 
         if (WAYPOINT_LOCATIONS.containsKey(place)) {
             addCustomWaypoint(place, blockPos);
