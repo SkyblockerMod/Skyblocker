@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public final class ItemUtils {
-    private ItemUtils() {}
     public static final String ID = "id";
     public static final String UUID = "uuid";
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
@@ -55,6 +54,8 @@ public final class ItemUtils {
             Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
             ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemStack::getComponentChanges)
     ).apply(instance, ItemStack::new)));
+
+    private ItemUtils() {}
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
