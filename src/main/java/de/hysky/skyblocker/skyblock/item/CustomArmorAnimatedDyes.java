@@ -1,20 +1,15 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static com.mojang.brigadier.arguments.StringArgumentType.word;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -26,6 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class CustomArmorAnimatedDyes {
 	private static final Object2ObjectOpenHashMap<AnimatedDye, AnimatedDyeStateTracker> STATE_TRACKER_MAP = new Object2ObjectOpenHashMap<>();
@@ -42,23 +40,17 @@ public class CustomArmorAnimatedDyes {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("custom")
 						.then(literal("animatedDye")
-								.executes(context -> customizeAnimatedDye(context.getSource(), null, null, 0, false, 0))
-								.then(argument("hex1", word())
-										.then(argument("hex2", word())
+								.executes(context -> customizeAnimatedDye(context.getSource(), Integer.MIN_VALUE, Integer.MIN_VALUE, 0, false, 0))
+								.then(argument("hex1", ColorArgumentType.hex())
+										.then(argument("hex2", ColorArgumentType.hex())
 												.then(argument("samples", IntegerArgumentType.integer(1))
 														.then(argument("cycleBack", BoolArgumentType.bool())
-																.executes(context -> customizeAnimatedDye(context.getSource(), getString(context, "hex1"), getString(context, "hex2"), IntegerArgumentType.getInteger(context, "samples"), BoolArgumentType.getBool(context, "cycleBack"), DEFAULT_TICK_DELAY))
+																.executes(context -> customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), IntegerArgumentType.getInteger(context, "samples"), BoolArgumentType.getBool(context, "cycleBack"), DEFAULT_TICK_DELAY))
 																.then(argument("tickDelay", IntegerArgumentType.integer(0, 20))
-																		.executes(context ->customizeAnimatedDye(context.getSource(), getString(context, "hex1"), getString(context, "hex2"), IntegerArgumentType.getInteger(context, "samples"), BoolArgumentType.getBool(context, "cycleBack"), IntegerArgumentType.getInteger(context, "tickDelay")))))))))));
+																		.executes(context ->customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), IntegerArgumentType.getInteger(context, "samples"), BoolArgumentType.getBool(context, "cycleBack"), IntegerArgumentType.getInteger(context, "tickDelay")))))))))));
 	}
 
-	private static int customizeAnimatedDye(FabricClientCommandSource source, String hex1, String hex2, int samples, boolean cycleBack, int tickDelay) {
-		if (hex1 != null && hex2 != null && (!CustomArmorDyeColors.isHexadecimalColor(hex1) || !CustomArmorDyeColors.isHexadecimalColor(hex2))) {
-			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.invalidHex")));
-
-			return Command.SINGLE_SUCCESS;
-		}
-
+	private static int customizeAnimatedDye(FabricClientCommandSource source, int color1, int color2, int samples, boolean cycleBack, int tickDelay) {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
@@ -68,7 +60,7 @@ public class CustomArmorAnimatedDyes {
 				if (!itemUuid.isEmpty()) {
 					Object2ObjectOpenHashMap<String, AnimatedDye> customAnimatedDyes = SkyblockerConfigManager.get().general.customAnimatedDyes;
 
-					if (hex1 == null && hex2 == null) {
+					if (color1 == Integer.MIN_VALUE && color2 == Integer.MIN_VALUE) {
 						if (customAnimatedDyes.containsKey(itemUuid)) {
 							customAnimatedDyes.remove(itemUuid);
 							SkyblockerConfigManager.save();
@@ -77,7 +69,7 @@ public class CustomArmorAnimatedDyes {
 							source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.neverHad")));
 						}
 					} else {
-						AnimatedDye animatedDye = new AnimatedDye(Integer.decode("0x" + hex1.replace("#", "")), Integer.decode("0x" + hex2.replace("#", "")), samples, cycleBack, tickDelay);
+						AnimatedDye animatedDye = new AnimatedDye(color1, color2, samples, cycleBack, tickDelay);
 
 						customAnimatedDyes.put(itemUuid, animatedDye);
 						SkyblockerConfigManager.save();

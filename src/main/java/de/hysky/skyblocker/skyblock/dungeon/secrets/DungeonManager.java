@@ -12,14 +12,16 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteMaps;
@@ -37,8 +39,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.PosArgument;
 import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
@@ -53,7 +53,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.registry.Registry;
 import net.minecraft.resource.Resource;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -387,13 +386,12 @@ public class DungeonManager {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static RequiredArgumentBuilder<FabricClientCommandSource, PosArgument> addCustomWaypointCommand(boolean relative, CommandRegistryAccess registryAccess) {
-        return argument("pos", BlockPosArgumentType.blockPos())
+    private static RequiredArgumentBuilder<FabricClientCommandSource, ClientPosArgument> addCustomWaypointCommand(boolean relative, CommandRegistryAccess registryAccess) {
+        return argument("pos", ClientBlockPosArgumentType.blockPos())
                 .then(argument("secretIndex", IntegerArgumentType.integer())
                         .then(argument("category", SecretWaypoint.Category.CategoryArgumentType.category())
                                 .then(argument("name", TextArgumentType.text(registryAccess)).executes(context -> {
-                                    // TODO Less hacky way with custom ClientBlockPosArgumentType
-                                    BlockPos pos = context.getArgument("pos", PosArgument.class).toAbsoluteBlockPos(new ServerCommandSource(null, context.getSource().getPosition(), context.getSource().getRotation(), null, 0, null, null, null, null));
+                                    BlockPos pos = context.getArgument("pos", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource());
                                     return relative ? addCustomWaypointRelative(context, pos) : addCustomWaypoint(context, pos);
                                 }))
                         )
@@ -419,11 +417,10 @@ public class DungeonManager {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static RequiredArgumentBuilder<FabricClientCommandSource, PosArgument> removeCustomWaypointCommand(boolean relative) {
-        return argument("pos", BlockPosArgumentType.blockPos())
+    private static RequiredArgumentBuilder<FabricClientCommandSource, ClientPosArgument> removeCustomWaypointCommand(boolean relative) {
+        return argument("pos", ClientBlockPosArgumentType.blockPos())
                 .executes(context -> {
-                    // TODO Less hacky way with custom ClientBlockPosArgumentType
-                    BlockPos pos = context.getArgument("pos", PosArgument.class).toAbsoluteBlockPos(new ServerCommandSource(null, context.getSource().getPosition(), context.getSource().getRotation(), null, 0, null, null, null, null));
+                    BlockPos pos = context.getArgument("pos", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource());
                     return relative ? removeCustomWaypointRelative(context, pos) : removeCustomWaypoint(context, pos);
                 });
     }

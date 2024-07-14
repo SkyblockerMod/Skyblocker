@@ -2,11 +2,11 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -25,28 +25,23 @@ public class CustomArmorDyeColors {
 		dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("custom")
 						.then(ClientCommandManager.literal("dyeColor")
-								.executes(context -> customizeDyeColor(context.getSource(), null))
-								.then(ClientCommandManager.argument("hexCode", StringArgumentType.string())
-										.executes(context -> customizeDyeColor(context.getSource(), StringArgumentType.getString(context, "hexCode")))))));
+								.executes(context -> customizeDyeColor(context.getSource(), Integer.MIN_VALUE))
+								.then(ClientCommandManager.argument("hexCode", ColorArgumentType.hex())
+										.executes(context -> customizeDyeColor(context.getSource(), ColorArgumentType.getIntFromHex(context, "hexCode")))))));
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	private static int customizeDyeColor(FabricClientCommandSource source, String hex) {
+	private static int customizeDyeColor(FabricClientCommandSource source, int color) {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
-		if (hex != null && !isHexadecimalColor(hex)) {
-			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.invalidHex")));
-			return Command.SINGLE_SUCCESS;
-		}
-
-	if (Utils.isOnSkyblock() && heldItem != null) {
+		if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.isIn(ItemTags.DYEABLE)) {
 				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
 				if (!itemUuid.isEmpty()) {
 					Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;
 
-					if (hex == null) {
+					if (color == Integer.MIN_VALUE) {
 						if (customDyeColors.containsKey(itemUuid)) {
 							customDyeColors.removeInt(itemUuid);
 							SkyblockerConfigManager.save();
@@ -55,7 +50,7 @@ public class CustomArmorDyeColors {
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.neverHad")));
 						}
 					} else {
-						customDyeColors.put(itemUuid, Integer.decode("0x" + hex.replace("#", "")).intValue());
+						customDyeColors.put(itemUuid, color);
 						SkyblockerConfigManager.save();
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.added")));
 					}
@@ -71,9 +66,5 @@ public class CustomArmorDyeColors {
 		}
 
 		return Command.SINGLE_SUCCESS;
-	}
-
-	public static boolean isHexadecimalColor(String s) {
-		return s.replace("#", "").chars().allMatch(c -> "0123456789ABCDEFabcdef".indexOf(c) >= 0) && s.replace("#", "").length() == 6;
 	}
 }
