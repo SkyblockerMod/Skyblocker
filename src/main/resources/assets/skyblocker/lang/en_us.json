@@ -291,6 +291,10 @@
 
   "skyblocker.config.helpers": "Helpers",
 
+  "skyblocker.config.helpers.bazaar": "Bazaar",
+  "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
+  "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
+
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
@@ -753,7 +757,6 @@
   "skyblocker.events.tab.noMore": "No more this year!",
   "skyblocker.events.tab.startsIn": "Starts in %s",
 
-
   "skyblocker.garden.hud.mouseLocked": "Mouse locked.",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
@@ -901,6 +904,9 @@
   "skyblocker.partyFinder.yourParty": "Your party",
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
+
+  "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] You can copy the amount of items",
+  "skyblocker.reorderHelper.tooltip.line2": "by holding CTRL while clicking on the item!",
 
   "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
   "skyblocker.fancyAuctionHouse.price": "Price:",
