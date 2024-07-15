@@ -150,7 +150,7 @@ public class CrystalsLocationsManager {
                                     CLIENT.player.sendMessage(getLocationMenu((int) CLIENT.player.getX() + " " + (int) CLIENT.player.getY() + " " + (int) CLIENT.player.getZ(), true), false);
                                     return Command.SINGLE_SUCCESS;
                                 })
-                                .then(argument("pos", BlockPosArgumentType.blockPos())
+                                .then(argument("pos", ClientBlockPosArgumentType.blockPos())
                                         .then(argument("place", StringArgumentType.greedyString())
                                                 .suggests((context, builder) -> suggestMatching(WAYPOINT_LOCATIONS.keySet(), builder))
                                                 .executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", ClientPosArgument.class)))
