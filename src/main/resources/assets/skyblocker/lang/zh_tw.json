@@ -554,7 +554,7 @@
     "skyblocker.updateRepository.failed": "§c更新本地儲存庫失敗。 詳細資訊請參閱日誌。",
     "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "繪製星標怪物的判定箱。",
     "skyblocker.updateRepository.start": "§b正在更新本機儲存庫…",
-    "skyblocker.updateRepository.loading": "§c本機儲存庫目前正在由另一個進程更新，請稍後重試。",
+    "skyblocker.updateRepository.loading": "§c另一個進程正在更新本機儲存庫，請稍後重試。",
     "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "找到礦井中心，現在工作速度更快",
     "skyblocker.config.mining.crystalHollows.metalDetectorHelper.@Tooltip": "解決Mines of Divan的金屬探測器謎題。",
     "skyblocker.config.mining.crystalHollows.metalDetectorHelper": "金屬探測器助手",
@@ -771,5 +771,15 @@
     "skyblocker.profileviewer.inventory.enderchest": "終界箱",
     "skyblocker.profileviewer.inventory.backpack": "背包",
     "skyblocker.profileviewer.inventory.inactive.description.backpack": "選定的背包",
-    "skyblocker.profileviewer.inventory.inactive.description.general": "不包含此欄"
+    "skyblocker.profileviewer.inventory.inactive.description.general": "不包含此欄",
+    "skyblocker.tips.crystalWaypointsShare": "透過 /skyblocker crystalWaypoints share 分享水晶洞窟路徑點。",
+    "skyblocker.tips.eventNotifications": "查看配置中的可自訂的事件通知。",
+    "skyblocker.waypoints.ordered.import.coleWeight.fail": "§c未能匯入Cole Weight格式的路徑點。請確保路徑點已經複製到剪貼簿！",
+    "skyblocker.config.helpers.bazaar": "集市",
+    "skyblocker.config.helpers.bazaar.enableBazaarHelper": "啟用集市助手",
+    "argument.color.rgb.incomplete": "不完整（應有三個顏色值）。",
+    "argument.color.hex.invalidChar": "十六進制數字的字元無效：%s。有效字元：[0-9a-fA-F]",
+    "argument.color.hex.invalidString": "十六進制顏色的長度應為六個字元，目前有%d個字元。",
+    "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] 你可以複製物品的數量",
+    "skyblocker.reorderHelper.tooltip.line2": "透過按住CTRL鍵的同時點擊該項目！"
 }
