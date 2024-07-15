@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -39,6 +40,7 @@ public class EggFinder {
 	private static final Pattern eggFoundPattern = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner)");
 	private static final Pattern newEggPattern = Pattern.compile("^HOPPITY'S HUNT A Chocolate (Breakfast|Lunch|Dinner) Egg has appeared!$");
 	private static final Logger logger = LoggerFactory.getLogger("Skyblocker Egg Finder");
+	//This is most likely unnecessary with the addition of the location change packet, but it works fine and might be doing something so might as well keep it
 	private static final LinkedList<ArmorStandEntity> armorStandQueue = new LinkedList<>();
 	private static final Location[] possibleLocations = {Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.HUB, Location.THE_END, Location.THE_PARK, Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.SPIDERS_DEN, Location.THE_FARMING_ISLAND};
 	private static boolean isLocationCorrect = false;
@@ -51,6 +53,15 @@ public class EggFinder {
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.GAME.register(EggFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder || client.player == null) return;
+			for (EggType type : EggType.entries) {
+				Egg egg = type.egg;
+				if (egg != null && !egg.seen && client.player.canSee(egg.entity)) {
+					type.setSeen();
+				}
+			}
+		});
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("eggFinder")
 						.then(literal("shareLocation")
@@ -73,7 +84,6 @@ public class EggFinder {
 			armorStandQueue.clear();
 			return;
 		}
-
 		while (!armorStandQueue.isEmpty()) {
 			handleArmorStand(armorStandQueue.poll());
 		}
@@ -87,7 +97,7 @@ public class EggFinder {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 		if (armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
-		if (Utils.getLocation() == Location.UNKNOWN) { //The location is unknown upon world change and will be changed via /locraw soon, so we can queue it for now
+		if (Utils.getLocation() == Location.UNKNOWN) { //The location is unknown upon world change and will be changed via location change packets soon, so we can queue it for now
 			armorStandQueue.add(armorStand);
 			return;
 		}
@@ -116,25 +126,14 @@ public class EggFinder {
 	}
 
 	private static void handleFoundEgg(ArmorStandEntity entity, EggType eggType) {
-		eggType.egg = new Egg(entity, new Waypoint(entity.getBlockPos().up(2), SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(eggType.color)));
-
-		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages || System.currentTimeMillis() - eggType.messageLastSent < 1000) return;
-		eggType.messageLastSent = System.currentTimeMillis();
-		MinecraftClient.getInstance().player.sendMessage(
-				Constants.PREFIX.get()
-				                .append("Found a ")
-				                .append(Text.literal("Chocolate " + eggType + " Egg")
-				                            .withColor(eggType.color))
-				                .append(" at " + entity.getBlockPos().up(2).toShortString() + "!")
-				                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + entity.getBlockX() + " " + (entity.getBlockY() + 2) + " " + entity.getBlockZ() + " " + eggType))
-				                                      .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))));
+		eggType.egg = new Egg(entity, new Waypoint(entity.getBlockPos().up(2), SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(eggType.color)), false);
 	}
 
 	private static void renderWaypoints(WorldRenderContext context) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		for (EggType type : EggType.entries) {
 			Egg egg = type.egg;
-			if (egg != null && egg.waypoint.shouldRender()) egg.waypoint.render(context);
+			if (egg != null && egg.waypoint.shouldRender() && egg.seen) egg.waypoint.render(context);
 		}
 	}
 
@@ -160,7 +159,17 @@ public class EggFinder {
 		}
 	}
 
-	record Egg(ArmorStandEntity entity, Waypoint waypoint) {}
+	static class Egg {
+		private final ArmorStandEntity entity;
+		private final Waypoint waypoint;
+		private boolean seen;
+
+		Egg(ArmorStandEntity entity, Waypoint waypoint, boolean seen) {
+			this.entity = entity;
+			this.waypoint = waypoint;
+			this.seen = seen;
+		}
+	}
 
 	@SuppressWarnings("DataFlowIssue") //Removes that pesky "unboxing of Integer might cause NPE" warning when we already know it's not null
 	public enum EggType {
@@ -186,6 +195,20 @@ public class EggFinder {
 		EggType(int color, String texture) {
 			this.color = color;
 			this.texture = texture;
+		}
+
+		public void setSeen() {
+			egg.seen = true;
+			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages || System.currentTimeMillis() - messageLastSent < 1000) return;
+			messageLastSent = System.currentTimeMillis();
+			MinecraftClient.getInstance().player.sendMessage(
+					Constants.PREFIX.get()
+					                .append("Found a ")
+					                .append(Text.literal("Chocolate " + this + " Egg")
+					                            .withColor(color))
+					                .append(" at " + egg.entity.getBlockPos().up(2).toShortString() + "!")
+					                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + PosUtils.toSpaceSeparatedString(egg.waypoint.pos) + " " + this))
+					                                      .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))));
 		}
 
 		@Override
