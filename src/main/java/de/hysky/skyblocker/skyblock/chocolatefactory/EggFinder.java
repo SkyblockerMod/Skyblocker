@@ -25,7 +25,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -212,7 +212,6 @@ public class EggFinder {
 		}
 
 		@Override
-		@SuppressWarnings("deprecation") // It's either a new dependency or a deprecated method, and I'd rather use the deprecated method
 		public String toString() {
 			return WordUtils.capitalizeFully(this.name());
 		}

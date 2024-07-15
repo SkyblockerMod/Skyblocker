@@ -82,6 +82,9 @@ dependencies {
 
 	// Apache Commons Math
 	include implementation("org.apache.commons:commons-math3:${project.commons_math_version}")
+
+	// Apache Commons Text
+	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
 }
 
 loom {
