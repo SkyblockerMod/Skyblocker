@@ -80,8 +80,9 @@ public class CrystalsChestHighlighter {
             activeChests.add(pos);
             currentLockCount = 0;
             waitingForChest -= 1;
-        } else if (state.isAir()) {
-            activeChests.remove(pos);
+        } else if (state.isAir() && activeChests.contains(pos)) {
+            currentLockCount = 0;
+            activeChests.remove(pos);      
         }
     }
 
@@ -117,7 +118,6 @@ public class CrystalsChestHighlighter {
             neededLockCount = currentLockCount;
             activeParticles.clear();
         }
-
     }
 
 
