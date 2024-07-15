@@ -14,7 +14,6 @@ import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -82,12 +81,12 @@ public class CrystalsChestHighlighter {
             waitingForChest -= 1;
         } else if (state.isAir() && activeChests.contains(pos)) {
             currentLockCount = 0;
-            activeChests.remove(pos);      
+            activeChests.remove(pos);
         }
     }
 
     /**
-     * When a particle is spawned add that particle to active particles
+     * When a particle is spawned add that particle to active particles if correct for lock picking
      *
      * @param packet particle spawn packet
      */
@@ -101,25 +100,30 @@ public class CrystalsChestHighlighter {
     }
 
     /**
-     * When sound is created to tell the user that they have done a stage of picking remove all old particles
+     * Updates {@link CrystalsChestHighlighter#currentLockCount} and clears {@link CrystalsChestHighlighter#activeParticles} based on lock pick related sound events.
      *
      * @param packet sound packet
      */
     public static void onSound(PlaySoundS2CPacket packet) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
+            return;
+        }
         String path = packet.getSound().value().getId().getPath();
+        //lock picked sound
         if (path.equals("entity.experience_orb.pickup") && packet.getPitch() == 1) {
             currentLockCount += 1;
             activeParticles.clear();
+        //lock pick fail sound
         } else if (path.equals("entity.villager.no")) {
             currentLockCount = 0;
             activeParticles.clear();
+        //lock pick finish sound
         } else if (path.equals("block.chest.open")) {
             //set the needed lock count to the current, so we know how many locks a chest has
             neededLockCount = currentLockCount;
             activeParticles.clear();
         }
     }
-
 
     /**
      * If enabled, renders a box around active treasure chests, taking the color from the config.
