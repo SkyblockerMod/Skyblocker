@@ -85,6 +85,7 @@ public class SkyblockTime {
 			skyblockHour.set(hour);
 			HOUR_CHANGE.invoker().onHourChange(hour);
 		}
+		TIME_UPDATE.invoker().onTimeUpdate(year, season, month, day, hour);
 		LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}, Hour {}", year, season, month, day, hour);
 	}
 
@@ -119,6 +120,10 @@ public class SkyblockTime {
 		void onYearChange(int year);
 	}
 
+	public interface OnTimeUpdate {
+		void onTimeUpdate(int year, Season season, Month month, int day, int hour);
+	}
+
 	public static final Event<OnHourChange> HOUR_CHANGE = EventFactory.createArrayBacked(OnHourChange.class, listeners -> hour -> {
 		for (OnHourChange listener : listeners) {
 			listener.onHourChange(hour);
@@ -146,6 +151,12 @@ public class SkyblockTime {
 	public static final Event<OnYearChange> YEAR_CHANGE = EventFactory.createArrayBacked(OnYearChange.class, listeners -> year -> {
 		for (OnYearChange listener : listeners) {
 			listener.onYearChange(year);
+		}
+	});
+
+	public static final Event<OnTimeUpdate> TIME_UPDATE = EventFactory.createArrayBacked(OnTimeUpdate.class, listeners -> (year, season, month, day, hour) -> {
+		for (OnTimeUpdate listener : listeners) {
+			listener.onTimeUpdate(year, season, month, day, hour);
 		}
 	});
 }
