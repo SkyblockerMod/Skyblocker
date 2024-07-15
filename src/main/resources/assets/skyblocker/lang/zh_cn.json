@@ -555,7 +555,7 @@
     "skyblocker.updateRepository.success": "§a已成功更新本地存储库。",
     "skyblocker.updateRepository.failed": "§c更新本地存储库失败。详细信息请参阅日志。",
     "skyblocker.config.mining.crystalsWaypoints.shareFail": "只能分享你已经找到的路径点。",
-    "skyblocker.updateRepository.loading": "§c本地存储库当前正在由另一个进程更新，请稍后重试。",
+    "skyblocker.updateRepository.loading": "§c另一个进程正在更新本地存储库，请稍后重试。",
     "skyblocker.config.mining.crystalHollows.metalDetectorHelper": "金属探测器助手",
     "skyblocker.config.mining.crystalHollows.metalDetectorHelper.@Tooltip": "解决Mines of Divan的金属探测器谜题。",
     "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "找到矿井中心，现在工作速度更快",
@@ -773,5 +773,15 @@
     "skyblocker.profileviewer.inventory.enderchest": "末影箱",
     "skyblocker.config.dungeons.devices.solveSimonSays": "Simon Says助手",
     "skyblocker.config.dungeons.devices.solveLightsOn": "Lights On助手",
-    "skyblocker.config.dungeons.devices": "设备助手（F7/M7）"
+    "skyblocker.config.dungeons.devices": "设备助手（F7/M7）",
+    "skyblocker.tips.crystalWaypointsShare": "通过 /skyblocker crystalWaypoints share 分享水晶洞窟路径点。",
+    "skyblocker.tips.eventNotifications": "查看配置中的可自定义的事件通知。",
+    "skyblocker.waypoints.ordered.import.coleWeight.fail": "§c未能导入Cole Weight格式的路径点。请确保路径点已经复制到剪贴板！",
+    "skyblocker.config.helpers.bazaar": "集市",
+    "skyblocker.config.helpers.bazaar.enableBazaarHelper": "启用集市助手",
+    "skyblocker.reorderHelper.tooltip.line2": "通过按住CTRL键的同时点击该项目！",
+    "argument.color.rgb.incomplete": "不完整（应有三个颜色值）。",
+    "argument.color.hex.invalidString": "十六进制颜色的长度应为六个字符，目前有%d个字符。",
+    "argument.color.hex.invalidChar": "十六进制数字的字符无效：%s。有效字符：[0-9a-fA-F]",
+    "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] 你可以复制物品的数量"
 }
