@@ -14,6 +14,7 @@ import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -35,6 +36,8 @@ public class CrystalsChestHighlighter {
     private static int waitingForChest = 0;
     private static final List<BlockPos> activeChests = new ArrayList<>();
     private static final Map<Vec3d, Long> activeParticles = new HashMap<>();
+    private static int currentLockCount = 0;
+    private static int neededLockCount = 0;
 
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
@@ -46,6 +49,7 @@ public class CrystalsChestHighlighter {
         waitingForChest = 0;
         activeChests.clear();
         activeParticles.clear();
+        currentLockCount = 0;
     }
 
     private static void extractLocationFromMessage(Text text, boolean b) {
@@ -74,6 +78,7 @@ public class CrystalsChestHighlighter {
                 return;
             }
             activeChests.add(pos);
+            currentLockCount = 0;
             waitingForChest -= 1;
         } else if (state.isAir()) {
             activeChests.remove(pos);
@@ -82,6 +87,7 @@ public class CrystalsChestHighlighter {
 
     /**
      * When a particle is spawned add that particle to active particles
+     *
      * @param packet particle spawn packet
      */
     public static void onParticle(ParticleS2CPacket packet) {
@@ -100,14 +106,25 @@ public class CrystalsChestHighlighter {
      */
     public static void onSound(PlaySoundS2CPacket packet) {
         String path = packet.getSound().value().getId().getPath();
-        if (path.equals("entity.experience_orb.pickup") || path.equals("entity.villager.no")) {
+        if (path.equals("entity.experience_orb.pickup") && packet.getPitch() == 1) {
+            currentLockCount += 1;
+            activeParticles.clear();
+        } else if (path.equals("entity.villager.no")) {
+            currentLockCount = 0;
+            activeParticles.clear();
+        } else if (path.equals("block.chest.open")) {
+            //set the needed lock count to the current, so we know how many locks a chest has
+            neededLockCount = currentLockCount;
             activeParticles.clear();
         }
+
     }
 
 
     /**
-     * If enabled, renders a box around active treasure chests, taking the color from the config. Additionally, calculates and displaces the highlight to indicate lock-picking spots on chests.
+     * If enabled, renders a box around active treasure chests, taking the color from the config.
+     * Additionally, calculates and displaces the highlight to indicate lock-picking spots on chests.
+     * Finally, renders text showing how many lock picks the player has done
      *
      * @param context context
      */
@@ -122,27 +139,37 @@ public class CrystalsChestHighlighter {
         }
 
         //render lock picking if player is looking at chest that is in the active chests list
-        if (CLIENT.player == null || activeParticles.isEmpty()) {
+        if (CLIENT.player == null) {
             return;
         }
         HitResult target = CLIENT.crosshairTarget;
         if (target instanceof BlockHitResult blockHitResult && activeChests.contains(blockHitResult.getBlockPos())) {
-            //the player is looking at a chest use active particle to highlight correct spot
-            Vec3d highlightSpot = Vec3d.ZERO;
+            Vec3d chestPos = blockHitResult.getBlockPos().toCenterPos();
 
-            //if to old remove particle
-            activeParticles.entrySet().removeIf(e -> System.currentTimeMillis() - e.getValue() > MAX_PARTICLE_LIFE_TIME);
+            if (!activeParticles.isEmpty()) {
+                //the player is looking at a chest use active particle to highlight correct spot
+                Vec3d highlightSpot = Vec3d.ZERO;
 
-            //add up all particle within range of active block
-            for (Vec3d particlePos : activeParticles.keySet()) {
-                if (particlePos.squaredDistanceTo(blockHitResult.getBlockPos().toCenterPos()) <= 0.75) {
-                    highlightSpot = highlightSpot.add(particlePos);
+                //if to old remove particle
+                activeParticles.entrySet().removeIf(e -> System.currentTimeMillis() - e.getValue() > MAX_PARTICLE_LIFE_TIME);
+
+                //add up all particle within range of active block
+                for (Vec3d particlePos : activeParticles.keySet()) {
+                    if (particlePos.squaredDistanceTo(chestPos) <= 0.75) {
+                        highlightSpot = highlightSpot.add(particlePos);
+                    }
                 }
+
+                //render the spot
+                highlightSpot = highlightSpot.multiply((double) 1 / activeParticles.size()).subtract(LOCK_HIGHLIGHT_SIZE.multiply(0.5));
+                RenderHelper.renderFilled(context, highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
             }
 
-            //render the spot
-            highlightSpot = highlightSpot.multiply((double) 1 / activeParticles.size()).subtract(LOCK_HIGHLIGHT_SIZE.multiply(0.5));
-            RenderHelper.renderFilled(context, highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
+            //render total text if needed is more than 0
+            if (neededLockCount <= 0) {
+                return;
+            }
+            RenderHelper.renderText(context, Text.literal(Math.min(currentLockCount, neededLockCount) + "/" + neededLockCount).withColor(SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getRGB()), chestPos, true);
         }
     }
 }
