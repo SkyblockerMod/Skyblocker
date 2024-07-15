@@ -29,7 +29,7 @@ public class CrystalsChestHighlighter {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final String CHEST_SPAWN_MESSAGE = "You uncovered a treasure chest!";
-    private static final long MAX_PARTICLE_LIFE_TIME = 500;
+    private static final long MAX_PARTICLE_LIFE_TIME = 250;
     private static final Vec3d LOCK_HIGHLIGHT_SIZE = new Vec3d(0.1, 0.1, 0.1);
 
     private static int waitingForChest = 0;
@@ -80,6 +80,10 @@ public class CrystalsChestHighlighter {
         }
     }
 
+    /**
+     * When a particle is spawned add that particle to active particles
+     * @param packet particle spawn packet
+     */
     public static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
             return;
@@ -103,7 +107,7 @@ public class CrystalsChestHighlighter {
 
 
     /**
-     * Renders a box around active treasure chests if enabled. Taking the color from the config. Also displaces highlight to where to lock pick chests
+     * If enabled, renders a box around active treasure chests, taking the color from the config. Additionally, calculates and displaces the highlight to indicate lock-picking spots on chests.
      *
      * @param context context
      */
@@ -125,15 +129,18 @@ public class CrystalsChestHighlighter {
         if (target instanceof BlockHitResult blockHitResult && activeChests.contains(blockHitResult.getBlockPos())) {
             //the player is looking at a chest use active particle to highlight correct spot
             Vec3d highlightSpot = Vec3d.ZERO;
+
             //if to old remove particle
             activeParticles.entrySet().removeIf(e -> System.currentTimeMillis() - e.getValue() > MAX_PARTICLE_LIFE_TIME);
+
             //add up all particle within range of active block
             for (Vec3d particlePos : activeParticles.keySet()) {
                 if (particlePos.squaredDistanceTo(blockHitResult.getBlockPos().toCenterPos()) <= 0.75) {
                     highlightSpot = highlightSpot.add(particlePos);
                 }
-
             }
+
+            //render the spot
             highlightSpot = highlightSpot.multiply((double) 1 / activeParticles.size()).subtract(LOCK_HIGHLIGHT_SIZE.multiply(0.5));
             RenderHelper.renderFilled(context, highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
         }
