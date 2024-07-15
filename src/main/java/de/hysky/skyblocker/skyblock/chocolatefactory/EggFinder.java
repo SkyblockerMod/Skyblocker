@@ -42,7 +42,14 @@ public class EggFinder {
 	private static final Logger logger = LoggerFactory.getLogger("Skyblocker Egg Finder");
 	//This is most likely unnecessary with the addition of the location change packet, but it works fine and might be doing something so might as well keep it
 	private static final LinkedList<ArmorStandEntity> armorStandQueue = new LinkedList<>();
+	/**
+	 * The locations that the egg finder should work while the player is in.
+	 */
 	private static final Location[] possibleLocations = {Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.HUB, Location.THE_END, Location.THE_PARK, Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.SPIDERS_DEN, Location.THE_FARMING_ISLAND};
+	/**
+	 * Whether the player is in a location where the egg finder should work.
+	 * This is set to false upon world change and will be checked with the location change event afterward.
+	 */
 	private static boolean isLocationCorrect = false;
 
 	private EggFinder() {
@@ -182,10 +189,12 @@ public class EggFinder {
 		public final String texture;
 		/*
 			When a new egg spawns in the player's range, the order of packets/messages goes like this:
-			set_equipment -> new egg message -> set_entity_data
+			set_equipment → new egg message → set_entity_data
 			We have to set the egg to null to prevent the highlight from staying where it was before the new egg spawned,
-			and doing so causes the found message to get sent twice. This is the reason for the existence of this field, so that we can not send the 2nd message.
-			This doesn't fix the field being set twice, but that's not an issue anyway. It'd be much harder to fix the highlight issue mentioned above if it wasn't being set twice.
+			and doing so causes the found message to get sent twice.
+			This is the reason for the existence of this field, so that we don't send the 2nd message.
+			This doesn't fix the field being set twice, but that's not an issue anyway.
+			It'd be much harder to fix the highlight issue mentioned above if it wasn't being set twice.
 		 */
 		private long messageLastSent = 0;
 
