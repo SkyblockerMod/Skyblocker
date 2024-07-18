@@ -6,10 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hysky.skyblocker.skyblock.dwarven.CommissionLabels;
-import de.hysky.skyblocker.skyblock.tabhud.util.Colors;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
+import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -55,11 +55,11 @@ public class CommsWidget extends TabHudWidget {
                 newCommissionsNames.add(name);
 
                 if (progress.equals("DONE")) {
-                    pc = new ProgressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f, Colors.pcntToCol(100));
+                    pc = new ProgressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f, ColorUtils.percentToColor(100));
                     commissionDone = true;
                 } else {
                     float pcnt = Float.parseFloat(progress.substring(0, progress.length() - 1));
-                    pc = new ProgressComponent(Ico.BOOK, Text.of(name), pcnt, Colors.pcntToCol(pcnt));
+                    pc = new ProgressComponent(Ico.BOOK, Text.of(name), pcnt, ColorUtils.percentToColor(pcnt));
                 }
                 this.addComponent(pc);
             }
