@@ -52,18 +52,19 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	private static final byte STRAY_RABBIT_START = 0;
 	private static final byte STRAY_RABBIT_END = 26;
 
-	private final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(8);
-	private long totalChocolate = -1L;
-	private double totalCps = -1.0;
-	private double totalCpsMultiplier = -1.0;
-	private long requiredUntilNextPrestige = -1L;
-	private boolean canPrestige = false;
-	private boolean reachedMaxPrestige = false;
-	private double timeTowerMultiplier = -1.0;
-	private boolean isTimeTowerMaxed = false;
-	private boolean isTimeTowerActive = false;
-	private int bestUpgrade = -1;
-	private int bestAffordableUpgrade = -1;
+	// TODO: Convert to instance fields in #788
+	private static final ObjectArrayList<Rabbit> cpsIncreaseFactors = new ObjectArrayList<>(8);
+	private static long totalChocolate = -1L;
+	private static double totalCps = -1.0;
+	private static double totalCpsMultiplier = -1.0;
+	private static long requiredUntilNextPrestige = -1L;
+	private static boolean canPrestige = false;
+	private static boolean reachedMaxPrestige = false;
+	private static double timeTowerMultiplier = -1.0;
+	private static boolean isTimeTowerMaxed = false;
+	private static boolean isTimeTowerActive = false;
+	private static int bestUpgrade = -1;
+	private static int bestAffordableUpgrade = -1;
 
 	private static StraySound ding = StraySound.NONE;
 	private static int dingTick = 0;
@@ -100,8 +101,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		getPrestigeHighlight().ifPresent(highlights::add);
 		highlights.addAll(getStrayRabbitHighlight(slots));
 
-		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty())
-			return highlights; //Something went wrong or there's nothing we can afford.
+		if (totalChocolate <= 0 || cpsIncreaseFactors.isEmpty()) return highlights; //Something went wrong or there's nothing we can afford.
 		Rabbit bestRabbit = cpsIncreaseFactors.getFirst();
 		bestUpgrade = bestRabbit.slot;
 		if (bestRabbit.cost <= totalChocolate) {
@@ -284,15 +284,14 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 	private record Rabbit(double cpsIncrease, long cost, int slot) {}
 
-	public final class Tooltip extends TooltipAdder {
+	public static final class Tooltip extends TooltipAdder {
 		public Tooltip() {
 			super("^Chocolate Factory$", 0); //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
 		}
 
 		@Override
 		public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper || focusedSlot == null)
-				return;
+			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableChocolateFactoryHelper || focusedSlot == null) return;
 
 			int lineIndex = lines.size();
 			//This boolean is used to determine if we should add a smooth line to separate the added information from the rest of the tooltip.

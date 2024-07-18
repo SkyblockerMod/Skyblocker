@@ -101,8 +101,7 @@ public class VisitorHelper {
 
     private static void processVisitorItem(String visitorName, ScreenHandler handler) {
         ItemStack visitorItem = handler.getSlot(13).getStack();
-        if (visitorItem == null || !visitorItem.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorItem, t -> t.contains("Times Visited")) == null)
-            return;
+        if (visitorItem == null || !visitorItem.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorItem, t -> t.contains("Times Visited")) == null) return;
         ItemStack acceptButton = handler.getSlot(29).getStack();
         if (acceptButton == null) return;
         processLore(visitorName, getTextureOrNull(visitorItem), ItemUtils.getLore(acceptButton));
@@ -169,8 +168,7 @@ public class VisitorHelper {
         String strippedName = Formatting.strip(displayName);
         ItemStack cachedStack = itemCache.get(strippedName);
         if (cachedStack != null) return cachedStack;
-        if (NEURepoManager.isLoading() || !ItemRepository.filesImported())
-            return null; // Item repo might be taking its sweet time doing things and cause concurrent modification error
+        if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return null; // Item repo might be taking its sweet time doing things and cause concurrent modification error
         Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
         if (items == null) return null;
         ItemStack stack = items.values().stream()
