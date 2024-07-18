@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.end;
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
@@ -33,15 +32,10 @@ public class EndHudWidget extends ComponentBasedWidget {
 
         ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
         POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
-
-        //INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
-        //INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);
     }
 
     public EndHudWidget(MutableText title, Integer colorValue) {
         super(title, colorValue, "hud_end");
-        this.setX(5);
-        this.setY(5);
         this.update();
     }
     @Override
