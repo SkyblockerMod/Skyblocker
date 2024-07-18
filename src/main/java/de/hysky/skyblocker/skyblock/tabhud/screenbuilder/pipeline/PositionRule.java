@@ -7,9 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public record PositionRule(String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY,
 ScreenMaster.ScreenLayer screenLayer) {
-
     public static final PositionRule DEFAULT = new PositionRule("screen", Point.DEFAULT, Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.DEFAULT);
-
     public static final Codec<PositionRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("parent").forGetter(PositionRule::parent),
             Point.CODEC.fieldOf("parent_anchor").forGetter(PositionRule::parentPoint),

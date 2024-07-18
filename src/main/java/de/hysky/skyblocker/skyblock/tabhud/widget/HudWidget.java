@@ -14,8 +14,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 
 public abstract class HudWidget implements Element, Widget, Drawable {
-
-
     private final String internalID;
     protected int w = 0, h = 0;
     protected int x = 0, y = 0;
