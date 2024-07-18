@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsOrderingTab implements Tab {
-
     private final WidgetsElementList widgetsElementList;
     private final ButtonWidget back;
     private final ButtonWidget previousPage;

@@ -155,7 +155,6 @@ public class ScreenMaster {
 
     @Init
     public static void init() {
-
         SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
 
         HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
