@@ -283,4 +283,24 @@ public final class ItemUtils {
             throw new RuntimeException(e);
         }
     }
+
+	/**
+	 * Utility method.
+	 */
+	public static @NotNull String getConcatenatedLore(@NotNull ItemStack item) {
+	    return concatenateLore(getLore(item));
+	}
+
+	/**
+	 * Concatenates the lore of an item into one string.
+	 * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
+	 */
+	public static @NotNull String concatenateLore(@NotNull List<Text> lore) {
+	    StringBuilder stringBuilder = new StringBuilder();
+	    for (int i = 0; i < lore.size(); i++) {
+	        stringBuilder.append(lore.get(i).getString());
+	        if (i != lore.size() - 1) stringBuilder.append(" ");
+	    }
+	    return stringBuilder.toString();
+	}
 }

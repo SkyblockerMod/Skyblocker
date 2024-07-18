@@ -221,6 +221,13 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.dungeonQuality = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.showEssenceCost"))
+                                .binding(defaults.general.itemTooltip.showEssenceCost,
+                                        () -> config.general.itemTooltip.showEssenceCost,
+                                        newValue -> config.general.itemTooltip.showEssenceCost = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Item Info Display

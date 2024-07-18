@@ -158,7 +158,7 @@ public class Utils {
 
     /**
      * Can be used to restrict features to being active only on the Alpha network.
-     * 
+     *
      * @return the current environment parsed from the Mod API.
      */
     @NotNull

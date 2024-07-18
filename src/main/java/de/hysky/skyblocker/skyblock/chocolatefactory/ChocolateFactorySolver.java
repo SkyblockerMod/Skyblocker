@@ -138,14 +138,14 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		RegexUtils.getLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getName().getString())).ifPresent(l -> totalChocolate = l);
 
 		//Cps item (cocoa bean) is in slot 45
-		String cpsItemLore = getConcatenatedLore(slots.get(CPS_SLOT));
+		String cpsItemLore = ItemUtils.getConcatenatedLore(slots.get(CPS_SLOT));
 		Matcher cpsMatcher = CPS_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(cpsMatcher).ifPresent(d -> totalCps = d);
 		Matcher multiplierMatcher = TOTAL_MULTIPLIER_PATTERN.matcher(cpsItemLore);
 		RegexUtils.getDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
 
 		//Prestige item is in slot 28
-		String prestigeLore = getConcatenatedLore(slots.get(PRESTIGE_SLOT));
+		String prestigeLore = ItemUtils.getConcatenatedLore(slots.get(PRESTIGE_SLOT));
 		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(prestigeLore);
 		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(prestigeMatcher);
 		if (currentChocolate.isPresent()) {
@@ -166,7 +166,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 
 		//Time Tower is in slot 39
 		isTimeTowerMaxed = StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ').equals("XV");
-		String timeTowerLore = getConcatenatedLore(slots.get(TIME_TOWER_SLOT));
+		String timeTowerLore = ItemUtils.getConcatenatedLore(slots.get(TIME_TOWER_SLOT));
 		Matcher timeTowerMultiplierMatcher = TIME_TOWER_MULTIPLIER_PATTERN.matcher(timeTowerLore);
 		RegexUtils.getDoubleFromMatcher(timeTowerMultiplierMatcher).ifPresent(d -> timeTowerMultiplier = d);
 		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(timeTowerLore);
@@ -178,29 +178,9 @@ public class ChocolateFactorySolver extends ContainerSolver {
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
 	}
 
-	/**
-	 * Utility method.
-	 */
-	private static String getConcatenatedLore(ItemStack item) {
-		return concatenateLore(ItemUtils.getLore(item));
-	}
-
-	/**
-	 * Concatenates the lore of an item into one string.
-	 * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
-	 */
-	private static String concatenateLore(List<Text> lore) {
-		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < lore.size(); i++) {
-			stringBuilder.append(lore.get(i).getString());
-			if (i != lore.size() - 1) stringBuilder.append(" ");
-		}
-		return stringBuilder.toString();
-	}
-
 	private Optional<Rabbit> getCoach(ItemStack coachItem) {
 		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
-		String coachLore = getConcatenatedLore(coachItem);
+		String coachLore = ItemUtils.getConcatenatedLore(coachItem);
 
 		if (totalCps < 0 || totalCpsMultiplier < 0) return Optional.empty(); //We need these 2 to calculate the increase in cps.
 
@@ -222,7 +202,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 	}
 
 	private Optional<Rabbit> getRabbit(ItemStack item, int slot) {
-		String lore = getConcatenatedLore(item);
+		String lore = ItemUtils.getConcatenatedLore(item);
 		Matcher cpsMatcher = CPS_INCREASE_PATTERN.matcher(lore);
 		OptionalInt currentCps = RegexUtils.getIntFromMatcher(cpsMatcher);
 		if (currentCps.isEmpty()) return Optional.empty();
@@ -298,7 +278,7 @@ public class ChocolateFactorySolver extends ContainerSolver {
 			//It should be set to true if there's any information added, false otherwise.
 			boolean shouldAddLine = false;
 
-			String lore = concatenateLore(lines);
+			String lore = ItemUtils.concatenateLore(lines);
 			Matcher costMatcher = COST_PATTERN.matcher(lore);
 			OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
 			//Available on all items with a chocolate cost
