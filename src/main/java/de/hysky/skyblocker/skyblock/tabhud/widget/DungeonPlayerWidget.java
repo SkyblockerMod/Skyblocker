@@ -40,6 +40,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
         ICOS.put("Archer", Ico.BOW);
         ICOS.put("Healer", Ico.POTION);
 
+        MSGS.add("???");
         MSGS.add("PRESS A TO JOIN");
         MSGS.add("Invite a friend!");
         MSGS.add("But nobody came.");
@@ -59,7 +60,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
         int start = 1 + (player - 1) * 4;
 
         if (PlayerListMgr.strAt(start) == null) {
-            int idx = player - 2;
+            int idx = player - 1;
             IcoTextComponent noplayer = new IcoTextComponent(Ico.SIGN,
                     Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY));
             this.addComponent(noplayer);
