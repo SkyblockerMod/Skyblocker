@@ -51,9 +51,6 @@ public class GeneralConfig {
     @SerialEntry
     public List<Integer> lockedSlots = new ArrayList<>();
 
-    @SerialEntry
-    public boolean showEssenceCost = false;
-
     //maybe put this 5 somewhere else
     @SerialEntry
     public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
@@ -134,6 +131,9 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean dungeonQuality = true;
+
+        @SerialEntry
+        public boolean showEssenceCost = false;
     }
 
     public enum Average {

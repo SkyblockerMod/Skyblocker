@@ -12,11 +12,8 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.OptionalLong;
@@ -24,9 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EssenceShopPrice extends TooltipAdder {
-	private static final Logger LOGGER = LoggerFactory.getLogger(EssenceShopPrice.class);
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("Cost (?<amount>[\\d,]+) (?<type>[A-Za-z]+) Essence");
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final String[] ESSENCE_TYPES = {"WITHER", "SPIDER", "UNDEAD", "DRAGON", "GOLD", "DIAMOND", "ICE", "CRIMSON"};
 	private static final Object2LongArrayMap<String> ESSENCE_PRICES = new Object2LongArrayMap<>(ESSENCE_TYPES, new long[8]);
 
@@ -44,13 +40,12 @@ public class EssenceShopPrice extends TooltipAdder {
 				ESSENCE_PRICES.put(essenceType, sellPrice.getAsLong());
 			}
 		}
-		LOGGER.info("[Skyblocker] Refreshed essence prices.");
 	}
 
 	//Todo: maybe move the price value right after the essence amount ex: "1,500 Wither Essence (645k coins)"
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (!SkyblockerConfigManager.get().uiAndVisuals.showEssenceCost) return;
+		if (!SkyblockerConfigManager.get().general.itemTooltip.showEssenceCost) return;
 
 		String lore = ItemUtils.concatenateLore(lines);
 		Matcher essenceMatcher = ESSENCE_PATTERN.matcher(lore);
@@ -62,11 +57,11 @@ public class EssenceShopPrice extends TooltipAdder {
 		if (priceData == 0) return; //Default value for getLong is 0 if no value exists for that key
 
 		lines.add(Text.empty()
-		              .append(Text.literal("Essence Cost:      ").formatted(Formatting.AQUA))
-		              .append(Text.literal(DECIMAL_FORMAT.format(priceData * cost.getAsLong()) + " coins").formatted(Formatting.DARK_AQUA))
-		              .append(Text.literal(" (").formatted(Formatting.GRAY))
-		              .append(Text.literal(DECIMAL_FORMAT.format(priceData) + " each").formatted(Formatting.GRAY))
-		              .append(Text.literal(")").formatted(Formatting.GRAY))
+				.append(Text.literal("Essence Cost:      ").formatted(Formatting.AQUA))
+				.append(Text.literal(DECIMAL_FORMAT.format(priceData * cost.getAsLong()) + " coins").formatted(Formatting.DARK_AQUA))
+				.append(Text.literal(" (").formatted(Formatting.GRAY))
+				.append(Text.literal(DECIMAL_FORMAT.format(priceData) + " each").formatted(Formatting.GRAY))
+				.append(Text.literal(")").formatted(Formatting.GRAY))
 		);
 	}
 }
