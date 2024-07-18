@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.emi;
 
-import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
