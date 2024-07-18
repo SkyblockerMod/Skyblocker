@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 
 public enum TooltipInfoType implements Runnable {
     NPC("https://hysky.de/api/npcprice", itemTooltip -> itemTooltip.enableNPCPrice, true),
-    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableBazaarPrice, false, EssenceShopPrice::refreshEssencePrices),
+    BAZAAR("https://hysky.de/api/bazaar", itemTooltip -> itemTooltip.enableBazaarPrice || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue || itemTooltip.showEssenceCost, itemTooltip -> itemTooltip.enableBazaarPrice, false, EssenceShopPrice::refreshEssencePrices),
     LOWEST_BINS("https://hysky.de/api/auctions/lowestbins", itemTooltip -> itemTooltip.enableLowestBIN || itemTooltip.enableCraftingCost.getOrder() != null || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator || SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit || SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue, itemTooltip -> itemTooltip.enableLowestBIN, false),
     ONE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/1day.json", itemTooltip -> itemTooltip.enableAvgBIN, false),
     THREE_DAY_AVERAGE("https://hysky.de/api/auctions/lowestbins/average/3day.json", itemTooltip -> itemTooltip.enableAvgBIN || SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableAuctionHouse, itemTooltip -> itemTooltip.enableAvgBIN, false),
@@ -30,10 +30,10 @@ public enum TooltipInfoType implements Runnable {
     private final String address;
     private final Predicate<GeneralConfig.ItemTooltip> dataEnabled;
     private final Predicate<GeneralConfig.ItemTooltip> tooltipEnabled;
-    private JsonObject data;
+    private @Nullable JsonObject data;
     private final boolean cacheable;
     private long hash;
-    private final Consumer<JsonObject> callback;
+    private final @Nullable Consumer<JsonObject> callback;
 
     /**
      * Use this for when you're adding tooltip info that has no data associated with it
@@ -46,19 +46,19 @@ public enum TooltipInfoType implements Runnable {
      * @param address   the address to download the data from
      * @param enabled   the predicate to check if the data should be downloaded and the tooltip should be shown
      * @param cacheable whether the data should be cached
-     * @param callback  called when the {@code data} is refreshed
      */
-    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> enabled, boolean cacheable, Consumer<JsonObject> callback) {
-        this(address, enabled, enabled, cacheable, callback);
+    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> enabled, boolean cacheable) {
+        this(address, enabled, enabled, cacheable, null);
     }
 
     /**
      * @param address   the address to download the data from
      * @param enabled   the predicate to check if the data should be downloaded and the tooltip should be shown
      * @param cacheable whether the data should be cached
+     * @param callback  called when the {@code data} is refreshed
      */
-    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> enabled, boolean cacheable) {
-        this(address, enabled, enabled, cacheable, null);
+    TooltipInfoType(String address, Predicate<GeneralConfig.ItemTooltip> enabled, boolean cacheable, Consumer<JsonObject> callback) {
+        this(address, enabled, enabled, cacheable, callback);
     }
 
     /**
@@ -100,7 +100,7 @@ public enum TooltipInfoType implements Runnable {
         return tooltipEnabled.test(ItemTooltip.config);
     }
 
-    public JsonObject getData() {
+    public @Nullable JsonObject getData() {
         return data;
     }
 
@@ -161,14 +161,14 @@ public enum TooltipInfoType implements Runnable {
             }
             String response = Http.sendGetRequest(address);
             if (response.trim().startsWith("<!DOCTYPE") || response.trim().startsWith("<html")) {
-                ItemTooltip.LOGGER.warn("[Skyblocker] Received HTML content for " + this.name() + ". Expected JSON.");
+                ItemTooltip.LOGGER.warn("[Skyblocker] Received HTML content for {}. Expected JSON.", this);
                 return;
             }
             data = SkyblockerMod.GSON.fromJson(response, JsonObject.class);
 
             if (callback != null) callback.accept(data);
         } catch (Exception e) {
-            ItemTooltip.LOGGER.warn("[Skyblocker] Failed to download " + this + " prices!", e);
+            ItemTooltip.LOGGER.warn("[Skyblocker] Failed to download {} prices!", this, e);
         }
     }
 }
