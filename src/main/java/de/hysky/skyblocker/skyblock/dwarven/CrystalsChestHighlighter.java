@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -21,9 +22,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CrystalsChestHighlighter {
 
@@ -34,7 +33,7 @@ public class CrystalsChestHighlighter {
 
     private static int waitingForChest = 0;
     private static final List<BlockPos> activeChests = new ArrayList<>();
-    private static final Map<Vec3d, Long> activeParticles = new HashMap<>();
+    private static final Object2LongOpenHashMap<Vec3d> activeParticles = new Object2LongOpenHashMap<>();
     private static int currentLockCount = 0;
     private static int neededLockCount = 0;
 
@@ -113,11 +112,11 @@ public class CrystalsChestHighlighter {
         if (path.equals("entity.experience_orb.pickup") && packet.getPitch() == 1) {
             currentLockCount += 1;
             activeParticles.clear();
-        //lock pick fail sound
+            //lock pick fail sound
         } else if (path.equals("entity.villager.no")) {
             currentLockCount = 0;
             activeParticles.clear();
-        //lock pick finish sound
+            //lock pick finish sound
         } else if (path.equals("block.chest.open")) {
             //set the needed lock count to the current, so we know how many locks a chest has
             neededLockCount = currentLockCount;
