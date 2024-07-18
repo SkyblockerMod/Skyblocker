@@ -14,9 +14,6 @@ import net.minecraft.util.Colors;
 import java.util.List;
 
 public class WidgetEntry extends WidgetsListEntry {
-
-
-
     private final ButtonWidget editButton;
     private final State state;
     private final ButtonWidget enableButton;
