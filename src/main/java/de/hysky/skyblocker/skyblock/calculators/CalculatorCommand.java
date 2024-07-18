@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -22,7 +23,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class CalculatorCommand {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final NumberFormat FORMATTER = NumberFormat.getInstance();
+    private static final NumberFormat FORMATTER = NumberFormat.getInstance(Locale.US);
 
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(CalculatorCommand::calculate);
