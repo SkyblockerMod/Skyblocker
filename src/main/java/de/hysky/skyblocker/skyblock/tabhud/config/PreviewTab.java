@@ -251,7 +251,14 @@ public class PreviewTab implements Tab {
         widgetOptions.addWidget(new TextWidget(width, 9, Text.literal(hudWidget.getNiceName()).formatted(Formatting.BOLD, Formatting.UNDERLINE), client.textRenderer));
         if (positionRule == null) {
             widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Positioning: Auto"), button -> {
-                        screenBuilder.setPositionRule(hudWidget.getInternalID(), PositionRule.DEFAULT);
+                        PositionRule rule = new PositionRule(
+                                "screen",
+                                PositionRule.Point.DEFAULT,
+                                PositionRule.Point.DEFAULT,
+                                hudWidget.getX() - 5,
+                                hudWidget.getY() - 5,
+                                ScreenMaster.ScreenLayer.DEFAULT);
+                        screenBuilder.setPositionRule(hudWidget.getInternalID(), rule);
                         updateWidgets();
                         onHudWidgetSelected(hudWidget);
                     })
@@ -317,19 +324,19 @@ public class PreviewTab implements Tab {
                 }
             });
             widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Apply everywhere"), button -> {
-                if (this.previewWidget.selectedWidget == null) return;
-                PositionRule toCopy = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
-                if (toCopy == null) return;
-                for (Location value : Location.values()) {
-                    if (value == getCurrentLocation() || value == Location.DUNGEON) continue;
-                    ScreenMaster.getScreenBuilder(value).setPositionRule(
-                            this.previewWidget.selectedWidget.getInternalID(),
-                            toCopy
-                    );
-                }
-                button.setMessage(Text.literal("Applied!"));
-                Scheduler.INSTANCE.schedule(() -> button.setMessage(Text.literal("Apply everywhere")), 15);
-            }).width(width).tooltip(Tooltip.of(Text.literal("Apply positioning to all locations. This cannot be restored!"))).build()
+                        if (this.previewWidget.selectedWidget == null) return;
+                        PositionRule toCopy = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
+                        if (toCopy == null) return;
+                        for (Location value : Location.values()) {
+                            if (value == getCurrentLocation() || value == Location.DUNGEON) continue;
+                            ScreenMaster.getScreenBuilder(value).setPositionRule(
+                                    this.previewWidget.selectedWidget.getInternalID(),
+                                    toCopy
+                            );
+                        }
+                        button.setMessage(Text.literal("Applied!"));
+                        Scheduler.INSTANCE.schedule(() -> button.setMessage(Text.literal("Apply everywhere")), 15);
+                    }).width(width).tooltip(Tooltip.of(Text.literal("Apply positioning to all locations. This cannot be restored!"))).build()
             );
 
         }
@@ -388,7 +395,9 @@ public class PreviewTab implements Tab {
             float localMouseX = (mouseX - getX()) / scaledRatio;
             float localMouseY = (mouseY - getY()) / scaledRatio;
 
-            for (HudWidget hudWidget : screenBuilder.getHudWidgets(PreviewTab.this.currentScreenLayer)) {
+            if (selectedWidget != null && selectedWidget.isMouseOver(localMouseX, localMouseY)) {
+                hoveredWidget = selectedWidget;
+            } else for (HudWidget hudWidget : screenBuilder.getHudWidgets(PreviewTab.this.currentScreenLayer)) {
                 if (hudWidget.isMouseOver(localMouseX, localMouseY)) {
                     hoveredWidget = hudWidget;
                     break;
@@ -525,6 +534,24 @@ public class PreviewTab implements Tab {
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if (!(this.active && this.visible && isMouseOver(mouseX, mouseY))) return false;
+            double localMouseX = (mouseX - getX()) / scaledRatio;
+            double localMouseY = (mouseY - getY()) / scaledRatio;
+            if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                List<HudWidget> hoveredThingies = new ArrayList<>();
+                for (HudWidget hudWidget : ScreenMaster.getScreenBuilder(getCurrentLocation()).getHudWidgets(currentScreenLayer)) {
+                    if (hudWidget.isMouseOver(localMouseX, localMouseY)) hoveredThingies.add(hudWidget);
+                }
+                if (hoveredThingies.size() == 1) selectedWidget = hoveredThingies.getFirst();
+                else if (!hoveredThingies.isEmpty()) {
+                    for (int i = 0; i < hoveredThingies.size(); i++) {
+                        if (hoveredThingies.get(i).equals(hoveredWidget)) {
+                            selectedWidget = hoveredThingies.get((i + 1) % hoveredThingies.size());
+                        }
+                    }
+                }
+                return true;
+            }
             ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
             if (pickParent && selectedWidget != null && !selectedWidget.equals(hoveredWidget)) {
                 PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
@@ -550,14 +577,13 @@ public class PreviewTab implements Tab {
                 return true;
             }
 
-            double localMouseX = (mouseX - getX()) / scaledRatio;
-            double localMouseY = (mouseY - getY()) / scaledRatio;
+
 
             if (selectedWidget != null && selectedWidget.isMouseOver(localMouseX, localMouseY) &&
                     screenBuilder.getPositionRule(selectedWidget.getInternalID()) != null) {
                 selectedOriginalPos = new ScreenPos(selectedWidget.getX(), selectedWidget.getY());
             }
-            return this.active && this.visible && isMouseOver(mouseX, mouseY);
+            return true;
         }
 
         @Override
