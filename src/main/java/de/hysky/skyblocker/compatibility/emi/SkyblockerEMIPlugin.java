@@ -28,6 +28,6 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
         });
         registry.addCategory(SKYBLOCK);
         registry.addWorkstation(SKYBLOCK, EmiStack.of(Items.CRAFTING_TABLE));
-        ItemRepository.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
+        ItemRepository.getRecipesStreamOld().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
     }
 }

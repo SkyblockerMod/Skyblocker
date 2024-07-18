@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -190,7 +191,7 @@ public class SearchResultsWidget implements Drawable, Element {
                 if (internalName.isEmpty()) {
                     continue;
                 }
-                List<SkyblockCraftingRecipe> recipes = ItemRepository.getRecipes(internalName);
+                List<SkyblockCraftingRecipe> recipes = ItemRepository.getRecipesPmd(internalName);
                 if (!recipes.isEmpty()) {
                     this.recipeResults = recipes;
                     this.currentPage = 0;
