@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import java.util.Map;
 
 public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerListener {
-
     public static final Logger LOGGER = LogUtils.getLogger();
 
     private GenericContainerScreenHandler handler;
