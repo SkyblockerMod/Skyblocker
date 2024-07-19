@@ -8,20 +8,20 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 @Environment(EnvType.CLIENT)
 public final class SkyblockEvents {
-    public static final Event<SkyblockEvents.SkyblockJoin> JOIN = EventFactory.createArrayBacked(SkyblockEvents.SkyblockJoin.class, callbacks -> () -> {
+    public static final Event<SkyblockJoin> JOIN = EventFactory.createArrayBacked(SkyblockJoin.class, callbacks -> () -> {
         for (SkyblockEvents.SkyblockJoin callback : callbacks) {
             callback.onSkyblockJoin();
         }
     });
 
-    public static final Event<SkyblockEvents.SkyblockLeave> LEAVE = EventFactory.createArrayBacked(SkyblockEvents.SkyblockLeave.class, callbacks -> () -> {
-        for (SkyblockEvents.SkyblockLeave callback : callbacks) {
+    public static final Event<SkyblockLeave> LEAVE = EventFactory.createArrayBacked(SkyblockLeave.class, callbacks -> () -> {
+        for (SkyblockLeave callback : callbacks) {
             callback.onSkyblockLeave();
         }
     });
 
-    public static final Event<SkyblockEvents.SkyblockLocationChange> LOCATION_CHANGE = EventFactory.createArrayBacked(SkyblockEvents.SkyblockLocationChange.class, callbacks -> location -> {
-        for (SkyblockEvents.SkyblockLocationChange callback : callbacks) {
+    public static final Event<SkyblockLocationChange> LOCATION_CHANGE = EventFactory.createArrayBacked(SkyblockLocationChange.class, callbacks -> location -> {
+        for (SkyblockLocationChange callback : callbacks) {
             callback.onSkyblockLocationChange(location);
         }
     });
