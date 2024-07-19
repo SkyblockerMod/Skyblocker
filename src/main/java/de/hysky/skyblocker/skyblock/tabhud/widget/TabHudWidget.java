@@ -45,7 +45,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
     /**
      * Update the content from the hypixel widget's lines
      *
-     * @param lines the lines, they are formatted, no blank lines will be present.
+     * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
      *              If the vanilla tab widget has text right after the : they will be put on the first line.
      */
     protected abstract void updateContent(List<Text> lines);

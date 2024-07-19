@@ -100,7 +100,7 @@ public class MinionWidget extends TabHudWidget {
         addComponent(new PlainTextComponent(lines.getFirst().copy().append(Text.literal(" minions"))));
         for (int i = 1; i < lines.size(); i++) {
             String string = lines.get(i).getString();
-            if (string.toLowerCase().contains("... and")) this.addComponent(new PlainTextComponent(lines.get(i)));
+            if (string.toLowerCase().startsWith("...")) this.addComponent(new PlainTextComponent(lines.get(i).copy().formatted(Formatting.GRAY)));
             else addMinionComponent(string);
         }
     }

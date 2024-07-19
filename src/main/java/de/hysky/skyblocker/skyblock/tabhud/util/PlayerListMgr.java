@@ -79,10 +79,12 @@ public class PlayerListMgr {
 			playerStringList = playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).map(Text::getString).map(String::strip).toList();
 		}
 
+		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible()) return;
+
 		if (Utils.isInDungeons()) {
 			updateDungeons(null);
 		}
-		else if (!(MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible())) {
+		else {
 			updateWidgetsFrom(playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).toList());
 		}
 
