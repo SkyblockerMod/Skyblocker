@@ -12,6 +12,7 @@ import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
@@ -160,6 +161,7 @@ public class ScreenMaster {
         HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
             if (!Utils.isOnSkyblock()) return;
             MinecraftClient client = MinecraftClient.getInstance();
+            if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
             Window window = client.getWindow();
             float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
             MatrixStack matrices = context.getMatrices();

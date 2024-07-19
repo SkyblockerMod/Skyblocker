@@ -301,7 +301,15 @@ public class PreviewTab implements Tab {
 
             }).width(width).build());
 
-            String parentName = positionRule.parent().equals("screen") ? "Screen" : ScreenMaster.widgetInstances.get(positionRule.parent()).getNiceName();
+            String parentName;
+            HudWidget parent;
+            if (positionRule.parent().equals("screen")) {
+                parentName = "Screen";
+            } else if ((parent = ScreenMaster.widgetInstances.get(positionRule.parent())) == null) {
+                parentName = "Unloaded Widget";
+            } else {
+                parentName = parent.getNiceName();
+            }
 
             widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Parent: " + parentName), button -> {
                 this.previewWidget.pickParent = true;
