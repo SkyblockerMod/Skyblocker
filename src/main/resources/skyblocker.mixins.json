@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "AbstractInventoryScreenMixin",
+    "BackgroundRendererMixin",
     "BatEntityMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",

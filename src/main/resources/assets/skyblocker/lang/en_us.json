@@ -29,6 +29,9 @@
 
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 
+  "skyblocker.config.crimsonIsle.extendNetherFog": "Extend Nether Fog",
+  "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "When in the Crimson Isles, prevents fog from appearing closer to the player as it does in vanilla nether biomes",
+
   "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
 
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poison Warning Threshold",

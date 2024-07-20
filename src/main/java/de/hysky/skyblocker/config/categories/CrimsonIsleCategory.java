@@ -143,6 +143,16 @@ public class CrimsonIsleCategory {
 								.build())
 						.build())
 
+				// Extend nether fog
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.crimsonIsle.extendNetherFog"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip")))
+						.binding(config.crimsonIsle.extendNetherFog,
+								() -> config.crimsonIsle.extendNetherFog,
+								newValue -> config.crimsonIsle.extendNetherFog = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+
 				.build();
     }
 }
