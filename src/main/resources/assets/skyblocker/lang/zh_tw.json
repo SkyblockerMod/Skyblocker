@@ -781,5 +781,7 @@
     "argument.color.hex.invalidChar": "十六進制數字的字元無效：%s。有效字元：[0-9a-fA-F]",
     "argument.color.hex.invalidString": "十六進制顏色的長度應為六個字元，目前有%d個字元。",
     "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] 你可以複製物品的數量",
-    "skyblocker.reorderHelper.tooltip.line2": "透過按住CTRL鍵的同時點擊該項目！"
+    "skyblocker.reorderHelper.tooltip.line2": "透過按住CTRL鍵的同時點擊該項目！",
+    "skyblocker.tips.signCalculator": "在告示牌中輸入數學表達式，模組會替你計算。",
+    "skyblocker.tips.calculateCommand": "在 /skyblocker calculate 後輸入一個數學表達式，模組會替你計算。"
 }
