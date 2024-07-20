@@ -17,6 +17,7 @@ import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket;
 import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
 import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -210,6 +211,7 @@ public class Utils {
         });
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
 
         //Register Mod API stuff
         HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
@@ -377,6 +379,10 @@ public class Utils {
                 profile = name.substring(PROFILE_PREFIX.length());
             }
         }
+    }
+
+    private static void onDisconnect() {
+        isOnSkyblock = false;
     }
 
     private static void onPacket(HypixelS2CPacket packet) {
