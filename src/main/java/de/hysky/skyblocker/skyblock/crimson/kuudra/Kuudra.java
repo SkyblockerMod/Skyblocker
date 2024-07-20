@@ -1,11 +1,8 @@
 package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -13,11 +10,10 @@ public class Kuudra {
 	static KuudraPhase phase = KuudraPhase.OTHER;
 
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(KuudraWaypoints::render);
-		ClientLifecycleEvents.CLIENT_STARTED.register(KuudraWaypoints::load);
+		KuudraWaypoints.init();
+
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 		ClientReceiveMessageEvents.GAME.register(Kuudra::onMessage);
-		Scheduler.INSTANCE.scheduleCyclic(KuudraWaypoints::tick, 20);
 	}
 
 	private static void onMessage(Text text, boolean overlay) {

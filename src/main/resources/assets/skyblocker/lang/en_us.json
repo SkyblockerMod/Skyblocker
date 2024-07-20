@@ -45,6 +45,8 @@
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "If the amount of Toxic Arrow Poison you have in your inventory is below the set threshold, then you will receive a warning.\n\n16 is the absolute minimum.\nYou want 32 for smooth 'DPS' phase with prefire.",
   "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Ballista Build Spot Waypoints",
   "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Fuel Waypoints",
+  "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra Glow",
+  "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Outlines Kuudra in a deep orange.",
   "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "No Arrow Poison Warning",
   "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Warns you when you pull out a bow and have no Toxic Arrow Poison in your inventory. Only works during the DPS phase.",
   "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "Pearl Waypoints",

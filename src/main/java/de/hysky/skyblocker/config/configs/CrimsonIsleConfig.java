@@ -38,6 +38,9 @@ public class CrimsonIsleConfig {
 
         @SerialEntry
         public int arrowPoisonThreshold = 32;
+
+        @SerialEntry
+        public boolean kuudraGlow = true;
     }
 
     public static class Dojo {

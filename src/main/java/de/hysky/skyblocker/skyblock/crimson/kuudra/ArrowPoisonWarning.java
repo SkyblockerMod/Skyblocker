@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
 import java.util.function.Supplier;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra.KuudraPhase;
