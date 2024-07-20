@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
 import net.minecraft.item.ItemStack;
@@ -86,8 +86,11 @@ public class ItemStackBuilder {
         // Add firework star color
         Matcher explosionColorMatcher = EXPLOSION_COLOR_PATTERN.matcher(nbttag);
         if (explosionColorMatcher.find()) {
+            //We used create an IntArrayList and took the color as the list's capacity and not add anything to the list which y'know casually leaked a lot of memory...
+            IntList color = IntList.of(Integer.parseInt(explosionColorMatcher.group("color")));
+
             //Forget about the actual ball type because it probably doesn't matter
-            stack.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.SMALL_BALL, new IntArrayList(Integer.parseInt(explosionColorMatcher.group("color"))), new IntArrayList(), false, false));
+            stack.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.SMALL_BALL, color, IntList.of(), false, false));
         }
 
         // Attach custom nbt data
