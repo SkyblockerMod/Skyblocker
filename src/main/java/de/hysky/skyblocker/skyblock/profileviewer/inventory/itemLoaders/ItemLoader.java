@@ -54,16 +54,16 @@ public class ItemLoader {
             }
 
             Identifier itemId = identifierFromOldId(containerContent.getCompound(i).getInt("id"), containerContent.getCompound(i).getInt("Damage"));
-            ItemStack stack;
 
+            ItemStack stack;
             if (itemId.toString().equals("minecraft:air")) {
                 ItemStack itemStack = getItemStack(internalName);
-                stack = itemStack != null ? itemStack.copy() : null;
+                stack = itemStack != null ? itemStack.copy() : ItemStack.EMPTY;
             } else {
                 stack = new ItemStack(Registries.ITEM.get(itemId));
             }
 
-            if (stack == null || stack.isEmpty() || stack.getItem().equals(Ico.BARRIER.getItem())) {
+            if (stack.isEmpty() || stack.getItem().equals(Ico.BARRIER.getItem())) {
                 // Last ditch effort to find item in NEU REPO
                 Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
                 stack = items.values().stream()
