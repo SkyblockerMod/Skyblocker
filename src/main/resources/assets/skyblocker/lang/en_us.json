@@ -44,6 +44,8 @@
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poison Warning Threshold",
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "If the amount of Toxic Arrow Poison you have in your inventory is below the set threshold, then you will receive a warning.\n\n16 is the absolute minimum.\nYou want 32 for smooth 'DPS' phase with prefire.",
   "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Ballista Build Spot Waypoints",
+  "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Danger Warning",
+  "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Displays a warning when you're in danger from a tentacle slam or from TNT. The color of the warning adapts to the danger level!",
   "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Fuel Waypoints",
   "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra Glow",
   "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Outlines Kuudra in a deep orange.",
@@ -995,6 +997,7 @@
 
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
+  "skyblocker.crimson.kuudra.danger": "DANGER!",
 
   "skyblocker.waypoints.ordered.groupNonExistent": "§cThe waypoint group %s doesn't exist.",
   "skyblocker.waypoints.ordered.add.invalidHexColor": "§cInvalid HEX color code!",

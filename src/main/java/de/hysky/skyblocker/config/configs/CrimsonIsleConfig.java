@@ -41,6 +41,9 @@ public class CrimsonIsleConfig {
 
         @SerialEntry
         public boolean kuudraGlow = true;
+
+        @SerialEntry
+        public boolean dangerWarning = true;
     }
 
     public static class Dojo {
