@@ -32,6 +32,10 @@ public class Kuudra {
 			if (message.equals("[NPC] Elle: POW! SURELY THAT'S IT! I don't think he has any more in him!")) {
 				phase = KuudraPhase.OTHER;
 			}
+
+			if (message.equals("[NPC] Elle: What just happened!? Is this Kuudra's real lair?")) {
+				phase = KuudraPhase.KUUDRA_LAIR;
+			}
 		}
 	}
 
@@ -42,6 +46,7 @@ public class Kuudra {
 	enum KuudraPhase {
 		OTHER,
 		RETRIEVE_SUPPLIES,
-		DPS;
+		DPS,
+		KUUDRA_LAIR; //Infernal Only
 	}
 }
