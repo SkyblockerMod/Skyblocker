@@ -54,9 +54,16 @@ public class ItemLoader {
             }
 
             Identifier itemId = identifierFromOldId(containerContent.getCompound(i).getInt("id"), containerContent.getCompound(i).getInt("Damage"));
-            ItemStack stack = itemId.toString().equals("minecraft:air") ? getItemStack(internalName) : new ItemStack(Registries.ITEM.get(itemId));
 
-            if (stack == null || stack.isEmpty() || stack.getItem().equals(Ico.BARRIER.getItem())) {
+            ItemStack stack;
+            if (itemId.toString().equals("minecraft:air")) {
+                ItemStack itemStack = getItemStack(internalName);
+                stack = itemStack != null ? itemStack.copy() : ItemStack.EMPTY;
+            } else {
+                stack = new ItemStack(Registries.ITEM.get(itemId));
+            }
+
+            if (stack.isEmpty() || stack.getItem().equals(Ico.BARRIER.getItem())) {
                 // Last ditch effort to find item in NEU REPO
                 Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
                 stack = items.values().stream()
@@ -64,6 +71,7 @@ public class ItemLoader {
                         .findFirst()
                         .map(NEUItem::getSkyblockItemId)
                         .map(ItemRepository::getItemStack)
+                        .map(ItemStack::copy)
                         .orElse(Ico.BARRIER.copy());
 
 
