@@ -6,8 +6,8 @@ import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
+import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
@@ -57,31 +57,40 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			// Fancy AH
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.contains("auctions browser") || nameLowercase.contains("auctions: ")) -> {
 				AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, false);
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Setting 'Auction Browser' screen handler."); // TODO: debug
 				client.player.currentScreenHandler = auctionHouseScreenHandler;
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Finished setting 'Auction Browser' screen handler, setting 'Auction Browser' screen."); // TODO: debug
 
 				switch (client.currentScreen) {
 					case AuctionBrowserScreen auctionBrowserScreen -> auctionBrowserScreen.changeHandler(auctionHouseScreenHandler);
 					case null, default -> client.setScreen(new AuctionBrowserScreen(auctionHouseScreenHandler, client.player.getInventory()));
 				}
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Finished setting 'Auction Browser' screen."); // TODO: debug
 
 				ci.cancel();
 			}
 
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && nameLowercase.contains("auction view") -> {
 				AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, true);
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Setting 'Auction View' screen handler."); // TODO: debug
 				client.player.currentScreenHandler = auctionHouseScreenHandler;
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Finished setting 'Auction View' screen handler, setting 'Auction View' screen."); // TODO: debug
 
 				switch (client.currentScreen) {
 					case AuctionViewScreen auctionViewScreen -> auctionViewScreen.changeHandler(auctionHouseScreenHandler);
 					case null, default -> client.setScreen(new AuctionViewScreen(auctionHouseScreenHandler, client.player.getInventory(), name));
 				}
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Finished setting 'Auction View' screen."); // TODO: debug
 
 				ci.cancel();
 			}
 
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.contains("confirm purchase") || nameLowercase.contains("confirm bid")) && client.currentScreen instanceof AuctionViewScreen auctionViewScreen -> {
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Setting 'Confirm Purchase' screen."); // TODO: debug
 				client.setScreen(auctionViewScreen.getConfirmPurchasePopup(name));
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Finished setting 'Confirm Purchase' screen, setting 'Confirm Purchase' screen handler."); // TODO: debug
 				client.player.currentScreenHandler = containerScreenHandler;
+				AuctionBrowserScreen.LOGGER.info("[Skyblocker Fancy Auction House Debug] Finished setting 'Confirm Purchase' screen handler."); // TODO: debug
 				ci.cancel();
 			}
 

@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
     private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
     private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/creative_inventory/scroller");
 
