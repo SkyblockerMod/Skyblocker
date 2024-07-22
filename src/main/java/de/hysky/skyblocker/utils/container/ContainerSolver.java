@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -8,11 +9,12 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public interface ContainerSolver extends ContainerMatcher {
+public interface ContainerSolver extends ContainerMatcher, Resettable {
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
 	default void start(GenericContainerScreen screen) {}
 
+	@Override
 	default void reset() {}
 
 	default boolean onClickSlot(int slot, ItemStack stack, int screenId) {

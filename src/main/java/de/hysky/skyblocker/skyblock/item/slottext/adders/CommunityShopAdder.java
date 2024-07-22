@@ -36,26 +36,24 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 	}
 
 	private static List<SlotText> getTextForUpgradesScreen(ItemStack stack, int slotId) {
-		switch (slotId) {
+		return switch (slotId) {
 			case 30, 31, 32, 33, 34, 38, 39, 40, 41, 42, 43, 44 -> {
 				String name = stack.getName().getString();
 				int lastIndex = name.lastIndexOf(' ');
 				String roman = name.substring(lastIndex + 1); // + 1 as we don't want the space
-				if (!RomanNumerals.isValidRomanNumeral(roman)) return List.of();
+				if (!RomanNumerals.isValidRomanNumeral(roman)) yield List.of();
 
 				List<Text> lore = ItemUtils.getLore(stack);
-				if (lore.isEmpty()) return List.of();
+				if (lore.isEmpty()) yield List.of();
 				String lastLine = lore.getLast().getString();
-				return List.of(SlotText.bottomLeft(switch (lastLine) {
+				yield List.of(SlotText.bottomLeft(switch (lastLine) {
 					case "Maxed out!" -> Text.literal("Max").withColor(0xfab387);
 					case "Currently upgrading!", "Click to instantly upgrade!" -> Text.literal("⏰").withColor(0xf9e2af).formatted(Formatting.BOLD);
 					case "Click to claim!" -> Text.literal("✅").withColor(0xa6e3a1).formatted(Formatting.BOLD);
 					default -> Text.literal(String.valueOf(RomanNumerals.romanToDecimal(roman))).withColor(0xcba6f7);
 				}));
 			}
-			default -> {
-				return List.of();
-			}
-		}
+			default -> List.of();
+		};
 	}
 }

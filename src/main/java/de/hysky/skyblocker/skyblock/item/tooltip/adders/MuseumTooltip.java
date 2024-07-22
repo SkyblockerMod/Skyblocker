@@ -20,7 +20,7 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return TooltipInfoType.MOTES.isTooltipEnabled();
+		return TooltipInfoType.MUSEUM.isTooltipEnabled();
 	}
 
 	@Override
