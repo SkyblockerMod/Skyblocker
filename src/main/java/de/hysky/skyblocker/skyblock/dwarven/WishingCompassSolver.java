@@ -9,13 +9,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -24,45 +26,27 @@ import net.minecraft.world.World;
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public class WishingCompassSolver {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-
-    enum SolverStates {
-        NOT_STARTED,
-        PROCESSING_FIRST_USE,
-        WAITING_FOR_SECOND,
-        PROCESSING_SECOND_USE,
-    }
-
-    enum ZONE {
-        CRYSTAL_NUCLEUS,
-        JUNGLE,
-        MITHRIL_DEPOSITS,
-        GOBLIN_HOLDOUT,
-        PRECURSOR_REMNANTS,
-        MAGMA_FIELDS,
-    }
-
-    private static final HashMap<ZONE, Box> ZONE_BOUNDING_BOXES = Util.make(new HashMap<>(), map -> {
-        map.put(ZONE.CRYSTAL_NUCLEUS, new Box(462, 63, 461, 564, 181, 565));
-        map.put(ZONE.JUNGLE, new Box(201, 63, 201, 513, 189, 513));
-        map.put(ZONE.MITHRIL_DEPOSITS, new Box(512, 63, 201, 824, 189, 513));
-        map.put(ZONE.GOBLIN_HOLDOUT, new Box(201, 63, 512, 513, 189, 824));
-        map.put(ZONE.PRECURSOR_REMNANTS, new Box(512, 63, 512, 824, 189, 824));
-        map.put(ZONE.MAGMA_FIELDS, new Box(201, 30, 201, 824, 64, 824));
-    });
+    private static final Map<Zone, Box> ZONE_BOUNDING_BOXES = Map.of(
+            Zone.CRYSTAL_NUCLEUS, new Box(462, 63, 461, 564, 181, 565),
+            Zone.JUNGLE, new Box(201, 63, 201, 513, 189, 513),
+            Zone.MITHRIL_DEPOSITS, new Box(512, 63, 201, 824, 189, 513),
+            Zone.GOBLIN_HOLDOUT, new Box(201, 63, 512, 513, 189, 824),
+            Zone.PRECURSOR_REMNANTS, new Box(512, 63, 512, 824, 189, 824),
+            Zone.MAGMA_FIELDS, new Box(201, 30, 201, 824, 64, 824)
+    );
     private static final Vec3d JUNGLE_TEMPLE_DOOR_OFFSET = new Vec3d(-57, 36, -21);
     /**
-     * how many particles to use to get direction of a line
+     * The number of particles to use to get direction of a line
      */
     private static final long PARTICLES_PER_LINE = 25;
     /**
-     * the amount of milliseconds to wait for the next particle until assumed failed
+     * The time in milliseconds to wait for the next particle until assumed failed
      */
     private static final long PARTICLES_MAX_DELAY = 500;
     /**
@@ -93,12 +77,12 @@ public class WishingCompassSolver {
     }
 
     /**
-     * When a filed message is sent in chat reset the wishing compass solver to start
+     * When a filed message is sent in chat, reset the wishing compass solver to start
      * @param text message
      * @param b overlay
      */
     private static void failMessageListener(Text text, boolean b) {
-        if (!Utils.isInCrystalHollows()){
+        if (!Utils.isInCrystalHollows()) {
             return;
         }
         if (Formatting.strip(text.getString()).equals("The Wishing Compass can't seem to locate anything!")) {
@@ -115,7 +99,7 @@ public class WishingCompassSolver {
         particleUsedCountOne = 0;
         particleUsedCountTwo = 0;
         particleLastUpdate = System.currentTimeMillis();
-        Vec3d particleLastPos = Vec3d.ZERO;
+        particleLastPos = Vec3d.ZERO;
     }
 
     private static boolean isKingsScentPresent() {
@@ -127,45 +111,26 @@ public class WishingCompassSolver {
     }
 
     private static boolean isKeyInInventory() {
-        if (CLIENT.player == null) {
-            return false;
-        }
-        for (ItemStack item : CLIENT.player.getInventory().main) {
-            if (item != null && Objects.equals(item.getSkyblockId(), "JUNGLE_KEY")) {
-                return true;
-            }
-        }
-        return false;
+        return CLIENT.player != null && CLIENT.player.getInventory().main.stream().anyMatch(stack -> stack != null && Objects.equals(stack.getSkyblockId(), "JUNGLE_KEY"));
     }
 
-    private static ZONE getZoneOfLocation(Vec3d location) {
-        for (Map.Entry<ZONE, Box> zone : ZONE_BOUNDING_BOXES.entrySet()) {
-            if (zone.getValue().contains(location)) {
-                return zone.getKey();
-            }
-        }
-
-        //default to nucleus if somehow not in another zone
-        return ZONE.CRYSTAL_NUCLEUS;
+    private static Zone getZoneOfLocation(Vec3d location) {
+        return ZONE_BOUNDING_BOXES.entrySet().stream().filter(zone -> zone.getValue().contains(location)).findFirst().map(Map.Entry::getKey).orElse(Zone.CRYSTAL_NUCLEUS); //default to nucleus if somehow not in another zone
     }
 
-    private static Boolean isZoneComplete(ZONE zone) {
+    private static Boolean isZoneComplete(Zone zone) {
         if (CLIENT.getNetworkHandler() == null || CLIENT.player == null) {
             return false;
         }
-        //creates cleaned stream of all the entry's in tab list
-        Stream<PlayerListEntry> playerListStream = CLIENT.getNetworkHandler().getPlayerList().stream();
-        Stream<String> displayNameStream = playerListStream.map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).map(Text::getString).map(String::strip);
 
         //make sure the data is in tab and if not tell the user
-        if (displayNameStream.noneMatch(entry -> entry.equals("Crystals:"))) {
+        if (PlayerListMgr.getPlayerStringList().stream().noneMatch(entry -> entry.equals("Crystals:"))) {
             CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
             return false;
         }
 
         //return if the crystal for a zone is found
-        playerListStream = CLIENT.getNetworkHandler().getPlayerList().stream();
-        displayNameStream = playerListStream.map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).map(Text::getString).map(String::strip);
+        Stream<String> displayNameStream = PlayerListMgr.getPlayerStringList().stream();
         return switch (zone) {
             case JUNGLE -> displayNameStream.noneMatch(entry -> entry.equals("Amethyst: ✖ Not Found"));
             case MITHRIL_DEPOSITS -> displayNameStream.noneMatch(entry -> entry.equals("Jade: ✖ Not Found"));
@@ -176,17 +141,15 @@ public class WishingCompassSolver {
         };
     }
 
-    private static MiningLocationLabel.CrystalHollowsLocationsCategory getTargetLocation(ZONE startingZone) {
+    private static MiningLocationLabel.CrystalHollowsLocationsCategory getTargetLocation(Zone startingZone) {
         //if the zone is complete return null
         if (isZoneComplete(startingZone)) {
             return MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN;
         }
         return switch (startingZone) {
-            case JUNGLE ->
-                    isKeyInInventory() ? MiningLocationLabel.CrystalHollowsLocationsCategory.JUNGLE_TEMPLE : MiningLocationLabel.CrystalHollowsLocationsCategory.ODAWA;
+            case JUNGLE -> isKeyInInventory() ? MiningLocationLabel.CrystalHollowsLocationsCategory.JUNGLE_TEMPLE : MiningLocationLabel.CrystalHollowsLocationsCategory.ODAWA;
             case MITHRIL_DEPOSITS -> MiningLocationLabel.CrystalHollowsLocationsCategory.MINES_OF_DIVAN;
-            case GOBLIN_HOLDOUT ->
-                    isKingsScentPresent() ? MiningLocationLabel.CrystalHollowsLocationsCategory.GOBLIN_QUEENS_DEN : MiningLocationLabel.CrystalHollowsLocationsCategory.KING_YOLKAR;
+            case GOBLIN_HOLDOUT -> isKingsScentPresent() ? MiningLocationLabel.CrystalHollowsLocationsCategory.GOBLIN_QUEENS_DEN : MiningLocationLabel.CrystalHollowsLocationsCategory.KING_YOLKAR;
             case PRECURSOR_REMNANTS -> MiningLocationLabel.CrystalHollowsLocationsCategory.LOST_PRECURSOR_CITY;
             case MAGMA_FIELDS -> MiningLocationLabel.CrystalHollowsLocationsCategory.KHAZAD_DUM;
             default -> MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN;
@@ -194,12 +157,12 @@ public class WishingCompassSolver {
     }
 
     /**
-     * Verify that a location could be correct and not to far out of zone. This is a problem when areas sometimes do not exist and is not a perfect solution
+     * Verifies that a location could be correct and not to far out of zone. This is a problem when areas sometimes do not exist and is not a perfect solution
      * @param startingZone zone player is searching in
      * @param pos location where the area should be
      * @return corrected location
      */
-    private static Boolean verifyLocation(ZONE startingZone, Vec3d pos) {
+    private static Boolean verifyLocation(Zone startingZone, Vec3d pos) {
         return ZONE_BOUNDING_BOXES.get(startingZone).expand(100, 0, 100).contains(pos);
     }
 
@@ -254,7 +217,7 @@ public class WishingCompassSolver {
             CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage").formatted(Formatting.RED)), false);
         } else {
             //send message to player with location and name
-            ZONE playerZone = getZoneOfLocation(startPosOne);
+            Zone playerZone = getZoneOfLocation(startPosOne);
             MiningLocationLabel.CrystalHollowsLocationsCategory location = getTargetLocation(playerZone);
             if (!verifyLocation(playerZone, targetLocation)) {
                 location = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN;
@@ -342,12 +305,12 @@ public class WishingCompassSolver {
             return true;
         }
         Vec3d playerPos = CLIENT.player.getEyePos();
-        ZONE currentZone = getZoneOfLocation(playerPos);
+        Zone currentZone = getZoneOfLocation(playerPos);
 
         switch (currentState) {
             case NOT_STARTED -> {
                 //do not start if the player is in nucleus as this does not work well
-                if (currentZone == ZONE.CRYSTAL_NUCLEUS) {
+                if (currentZone == Zone.CRYSTAL_NUCLEUS) {
                     CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.useOutsideNucleusMessage")), false);
                     return true;
                 }
@@ -406,5 +369,21 @@ public class WishingCompassSolver {
             particleLastUpdate = System.currentTimeMillis();
             particleLastPos = playerPos;
         }
+    }
+
+    private enum SolverStates {
+        NOT_STARTED,
+        PROCESSING_FIRST_USE,
+        WAITING_FOR_SECOND,
+        PROCESSING_SECOND_USE,
+    }
+
+    private enum Zone {
+        CRYSTAL_NUCLEUS,
+        JUNGLE,
+        MITHRIL_DEPOSITS,
+        GOBLIN_HOLDOUT,
+        PRECURSOR_REMNANTS,
+        MAGMA_FIELDS,
     }
 }

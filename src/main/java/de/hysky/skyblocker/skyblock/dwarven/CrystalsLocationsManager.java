@@ -187,14 +187,8 @@ public class CrystalsLocationsManager {
     }
 
     protected static Text getSetLocationMessage(String location, BlockPos blockPos) {
-        MutableText text = Constants.PREFIX.get();
-        text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint"));
         int locationColor = WAYPOINT_LOCATIONS.get(location).getColor();
-        text.append(Text.literal(location).withColor(locationColor));
-        text.append(Text.literal(" ").append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint.at")));
-        text.append(Text.literal(" : " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + "."));
-
-        return text;
+        return Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint", Text.literal(location).withColor(locationColor), blockPos.getX(), blockPos.getY(), blockPos.getZ()));
     }
 
     /**
@@ -205,18 +199,14 @@ public class CrystalsLocationsManager {
      * @return text for a message to send to the player
      */
     private static Text getLocationMenu(String location, boolean excludeUnknown) {
-        MutableText text = Constants.PREFIX.get();
 
         //if the user has all available waypoints active warn them instead of an empty list (excused unknown from check when disabled)
         if (activeWaypoints.size() == WAYPOINT_LOCATIONS.size() || (excludeUnknown && WAYPOINT_LOCATIONS.size() - activeWaypoints.size() == 1 && !activeWaypoints.containsKey(MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName()))) {
-            return text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.allActive").formatted(Formatting.RED));
+            return Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.allActive").formatted(Formatting.RED));
         }
 
         //add starting message
-        text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.MarkLocation.start")
-                .append(Text.literal(" ("+location+") ").formatted(Formatting.GRAY))
-                .append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.MarkLocation.end"))
-        );
+        MutableText text = Text.empty();
 
         //add possible locations to the message
         for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
@@ -231,9 +221,8 @@ public class CrystalsLocationsManager {
             );
         }
 
-        return text;
+        return Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.markLocation", location, text));
     }
-
 
     /**
      * Creates a formated text with a list of found places to remove / share a waypoint for
@@ -250,20 +239,20 @@ public class CrystalsLocationsManager {
         }
 
         //depending on the action load the correct prefix and hover message
-        String hoverMessage;
+        MutableText hoverMessage;
         if (action.equals("remove")) {
             text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.getLocationHover.remove").append(Text.literal(": ")));
-            hoverMessage = "skyblocker.config.mining.crystalsWaypoints.getLocationHover.remove";
+            hoverMessage = Text.translatable("skyblocker.config.mining.crystalsWaypoints.getLocationHover.remove");
         } else {
             text.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.getLocationHover.share").append(Text.literal(": ")));
-            hoverMessage = "skyblocker.config.mining.crystalsWaypoints.getLocationHover.share";
+            hoverMessage = Text.translatable("skyblocker.config.mining.crystalsWaypoints.getLocationHover.share");
         }
-        
+
         for (String waypointLocation : activeWaypoints.keySet()) {
             int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
             text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style
                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints " + action + " " + waypointLocation))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable(hoverMessage).withColor(locationColor))))
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage.withColor(locationColor))))
             );
         }
 

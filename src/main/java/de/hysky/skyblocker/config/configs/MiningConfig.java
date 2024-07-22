@@ -108,10 +108,10 @@ public class MiningConfig {
         public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
 
         @SerialEntry
-        public boolean useColor = true;
+        public float textScale = 1;
 
         @SerialEntry
-        public float textScale = 1;
+        public boolean useColor = true;
 
         @SerialEntry
         public boolean showBaseCamp = false;

@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 
+// TODO: Clean up into the waypoint system with a new `DistancedWaypoint` that extends `NamedWaypoint` for this and secret waypoints.
 public record MiningLocationLabel(Category category, Vec3d centerPos) implements Renderable {
     public MiningLocationLabel(Category category, BlockPos pos) {
         this(category, pos.toCenterPos());
