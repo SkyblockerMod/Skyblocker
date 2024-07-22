@@ -31,7 +31,7 @@ public final class OrderTerminal extends ContainerSolver implements TerminalSolv
     protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
         if(orderedSlots == null && !orderSlots(slots))
             return Collections.emptyList();
-        while(currentNum < PANES_NUM && Items.LIME_STAINED_GLASS_PANE.equals(slots.get(orderedSlots[currentNum]).getItem()))
+        while(currentNum < PANES_NUM && slots.containsKey(orderedSlots[currentNum]) && Items.LIME_STAINED_GLASS_PANE.equals(slots.get(orderedSlots[currentNum]).getItem()))
             currentNum++;
         List<ColorHighlight> highlights = new ArrayList<>(3);
         int last = Integer.min(3, PANES_NUM - currentNum);
