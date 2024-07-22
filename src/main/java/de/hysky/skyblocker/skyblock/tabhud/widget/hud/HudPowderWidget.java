@@ -125,7 +125,7 @@ public class HudPowderWidget extends Widget {
         String glacitePowderString = formatPowderString(glacitePowder, glacitePowderDiff);
 
         this.addSimpleIcoText(Ico.MITHRIL, "Mithril: ", Formatting.DARK_GREEN, mithrilPowderString);
-        this.addSimpleIcoText(Ico.AMETHYST_SHARD, "Gemstone: ", Formatting.DARK_PURPLE, gemstonePowderString);
+        this.addSimpleIcoText(Ico.AMETHYST_SHARD, "Gemstone: ", Formatting.LIGHT_PURPLE, gemstonePowderString);
         this.addSimpleIcoText(Ico.BLUE_ICE, "Glacite: ", Formatting.AQUA, glacitePowderString);
     }
 
