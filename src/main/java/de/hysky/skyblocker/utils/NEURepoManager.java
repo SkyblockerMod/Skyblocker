@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.NEURepository;
@@ -9,6 +10,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.function.Consumers;
 import org.eclipse.jgit.api.Git;
@@ -49,6 +51,20 @@ public class NEURepoManager {
                         }))
                 )
         );
+        SkyblockEvents.JOIN.register(NEURepoManager::load);
+    }
+
+    private static void load() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.world != null && client.getNetworkHandler() != null) {
+            SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(List.of());
+
+            try {
+                client.getNetworkHandler().onSynchronizeRecipes(packet);
+            } catch (Exception e) {
+                LOGGER.info("[Skyblocker] recipe sync error" , e);
+            }
+        }
     }
 
     public static boolean isLoading() {
