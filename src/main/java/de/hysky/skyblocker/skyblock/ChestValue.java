@@ -18,6 +18,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Style;
@@ -30,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -49,26 +51,18 @@ public class ChestValue {
 				String titleString = title.getString();
 				if (DUNGEON_CHESTS.contains(titleString)) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
-						ScreenEvents.afterTick(screen).register(screen_ ->
-								{
-									Text dungeonChestProfit = getDungeonChestProfit(genericContainerScreen.getScreenHandler());
-									if (dungeonChestProfit != null) addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
-								}
-						);
+                        Text dungeonChestProfit = getDungeonChestProfit(genericContainerScreen.getScreenHandler());
+                        if (dungeonChestProfit != null) addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
 					boolean minion = MINION_PATTERN.matcher(title.getString().trim()).find();
 					Screens.getButtons(screen).add(ButtonWidget
 							.builder(Text.literal("$"), buttonWidget -> {
 								Screens.getButtons(screen).remove(buttonWidget);
-								ScreenEvents.afterTick(screen).register(screen_ -> {
 									Text chestValue = getChestValue(genericContainerScreen.getScreenHandler(), minion);
-											if (chestValue != null) {
-												addValueToContainer(genericContainerScreen, chestValue, title);
-											}
-
-										}
-								);
+                                    if (chestValue != null) {
+                                        addValueToContainer(genericContainerScreen, chestValue, title);
+                                    }
 							})
 							.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
 							.tooltip(minion ? Tooltip.of(Text.translatable("skyblocker.config.general.minionValue.@Tooltip")) : Tooltip.of(Text.translatable("skyblocker.config.general.chestValue.@Tooltip")))
@@ -80,8 +74,6 @@ public class ChestValue {
 	}
 
 	private static void addValueToContainer(GenericContainerScreen genericContainerScreen, Text chestValue, Text title) {
-		// If the contents get updated the widgets get added again, I have no idea why and I don't feel like debugging this.
-		Screens.getButtons(genericContainerScreen).removeIf(clickableWidget -> clickableWidget instanceof ScrollingTextWidget);
 		int backgroundWidth = ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth();
 		int y = ((HandledScreenAccessor) genericContainerScreen).getY();
 		int x = ((HandledScreenAccessor) genericContainerScreen).getX();
@@ -193,6 +185,20 @@ public class ChestValue {
 					int y = slot.id / 9;
 					return x > 2 && x < 8 && y > 1 && y < 5;
 				}).toList();
+				ItemStack stack;
+				String coinsLine;
+				if (handler.slots.size() > 28 &&
+						(stack = handler.slots.get(28).getStack()).isOf(Items.HOPPER) &&
+						(coinsLine = ItemUtils.getLoreLineIf(stack, s -> s.contains("Held Coins:"))) != null) {
+
+					String source = coinsLine.split(":")[1];
+					try {
+						value += DecimalFormat.getNumberInstance(java.util.Locale.US).parse(source.trim()).doubleValue();
+					} catch (ParseException e) {
+						LOGGER.warn("[Skyblocker] Failed to parse {}", source);
+					}
+
+				}
 			} else {
 				slots = handler.slots.subList(0, handler.getRows() * 9);
 			}
