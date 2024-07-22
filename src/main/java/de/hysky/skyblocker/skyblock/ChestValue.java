@@ -1,25 +1,31 @@
 package de.hysky.skyblocker.skyblock;
 
-import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +39,7 @@ public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
 	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Gold Chest", "Diamond Chest", "Emerald Chest", "Obsidian Chest", "Bedrock Chest");
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>[0-9]+)");
+	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
 	private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
 	public static void init() {
@@ -43,19 +50,28 @@ public class ChestValue {
 				if (DUNGEON_CHESTS.contains(titleString)) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
 						ScreenEvents.afterTick(screen).register(screen_ ->
-								((ScreenAccessor) screen).setTitle(getDungeonChestProfit(genericContainerScreen.getScreenHandler(), title, titleString))
+								{
+									Text dungeonChestProfit = getDungeonChestProfit(genericContainerScreen.getScreenHandler());
+									if (dungeonChestProfit != null) addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
+								}
 						);
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
+					boolean minion = MINION_PATTERN.matcher(title.getString().trim()).find();
 					Screens.getButtons(screen).add(ButtonWidget
 							.builder(Text.literal("$"), buttonWidget -> {
 								Screens.getButtons(screen).remove(buttonWidget);
-								ScreenEvents.afterTick(screen).register(screen_ ->
-										((ScreenAccessor) screen).setTitle(getChestValue(genericContainerScreen.getScreenHandler(), title, titleString))
+								ScreenEvents.afterTick(screen).register(screen_ -> {
+									Text chestValue = getChestValue(genericContainerScreen.getScreenHandler(), minion);
+											if (chestValue != null) {
+												addValueToContainer(genericContainerScreen, chestValue, title);
+											}
+
+										}
 								);
 							})
 							.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
-							.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.chestValue.@Tooltip")))
+							.tooltip(minion ? Tooltip.of(Text.translatable("skyblocker.config.general.minionValue.@Tooltip")) : Tooltip.of(Text.translatable("skyblocker.config.general.chestValue.@Tooltip")))
 							.build()
 					);
 				}
@@ -63,14 +79,34 @@ public class ChestValue {
 		});
 	}
 
-	private static Text getDungeonChestProfit(GenericContainerScreenHandler handler, Text title, String titleString) {
+	private static void addValueToContainer(GenericContainerScreen genericContainerScreen, Text chestValue, Text title) {
+		// If the contents get updated the widgets get added again, I have no idea why and I don't feel like debugging this.
+		Screens.getButtons(genericContainerScreen).removeIf(clickableWidget -> clickableWidget instanceof ScrollingTextWidget);
+		int backgroundWidth = ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth();
+		int y = ((HandledScreenAccessor) genericContainerScreen).getY();
+		int x = ((HandledScreenAccessor) genericContainerScreen).getX();
+		((ScreenAccessor) genericContainerScreen).setTitle(Text.empty());
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		int chestValueWidth = Math.min(textRenderer.getWidth(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.getWidth(title)));
+
+		TextWidget chestValueWidget = new ScrollingTextWidget(chestValueWidth, textRenderer.fontHeight, chestValue, textRenderer);
+		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);
+		Screens.getButtons(genericContainerScreen).add(chestValueWidget);
+
+		ScrollingTextWidget chestTitleWidget = new ScrollingTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.fontHeight, title.copy().fillStyle(Style.EMPTY.withColor(4210752)), textRenderer);
+		chestTitleWidget.shadow = false;
+		chestTitleWidget.setPosition(x + 8, y + 6);
+		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
+	}
+
+	private static @Nullable Text getDungeonChestProfit(GenericContainerScreenHandler handler) {
 		try {
 			double profit = 0;
 			boolean hasIncompleteData = false, usedKismet = false;
 			List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
 
 			//If the item stack for the "Open Reward Chest" button or the kismet button hasn't been sent to the client yet
-			if (slots.get(31).getStack().isEmpty() || slots.get(50).getStack().isEmpty()) return title;
+			if (slots.get(31).getStack().isEmpty() || slots.get(50).getStack().isEmpty()) return null;
 
 			for (Slot slot : slots) {
 				ItemStack stack = slot.getStack();
@@ -138,19 +174,28 @@ public class ChestValue {
 				profit -= kismetPriceData.leftDouble();
 			}
 
-			return Text.literal(titleString).append(getProfitText((long) profit, hasIncompleteData));
+			return getProfitText((long) profit, hasIncompleteData);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Profit Calculator] Failed to calculate dungeon chest profit! ", e);
 		}
 
-		return title;
+		return null;
 	}
 
-	private static Text getChestValue(GenericContainerScreenHandler handler, Text title, String titleString) {
+	private static @Nullable Text getChestValue(GenericContainerScreenHandler handler, boolean minion) {
 		try {
 			double value = 0;
 			boolean hasIncompleteData = false;
-			List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
+			List<Slot> slots;
+			if (minion) {
+				slots = handler.slots.subList(0, handler.getRows() * 9).stream().filter(slot -> {
+					int x = slot.id % 9;
+					int y = slot.id / 9;
+					return x > 2 && x < 8 && y > 1 && y < 5;
+				}).toList();
+			} else {
+				slots = handler.slots.subList(0, handler.getRows() * 9);
+			}
 
 			for (Slot slot : slots) {
 				ItemStack stack = slot.getStack();
@@ -169,12 +214,12 @@ public class ChestValue {
 				}
 			}
 
-			return Text.literal(titleString).append(getValueText((long) value, hasIncompleteData));
+			return getValueText((long) value, hasIncompleteData);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Value Calculator] Failed to calculate dungeon chest value! ", e);
 		}
 
-		return title;
+		return null;
 	}
 
 	/**
@@ -192,5 +237,42 @@ public class ChestValue {
 	static Text getValueText(long value, boolean hasIncompleteData) {
 		UIAndVisualsConfig.ChestValue config = SkyblockerConfigManager.get().uiAndVisuals.chestValue;
 		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : config.color);
+	}
+
+
+
+	private static class ScrollingTextWidget extends TextWidget {
+
+		public boolean shadow = true;
+
+		public ScrollingTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
+			super(width, height, message, textRenderer);
+			alignLeft();
+		}
+
+		@Override
+		public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+			draw(context, getTextRenderer(), getMessage(), getX(), getRight());
+		}
+
+		// Yoinked from ClickableWidget
+		protected void draw(
+				DrawContext context, TextRenderer textRenderer, Text text, int startX, int endX
+		) {
+			int i = textRenderer.getWidth(text);
+			int k = endX - startX;
+			if (i > k) {
+				int l = i - k;
+				double d = (double) Util.getMeasuringTimeMs() / 600.0;
+				double e = Math.max((double)l * 0.5, 3.0);
+				double f = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * d / e)) / 2.0 + 0.5;
+				double g = MathHelper.lerp(f, 0.0, l);
+				context.enableScissor(startX, getY(), endX, getY() + textRenderer.fontHeight);
+				context.drawText(textRenderer, text, startX - (int)g, getY(), -1, shadow);
+				context.disableScissor();
+			} else {
+				context.drawText(textRenderer, text, startX, getY(), -1, shadow);
+			}
+		}
 	}
 }
