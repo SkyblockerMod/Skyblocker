@@ -36,7 +36,7 @@ public class MobGlow {
 				return switch (entity) {
 					// Minibosses
 					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
-					case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
+					case PlayerEntity p when entity.getId() == LividColor.getLividID() -> LividColor.shouldGlow(name);
 
 					// Bats
 					case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
@@ -48,7 +48,6 @@ public class MobGlow {
 					default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
 				};
 			}
-
 
 			return switch (entity) {
 				// Rift
@@ -111,11 +110,11 @@ public class MobGlow {
 			case PlayerEntity p when name.equals("Lost Adventurer") -> 0xfee15c;
 			case PlayerEntity p when name.equals("Shadow Assassin") -> 0x5b2cb2;
 			case PlayerEntity p when name.equals("Diamond Guy") -> 0x57c2f7;
-			case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.getGlowColor(name);
+			case PlayerEntity p when entity.getId() == LividColor.getLividID() -> LividColor.getGlowColor(name);
 			case PlayerEntity p when name.equals("Blobbercyst ") -> Formatting.GREEN.getColorValue();
 
 			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
-			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
+			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> Formatting.GREEN.getColorValue();
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 
 			default -> 0xf57738;

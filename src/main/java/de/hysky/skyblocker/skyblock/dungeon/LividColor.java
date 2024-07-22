@@ -46,10 +46,12 @@ public class LividColor {
     );
     public static final Set<String> LIVID_NAMES = Set.copyOf(LIVID_TO_FORMATTING.keySet());
     public static final DungeonsConfig.Livid CONFIG = SkyblockerConfigManager.get().dungeons.livid;
-    private static Formatting color;
+    private static Formatting color = Formatting.AQUA;
     private static Block lastColor = Blocks.AIR;
+    private static int lividID = 0;
 
     private static boolean isInitialized = false;
+    private static boolean originLividFound = false;
     private static final long OFFSET_DURATION = 2000;
     private static long toggleTime = 0;
 
@@ -74,6 +76,18 @@ public class LividColor {
             isInitialized = true;
         } else if (isInitialized && System.currentTimeMillis() - toggleTime >= OFFSET_DURATION) {
             onLividColorFound(client, currentColor);
+            if (!originLividFound) {
+                String lividName = LIVID_TO_FORMATTING.entrySet().stream()
+                        .filter(entry -> entry.getValue() == color)
+                        .map(Map.Entry::getKey)
+                        .findFirst()
+                        .orElse("unknown");
+                client.world.getPlayers().stream()
+                        .filter(entity -> entity.getName().getString().equals(lividName))
+                        .findFirst()
+                        .ifPresent(entity -> lividID = entity.getId());
+                originLividFound = true;
+            }
             lastColor = currentColor;
         }
 
@@ -114,9 +128,16 @@ public class LividColor {
         return Formatting.WHITE.getColorValue();
     }
 
+    public static int getLividID(){
+        return lividID;
+    }
+
     private static void reset() {
         lastColor = Blocks.AIR;
         toggleTime = 0;
         isInitialized = false;
+        originLividFound = false;
+        lividID = 0;
+        color = Formatting.AQUA;
     }
 }
