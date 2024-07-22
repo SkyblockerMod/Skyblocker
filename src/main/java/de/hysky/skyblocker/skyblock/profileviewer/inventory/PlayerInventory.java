@@ -22,7 +22,8 @@ import java.util.List;
 
 public class PlayerInventory implements ProfileViewerPage {
     private static final Identifier TEXTURE = Identifier.of("textures/gui/container/generic_54.png");
-    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static final TextRenderer textRenderer = CLIENT.textRenderer;
     private final List<ItemStack> containerList;
     private List<Text> tooltip = Collections.emptyList();
 
@@ -75,7 +76,7 @@ public class PlayerInventory implements ProfileViewerPage {
             context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
 
             if (mouseX > x -1 && mouseX < x + 16 && mouseY > y - 1 && mouseY < y + 16) {
-                tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
+                tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
             }
         }
     }
