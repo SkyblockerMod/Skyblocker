@@ -4,8 +4,10 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -21,7 +23,7 @@ public class YourEssenceAdder extends SimpleSlotTextAdder {
     }
 
     @Override
-    public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
+    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
         String name = stack.getName().getString();
         if (name.contains("Essence")) {
             List<Text> lore = ItemUtils.getLore(stack);

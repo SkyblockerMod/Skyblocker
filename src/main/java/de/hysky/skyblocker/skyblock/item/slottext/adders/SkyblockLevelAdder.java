@@ -4,9 +4,11 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,9 +18,9 @@ public class SkyblockLevelAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (slotId != 22) return List.of();
-		List<Text> lore = ItemUtils.getLore(itemStack);
+		List<Text> lore = ItemUtils.getLore(stack);
 		if (lore.isEmpty()) return List.of();
 		List<Text> siblings = lore.getFirst().getSiblings();
 		if (siblings.size() < 3) return List.of();

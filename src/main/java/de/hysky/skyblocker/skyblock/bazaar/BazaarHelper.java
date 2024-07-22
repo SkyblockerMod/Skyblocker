@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -11,12 +11,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BazaarHelper extends SlotTextAdder {
+public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");
 	private static final int RED = 0xe60b1e;
 	private static final int YELLOW = 0xe6ba0b;
@@ -27,14 +28,19 @@ public class BazaarHelper extends SlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(Slot slot) {
-		if (!SkyblockerConfigManager.get().helpers.bazaar.enableBazaarHelper) return List.of();
-		// Skip the first row as it's always glass panes.
-		if (slot.id < 10) return List.of();
-		// Skip the last 10 items. 11 is subtracted because size is 1-based so the last slot is size - 1.
-		if (slot.id > slot.inventory.size() - 11) return List.of(); //Note that this also skips the slots in player's inventory (anything above 36/45/54 depending on the order count)
+	public boolean isEnabled() {
+		return SkyblockerConfigManager.get().helpers.bazaar.enableBazaarHelper;
+	}
 
-		int column = slot.id % 9;
+	@Override
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		if (slot == null) return List.of();
+		// Skip the first row as it's always glass panes.
+		if (slotId < 10) return List.of();
+		// Skip the last 10 items. 11 is subtracted because size is 1-based so the last slot is size - 1.
+		if (slotId > slot.inventory.size() - 11) return List.of(); //Note that this also skips the slots in player's inventory (anything above 36/45/54 depending on the order count)
+
+		int column = slotId % 9;
 		if (column == 0 || column == 8) return List.of(); // Skip the first and last column as those are always glass panes as well.
 
 		ItemStack item = slot.getStack();

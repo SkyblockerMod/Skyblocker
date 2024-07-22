@@ -24,8 +24,8 @@ public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(), // Applies before anything else
 			new SupercraftReminder(),
-			new ChocolateFactorySolver.Tooltip(),
-			new ReorderHelper.Tooltip(),
+			new ChocolateFactorySolver(),
+			new ReorderHelper(),
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),

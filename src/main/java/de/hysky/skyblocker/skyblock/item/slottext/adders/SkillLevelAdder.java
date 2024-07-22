@@ -5,9 +5,11 @@ import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class SkillLevelAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		switch (slotId) {
 			case 19, 20, 21, 22, 23, 24, 25, 29, 30, 31, 32 -> { //These are the slots that contain the skill items. Note that they aren't continuous, as there are 2 rows.
 				String name = stack.getName().getString();

@@ -16,6 +16,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -86,21 +87,21 @@ public class SlotTextManager {
 	 * The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
 	 */
 	@NotNull
-	public static List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
+	public static List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (currentScreenAdders.isEmpty() || !isEnabled()) return List.of();
 		for (SlotTextAdder adder : currentScreenAdders) {
-			List<SlotText> text = adder.getText(itemStack, slotId);
+			List<SlotText> text = adder.getText(slot, stack, slotId);
 			if (!text.isEmpty()) return text;
 		}
 		return List.of();
 	}
 
-	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, Slot slot) {
-		renderSlotText(context, textRenderer, slot.getStack(), slot.id, slot.x, slot.y);
+	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, @NotNull Slot slot) {
+		renderSlotText(context, textRenderer, slot, slot.getStack(), slot.id, slot.x, slot.y);
 	}
 
-	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, ItemStack itemStack, int slotId, int x, int y) {
-		List<SlotText> textList = getText(itemStack, slotId);
+	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
+		List<SlotText> textList = getText(slot, stack, slotId);
 		if (textList.isEmpty()) return;
 		MatrixStack matrices = context.getMatrices();
 

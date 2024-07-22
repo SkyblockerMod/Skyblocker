@@ -4,8 +4,10 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,7 +22,7 @@ public class StatsTuningAdder extends SimpleSlotTextAdder {
     }
 
     @Override
-    public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
+    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
         Matcher statMatcher = ItemUtils.getLoreLineIfMatch(stack, STATHAS);
         Matcher unassignedMatcher = ItemUtils.getLoreLineIfMatch(stack, UNASSIGNEDPOINTS);
 

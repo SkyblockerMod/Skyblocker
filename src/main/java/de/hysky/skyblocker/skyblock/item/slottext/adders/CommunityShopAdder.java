@@ -6,9 +6,11 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -22,13 +24,13 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
-		if (slotId >= CATEGORIES_START && slotId <= CATEGORIES_END && itemStack.isOf(Items.LIME_STAINED_GLASS_PANE)) { //Only the selected category has a lime stained glass pane, the others have a gray one.
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		if (slotId >= CATEGORIES_START && slotId <= CATEGORIES_END && stack.isOf(Items.LIME_STAINED_GLASS_PANE)) { //Only the selected category has a lime stained glass pane, the others have a gray one.
 			currentScreen = (byte) (slotId - CATEGORIES_START);
 			return List.of();
 		}
 		return switch (currentScreen) { //This is a switch statement to allow easily adding other categories in the future.
-			case 1 -> getTextForUpgradesScreen(itemStack, slotId);
+			case 1 -> getTextForUpgradesScreen(stack, slotId);
 			default -> List.of();
 		};
 	}

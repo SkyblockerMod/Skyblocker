@@ -4,7 +4,9 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public interface SlotTextAdder extends ContainerMatcher {
 	 *           So, limit your text to 3 characters (or roughly less than 20 width) if you want it to not look horrible.
 	 */
 	@NotNull
-	List<SlotText> getText(@NotNull ItemStack itemStack, int slotId);
+	List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId);
 
 	@Override
 	default boolean isEnabled() {

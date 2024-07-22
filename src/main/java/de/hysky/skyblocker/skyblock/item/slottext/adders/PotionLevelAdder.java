@@ -6,14 +6,16 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class PotionLevelAdder extends SimpleSlotTextAdder {
     @Override
-    public @NotNull List<SlotText> getText(@NotNull ItemStack stack, int slotId) {
+    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
         NbtCompound customData = ItemUtils.getCustomData(stack);
         String title = stack.getName().getString();
         if (customData.contains("potion_level", NbtElement.INT_TYPE) && !title.contains("Healer Class") && !title.contains("Class Passives")) {

@@ -8,8 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -19,11 +21,11 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@NotNull ItemStack itemStack, int slotId) {
-		if (!itemStack.isOf(Items.ENCHANTED_BOOK)) return List.of();
-		String name = itemStack.getName().getString();
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		if (!stack.isOf(Items.ENCHANTED_BOOK)) return List.of();
+		String name = stack.getName().getString();
 		if (name.equals("Enchanted Book")) {
-			NbtCompound nbt = ItemUtils.getCustomData(itemStack);
+			NbtCompound nbt = ItemUtils.getCustomData(stack);
 			if (nbt.isEmpty() || !nbt.contains("enchantments", NbtElement.COMPOUND_TYPE)) return List.of();
 			NbtCompound enchantments = nbt.getCompound("enchantments");
 			if (enchantments.getSize() != 1) return List.of(); //Only makes sense to display the level when there's one enchant.

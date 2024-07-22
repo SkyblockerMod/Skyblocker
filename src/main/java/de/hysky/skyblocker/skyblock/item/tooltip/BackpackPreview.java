@@ -173,7 +173,7 @@ public class BackpackPreview {
 
             context.drawItem(currentStack, itemX, itemY);
             context.drawItemInSlot(textRenderer, currentStack, itemX, itemY);
-            SlotTextManager.renderSlotText(context, textRenderer, currentStack, i, itemX, itemY);
+            SlotTextManager.renderSlotText(context, textRenderer, null, currentStack, i, itemX, itemY);
         }
 
         matrices.pop();
