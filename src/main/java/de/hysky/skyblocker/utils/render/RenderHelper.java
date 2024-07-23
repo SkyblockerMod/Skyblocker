@@ -351,6 +351,13 @@ public class RenderHelper {
         }
     }
 
+    /**
+     * Retrieves the bounding box of a block in the world.
+     *
+     * @param world The client world.
+     * @param pos   The position of the block.
+     * @return The bounding box of the block.
+     */
     public static Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
         return getBlockBoundingBox(world, world.getBlockState(pos), pos);
     }
@@ -473,17 +480,5 @@ public class RenderHelper {
         }
 
         return null;
-    }
-
-    /**
-     * Retrieves the bounding box of a block in the world.
-     *
-     * @param world The client world.
-     * @param pos   The position of the block.
-     * @return The bounding box of the block.
-     */
-    public static Box getBlockBoundingBox(BlockView world, BlockPos pos) {
-        BlockState blockState = world.getBlockState(pos);
-        return blockState.getOutlineShape(world, pos).getBoundingBox().offset(pos);
     }
 }
