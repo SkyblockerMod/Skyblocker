@@ -51,10 +51,13 @@ public class NEURepoManager {
                         }))
                 )
         );
-        SkyblockEvents.JOIN.register(NEURepoManager::load);
+        SkyblockEvents.JOIN.register(NEURepoManager::handleRecipeSynchronization);
     }
 
-    private static void load() {
+    /**
+     * load the recipe manually because Hypixel doesn't send any vanilla recipes to the client
+     */
+    private static void handleRecipeSynchronization() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.world != null && client.getNetworkHandler() != null) {
             SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(List.of());
