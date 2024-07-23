@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -15,7 +16,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,7 +30,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
     private ThreeWeirdos() {
         super("three-weirdos", "three-chests");
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            World world = MinecraftClient.getInstance().world;
+            ClientWorld world = MinecraftClient.getInstance().world;
             if (overlay || !shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveThreeWeirdos || world == null || !DungeonManager.isCurrentRoomMatched()) return;
 
             @SuppressWarnings("DataFlowIssue")
@@ -55,7 +55,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
         new ThreeWeirdos();
     }
 
-    private void checkForNPC(World world, Room room, BlockPos relative, String name) {
+    private void checkForNPC(ClientWorld world, Room room, BlockPos relative, String name) {
         BlockPos npcPos = room.relativeToActual(relative);
         List<ArmorStandEntity> npcs = world.getEntitiesByClass(
                 ArmorStandEntity.class,
