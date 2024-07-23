@@ -129,7 +129,7 @@ public class SlotTextManager {
 	}
 
 	public static boolean isEnabled() {
-		return switch (SkyblockerConfigManager.get().general.itemInfoDisplay.slotText) {
+		return switch (SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextMode) {
 			case ENABLED -> true;
 			case DISABLED -> false;
 			case PRESS_TO_TOGGLE -> SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextToggled;

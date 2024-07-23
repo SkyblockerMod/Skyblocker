@@ -28,6 +28,9 @@
 
   "skyblocker.config.title": "Skyblocker Settings",
 
+  "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
+  "skyblocker.config.shortcutToKeybindsSettings.@Text": "Click... (Opens up Keybinds Options)",
+
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 
   "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
@@ -225,8 +228,6 @@
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
   "skyblocker.config.general.itemInfoDisplay.slotText": "Slot Text",
   "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
-  "skyblocker.config.general.itemInfoDisplay.slotText.shortcutToKeybindsSettings": "Slot Text Keybind",
-  "skyblocker.config.general.itemInfoDisplay.slotText.shortcutToKeybindsSettings.@Text": "Click... (opens up keybinds settings)",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",

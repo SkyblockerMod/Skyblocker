@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 /**
  * Used in {@link SlotTextManager#isEnabled()} to determine whether the slot text should be shown or not.
  */
-public enum SlotTextState {
+public enum SlotTextMode {
 	ENABLED,
 	HOLD_TO_SHOW,
 	PRESS_TO_TOGGLE,
