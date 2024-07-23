@@ -62,18 +62,9 @@ public class RenderHelper {
         renderBeaconBeam(context, pos, colorComponents);
     }
     public static void renderFilled(WorldRenderContext context, Box boundingBox, float[] colorComponents, float alpha, boolean throughWalls) {
-        MatrixStack matrices = context.matrixStack();
-        Vec3d camera = context.camera().getPos();
-
-        matrices.push();
-        matrices.translate(-camera.x, -camera.y, -camera.z);
-
-        VertexConsumerProvider consumers = context.consumers();
-        VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
-
-        WorldRenderer.renderFilledBox(matrices, buffer, boundingBox.minX, boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
-
-        matrices.pop();
+        Vec3d pos = new Vec3d(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
+        Vec3d dimensions = new Vec3d(boundingBox.getLengthX(), boundingBox.getLengthY(), boundingBox.getLengthZ());
+        renderFilled(context, pos, dimensions, colorComponents, alpha, throughWalls);
     }
 
     public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
