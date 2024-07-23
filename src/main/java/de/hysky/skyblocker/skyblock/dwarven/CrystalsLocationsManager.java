@@ -188,7 +188,11 @@ public class CrystalsLocationsManager {
 
     protected static Text getSetLocationMessage(String location, BlockPos blockPos) {
         int locationColor = WAYPOINT_LOCATIONS.get(location).getColor();
-        return Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.addedWaypoint", Text.literal(location).withColor(locationColor), blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+
+        // Minecraft transforms all arguments (`%s`, `%d`, whatever) to `%$1s` DURING LOADING in `Language#load(InputStream, BiConsumer<String,String>)` for some unknown reason.
+        // And then `TranslatableTextContent#forEachPart` only accepts `%s` for some other unknown reason.
+        // So that's why the arguments are all `%s`. Wtf mojang?????????
+        return Constants.PREFIX.get().append(Text.translatableWithFallback("skyblocker.config.mining.crystalsWaypoints.addedWaypoint", "Added waypoint for '%s' at %s %s %s.", Text.literal(location).withColor(locationColor), blockPos.getX(), blockPos.getY(), blockPos.getZ()));
     }
 
     /**
