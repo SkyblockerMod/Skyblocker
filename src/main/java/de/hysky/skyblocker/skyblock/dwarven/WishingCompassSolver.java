@@ -219,8 +219,10 @@ public class WishingCompassSolver {
             //send message to player with location and name
             Zone playerZone = getZoneOfLocation(startPosOne);
             MiningLocationLabel.CrystalHollowsLocationsCategory location = getTargetLocation(playerZone);
+            //set to unknown if the target is to far from the region it's allowed to spawn in
             if (!verifyLocation(playerZone, targetLocation)) {
                 location = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN;
+                CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.targetLocationToFar").formatted(Formatting.RED)), false);
             }
             //offset the jungle location to its doors
             if (location == MiningLocationLabel.CrystalHollowsLocationsCategory.JUNGLE_TEMPLE) {
@@ -259,8 +261,6 @@ public class WishingCompassSolver {
             return null;
         }
         return new Vec3d(intersection.getX(), intersection.getY(), intersection.getZ());
-
-
     }
 
     private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
