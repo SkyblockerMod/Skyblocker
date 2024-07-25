@@ -5,6 +5,8 @@
 
   "key.categories.skyblocker": "Skyblocker",
   "key.hotbarSlotLock": "Slot Lock (Hotbar)",
+  "key.skyblocker.slotSwapConfigure" : "Configure Slot Swap",
+  "key.skyblocker.slotSwapReset" : "Reset Slot Swap Bindings (double tap)",
   "key.skyblocker.toggleB": "Toggle tab HUD to screen B",
   "key.skyblocker.defaultTgl": "Switch tab HUD to default view",
   "key.skyblocker.toggleA": "Toggle tab HUD to screen A",
@@ -1040,6 +1042,10 @@
   "skyblocker.profileviewer.inventory.inactive": "Locked Slot",
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
+
+  "skyblocker.slotSwap.add" : "Successfully added slot swap from slot %s to slot %s",
+  "skyblocker.slotSwap.reset" : "Successfully reset all slot swaps.",
+
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }

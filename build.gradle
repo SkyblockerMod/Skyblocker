@@ -2,6 +2,7 @@ plugins {
 	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.5.1"
+	id 'org.jetbrains.kotlin.jvm' version '2.0.0'
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -85,6 +86,9 @@ dependencies {
 
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
+
+	// Fabric Language Kotlin
+	modImplementation("net.fabricmc:fabric-language-kotlin:${project.fabric_language_kotlin_version}")
 }
 
 loom {
@@ -114,6 +118,10 @@ tasks.withType(JavaCompile).configureEach {
 java {
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
+}
+
+kotlin {
+	jvmToolchain(21)
 }
 
 jar {

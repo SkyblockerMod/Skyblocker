@@ -51,6 +51,7 @@ import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.waypoint.*;
+import de.hysky.skyblocker.util.CoroutineUtil;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
@@ -105,6 +106,7 @@ public class SkyblockerMod implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
+        CoroutineUtil.init();
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
         ConfigDataFixer.apply();
         Utils.init();
@@ -209,6 +211,7 @@ public class SkyblockerMod implements ClientModInitializer {
         TooltipManager.init();
         SlotTextManager.init();
         BazaarHelper.init();
+        SlotSwap.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

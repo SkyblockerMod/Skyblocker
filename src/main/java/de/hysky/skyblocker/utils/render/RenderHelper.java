@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -27,10 +28,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -261,6 +259,29 @@ public class RenderHelper {
         RenderSystem.lineWidth(1f);
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+    }
+
+    public static void renderLine(Vec2f from, Vec2f to, int fromColor, int toColor, float lineWidth) {
+        RenderSystem.assertOnRenderThread();
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+        GlStateManager._depthMask(false);
+        GlStateManager._disableCull();
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        RenderSystem.lineWidth(lineWidth);
+
+        Vec2f normal = to.add(from.negate()).normalize();
+
+        bufferBuilder.vertex(from.x, from.y, 0.0F).color(fromColor).normal(normal.x, normal.y, 0.0F);
+        bufferBuilder.vertex(to.x, to.y, 0.0F).color(toColor).normal(normal.x, normal.y, 0.0F);
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        RenderSystem.lineWidth(1.0F);
+        GlStateManager._enableCull();
+        GlStateManager._depthMask(true);
     }
 
     public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {
