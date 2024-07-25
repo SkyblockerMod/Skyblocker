@@ -1,19 +1,20 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class may be used to get data from the player list. It doesn't get its
@@ -24,8 +25,15 @@ public class PlayerListMgr {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 
-	private static List<PlayerListEntry> playerList;
-    private static String footer;
+	/**
+	 * The player list in tab.
+	 */
+	private static List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
+	/**
+	 * The player list in tab, but a list of strings instead of {@link PlayerListEntry}s.
+	 */
+	private static List<String> playerStringList = new ArrayList<>();
+	private static String footer;
 
 	public static void updateList() {
 
@@ -38,25 +46,40 @@ public class PlayerListMgr {
 		// check is needed, else game crashes on server leave
 		if (cpnwh != null) {
 			playerList = cpnwh.getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList();
+			playerStringList = playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).map(Text::getString).map(String::strip).toList();
 		}
 	}
 
-    public static void updateFooter(Text f) {
-        if (f == null) {
-            footer = null;
-        } else {
-            footer = f.getString();
-        }
-    }
+	/**
+	 * @return the cached player list
+	 */
+	public static List<PlayerListEntry> getPlayerList() {
+		return playerList;
+	}
 
-    public static String getFooter() {
-        return footer;
-    }
+	/**
+	 * @return the cached player list as a list of strings
+	 */
+	public static List<String> getPlayerStringList() {
+		return playerStringList;
+	}
+
+	public static void updateFooter(Text f) {
+		if (f == null) {
+			footer = null;
+		} else {
+			footer = f.getString();
+		}
+	}
+
+	public static String getFooter() {
+		return footer;
+	}
 
 	/**
 	 * Get the display name at some index of the player list and apply a pattern to
 	 * it
-	 * 
+	 *
 	 * @return the matcher if p fully matches, else null
 	 */
 	public static Matcher regexAt(int idx, Pattern p) {
@@ -78,7 +101,7 @@ public class PlayerListMgr {
 
 	/**
 	 * Get the display name at some index of the player list as string
-	 * 
+	 *
 	 * @return the string or null, if the display name is null, empty or whitespace
 	 *         only
 	 */
@@ -105,9 +128,9 @@ public class PlayerListMgr {
 
 	/**
 	 * Gets the display name at some index of the player list
-	 * 
+	 *
 	 * @return the text or null, if the display name is null
-	 * 
+	 *
 	 * @implNote currently designed specifically for crimson isles faction quests
 	 *           widget and the rift widgets, might not work correctly without
 	 *           modification for other stuff. you've been warned!
@@ -157,7 +180,7 @@ public class PlayerListMgr {
 	/**
 	 * Get the display name at some index of the player list as Text as seen in the
 	 * game
-	 * 
+	 *
 	 * @return the PlayerListEntry at that index
 	 */
 	public static PlayerListEntry getRaw(int idx) {

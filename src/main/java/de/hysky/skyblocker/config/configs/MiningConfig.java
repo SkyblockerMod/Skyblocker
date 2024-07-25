@@ -94,7 +94,13 @@ public class MiningConfig {
         public boolean enabled = true;
 
         @SerialEntry
+        public float textScale = 1;
+
+        @SerialEntry
         public boolean findInChat = true;
+
+        @SerialEntry
+        public boolean wishingCompassSolver = true;
     }
 
     public static class CommissionWaypoints {
@@ -102,10 +108,10 @@ public class MiningConfig {
         public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
 
         @SerialEntry
-        public boolean useColor = true;
+        public float textScale = 1;
 
         @SerialEntry
-        public float textScale = 1;
+        public boolean useColor = true;
 
         @SerialEntry
         public boolean showBaseCamp = false;

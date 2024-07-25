@@ -132,6 +132,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FarmingHud.init();
         LowerSensitivity.init();
         CrystalsLocationsManager.init();
+        WishingCompassSolver.init();
         MetalDetector.init();
         ChatMessageListener.init();
         Shortcuts.init();
