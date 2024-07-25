@@ -19,3 +19,4 @@ accessible class net/minecraft/client/render/RenderPhase$ColorLogic
 accessible class net/minecraft/client/render/RenderPhase$OffsetTexturing
 accessible class net/minecraft/client/render/RenderPhase$Textures
 accessible field net/minecraft/command/argument/BlockPosArgumentType EXAMPLES Ljava/util/Collection;
+accessible class net/minecraft/datafixer/fix/ItemStackComponentizationFix$StackData
