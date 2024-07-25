@@ -785,5 +785,6 @@
     "argument.color.hex.invalidChar": "十六进制数字的字符无效：%s。有效字符：[0-9a-fA-F]",
     "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] 你可以复制物品的数量",
     "skyblocker.tips.signCalculator": "在告示牌中输入数学表达式，模组会替你计算。",
-    "skyblocker.tips.calculateCommand": "在 /skyblocker calculate 后输入一个数学表达式，模组会替你计算。"
+    "skyblocker.tips.calculateCommand": "在 /skyblocker calculate 后输入一个数学表达式，模组会替你计算。",
+    "skyblocker.config.shortcutToKeybindsSettings": "编辑按键绑定"
 }
