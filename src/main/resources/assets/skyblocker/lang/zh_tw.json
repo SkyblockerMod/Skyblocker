@@ -783,5 +783,6 @@
     "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] 你可以複製物品的數量",
     "skyblocker.reorderHelper.tooltip.line2": "透過按住CTRL鍵的同時點擊該項目！",
     "skyblocker.tips.signCalculator": "在告示牌中輸入數學表達式，模組會替你計算。",
-    "skyblocker.tips.calculateCommand": "在 /skyblocker calculate 後輸入一個數學表達式，模組會替你計算。"
+    "skyblocker.tips.calculateCommand": "在 /skyblocker calculate 後輸入一個數學表達式，模組會替你計算。",
+    "skyblocker.config.shortcutToKeybindsSettings": "編輯按鍵綁定"
 }
