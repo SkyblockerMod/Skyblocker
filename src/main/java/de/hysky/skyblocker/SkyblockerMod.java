@@ -131,7 +131,6 @@ public class SkyblockerMod implements ClientModInitializer {
         TabHud.init();
         GlaciteColdOverlay.init();
         CommissionLabels.init();
-        CrystalsHudWidget.init();
         FarmingHud.init();
         LowerSensitivity.init();
         CrystalsLocationsManager.init();
