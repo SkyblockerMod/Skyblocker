@@ -73,7 +73,9 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		DECIMAL_FORMAT.setMaximumFractionDigits(1);
 	}
 
-	public ChocolateFactorySolver() {
+	public static final ChocolateFactorySolver INSTANCE = new ChocolateFactorySolver();
+
+	private ChocolateFactorySolver() {
 		super("^Chocolate Factory$"); //There are multiple screens that fit the pattern `^Chocolate Factory`, so the $ is required
 		ClientTickEvents.START_CLIENT_TICK.register(ChocolateFactorySolver::onTick);
 	}

@@ -56,7 +56,7 @@ public class ContainerSolverManager {
 				UltrasequencerSolver.INSTANCE,
 				new NewYearCakeBagHelper(),
 				NewYearCakesHelper.INSTANCE,
-				new ChocolateFactorySolver(),
+				ChocolateFactorySolver.INSTANCE,
 				new ReorderHelper()
 		};
 	}
