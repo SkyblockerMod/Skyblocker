@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BazaarPriceTooltip extends TooltipAdder {
+public class BazaarPriceTooltip extends SimpleTooltipAdder {
 	public static boolean bazaarExist = false;
 
 	public BazaarPriceTooltip(int priority) {
@@ -30,7 +30,7 @@ public class BazaarPriceTooltip extends TooltipAdder {
 
 		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;
 
-		if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name)) {
+		if (TooltipInfoType.BAZAAR.hasOrNullWarning(name)) {
 			int amount;
 			if (lines.get(1).getString().endsWith("Sack")) {
 				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V
@@ -53,5 +53,10 @@ public class BazaarPriceTooltip extends TooltipAdder {
 					              : ItemTooltip.getCoinsMessage(getItem.get("sellPrice").getAsDouble(), amount)));
 			bazaarExist = true;
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.BAZAAR.isTooltipEnabled();
 	}
 }

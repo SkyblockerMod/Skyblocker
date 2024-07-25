@@ -1,16 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,19 +17,19 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CroesusProfit extends ContainerSolver {
-    private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>[0-9]+)");
+public class CroesusProfit extends SimpleContainerSolver {
+    private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
     public CroesusProfit() {
         super(".*Catacombs - Floor.*");
     }
 
     @Override
-    protected boolean isEnabled() {
+    public boolean isEnabled() {
         return SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit;
     }
 
     @Override
-    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
+    public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
         ItemStack bestChest = null, secondBestChest = null;
         double bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
@@ -82,7 +79,7 @@ public class CroesusProfit extends ContainerSolver {
             } else if (lineString.isEmpty()) {
                 processingContents = false;
             } else if (lineString.contains("Coins") && !processingContents) {
-                chestPrice = Integer.parseInt(lineString.replaceAll(",", "").replaceAll("\\D", ""));
+                chestPrice = Integer.parseInt(lineString.replace(",", "").replaceAll("\\D", ""));
             }
 
             if (processingContents) {

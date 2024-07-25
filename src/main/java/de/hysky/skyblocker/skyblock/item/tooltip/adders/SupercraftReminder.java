@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class SupercraftReminder extends TooltipAdder {
+public class SupercraftReminder extends SimpleTooltipAdder {
 	private static final byte SUPERCRAFT_SLOT = 32;
 	private static final byte RECIPE_RESULT_SLOT = 25;
 
@@ -28,5 +28,10 @@ public class SupercraftReminder extends TooltipAdder {
 		int index = lines.size() - 1;
 		if (lines.get(lines.size() - 2).getString().equals("Recipe not unlocked!")) index--; //Place it right below the "Right-Click to set amount" line
 		lines.add(index, Text.literal("Shift-Click to maximize the amount!").formatted(Formatting.GOLD));
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 }

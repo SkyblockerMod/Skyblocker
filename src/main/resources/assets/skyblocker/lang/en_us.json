@@ -10,6 +10,7 @@
   "key.skyblocker.toggleA": "Toggle tab HUD to screen A",
   "key.wikiLookup": "Wiki Lookup",
   "key.itemProtection": "Protect Item",
+  "key.skyblocker.slottext": "Slot Text",
 
   "text.skyblocker.open": "Open",
   "text.skyblocker.quit_config": "Changes Not Saved",
@@ -26,6 +27,9 @@
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
   "skyblocker.config.title": "Skyblocker Settings",
+
+  "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
+  "skyblocker.config.shortcutToKeybindsSettings.@Text": "Click... (Opens up Keybinds Options)",
 
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 

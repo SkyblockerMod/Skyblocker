@@ -7,6 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -15,7 +16,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -49,6 +49,8 @@ public class BackpackPreview {
     private static final int STORAGE_SIZE = 27;
 
     private static final Storage[] storages = new Storage[STORAGE_SIZE];
+
+    private BackpackPreview() {}
 
     /**
      * The profile id of the currently loaded backpack preview.
@@ -119,7 +121,7 @@ public class BackpackPreview {
             writer.write(new StringNbtWriter().apply(Storage.CODEC.encodeStart(getOps(), storages[index]).getOrThrow()));
             storages[index].markClean();
         } catch (Exception e) {
-            LOGGER.error("Failed to save backpack preview file: {}", storageFile.getFileName().toString(), e);
+            LOGGER.error("Failed to save backpack preview file: {}", storageFile.getFileName(), e);
         }
     }
 
@@ -171,6 +173,7 @@ public class BackpackPreview {
 
             context.drawItem(currentStack, itemX, itemY);
             context.drawItemInSlot(textRenderer, currentStack, itemX, itemY);
+            SlotTextManager.renderSlotText(context, textRenderer, null, currentStack, i, itemX, itemY);
         }
 
         matrices.pop();

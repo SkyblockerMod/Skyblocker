@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 
-public class MotesTooltip extends TooltipAdder {
+public class MotesTooltip extends SimpleTooltipAdder {
 	public MotesTooltip(int priority) {
 		super(priority);
 	}
@@ -21,11 +21,16 @@ public class MotesTooltip extends TooltipAdder {
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (internalID != null && TooltipInfoType.MOTES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+		if (internalID != null && TooltipInfoType.MOTES.hasOrNullWarning(internalID)) {
 			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
 			              .formatted(Formatting.LIGHT_PURPLE)
 			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), stack.getCount())));
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.MOTES.isTooltipEnabled();
 	}
 
 	private static Text getMotesMessage(int price, int count) {

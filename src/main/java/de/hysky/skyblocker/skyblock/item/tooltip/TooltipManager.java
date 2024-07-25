@@ -4,8 +4,8 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
@@ -24,8 +24,8 @@ public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(), // Applies before anything else
 			new SupercraftReminder(),
-			new ChocolateFactorySolver.Tooltip(),
-			new ReorderHelper.Tooltip(),
+			new ChocolateFactorySolver(),
+			new ReorderHelper(),
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),
@@ -59,14 +59,13 @@ public class TooltipManager {
 	}
 
 	private static void onScreenChange(Screen screen) {
-		final String title = screen.getTitle().getString();
 		currentScreenAdders.clear();
 		for (TooltipAdder adder : adders) {
-			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
+			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
-		currentScreenAdders.sort(Comparator.comparingInt(adder -> adder.priority));
+		currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
 	}
 
 	/**

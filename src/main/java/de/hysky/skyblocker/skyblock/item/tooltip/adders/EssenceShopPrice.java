@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
@@ -20,7 +20,7 @@ import java.util.OptionalLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EssenceShopPrice extends TooltipAdder {
+public class EssenceShopPrice extends SimpleTooltipAdder {
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("Cost (?<amount>[\\d,]+) (?<type>[A-Za-z]+) Essence");
 	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final String[] ESSENCE_TYPES = {"WITHER", "SPIDER", "UNDEAD", "DRAGON", "GOLD", "DIAMOND", "ICE", "CRIMSON"};
@@ -45,8 +45,6 @@ public class EssenceShopPrice extends TooltipAdder {
 	//Todo: maybe move the price value right after the essence amount ex: "1,500 Wither Essence (645k coins)"
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (!SkyblockerConfigManager.get().general.itemTooltip.showEssenceCost) return;
-
 		String lore = ItemUtils.concatenateLore(lines);
 		Matcher essenceMatcher = ESSENCE_PATTERN.matcher(lore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(essenceMatcher);
@@ -63,5 +61,10 @@ public class EssenceShopPrice extends TooltipAdder {
 				.append(Text.literal(DECIMAL_FORMAT.format(priceData) + " each").formatted(Formatting.GRAY))
 				.append(Text.literal(")").formatted(Formatting.GRAY))
 		);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return SkyblockerConfigManager.get().general.itemTooltip.showEssenceCost;
 	}
 }

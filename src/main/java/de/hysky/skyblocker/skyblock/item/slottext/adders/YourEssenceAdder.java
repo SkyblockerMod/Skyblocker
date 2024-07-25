@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class YourEssenceAdder extends SlotTextAdder {
+public class YourEssenceAdder extends SimpleSlotTextAdder {
     private static final Pattern ESSENCE = Pattern.compile("You currently own (?<essence>[\\d,]+)");
 
     public YourEssenceAdder() {
@@ -22,8 +23,7 @@ public class YourEssenceAdder extends SlotTextAdder {
     }
 
     @Override
-    public @NotNull List<SlotText> getText(Slot slot) {
-        final ItemStack stack = slot.getStack();
+    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
         String name = stack.getName().getString();
         if (name.contains("Essence")) {
             List<Text> lore = ItemUtils.getLore(stack);
