@@ -1,15 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
@@ -34,40 +29,6 @@ public class CrystalsHudWidget extends HudWidget {
 
     public CrystalsHudWidget() {
         super("hud_crystals");
-    }
-
-    @Init
-    public static void init() {
-        /*ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
-                .then(ClientCommandManager.literal("hud")
-                        .then(ClientCommandManager.literal("crystals")
-                                .executes(Scheduler.queueOpenScreenCommand(CrystalsHudConfigScreen::new))))));*/
-
-        /*HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
-            if (!SkyblockerConfigManager.get().mining.crystalsHud.enabled
-                    || CLIENT.player == null
-                    || !visible) {
-                return;
-            }
-            render(context, SkyblockerConfigManager.get().mining.crystalsHud.x,
-                    SkyblockerConfigManager.get().mining.crystalsHud.y);
-        });*/
-    }
-
-    protected static int getDimensionsForConfig() {
-        return (int) (62 * SkyblockerConfigManager.get().mining.crystalsHud.mapScaling);
-    }
-
-
-    /**
-     * Renders the map to the players UI. renders the background image ({@link CrystalsHudWidget#MAP_TEXTURE}) of the map then if enabled special locations on the map. then finally the player to the map.
-     *
-     * @param context DrawContext to draw map to
-     * @param hudX    Top left X coordinate of the map
-     * @param hudY    Top left Y coordinate of the map
-     */
-    private static void render(DrawContext context, int hudX, int hudY) {
-
     }
 
     /**
@@ -172,48 +133,5 @@ public class CrystalsHudWidget extends HudWidget {
         //draw marker on map
         context.drawTexture(RenderLayer::getGuiTextured, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
         matrices.pop();
-    }
-
-    /**
-     * Converts an X and Z coordinate in the crystal hollow to an X and Y coordinate on the map.
-     *
-     * @param x the world X coordinate
-     * @param z the world Z coordinate
-     * @return a vector representing the x and y values
-     */
-    protected static Vector2ic transformLocation(double x, double z) {
-        //converts an x and z to a location on the map
-        int transformedX = (int) ((x - 202) / 621 * 62);
-        int transformedY = (int) ((z - 202) / 621 * 62);
-        transformedX = Math.clamp(transformedX, 0, 62);
-        transformedY = Math.clamp(transformedY, 0, 62);
-
-        return new Vector2i(transformedX, transformedY);
-    }
-
-    /**
-     * Converts yaw to the cardinal directions that a player marker can be rotated towards on a map.
-     * The rotations of a marker follow this order: N, NNE, NE, ENE, E, ESE, SE, SSE, S, SSW, SW, WSW, W, WNW, NW, NNW.
-     * <br><br>
-     * Based off code from {@link net.minecraft.client.render.MapRenderer}
-     */
-    private static float yaw2Cardinal(float yaw) {
-        yaw += 180; //flip direction
-        byte clipped = (byte) ((yaw + (yaw < 0.0 ? -8.0 : 8.0)) * 16.0 / 360.0);
-
-        return (clipped * 360f) / 16f;
-    }
-
-    /**
-     * Works out if the crystals map should be rendered and sets {@link CrystalsHud#visible} accordingly.
-     */
-    public static void update() {
-        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) {
-            visible = false;
-            return;
-        }
-
-        //get if the player is in the crystals
-        visible = Utils.isInCrystalHollows();
     }
 }
