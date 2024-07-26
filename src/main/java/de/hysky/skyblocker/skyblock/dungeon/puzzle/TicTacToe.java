@@ -23,6 +23,7 @@ import java.util.List;
 public class TicTacToe extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToe.class);
 	private static final float[] RED_COLOR_COMPONENTS = { 1.0F, 0.0F, 0.0F };
+	private static final float[] GREEN_COLOR_COMPONENTS = { 0.0F, 1.0F, 0.0F };
 	@SuppressWarnings("unused")
 	private static final TicTacToe INSTANCE = new TicTacToe();
 	private static Box nextBestMoveToMake = null;
@@ -101,7 +102,7 @@ public class TicTacToe extends DungeonPuzzle {
 				double nextZ = 17 - bestMove.column();
 
 				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.ofFloored(nextX, nextY, nextZ));
-				nextBestMoveToMake = new Box(nextPos);
+				nextBestMoveToMake = RenderHelper.getBlockBoundingBox(client.world, nextPos);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while determining a tic tac toe solution!", e);
@@ -112,7 +113,7 @@ public class TicTacToe extends DungeonPuzzle {
 	public void render(WorldRenderContext context) {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTicTacToe && nextBestMoveToMake != null) {
-				RenderHelper.renderOutline(context, nextBestMoveToMake, RED_COLOR_COMPONENTS, 5, false);
+				RenderHelper.renderFilled(context, nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 0.5f, false);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while rendering the tic tac toe solution!", e);
