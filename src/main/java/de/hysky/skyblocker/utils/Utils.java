@@ -405,7 +405,7 @@ public class Utils {
                     isOnSkyblock = true;
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
-                } else {
+                } else if (previousServerType.equals("SKYBLOCK")) {
                     isOnSkyblock = false;
                     SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
                 }
