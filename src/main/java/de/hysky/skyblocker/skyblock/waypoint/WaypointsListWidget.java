@@ -85,7 +85,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
     void updateButtons() {
         for (Entry<AbstractWaypointEntry> entry : children()) {
-            if (entry instanceof WaypointCategoryEntry categoryEntry && categoryEntry.enabled.isChecked() != categoryEntry.category.waypoints().stream().allMatch(screen::isEnabled)) {
+            if (entry instanceof WaypointCategoryEntry categoryEntry && categoryEntry.enabled.isChecked() != categoryEntry.shouldBeChecked()) {
                 ((CheckboxWidgetAccessor) categoryEntry.enabled).setChecked(!categoryEntry.enabled.isChecked());
             } else if (entry instanceof WaypointEntry waypointEntry && waypointEntry.enabled.isChecked() != screen.isEnabled(waypointEntry.waypoint)) {
                 waypointEntry.enabled.onPress();
@@ -114,7 +114,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
         public WaypointCategoryEntry(WaypointCategory category) {
             this.category = category;
-            enabled = CheckboxWidget.builder(Text.literal(""), client.textRenderer).checked(!category.waypoints().isEmpty() && category.waypoints().stream().allMatch(screen::isEnabled)).callback((checkbox, checked) -> category.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
+            enabled = CheckboxWidget.builder(Text.literal(""), client.textRenderer).checked(shouldBeChecked()).callback((checkbox, checked) -> category.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
             nameField = new TextFieldWidget(client.textRenderer, 70, 20, Text.literal("Name"));
             nameField.setText(category.name());
             nameField.setChangedListener(this::updateName);
@@ -151,6 +151,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         @Override
         public List<? extends Element> children() {
             return children;
+        }
+
+        private boolean shouldBeChecked() {
+            return !category.waypoints().isEmpty() && category.waypoints().stream().allMatch(screen::isEnabled);
         }
 
         private void updateName(String name) {
