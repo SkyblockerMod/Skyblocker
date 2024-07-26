@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.SlotSwap.SlotSquare;
 import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -11,9 +14,13 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.hysky.skyblocker.skyblock.SlotSwap.INVENTORY_SLOT_COUNT;
 
 public class GeneralConfig {
     @SerialEntry
@@ -52,6 +59,9 @@ public class GeneralConfig {
     @SerialEntry
     public List<Integer> lockedSlots = new ArrayList<>();
 
+    @SerialEntry
+    public SlotSwap slotSwap = new SlotSwap();
+
     //maybe put this 5 somewhere else
     @SerialEntry
     public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
@@ -78,7 +88,6 @@ public class GeneralConfig {
         @SerialEntry
         public boolean enableCommandArgShortcuts = true;
     }
-
 
     public static class QuiverWarning {
         @SerialEntry
@@ -251,4 +260,14 @@ public class GeneralConfig {
         public boolean oldLeverHitbox = false;
     }
 
+    public static class SlotSwap {
+        @SerialEntry
+        public boolean enableSlotSwap = true;
+        @SerialEntry
+        public BiMap<@Nullable SlotSquare, @Nullable SlotSquare> slotSquareMap = HashBiMap.create(INVENTORY_SLOT_COUNT);
+        @SerialEntry
+        public Color sourceSlotColor = new Color(0xE86DFF);
+        @SerialEntry
+        public Color targetSlotColor = new Color(0xFFBB00);
+    }
 }

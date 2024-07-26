@@ -8,10 +8,13 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.awt.*;
 
 public class GeneralCategory {
 
@@ -345,6 +348,34 @@ public class GeneralCategory {
                                         () -> config.general.hitbox.oldLeverHitbox,
                                         newValue -> config.general.hitbox.oldLeverHitbox = newValue)
                                 .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
+                //Slot Swap
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.general.slotSwap"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.slotSwap.enableSlotSwap"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.slotSwap.enableSlotSwap.@Tooltip")))
+                                .binding(defaults.general.slotSwap.enableSlotSwap,
+                                        () -> config.general.slotSwap.enableSlotSwap,
+                                        newValue -> config.general.slotSwap.enableSlotSwap = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.slotSwap.sourceSlotColor"))
+                                .binding(defaults.general.slotSwap.sourceSlotColor,
+                                        () -> config.general.slotSwap.sourceSlotColor,
+                                        newValue -> config.general.slotSwap.sourceSlotColor = newValue)
+                                .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.slotSwap.targetSlotColor"))
+                                .binding(defaults.general.slotSwap.targetSlotColor,
+                                        () -> config.general.slotSwap.targetSlotColor,
+                                        newValue -> config.general.slotSwap.targetSlotColor = newValue)
+                                .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
                         .build())
 

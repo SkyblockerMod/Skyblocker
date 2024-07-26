@@ -306,6 +306,12 @@
   "skyblocker.config.general.shortcuts.enableShortcuts": "Enable Shortcuts",
   "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Works anywhere, even in vanilla! Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
 
+  "skyblocker.config.general.slotSwap": "Slot Swap",
+  "skyblocker.config.general.slotSwap.enableSlotSwap": "Enable Slot Swap",
+  "skyblocker.config.general.slotSwap.enableSlotSwap.@Tooltip": "Allows you to swap items between your inventory and hotbar slots quickly by shift clicking them after setting up the connection via the Slot Swap keybinding.\n\nUsage: Hold the keybind while hovering over a slot, drag your cursor to another slot and release the keybind. Now, shift-clicking on either slot will try to swap them.",
+  "skyblocker.config.general.slotSwap.sourceSlotColor": "Source Slot Color",
+  "skyblocker.config.general.slotSwap.targetSlotColor": "Target Slot Color",
+
   "skyblocker.config.general.specialEffects": "Special Effects",
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "Rare Dungeon Drop Effects",
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",

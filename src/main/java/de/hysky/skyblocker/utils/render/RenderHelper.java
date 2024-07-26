@@ -29,6 +29,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -54,24 +55,24 @@ public class RenderHelper {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TRANSLUCENT_DRAW, RenderHelper::drawTranslucents);
     }
 
-    public static void renderFilledWithBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
+    public static void renderFilledWithBeaconBeam(@NotNull WorldRenderContext context, @NotNull BlockPos pos, float @NotNull [] colorComponents, float alpha, boolean throughWalls) {
         renderFilled(context, pos, colorComponents, alpha, throughWalls);
         renderBeaconBeam(context, pos, colorComponents);
     }
 
-    public static void renderFilled(WorldRenderContext context, Box box, float[] colorComponents, float alpha, boolean throughWalls) {
+    public static void renderFilled(@NotNull WorldRenderContext context, @NotNull Box box, float @NotNull [] colorComponents, float alpha, boolean throughWalls) {
         renderFilled(context, box.getMinPos(), Boxes.getLengthVec(box), colorComponents, alpha, throughWalls);
     }
 
-    public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
+    public static void renderFilled(@NotNull WorldRenderContext context, @NotNull BlockPos pos, float @NotNull [] colorComponents, float alpha, boolean throughWalls) {
         renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, throughWalls);
     }
 
-    public static void renderFilled(WorldRenderContext context, BlockPos pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+    public static void renderFilled(@NotNull WorldRenderContext context, @NotNull BlockPos pos, @NotNull Vec3d dimensions, float @NotNull [] colorComponents, float alpha, boolean throughWalls) {
         renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, throughWalls);
     }
 
-    public static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+    public static void renderFilled(@NotNull WorldRenderContext context, @NotNull Vec3d pos, @NotNull Vec3d dimensions, float @NotNull [] colorComponents, float alpha, boolean throughWalls) {
         if (throughWalls) {
             if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
                 renderFilledInternal(context, pos, dimensions, colorComponents, alpha, true);
@@ -83,7 +84,7 @@ public class RenderHelper {
         }
     }
 
-    private static void renderFilledInternal(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+    private static void renderFilledInternal(@NotNull WorldRenderContext context, @NotNull Vec3d pos, @NotNull Vec3d dimensions, float @NotNull [] colorComponents, float alpha, boolean throughWalls) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
 
@@ -98,7 +99,7 @@ public class RenderHelper {
         matrices.pop();
     }
 
-    private static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
+    private static void renderBeaconBeam(@NotNull WorldRenderContext context, @NotNull BlockPos pos, float @NotNull [] colorComponents) {
         if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, MAX_OVERWORLD_BUILD_HEIGHT, pos.getZ() + 1)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
@@ -117,44 +118,43 @@ public class RenderHelper {
      * This does not use renderer since renderer draws outline using debug lines with a fixed width.
      */
     public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float lineWidth, boolean throughWalls) {
-        renderOutline(context, box, colorComponents, 1f, lineWidth, throughWalls);
+	    renderOutline(context, box, colorComponents, 1f, lineWidth, throughWalls);
     }
 
-    /**
-     * Renders the outline of a box with the specified color components and line width.
-     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
-     *
-     * @param alpha the transparency of the lines for the box
-     */
-    public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
-        if (FrustumUtils.isVisible(box)) {
-            MatrixStack matrices = context.matrixStack();
-            Vec3d camera = context.camera().getPos();
-            Tessellator tessellator = RenderSystem.renderThreadTesselator();
+	/**
+	 * Renders the outline of a box with the specified color components and line width.
+	 * This does not use renderer since renderer draws outline using debug lines with a fixed width.
+	 *
+	 * @param alpha the transparency of the lines for the box
+	 */
+	public static void renderOutline(@NotNull WorldRenderContext context, @NotNull Box box, float @NotNull [] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
+		if (!FrustumUtils.isVisible(box)) return;
+		MatrixStack matrices = context.matrixStack();
+		Vec3d camera = context.camera().getPos();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
-            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            RenderSystem.enableBlend();
-            RenderSystem.lineWidth(lineWidth);
-            RenderSystem.disableCull();
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderSystem.enableBlend();
+		RenderSystem.lineWidth(lineWidth);
+		RenderSystem.disableCull();
+		RenderSystem.enableDepthTest();
+		RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
-            matrices.push();
-            matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
+		matrices.push();
+		matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
-            BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
-            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
-            BufferRenderer.drawWithGlobalProgram(buffer.end());
+		BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
+		WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
-            matrices.pop();
-            RenderSystem.lineWidth(1f);
-            RenderSystem.enableCull();
-            RenderSystem.disableBlend();
-            RenderSystem.disableDepthTest();
-            RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        }
-    }
+		matrices.pop();
+		RenderSystem.lineWidth(1f);
+		RenderSystem.enableCull();
+		RenderSystem.disableBlend();
+		RenderSystem.disableDepthTest();
+		RenderSystem.depthFunc(GL11.GL_LEQUAL);
+	}
 
     /**
      * Draws lines from point to point.<br><br>
@@ -170,7 +170,7 @@ public class RenderHelper {
      * @param lineWidth       The width of the lines
      * @param throughWalls    Whether to render through walls or not
      */
-    public static void renderLinesFromPoints(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
+    public static void renderLinesFromPoints(@NotNull WorldRenderContext context, @NotNull Vec3d[] points, float @NotNull [] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
         Vec3d camera = context.camera().getPos();
         MatrixStack matrices = context.matrixStack();
 
@@ -213,7 +213,7 @@ public class RenderHelper {
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
-    public static void renderLineFromCursor(WorldRenderContext context, Vec3d point, float[] colorComponents, float alpha, float lineWidth) {
+    public static void renderLineFromCursor(@NotNull WorldRenderContext context, @NotNull Vec3d point, float @NotNull [] colorComponents, float alpha, float lineWidth) {
         Vec3d camera = context.camera().getPos();
         MatrixStack matrices = context.matrixStack();
 
@@ -261,7 +261,7 @@ public class RenderHelper {
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
-    public static void renderLine(Vec2f from, Vec2f to, int fromColor, int toColor, float lineWidth) {
+    public static void renderLine(@NotNull Vec2f from, @NotNull Vec2f to, int fromColor, int toColor, float lineWidth) {
         RenderSystem.assertOnRenderThread();
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
@@ -284,7 +284,7 @@ public class RenderHelper {
         GlStateManager._depthMask(true);
     }
 
-    public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {
+    public static void renderQuad(@NotNull WorldRenderContext context, @NotNull Vec3d @NotNull [] points, float @NotNull [] colorComponents, float alpha, boolean throughWalls) {
         Matrix4f positionMatrix = new Matrix4f();
         Vec3d camera = context.camera().getPos();
 
@@ -309,15 +309,15 @@ public class RenderHelper {
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
-    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean throughWalls) {
+    public static void renderText(@NotNull WorldRenderContext context, @NotNull Text text, @NotNull Vec3d pos, boolean throughWalls) {
         renderText(context, text, pos, 1, throughWalls);
     }
 
-    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, float scale, boolean throughWalls) {
+    public static void renderText(@NotNull WorldRenderContext context, @NotNull  Text text, @NotNull Vec3d pos, float scale, boolean throughWalls) {
         renderText(context, text, pos, scale, 0, throughWalls);
     }
 
-    public static void renderText(WorldRenderContext context, Text text, Vec3d pos, float scale, float yOffset, boolean throughWalls) {
+    public static void renderText(@NotNull WorldRenderContext context, @NotNull Text text, @NotNull Vec3d pos, float scale, float yOffset, boolean throughWalls) {
         renderText(context, text.asOrderedText(), pos, scale, yOffset, throughWalls);
     }
 
@@ -326,7 +326,7 @@ public class RenderHelper {
      *
      * @param throughWalls whether the text should be able to be seen through walls or not.
      */
-    public static void renderText(WorldRenderContext context, OrderedText text, Vec3d pos, float scale, float yOffset, boolean throughWalls) {
+    public static void renderText(@NotNull WorldRenderContext context, @NotNull OrderedText text, @NotNull Vec3d pos, float scale, float yOffset, boolean throughWalls) {
         Matrix4f positionMatrix = new Matrix4f();
         Camera camera = context.camera();
         Vec3d cameraPos = camera.getPos();
@@ -354,12 +354,12 @@ public class RenderHelper {
     /**
      * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
      */
-    private static void drawTranslucents(WorldRenderContext context) {
+    private static void drawTranslucents(@NotNull WorldRenderContext context) {
         //Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why
         ((VertexConsumerProvider.Immediate) context.consumers()).draw();
     }
 
-    public static void runOnRenderThread(Runnable runnable) {
+    public static void runOnRenderThread(@NotNull Runnable runnable) {
         if (RenderSystem.isOnRenderThread()) {
             runnable.run();
         } else if (SCHEDULE_DEFERRED_RENDER_TASK != null) { //Sodium
@@ -394,7 +394,7 @@ public class RenderHelper {
      *
      * @param title the title
      */
-    public static void displayInTitleContainerAndPlaySound(Title title) {
+    public static void displayInTitleContainerAndPlaySound(@NotNull Title title) {
         if (TitleContainer.addTitle(title)) {
             playNotificationSound();
         }
@@ -407,7 +407,7 @@ public class RenderHelper {
      * @param title the title
      * @param ticks the number of ticks the title will remain
      */
-    public static void displayInTitleContainerAndPlaySound(Title title, int ticks) {
+    public static void displayInTitleContainerAndPlaySound(@NotNull Title title, int ticks) {
         if (TitleContainer.addTitle(title, ticks)) {
             playNotificationSound();
         }
@@ -423,13 +423,12 @@ public class RenderHelper {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
-    private static void drawSprite(DrawContext context, Sprite sprite, int i, int j, int k, int l, int x, int y, int z, int width, int height, float red, float green, float blue, float alpha) {
+    private static void drawSprite(@NotNull DrawContext context, @NotNull Sprite sprite, int i, int j, int k, int l, int x, int y, int z, int width, int height, float red, float green, float blue, float alpha) {
         if (width == 0 || height == 0) {
             return;
         }
         ((DrawContextInvoker) context).invokeDrawTexturedQuad(sprite.getAtlasId(), x, x + width, y, y + height, z, sprite.getFrameU((float) k / (float) i), sprite.getFrameU((float) (k + width) / (float) i), sprite.getFrameV((float) l / (float) j), sprite.getFrameV((float) (l + height) / (float) j), red, green, blue, alpha);
     }
-
     private static void drawSpriteTiled(DrawContext context, Sprite sprite, int x, int y, int z, int width, int height, int i, int j, int tileWidth, int tileHeight, int k, int l, float red, float green, float blue, float alpha) {
         if (width <= 0 || height <= 0) {
             return;
@@ -446,7 +445,7 @@ public class RenderHelper {
         }
     }
 
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, float red, float green, float blue, float alpha) {
+    public static void renderNineSliceColored(@NotNull DrawContext context, @NotNull Identifier texture, int x, int y, int width, int height, float red, float green, float blue, float alpha) {
         Sprite sprite = MinecraftClient.getInstance().getGuiAtlasManager().getSprite(texture);
         Scaling scaling = MinecraftClient.getInstance().getGuiAtlasManager().getScaling(sprite);
         if (!(scaling instanceof Scaling.NineSlice nineSlice)) return;
@@ -485,7 +484,6 @@ public class RenderHelper {
     }
 
     private static final float[] colorBuffer = new float[4];
-
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
         color.getComponents(colorBuffer);
         renderNineSliceColored(context, texture, x, y, width, height, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3]);
