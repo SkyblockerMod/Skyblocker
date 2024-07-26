@@ -19,7 +19,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Map;
-import java.util.Set;
 
 public class LividColor {
     private static final Map<Block, Formatting> WOOL_TO_FORMATTING = Map.of(
@@ -44,14 +43,16 @@ public class LividColor {
             "Doctor Livid", Formatting.GRAY,
             "Vendetta Livid", Formatting.WHITE
     );
-    public static final Set<String> LIVID_NAMES = Set.copyOf(LIVID_TO_FORMATTING.keySet());
     public static final DungeonsConfig.Livid CONFIG = SkyblockerConfigManager.get().dungeons.livid;
     private static Formatting color = Formatting.AQUA;
     private static Block lastColor = Blocks.AIR;
-    private static int lividID = 0;
 
     private static boolean isInitialized = false;
-    private static boolean originLividFound = false;
+    /**
+     * The correct livid may change color in M5, so we use the entity id to track the correct original livid.
+     */
+    private static boolean correctLividIdFound = false;
+    private static int correctLividId = 0;
     private static final long OFFSET_DURATION = 2000;
     private static long toggleTime = 0;
 
@@ -76,7 +77,7 @@ public class LividColor {
             isInitialized = true;
         } else if (isInitialized && System.currentTimeMillis() - toggleTime >= OFFSET_DURATION) {
             onLividColorFound(client, currentColor);
-            if (!originLividFound) {
+            if (!correctLividIdFound) {
                 String lividName = LIVID_TO_FORMATTING.entrySet().stream()
                         .filter(entry -> entry.getValue() == color)
                         .map(Map.Entry::getKey)
@@ -85,8 +86,8 @@ public class LividColor {
                 client.world.getPlayers().stream()
                         .filter(entity -> entity.getName().getString().equals(lividName))
                         .findFirst()
-                        .ifPresent(entity -> lividID = entity.getId());
-                originLividFound = true;
+                        .ifPresent(entity -> correctLividId = entity.getId());
+                correctLividIdFound = true;
             }
             lastColor = currentColor;
         }
@@ -128,16 +129,16 @@ public class LividColor {
         return Formatting.WHITE.getColorValue();
     }
 
-    public static int getLividID(){
-        return lividID;
+    public static int getCorrectLividId() {
+        return correctLividId;
     }
 
     private static void reset() {
         lastColor = Blocks.AIR;
         toggleTime = 0;
         isInitialized = false;
-        originLividFound = false;
-        lividID = 0;
+        correctLividIdFound = false;
+        correctLividId = 0;
         color = Formatting.AQUA;
     }
 }
