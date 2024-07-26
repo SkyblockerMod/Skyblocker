@@ -6,6 +6,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor
 import de.hysky.skyblocker.util.CoroutineUtil
 import de.hysky.skyblocker.util.KtUtil.sendSkyblockerMessage
 import de.hysky.skyblocker.utils.render.RenderHelper
+import dev.isxander.yacl3.config.v2.api.SerialEntry
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -151,6 +152,7 @@ object SlotSwap {
 
 	private fun reset() {
 		slotMap.clear()
+		SkyblockerConfigManager.save()
 		slotAtKeyPress = null
 		waitJob?.cancel()
 		waitJob = null
@@ -169,9 +171,10 @@ object SlotSwap {
 		slotMap.inverse() -= aimed
 
 		slotMap[source] = aimed
+		SkyblockerConfigManager.save()
 	}
 
-	data class SlotSquare(val x: Int, val y: Int, val slotId: Int) {
-		val center = Point(x + HALF_SLOT_SIZE + OFFSET_TO_CENTER, y + HALF_SLOT_SIZE + OFFSET_TO_CENTER)
+	data class SlotSquare(@SerialEntry val x: Int, @SerialEntry val y: Int, @SerialEntry val slotId: Int) {
+		val center get() = Point(x + HALF_SLOT_SIZE + OFFSET_TO_CENTER, y + HALF_SLOT_SIZE + OFFSET_TO_CENTER)
 	}
 }
