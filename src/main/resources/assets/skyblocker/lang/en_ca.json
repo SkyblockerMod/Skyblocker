@@ -47,5 +47,8 @@
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Crit Damage Gradient Start Colour",
     "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Colour",
     "skyblocker.tips.fancierBars": "Customize the look of your health, mana, defence, and experience bars with /skyblocker bars. You can snap and resize bars too!",
-    "skyblocker.profileviewer.inventory.armor": "Armour"
+    "skyblocker.profileviewer.inventory.armor": "Armour",
+    "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Enable Livid Colour Bounding Box",
+    "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Glow and/or Bounding use same colour",
+    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Instead of the Livid's colour a red colour is shown"
 }
