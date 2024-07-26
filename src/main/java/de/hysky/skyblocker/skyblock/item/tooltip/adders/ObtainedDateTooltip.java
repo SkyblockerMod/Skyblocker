@@ -12,7 +12,6 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -42,6 +41,20 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 		}
 	}
 
+	private static TemporalAccessor getTimestampInternal(ItemStack stack) {
+		NbtCompound customData = ItemUtils.getCustomData(stack);
+
+		if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
+			return Instant.ofEpochMilli(customData.getLong("timestamp"));
+		}
+
+		if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
+			return OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp"));
+		}
+
+		return null;
+	}
+
 	/**
 	 * This method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
 	 * Currently, there are two types of string timestamps the legacy which is built like this
@@ -59,25 +72,17 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	 * @return if the item have a "Timestamp" it will be shown formated on the tooltip
 	 */
 	public static String getTimestamp(ItemStack stack) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
+		TemporalAccessor accessor = getTimestampInternal(stack);
 
-		if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
-			Instant date = Instant.ofEpochMilli(customData.getLong("timestamp"));
-			return OBTAINED_DATE_FORMATTER.format(date);
-		}
-
-		if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
-			TemporalAccessor date = OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp"));
-			return OBTAINED_DATE_FORMATTER.format(date);
-		}
-
-		return "";
+		return accessor != null ? OBTAINED_DATE_FORMATTER.format(accessor) : "";
 	}
 
 	/**
 	 * @see #getTimestamp(ItemStack)
 	 */
 	public static long getLongTimestamp(ItemStack stack) {
-		return LocalDate.parse(getTimestamp(stack), OBTAINED_DATE_FORMATTER).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		TemporalAccessor accessor = getTimestampInternal(stack);
+
+		return accessor != null ? Instant.from(accessor).toEpochMilli() : 0;
 	}
 }
