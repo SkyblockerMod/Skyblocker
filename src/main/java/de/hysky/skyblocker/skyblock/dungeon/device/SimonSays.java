@@ -5,7 +5,6 @@ import java.util.Objects;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -101,7 +100,7 @@ public class SimonSays {
 					Box outline = RenderHelper.getBlockBoundingBox(world, state, buttonPos);
 					float[] colour = buttonsRendered == 0 ? GREEN : YELLOW;
 
-					RenderHelper.renderFilled(context, Boxes.getMinVec(outline), Boxes.getLengthVec(outline), colour, 0.5f, true);
+					RenderHelper.renderFilled(context, outline, colour, 0.5f, true);
 					RenderHelper.renderOutline(context, outline, colour, 5f, true);
 
 					if (++buttonsRendered == 2) return;

@@ -5,6 +5,7 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
+import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -30,8 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
-
-import net.minecraft.world.BlockView;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -61,10 +60,9 @@ public class RenderHelper {
         renderFilled(context, pos, colorComponents, alpha, throughWalls);
         renderBeaconBeam(context, pos, colorComponents);
     }
-    public static void renderFilled(WorldRenderContext context, Box boundingBox, float[] colorComponents, float alpha, boolean throughWalls) {
-        Vec3d pos = new Vec3d(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
-        Vec3d dimensions = new Vec3d(boundingBox.getLengthX(), boundingBox.getLengthY(), boundingBox.getLengthZ());
-        renderFilled(context, pos, dimensions, colorComponents, alpha, throughWalls);
+
+    public static void renderFilled(WorldRenderContext context, Box box, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, box.getMinPos(), Boxes.getLengthVec(box), colorComponents, alpha, throughWalls);
     }
 
     public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
@@ -78,11 +76,11 @@ public class RenderHelper {
     public static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
         if (throughWalls) {
             if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-            	renderFilledInternal(context, pos, dimensions, colorComponents, alpha, true);
+                renderFilledInternal(context, pos, dimensions, colorComponents, alpha, true);
             }
         } else {
             if (OcclusionCulling.getRegularCuller().isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-            	renderFilledInternal(context, pos, dimensions, colorComponents, alpha, false);
+                renderFilledInternal(context, pos, dimensions, colorComponents, alpha, false);
             }
         }
     }
@@ -234,7 +232,7 @@ public class RenderHelper {
 
         Vector3f normal = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
         buffer
-                .vertex(positionMatrix, (float) cameraPoint.x , (float) cameraPoint.y, (float) cameraPoint.z)
+                .vertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
                 .normal(normal.x, normal.y, normal.z);
 
@@ -304,9 +302,9 @@ public class RenderHelper {
         scale *= 0.025f;
 
         positionMatrix
-        .translate((float) (pos.getX() - cameraPos.getX()), (float) (pos.getY() - cameraPos.getY()), (float) (pos.getZ() - cameraPos.getZ()))
-        .rotate(camera.getRotation())
-        .scale(scale, -scale, scale);
+                .translate((float) (pos.getX() - cameraPos.getX()), (float) (pos.getY() - cameraPos.getY()), (float) (pos.getZ() - cameraPos.getZ()))
+                .rotate(camera.getRotation())
+                .scale(scale, -scale, scale);
 
         float xOffset = -textRenderer.getWidth(text) / 2f;
 
@@ -396,8 +394,9 @@ public class RenderHelper {
         if (width == 0 || height == 0) {
             return;
         }
-        ((DrawContextInvoker) context).invokeDrawTexturedQuad(sprite.getAtlasId(), x, x + width, y, y + height, z, sprite.getFrameU((float)k / (float)i), sprite.getFrameU((float)(k + width) / (float)i), sprite.getFrameV((float)l / (float)j), sprite.getFrameV((float)(l + height) / (float)j), red, green, blue, alpha);
+        ((DrawContextInvoker) context).invokeDrawTexturedQuad(sprite.getAtlasId(), x, x + width, y, y + height, z, sprite.getFrameU((float) k / (float) i), sprite.getFrameU((float) (k + width) / (float) i), sprite.getFrameV((float) l / (float) j), sprite.getFrameV((float) (l + height) / (float) j), red, green, blue, alpha);
     }
+
     private static void drawSpriteTiled(DrawContext context, Sprite sprite, int x, int y, int z, int width, int height, int i, int j, int tileWidth, int tileHeight, int k, int l, float red, float green, float blue, float alpha) {
         if (width <= 0 || height <= 0) {
             return;
@@ -453,9 +452,10 @@ public class RenderHelper {
     }
 
     private static final float[] colorBuffer = new float[4];
+
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
         color.getComponents(colorBuffer);
-        renderNineSliceColored(context, texture, x, y, width, height, colorBuffer[0],colorBuffer[1],colorBuffer[2],colorBuffer[3]);
+        renderNineSliceColored(context, texture, x, y, width, height, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3]);
     }
 
     // TODO Get rid of reflection once the new Sodium is released
