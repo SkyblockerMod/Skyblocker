@@ -18,9 +18,15 @@ import net.minecraft.util.Identifier;
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
     private final int index;
-    private boolean toggled;
+    private final boolean toggled;
+    private boolean temporaryToggled = false;
     private final String command;
     private final ItemStack icon;
+
+    private static final long TOGGLE_DURATION = 1000;
+    private long toggleTime;
+
+    private float alpha = 1.0f;
 
     /**
      * Checks if the current tab is a top tab based on its index.
@@ -32,7 +38,7 @@ public class QuickNavButton extends ClickableWidget {
     }
 
     public boolean toggled() {
-        return toggled;
+        return toggled || temporaryToggled;
     }
 
     /**
@@ -49,6 +55,7 @@ public class QuickNavButton extends ClickableWidget {
         this.toggled = toggled;
         this.command = command;
         this.icon = icon;
+        this.toggleTime = 0;
     }
 
     private void updateCoordinates() {
@@ -71,10 +78,12 @@ public class QuickNavButton extends ClickableWidget {
      */
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (!this.toggled) {
-            this.toggled = true;
+        if (!this.temporaryToggled) {
+            this.temporaryToggled = true;
+            this.toggleTime = System.currentTimeMillis();
             MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
             // TODO : add null check with log error
+            this.alpha = 0.5f;
         }
     }
 
@@ -93,14 +102,34 @@ public class QuickNavButton extends ClickableWidget {
         this.updateCoordinates();
         RenderSystem.disableDepthTest();
 
+        if (this.temporaryToggled && System.currentTimeMillis() - this.toggleTime >= TOGGLE_DURATION) {
+            this.temporaryToggled = false; // Reset toggled state
+        }
+        //"animation"
+        if (this.alpha < 1.0f) {
+            this.alpha += 0.05f;
+            if (this.alpha > 1.0f) {
+                this.alpha = 1.0f;
+            }
+        }
+
+        //"animation"
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
+
         // Construct the texture identifier based on the index and toggled state
-        Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled ? "selected" : "unselected") + "_" + (index % 7 + 1));
+        Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled() ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
         // Render the button texture
         context.drawGuiTexture(tabTexture, this.getX(), this.getY(), this.width, this.height);
         // Render the button icon
         int yOffset = this.index < 7 ? 1 : -1;
         context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
+        //prevent "fading animation" on not quicknav stuff
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.disableBlend();
+
         RenderSystem.enableDepthTest();
     }
 
