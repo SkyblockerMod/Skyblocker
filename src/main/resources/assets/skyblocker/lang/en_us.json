@@ -99,8 +99,12 @@
   "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Hides the Haunted Skulls spawned that are spawned as a result of using Soulweaver Gloves.",
 
   "skyblocker.config.dungeons.livid": "Livid (F5/M5)",
+  "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Glow and/or Bounding use same color",
+  "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Instead of Livid color an Red color is Shown",
   "skyblocker.config.dungeons.livid.enableLividColorGlow": "Enable Livid Color Glow",
   "skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip": "Applies the glowing effect to the correct Livid in F5/M5.",
+  "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Enable Livid Color Bounding Box",
+  "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "Applies a bounding box to the correct Livid in F5/M5.",
   "skyblocker.config.dungeons.livid.enableLividColorText": "Enable Livid Color Text",
   "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Send the livid color in the chat during the Livid boss fight.",
   "skyblocker.config.dungeons.livid.enableLividColorTitle": "Enable Livid Color Title",

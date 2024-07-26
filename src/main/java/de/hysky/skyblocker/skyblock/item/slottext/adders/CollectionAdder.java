@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CollectionAdder extends SlotTextAdder {
-    private static final Pattern COLLECTION = Pattern.compile("^[\\w ]+ (?<level>[IVXLCDM]+)$");
+    private static final Pattern COLLECTION = Pattern.compile("^[\\w -]+ (?<level>[IVXLCDM]+)$");
 
     public CollectionAdder() {
         super("^\\w+ Collections");

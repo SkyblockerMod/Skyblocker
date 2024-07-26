@@ -24,7 +24,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
     public void register(EmiRegistry registry) {
         ItemRepository.getItemsStream().map(EmiStack::of).forEach(emiStack -> {
             registry.addEmiStack(emiStack);
-            registry.setDefaultComparison(emiStack, Comparison.compareNbt());
+            registry.setDefaultComparison(emiStack, Comparison.compareComponents());
         });
         registry.addCategory(SKYBLOCK);
         registry.addWorkstation(SKYBLOCK, EmiStack.of(Items.CRAFTING_TABLE));
