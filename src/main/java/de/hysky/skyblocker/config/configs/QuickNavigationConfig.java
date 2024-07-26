@@ -86,10 +86,10 @@ public class QuickNavigationConfig {
         public String uiTitle;
 
         @SerialEntry
-        public String clickEvent;
+        public String tooltip;
 
         @SerialEntry
-        public String tooltip;
+        public String clickEvent;
     }
 
     public static class ItemData {
