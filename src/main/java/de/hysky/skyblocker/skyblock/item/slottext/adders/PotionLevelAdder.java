@@ -21,10 +21,10 @@ public class PotionLevelAdder extends SimpleSlotTextAdder {
         if (customData.contains("potion_level", NbtElement.INT_TYPE) && !title.contains("Healer Class") && !title.contains("Class Passives")) {
             if (title.contains("Healer Level ")){
                 String level = title.replaceAll("\\D", "");
-                return List.of(SlotText.bottomRight(Text.literal(level).withColor(0xFFFFFF)));
+                return SlotText.bottomRightList(Text.literal(level).withColor(0xFFFFFF));
             } else {
                 int level = customData.getInt("potion_level");
-                return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
+                return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
             }
         }
         return List.of();

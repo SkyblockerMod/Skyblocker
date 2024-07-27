@@ -29,6 +29,6 @@ public class PowerStonesGuideAdder extends SimpleSlotTextAdder {
                 ? Text.literal("✖").withColor(0xFF7276)
                 : Text.literal("✔").withColor(0x90ee90);
 
-        return List.of(SlotText.bottomRight(text));
+        return SlotText.bottomRightList(text);
     }
 }
