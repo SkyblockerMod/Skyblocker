@@ -383,6 +383,11 @@ public class Utils {
 
     private static void onDisconnect() {
         isOnSkyblock = false;
+        server = "";
+        gameType = "";
+        locationRaw = "";
+        location = Location.UNKNOWN;
+        map = "";
     }
 
     private static void onPacket(HypixelS2CPacket packet) {
