@@ -1,20 +1,18 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.SlotSwap.SlotSquare;
 import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import kotlin.Pair;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -262,7 +260,7 @@ public class GeneralConfig {
         @SerialEntry
         public boolean enableSlotSwap = true;
         @SerialEntry
-        public List<Pair<@Nullable SlotSquare, @Nullable SlotSquare>> slotSquareMap = new ObjectArrayList<>(9); // Hotbar slot count
+        public ObjectArrayList<IntIntImmutablePair> slotSquareMap = new ObjectArrayList<>(9); // Hotbar slot count
         @SerialEntry
         public Color sourceSlotColor = new Color(0xE86DFF);
         @SerialEntry

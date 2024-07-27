@@ -5,7 +5,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor
 import de.hysky.skyblocker.util.CoroutineUtil
 import de.hysky.skyblocker.util.KtUtil.sendSkyblockerMessage
 import de.hysky.skyblocker.utils.render.RenderHelper
-import dev.isxander.yacl3.config.v2.api.SerialEntry
+import it.unimi.dsi.fastutil.ints.IntIntImmutablePair
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,16 +22,19 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec2f
+import org.joml.Vector2i
 import org.lwjgl.glfw.GLFW
 
 typealias Point = Vec2f
 
 object SlotSwap {
-	private val slotMap: MutableList<Pair<SlotSquare?, SlotSquare?>> get() = config.slotSquareMap
+	private val slotMap get() = config.slotSquareMap
 
 	private val config get() = SkyblockerConfigManager.get().general.slotSwap
 
-	private var slotAtKeyPress: SlotSquare? = null
+	//This field is used instead of the field in MinecraftClient, so we don't have to type check the current screen every time.
+	private var currentScreen: InventoryScreen? = null
+	private var slotAtKeyPress: Int? = null
 	private val configureKeybinding: KeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding("key.skyblocker.slotSwapConfigure", GLFW.GLFW_KEY_L, "key.categories.skyblocker"))
 	private val resetKeybinding: KeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding("key.skyblocker.slotSwapReset", GLFW.GLFW_KEY_UNKNOWN, "key.categories.skyblocker"))
 
@@ -54,6 +57,7 @@ object SlotSwap {
 		ScreenEvents.AFTER_INIT.register { client, screen, _, _ ->
 			//Since this event is called for each screen, we can just check the config enabled status here once and for all
 			if (screen !is InventoryScreen || !config.enableSlotSwap) return@register
+			currentScreen = screen
 			ScreenKeyboardEvents.afterKeyPress(screen).register { _, key, scancode, _ ->
 				onKeyPress(screen, key, scancode)
 			}
@@ -66,22 +70,24 @@ object SlotSwap {
 			ScreenMouseEvents.allowMouseClick(screen).register { _, _, _, button ->
 				onMouseClick(client, screen, button)
 			}
+			ScreenEvents.remove(screen).register {
+				currentScreen = null
+			}
 		}
 	}
 
 	private fun onMouseClick(client: MinecraftClient, screen: InventoryScreen, button: Int): Boolean {
 		if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT || !InputUtil.isKeyPressed(client.window.handle, GLFW.GLFW_KEY_LEFT_SHIFT)) return true
 
-		val entry = (screen as HandledScreenAccessor).focusedSlot?.id?.let { id ->
-			slotMap.firstOrNull { (key, value) -> key?.slotId == id || value?.slotId == id }
-		} ?: return true //If the slot is not in the mapping, then we don't care
+		val entry: IntIntImmutablePair = (screen as HandledScreenAccessor).focusedSlot?.id?.let { id ->
+			slotMap.firstOrNull { pair -> pair.keyInt() == id || pair.valueInt() == id }
+		} ?: return true
 
-		if (entry.first == null || entry.second == null) return true
-		if (isHotbarSlot(entry.first!!.slotId)) {
-			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.second!!.slotId, entry.first!!.slotId - 36, SlotActionType.SWAP, client.player)
+		if (isHotbarSlot(entry.keyInt())) {
+			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.valueInt(), entry.keyInt() - 36, SlotActionType.SWAP, client.player)
 			return false
-		} else if (isHotbarSlot(entry.second!!.slotId)) {
-			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.first!!.slotId, entry.second!!.slotId - 36, SlotActionType.SWAP, client.player)
+		} else if (isHotbarSlot(entry.valueInt())) {
+			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.keyInt(), entry.valueInt() - 36, SlotActionType.SWAP, client.player)
 			return false
 		}
 		return true
@@ -89,20 +95,22 @@ object SlotSwap {
 
 	private fun onKeyPress(screen: InventoryScreen, key: Int, scancode: Int) {
 		if (!configureKeybinding.matchesKey(key, scancode) || slotAtKeyPress != null) return
-		slotAtKeyPress = screen.getSquareFromFocusedSlot()
+		slotAtKeyPress = screen.getFocusedSlotId()
 	}
 
 	private fun onKeyRelease(client: MinecraftClient, screen: InventoryScreen, key: Int, scancode: Int) {
 		when {
 			configureKeybinding.matchesKey(key, scancode) -> {
-				val slotAtKeyRelease = screen.getSquareFromFocusedSlot()
+				val slotAtKeyRelease = screen.getFocusedSlotId()
 				if (slotAtKeyPress != null && slotAtKeyRelease != null && slotAtKeyPress != slotAtKeyRelease
-					&& (isHotbarSlot(slotAtKeyPress!!.slotId) || isHotbarSlot(slotAtKeyRelease.slotId))) { // At least one slot has to be in the hotbar
+					&& (isHotbarSlot(slotAtKeyPress!!) || isHotbarSlot(slotAtKeyRelease))
+				) { // At least one slot has to be in the hotbar
 					addSlotMapping(slotAtKeyPress!!, slotAtKeyRelease)
-					client.player?.sendSkyblockerMessage(Text.translatable("skyblocker.slotSwap.add", slotAtKeyPress!!.slotId, slotAtKeyRelease.slotId))
+					client.player?.sendSkyblockerMessage(Text.translatable("skyblocker.slotSwap.add", slotAtKeyPress!!, slotAtKeyRelease))
 				}
 				slotAtKeyPress = null
 			}
+
 			resetKeybinding.matchesKey(key, scancode) -> {
 				if (shouldResetOnNextKey) {
 					client.player?.sendSkyblockerMessage(Text.translatable("skyblocker.slotSwap.reset"))
@@ -120,25 +128,26 @@ object SlotSwap {
 
 	private fun render(screen: InventoryScreen, drawContext: DrawContext) {
 		//Slot mappings
-		for ((key, value) in slotMap) {
-			if (key == null || value == null) continue
-			renderRectanglesAndLine(drawContext, key, value, config.sourceSlotColor.rgb, config.targetSlotColor.rgb)
+		for (entry in slotMap) {
+			renderRectanglesAndLine(drawContext, entry.keyInt(), entry.valueInt(), config.sourceSlotColor.rgb, config.targetSlotColor.rgb)
 		}
 		//Configuring state
 		if (slotAtKeyPress == null) return
-		val currentSlot = screen.getSquareFromFocusedSlot()
+		val currentSlot = screen.getFocusedSlotId()
 		renderRectanglesAndLine(drawContext, slotAtKeyPress!!, currentSlot, CONFIGURING_SOURCE_SLOT_COLOR, CONFIGURING_TARGET_SLOT_COLOR)
 	}
 
-	private fun InventoryScreen.getSquareFromFocusedSlot() = (this as HandledScreenAccessor).focusedSlot?.let { slot -> if (isSlotValid(slot.id)) SlotSquare(x + slot.x, y + slot.y, slot.id) else null }
+	private fun InventoryScreen.getFocusedSlotId() = (this as HandledScreenAccessor).focusedSlot?.let { slot -> if (isSlotValid(slot.id)) slot.id else null }
 
-	private fun renderRectanglesAndLine(drawContext: DrawContext, slot1: SlotSquare, slot2: SlotSquare?, sourceColor: Int, targetColor: Int) {
-		drawContext.drawBorder(slot1.x, slot1.y, SLOT_SIZE, SLOT_SIZE, sourceColor) // Source slot
-		if (slot2 == null || slot1 == slot2) return
-		drawContext.drawBorder(slot2.x, slot2.y, SLOT_SIZE, SLOT_SIZE, targetColor) // Target slot
+	private fun renderRectanglesAndLine(drawContext: DrawContext, slotId1: Int, slotId2: Int?, sourceColor: Int, targetColor: Int) {
+		val pos1 = getPosFromSlotId(slotId1) ?: return
+		drawContext.drawBorder(pos1.x, pos1.y, SLOT_SIZE, SLOT_SIZE, sourceColor) // Source slot
+		if (slotId1 == slotId2 || slotId2 == null) return
+		val pos2 = getPosFromSlotId(slotId2) ?: return
+		drawContext.drawBorder(pos2.x, pos2.y, SLOT_SIZE, SLOT_SIZE, targetColor) // Target slot
 
 		//Draws a line between the two slots' centers only between the rectangles
-		RenderHelper.renderLine(slot1.center, slot2.center, sourceColor, targetColor, LINE_WIDTH)
+		RenderHelper.renderLine(getCenterFromPos(pos1), getCenterFromPos(pos2), sourceColor, targetColor, LINE_WIDTH)
 		//Todo: Find out the intersection point of the line and the square and render from that instead of the center as it looks ugly
 		//Disclaimer: Maths is hard
 	}
@@ -156,15 +165,18 @@ object SlotSwap {
 
 	private fun isHotbarSlot(slotId: Int) = slotId in PlayerScreenHandler.HOTBAR_START..<PlayerScreenHandler.HOTBAR_END
 
-	private fun addSlotMapping(source: SlotSquare, aimed: SlotSquare) {
+	private fun addSlotMapping(source: Int, aimed: Int) {
 		//Remove all mappings that are related to these keys
-		slotMap.removeAll { (key, value) ->  key == source || value == source || key == aimed || value == aimed }
-		slotMap += source to aimed
+		slotMap.removeAll { pair -> pair.keyInt() == source || pair.valueInt() == source || pair.keyInt() == aimed || pair.valueInt() == aimed }
+		slotMap += IntIntImmutablePair.of(source, aimed)
 		SkyblockerConfigManager.save()
 	}
 
-	@JvmRecord
-	data class SlotSquare(@SerialEntry val x: Int, @SerialEntry val y: Int, @SerialEntry val slotId: Int) {
-		val center get() = Point(x + HALF_SLOT_SIZE + OFFSET_TO_CENTER, y + HALF_SLOT_SIZE + OFFSET_TO_CENTER)
+	private fun getPosFromSlotId(slotId: Int) = currentScreen?.screenHandler?.getSlot(slotId)?.let { slot ->
+		(currentScreen as HandledScreenAccessor).let { screen ->
+			Vector2i(slot.x + screen.x, slot.y + screen.y)
+		}
 	}
+
+	private fun getCenterFromPos(pos: Vector2i) = Point(pos.x + HALF_SLOT_SIZE + OFFSET_TO_CENTER, pos.y + HALF_SLOT_SIZE + OFFSET_TO_CENTER)
 }
