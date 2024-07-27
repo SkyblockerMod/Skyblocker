@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -64,7 +63,7 @@ public class FarmingHudWidget extends Widget {
         ItemStack farmingToolStack = client.player.getMainHandStack();
         if (farmingToolStack == null) return;
         String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));
-        ItemStack cropStack = ItemRepository.getItemStack(ItemTooltip.getNeuName(cropItemId, cropItemId)); // The cropItemId is being used as the api id in the second parameter because the skyblock id and api id are the same for all crops.
+        ItemStack cropStack = ItemRepository.getItemStack(ItemUtils.getNeuId(cropItemId, cropItemId)); // The cropItemId is being used as the api id in the second parameter because the skyblock id and api id are the same for all crops.
 
         String counterText = FarmingHud.counterText();
         String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());

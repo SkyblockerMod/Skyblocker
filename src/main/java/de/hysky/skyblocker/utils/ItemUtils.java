@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -27,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
@@ -36,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -78,7 +81,7 @@ public final class ItemUtils {
      * Gets the Skyblock item id of the item stack.
      *
      * @param stack the item stack to get the internal name from
-     * @return an optional containing the internal name of the item stack
+     * @return an optional containing the Skyblock item id of the item stack
      */
     public static @NotNull Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
@@ -89,7 +92,7 @@ public final class ItemUtils {
      * Gets the Skyblock item id of the item stack.
      *
      * @param stack the item stack to get the internal name from
-     * @return the internal name of the item stack, or an empty string if the item stack is null or does not have an internal name
+     * @return the Skyblock item id of the item stack, or an empty string if the item stack does not have a Skyblock id
      */
     public static @NotNull String getItemId(@NotNull ItemStack stack) {
         return getCustomData(stack).getString(ID);
@@ -110,10 +113,169 @@ public final class ItemUtils {
      * Gets the UUID of the item stack.
      *
      * @param stack the item stack to get the UUID from
-     * @return the UUID of the item stack, or an empty string if the item stack is null or does not have a UUID
+     * @return the UUID of the item stack, or an empty string if the item stack does not have a UUID
      */
 	public static @NotNull String getItemUuid(@NotNull ComponentHolder stack) {
         return getCustomData(stack).getString(UUID);
+    }
+
+    /**
+     * Gets the Skyblock api id of the item stack.
+     * @return the Skyblock api id if of the item stack, or null if the item stack does not have a Skyblock id.
+     */
+    @Nullable
+    public static String getSkyblockApiId(@NotNull ItemStack itemStack, boolean itemIdOnly) {
+        NbtCompound customData = getCustomData(itemStack);
+
+        if (customData == null || !customData.contains(ID, NbtElement.STRING_TYPE)) {
+            return null;
+        }
+        String customDataString = customData.getString(ID);
+
+        if (itemIdOnly) {
+            return customDataString;
+        }
+
+        // Transformation to API format.
+        //TODO future - remove this and just handle it directly for the NEU id conversion because this whole system is confusing and hard to follow
+        if (customData.contains("is_shiny")) {
+            return "ISSHINY_" + customDataString;
+        }
+
+        switch (customDataString) {
+            case "ENCHANTED_BOOK" -> {
+                if (customData.contains("enchantments")) {
+                    NbtCompound enchants = customData.getCompound("enchantments");
+                    Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
+                    String enchant = firstEnchant.orElse("");
+                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
+                }
+            }
+
+            case "PET" -> {
+                if (customData.contains("petInfo")) {
+                    PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                    return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
+                }
+            }
+
+            case "POTION" -> {
+                String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
+                String extended = customData.contains("extended") ? "_EXTENDED" : "";
+                String splash = customData.contains("splash") ? "_SPLASH" : "";
+                if (customData.contains("potion") && customData.contains("potion_level")) {
+                    return (customData.getString("potion") + "_" + customDataString + "_" + customData.getInt("potion_level")
+                            + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
+                }
+            }
+
+            case "RUNE" -> {
+                if (customData.contains("runes")) {
+                    NbtCompound runes = customData.getCompound("runes");
+                    Optional<String> firstRunes = runes.getKeys().stream().findFirst();
+                    String rune = firstRunes.orElse("");
+                    return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
+                }
+            }
+
+            case "ATTRIBUTE_SHARD" -> {
+                if (customData.contains("attributes")) {
+                    NbtCompound shards = customData.getCompound("attributes");
+                    Optional<String> firstShards = shards.getKeys().stream().findFirst();
+                    String shard = firstShards.orElse("");
+                    return customDataString + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
+                }
+            }
+
+            case "NEW_YEAR_CAKE" -> {
+                return customDataString + "_" + customData.getInt("new_years_cake");
+            }
+
+            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
+                return customDataString + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
+            }
+
+            case "PARTY_HAT_SLOTH" -> {
+                return customDataString + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
+            }
+
+            case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
+                NbtCompound attributes = customData.getCompound("attributes");
+
+                if (attributes.contains("magic_find") && attributes.contains("veteran")) {
+                    return customDataString + "-MAGIC_FIND-VETERAN";
+                }
+            }
+
+            case "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS" -> {
+                NbtCompound attributes = customData.getCompound("attributes");
+
+                if (attributes.contains("mana_pool") && attributes.contains("mana_regeneration")) {
+                    return customDataString + "-MANA_POOL-MANA_REGENERATION";
+                }
+            }
+
+            case "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> {
+                NbtCompound attributes = customData.getCompound("attributes");
+
+                if (attributes.contains("lifeline") && attributes.contains("mana_pool")) {
+                    return customDataString + "-LIFELINE-MANA_POOL";
+                }
+            }
+
+            case "MIDAS_SWORD" -> {
+                if (customData.getInt("winning_bid") >= 50000000) {
+                    return customDataString + "_50M";
+                }
+            }
+
+            case "MIDAS_STAFF" -> {
+                if (customData.getInt("winning_bid") >= 100000000) {
+                    return customDataString + "_100M";
+                }
+            }
+        }
+        return customDataString;
+    }
+
+    /**
+     * Gets the NEU id from an id and an api id.
+     * @param id the id of the skyblock item, gotten from {@link ItemUtils#getItemId(ItemStack) ItemUtils#getItemId(ItemStack)} or {@link ItemStack#getSkyblockId() ItemStack#getSkyblockId()}
+     * @param apiId the api id of the skyblock item, matching the id of the item on the Skyblocker api, gotten from {@link ItemStack#getSkyblockApiId() ItemStack#getSkyblockApiId()}
+     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName() ItemStack#getNeuName()},
+     * or an empty string if either id or apiId is null
+     */
+    @NotNull
+    public static String getNeuId(String id, String apiId) {
+        if (id == null || apiId == null) return "";
+        switch (id) {
+            case "PET" -> {
+                apiId = apiId.replaceAll("LVL_\\d*_", "");
+                String[] parts = apiId.split("_");
+                String type = parts[0];
+                apiId = apiId.replaceAll(type + "_", "");
+                apiId = apiId + "-" + type;
+                apiId = apiId.replace("UNCOMMON", "1")
+                        .replace("COMMON", "0")
+                        .replace("RARE", "2")
+                        .replace("EPIC", "3")
+                        .replace("LEGENDARY", "4")
+                        .replace("MYTHIC", "5")
+                        .replace("-", ";");
+            }
+            case "RUNE" -> apiId = apiId.replaceAll("_(?!.*_)", ";");
+            case "POTION" -> apiId = "";
+            case "ATTRIBUTE_SHARD" ->
+                    apiId = id + "+" + apiId.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
+            case "NEW_YEAR_CAKE" -> apiId = id + "+" + apiId.replace("NEW_YEAR_CAKE_", "");
+            case "PARTY_HAT_CRAB_ANIMATED" -> apiId = "PARTY_HAT_CRAB_" + apiId.replace("PARTY_HAT_CRAB_ANIMATED_", "") + "_ANIMATED";
+            case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS",
+                 "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS",
+                 "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> apiId = id;
+            case "MIDAS_SWORD", "MIDAS_STAFF" -> apiId = id;
+            default -> apiId = apiId.replace(":", "-");
+        }
+        return apiId;
     }
 
     /**
@@ -123,29 +285,29 @@ public final class ItemUtils {
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
     public static @NotNull DoubleBooleanPair getItemPrice(@NotNull ItemStack stack) {
-        return getItemPrice(getItemId(stack));
+        return getItemPrice(stack.getSkyblockApiId());
     }
 
     /**
-     * Gets the bazaar sell price or the lowest bin of the item with the specified id.
+     * Gets the bazaar sell price or the lowest bin of the item with the specified skyblock api id.
      *
      * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
-    public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String id) {
+    public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
         JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
         JsonObject lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
-        if (id == null || id.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
+        if (skyblockApiId == null || skyblockApiId.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
 
-        if (bazaarPrices.has(id)) {
-            JsonElement sellPrice = bazaarPrices.get(id).getAsJsonObject().get("sellPrice");
+        if (bazaarPrices.has(skyblockApiId)) {
+            JsonElement sellPrice = bazaarPrices.get(skyblockApiId).getAsJsonObject().get("sellPrice");
             boolean isPriceNull = sellPrice.isJsonNull();
             return DoubleBooleanPair.of(isPriceNull ? 0 : sellPrice.getAsDouble(), !isPriceNull);
         }
 
-        if (lowestBinPrices.has(id)) {
-            return DoubleBooleanPair.of(lowestBinPrices.get(id).getAsDouble(), true);
+        if (lowestBinPrices.has(skyblockApiId)) {
+            return DoubleBooleanPair.of(lowestBinPrices.get(skyblockApiId).getAsDouble(), true);
         }
 
         return DoubleBooleanPair.of(0, false);

@@ -7,7 +7,6 @@ import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
@@ -302,7 +301,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                                 if (name.startsWith("ISSHINY_")) {
                                     neuName = internalID;
                                 }
-                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemTooltip.getNeuName(internalID, neuName));
+                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemUtils.getNeuId(internalID, neuName));
                                 if (jsonElement == null) break;
                                 else {
                                     isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);

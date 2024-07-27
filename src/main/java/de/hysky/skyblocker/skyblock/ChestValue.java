@@ -79,11 +79,11 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String id = stack.getSkyblockApiId();
+				String skyblockApiId = stack.getSkyblockApiId();
 
 				//Regular item price
-				if (id != null) {
-					DoubleBooleanPair priceData = ItemUtils.getItemPrice(id);
+				if (skyblockApiId != null) {
+					DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 

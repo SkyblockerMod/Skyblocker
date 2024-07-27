@@ -119,7 +119,7 @@ public class ItemRepository {
     }
 
     /**
-     * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip#getNeuName(String, String) ItemTooltip#getNeuName(String, String)}
+     * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(String, String) ItemTooltip#getNeuName(String, String)}
      */
     @Nullable
     public static ItemStack getItemStack(String neuId) {
