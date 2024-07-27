@@ -4,16 +4,10 @@ import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +15,6 @@ import java.util.List;
 public final class UltrasequencerSolver extends ExperimentSolver {
     public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
     private int ultrasequencerNextSlot;
-    public static KeyBinding ClickMaa;
-    public static Slot StoredLast;
 
     private UltrasequencerSolver() {
         super("^Ultrasequencer \\(\\w+\\)$");
@@ -34,15 +26,6 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 
     public void setUltrasequencerNextSlot(int ultrasequencerNextSlot) {
         this.ultrasequencerNextSlot = ultrasequencerNextSlot;
-    }
-
-    public static void init() {
-        ClickMaa = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.SolveMa",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_W,
-                "key.categories.skyblocker"
-        ));
     }
 
     @Override
@@ -81,7 +64,6 @@ public final class UltrasequencerSolver extends ExperimentSolver {
                     if (!name.startsWith("Timer: ")) {
                         if (name.equals("Remember the pattern!")) {
                             getSlots().clear();
-                            StoredLast = null;
                             setState(State.REMEMBER);
                         } else {
                             reset();
