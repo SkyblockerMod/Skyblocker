@@ -238,14 +238,6 @@ public class GeneralConfig {
         public boolean officialWiki = true;
     }
 
-//    public static class BazaarLookup  {
-//        @SerialEntry
-//        public boolean enableBazaarLookup = true;
-//
-//        @SerialEntry
-//        public boolean enableBazaarRefresh = true;
-//    }
-
     public static class SpecialEffects {
         @SerialEntry
         public boolean rareDungeonDropEffects = true;

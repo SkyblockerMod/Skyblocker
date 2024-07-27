@@ -3,17 +3,15 @@ package de.hysky.skyblocker.skyblock.bazaar;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import io.github.moulberry.repo.data.NEUItem;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
@@ -36,27 +34,22 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final int YELLOW = 0xe6ba0b;
 	private static final int GREEN = 0x1ee60b;
 
-	public BazaarHelper() {
+	public static final KeyBinding BAZAAR_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.bazaarLookup",
+            GLFW.GLFW_KEY_F6,
+            "key.categories.skyblocker"
+    ));
+	public static final KeyBinding BAZAAR_REFRESH = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.bazaarRefresh",
+            GLFW.GLFW_KEY_Z,
+            "key.categories.skyblocker"
+    ));
+
+    public BazaarHelper() {
 		super("(?:Co-op|Your) Bazaar Orders");
 	}
 
-	public static KeyBinding BazaarLookup;
-	public static KeyBinding BazaarRefresh;
-	public static String itemName;
-	public static void init() {
-		BazaarLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.bazaarLookup",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_F3,
-				"key.categories.skyblocker"
-		));
-		BazaarRefresh = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.bazaarRefresh",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_Z,
-				"key.categories.skyblocker"
-		));
-	}
+	public static void init() {}
 
 	@Override
 	public boolean isEnabled() {
@@ -95,29 +88,6 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 		return List.of();
 	}
 
-	public static void BazaarLookup(@NotNull Slot slot) {
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().helpers.bazaar.enableBazaarLookup) return;
-		String itemText = ItemUtils.getItemId(slot.getStack());
-		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(itemText);
-		if (neuItem != null) {
-			itemName = Formatting.strip(neuItem.getDisplayName());
-		}
-		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName);
-
-	}
-
-	//maybe rename to ItemTooltipPriceRefresh? since updating more than BZ?
-	public static void BazaarRefresh() {
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().helpers.bazaar.enableBazaarRefresh) return;
-		List<CompletableFuture<Void>> futureList = new ArrayList<>();
-		TooltipInfoType.NPC.downloadIfEnabled(futureList);
-		TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
-		TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
-		TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
-		TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
-		MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.bazaarRefresh.yesBazaarRefresh")));
-	}
-
 	public static @NotNull MutableText getExpiredIcon() {
 		return Text.literal("⏰").withColor(RED).formatted(Formatting.BOLD);
 	}
@@ -129,5 +99,35 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	public static @NotNull MutableText getFilledIcon(int filled) {
 		if (filled < 100) return Text.literal("%").withColor(YELLOW).formatted(Formatting.BOLD);
 		return Text.literal("✅").withColor(GREEN).formatted(Formatting.BOLD);
+	}
+
+	// ======== Other Bazaar Features ========
+
+	public static void bazaarLookup(ClientPlayerEntity player, @NotNull Slot slot) {
+		String itemId = ItemUtils.getItemId(slot.getStack());
+		// TODO: convert item id to neu id
+		ItemStack stack = ItemRepository.getItemStack(itemId);
+		if (stack != null && !stack.isEmpty()) {
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + Formatting.strip(stack.getName().getString()));
+		} else {
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.bazaarLookupFailed")));
+		}
+	}
+
+	public static void refreshItemPrices(ClientPlayerEntity player) {
+		player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.refreshingItemPrices")));
+		List<CompletableFuture<Void>> futureList = new ArrayList<>();
+		TooltipInfoType.NPC.downloadIfEnabled(futureList);
+		TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
+		TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
+		TooltipInfoType.ONE_DAY_AVERAGE.downloadIfEnabled(futureList);
+		TooltipInfoType.THREE_DAY_AVERAGE.downloadIfEnabled(futureList);
+		CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new))
+				.thenAccept(_void -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.refreshedItemPrices"))))
+				.exceptionally(e -> {
+					ItemTooltip.LOGGER.error("[Skyblocker] Failed to refresh item prices", e);
+					player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.refreshItemPricesFailed")));
+					return null;
+				});
 	}
 }

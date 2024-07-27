@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -33,8 +31,6 @@ public class WikiLookup {
     }
 
     public static void openWiki(@NotNull Slot slot, @NotNull PlayerEntity player) {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) return;
-
         ItemUtils.getItemIdOptional(slot.getStack())
                 .map(ItemRepository::getWikiLink)
                 .ifPresentOrElse(wikiLink -> CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {

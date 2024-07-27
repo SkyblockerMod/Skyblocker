@@ -220,21 +220,22 @@ public class HelperCategory {
                                  .controller(ConfigUtils::createBooleanController)
                                  .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.helpers.bazaar.bazaarLookup"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.bazaarLookup.enableBazaarLookup")))
+                                .name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarLookup"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarLookup.@Tooltip")))
                                 .binding(defaults.helpers.bazaar.enableBazaarLookup,
                                         () -> config.helpers.bazaar.enableBazaarLookup,
                                         newValue -> config.helpers.bazaar.enableBazaarLookup = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.helpers.bazaar.bazaarRefresh.enableBazaarRefresh"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.bazaarRefresh.enableBazaarRefresh.@Tooltip")))
+                                .name(Text.translatable("skyblocker.config.helpers.bazaar.enableRefreshItemPrices"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableRefreshItemPrices.@Tooltip")))
                                 .binding(defaults.helpers.bazaar.enableBazaarRefresh,
                                         () -> config.helpers.bazaar.enableBazaarRefresh,
                                         newValue -> config.helpers.bazaar.enableBazaarRefresh = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(ConfigUtils.createShortcutToKeybindsScreen())
 		                .build())
                 .build();
     }

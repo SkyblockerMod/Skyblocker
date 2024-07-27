@@ -52,20 +52,6 @@ public class MiscCategory {
                                 .controller(StringControllerBuilder::create)
                                 .build())
                         .build())
-
-                //Debug Options
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.misc.debugOptions"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.misc.debugOptions.enableDebugHitboxes"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.misc.debugOptions.enableDebugHitboxes.@Tooltip")))
-                                .binding(defaults.misc.debugOptions.enableDebugHitboxes,
-                                        () -> config.misc.debugOptions.enableDebugHitboxes,
-                                        newValue -> config.misc.debugOptions.enableDebugHitboxes = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
                 .build();
     }
 }
