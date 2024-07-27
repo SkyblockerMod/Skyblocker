@@ -104,9 +104,7 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	// ======== Other Bazaar Features ========
 
 	public static void bazaarLookup(ClientPlayerEntity player, @NotNull Slot slot) {
-		String itemId = ItemUtils.getItemId(slot.getStack());
-		// TODO: convert item id to neu id
-		ItemStack stack = ItemRepository.getItemStack(itemId);
+        ItemStack stack = ItemRepository.getItemStack(slot.getStack().getNeuName());
 		if (stack != null && !stack.isEmpty()) {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + Formatting.strip(stack.getName().getString()));
 		} else {
