@@ -14,9 +14,7 @@ import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -69,21 +67,6 @@ public class FishingHelper {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
                 if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.getPos().squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
                     RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
-                    int randReelTime = 20000;
-                    while (randReelTime > 0) {
-                        randReelTime--;
-                        if (randReelTime == 0) {
-                            Hand hand = Hand.MAIN_HAND;
-                            assert MinecraftClient.getInstance().interactionManager != null;
-                            ActionResult actionResult = MinecraftClient.getInstance().interactionManager.interactItem(player, hand);
-                            if (!actionResult.isAccepted()) {
-                                actionResult = MinecraftClient.getInstance().interactionManager.interactItem(player, hand);
-                            }
-                            if (actionResult.isAccepted() && actionResult.shouldSwingHand()) {
-                                player.swingHand(hand);
-                            }
-                        }
-                    }
                     resetFish();
                 }
             } else {

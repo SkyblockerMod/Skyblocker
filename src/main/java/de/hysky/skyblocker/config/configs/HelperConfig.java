@@ -101,5 +101,11 @@ public class HelperConfig {
     public static class Bazaar {
         @SerialEntry
         public boolean enableBazaarHelper = true;
+
+        @SerialEntry
+        public boolean enableBazaarLookup = true;
+
+        @SerialEntry
+        public boolean enableBazaarRefresh = true;
     }
 }

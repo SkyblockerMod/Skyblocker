@@ -219,8 +219,23 @@ public class HelperCategory {
 		                                 newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
                                  .controller(ConfigUtils::createBooleanController)
                                  .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.bazaar.bazaarLookup"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.bazaarLookup.enableBazaarLookup")))
+                                .binding(defaults.helpers.bazaar.enableBazaarLookup,
+                                        () -> config.helpers.bazaar.enableBazaarLookup,
+                                        newValue -> config.helpers.bazaar.enableBazaarLookup = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.bazaar.bazaarRefresh.enableBazaarRefresh"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.bazaarRefresh.enableBazaarRefresh.@Tooltip")))
+                                .binding(defaults.helpers.bazaar.enableBazaarRefresh,
+                                        () -> config.helpers.bazaar.enableBazaarRefresh,
+                                        newValue -> config.helpers.bazaar.enableBazaarRefresh = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
 		                .build())
-
                 .build();
     }
 }

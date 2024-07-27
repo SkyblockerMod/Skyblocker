@@ -323,20 +323,6 @@ public class GeneralCategory {
                                 .build())
                         .build())
 
-                //Bazaar Lookup
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.general.bazaarLookup"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.bazaarLookup.enableBazaarLookup"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.bazaarLookup.enableBazaarLookup.@Tooltip")))
-                                .binding(defaults.general.bazaarLookup.enableBazaarLookup,
-                                        () -> config.general.bazaarLookup.enableBazaarLookup,
-                                        newValue -> config.general.bazaarLookup.enableBazaarLookup = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
-
                 //Special Effects
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.general.specialEffects"))

@@ -65,14 +65,6 @@ public class MiscCategory {
                                         newValue -> config.misc.debugOptions.enableDebugHitboxes = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.misc.debugOptions.enableBazaarRefresh"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.misc.debugOptions.enableBazaarRefresh.@Tooltip")))
-                                .binding(defaults.misc.bazaarRefresh.enableBazaarRefresh,
-                                        () -> config.misc.bazaarRefresh.enableBazaarRefresh,
-                                        newValue -> config.misc.bazaarRefresh.enableBazaarRefresh = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
                         .build())
                 .build();
     }

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
@@ -261,6 +262,10 @@ public class Utils {
                     }
                     isOnSkyblock = true; //TODO in the future we can probably replace these skyblock checks entirely with the Mod API
                     SkyblockEvents.JOIN.invoker().onSkyblockJoin();
+                    MinecraftClient player = MinecraftClient.getInstance();
+                    if (SkyblockerConfigManager.get().misc.debugOptions.enableDebugHitboxes) {
+                        player.getEntityRenderDispatcher().setRenderHitboxes(true);
+                    }
                 }
             } else {
                 onLeaveSkyblock();

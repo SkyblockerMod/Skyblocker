@@ -96,7 +96,7 @@ public class BazaarHelper extends SimpleSlotTextAdder {
     }
 
     public static void BazaarLookup(@NotNull Slot slot) {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.bazaarLookup.enableBazaarLookup) return;
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().helpers.bazaar.enableBazaarLookup) return;
         String itemText = String.valueOf(ItemUtils.getItemId(slot.getStack()));
         NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(itemText);
         if (neuItem != null) {
@@ -108,14 +108,14 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 
     //maybe rename to ItemTooltipPriceRefresh? since updating more than BZ?
     public static void BazaarRefresh() {
-        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.bazaarLookup.enableBazaarRefresh) return;
+        if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().helpers.bazaar.enableBazaarRefresh) return;
         List<CompletableFuture<Void>> futureList = new ArrayList<>();
         TooltipInfoType.NPC.downloadIfEnabled(futureList);
         TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
         TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
         TooltipInfoType.ONE_DAY_AVERAGE.download(futureList);
         TooltipInfoType.THREE_DAY_AVERAGE.download(futureList);
-        MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.general.bazaarLookup.yesBazaarRefresh")));
+        MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.bazaarRefresh.yesBazaarRefresh")));
     }
 
     public static @NotNull MutableText getExpiredIcon() {

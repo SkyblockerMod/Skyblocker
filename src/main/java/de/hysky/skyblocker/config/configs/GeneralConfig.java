@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -43,9 +42,6 @@ public class GeneralConfig {
 
     @SerialEntry
     public WikiLookup wikiLookup = new WikiLookup();
-
-    @SerialEntry
-    public BazaarLookup  bazaarLookup = new BazaarLookup();
 
     @SerialEntry
     public SpecialEffects specialEffects = new SpecialEffects();
@@ -242,13 +238,13 @@ public class GeneralConfig {
         public boolean officialWiki = true;
     }
 
-    public static class BazaarLookup  {
-        @SerialEntry
-        public boolean enableBazaarLookup = true;
-
-        @SerialEntry
-        public boolean enableBazaarRefresh = true;
-    }
+//    public static class BazaarLookup  {
+//        @SerialEntry
+//        public boolean enableBazaarLookup = true;
+//
+//        @SerialEntry
+//        public boolean enableBazaarRefresh = true;
+//    }
 
     public static class SpecialEffects {
         @SerialEntry

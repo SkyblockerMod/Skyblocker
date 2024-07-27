@@ -9,9 +9,6 @@ public class MiscConfig {
     public RichPresence richPresence = new RichPresence();
 
     @SerialEntry
-    public BazaarRefresh bazaarRefresh = new BazaarRefresh();
-
-    @SerialEntry
     public DebugOptions debugOptions = new DebugOptions();
 
     public static class RichPresence {
@@ -26,11 +23,6 @@ public class MiscConfig {
 
         @SerialEntry
         public String customMessage = "Playing Skyblock";
-    }
-
-    public static class BazaarRefresh {
-        @SerialEntry
-        public boolean enableBazaarRefresh = false;
     }
 
     public static class DebugOptions {
