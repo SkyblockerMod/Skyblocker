@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.config.configs;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.SlotSwap.SlotSquare;
 import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
@@ -10,7 +8,9 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import kotlin.Pair;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -19,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static de.hysky.skyblocker.skyblock.SlotSwap.INVENTORY_SLOT_COUNT;
 
 public class GeneralConfig {
     @SerialEntry
@@ -264,7 +262,7 @@ public class GeneralConfig {
         @SerialEntry
         public boolean enableSlotSwap = true;
         @SerialEntry
-        public BiMap<@Nullable SlotSquare, @Nullable SlotSquare> slotSquareMap = HashBiMap.create(INVENTORY_SLOT_COUNT);
+        public List<Pair<@Nullable SlotSquare, @Nullable SlotSquare>> slotSquareMap = new ObjectArrayList<>(9); // Hotbar slot count
         @SerialEntry
         public Color sourceSlotColor = new Color(0xE86DFF);
         @SerialEntry

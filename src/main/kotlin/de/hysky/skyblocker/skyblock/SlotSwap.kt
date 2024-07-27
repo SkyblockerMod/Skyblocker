@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock
 
-import com.google.common.collect.BiMap
 import de.hysky.skyblocker.config.SkyblockerConfigManager
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor
 import de.hysky.skyblocker.util.CoroutineUtil
@@ -10,7 +9,6 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents
@@ -29,14 +27,9 @@ import org.lwjgl.glfw.GLFW
 typealias Point = Vec2f
 
 object SlotSwap {
-	/**
-	 * The number of slots in the inventory of the player including the hotbar, but excluding the armor slots, the off hand and the crafting slots.
-	 */
-	const val INVENTORY_SLOT_COUNT = 36
+	private val slotMap: MutableList<Pair<SlotSquare?, SlotSquare?>> get() = config.slotSquareMap
 
-	private val slotMap: BiMap<SlotSquare?, SlotSquare?> get() = config.slotSquareMap
-
-	private val config get() = SkyblockerConfigManager.get().general.slotSwap;
+	private val config get() = SkyblockerConfigManager.get().general.slotSwap
 
 	private var slotAtKeyPress: SlotSquare? = null
 	private val configureKeybinding: KeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding("key.skyblocker.slotSwapConfigure", GLFW.GLFW_KEY_L, "key.categories.skyblocker"))
@@ -45,7 +38,6 @@ object SlotSwap {
 	//Self-resetting state for the reset keybinding to make sure the user wants to reset by requiring the key to be pressed twice within `delay` ms
 	private var shouldResetOnNextKey = false
 	private var waitJob: Job? = null
-	private val mutex = Mutex() //Idk if this actually fixes anything or if I've used it correctly or not
 	private const val WAIT_TIME = 500L
 
 	private const val SLOT_SIZE = 16
@@ -79,16 +71,17 @@ object SlotSwap {
 
 	private fun onMouseClick(client: MinecraftClient, screen: InventoryScreen, button: Int): Boolean {
 		if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT || !InputUtil.isKeyPressed(client.window.handle, GLFW.GLFW_KEY_LEFT_SHIFT)) return true
+
 		val entry = (screen as HandledScreenAccessor).focusedSlot?.id?.let { id ->
-			slotMap.entries.firstOrNull { entry -> entry.key?.slotId == id }
-				?: slotMap.entries.firstOrNull { entry -> entry.value?.slotId == id }
-		}
-		if (entry?.key == null || entry.value == null) return true
-		if (isHotbarSlot(entry.key!!.slotId)) {
-			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.value!!.slotId, entry.key!!.slotId - 36, SlotActionType.SWAP, client.player)
+			slotMap.firstOrNull { (key, value) -> key?.slotId == id || value?.slotId == id }
+		} ?: return true //If the slot is not in the mapping, then we don't care
+
+		if (entry.first == null || entry.second == null) return true
+		if (isHotbarSlot(entry.first!!.slotId)) {
+			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.second!!.slotId, entry.first!!.slotId - 36, SlotActionType.SWAP, client.player)
 			return false
-		} else if (isHotbarSlot(entry.value!!.slotId)) {
-			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.key!!.slotId, entry.value!!.slotId - 36, SlotActionType.SWAP, client.player)
+		} else if (isHotbarSlot(entry.second!!.slotId)) {
+			client.interactionManager?.clickSlot(screen.screenHandler.syncId, entry.first!!.slotId, entry.second!!.slotId - 36, SlotActionType.SWAP, client.player)
 			return false
 		}
 		return true
@@ -127,9 +120,9 @@ object SlotSwap {
 
 	private fun render(screen: InventoryScreen, drawContext: DrawContext) {
 		//Slot mappings
-		for (entry in slotMap) {
-			if (entry.key == null || entry.value == null) continue
-			renderRectanglesAndLine(drawContext, entry.key!!, entry.value!!, config.sourceSlotColor.rgb, config.targetSlotColor.rgb)
+		for ((key, value) in slotMap) {
+			if (key == null || value == null) continue
+			renderRectanglesAndLine(drawContext, key, value, config.sourceSlotColor.rgb, config.targetSlotColor.rgb)
 		}
 		//Configuring state
 		if (slotAtKeyPress == null) return
@@ -165,15 +158,12 @@ object SlotSwap {
 
 	private fun addSlotMapping(source: SlotSquare, aimed: SlotSquare) {
 		//Remove all mappings that are related to these keys
-		slotMap -= source
-		slotMap -= aimed
-		slotMap.inverse() -= source
-		slotMap.inverse() -= aimed
-
-		slotMap[source] = aimed
+		slotMap.removeAll { (key, value) ->  key == source || value == source || key == aimed || value == aimed }
+		slotMap += source to aimed
 		SkyblockerConfigManager.save()
 	}
 
+	@JvmRecord
 	data class SlotSquare(@SerialEntry val x: Int, @SerialEntry val y: Int, @SerialEntry val slotId: Int) {
 		val center get() = Point(x + HALF_SLOT_SIZE + OFFSET_TO_CENTER, y + HALF_SLOT_SIZE + OFFSET_TO_CENTER)
 	}
