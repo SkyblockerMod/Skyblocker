@@ -382,6 +382,8 @@ public class Utils {
     }
 
     private static void onDisconnect() {
+        if (isOnSkyblock) SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
+
         isOnSkyblock = false;
         server = "";
         gameType = "";
