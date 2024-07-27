@@ -48,7 +48,7 @@ public class LegacyItemStackFixer {
 				.resultOrPartial(LegacyItemStackFixer::tryLog)
 				.get();
 
-		ENABLE_DFU_FIXES.set(false);
+		ENABLE_DFU_FIXES.remove(); //Free memory
 
 		//Convert Custom Name & Lore to components
 		if (stack.contains(DataComponentTypes.CUSTOM_NAME)) {
