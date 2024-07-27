@@ -161,7 +161,7 @@ object SlotSwap {
 		shouldResetOnNextKey = false
 	}
 
-	private fun isSlotValid(slotId: Int) = slotId in PlayerScreenHandler.INVENTORY_START..<PlayerScreenHandler.HOTBAR_END
+	private fun isSlotValid(slotId: Int) = slotId in PlayerScreenHandler.EQUIPMENT_START..<PlayerScreenHandler.HOTBAR_END
 
 	private fun isHotbarSlot(slotId: Int) = slotId in PlayerScreenHandler.HOTBAR_START..<PlayerScreenHandler.HOTBAR_END
 
