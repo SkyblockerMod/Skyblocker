@@ -301,7 +301,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                                 if (name.startsWith("ISSHINY_")) {
                                     neuName = internalID;
                                 }
-                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemUtils.getNeuId(internalID, neuName));
+                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemUtils.getNeuId(stack, internalID, neuName));
                                 if (jsonElement == null) break;
                                 else {
                                     isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);

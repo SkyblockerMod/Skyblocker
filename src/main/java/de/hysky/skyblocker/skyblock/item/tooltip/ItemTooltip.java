@@ -29,7 +29,7 @@ public class ItemTooltip {
      */
     @Deprecated(since = "1.22")
     public static String getNeuName(String id, String apiId) {
-        return ItemUtils.getNeuId(id, apiId);
+        return ItemUtils.getNeuId(null, id, apiId);
     }
 
     public static void nullWarning() {

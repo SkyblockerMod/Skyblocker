@@ -73,7 +73,7 @@ public final class ItemUtils {
      *         or an empty {@link NbtCompound} if the itemstack is missing a custom data component
      */
     @SuppressWarnings("deprecation")
-	public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
+    public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
         return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
     }
 
@@ -115,7 +115,7 @@ public final class ItemUtils {
      * @param stack the item stack to get the UUID from
      * @return the UUID of the item stack, or an empty string if the item stack does not have a UUID
      */
-	public static @NotNull String getItemUuid(@NotNull ComponentHolder stack) {
+    public static @NotNull String getItemUuid(@NotNull ComponentHolder stack) {
         return getCustomData(stack).getString(UUID);
     }
 
@@ -139,7 +139,7 @@ public final class ItemUtils {
         // Transformation to API format.
         //TODO future - remove this and just handle it directly for the NEU id conversion because this whole system is confusing and hard to follow
         if (customData.contains("is_shiny")) {
-            return "ISSHINY_" + customDataString;
+            return "SHINY_" + customDataString;
         }
 
         switch (customDataString) {
@@ -246,9 +246,17 @@ public final class ItemUtils {
      * or an empty string if either id or apiId is null
      */
     @NotNull
-    public static String getNeuId(String id, String apiId) {
+    public static String getNeuId(@Nullable ItemStack stack, String id, String apiId) {
         if (id == null || apiId == null) return "";
         switch (id) {
+            case "ENCHANTED_BOOK" -> {
+                if (stack == null) {
+                    return "";
+                }
+                NbtCompound customData = ItemUtils.getCustomData(stack);
+                String enchant = customData.getCompound("enchantments").getKeys().stream().findFirst().orElse("");
+                return enchant.toUpperCase(Locale.ROOT) + ";" + customData.getCompound("enchantments").getInt(enchant);
+            }
             case "PET" -> {
                 apiId = apiId.replaceAll("LVL_\\d*_", "");
                 String[] parts = apiId.split("_");
@@ -264,18 +272,23 @@ public final class ItemUtils {
                         .replace("-", ";");
             }
             case "RUNE" -> apiId = apiId.replaceAll("_(?!.*_)", ";");
-            case "POTION" -> apiId = "";
-            case "ATTRIBUTE_SHARD" ->
-                    apiId = id + "+" + apiId.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
+            case "POTION" -> {
+                if (stack == null) {
+                    return "";
+                }
+                NbtCompound customData = ItemUtils.getCustomData(stack);
+                apiId = "POTION_" + customData.getString("potion").toUpperCase(Locale.ROOT) + ";" + customData.getInt("potion_level");
+            }
+            case "ATTRIBUTE_SHARD" -> apiId = "ATTRIBUTE_SHARD";
             case "NEW_YEAR_CAKE" -> apiId = id + "+" + apiId.replace("NEW_YEAR_CAKE_", "");
             case "PARTY_HAT_CRAB_ANIMATED" -> apiId = "PARTY_HAT_CRAB_" + apiId.replace("PARTY_HAT_CRAB_ANIMATED_", "") + "_ANIMATED";
             case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS",
                  "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS",
-                 "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> apiId = id;
-            case "MIDAS_SWORD", "MIDAS_STAFF" -> apiId = id;
+                 "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS",
+                 "MIDAS_SWORD", "MIDAS_STAFF" -> apiId = id;
             default -> apiId = apiId.replace(":", "-");
         }
-        return apiId;
+        return apiId.replace("SHINY_", "");
     }
 
     /**
@@ -345,7 +358,7 @@ public final class ItemUtils {
         NbtCompound customData = getCustomData(stack);
         if (customData.isEmpty()) return null;
 
-	    // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
+        // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
         // TODO Cache the max durability and only update the current durability on inventory tick
 
         int pickonimbusDurability = customData.getInt("pickonimbus_durability");
@@ -393,22 +406,22 @@ public final class ItemUtils {
         return null;
     }
 
-	/**
-	 * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#find()}.
-	 * @param pattern the pattern to search for
-	 * @param stack the stack to search the lore of
-	 * @return A {@link Matcher matcher} that contains match results if the pattern was found in the lore, otherwise {@code null}.
-	 */
-	@Nullable
-	public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
-		Matcher matcher = pattern.matcher("");
-		for (Text line : getLore(stack)) {
-			if (matcher.reset(line.getString()).find()) {
-				return matcher;
-			}
-		}
-		return null;
-	}
+    /**
+     * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#find()}.
+     * @param pattern the pattern to search for
+     * @param stack the stack to search the lore of
+     * @return A {@link Matcher matcher} that contains match results if the pattern was found in the lore, otherwise {@code null}.
+     */
+    @Nullable
+    public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
+        Matcher matcher = pattern.matcher("");
+        for (Text line : getLore(stack)) {
+            if (matcher.reset(line.getString()).find()) {
+                return matcher;
+            }
+        }
+        return null;
+    }
 
     public static @NotNull List<Text> getLore(ItemStack stack) {
         return stack.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
@@ -446,23 +459,23 @@ public final class ItemUtils {
         }
     }
 
-	/**
-	 * Utility method.
-	 */
-	public static @NotNull String getConcatenatedLore(@NotNull ItemStack item) {
-	    return concatenateLore(getLore(item));
-	}
+    /**
+     * Utility method.
+     */
+    public static @NotNull String getConcatenatedLore(@NotNull ItemStack item) {
+        return concatenateLore(getLore(item));
+    }
 
-	/**
-	 * Concatenates the lore of an item into one string.
-	 * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
-	 */
-	public static @NotNull String concatenateLore(@NotNull List<Text> lore) {
-	    StringBuilder stringBuilder = new StringBuilder();
-	    for (int i = 0; i < lore.size(); i++) {
-	        stringBuilder.append(lore.get(i).getString());
-	        if (i != lore.size() - 1) stringBuilder.append(" ");
-	    }
-	    return stringBuilder.toString();
-	}
+    /**
+     * Concatenates the lore of an item into one string.
+     * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
+     */
+    public static @NotNull String concatenateLore(@NotNull List<Text> lore) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < lore.size(); i++) {
+            stringBuilder.append(lore.get(i).getString());
+            if (i != lore.size() - 1) stringBuilder.append(" ");
+        }
+        return stringBuilder.toString();
+    }
 }

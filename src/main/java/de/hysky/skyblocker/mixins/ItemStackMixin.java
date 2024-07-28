@@ -143,6 +143,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 		if (apiId.startsWith("ISSHINY_")) apiId = id;
 
-		return neuName = ItemUtils.getNeuId(id, apiId);
+		return neuName = ItemUtils.getNeuId((ItemStack) (Object) this, id, apiId);
 	}
 }

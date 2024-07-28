@@ -63,7 +63,7 @@ public class FarmingHudWidget extends Widget {
         ItemStack farmingToolStack = client.player.getMainHandStack();
         if (farmingToolStack == null) return;
         String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));
-        ItemStack cropStack = ItemRepository.getItemStack(ItemUtils.getNeuId(cropItemId, cropItemId)); // The cropItemId is being used as the api id in the second parameter because the skyblock id and api id are the same for all crops.
+        ItemStack cropStack = ItemRepository.getItemStack(ItemUtils.getNeuId(null, cropItemId, cropItemId)); // The cropItemId is being used as the api id in the second parameter because the skyblock id and api id are the same for all crops.
 
         String counterText = FarmingHud.counterText();
         String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
