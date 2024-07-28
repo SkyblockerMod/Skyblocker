@@ -3,7 +3,6 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
-import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -18,6 +17,8 @@ import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket;
 import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
 import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -34,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -49,7 +49,6 @@ public class Utils {
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
-    private static boolean isInjected = false;
     /**
      * Current Skyblock location (from the Mod API)
      */
@@ -129,10 +128,6 @@ public class Utils {
 
     public static boolean isInModernForagingIsland() {
         return location == Location.MODERN_FORAGING_ISLAND;
-    }
-
-    public static boolean isInjected() {
-        return isInjected;
     }
 
     /**
@@ -216,6 +211,7 @@ public class Utils {
         });
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
 
         //Register Mod API stuff
         HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
@@ -229,45 +225,27 @@ public class Utils {
     public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
         updateScoreboard(client);
-        updatePlayerPresenceFromScoreboard(client);
+        updatePlayerPresence(client);
         updateFromPlayerList(client);
     }
 
     /**
-     * Updates {@link #isOnSkyblock}, {@link #isInDungeons}, and {@link #isInjected} from the scoreboard.
+     * Updates {@link #isOnSkyblock} if in a development environment and {@link #isOnHypixel} in all environments.
      */
-    public static void updatePlayerPresenceFromScoreboard(MinecraftClient client) {
-        List<String> sidebar = STRING_SCOREBOARD;
-
-        if (client.world == null || client.isInSingleplayer() || sidebar.isEmpty()) {
-            if (Debug.debugEnabled()) {
-                sidebar = Collections.emptyList();
-            } else {
-                isOnSkyblock = false;
-                return;
+    private static void updatePlayerPresence(MinecraftClient client) {
+        FabricLoader fabricLoader = FabricLoader.getInstance();
+        if (client.world == null || client.isInSingleplayer()) {
+            if (fabricLoader.isDevelopmentEnvironment()) { // Pretend we're always in skyblock when in dev
+                isOnSkyblock = true;
             }
         }
 
-        if (sidebar.isEmpty() && !Debug.debugEnabled()) return;
-
-        if (Debug.debugEnabled() || isConnectedToHypixel(client)) {
+        if (fabricLoader.isDevelopmentEnvironment() || isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
-            if (Debug.debugEnabled() || sidebar.getFirst().contains("SKYBLOCK") || sidebar.getFirst().contains("SKIBLOCK")) {
-                if (!isOnSkyblock) {
-                    if (!isInjected) {
-                        isInjected = true;
-                    }
-                    isOnSkyblock = true; //TODO in the future we can probably replace these skyblock checks entirely with the Mod API
-                    SkyblockEvents.JOIN.invoker().onSkyblockJoin();
-                }
-            } else {
-                onLeaveSkyblock();
-            }
         } else if (isOnHypixel) {
             isOnHypixel = false;
-            onLeaveSkyblock();
         }
     }
 
@@ -276,13 +254,6 @@ public class Utils {
         String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
 
         return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
-    }
-
-    private static void onLeaveSkyblock() {
-        if (isOnSkyblock) {
-            isOnSkyblock = false;
-            SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
-        }
     }
 
     public static String getIslandArea() {
@@ -410,6 +381,17 @@ public class Utils {
         }
     }
 
+    private static void onDisconnect() {
+        if (isOnSkyblock) SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
+
+        isOnSkyblock = false;
+        server = "";
+        gameType = "";
+        locationRaw = "";
+        location = Location.UNKNOWN;
+        map = "";
+    }
+
     private static void onPacket(HypixelS2CPacket packet) {
         switch (packet) {
             case HelloS2CPacket(var environment) -> {
@@ -418,12 +400,22 @@ public class Utils {
 
             case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var map) -> {
                 Utils.server = serverName;
+                String previousServerType = Utils.gameType;
                 Utils.gameType = serverType.orElse("");
                 Utils.locationRaw = mode.orElse("");
                 Utils.location = Location.from(locationRaw);
                 Utils.map = map.orElse("");
 
                 SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
+
+                if (Utils.gameType.equals("SKYBLOCK")) {
+                    isOnSkyblock = true;
+
+                    if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
+                } else if (previousServerType.equals("SKYBLOCK")) {
+                    isOnSkyblock = false;
+                    SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
+                }
             }
 
             case ErrorS2CPacket(var id, var error) when id.equals(LocationUpdateS2CPacket.ID) -> {
@@ -451,6 +443,8 @@ public class Utils {
      * and {@link #location}
      *
      * @param message json message from chat
+     * 
+     * @deprecated Retained just in case the mod api doesn't work or gets disabled.
      */
     @Deprecated
     private static void parseLocRaw(String message) {
@@ -461,6 +455,7 @@ public class Utils {
         }
         if (locRaw.has("gameType")) {
             gameType = locRaw.get("gameType").getAsString();
+            isOnSkyblock = gameType.equals("SKYBLOCK");
         }
         if (locRaw.has("mode")) {
             locationRaw = locRaw.get("mode").getAsString();
