@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -25,11 +26,12 @@ public class ItemTooltip {
     private static volatile boolean sentNullWarning = false;
 
     /**
-     * @deprecated Use {@link ItemUtils#getNeuId(String, String)} instead
+     * @deprecated Use {@link ItemUtils#getNeuId(ItemStack)} instead
      */
     @Deprecated(since = "1.22")
     public static String getNeuName(String id, String apiId) {
-        return ItemUtils.getNeuId(null, id, apiId);
+        LOGGER.error("[Skyblocker Item Tooltip] ItemTooltip.getNeuName is deprecated and will not work. Use ItemStack#getNeuName instead.");
+        return "";
     }
 
     public static void nullWarning() {

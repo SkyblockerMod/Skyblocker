@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
@@ -14,7 +13,7 @@ import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -120,29 +119,23 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	}
 
 	@Override
-	@Nullable
+	@NotNull
 	public String getSkyblockId() {
 		if (skyblockId != null && !skyblockId.isEmpty()) return skyblockId;
-		return skyblockId = ItemUtils.getSkyblockApiId((ItemStack) (Object) this, true);
+		return skyblockId = ItemUtils.getItemId(this);
 	}
 
 	@Override
-	@Nullable
+	@NotNull
 	public String getSkyblockApiId() {
 		if (skyblockApiId != null && !skyblockApiId.isEmpty()) return skyblockApiId;
-		return skyblockApiId = ItemUtils.getSkyblockApiId((ItemStack) (Object) this, false);
+		return skyblockApiId = ItemUtils.getSkyblockApiId(this);
 	}
 
 	@Override
-	@Nullable
+	@NotNull
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
-		String apiId = getSkyblockApiId();
-		String id = getSkyblockId();
-		if (apiId == null || id == null) return null;
-
-		if (apiId.startsWith("ISSHINY_")) apiId = id;
-
-		return neuName = ItemUtils.getNeuId((ItemStack) (Object) this, id, apiId);
+        return neuName = ItemUtils.getNeuId((ItemStack) (Object) this);
 	}
 }

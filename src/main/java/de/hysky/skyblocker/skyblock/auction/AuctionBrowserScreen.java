@@ -294,14 +294,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
                             try {
                                 long parsed = Long.parseLong(coins);
-                                String name = stack.getSkyblockApiId();
-                                String internalID = stack.getSkyblockId();
-                                String neuName = name;
-                                if (name == null || internalID == null) break;
-                                if (name.startsWith("ISSHINY_")) {
-                                    neuName = internalID;
-                                }
-                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemUtils.getNeuId(stack, internalID, neuName));
+                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(stack.getNeuName());
                                 if (jsonElement == null) break;
                                 else {
                                     isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);

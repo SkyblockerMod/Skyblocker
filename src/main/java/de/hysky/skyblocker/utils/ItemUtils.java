@@ -28,7 +28,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
@@ -83,7 +82,7 @@ public final class ItemUtils {
      * @param stack the item stack to get the internal name from
      * @return an optional containing the Skyblock item id of the item stack
      */
-    public static @NotNull Optional<String> getItemIdOptional(@NotNull ItemStack stack) {
+    public static @NotNull Optional<String> getItemIdOptional(@NotNull ComponentHolder stack) {
         NbtCompound customData = getCustomData(stack);
         return customData.contains(ID) ? Optional.of(customData.getString(ID)) : Optional.empty();
     }
@@ -94,7 +93,7 @@ public final class ItemUtils {
      * @param stack the item stack to get the internal name from
      * @return the Skyblock item id of the item stack, or an empty string if the item stack does not have a Skyblock id
      */
-    public static @NotNull String getItemId(@NotNull ItemStack stack) {
+    public static @NotNull String getItemId(@NotNull ComponentHolder stack) {
         return getCustomData(stack).getString(ID);
     }
 
@@ -104,7 +103,7 @@ public final class ItemUtils {
      * @param stack the item stack to get the UUID from
      * @return an optional containing the UUID of the item stack
      */
-    public static @NotNull Optional<String> getItemUuidOptional(@NotNull ItemStack stack) {
+    public static @NotNull Optional<String> getItemUuidOptional(@NotNull ComponentHolder stack) {
         NbtCompound customData = getCustomData(stack);
         return customData.contains(UUID) ? Optional.of(customData.getString(UUID)) : Optional.empty();
     }
@@ -123,32 +122,23 @@ public final class ItemUtils {
      * Gets the Skyblock api id of the item stack.
      * @return the Skyblock api id if of the item stack, or null if the item stack does not have a Skyblock id.
      */
-    @Nullable
-    public static String getSkyblockApiId(@NotNull ItemStack itemStack, boolean itemIdOnly) {
+    public static @NotNull String getSkyblockApiId(@NotNull ComponentHolder itemStack) {
         NbtCompound customData = getCustomData(itemStack);
-
-        if (customData == null || !customData.contains(ID, NbtElement.STRING_TYPE)) {
-            return null;
-        }
-        String customDataString = customData.getString(ID);
-
-        if (itemIdOnly) {
-            return customDataString;
-        }
+        String id = customData.getString(ID);
 
         // Transformation to API format.
         //TODO future - remove this and just handle it directly for the NEU id conversion because this whole system is confusing and hard to follow
         if (customData.contains("is_shiny")) {
-            return "SHINY_" + customDataString;
+            return "SHINY_" + id;
         }
 
-        switch (customDataString) {
+        switch (id) {
             case "ENCHANTED_BOOK" -> {
                 if (customData.contains("enchantments")) {
                     NbtCompound enchants = customData.getCompound("enchantments");
                     Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
                     String enchant = firstEnchant.orElse("");
-                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
+                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ROOT) + "_" + enchants.getInt(enchant);
                 }
             }
 
@@ -164,46 +154,44 @@ public final class ItemUtils {
                 String extended = customData.contains("extended") ? "_EXTENDED" : "";
                 String splash = customData.contains("splash") ? "_SPLASH" : "";
                 if (customData.contains("potion") && customData.contains("potion_level")) {
-                    return (customData.getString("potion") + "_" + customDataString + "_" + customData.getInt("potion_level")
-                            + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
+                    return (customData.getString("potion") + "_" + id + "_" + customData.getInt("potion_level")
+                            + enhanced + extended + splash).toUpperCase(Locale.ROOT);
                 }
             }
 
             case "RUNE" -> {
                 if (customData.contains("runes")) {
                     NbtCompound runes = customData.getCompound("runes");
-                    Optional<String> firstRunes = runes.getKeys().stream().findFirst();
-                    String rune = firstRunes.orElse("");
-                    return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
+                    String rune = runes.getKeys().stream().findFirst().orElse("");
+                    return rune.toUpperCase(Locale.ROOT) + "_RUNE_" + runes.getInt(rune);
                 }
             }
 
             case "ATTRIBUTE_SHARD" -> {
                 if (customData.contains("attributes")) {
                     NbtCompound shards = customData.getCompound("attributes");
-                    Optional<String> firstShards = shards.getKeys().stream().findFirst();
-                    String shard = firstShards.orElse("");
-                    return customDataString + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
+                    String shard = shards.getKeys().stream().findFirst().orElse("");
+                    return id + "-" + shard.toUpperCase(Locale.ROOT) + "_" + shards.getInt(shard);
                 }
             }
 
             case "NEW_YEAR_CAKE" -> {
-                return customDataString + "_" + customData.getInt("new_years_cake");
+                return id + "_" + customData.getInt("new_years_cake");
             }
 
             case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
-                return customDataString + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
+                return id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ROOT);
             }
 
             case "PARTY_HAT_SLOTH" -> {
-                return customDataString + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
+                return id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ROOT);
             }
 
             case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
                 NbtCompound attributes = customData.getCompound("attributes");
 
                 if (attributes.contains("magic_find") && attributes.contains("veteran")) {
-                    return customDataString + "-MAGIC_FIND-VETERAN";
+                    return id + "-MAGIC_FIND-VETERAN";
                 }
             }
 
@@ -211,7 +199,7 @@ public final class ItemUtils {
                 NbtCompound attributes = customData.getCompound("attributes");
 
                 if (attributes.contains("mana_pool") && attributes.contains("mana_regeneration")) {
-                    return customDataString + "-MANA_POOL-MANA_REGENERATION";
+                    return id + "-MANA_POOL-MANA_REGENERATION";
                 }
             }
 
@@ -219,76 +207,57 @@ public final class ItemUtils {
                 NbtCompound attributes = customData.getCompound("attributes");
 
                 if (attributes.contains("lifeline") && attributes.contains("mana_pool")) {
-                    return customDataString + "-LIFELINE-MANA_POOL";
+                    return id + "-LIFELINE-MANA_POOL";
                 }
             }
 
             case "MIDAS_SWORD" -> {
                 if (customData.getInt("winning_bid") >= 50000000) {
-                    return customDataString + "_50M";
+                    return id + "_50M";
                 }
             }
 
             case "MIDAS_STAFF" -> {
                 if (customData.getInt("winning_bid") >= 100000000) {
-                    return customDataString + "_100M";
+                    return id + "_100M";
                 }
             }
         }
-        return customDataString;
+        return id;
     }
 
     /**
      * Gets the NEU id from an id and an api id.
-     * @param id the id of the skyblock item, gotten from {@link ItemUtils#getItemId(ItemStack) ItemUtils#getItemId(ItemStack)} or {@link ItemStack#getSkyblockId() ItemStack#getSkyblockId()}
-     * @param apiId the api id of the skyblock item, matching the id of the item on the Skyblocker api, gotten from {@link ItemStack#getSkyblockApiId() ItemStack#getSkyblockApiId()}
-     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName() ItemStack#getNeuName()},
-     * or an empty string if either id or apiId is null
+     *
+     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()},
+     * or an empty string if stack is null
      */
-    @NotNull
-    public static String getNeuId(@Nullable ItemStack stack, String id, String apiId) {
-        if (id == null || apiId == null) return "";
-        switch (id) {
+    public static @NotNull String getNeuId(ItemStack stack) {
+        if (stack == null) return "";
+        String id = stack.getSkyblockId();
+        NbtCompound customData = ItemUtils.getCustomData(stack);
+        return switch (id) {
             case "ENCHANTED_BOOK" -> {
-                if (stack == null) {
-                    return "";
-                }
-                NbtCompound customData = ItemUtils.getCustomData(stack);
-                String enchant = customData.getCompound("enchantments").getKeys().stream().findFirst().orElse("");
-                return enchant.toUpperCase(Locale.ROOT) + ";" + customData.getCompound("enchantments").getInt(enchant);
+                NbtCompound enchantments = customData.getCompound("enchantments");
+                String enchant = enchantments.getKeys().stream().findFirst().orElse("");
+                yield enchant.toUpperCase(Locale.ROOT) + ";" + enchantments.getInt(enchant);
             }
             case "PET" -> {
-                apiId = apiId.replaceAll("LVL_\\d*_", "");
-                String[] parts = apiId.split("_");
-                String type = parts[0];
-                apiId = apiId.replaceAll(type + "_", "");
-                apiId = apiId + "-" + type;
-                apiId = apiId.replace("UNCOMMON", "1")
-                        .replace("COMMON", "0")
-                        .replace("RARE", "2")
-                        .replace("EPIC", "3")
-                        .replace("LEGENDARY", "4")
-                        .replace("MYTHIC", "5")
-                        .replace("-", ";");
+                PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                yield petInfo.type() + ';' + petInfo.tierIndex();
             }
-            case "RUNE" -> apiId = apiId.replaceAll("_(?!.*_)", ";");
-            case "POTION" -> {
-                if (stack == null) {
-                    return "";
-                }
-                NbtCompound customData = ItemUtils.getCustomData(stack);
-                apiId = "POTION_" + customData.getString("potion").toUpperCase(Locale.ROOT) + ";" + customData.getInt("potion_level");
+            case "RUNE" -> {
+                NbtCompound runes = customData.getCompound("runes");
+                String rune = runes.getKeys().stream().findFirst().orElse("");
+                yield rune.toUpperCase(Locale.ROOT) + "_RUNE;" + runes.getInt(rune);
             }
-            case "ATTRIBUTE_SHARD" -> apiId = "ATTRIBUTE_SHARD";
-            case "NEW_YEAR_CAKE" -> apiId = id + "+" + apiId.replace("NEW_YEAR_CAKE_", "");
-            case "PARTY_HAT_CRAB_ANIMATED" -> apiId = "PARTY_HAT_CRAB_" + apiId.replace("PARTY_HAT_CRAB_ANIMATED_", "") + "_ANIMATED";
-            case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS",
-                 "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS",
-                 "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS",
-                 "MIDAS_SWORD", "MIDAS_STAFF" -> apiId = id;
-            default -> apiId = apiId.replace(":", "-");
-        }
-        return apiId.replace("SHINY_", "");
+            case "POTION" -> "POTION_" + customData.getString("potion").toUpperCase(Locale.ROOT) + ";" + customData.getInt("potion_level");
+            case "ATTRIBUTE_SHARD" -> "ATTRIBUTE_SHARD";
+            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024" -> id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ROOT);
+            case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color").toUpperCase(Locale.ROOT) + "_ANIMATED";
+            case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ROOT);
+            default -> id.replace(":", "-");
+        };
     }
 
     /**
