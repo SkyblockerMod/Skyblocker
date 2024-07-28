@@ -61,10 +61,12 @@ public class QuickNavButton extends ClickableWidget {
     private void updateCoordinates() {
         Screen screen = MinecraftClient.getInstance().currentScreen;
         if (screen instanceof HandledScreen<?> handledScreen) {
-            int x = ((HandledScreenAccessor) handledScreen).getX();
-            int y = ((HandledScreenAccessor) handledScreen).getY();
-            int h = ((HandledScreenAccessor) handledScreen).getBackgroundHeight();
-            this.setX(x + this.index % 7 * 25);
+            var accessibleScreen = (HandledScreenAccessor) handledScreen;
+            int x = accessibleScreen.getX();
+            int y = accessibleScreen.getY();
+            int h = accessibleScreen.getBackgroundHeight();
+            int w = accessibleScreen.getBackgroundWidth();
+            this.setX(x + this.index % 7 * 25 + w / 2 - 176 / 2);
             this.setY(this.index < 7 ? y - 28 : y + h - 4);
         }
     }
