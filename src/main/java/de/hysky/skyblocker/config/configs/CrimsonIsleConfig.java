@@ -10,6 +10,9 @@ public class CrimsonIsleConfig {
     @SerialEntry
     public Dojo dojo = new Dojo();
 
+    @SerialEntry
+    public boolean extendNetherFog = true;
+
 
     public static class Kuudra {
         @SerialEntry
