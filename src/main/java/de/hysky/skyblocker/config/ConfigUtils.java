@@ -1,8 +1,11 @@
 package de.hysky.skyblocker.config;
 
+import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.controller.*;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.option.KeybindsScreen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -43,6 +46,15 @@ public class ConfigUtils {
 	 */
 	public static <E extends Enum<E>> Function<Option<E>, ControllerBuilder<E>> getEnumDropdownControllerFactory(ValueFormatter<E> formatter) {
 		return opt -> EnumDropdownControllerBuilder.create(opt).formatValue(formatter);
+	}
+
+	public static ButtonOption createShortcutToKeybindsScreen() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		return ButtonOption.createBuilder()
+				.name(Text.translatable("skyblocker.config.shortcutToKeybindsSettings"))
+				.action((screen, opt) -> client.setScreen(new KeybindsScreen(screen, client.options)))
+				.text(Text.translatable("skyblocker.config.shortcutToKeybindsSettings.@Text"))
+				.build();
 	}
 
 	/**

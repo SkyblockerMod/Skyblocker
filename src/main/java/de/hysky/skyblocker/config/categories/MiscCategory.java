@@ -21,6 +21,7 @@ public class MiscCategory {
                 //Discord RPC
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.misc.richPresence"))
+                        .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.misc.richPresence.enableRichPresence"))
                                 .binding(defaults.misc.richPresence.enableRichPresence,

@@ -3,8 +3,10 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.PetCache;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -117,14 +119,23 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-		if (this.client != null && this.focusedSlot != null && keyCode != 256) {
+		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
+			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
-			if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode) && client.player != null) {
+			if (config.general.wikiLookup.enableWikiLookup && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
 				WikiLookup.openWiki(this.focusedSlot, client.player);
 			}
 			//item protection
-			if (!this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
+			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
+			}
+			//Bazaar Lookup
+			if (config.helpers.bazaar.enableBazaarLookup && BazaarHelper.BAZAAR_LOOKUP.matchesKey(keyCode, scanCode)) {
+				BazaarHelper.bazaarLookup(client.player, this.focusedSlot);
+			}
+			//Refresh Item Prices
+			if (config.helpers.bazaar.enableBazaarRefresh && BazaarHelper.BAZAAR_REFRESH.matchesKey(keyCode, scanCode)) {
+				BazaarHelper.refreshItemPrices(this.client.player);
 			}
 		}
 	}

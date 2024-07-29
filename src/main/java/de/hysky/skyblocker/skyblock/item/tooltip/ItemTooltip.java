@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class ItemTooltip {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
+    public static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
     private static final MinecraftClient client = MinecraftClient.getInstance();
     public static final GeneralConfig.ItemTooltip config = SkyblockerConfigManager.get().general.itemTooltip;
     private static volatile boolean sentNullWarning = false;
@@ -127,7 +127,7 @@ public class ItemTooltip {
             TooltipInfoType.ACCESSORIES.downloadIfEnabled(futureList);
 
             CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new)).exceptionally(e -> {
-                LOGGER.error("Encountered unknown error while downloading tooltip data", e);
+                LOGGER.error("[Skyblocker] Encountered unknown error while downloading tooltip data", e);
                 return null;
             });
 

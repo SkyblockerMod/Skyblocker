@@ -68,8 +68,8 @@ public class ItemRepository {
         }
     }
 
-    public static String getWikiLink(String internalName) {
-        NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(internalName);
+    public static String getWikiLink(String neuId) {
+        NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
         if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
             return null;
         }
@@ -86,14 +86,14 @@ public class ItemRepository {
         return null;
     }
 
-    public static List<SkyblockCraftingRecipe> getRecipes(String internalName) {
+    public static List<SkyblockCraftingRecipe> getRecipes(String neuId) {
         List<SkyblockCraftingRecipe> result = new ArrayList<>();
         for (SkyblockCraftingRecipe recipe : recipes) {
-            if (ItemUtils.getItemId(recipe.getResult()).equals(internalName)) result.add(recipe);
+            if (ItemUtils.getItemId(recipe.getResult()).equals(neuId)) result.add(recipe);
         }
         for (SkyblockCraftingRecipe recipe : recipes) {
             for (ItemStack ingredient : recipe.getGrid()) {
-                if (!ingredient.getItem().equals(Items.AIR) && ItemUtils.getItemId(ingredient).equals(internalName)) {
+                if (!ingredient.getItem().equals(Items.AIR) && ItemUtils.getItemId(ingredient).equals(neuId)) {
                     result.add(recipe);
                     break;
                 }

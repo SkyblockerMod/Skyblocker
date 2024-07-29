@@ -11,6 +11,9 @@
   "key.wikiLookup": "Wiki Lookup",
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
+  "key.bazaarLookup": "Bazaar Lookup",
+  "key.bazaarRefresh": "Bazaar Refresh",
+
 
   "text.skyblocker.open": "Open",
   "text.skyblocker.quit_config": "Changes Not Saved",
@@ -307,6 +310,14 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
+  "skyblocker.config.helpers.bazaar.enableBazaarLookup": "Enable Bazaar Lookup",
+  "skyblocker.config.helpers.bazaar.enableBazaarLookup.@Tooltip": "Searches the Bazaar for the current hovered item with the F6 key.",
+  "skyblocker.config.helpers.bazaar.bazaarLookupFailed": "Failed to find item in the Bazaar",
+  "skyblocker.config.helpers.bazaar.enableRefreshItemPrices": "Enable Bazaar Refresh",
+  "skyblocker.config.helpers.bazaar.enableRefreshItemPrices.@Tooltip": "Refresh the Bazaar prices with the Z key.",
+  "skyblocker.config.helpers.bazaar.refreshingItemPrices": "Refreshing Item Prices...",
+  "skyblocker.config.helpers.bazaar.refreshedItemPrices": "Refreshed Item Prices",
+  "skyblocker.config.helpers.bazaar.refreshItemPricesFailed": "Item Prices Refresh Failed.",
 
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
@@ -753,7 +764,7 @@
 
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the number of secrets everybody did this run!",
-  
+
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %d seconds old.",
   "skyblocker.api.cache.MISS": "This data wasn't cached!",
   "skyblocker.api.token.authFailure": "Failed to refresh your Skyblocker API token, some features may not work temporarily!",
@@ -861,7 +872,7 @@
   "skyblocker.customArmorTrims.added": "§fSet a custom armor trim for your currently held item!",
   "skyblocker.customArmorTrims.noItemUuid": "§cYou must be holding an item that has an uuid to set a custom armor trim!",
   "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)",
-  
+
   "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX color code was supplied!",
   "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armor piece!",
   "skyblocker.customAnimatedDyes.removed": "Removed this item's custom animated dye.",
@@ -873,7 +884,7 @@
   "skyblocker.quiverWarning.50Left": "You only have 50 Arrows left in your Quiver!",
   "skyblocker.quiverWarning.10Left": "You only have 10 Arrows left in your Quiver!",
   "skyblocker.quiverWarning.empty": "You don't have any more Arrows left in your Quiver!",
-  
+
   "skyblocker.itemProtection.added": "§fYour %s will now be protected! §o*your item now feels a little safer :')*",
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has an uuid to protect it!",

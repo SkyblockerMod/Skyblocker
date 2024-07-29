@@ -27,7 +27,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-
 import org.apache.http.client.HttpResponseException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -518,7 +517,7 @@ public class Utils {
         }).exceptionally(throwable -> {
             LOGGER.error("[Skyblocker] Failed to get mayor status!", throwable.getCause());
             if (mayorTickRetryAttempts < 5) {
-                int minutes = 5 * 1 << mayorTickRetryAttempts; //5, 10, 20, 40, 80 minutes
+                int minutes = 5 << mayorTickRetryAttempts; //5, 10, 20, 40, 80 minutes
                 mayorTickRetryAttempts++;
                 LOGGER.warn("[Skyblocker] Retrying in {} minutes.", minutes);
                 Scheduler.INSTANCE.schedule(Utils::tickMayorCache, minutes * 60 * 20);
