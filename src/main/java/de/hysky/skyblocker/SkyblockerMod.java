@@ -108,6 +108,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SkyblockerScreen.initClass();
         ProfileViewerScreen.initClass();
         Tips.init();
+        UpdateNotifications.init();
         NEURepoManager.init();
         //ImageRepoLoader.init();
         ItemRepository.init();
