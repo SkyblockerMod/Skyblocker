@@ -50,6 +50,9 @@ public class ChatConfig {
     public ChatFilterResult hideDicer = ChatFilterResult.PASS;
 
     @SerialEntry
+    public boolean skyblockXpMessages = true;
+
+    @SerialEntry
     public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
 
     public static class ChatRuleConfig {

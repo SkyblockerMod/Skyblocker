@@ -435,6 +435,9 @@
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
 
+  "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
+  "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
+
   "skyblocker.config.eventNotifications": "Event Notifications",
 
   "skyblocker.config.eventNotifications.criterion": "Notification Criterion",
