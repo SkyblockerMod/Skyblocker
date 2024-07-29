@@ -85,6 +85,14 @@ public class MiningCategory {
                                         newValue -> config.mining.dwarvenHud.style = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.showNumbers"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenHud.showNumbers.@Tooltip")))
+                                .binding(defaults.mining.dwarvenHud.showNumbers,
+                                        () -> config.mining.dwarvenHud.showNumbers,
+                                        newValue -> config.mining.dwarvenHud.showNumbers = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
                                 .text(Text.translatable("text.skyblocker.open"))
