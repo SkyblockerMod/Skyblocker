@@ -27,9 +27,9 @@ public class CollectionAdder extends SimpleSlotTextAdder {
         if (matcher.matches()) {
             int level = RomanNumerals.romanToDecimal(matcher.group("level"));
             if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Progress to ")) != null) {
-                return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
+                return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
             } else {
-                return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xE5B80B)));
+                return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(0xE5B80B));
             }
         }
         return List.of();

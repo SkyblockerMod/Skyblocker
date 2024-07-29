@@ -36,7 +36,7 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
             if (unlockedMatcher == null) {
                 level -= 1;
             }
-            return List.of(SlotText.bottomRight(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)));
+            return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
         }
         if (essenceAmountMatcher == null) return List.of();
         String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
@@ -45,6 +45,6 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
         NUMBER_FORMATTER_S.setMinimumFractionDigits(1);
         int amount = Integer.parseInt(essenceAmount);
 
-        return List.of(SlotText.bottomRight(Text.literal(NUMBER_FORMATTER_S.format(amount)).withColor(0xFFDDC1)));
+        return SlotText.bottomRightList(Text.literal(NUMBER_FORMATTER_S.format(amount)).withColor(0xFFDDC1));
     }
 }
