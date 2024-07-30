@@ -299,6 +299,9 @@
   "skyblocker.config.general.updateNotifications": "Update Notifications",
   "skyblocker.config.general.updateChannel": "Update Channel",
   "skyblocker.config.general.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
+  "skyblocker.config.general.updateChannel.channel.ALPHA": "Alpha",
+  "skyblocker.config.general.updateChannel.channel.BETA": "Beta",
+  "skyblocker.config.general.updateChannel.channel.RELEASE": "Release",
 
   "skyblocker.config.general.wikiLookup": "Wiki Lookup",
   "skyblocker.config.general.wikiLookup.enableWikiLookup": "Enable Wiki Lookup",

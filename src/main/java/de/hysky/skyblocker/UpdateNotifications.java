@@ -30,6 +30,7 @@ import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
@@ -200,6 +201,11 @@ public class UpdateNotifications {
 		ALPHA;
 
 		private static final Codec<Channel> CODEC = StringIdentifiable.createBasicCodec(Channel::values);
+
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.general.updateChannel.channel." + name());
+		}
 
 		@Override
 		public String asString() {
