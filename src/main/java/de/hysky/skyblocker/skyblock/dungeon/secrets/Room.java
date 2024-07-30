@@ -53,7 +53,6 @@ public class Room implements Tickable, Renderable {
     private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
     private static final String LOCKED_CHEST = "That chest is locked!";
-    private static final Vec3d DOOR_SIZE = new Vec3d(3, 4, 3);
     protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
     protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
     @NotNull
@@ -100,16 +99,6 @@ public class Room implements Tickable, Renderable {
     protected List<Renderable> renderables = new ArrayList<>();
     private BlockPos lastChestSecret;
     private long lastChestSecretTime;
-    /**
-     * Stores the next room in the dungeon. Currently only used if the next room is the fairy room.
-     */
-    @Nullable
-    protected Room nextRoom;
-    @Nullable
-    private BlockPos doorPos;
-    @Nullable
-    private Box doorBox;
-    protected boolean keyFound;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -307,14 +296,6 @@ public class Room implements Tickable, Renderable {
 
         for (Tickable tickable : tickables) {
             tickable.tick(client);
-        }
-
-        // Wither and blood door
-        if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight && doorPos == null) {
-            doorPos = DungeonMapUtils.getWitherBloodDoorPos(client.world, segments);
-            if (doorPos != null) {
-                doorBox = new Box(doorPos.getX(), doorPos.getY(), doorPos.getZ(), doorPos.getX() + DOOR_SIZE.getX(), doorPos.getY() + DOOR_SIZE.getY(), doorPos.getZ() + DOOR_SIZE.getZ());
-            }
         }
 
         // Room scanning and matching
@@ -534,19 +515,6 @@ public class Room implements Tickable, Renderable {
                 }
             }
         }
-
-        if (!SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight || doorPos == null) {
-            return;
-        }
-        float[] colorComponents = keyFound ? GREEN_COLOR_COMPONENTS : RED_COLOR_COMPONENTS;
-        switch (SkyblockerConfigManager.get().dungeons.doorHighlight.doorHighlightType) {
-            case HIGHLIGHT -> RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);
-            case OUTLINED_HIGHLIGHT -> {
-                RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);
-                RenderHelper.renderOutline(context, doorBox, colorComponents, 5, true);
-            }
-            case OUTLINE -> RenderHelper.renderOutline(context, doorBox, colorComponents, 5, true);
-        }
     }
 
     /**
@@ -653,13 +621,6 @@ public class Room implements Tickable, Renderable {
             secret.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
             return true;
         }
-    }
-
-    protected void keyFound() {
-        if (nextRoom != null && nextRoom.type == Type.FAIRY) {
-            nextRoom.keyFound = true;
-        }
-        keyFound = true;
     }
 
     public enum Type {
