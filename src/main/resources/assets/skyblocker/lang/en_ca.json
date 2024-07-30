@@ -50,5 +50,6 @@
     "skyblocker.profileviewer.inventory.armor": "Armour",
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Enable Livid Colour Bounding Box",
     "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Glow and/or Bounding use same colour",
-    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Instead of the Livid's colour a red colour is shown"
+    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Instead of the Livid's colour a red colour is shown",
+    "argument.color.rgb.incomplete": "Incomplete (expected 3 colour values)."
 }
