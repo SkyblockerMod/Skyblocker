@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -22,6 +24,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
@@ -29,13 +32,13 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChocolateFactorySolver extends SimpleContainerSolver implements TooltipAdder {
+public class ChocolateFactorySolver extends SimpleContainerSolver implements TooltipAdder, SlotTextAdder {
 	//Patterns
 	private static final Pattern CPS_PATTERN = Pattern.compile("([\\d,.]+) Chocolate per second");
 	private static final Pattern CPS_INCREASE_PATTERN = Pattern.compile("\\+([\\d,]+) Chocolate per second");
 	private static final Pattern COST_PATTERN = Pattern.compile("Cost ([\\d,]+) Chocolate");
 	private static final Pattern LEVEL_PATTERN = Pattern.compile("\\[(\\d+)]");
-	private static final Pattern COACH_LEVEL_PATTERN = Pattern.compile("Coach Jackrabbit (\\w+) ");
+	private static final Pattern COACH_LEVEL_PATTERN = Pattern.compile("Coach Jackrabbit (\\w+)");
 	private static final Pattern TOTAL_MULTIPLIER_PATTERN = Pattern.compile("Total Multiplier: ([\\d.]+)x");
 	private static final Pattern MULTIPLIER_INCREASE_PATTERN = Pattern.compile("\\+([\\d.]+)x Chocolate per second");
 	private static final Pattern CHOCOLATE_PATTERN = Pattern.compile("^([\\d,]+) Chocolate$");
@@ -184,10 +187,10 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
 	}
 
-    /**
-     * @param coachItem Represents the coach item.
-     * @return An optional containing the rabbit if the item is a coach, empty otherwise.
-     */
+	/**
+	 * @param coachItem Represents the coach item.
+	 * @return An optional containing the rabbit if the item is a coach, empty otherwise.
+	 */
 	private Optional<Rabbit> getCoach(ItemStack coachItem) {
 		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
 		String coachLore = ItemUtils.getConcatenatedLore(coachItem);
@@ -207,21 +210,15 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
 		Matcher levelMatcher = COACH_LEVEL_PATTERN.matcher(coachLore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
-		int level;
-		try {
-			level = RomanNumerals.romanToDecimal(String.valueOf(levelMatcher.find()));
-		} catch (IllegalArgumentException e) {
-			level = 0;
+		int level = 0;
+		if (levelMatcher.find()) {
+			level = RomanNumerals.romanToDecimal(levelMatcher.group(1));
 		}
 		if (cost.isEmpty()) return Optional.empty();
 		return Optional.of(new Rabbit(totalCps / totalCpsMultiplier * (nextCpsMultiplier.getAsDouble() - currentCpsMultiplier.getAsDouble()), cost.getAsLong(), COACH_SLOT, level));
 	}
 
-	public static List<Rabbit> getRabbits() {
-		return Collections.unmodifiableList(cpsIncreaseFactors);
-	}
-
-	private Optional<Rabbit> getRabbit(ItemStack item, int slot) {
+    private Optional<Rabbit> getRabbit(ItemStack item, int slot) {
 		String lore = ItemUtils.getConcatenatedLore(item);
 		Matcher cpsMatcher = CPS_INCREASE_PATTERN.matcher(lore);
 		OptionalInt currentCps = RegexUtils.getIntFromMatcher(cpsMatcher);
@@ -393,6 +390,20 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	@Override
 	public int getPriority() {
 		return 0; //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
+	}
+
+	// ======== Slot Text Adder ========
+
+    @Override
+    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+        for (ChocolateFactorySolver.Rabbit rabbit : cpsIncreaseFactors) {
+			if (slotId == rabbit.slot()) {
+				// Use SlotText#topLeft for positioning and add color to the text.
+				Text levelText = Text.literal(String.valueOf(rabbit.level())).formatted(Formatting.GOLD);
+				return List.of(SlotText.topLeft(levelText));
+			}
+		}
+		return List.of(); // Return an empty list if the slot does not correspond to a rabbit slot.
 	}
 
 	// ======== Reset and Other Classes ========
