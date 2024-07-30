@@ -51,18 +51,24 @@ public class ChestValue {
 				String titleString = title.getString();
 				if (DUNGEON_CHESTS.contains(titleString)) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
-                        Text dungeonChestProfit = getDungeonChestProfit(genericContainerScreen.getScreenHandler());
-                        if (dungeonChestProfit != null) addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
+						ScreenEvents.afterTick(screen).register(ignored -> {
+							Text dungeonChestProfit = getDungeonChestProfit(genericContainerScreen.getScreenHandler());
+							if (dungeonChestProfit != null)
+								addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
+						});
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
 					boolean minion = MINION_PATTERN.matcher(title.getString().trim()).find();
 					Screens.getButtons(screen).add(ButtonWidget
 							.builder(Text.literal("$"), buttonWidget -> {
 								Screens.getButtons(screen).remove(buttonWidget);
+								ScreenEvents.afterTick(screen).register(ignored -> {
 									Text chestValue = getChestValue(genericContainerScreen.getScreenHandler(), minion);
-                                    if (chestValue != null) {
-                                        addValueToContainer(genericContainerScreen, chestValue, title);
-                                    }
+									if (chestValue != null) {
+										addValueToContainer(genericContainerScreen, chestValue, title);
+									}
+								});
+
 							})
 							.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
 							.tooltip(minion ? Tooltip.of(Text.translatable("skyblocker.config.general.minionValue.@Tooltip")) : Tooltip.of(Text.translatable("skyblocker.config.general.chestValue.@Tooltip")))
@@ -71,24 +77,6 @@ public class ChestValue {
 				}
 			}
 		});
-	}
-
-	private static void addValueToContainer(GenericContainerScreen genericContainerScreen, Text chestValue, Text title) {
-		int backgroundWidth = ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth();
-		int y = ((HandledScreenAccessor) genericContainerScreen).getY();
-		int x = ((HandledScreenAccessor) genericContainerScreen).getX();
-		((ScreenAccessor) genericContainerScreen).setTitle(Text.empty());
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int chestValueWidth = Math.min(textRenderer.getWidth(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.getWidth(title)));
-
-		TextWidget chestValueWidget = new ScrollingTextWidget(chestValueWidth, textRenderer.fontHeight, chestValue, textRenderer);
-		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestValueWidget);
-
-		ScrollingTextWidget chestTitleWidget = new ScrollingTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.fontHeight, title.copy().fillStyle(Style.EMPTY.withColor(4210752)), textRenderer);
-		chestTitleWidget.shadow = false;
-		chestTitleWidget.setPosition(x + 8, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
 	}
 
 	private static @Nullable Text getDungeonChestProfit(GenericContainerScreenHandler handler) {
@@ -245,13 +233,30 @@ public class ChestValue {
 		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : config.color);
 	}
 
+	private static void addValueToContainer(GenericContainerScreen genericContainerScreen, Text chestValue, Text title) {
+		Screens.getButtons(genericContainerScreen).removeIf(clickableWidget -> clickableWidget instanceof ChestValueTextWidget);
+		int backgroundWidth = ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth();
+		int y = ((HandledScreenAccessor) genericContainerScreen).getY();
+		int x = ((HandledScreenAccessor) genericContainerScreen).getX();
+		((ScreenAccessor) genericContainerScreen).setTitle(Text.empty());
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		int chestValueWidth = Math.min(textRenderer.getWidth(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.getWidth(title)));
 
+		TextWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, textRenderer.fontHeight, chestValue, textRenderer);
+		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);
+		Screens.getButtons(genericContainerScreen).add(chestValueWidget);
 
-	private static class ScrollingTextWidget extends TextWidget {
+		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.fontHeight, title.copy().fillStyle(Style.EMPTY.withColor(4210752)), textRenderer);
+		chestTitleWidget.shadow = false;
+		chestTitleWidget.setPosition(x + 8, y + 6);
+		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
+	}
+
+	private static class ChestValueTextWidget extends TextWidget {
 
 		public boolean shadow = true;
 
-		public ScrollingTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
+		public ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
 			super(width, height, message, textRenderer);
 			alignLeft();
 		}
@@ -270,11 +275,11 @@ public class ChestValue {
 			if (i > k) {
 				int l = i - k;
 				double d = (double) Util.getMeasuringTimeMs() / 600.0;
-				double e = Math.max((double)l * 0.5, 3.0);
+				double e = Math.max((double) l * 0.5, 3.0);
 				double f = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * d / e)) / 2.0 + 0.5;
 				double g = MathHelper.lerp(f, 0.0, l);
 				context.enableScissor(startX, getY(), endX, getY() + textRenderer.fontHeight);
-				context.drawText(textRenderer, text, startX - (int)g, getY(), -1, shadow);
+				context.drawText(textRenderer, text, startX - (int) g, getY(), -1, shadow);
 				context.disableScissor();
 			} else {
 				context.drawText(textRenderer, text, startX, getY(), -1, shadow);
