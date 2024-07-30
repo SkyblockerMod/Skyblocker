@@ -28,7 +28,7 @@ public class ItemTooltip {
     /**
      * @deprecated Use {@link ItemUtils#getNeuId(ItemStack)} instead
      */
-    @Deprecated(since = "1.22")
+    @Deprecated(since = "1.22.0")
     public static String getNeuName(String id, String apiId) {
         LOGGER.error("[Skyblocker Item Tooltip] ItemTooltip.getNeuName is deprecated and will not work. Use ItemStack#getNeuName instead.");
         return "";

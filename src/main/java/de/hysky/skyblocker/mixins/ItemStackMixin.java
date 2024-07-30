@@ -136,6 +136,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	@NotNull
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
-        return neuName = ItemUtils.getNeuId((ItemStack) (Object) this);
+		return neuName = ItemUtils.getNeuId((ItemStack) (Object) this);
 	}
 }

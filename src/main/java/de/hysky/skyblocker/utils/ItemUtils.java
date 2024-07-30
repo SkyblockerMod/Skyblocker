@@ -138,7 +138,7 @@ public final class ItemUtils {
                     NbtCompound enchants = customData.getCompound("enchantments");
                     Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
                     String enchant = firstEnchant.orElse("");
-                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ROOT) + "_" + enchants.getInt(enchant);
+                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
                 }
             }
 
@@ -155,7 +155,7 @@ public final class ItemUtils {
                 String splash = customData.contains("splash") ? "_SPLASH" : "";
                 if (customData.contains("potion") && customData.contains("potion_level")) {
                     return (customData.getString("potion") + "_" + id + "_" + customData.getInt("potion_level")
-                            + enhanced + extended + splash).toUpperCase(Locale.ROOT);
+                            + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
                 }
             }
 
@@ -163,7 +163,7 @@ public final class ItemUtils {
                 if (customData.contains("runes")) {
                     NbtCompound runes = customData.getCompound("runes");
                     String rune = runes.getKeys().stream().findFirst().orElse("");
-                    return rune.toUpperCase(Locale.ROOT) + "_RUNE_" + runes.getInt(rune);
+                    return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
                 }
             }
 
@@ -171,7 +171,7 @@ public final class ItemUtils {
                 if (customData.contains("attributes")) {
                     NbtCompound shards = customData.getCompound("attributes");
                     String shard = shards.getKeys().stream().findFirst().orElse("");
-                    return id + "-" + shard.toUpperCase(Locale.ROOT) + "_" + shards.getInt(shard);
+                    return id + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
                 }
             }
 
@@ -180,11 +180,11 @@ public final class ItemUtils {
             }
 
             case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
-                return id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ROOT);
+                return id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
             }
 
             case "PARTY_HAT_SLOTH" -> {
-                return id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ROOT);
+                return id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
             }
 
             case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
@@ -240,7 +240,7 @@ public final class ItemUtils {
             case "ENCHANTED_BOOK" -> {
                 NbtCompound enchantments = customData.getCompound("enchantments");
                 String enchant = enchantments.getKeys().stream().findFirst().orElse("");
-                yield enchant.toUpperCase(Locale.ROOT) + ";" + enchantments.getInt(enchant);
+                yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getInt(enchant);
             }
             case "PET" -> {
                 PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
@@ -249,13 +249,13 @@ public final class ItemUtils {
             case "RUNE" -> {
                 NbtCompound runes = customData.getCompound("runes");
                 String rune = runes.getKeys().stream().findFirst().orElse("");
-                yield rune.toUpperCase(Locale.ROOT) + "_RUNE;" + runes.getInt(rune);
+                yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getInt(rune);
             }
-            case "POTION" -> "POTION_" + customData.getString("potion").toUpperCase(Locale.ROOT) + ";" + customData.getInt("potion_level");
+            case "POTION" -> "POTION_" + customData.getString("potion").toUpperCase(Locale.ENGLISH) + ";" + customData.getInt("potion_level");
             case "ATTRIBUTE_SHARD" -> "ATTRIBUTE_SHARD";
-            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024" -> id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ROOT);
-            case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color").toUpperCase(Locale.ROOT) + "_ANIMATED";
-            case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ROOT);
+            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024" -> id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
+            case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
+            case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
             default -> id.replace(":", "-");
         };
     }
