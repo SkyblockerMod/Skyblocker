@@ -208,9 +208,9 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
-		Matcher levelMatcher = COACH_LEVEL_PATTERN.matcher(coachLore);
+		Matcher levelMatcher = COACH_LEVEL_PATTERN.matcher(coachItem.getName().getString());
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
-		int level = 0;
+		int level = -1;
 		if (levelMatcher.find()) {
 			level = RomanNumerals.romanToDecimal(levelMatcher.group(1));
 		}
@@ -232,8 +232,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
 		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		Matcher levelMatcher = LEVEL_PATTERN.matcher(lore);
-		int level = RegexUtils.getIntFromMatcher(levelMatcher).orElse(0);
-		level--;
+		int level = RegexUtils.getIntFromMatcher(levelMatcher).orElse(0) - 1;
 		if (cost.isEmpty()) return Optional.empty();
 		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt()) * (totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsLong(), slot, level));
 	}
