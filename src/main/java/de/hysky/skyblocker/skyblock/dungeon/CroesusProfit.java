@@ -105,12 +105,12 @@ public class CroesusProfit extends SimpleContainerSolver {
 
 
     private double getItemPrice(String itemDisplayName) {
-        return ItemUtils.getItemPrice(dungeonDropsNameToId.get(itemDisplayName)).leftDouble();
+        return ItemUtils.getItemPrice(dungeonDropsNameToApiId.get(itemDisplayName)).leftDouble();
     }
 
 
     // I did a thing :(
-    private final Map<String, String> dungeonDropsNameToId = Util.make(new HashMap<>(), map -> {
+    private final Map<String, String> dungeonDropsNameToApiId = Util.make(new HashMap<>(), map -> {
     	map.put("Enchanted Book (Ultimate Jerry I)", "ENCHANTMENT_ULTIMATE_JERRY_1");    // ultimate books start
     	map.put("Enchanted Book (Ultimate Jerry II)", "ENCHANTMENT_ULTIMATE_JERRY_2");
     	map.put("Enchanted Book (Ultimate Jerry III)", "ENCHANTMENT_ULTIMATE_JERRY_3");
