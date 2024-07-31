@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
@@ -24,8 +23,6 @@ public class CrystalsHudWidget extends HudWidget {
     private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
 
     public static final CrystalsHudWidget INSTANCE = new CrystalsHudWidget();
-
-    public static boolean visible = false;
 
     public CrystalsHudWidget() {
         super("hud_crystals");
@@ -66,18 +63,13 @@ public class CrystalsHudWidget extends HudWidget {
         return location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.crystalsHud.enabled;
     }
 
-    /**
-     * Works out if the crystals map should be rendered and sets {@link CrystalsHudWidget#visible} accordingly.
-     *
-     */
     public void update() {
-        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) {
-            visible = false;
-            return;
-        }
+        if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) return;
+
 
         //get if the player is in the crystals
-        visible = Utils.isInCrystalHollows();
+        float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
+        w = h = (int) (62 * scale);
     }
 
     @Override

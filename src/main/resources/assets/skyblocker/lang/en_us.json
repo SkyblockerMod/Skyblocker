@@ -797,7 +797,7 @@
 
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
 
-  "skyblocker.config.uiAndVisuals.tabHud": "Fancy tab HUD (Temporarily disabled outside dungeons)",
+  "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "Player Name Sorting Method",

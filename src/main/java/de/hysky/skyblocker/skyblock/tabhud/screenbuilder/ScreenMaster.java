@@ -8,11 +8,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
@@ -23,8 +21,6 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -64,6 +60,7 @@ public class ScreenMaster {
     /**
      * Top level render method.
      * Calls the appropriate ScreenBuilder with the screen's dimensions
+     * Called in PlayerListHudMixin
      */
     public static void render(DrawContext context, int w, int h) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -157,19 +154,6 @@ public class ScreenMaster {
     @Init
     public static void init() {
         SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
-
-        HudRenderEvents.BEFORE_CHAT.register((context, tickDelta) -> {
-            if (!Utils.isOnSkyblock()) return;
-            MinecraftClient client = MinecraftClient.getInstance();
-            if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
-            Window window = client.getWindow();
-            float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-            MatrixStack matrices = context.getMatrices();
-            matrices.push();
-            matrices.scale(scale, scale, 1.F);
-            render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale));
-            matrices.pop();
-        });
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             try {

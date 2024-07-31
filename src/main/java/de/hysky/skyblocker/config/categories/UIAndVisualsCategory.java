@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.*;
@@ -210,25 +209,6 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build()
                         )
-                        // TODO Decide what to do with these options
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.plainPlayerNames"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.plainPlayerNames.@Tooltip")))
-                                .binding(defaults.uiAndVisuals.tabHud.plainPlayerNames,
-                                        () -> config.uiAndVisuals.tabHud.plainPlayerNames,
-                                        newValue -> config.uiAndVisuals.tabHud.plainPlayerNames = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .available(false)
-                                .build())
-                        .option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip")))
-                                .binding(defaults.uiAndVisuals.tabHud.nameSorting,
-                                        () -> config.uiAndVisuals.tabHud.nameSorting,
-                                        newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .available(false)
-                                .build())
                         .build())
 
                 // Fancy Auction House
