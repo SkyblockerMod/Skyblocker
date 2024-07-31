@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
 import java.util.function.Supplier;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -32,18 +30,17 @@ public class DangerWarning {
 
 	private static void updateIndicator() {
 		if (Utils.isInKuudra() && SkyblockerConfigManager.get().crimsonIsle.kuudra.dangerWarning && CLIENT.player != null && CLIENT.world != null) {
-			BlockPos under = CLIENT.player.getBlockPos().down();
-			BlockPos under2 = CLIENT.player.getBlockPos().down(2);
-			BlockPos under3 = CLIENT.player.getBlockPos().down(3);
-			BlockPos under4 = CLIENT.player.getBlockPos().down(4);
-			BlockPos under5 = CLIENT.player.getBlockPos().down(5);
+			for (int i = 1; i <= 5; i++) {
+				BlockPos under = CLIENT.player.getBlockPos().down(i);
+				Title title = getDangerTitle(under);
 
-			Title title = ObjectUtils.firstNonNull(getDangerTitle(under), getDangerTitle(under2), getDangerTitle(under3), getDangerTitle(under4), getDangerTitle(under5));
+				if (title != null) {
+					RenderHelper.displayInTitleContainerAndPlaySound(title);
 
-			if (title != null) {
-				RenderHelper.displayInTitleContainerAndPlaySound(title);
-			} else {
-				TitleContainer.removeTitle(TITLE);
+					return;
+				} else if (i == 5) { //Prevent removing the title prematurely
+					TitleContainer.removeTitle(TITLE);
+				}
 			}
 		}
 	}

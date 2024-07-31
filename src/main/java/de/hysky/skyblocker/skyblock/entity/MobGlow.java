@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.entity;
 import com.google.common.collect.Streams;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.skyblock.crimson.kuudra.KuudraGlow;
+import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -70,7 +70,7 @@ public class MobGlow {
 				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
 
 				//Kuudra
-				case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> KuudraGlow.shouldGlow(magmaCube, name);
+				case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> SkyblockerConfigManager.get().crimsonIsle.kuudra.kuudraGlow && magmaCube.getSize() == Kuudra.KUUDRA_MAGMA_CUBE_SIZE;
 
 				default -> false;
 			};
