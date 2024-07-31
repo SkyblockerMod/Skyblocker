@@ -26,6 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,34 +167,21 @@ public class ChestValue {
 		try {
 			double value = 0;
 			boolean hasIncompleteData = false;
-			List<Slot> slots;
-			if (minion) {
-				slots = handler.slots.subList(0, handler.getRows() * 9).stream().filter(slot -> {
-					int x = slot.id % 9;
-					int y = slot.id / 9;
-					return x > 2 && x < 8 && y > 1 && y < 5;
-				}).toList();
-				ItemStack stack;
-				String coinsLine;
-				if (handler.slots.size() > 28 &&
-						(stack = handler.slots.get(28).getStack()).isOf(Items.HOPPER) &&
-						(coinsLine = ItemUtils.getLoreLineIf(stack, s -> s.contains("Held Coins:"))) != null) {
+			List<Slot> slots = minion ? getMinionSlots(handler) : handler.slots.subList(0, handler.getRows() * 9);
 
+			for (Slot slot : slots) {
+				ItemStack stack = slot.getStack();
+				if (stack.isEmpty()) {
+					continue;
+				}
+				String coinsLine;
+				if (minion && slot.id == 28 && stack.isOf(Items.HOPPER) && (coinsLine = ItemUtils.getLoreLineIf(stack, s -> s.contains("Held Coins:"))) != null) {
 					String source = coinsLine.split(":")[1];
 					try {
 						value += DecimalFormat.getNumberInstance(java.util.Locale.US).parse(source.trim()).doubleValue();
 					} catch (ParseException e) {
 						LOGGER.warn("[Skyblocker] Failed to parse {}", source);
 					}
-
-				}
-			} else {
-				slots = handler.slots.subList(0, handler.getRows() * 9);
-			}
-
-			for (Slot slot : slots) {
-				ItemStack stack = slot.getStack();
-				if (stack.isEmpty()) {
 					continue;
 				}
 
@@ -214,6 +202,14 @@ public class ChestValue {
 		}
 
 		return null;
+	}
+
+	private static @NotNull List<Slot> getMinionSlots(GenericContainerScreenHandler handler) {
+		return handler.slots.subList(0, handler.getRows() * 9).stream().filter(slot -> {
+			int x = slot.id % 9;
+			int y = slot.id / 9;
+			return x > 2 && x < 8 && y > 1 && y < 5 || slot.id == 28;
+		}).toList();
 	}
 
 	/**
