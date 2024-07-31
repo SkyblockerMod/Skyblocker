@@ -13,7 +13,6 @@ import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,8 +22,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 @Environment(EnvType.CLIENT)
 @Mixin(PlayerListHud.class)
 public class PlayerListHudMixin {
-    @Shadow
-    private Text footer;
 
     @Inject(at = @At("HEAD"), method = "render", cancellable = true)
     public void skyblocker$renderTabHud(CallbackInfo info, @Local(argsOnly = true) DrawContext context, @Local(argsOnly = true) int w) {
