@@ -23,6 +23,7 @@ import java.util.List;
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(), // Applies before anything else
+			new TrueHexDisplay(),
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
