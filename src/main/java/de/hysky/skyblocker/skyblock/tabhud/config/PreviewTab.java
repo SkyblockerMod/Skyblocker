@@ -117,6 +117,8 @@ public class PreviewTab implements Tab {
         scoreboard.getOrCreateScore(createHolder(Text.literal("this should be")), placeHolderObjective).setScore(-8);
         scoreboard.getOrCreateScore(createHolder(Text.literal("enough lines bye")), placeHolderObjective).setScore(-9);
         scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
+
+        ScreenMaster.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
     }
 
     private ScoreHolder createHolder(Text name) {
