@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils;
 
 public class RomanNumerals {
-	private RomanNumerals() {
-	}
+    private RomanNumerals() {}
+
 	private static int getDecimalValue(char romanChar) {
 		return switch (romanChar) {
 			case 'I' -> 1;
@@ -35,7 +35,8 @@ public class RomanNumerals {
 	 * Converts a roman numeral to a decimal number.
 	 *
 	 * @param romanNumeral The roman numeral to convert.
-	 * @return The decimal number, or 0 if the roman numeral string has non-roman characters in it, or if the string is empty or null.
+	 * @return The decimal number, or 0 if the string is empty or null.
+     * @throws IllegalArgumentException If the roman numeral is malformed.
 	 */
 	public static int romanToDecimal(String romanNumeral) {
 		if (romanNumeral == null || romanNumeral.isEmpty()) return 0;
@@ -45,7 +46,7 @@ public class RomanNumerals {
 		for (int i = romanNumeral.length() - 1; i >= 0; i--) {
 			char ch = romanNumeral.charAt(i);
 			int number = getDecimalValue(ch);
-			if (number == 0) return 0; //Malformed roman numeral
+			if (number == 0) throw new IllegalArgumentException("Malformed roman numeral: " + romanNumeral);
 			decimal = number >= lastNumber ? decimal + number : decimal - number;
 			lastNumber = number;
 		}
