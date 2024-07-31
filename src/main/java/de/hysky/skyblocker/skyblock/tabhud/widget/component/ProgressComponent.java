@@ -48,6 +48,7 @@ public class ProgressComponent extends Component {
     public ProgressComponent(ItemStack ico, Text text, float pcnt, int color) {
         this(ico, text, Text.of(pcnt + "%"), pcnt, color);
     }
+
     public ProgressComponent(ItemStack ico, Text text, float pcnt, int max, int color) {
         this(ico, text, Text.of(Math.round(max * (pcnt/100)) + "/" + max), pcnt, color);
     }

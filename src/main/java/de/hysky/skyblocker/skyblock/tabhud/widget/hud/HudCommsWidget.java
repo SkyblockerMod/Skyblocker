@@ -58,13 +58,13 @@ public class HudCommsWidget extends Widget {
             Component comp;
             var max = getCommissionMax(comm.commission());
             if (isFancy) {
-                if (SkyblockerConfigManager.get().mining.dwarvenHud.showNumbers && max != null) {
+                if (SkyblockerConfigManager.get().mining.dwarvenHud.showNumbers && max != 0) {
                     comp = new ProgressComponent(Ico.BOOK, c, p, max, Colors.pcntToCol(p));
                 } else {
                     comp = new ProgressComponent(Ico.BOOK, c, p, Colors.pcntToCol(p));
                 }
             } else {
-                if (SkyblockerConfigManager.get().mining.dwarvenHud.showNumbers && max != null) {
+                if (SkyblockerConfigManager.get().mining.dwarvenHud.showNumbers && max != 0) {
                     comp = new PlainTextComponent(
                             Text.literal(comm.commission() + ": ").append(
                                     Text.literal(p == 100f ? "DONE" : Math.round(max * (p / 100)) + "/" + max).withColor(Colors.pcntToCol(p))
@@ -88,7 +88,7 @@ public class HudCommsWidget extends Widget {
      * @param commission the string name of the commission
      * @return the actions needed to complete the commission
      */
-    private static Integer getCommissionMax(String commission) {
+    private static int getCommissionMax(String commission) {
         switch (commission) {
             case "Mithril Miner" -> {
                 return 350;
@@ -143,7 +143,7 @@ public class HudCommsWidget extends Widget {
                 return 1500;
             }
             default -> {
-                return null;
+                return 0;
             }
 
         }
