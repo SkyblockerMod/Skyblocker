@@ -19,8 +19,9 @@ public class NpcPriceTooltip extends TooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		// NPC prices seem to use the Skyblock item id, not the Skyblock api id.
 		final String internalID = stack.getSkyblockId();
-		if (internalID != null && TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+		if (TooltipInfoType.NPC.isTooltipEnabledAndHasOrNullWarning(internalID)) {
 			int amount;
 			if (lines.get(1).getString().endsWith("Sack")) {
 				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V

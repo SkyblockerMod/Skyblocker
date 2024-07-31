@@ -9,8 +9,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,7 +17,7 @@ public class PrehistoricEggAdder extends SlotTextAdder {
 	@Override
 	public @NotNull List<SlotText> getText(Slot slot) {
 		final ItemStack stack = slot.getStack();
-		if (!stack.isOf(Items.PLAYER_HEAD) || !StringUtils.equals(stack.getSkyblockId(), "PREHISTORIC_EGG")) return List.of();
+		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
 		NbtCompound nbt = ItemUtils.getCustomData(stack);
 		if (!nbt.contains("blocks_walked", NbtElement.INT_TYPE)) return List.of();
 		int walked = nbt.getInt("blocks_walked");

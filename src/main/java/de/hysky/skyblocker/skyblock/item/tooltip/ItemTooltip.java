@@ -3,12 +3,13 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,37 +25,12 @@ public class ItemTooltip {
     private static volatile boolean sentNullWarning = false;
 
     /**
-     * Gets the NEU id from an id and an api id.
-     * @param id the id of the skyblock item, gotten from {@link de.hysky.skyblocker.utils.ItemUtils#getItemId(net.minecraft.item.ItemStack) ItemUtils#getItemId(ItemStack)} or {@link net.minecraft.item.ItemStack#getSkyblockId() ItemStack#getSkyblockId()}
-     * @param apiId the api id of the skyblock item, matching the id of the item on the Skyblocker api, gotten from {@link net.minecraft.item.ItemStack#getSkyblockApiId() ItemStack#getSkyblockApiId()}
-     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link net.minecraft.item.ItemStack#getNeuName() ItemStack#getNeuName()},
-     * or an empty string if either id or apiId is null
+     * @deprecated Use {@link ItemUtils#getNeuId(ItemStack)} instead
      */
-    @NotNull
+    @Deprecated(since = "1.22.0")
     public static String getNeuName(String id, String apiId) {
-        if (id == null || apiId == null) return "";
-        switch (id) {
-            case "PET" -> {
-                apiId = apiId.replaceAll("LVL_\\d*_", "");
-                String[] parts = apiId.split("_");
-                String type = parts[0];
-                apiId = apiId.replaceAll(type + "_", "");
-                apiId = apiId + "-" + type;
-                apiId = apiId.replace("UNCOMMON", "1")
-                        .replace("COMMON", "0")
-                        .replace("RARE", "2")
-                        .replace("EPIC", "3")
-                        .replace("LEGENDARY", "4")
-                        .replace("MYTHIC", "5")
-                        .replace("-", ";");
-            }
-            case "RUNE" -> apiId = apiId.replaceAll("_(?!.*_)", ";");
-            case "POTION" -> apiId = "";
-            case "ATTRIBUTE_SHARD" ->
-                    apiId = id + "+" + apiId.replace("SHARD-", "").replaceAll("_(?!.*_)", ";");
-            default -> apiId = apiId.replace(":", "-");
-        }
-        return apiId;
+        LOGGER.error("[Skyblocker Item Tooltip] ItemTooltip.getNeuName is deprecated and will not work. Use ItemStack#getNeuName instead.");
+        return "";
     }
 
     public static void nullWarning() {
