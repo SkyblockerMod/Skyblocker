@@ -35,8 +35,7 @@ public class RomanNumerals {
 	 * Converts a roman numeral to a decimal number.
 	 *
 	 * @param romanNumeral The roman numeral to convert.
-	 * @return The decimal number, or 0 if the string is empty or null.
-     * @throws IllegalArgumentException If the roman numeral is malformed.
+	 * @return The decimal number, or 0 if the string is empty, null, or malformed.
 	 */
 	public static int romanToDecimal(String romanNumeral) {
 		if (romanNumeral == null || romanNumeral.isEmpty()) return 0;
@@ -46,7 +45,7 @@ public class RomanNumerals {
 		for (int i = romanNumeral.length() - 1; i >= 0; i--) {
 			char ch = romanNumeral.charAt(i);
 			int number = getDecimalValue(ch);
-			if (number == 0) throw new IllegalArgumentException("Malformed roman numeral: " + romanNumeral);
+			if (number == 0) return 0; //Malformed roman numeral
 			decimal = number >= lastNumber ? decimal + number : decimal - number;
 			lastNumber = number;
 		}
