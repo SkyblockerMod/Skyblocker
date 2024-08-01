@@ -340,7 +340,7 @@
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
   "skyblocker.config.helpers.bazaar.enableBazaarLookup": "Enable Bazaar Lookup",
   "skyblocker.config.helpers.bazaar.enableBazaarLookup.@Tooltip": "Searches the Bazaar for the current hovered item with the F6 key.",
-  "skyblocker.config.helpers.bazaar.bazaarLookupFailed": "Failed to find item in the Bazaar",
+  "skyblocker.config.helpers.bazaar.bazaarLookupFailed": "Failed to find item in the Bazaar / Auction House",
   "skyblocker.config.helpers.bazaar.enableRefreshItemPrices": "Enable Bazaar Refresh",
   "skyblocker.config.helpers.bazaar.enableRefreshItemPrices.@Tooltip": "Refresh the Bazaar prices with the Z key.",
   "skyblocker.config.helpers.bazaar.refreshingItemPrices": "Refreshing Item Prices...",

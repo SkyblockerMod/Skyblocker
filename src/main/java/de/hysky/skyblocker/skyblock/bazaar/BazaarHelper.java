@@ -7,6 +7,8 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.BazaarPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LBinTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -106,10 +108,17 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 
 	// ======== Other Bazaar Features ========
 
+	// TODO: Come up with another name? due to supporting AH searching
+	// TODO: Add Cookie Buff reqirement somewhere in the config screen?
 	public static void bazaarLookup(ClientPlayerEntity player, @NotNull Slot slot) {
-        ItemStack stack = ItemRepository.getItemStack(slot.getStack().getNeuName());
+		ItemStack stack = ItemRepository.getItemStack(slot.getStack().getNeuName());
 		if (stack != null && !stack.isEmpty()) {
-			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + Formatting.strip(stack.getName().getString()));
+			String itemName = Formatting.strip(stack.getName().getString());
+			if (BazaarPriceTooltip.bazaarExist) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName);
+			} else if (LBinTooltip.lbinExist) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName);
+			}
 		} else {
 			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.bazaarLookupFailed")));
 		}
