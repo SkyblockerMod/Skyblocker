@@ -62,7 +62,8 @@ public class FarmingHudWidget extends Widget {
         if (client.player == null) return;
         ItemStack farmingToolStack = client.player.getMainHandStack();
         if (farmingToolStack == null) return;
-        String cropItemId = FARMING_TOOLS.get(ItemUtils.getItemId(farmingToolStack));
+        String itemId = ItemUtils.getItemId(farmingToolStack);
+        String cropItemId = FARMING_TOOLS.containsKey(itemId) ? FARMING_TOOLS.get(itemId) : "";
         ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 
         String counterText = FarmingHud.counterText();
