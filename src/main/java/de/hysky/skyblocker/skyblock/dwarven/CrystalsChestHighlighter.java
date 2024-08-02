@@ -138,7 +138,7 @@ public class CrystalsChestHighlighter {
         //render chest outline
         float[] color = SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getComponents(new float[]{0, 0, 0, 0});
         for (BlockPos chest : activeChests) {
-            RenderHelper.renderOutline(context, Box.of(chest.toCenterPos().subtract(0, 0.0625, 0), 0.875, 0.875, 0.875), color, color[3], 3, false);
+            RenderHelper.renderOutline(context, Box.of(chest.toCenterPos().subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
         }
 
         //render lock picking if player is looking at chest that is in the active chests list
