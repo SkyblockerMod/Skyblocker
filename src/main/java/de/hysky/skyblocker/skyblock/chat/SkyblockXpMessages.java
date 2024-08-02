@@ -19,7 +19,6 @@ public class SkyblockXpMessages {
 
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(SkyblockXpMessages::onMessage);
-		Scheduler.INSTANCE.scheduleCyclic(RECENT_MESSAGES::clear, 20 * 60);
 	}
 
 	private static void onMessage(Text text, boolean overlay) {
@@ -31,6 +30,7 @@ public class SkyblockXpMessages {
 			if (matcher.find() && !RECENT_MESSAGES.contains(hash)) {
 				CLIENT.player.sendMessage(Constants.PREFIX.get().append(matcher.group()));
 				RECENT_MESSAGES.add(hash);
+				Scheduler.INSTANCE.schedule(() -> RECENT_MESSAGES.remove(hash), 20 * 10);
 			}
 		}
 	}
