@@ -65,13 +65,11 @@ public class QuickNavButton extends ClickableWidget {
         this.icon = icon;
         this.toggleTime = 0;
         if (tooltip == null || tooltip.isEmpty()) return;
-        if (tooltip.startsWith("{") || tooltip.startsWith("[")) {
-            TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class))
-                    .ifError(pairError -> QuickNav.LOGGER.error("[Skyblocker] Failed to parse quicknav error for index {}. {}", index, pairError.message()))
-                    .ifSuccess(textJsonElementPair -> setTooltip(Tooltip.of(textJsonElementPair.getFirst())));
-
-
-        } else setTooltip(Tooltip.of(Text.literal(tooltip)));
+        try {
+            setTooltip(Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
+        } catch (Exception e) {
+            setTooltip(Tooltip.of(Text.literal(tooltip)));
+        }
         setTooltipDelay(Duration.ofMillis(100));
     }
 
