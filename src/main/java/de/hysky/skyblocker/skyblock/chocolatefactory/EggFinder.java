@@ -61,6 +61,7 @@ public class EggFinder {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder || client.player == null) return;
+			if (!isLocationCorrect || SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 			for (EggType type : EggType.entries) {
 				Egg egg = type.egg;
 				if (egg != null && !egg.seen && client.player.canSee(egg.entity)) {

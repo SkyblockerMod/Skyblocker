@@ -25,6 +25,37 @@ public class SkyblockTime {
 	public static final double SEASON_LENGTH = MONTH_LENGTH * 3;
 	public static final double YEAR_LENGTH = SEASON_LENGTH * 4;
 
+	public static final Event<OnHourChange> HOUR_CHANGE = EventFactory.createArrayBacked(OnHourChange.class, listeners -> hour -> {
+		for (OnHourChange listener : listeners) {
+			listener.onHourChange(hour);
+		}
+	});
+	public static final Event<OnDayChange> DAY_CHANGE = EventFactory.createArrayBacked(OnDayChange.class, listeners -> day -> {
+		for (OnDayChange listener : listeners) {
+			listener.onDayChange(day);
+		}
+	});
+	public static final Event<OnMonthChange> MONTH_CHANGE = EventFactory.createArrayBacked(OnMonthChange.class, listeners -> month -> {
+		for (OnMonthChange listener : listeners) {
+			listener.onMonthChange(month);
+		}
+	});
+	public static final Event<OnSeasonChange> SEASON_CHANGE = EventFactory.createArrayBacked(OnSeasonChange.class, listeners -> season -> {
+		for (OnSeasonChange listener : listeners) {
+			listener.onSeasonChange(season);
+		}
+	});
+	public static final Event<OnYearChange> YEAR_CHANGE = EventFactory.createArrayBacked(OnYearChange.class, listeners -> year -> {
+		for (OnYearChange listener : listeners) {
+			listener.onYearChange(year);
+		}
+	});
+	public static final Event<OnTimeUpdate> TIME_UPDATE = EventFactory.createArrayBacked(OnTimeUpdate.class, listeners -> (year, season, month, day, hour) -> {
+		for (OnTimeUpdate listener : listeners) {
+			listener.onTimeUpdate(year, season, month, day, hour);
+		}
+	});
+
 	private SkyblockTime() {
 	}
 
@@ -123,40 +154,4 @@ public class SkyblockTime {
 	public interface OnTimeUpdate {
 		void onTimeUpdate(int year, Season season, Month month, int day, int hour);
 	}
-
-	public static final Event<OnHourChange> HOUR_CHANGE = EventFactory.createArrayBacked(OnHourChange.class, listeners -> hour -> {
-		for (OnHourChange listener : listeners) {
-			listener.onHourChange(hour);
-		}
-	});
-
-	public static final Event<OnDayChange> DAY_CHANGE = EventFactory.createArrayBacked(OnDayChange.class, listeners -> day -> {
-		for (OnDayChange listener : listeners) {
-			listener.onDayChange(day);
-		}
-	});
-
-	public static final Event<OnMonthChange> MONTH_CHANGE = EventFactory.createArrayBacked(OnMonthChange.class, listeners -> month -> {
-		for (OnMonthChange listener : listeners) {
-			listener.onMonthChange(month);
-		}
-	});
-
-	public static final Event<OnSeasonChange> SEASON_CHANGE = EventFactory.createArrayBacked(OnSeasonChange.class, listeners -> season -> {
-		for (OnSeasonChange listener : listeners) {
-			listener.onSeasonChange(season);
-		}
-	});
-
-	public static final Event<OnYearChange> YEAR_CHANGE = EventFactory.createArrayBacked(OnYearChange.class, listeners -> year -> {
-		for (OnYearChange listener : listeners) {
-			listener.onYearChange(year);
-		}
-	});
-
-	public static final Event<OnTimeUpdate> TIME_UPDATE = EventFactory.createArrayBacked(OnTimeUpdate.class, listeners -> (year, season, month, day, hour) -> {
-		for (OnTimeUpdate listener : listeners) {
-			listener.onTimeUpdate(year, season, month, day, hour);
-		}
-	});
 }
