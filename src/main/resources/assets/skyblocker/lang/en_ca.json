@@ -51,5 +51,6 @@
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Enable Livid Colour Bounding Box",
     "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Glow and/or Bounding use same colour",
     "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Instead of the Livid's colour a red colour is shown",
-    "argument.color.rgb.incomplete": "Incomplete (expected 3 colour values)."
+    "argument.color.rgb.incomplete": "Incomplete (expected 3 colour values).",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Displays a warning when you're in danger from a tentacle slam or from TNT. The colour of the warning adapts to the danger level!"
 }
