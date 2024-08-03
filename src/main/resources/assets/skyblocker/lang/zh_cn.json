@@ -849,5 +849,9 @@
     "skyblocker.config.helpers.bazaar.refreshItemPricesFailed": "物品价格更新失败。",
     "skyblocker.config.helpers.bazaar.refreshingItemPrices": "正在刷新物品价格……",
     "key.bazaarLookup": "集市查找",
-    "key.bazaarRefresh": "集市刷新"
+    "key.bazaarRefresh": "集市刷新",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "当面临触手重击或TNT的危险情况时显示警告。警告的颜色根据危险级别而定！",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "危险警告",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra发光效果",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "用深橙色绘制Kuudra的轮廓。"
 }
