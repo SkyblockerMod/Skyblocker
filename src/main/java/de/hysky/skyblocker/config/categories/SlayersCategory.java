@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
@@ -16,6 +17,30 @@ public class SlayersCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("skyblocker.config.slayer"))
+
+                .option(Option.<SlayersConfig.HighlightSlayerEntities>createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.highlightMinis"))
+                        .description(OptionDescription.of(
+                                Text.translatable("skyblocker.config.slayer.highlightMinis.@Tooltip[0]"),
+                                Text.translatable("skyblocker.config.slayer.highlightMinis.@Tooltip[1]"),
+                                Text.translatable("skyblocker.config.slayer.highlightMinis.@Tooltip[2]")))
+                        .binding(defaults.slayers.highlightMinis,
+                                () -> config.slayers.highlightMinis,
+                                newValue -> config.slayers.highlightMinis = newValue)
+                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .build())
+                .option(Option.<SlayersConfig.HighlightSlayerEntities>createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.highlightBosses"))
+                        .description(OptionDescription.of(
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[0]"),
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[1]"),
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[2]"),
+                                Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[3]")))
+                        .binding(defaults.slayers.highlightBosses,
+                                () -> config.slayers.highlightBosses,
+                                newValue -> config.slayers.highlightBosses = newValue)
+                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .build())
 
                 //Enderman Slayer
                 .group(OptionGroup.createBuilder()
@@ -135,6 +160,27 @@ public class SlayersCategory {
                                         () -> config.slayers.vampireSlayer.maniaUpdateFrequency,
                                         newValue -> config.slayers.vampireSlayer.maniaUpdateFrequency = newValue)
                                 .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+                                .build())
+                        .build())
+
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.blazeSlayer"))
+                        .collapsed(true)
+                        .option(Option.<SlayersConfig.BlazeSlayer.FirePillar>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip")))
+                                .binding(defaults.slayers.blazeSlayer.firePillarCountdown,
+                                        () -> config.slayers.blazeSlayer.firePillarCountdown,
+                                        newValue -> config.slayers.blazeSlayer.firePillarCountdown = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.slayer.blazeSlayer.attunementHighlights"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip")))
+                                .binding(defaults.slayers.blazeSlayer.attunementHighlights,
+                                        () -> config.slayers.blazeSlayer.attunementHighlights,
+                                        newValue -> config.slayers.blazeSlayer.attunementHighlights = newValue)
+                                .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
 
