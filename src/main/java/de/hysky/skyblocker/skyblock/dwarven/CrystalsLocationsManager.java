@@ -6,12 +6,18 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.ws.WsMessageHandler;
+import de.hysky.skyblocker.utils.ws.Service;
+import de.hysky.skyblocker.utils.ws.WsStateManager;
+import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -60,6 +66,7 @@ public class CrystalsLocationsManager {
 
     protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
     protected static List<String> verifiedWaypoints = new ArrayList<>();
+    private static List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
 
     public static void init() {
         // Crystal Hollows Waypoints
@@ -67,6 +74,7 @@ public class CrystalsLocationsManager {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
         ClientReceiveMessageEvents.GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
+        SkyblockEvents.LOCATION_CHANGE.register(CrystalsLocationsManager::onLocationChange);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 
         // Nucleus Waypoints
@@ -127,6 +135,7 @@ public class CrystalsLocationsManager {
                 if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage) && !verifiedWaypoints.contains(waypointName)) {
                     addCustomWaypoint(waypointLocation.getName(), CLIENT.player.getBlockPos());
                     verifiedWaypoints.add(waypointName);
+                    trySendWaypoint2Socket(waypointLocation);
                 }
             }
         }
@@ -311,6 +320,14 @@ public class CrystalsLocationsManager {
         return Command.SINGLE_SUCCESS;
     }
 
+    public static void addCustomWaypointFromSocket(MiningLocationLabel.CrystalHollowsLocationsCategory category, BlockPos pos) {
+        if (activeWaypoints.containsKey(category.name())) return;
+
+        removeUnknownNear(pos);
+        MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
+        waypointsSent2Socket.add(category);
+        activeWaypoints.put(category.name(), waypoint);
+    }
 
     protected static void addCustomWaypoint(String waypointName, BlockPos pos) {
         removeUnknownNear(pos);
@@ -335,7 +352,7 @@ public class CrystalsLocationsManager {
         }
     }
 
-    public static void render(WorldRenderContext context) {
+    private static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
             for (MiningLocationLabel crystalsWaypoint : activeWaypoints.values()) {
                 crystalsWaypoint.render(context);
@@ -343,23 +360,41 @@ public class CrystalsLocationsManager {
         }
     }
 
+    private static void onLocationChange(Location newLocation) {
+        if (newLocation == Location.CRYSTAL_HOLLOWS) {
+            WsStateManager.subscribe(Service.CRYSTAL_WAYPOINTS);
+        }
+    }
+
     private static void reset() {
         activeWaypoints.clear();
         verifiedWaypoints.clear();
+        waypointsSent2Socket.clear();
     }
 
-    public static void update() {
+    private static void update() {
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled || !Utils.isInCrystalHollows()) {
             return;
         }
 
         //get if the player is in the crystals
         String location = Utils.getIslandArea().substring(2);
-        //if new location and needs waypoint add waypoint
-        if (!location.equals("Unknown") && WAYPOINT_LOCATIONS.containsKey(location) && !activeWaypoints.containsKey(location)) {
-            //add waypoint at player location
-            BlockPos playerLocation = CLIENT.player.getBlockPos();
-            addCustomWaypoint(location, playerLocation);
+        //if new location and needs waypoint add waypoint, and if socket hasn't received waypoint send it
+        if (!location.equals("Unknown") && WAYPOINT_LOCATIONS.containsKey(location)) {
+            if (!activeWaypoints.containsKey(location)) {
+                //add waypoint at player location
+                BlockPos playerLocation = CLIENT.player.getBlockPos();
+                addCustomWaypoint(location, playerLocation);
+            }
+
+            trySendWaypoint2Socket(WAYPOINT_LOCATIONS.get(location));
+        }
+    }
+
+    private static void trySendWaypoint2Socket(MiningLocationLabel.CrystalHollowsLocationsCategory category) {
+        if (!waypointsSent2Socket.contains(category)) {
+            WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
+            waypointsSent2Socket.add(category);
         }
     }
 }
