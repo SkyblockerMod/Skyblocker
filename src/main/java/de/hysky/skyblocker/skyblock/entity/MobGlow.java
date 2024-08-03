@@ -47,21 +47,16 @@ public class MobGlow {
 
 		long currentTime = System.currentTimeMillis();
 
-		boolean shouldGlow;
 		CacheEntry cachedGlow = glowCache.get(entity);
 		if (cachedGlow == null || (currentTime - cachedGlow.timestamp) > GLOW_CACHE_DURATION) {
-			shouldGlow = computeShouldMobGlow(entity);
+			boolean shouldGlow = computeShouldMobGlow(entity);
 			glowCache.put(entity, new CacheEntry(shouldGlow, currentTime));
-		} else {
-			shouldGlow = cachedGlow.value;
+			cachedGlow = glowCache.get(entity);
 		}
 
-		if (shouldGlow) {
-			return playerCanSee(entity, currentTime);
-		}
-
-		return false;
+		return cachedGlow.value && playerCanSee(entity, currentTime);
 	}
+
 
 	/**
 	 * Checks if the player can see the entity.
@@ -83,7 +78,7 @@ public class MobGlow {
 		String name = entity.getName().getString();
 
 		// Dungeons
-		if (Utils.isInDungeons() && !entity.isInvisible()) {
+		if (Utils.isInDungeons()) {
 			return switch (entity) {
 				// Minibosses
 				case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") ->
@@ -105,7 +100,7 @@ public class MobGlow {
 		return switch (entity) {
 
 			// Rift Blobbercyst
-			case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") ->
+			case PlayerEntity p when Utils.isInTheRift() && name.equals("Blobbercyst ") ->
 					SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
 
 			// Dojo Helpers
@@ -117,7 +112,7 @@ public class MobGlow {
 					SkyblockerConfigManager.get().crimsonIsle.kuudra.kuudraGlow && magmaCube.getSize() == Kuudra.KUUDRA_MAGMA_CUBE_SIZE;
 
 			// Special Zealot && Slayer (Mini)Boss
-			case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() ->
+			case EndermanEntity enderman when Utils.isInTheEnd() ->
 					TheEnd.isSpecialZealot(enderman) || SlayerEntitiesGlow.shouldGlow(enderman.getUuid());
 			case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) ->
 					SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
