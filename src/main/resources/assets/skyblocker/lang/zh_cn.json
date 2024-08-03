@@ -853,5 +853,7 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "当面临触手重击或TNT的危险情况时显示警告。警告的颜色根据危险级别而定！",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "危险警告",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra发光效果",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "用深橙色绘制Kuudra的轮廓。"
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "用深橙色绘制Kuudra的轮廓。",
+    "skyblocker.config.otherLocations.rift.mcGrubberStacks": "已有 McGrubber 数量",
+    "skyblocker.config.general.minionValue.@Tooltip": "计算这个 Minion 生成的物品的价值"
 }
