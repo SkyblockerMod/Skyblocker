@@ -35,6 +35,9 @@ public class SlayerEntitiesGlow {
             Map.entry("Burningsoul Demon", SlayerUtils.DEMONLORD)
     );
 
+    public static void init() {
+        SkyblockEvents.LOCATION_CHANGE.register(SlayerEntitiesGlow::clearGlow);
+    }
     private static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
             SlayerUtils.REVENANT, ZombieEntity.class,
             SlayerUtils.TARA, SpiderEntity.class,
@@ -50,13 +53,15 @@ public class SlayerEntitiesGlow {
     }
 
     public static boolean isSlayer(LivingEntity e) {
-        return SlayerUtils.isInSlayer() && SlayerUtils.getEntityArmorStands(e).stream().anyMatch(entity -> entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
+        return SlayerUtils.isInSlayer() && SlayerUtils.getEntityArmorStands(e).stream().anyMatch(entity ->
+                entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
     }
 
     public static boolean isSlayerMiniMob(LivingEntity entity) {
         if (entity.getCustomName() == null) return false;
         String entityName = entity.getCustomName().getString();
-        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName -> entityName.contains(slayerMobName) && SlayerUtils.isInSlayerQuestType(SLAYER_MINI_NAMES.get(slayerMobName)));
+        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName ->
+                entityName.contains(slayerMobName) && SlayerUtils.isInSlayerQuestType(SLAYER_MINI_NAMES.get(slayerMobName)));
     }
 
     public static Box getSlayerMobBoundingBox(LivingEntity entity) {
@@ -86,9 +91,18 @@ public class SlayerEntitiesGlow {
                         .getBoxAt(armorStand.getPos()).expand(1.5), entity ->
                         !entity.isDead() && entity.age > armorStand.age - 4 && entity.age < armorStand.age + 4)
                 .stream()
-                .filter(entity -> !(entity instanceof CaveSpiderEntity)) // CaveSpider extends Spider so filter out mob for BroodFather highlight
+                .filter(entity -> !(entity instanceof CaveSpiderEntity))
+                .filter(SlayerEntitiesGlow::isValidSlayerMob)
                 .min(Comparator.comparingDouble((MobEntity e) -> e.distanceTo(armorStand)))
                 .orElse(null);
+    }
+
+    /**
+     * Use this func to add checks to prevent accidental highlights
+     * i.e. Cavespider extends spider and thus will highlight the broodfather's head pet instead and
+     */
+    private static boolean isValidSlayerMob(MobEntity entity) {
+        return !(entity instanceof CaveSpiderEntity) && !(entity.isBaby());
     }
 
     /**
@@ -113,7 +127,4 @@ public class SlayerEntitiesGlow {
         MOBS_TO_GLOW.clear();
     }
 
-    public static void init() {
-        SkyblockEvents.LOCATION_CHANGE.register(SlayerEntitiesGlow::clearGlow);
-    }
 }
