@@ -86,6 +86,14 @@ public class QuickNavigationCategory {
                         .controller(StringControllerBuilder::create)
                         .build())
                 .option(Option.<String>createBuilder()
+                        .name(Text.translatable("skyblocker.config.quickNav.button.tooltip"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.quickNav.button.tooltip.@Tooltip")))
+                        .binding(defaultButton.tooltip,
+                                () -> button.tooltip,
+                                newValue -> button.tooltip = newValue)
+                        .controller(StringControllerBuilder::create)
+                        .build())
+                .option(Option.<String>createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.button.clickEvent"))
                         .binding(defaultButton.clickEvent,
                                 () -> button.clickEvent,

@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
+import com.google.gson.JsonElement;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.serialization.JsonOps;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
@@ -10,10 +13,14 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
+
+import java.time.Duration;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
@@ -48,14 +55,22 @@ public class QuickNavButton extends ClickableWidget {
      * @param toggled the toggled state of the button.
      * @param command the command to execute when the button is clicked.
      * @param icon    the icon to display on the button.
+     * @param tooltip the tooltip to show when hovered
      */
-    public QuickNavButton(int index, boolean toggled, String command, ItemStack icon) {
+    public QuickNavButton(int index, boolean toggled, String command, ItemStack icon, String tooltip) {
         super(0, 0, 26, 32, Text.empty());
         this.index = index;
         this.toggled = toggled;
         this.command = command;
         this.icon = icon;
         this.toggleTime = 0;
+        if (tooltip == null || tooltip.isEmpty()) return;
+        try {
+            setTooltip(Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
+        } catch (Exception e) {
+            setTooltip(Tooltip.of(Text.literal(tooltip)));
+        }
+        setTooltipDelay(Duration.ofMillis(100));
     }
 
     private void updateCoordinates() {
