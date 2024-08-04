@@ -861,5 +861,6 @@
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "箱子高亮颜色",
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "宝箱和开锁器应使用的颜色。",
     "skyblocker.config.chat.skyblockXpMessages": "SkyBlock经验值消息",
-    "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "获得SkyBlock经验值时，在聊天栏发送提示消息。"
+    "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "获得SkyBlock经验值时，在聊天栏发送提示消息。",
+    "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "为 %s 在 %d %d %d 处添加了路径点。"
 }
