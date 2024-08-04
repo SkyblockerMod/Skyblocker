@@ -858,5 +858,8 @@
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "寶箱和開鎖器應使用的顏色。",
     "skyblocker.config.chat.skyblockXpMessages": "SkyBlock經驗值訊息",
     "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "獲得SkyBlock經驗值時，在聊天欄發送提示訊息。",
-    "skyblocker.config.general.minionValue.@Tooltip": "計算該Minion產生的物品價值。"
+    "skyblocker.config.general.minionValue.@Tooltip": "計算該Minion產生的物品價值。",
+    "skyblocker.config.otherLocations.rift.mcGrubberStacks": "已有McGrubber數量",
+    "skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "在物品槽位上顯示Attribute Ahard的等級及首字母縮寫。",
+    "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "為%s在 %d %d %d 處新增了路徑點。"
 }
