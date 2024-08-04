@@ -851,5 +851,12 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "危險警告",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "當面臨觸手重擊或TNT的危險情況時顯示警告。警告的顏色根據危險等級而定！",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra發光效果",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "用深橙色繪製Kuudra的輪廓。"
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "用深橙色繪製Kuudra的輪廓。",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "突出顯示在水晶洞窟挖礦時找到的寶箱以及開鎖位置。",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter": "寶箱突顯",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "箱子突顯顏色",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "寶箱和開鎖器應使用的顏色。",
+    "skyblocker.config.chat.skyblockXpMessages": "SkyBlock經驗值訊息",
+    "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "獲得SkyBlock經驗值時，在聊天欄發送提示訊息。",
+    "skyblocker.config.general.minionValue.@Tooltip": "計算該Minion產生的物品價值。"
 }
