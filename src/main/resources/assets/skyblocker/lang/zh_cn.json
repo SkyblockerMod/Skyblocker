@@ -273,7 +273,7 @@
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "高亮：只显示高亮。\n\n边框+高亮：显示高亮与边框。\n\n边框：只显示边框。",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle.@Tooltip": "当在地牢之中达到%d分时显示提示标题。",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "当在地牢中达到%d分时播放音效。",
-    "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "杀死 Mimic 后在聊天中发送一条消息，以供其他玩家的分数计算模组使用。",
+    "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "杀死Mimic后在聊天中发送一条消息，以供其他玩家的分数计算模组使用。",
     "skyblocker.config.chat.chatRules.screen": "聊天栏规则配置",
     "skyblocker.config.chat.chatRules.screen.modify": "修改",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.inputs": "输入：",
@@ -643,7 +643,7 @@
     "skyblocker.config.helpers.chocolateFactory.waypointType.@Tooltip": "路径点：高亮显示以及信标光束。\n\n边框+路径点：显示路径点和边框。\n\n高亮：只显示高亮。\n\n边框+高亮：显示高亮与边框。\n\n边框：只显示边框。",
     "skyblocker.config.helpers.chocolateFactory.enableEggFinder": "启用寻蛋助手",
     "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "高亮显示Hoppity的寻蛋活动期间的彩蛋。",
-    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "启用 Time Tower 提醒",
+    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "启用Time Tower提醒",
     "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages": "发送彩蛋已找到的信息",
     "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip": "当在当前岛屿中发现彩蛋时在聊天栏中发送提示信息。",
     "skyblocker.config.helpers.chocolateFactory.waypointType": "彩蛋路径点类型",
@@ -854,6 +854,12 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "危险警告",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra发光效果",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "用深橙色绘制Kuudra的轮廓。",
-    "skyblocker.config.otherLocations.rift.mcGrubberStacks": "已有 McGrubber 数量",
-    "skyblocker.config.general.minionValue.@Tooltip": "计算这个 Minion 生成的物品的价值。"
+    "skyblocker.config.otherLocations.rift.mcGrubberStacks": "已有McGrubber数量",
+    "skyblocker.config.general.minionValue.@Tooltip": "计算该Minion生成的物品价值。",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter": "宝箱高亮",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "高亮显示在水晶洞窟挖矿时找到的宝箱以及开锁位置。",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "箱子高亮颜色",
+    "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "宝箱和开锁器应使用的颜色。",
+    "skyblocker.config.chat.skyblockXpMessages": "SkyBlock经验值消息",
+    "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "获得SkyBlock经验值时，在聊天栏发送提示消息。"
 }
