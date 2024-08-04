@@ -58,6 +58,25 @@ public class SlayerUtils {
         return false;
     }
 
+    public static boolean isInSlayerType(String slayer) {
+        try {
+            boolean inFight = false;
+            boolean type = false;
+            for (String line : Utils.STRING_SCOREBOARD) {
+                switch (line) {
+                    case String a when a.contains("Slayer Quest") -> { return false; }
+                    case String b when b.contains("Slay the boss!") -> inFight = true;
+                    case String c when c.contains(slayer) -> type = true;
+                    default -> { continue; }
+                }
+                if (inFight && type) return true;
+            }
+        } catch (NullPointerException e) {
+            LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
+        }
+        return false;
+    }
+
     public static boolean isInSlayerQuestType(String slayer) {
         try {
             boolean quest = false;

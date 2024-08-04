@@ -42,7 +42,7 @@ public class FirePillarAnnouncer {
                 // There is an edge case where the slayer has entered demon phase and temporarily despawned with
                 //  an active fire pillar in play, So fallback to the player
                 Entity referenceEntity = SlayerUtils.getSlayerEntity();
-                if (!(referenceEntity != null ? referenceEntity : MinecraftClient.getInstance().player).getBlockPos().isWithinDistance(entity.getPos(), 24)) return;
+                if (!(referenceEntity != null ? referenceEntity : MinecraftClient.getInstance().player).getBlockPos().isWithinDistance(entity.getPos(), 22)) return;
                 announceFirePillarDetails(entityName);
             }
         }

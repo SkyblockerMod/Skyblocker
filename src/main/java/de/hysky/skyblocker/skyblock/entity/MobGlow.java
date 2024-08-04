@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import com.google.common.collect.Streams;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.crimson.slayer.AttunementColours;
@@ -60,13 +61,13 @@ public class MobGlow {
 
 	/**
 	 * Checks if the player can see the entity.
-	 * Has "True sight" within an small aura, but since name tags exist I think this is fine...
+	 * Has "True sight" within a certain aura, but since name tags exist I think this is fine...
 	 */
 	private static boolean playerCanSee(Entity entity, long currentTime) {
 
 		CacheEntry canSee = canSeeCache.get(entity);
 		if (canSee == null || (currentTime - canSee.timestamp) > PLAYER_CAN_SEE_CACHE_DURATION) {
-			boolean playerCanSee = entity.distanceTo(MinecraftClient.getInstance().player) <= 15 || MinecraftClient.getInstance().player.canSee(entity);
+			boolean playerCanSee = entity.distanceTo(MinecraftClient.getInstance().player) <= 20 || MinecraftClient.getInstance().player.canSee(entity);
 			canSeeCache.put(entity, new CacheEntry(playerCanSee, currentTime));
 			return playerCanSee;
 		}
@@ -128,10 +129,10 @@ public class MobGlow {
 					SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
 
 			// Blaze Slayer's Demonic minions
-			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
-					SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
-			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses.toString().equals("GLOW") ->
-					SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 10;
+			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW ->
+					SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 14;
+			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW ->
+					SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 14;
 
 			default -> false;
 		};
