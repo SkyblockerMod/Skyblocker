@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
@@ -79,6 +80,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onPlaySound", at = @At("RETURN"))
     private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
         FishingHelper.onSound(packet);
+        CrystalsChestHighlighter.onSound(packet);
     }
 
     @WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
@@ -100,6 +102,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
         MythologicalRitual.onParticle(packet);
         DojoManager.onParticle(packet);
+        CrystalsChestHighlighter.onParticle(packet);
         EnderNodes.onParticle(packet);
         WishingCompassSolver.onParticle(packet);
     }

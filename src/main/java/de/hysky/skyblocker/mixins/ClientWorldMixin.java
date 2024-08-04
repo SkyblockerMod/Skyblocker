@@ -2,6 +2,7 @@ package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
@@ -25,7 +26,10 @@ public class ClientWorldMixin {
         if (Utils.isInCrimson()) {
             DojoManager.onBlockUpdate(pos.toImmutable(), state);
         }
-
+        else if (Utils.isInCrystalHollows()) {
+            CrystalsChestHighlighter.onBlockUpdate(pos.toImmutable(), state);
+        }
         SimonSays.onBlockUpdate(pos, state);
+        
     }
 }
