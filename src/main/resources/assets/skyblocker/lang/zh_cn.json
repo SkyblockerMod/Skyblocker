@@ -211,7 +211,7 @@
     "skyblocker.config.uiAndVisuals.flameOverlay.flameHeight": "火焰高度",
     "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "启用Mimic消息",
     "skyblocker.config.dungeons.mimicMessage": "Mimic消息",
-    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound": "启用地牢 %d 提示音效",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound": "启用地牢%d分提示音效",
     "skyblocker.config.general.chestValue.@Tooltip": "计算这个容器中的物品价值。",
     "skyblocker.config.uiAndVisuals.chestValue": "箱子价值",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle": "启用地牢%d分提示标题",
