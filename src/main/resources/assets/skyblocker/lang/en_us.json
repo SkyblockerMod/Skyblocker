@@ -740,6 +740,7 @@
   "skyblocker.wikiLookup.noArticleFound": "\u00a7rUnable to locate a wiki article for this item...",
 
   "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
+  "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s",
 
   "skyblocker.bars.config.health": "Health",
   "skyblocker.bars.config.defense": "Defense",

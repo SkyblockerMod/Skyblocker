@@ -9,10 +9,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
+
+import com.mojang.serialization.Codec;
 
 // TODO: Clean up into the waypoint system with a new `DistancedWaypoint` that extends `NamedWaypoint` for this and secret waypoints.
 public record MiningLocationLabel(Category category, Vec3d centerPos) implements Renderable {
@@ -166,7 +169,7 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
     /**
      * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
      */
-    enum CrystalHollowsLocationsCategory implements Category {
+    public enum CrystalHollowsLocationsCategory implements Category, StringIdentifiable {
         UNKNOWN("Unknown", Color.WHITE, null), //used when a location is known but what's at the location is not known
         JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
         MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
@@ -179,6 +182,8 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
         KING_YOLKAR("King Yolkar", Color.RED, "[NPC] King Yolkar:"),
         ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),
         KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, null);
+
+        public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringIdentifiable.createBasicCodec(CrystalHollowsLocationsCategory::values);
 
         public final Color color;
         private final String name;
@@ -202,6 +207,11 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
 
         public String getLinkedMessage() {
             return this.linkedMessage;
+        }
+
+        @Override
+        public String asString() {
+            return name();
         }
     }
 

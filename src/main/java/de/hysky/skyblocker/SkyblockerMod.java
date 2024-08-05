@@ -60,6 +60,8 @@ import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.ws.SkyblockerWebSocket;
+import de.hysky.skyblocker.utils.ws.WsStateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -186,6 +188,8 @@ public class SkyblockerMod implements ClientModInitializer {
         SecretsTracker.init();
         ApiAuthentication.init();
         ApiUtils.init();
+        SkyblockerWebSocket.init();
+        WsStateManager.init();
         Debug.init();
         Kuudra.init();
         DojoManager.init();

@@ -29,6 +29,7 @@ public class Debug {
 	private static final boolean DEBUG_ENABLED = Boolean.parseBoolean(System.getProperty("skyblocker.debug", "false"));
 
 	private static boolean showInvisibleArmorStands = false;
+	private static boolean webSocketDebug = false;
 
 	public static boolean debugEnabled() {
 		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment();
@@ -36,6 +37,10 @@ public class Debug {
 
 	public static boolean shouldShowInvisibleArmorStands() {
 		return showInvisibleArmorStands;
+	}
+
+	public static boolean webSocketDebug() {
+		return webSocketDebug;
 	}
 
 	public static void init() {
@@ -46,6 +51,7 @@ public class Debug {
 					.then(ItemUtils.dumpHeldItemCommand())
 					.then(toggleShowingInvisibleArmorStands())
 					.then(dumpArmorStandHeadTextures())
+					.then(toggleWebSocketDebug())
 			)));
 			ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 				if (screen instanceof HandledScreen<?> handledScreen) {
@@ -73,6 +79,15 @@ public class Debug {
 				.executes(context -> {
 					showInvisibleArmorStands = !showInvisibleArmorStands;
 					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledShowingInvisibleArmorStands", showInvisibleArmorStands)));
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> toggleWebSocketDebug() {
+		return literal("toggleWebSocketDebug")
+				.executes(context -> {
+					webSocketDebug = !webSocketDebug;
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledWebSocketDebug", webSocketDebug)));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
