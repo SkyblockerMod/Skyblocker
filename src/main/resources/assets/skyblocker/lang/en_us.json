@@ -228,6 +228,7 @@
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
+  "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
