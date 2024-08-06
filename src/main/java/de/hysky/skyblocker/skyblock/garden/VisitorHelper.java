@@ -156,9 +156,9 @@ public class VisitorHelper {
         context.getMatrices().pop();
     }
 
-    private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Map.Entry<String, Integer> itemEntry, int index, int mouseX, int mouseY) {
+    private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Object2IntMap.Entry<String> itemEntry, int index, int mouseX, int mouseY) {
         String itemName = itemEntry.getKey();
-        int amount = itemEntry.getValue();
+        int amount = itemEntry.getIntValue();
         ItemStack stack = getCachedItem(itemName);
         drawItemEntryWithHover(context, textRenderer, stack, itemName, amount, index, mouseX, mouseY);
         return index + 1;

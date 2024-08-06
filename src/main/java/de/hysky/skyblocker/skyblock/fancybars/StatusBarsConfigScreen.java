@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.fancybars;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
+import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
@@ -39,7 +40,7 @@ public class StatusBarsConfigScreen extends Screen {
 
     private BarLocation currentInsertLocation = new BarLocation(null, 0, 0);
 
-    private final Pair<BarLocation, Boolean> resizeHover = new ObjectBooleanMutablePair<>(BarLocation.NULL, false);
+    private final ObjectBooleanPair<BarLocation> resizeHover = new ObjectBooleanMutablePair<>(BarLocation.NULL, false);
 
     private final Pair<BarLocation, BarLocation> resizedBars = ObjectObjectMutablePair.of(BarLocation.NULL, BarLocation.NULL);
     private boolean resizing = false;
@@ -346,7 +347,7 @@ public class StatusBarsConfigScreen extends Screen {
         if (!editBarWidget.isMouseOver(mouseX, mouseY) && button == 0 && !first.equals(BarLocation.NULL)) {
             BarPositioner.BarAnchor barAnchor = first.barAnchor();
             assert barAnchor != null;
-            if (resizeHover.right()) {
+            if (resizeHover.rightBoolean()) {
                 resizedBars.left(first);
 
                 if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.y(), first.x(), true)) {
