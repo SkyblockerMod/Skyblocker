@@ -51,7 +51,7 @@ import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.waypoint.*;
-import de.hysky.skyblocker.util.CoroutineUtil;
+import de.hysky.skyblocker.utils.CoroutineUtils;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
@@ -106,7 +106,7 @@ public class SkyblockerMod implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
-        CoroutineUtil.init();
+        CoroutineUtils.init();
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
         ConfigDataFixer.apply();
         Utils.init();

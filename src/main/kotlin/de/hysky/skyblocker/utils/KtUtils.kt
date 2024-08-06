@@ -1,6 +1,5 @@
-package de.hysky.skyblocker.util
+package de.hysky.skyblocker.utils
 
-import de.hysky.skyblocker.utils.Constants
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.text.Text

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.util
+package de.hysky.skyblocker.utils
 
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-object CoroutineUtil {
+object CoroutineUtils {
 	var globalJob = CoroutineScope(SupervisorJob() + CoroutineName("Skyblocker"))
 	var logger: Logger = LoggerFactory.getLogger("Skyblocker Coroutines")
 

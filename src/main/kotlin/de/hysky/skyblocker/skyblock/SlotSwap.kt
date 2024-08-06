@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor
-import de.hysky.skyblocker.util.CoroutineUtil
-import de.hysky.skyblocker.util.KtUtil.sendSkyblockerMessage
+import de.hysky.skyblocker.utils.CoroutineUtils
+import de.hysky.skyblocker.utils.KtUtil.sendSkyblockerMessage
 import de.hysky.skyblocker.utils.render.RenderHelper
 import it.unimi.dsi.fastutil.ints.IntIntImmutablePair
 import kotlinx.coroutines.Job
@@ -118,7 +118,7 @@ object SlotSwap {
 					return
 				}
 				shouldResetOnNextKey = true
-				waitJob = CoroutineUtil.globalJob.launch {
+				waitJob = CoroutineUtils.globalJob.launch {
 					delay(WAIT_TIME)
 					shouldResetOnNextKey = false //Resets back to the initial state after 500ms, but if the keybinding is pressed again then this timeout is canceled and the reset happens
 				}
