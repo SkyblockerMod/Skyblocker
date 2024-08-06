@@ -94,6 +94,8 @@ public class DungeonManager {
     private static final Pattern KEY_FOUND = Pattern.compile("^RIGHT CLICK on (?:the BLOOD DOOR|a WITHER door) to open it. This key can only be used to open 1 door!$");
     private static final Pattern WITHER_DOOR_OPENED = Pattern.compile("^\\w+ opened a WITHER door!$");
     private static final String BLOOD_DOOR_OPENED = "The BLOOD DOOR has been opened!";
+    protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
+    protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -159,8 +161,6 @@ public class DungeonManager {
     @Nullable
     private static Box bloodRushDoorBox;
     private static boolean bloodOpened;
-    protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
-    protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
     private static boolean hasKey;
 
     public static boolean isRoomsLoaded() {
@@ -561,7 +561,7 @@ public class DungeonManager {
             LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
         }
 
-        getBloodRushDoorPos();
+        getBloodRushDoorPos(map);
 
         Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(client.player.getPos());
         Vector2ic mapPos = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, physicalPos);
@@ -573,8 +573,7 @@ public class DungeonManager {
             }
             switch (type) {
                 case ENTRANCE, PUZZLE, TRAP, MINIBOSS, FAIRY, BLOOD -> room = newRoom(type, physicalPos);
-                case ROOM ->
-                        room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
+                case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
             }
         }
         if (room != null && currentRoom != room) {
@@ -784,24 +783,19 @@ public class DungeonManager {
      *
      * @implNote Relies on the minimap to check for doors
      */
-    private static void getBloodRushDoorPos() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.world == null) {
-            return;
-        }
-
-        MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world);
-        if (map == null || mapEntrancePos == null || mapRoomSize == 0) {
-            LOGGER.error("[Skyblocker Dungeon Secrets] Failed to get map state.");
+    private static void getBloodRushDoorPos(@NotNull MapState map) {
+        if (mapEntrancePos == null || mapRoomSize == 0) {
+            LOGGER.error("[Skyblocker Dungeon Secrets] Dungeon map info missing with map entrance pos {} and map room size {}", mapEntrancePos, mapRoomSize);
             return;
         }
 
         Vector2i nWMostRoom = getMapPosForNWMostRoom(mapEntrancePos, mapRoomSize);
 
-        for (int x = nWMostRoom.x + mapRoomSize / 2; x < 127; x += mapRoomSize + 4) {
-            for (int y = nWMostRoom.y + mapRoomSize; y < 127; y += mapRoomSize + 4) {
+        for (int x = nWMostRoom.x + mapRoomSize / 2; x < 128; x += mapRoomSize + 4) {
+            for (int y = nWMostRoom.y + mapRoomSize; y < 128; y += mapRoomSize + 4) {
                 byte color = getColor(map, x, y);
 
+                // 119 is the black found on wither doors on the map, 18 is the blood door red
                 if (color == 119 || color == 18) {
                     Vector2ic doorPos = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, new Vector2i(x - mapRoomSize / 2, y - mapRoomSize));
                     bloodRushDoorBox = new Box(doorPos.x() + 14, 69, doorPos.y() + 30, doorPos.x() + 17, 73, doorPos.y() + 33);
@@ -811,13 +805,13 @@ public class DungeonManager {
             }
         }
 
-        for (int x = nWMostRoom.x + mapRoomSize; x < 127; x += mapRoomSize + 4) {
-            for (int y = nWMostRoom.y + mapRoomSize / 2; y < 127; y += mapRoomSize + 4) {
+        for (int x = nWMostRoom.x + mapRoomSize; x < 128; x += mapRoomSize + 4) {
+            for (int y = nWMostRoom.y + mapRoomSize / 2; y < 128; y += mapRoomSize + 4) {
                 byte color = getColor(map, x, y);
 
                 if (color == 119 || color == 18) {
-                    Vector2ic doorpos = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, new Vector2i(x - mapRoomSize, y - mapRoomSize / 2));
-                    bloodRushDoorBox = new Box(doorpos.x() + 30, 69, doorpos.y() + 14, doorpos.x() + 33, 73, doorpos.y() + 17);
+                    Vector2ic doorPos = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, new Vector2i(x - mapRoomSize, y - mapRoomSize / 2));
+                    bloodRushDoorBox = new Box(doorPos.x() + 30, 69, doorPos.y() + 14, doorPos.x() + 33, 73, doorPos.y() + 17);
 
                     return;
                 }

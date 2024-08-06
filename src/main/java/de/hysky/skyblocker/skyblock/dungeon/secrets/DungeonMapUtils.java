@@ -145,6 +145,18 @@ public class DungeonMapUtils {
     }
 
     /**
+     * Gets the map pos for the room that could be the furthest north-west on the map
+     * (doesn't mean the room has to exist, it's just the furthest possible room)
+     *
+     * @param mapEntrancePos The map pos of the entrance room
+     * @param mapRoomSize    The size of a room on the map
+     * @return The map pos for the room that could be the furthest north-east on the map
+     */
+    public static Vector2i getMapPosForNWMostRoom(Vector2ic mapEntrancePos, int mapRoomSize) {
+        return new Vector2i(Math.floorMod(mapEntrancePos.x(), (mapRoomSize + 4)), Math.floorMod(mapEntrancePos.y(), (mapRoomSize + 4)));
+    }
+
+    /**
      * @see #getPhysicalRoomPos(double, double)
      */
     @NotNull
@@ -174,18 +186,6 @@ public class DungeonMapUtils {
     public static Vector2ic getPhysicalRoomPos(double x, double z) {
         Vector2i physicalPos = new Vector2i(x + 8.5, z + 8.5, RoundingMode.TRUNCATE);
         return physicalPos.sub(Math.floorMod(physicalPos.x(), 32), Math.floorMod(physicalPos.y(), 32)).sub(8, 8);
-    }
-
-    /**
-     * Gets the map pos for the room that could be the furthest north-west on the map
-     * (doesn't mean the room has to exist, it's just the furthest possible room)
-     *
-     * @param mapEntrancePos The map pos of the entrance room
-     * @param mapRoomSize    The size of a room on the map
-     * @return The map pos for the room that could be the furthest north-east on the map
-     */
-    public static Vector2i getMapPosForNWMostRoom(Vector2ic mapEntrancePos, int mapRoomSize) {
-        return new Vector2i(Math.floorMod(mapEntrancePos.x(), (mapRoomSize + 4)), Math.floorMod(mapEntrancePos.y(), (mapRoomSize + 4)));
     }
 
     public static Vector2ic[] getPhysicalPosFromMap(Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalEntrancePos, Vector2ic... mapPositions) {
@@ -220,12 +220,9 @@ public class DungeonMapUtils {
     public static BlockPos actualToRelative(Room.Direction direction, Vector2ic physicalCornerPos, BlockPos pos) {
         return switch (direction) {
             case NW -> new BlockPos(pos.getX() - physicalCornerPos.x(), pos.getY(), pos.getZ() - physicalCornerPos.y());
-            case NE ->
-                    new BlockPos(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
-            case SW ->
-                    new BlockPos(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
-            case SE ->
-                    new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+            case NE -> new BlockPos(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
+            case SW -> new BlockPos(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
+            case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
         };
     }
 
@@ -236,12 +233,9 @@ public class DungeonMapUtils {
     public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, BlockPos pos) {
         return switch (direction) {
             case NW -> new BlockPos(pos.getX() + physicalCornerPos.x(), pos.getY(), pos.getZ() + physicalCornerPos.y());
-            case NE ->
-                    new BlockPos(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
-            case SW ->
-                    new BlockPos(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
-            case SE ->
-                    new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+            case NE -> new BlockPos(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
+            case SW -> new BlockPos(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
+            case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
         };
     }
 
