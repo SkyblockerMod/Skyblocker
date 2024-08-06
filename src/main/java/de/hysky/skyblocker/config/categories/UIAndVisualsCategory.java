@@ -49,6 +49,7 @@ public class UIAndVisualsCategory {
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.hideEmptyTooltips"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip")))
                         .binding(defaults.uiAndVisuals.hideEmptyTooltips,
                                 () -> config.uiAndVisuals.hideEmptyTooltips,
                                 newValue -> config.uiAndVisuals.hideEmptyTooltips = newValue)

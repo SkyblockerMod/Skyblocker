@@ -20,10 +20,8 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		String neuName = stack.getNeuName();
-		String internalID = stack.getSkyblockId();
-		if (neuName == null || internalID == null) return;
 
-		if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
+        if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
 			ItemTooltip.nullWarning();
 		} else {
                 /*

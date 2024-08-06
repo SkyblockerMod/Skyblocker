@@ -5,6 +5,9 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 public class ChatConfig {
     @SerialEntry
+    public boolean skyblockXpMessages = true;
+
+    @SerialEntry
     public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 
     @SerialEntry

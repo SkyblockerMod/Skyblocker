@@ -44,7 +44,11 @@
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poison Warning Threshold",
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "If the amount of Toxic Arrow Poison you have in your inventory is below the set threshold, then you will receive a warning.\n\n16 is the absolute minimum.\nYou want 32 for smooth 'DPS' phase with prefire.",
   "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Ballista Build Spot Waypoints",
+  "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Danger Warning",
+  "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Displays a warning when you're in danger from a tentacle slam or from TNT. The color of the warning adapts to the danger level!",
   "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Fuel Waypoints",
+  "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra Glow",
+  "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Outlines Kuudra in a deep orange.",
   "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "No Arrow Poison Warning",
   "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Warns you when you pull out a bow and have no Toxic Arrow Poison in your inventory. Only works during the DPS phase.",
   "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "Pearl Waypoints",
@@ -217,12 +221,14 @@
   "skyblocker.config.general": "General",
 
   "skyblocker.config.general.chestValue.@Tooltip": "Calculate the value of this container.",
+  "skyblocker.config.general.minionValue.@Tooltip": "Calculate the value of this minion's generated resources.",
 
   "skyblocker.config.general.enableTips": "Enable Tips",
 
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
+  "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
@@ -449,6 +455,9 @@
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
 
+  "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
+  "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
+
   "skyblocker.config.eventNotifications": "Event Notifications",
 
   "skyblocker.config.eventNotifications.criterion": "Notification Criterion",
@@ -481,6 +490,10 @@
   "skyblocker.config.mining.crystalHollows.metalDetectorHelper.@Tooltip": "Helper for the metal detector puzzle in the Mines of Divan.",
   "skyblocker.config.mining.crystalHollows.nucleusWaypoints": "Nucleus Waypoints",
   "skyblocker.config.mining.crystalHollows.nucleusWaypoints.@Tooltip": "Show waypoints to the Nucleus in the Crystal Hollows.",
+  "skyblocker.config.mining.crystalHollows.chestHighlighter": "Treasure Chest Highlighter",
+  "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
+  "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
+  "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
   "skyblocker.config.mining.crystalsHud.enabled": "Enabled",
@@ -590,6 +603,8 @@
   "skyblocker.config.quickNav.button.item.count": "Item Count",
   "skyblocker.config.quickNav.button.item.itemName": "Item",
   "skyblocker.config.quickNav.button.render": "Render",
+  "skyblocker.config.quickNav.button.tooltip": "Tooltip",
+  "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Tooltip shown when hovering your mouse over the button.\n\nYou can use text json format.\nPutting nothing will make the tooltip not render.",
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
   "skyblocker.config.quickNav.enableQuickNav": "Enable Quick Navigation",
 
@@ -725,6 +740,7 @@
   "skyblocker.wikiLookup.noArticleFound": "\u00a7rUnable to locate a wiki article for this item...",
 
   "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
+  "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s",
 
   "skyblocker.bars.config.health": "Health",
   "skyblocker.bars.config.defense": "Defense",
@@ -993,6 +1009,7 @@
 
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
+  "skyblocker.crimson.kuudra.danger": "DANGER!",
 
   "skyblocker.waypoints.ordered.groupNonExistent": "§cThe waypoint group %s doesn't exist.",
   "skyblocker.waypoints.ordered.add.invalidHexColor": "§cInvalid HEX color code!",

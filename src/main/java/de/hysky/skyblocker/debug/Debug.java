@@ -7,6 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -28,6 +29,7 @@ public class Debug {
 	private static final boolean DEBUG_ENABLED = Boolean.parseBoolean(System.getProperty("skyblocker.debug", "false"));
 
 	private static boolean showInvisibleArmorStands = false;
+	private static boolean webSocketDebug = false;
 
 	public static boolean debugEnabled() {
 		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment();
@@ -35,6 +37,10 @@ public class Debug {
 
 	public static boolean shouldShowInvisibleArmorStands() {
 		return showInvisibleArmorStands;
+	}
+
+	public static boolean webSocketDebug() {
+		return webSocketDebug;
 	}
 
 	public static void init() {
@@ -45,13 +51,14 @@ public class Debug {
 					.then(ItemUtils.dumpHeldItemCommand())
 					.then(toggleShowingInvisibleArmorStands())
 					.then(dumpArmorStandHeadTextures())
+					.then(toggleWebSocketDebug())
 			)));
 			ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 				if (screen instanceof HandledScreen<?> handledScreen) {
                     ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
                         Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
                         if (key == GLFW.GLFW_KEY_U && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
-                            client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, focusedSlot.getStack()))));
+                            client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow())));
                         }
                     });
                 }
@@ -72,6 +79,15 @@ public class Debug {
 				.executes(context -> {
 					showInvisibleArmorStands = !showInvisibleArmorStands;
 					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledShowingInvisibleArmorStands", showInvisibleArmorStands)));
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> toggleWebSocketDebug() {
+		return literal("toggleWebSocketDebug")
+				.executes(context -> {
+					webSocketDebug = !webSocketDebug;
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledWebSocketDebug", webSocketDebug)));
 					return Command.SINGLE_SUCCESS;
 				});
 	}

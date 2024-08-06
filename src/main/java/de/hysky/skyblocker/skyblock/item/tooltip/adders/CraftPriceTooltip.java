@@ -33,15 +33,12 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
     @Override
     public void addToTooltip(@Nullable Slot focusedSloFt, ItemStack stack, List<Text> lines) {
-        String internalID = stack.getSkyblockId();
-        if (stack.getNeuName() == null || internalID == null) return;
-
         if (TooltipInfoType.LOWEST_BINS.getData() == null || TooltipInfoType.BAZAAR.getData() == null) {
             ItemTooltip.nullWarning();
             return;
         }
 
-        NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(internalID);
+        NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(stack.getNeuName());
         if (neuItem == null) return;
 
         List<NEURecipe> neuRecipes = neuItem.getRecipes();
@@ -63,7 +60,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
                             .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), amountInStack))));
 
         } catch (Exception e) {
-            LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + internalID, e);
+            LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + stack.getNeuName(), e);
         }
     }
 

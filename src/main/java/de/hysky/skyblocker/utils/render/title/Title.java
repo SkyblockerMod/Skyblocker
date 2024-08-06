@@ -38,8 +38,10 @@ public class Title {
         return text;
     }
 
-    public void setText(MutableText text) {
+    public Title setText(MutableText text) {
         this.text = text;
+
+        return this;
     }
 
     protected boolean isDefaultPos() {

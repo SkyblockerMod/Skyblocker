@@ -23,14 +23,9 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		bazaarExist = false;
-		final String internalID = stack.getSkyblockId();
-		if (internalID == null) return;
-		String name = stack.getSkyblockApiId();
-		if (name == null) return;
+        String skyblockApiId = stack.getSkyblockApiId();
 
-		if (name.startsWith("ISSHINY_")) name = "SHINY_" + internalID;
-
-		if (TooltipInfoType.BAZAAR.hasOrNullWarning(name)) {
+		if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
 			int amount;
 			if (lines.get(1).getString().endsWith("Sack")) {
 				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V
@@ -40,7 +35,7 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 			} else {
 				amount = stack.getCount();
 			}
-			JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(name);
+			JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(skyblockApiId);
 			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
 			              .formatted(Formatting.GOLD)
 			              .append(getItem.get("buyPrice").isJsonNull()

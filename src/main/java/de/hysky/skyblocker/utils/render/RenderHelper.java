@@ -119,6 +119,16 @@ public class RenderHelper {
      * This does not use renderer since renderer draws outline using debug lines with a fixed width.
      */
     public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float lineWidth, boolean throughWalls) {
+        renderOutline(context, box, colorComponents, 1f, lineWidth, throughWalls);
+    }
+
+    /**
+     * Renders the outline of a box with the specified color components and line width.
+     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
+     *
+     * @param alpha the transparency of the lines for the box
+     */
+    public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
         if (FrustumUtils.isVisible(box)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
@@ -126,6 +136,7 @@ public class RenderHelper {
 
             RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.enableBlend();
             RenderSystem.lineWidth(lineWidth);
             RenderSystem.disableCull();
             RenderSystem.enableDepthTest();
@@ -135,12 +146,13 @@ public class RenderHelper {
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
             BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
-            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], 1f);
+            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
             BufferRenderer.drawWithGlobalProgram(buffer.end());
 
             matrices.pop();
             RenderSystem.lineWidth(1f);
             RenderSystem.enableCull();
+            RenderSystem.disableBlend();
             RenderSystem.disableDepthTest();
             RenderSystem.depthFunc(GL11.GL_LEQUAL);
         }

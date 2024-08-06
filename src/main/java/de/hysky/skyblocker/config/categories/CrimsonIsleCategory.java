@@ -80,6 +80,22 @@ public class CrimsonIsleCategory {
                                         newValue -> config.crimsonIsle.kuudra.arrowPoisonThreshold = newValue)
                                 .controller(IntegerFieldControllerBuilder::create)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.kuudraGlow"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip")))
+                                .binding(defaults.crimsonIsle.kuudra.kuudraGlow,
+                                        () -> config.crimsonIsle.kuudra.kuudraGlow,
+                                        newValue -> config.crimsonIsle.kuudra.kuudraGlow = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.dangerWarning"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip")))
+                                .binding(defaults.crimsonIsle.kuudra.dangerWarning,
+                                        () -> config.crimsonIsle.kuudra.dangerWarning,
+                                        newValue -> config.crimsonIsle.kuudra.dangerWarning = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 				//dojo
 				.group(OptionGroup.createBuilder()

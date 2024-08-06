@@ -88,8 +88,8 @@ public class SkillWidget {
             fillColor = Color.MAGENTA;
         }
 
-        if ((SOFT_SKILL_CAP.containsKey(SKILL_NAME) && SKILL_LEVEL.level > SOFT_SKILL_CAP.get(SKILL_NAME)) && SKILL_LEVEL.level < SKILL_CAP.get(SKILL_NAME) && SKILL_LEVEL.fill == 1 ||
-                (SKILL_NAME.equals("Taming") && SKILL_LEVEL.level >= SOFT_SKILL_CAP.get(SKILL_NAME))) {
+        if ((SOFT_SKILL_CAP.containsKey(SKILL_NAME) && SKILL_LEVEL.level > SOFT_SKILL_CAP.get(SKILL_NAME))
+                && SKILL_LEVEL.level < SKILL_CAP.get(SKILL_NAME) && SKILL_LEVEL.fill == 1) {
             fillColor = Color.YELLOW;
         }
 

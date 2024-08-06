@@ -29,39 +29,37 @@ public class TeleportOverlay {
             String itemId = heldItem.getSkyblockId();
             NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
-            if (itemId != null) {
-                switch (itemId) {
-                    case "ASPECT_OF_THE_LEECH_1" -> {
-                        if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
-                            render(wrc, 3);
-                        }
+            switch (itemId) {
+                case "ASPECT_OF_THE_LEECH_1" -> {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
+                        render(wrc, 3);
                     }
-                    case "ASPECT_OF_THE_LEECH_2" -> {
-                        if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
-                            render(wrc, 4);
-                        }
+                }
+                case "ASPECT_OF_THE_LEECH_2" -> {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
+                        render(wrc, 4);
                     }
-                    case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-                        if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && customData != null && customData.getInt("ethermerge") == 1) {
-                            render(wrc, customData, 57);
-                        } else if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableInstantTransmission) {
-                            render(wrc, customData, 8);
-                        }
+                }
+                case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && customData.getInt("ethermerge") == 1) {
+                        render(wrc, customData, 57);
+                    } else if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableInstantTransmission) {
+                        render(wrc, customData, 8);
                     }
-                    case "ETHERWARP_CONDUIT" -> {
-                        if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission) {
-                            render(wrc, customData, 57);
-                        }
+                }
+                case "ETHERWARP_CONDUIT" -> {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission) {
+                        render(wrc, customData, 57);
                     }
-                    case "SINSEEKER_SCYTHE" -> {
-                        if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableSinrecallTransmission) {
-                            render(wrc, customData, 4);
-                        }
+                }
+                case "SINSEEKER_SCYTHE" -> {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableSinrecallTransmission) {
+                        render(wrc, customData, 4);
                     }
-                    case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
-                        if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWitherImpact) {
-                            render(wrc, 10);
-                        }
+                }
+                case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWitherImpact) {
+                        render(wrc, 10);
                     }
                 }
             }
@@ -84,7 +82,6 @@ public class TeleportOverlay {
         if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.squaredDistanceTo(client.player) < range * range) {
             render(wrc, blockHitResult);
         } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE).getValue()) {
-            @SuppressWarnings("DataFlowIssue")
             HitResult result = client.player.raycast(range, wrc.tickCounter().getTickDelta(true), false);
             if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {
                 render(wrc, blockHitResult);

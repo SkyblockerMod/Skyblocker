@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.entity;
 import com.google.common.collect.Streams;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
+import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -12,6 +13,7 @@ import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.mob.MagmaCubeEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -67,6 +69,9 @@ public class MobGlow {
 				//dojo
 				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
 
+				//Kuudra
+				case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> SkyblockerConfigManager.get().crimsonIsle.kuudra.kuudraGlow && magmaCube.getSize() == Kuudra.KUUDRA_MAGMA_CUBE_SIZE;
+
 				default -> false;
 			};
 		}
@@ -120,6 +125,7 @@ public class MobGlow {
 			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
 			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> Formatting.GREEN.getColorValue();
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
+			case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> 0xf7510f;
 
 			default -> 0xf57738;
 		};

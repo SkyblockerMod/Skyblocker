@@ -1,19 +1,19 @@
 package de.hysky.skyblocker.injected;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public interface SkyblockerStack {
-	@Nullable
+	@NotNull
 	default String getSkyblockId() {
 		return "";
 	}
 
-	@Nullable
+	@NotNull
 	default String getSkyblockApiId() {
 		return "";
 	}
 
-	@Nullable
+	@NotNull
 	default String getNeuName() {
 		return "";
 	}

@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils;
 
 public class RomanNumerals {
-	private RomanNumerals() {
-	}
+    private RomanNumerals() {}
+
 	private static int getDecimalValue(char romanChar) {
 		return switch (romanChar) {
 			case 'I' -> 1;
@@ -35,7 +35,7 @@ public class RomanNumerals {
 	 * Converts a roman numeral to a decimal number.
 	 *
 	 * @param romanNumeral The roman numeral to convert.
-	 * @return The decimal number, or 0 if the roman numeral string has non-roman characters in it, or if the string is empty or null.
+	 * @return The decimal number, or 0 if the string is empty, null, or malformed.
 	 */
 	public static int romanToDecimal(String romanNumeral) {
 		if (romanNumeral == null || romanNumeral.isEmpty()) return 0;

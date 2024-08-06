@@ -14,6 +14,14 @@ public class ChatCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("skyblocker.config.chat"))
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.chat.skyblockXpMessages"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.skyblockXpMessages.@Tooltip")))
+                        .binding(defaults.chat.skyblockXpMessages,
+                                () -> config.chat.skyblockXpMessages,
+                                newValue -> config.chat.skyblockXpMessages = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Uncategorized Options
                 .group(OptionGroup.createBuilder()

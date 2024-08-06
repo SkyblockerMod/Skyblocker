@@ -25,9 +25,9 @@ public class WardrobeInventoryItemLoader extends ItemLoader {
             if (activeSlot != -1) {
                 List<ItemStack> activeArmour = super.loadItems(activeArmorSet).reversed();
                 for (int i = 0; i < 4; i++) {
-                    int baseIndex = activeSlot % 9;
-                    int page = activeSlot / 9;
-                    int slotIndex = (page * 36) + (i * 9) + baseIndex - 1;
+                    int baseIndex = (activeSlot - 1) % 9;
+                    int page = (activeSlot - 1) / 9;
+                    int slotIndex = (page * 36) + (i * 9) + baseIndex;
                     itemList.set(slotIndex, activeArmour.get(i));
                 }
             }
