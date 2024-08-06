@@ -70,7 +70,7 @@
     "skyblocker.config.chat.filter.hideAutopet": "隐藏自动宠物消息",
     "skyblocker.config.chat.filter.hideMana": "在动作栏中隐藏法力消耗信息",
     "skyblocker.config.chat.filter.hideMana.@Tooltip": "已被更好的属性条代替",
-    "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "隐藏菜单中分隔符的物品信息",
+    "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "隐藏菜单中占位玻璃板的物品信息",
     "skyblocker.config.dungeons.map.mapScaling": "地图界面大小",
     "skyblocker.updateRepository.error": "§c更新本地数据存储库失败，请手动删除文件并重启游戏。",
     "skyblocker.config.helpers.fishing": "钓鱼助手",
