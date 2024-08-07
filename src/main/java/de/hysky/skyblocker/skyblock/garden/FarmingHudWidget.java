@@ -53,8 +53,6 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
     public FarmingHudWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue(), "hud_farming");
-        //setX(SkyblockerConfigManager.get().farming.garden.farmingHud.x);
-        //setY(SkyblockerConfigManager.get().farming.garden.farmingHud.y);
         update();
     }
 
@@ -67,7 +65,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
         ItemStack farmingToolStack = client.player.getMainHandStack();
         if (farmingToolStack == null) return;
         String itemId = ItemUtils.getItemId(farmingToolStack);
-        String cropItemId = FARMING_TOOLS.containsKey(itemId) ? FARMING_TOOLS.get(itemId) : "";
+        String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
         ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 
         String counterText = FarmingHud.counterText();
