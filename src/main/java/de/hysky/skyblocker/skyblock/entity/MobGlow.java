@@ -203,7 +203,7 @@ public class MobGlow {
 		return Streams.stream(entity.getArmorItems()).map(ItemUtils::getHeadTexture).anyMatch(headTexture -> headTexture.contains(NUKEKUBI_HEAD_TEXTURE));
 	}
 
-	private record CacheEntry(boolean value, long timestamp){};
+	private record CacheEntry(boolean value, long timestamp){}
 
 	private static void clearCache() {
 		canSeeCache.clear();
