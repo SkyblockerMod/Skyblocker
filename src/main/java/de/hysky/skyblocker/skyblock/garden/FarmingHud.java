@@ -65,7 +65,6 @@ public class FarmingHud {
                 }
 
                 FarmingHudWidget.INSTANCE.update();
-                //FarmingHudWidget.INSTANCE.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
             }
         });
         ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {

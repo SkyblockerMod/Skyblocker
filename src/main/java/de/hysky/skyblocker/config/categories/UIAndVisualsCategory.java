@@ -195,7 +195,7 @@ public class UIAndVisualsCategory {
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.literal("Effects from footer"))
-                                .description(OptionDescription.of(Text.literal("If on, will fetch current effects from the tab footer if the hypixel Effects widget is disabled")))
+                                .description(OptionDescription.of(Text.literal("If on, will fetch current effects from the tab footer if the Hypixel Effects Widget is disabled")))
                                 .controller(ConfigUtils::createBooleanController)
                                 .binding(defaults.uiAndVisuals.tabHud.effectsFromFooter,
                                         () -> config.uiAndVisuals.tabHud.effectsFromFooter,
