@@ -22,14 +22,17 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (TooltipInfoType.ESTIMATED_ITEM_VALUE.isTooltipEnabled()) {
-			NetworthResult result = NetworthCalculator.getItemNetworth(stack);
+		NetworthResult result = NetworthCalculator.getItemNetworth(stack);
 
-			if (result.price() > 0) {
-				lines.add(Text.literal(String.format("%-20s", "Est. Item Value:"))
-						.formatted(Formatting.GOLD)
-						.append(ItemTooltip.getCoinsMessage(result.price(), stack.getCount(), true)));
-			}
+		if (result.price() > 0) {
+			lines.add(Text.literal(String.format("%-20s", "Est. Item Value:"))
+					.formatted(Formatting.GOLD)
+					.append(ItemTooltip.getCoinsMessage(result.price(), stack.getCount(), true)));
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.ESTIMATED_ITEM_VALUE.isTooltipEnabled();
 	}
 }

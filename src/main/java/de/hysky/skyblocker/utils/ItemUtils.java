@@ -20,6 +20,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
+import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentHolder;
