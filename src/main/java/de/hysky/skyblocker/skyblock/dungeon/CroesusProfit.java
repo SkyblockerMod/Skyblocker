@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class CroesusProfit extends SimpleContainerSolver {
     private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
     public CroesusProfit() {
-        super(".*Catacombs - Floor.*");
+        super(".*The Catacombs - Flo.*");
     }
 
     @Override
