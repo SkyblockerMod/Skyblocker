@@ -1,21 +1,3 @@
 accessWidener v2 named
 
-accessible class net/minecraft/client/render/RenderLayer$MultiPhase
-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
-accessible class net/minecraft/client/render/RenderPhase$Transparency
-accessible class net/minecraft/client/render/RenderPhase$ShaderProgram
-accessible class net/minecraft/client/render/RenderPhase$Texture
-accessible class net/minecraft/client/render/RenderPhase$TextureBase
-accessible class net/minecraft/client/render/RenderPhase$Texturing
-accessible class net/minecraft/client/render/RenderPhase$Lightmap
-accessible class net/minecraft/client/render/RenderPhase$Overlay
-accessible class net/minecraft/client/render/RenderPhase$Cull
-accessible class net/minecraft/client/render/RenderPhase$DepthTest
-accessible class net/minecraft/client/render/RenderPhase$WriteMaskState
-accessible class net/minecraft/client/render/RenderPhase$Layering
-accessible class net/minecraft/client/render/RenderPhase$Target
-accessible class net/minecraft/client/render/RenderPhase$LineWidth
-accessible class net/minecraft/client/render/RenderPhase$ColorLogic
-accessible class net/minecraft/client/render/RenderPhase$OffsetTexturing
-accessible class net/minecraft/client/render/RenderPhase$Textures
 accessible field net/minecraft/command/argument/BlockPosArgumentType EXAMPLES Ljava/util/Collection;
