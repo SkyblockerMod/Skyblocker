@@ -282,13 +282,13 @@ public class Waterboard extends DungeonPuzzle {
                 // Check if left down is in range and is closer than right down.
                 // Note 1: The yarn name "getFlowSpeed" is incorrect as it actually returns the maximum distance that water will check for a hole to flow towards.
                 // Note 2: Skyblock's maximum offset is 5 instead of 4 for some reason.
-                if (-leftFlowDownOffset <= ((WaterFluid) Fluids.WATER).getFlowSpeed(null) + 1 && -leftFlowDownOffset < rightFlowDownOffset) {
+                if (-leftFlowDownOffset <= ((WaterFluid) Fluids.WATER).getMaxFlowDistance(null) + 1 && -leftFlowDownOffset < rightFlowDownOffset) {
                     result.putPath(water, leftFlowDownOffset);
                     water.add(leftFlowDownOffset, 1);
                     continue;
                 }
                 // Check if right down is in range and closer than left down.
-                if (rightFlowDownOffset <= ((WaterFluid) Fluids.WATER).getFlowSpeed(null) + 1 && rightFlowDownOffset < -leftFlowDownOffset) {
+                if (rightFlowDownOffset <= ((WaterFluid) Fluids.WATER).getMaxFlowDistance(null) + 1 && rightFlowDownOffset < -leftFlowDownOffset) {
                     result.putPath(water, rightFlowDownOffset);
                     water.add(rightFlowDownOffset, 1);
                     continue;
