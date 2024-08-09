@@ -16,6 +16,8 @@ import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -218,7 +220,7 @@ public class ProfileViewerScreen extends Screen {
             JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
             if (jsonObject.get("success").getAsBoolean()) {
                 Map<String, String[]> collectionsMap = new HashMap<>();
-                Map<String, List<Integer>> tierRequirementsMap = new HashMap<>();
+                Map<String, IntList> tierRequirementsMap = new HashMap<>();
                 JsonObject collections = jsonObject.getAsJsonObject("collections");
                 collections.entrySet().forEach(entry -> {
                     String category = entry.getKey();
@@ -226,7 +228,7 @@ public class ProfileViewerScreen extends Screen {
                     String[] items = itemsObject.keySet().toArray(new String[0]);
                     collectionsMap.put(category, items);
                     itemsObject.entrySet().forEach(itemEntry -> {
-                        List<Integer> tierReqs = new ArrayList<>();
+                        IntList tierReqs = new IntArrayList();
                         itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").forEach(req ->
                                 tierReqs.add(req.getAsJsonObject().get("amountRequired").getAsInt()));
                         tierRequirementsMap.put(itemEntry.getKey(), tierReqs);

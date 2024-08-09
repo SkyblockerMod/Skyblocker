@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -38,7 +39,7 @@ public class GenericCategory implements ProfileViewerPage {
     private static final int COLUMNS = 7;
 
     private final Map<String, String[]> collectionsMap;
-    private final Map<String, List<Integer>> tierRequirementsMap;
+    private final Map<String, IntList> tierRequirementsMap;
     private final Map<String, String> ICON_TRANSLATION = Map.ofEntries(
             Map.entry("MUSHROOM_COLLECTION", "RED_MUSHROOM"));
     private final String[] ROMAN_NUMERALS = {"-", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
@@ -48,13 +49,13 @@ public class GenericCategory implements ProfileViewerPage {
         //noinspection unchecked
         collectionsMap = (Map<String, String[]>) fetchedData.get("COLLECTIONS");
         //noinspection unchecked
-        tierRequirementsMap = (Map<String, List<Integer>>) fetchedData.get("TIER_REQS");
+        tierRequirementsMap = (Map<String, IntList>) fetchedData.get("TIER_REQS");
         this.category = collection;
         setupItemStacks(hProfile, pProfile);
     }
 
-    private int calculateTier(int achieved, List<Integer> requirements) {
-        return (int) requirements.stream().filter(req -> achieved >= req).count();
+    private int calculateTier(int achieved, IntList requirements) {
+        return (int) requirements.intStream().filter(req -> achieved >= req).count();
     }
 
     private void setupItemStacks(JsonObject hProfile, JsonObject pProfile) {
@@ -84,7 +85,7 @@ public class GenericCategory implements ProfileViewerPage {
             }
 
             int collectionTier = calculateTier(totalCollection, tierRequirementsMap.get(collection));
-            List<Integer> tierRequirements = tierRequirementsMap.get(collection);
+            IntList tierRequirements = tierRequirementsMap.get(collection);
 
             List<Text> lore = new ArrayList<>();
             lore.add(Text.literal("Collection Item").setStyle(style).formatted(Formatting.DARK_GRAY));

@@ -14,6 +14,9 @@ import io.github.moulberry.repo.data.Rarity;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.ProfileComponent;
@@ -51,9 +54,9 @@ public class Pet {
 
 
 
-    private static final Map<String, Integer> TIER_MAP = Map.of(
+    private static final Object2IntMap<String> TIER_MAP = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
             "COMMON", 0, "UNCOMMON", 1, "RARE", 2, "EPIC", 3, "LEGENDARY", 4, "MYTHIC", 5
-    );
+    )));
 
     private static final Int2ObjectMap<Formatting> RARITY_COLOR_MAP = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.of(
             0, Formatting.WHITE, // COMMON

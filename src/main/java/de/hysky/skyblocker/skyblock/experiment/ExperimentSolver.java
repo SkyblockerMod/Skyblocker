@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.experiment;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -10,16 +12,13 @@ import net.minecraft.item.ItemStack;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public abstract sealed class ExperimentSolver extends SimpleContainerSolver permits ChronomatronSolver, SuperpairsSolver, UltrasequencerSolver {
     public enum State {
         REMEMBER, WAIT, SHOW, END
     }
 
     private State state = State.REMEMBER;
-    private final Map<Integer, ItemStack> slots = new HashMap<>();
+    private final Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
 
     protected ExperimentSolver(@NotNull @Language("RegExp") String containerName) {
         super(containerName);
@@ -33,7 +32,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver perm
         this.state = state;
     }
 
-    public Map<Integer, ItemStack> getSlots() {
+    public Int2ObjectMap<ItemStack> getSlots() {
         return slots;
     }
 

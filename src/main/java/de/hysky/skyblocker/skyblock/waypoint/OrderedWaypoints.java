@@ -12,6 +12,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -45,10 +46,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 import java.util.zip.GZIPInputStream;
@@ -349,7 +347,7 @@ public class OrderedWaypoints {
 					//I think Cole Weight ignores the colors and overrides them so we will comment this out
 					//float[] colorComponents = (waypoint.r().isPresent() && waypoint.g().isPresent() && waypoint.b().isPresent()) ? new float[] { waypoint.r().get() / 255f, waypoint.g().get() / 255f, waypoint.b().get() / 255f } : new float[0];
 
-					convertedWaypoints.add(new OrderedWaypoint(new BlockPos(waypoint.x().get(), waypoint.y().get(), waypoint.z().get()), new float[0]));
+					convertedWaypoints.add(new OrderedWaypoint(new BlockPos(waypoint.x().getAsInt(), waypoint.y().getAsInt(), waypoint.z().getAsInt()), new float[0]));
 				}
 			}
 
@@ -425,14 +423,14 @@ public class OrderedWaypoints {
 		}
 	}
 
-	private record ColeWeightWaypoint(Optional<Integer> x, Optional<Integer> y, Optional<Integer> z, Optional<Integer> r, Optional<Integer> g, Optional<Integer> b, Optional<Options> options) {
+	private record ColeWeightWaypoint(OptionalInt x, OptionalInt y, OptionalInt z, OptionalInt r, OptionalInt g, OptionalInt b, Optional<Options> options) {
 		static final Codec<ColeWeightWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.INT.optionalFieldOf("x").forGetter(ColeWeightWaypoint::x),
-				Codec.INT.optionalFieldOf("y").forGetter(ColeWeightWaypoint::y),
-				Codec.INT.optionalFieldOf("z").forGetter(ColeWeightWaypoint::z),
-				Codec.INT.optionalFieldOf("r").forGetter(ColeWeightWaypoint::r),
-				Codec.INT.optionalFieldOf("g").forGetter(ColeWeightWaypoint::g),
-				Codec.INT.optionalFieldOf("b").forGetter(ColeWeightWaypoint::b),
+				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("x")).forGetter(ColeWeightWaypoint::x),
+				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("y")).forGetter(ColeWeightWaypoint::y),
+				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("z")).forGetter(ColeWeightWaypoint::z),
+				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("r")).forGetter(ColeWeightWaypoint::r),
+				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("g")).forGetter(ColeWeightWaypoint::g),
+				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("b")).forGetter(ColeWeightWaypoint::b),
 				Options.CODEC.optionalFieldOf("options").forGetter(ColeWeightWaypoint::options))
 				.apply(instance, ColeWeightWaypoint::new));
 		static final Codec<List<ColeWeightWaypoint>> LIST_CODEC = CODEC.listOf();

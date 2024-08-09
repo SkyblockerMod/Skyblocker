@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,14 +20,14 @@ public class Calculator {
     }
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbt]?)");
-    private static final Map<String, Long> MAGNITUDE_VALUES = Map.of(
+    private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMaps.unmodifiable(new Object2LongOpenHashMap<>(Map.of(
             "s", 64L,
             "e", 160L,
             "k", 1_000L,
             "m", 1_000_000L,
             "b", 1_000_000_000L,
             "t", 1_000_000_000_000L
-    );
+    )));
 
     private static List<Token> lex(String input) {
         List<Token> tokens = new ArrayList<>();
@@ -194,7 +198,7 @@ public class Calculator {
             if (!MAGNITUDE_VALUES.containsKey(magnitude)) {//its invalid if its another letter
                 throw new UnsupportedOperationException("Invalid magnitude");
             }
-            number *= MAGNITUDE_VALUES.get(magnitude);
+            number *= MAGNITUDE_VALUES.getLong(magnitude);
         }
 
         return number;

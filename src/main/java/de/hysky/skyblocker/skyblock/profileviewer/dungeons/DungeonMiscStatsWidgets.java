@@ -4,6 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -11,7 +13,6 @@ import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.Map;
 
 public class DungeonMiscStatsWidgets {
@@ -21,7 +22,7 @@ public class DungeonMiscStatsWidgets {
     private static final DecimalFormat DF = new DecimalFormat("#.##");
     private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};
 
-    private final Map<String, Integer> dungeonRuns = new HashMap<>();
+    private final Object2IntMap<String> dungeonRuns = new Object2IntOpenHashMap<>();
     private int secrets = 0;
     private int totalRuns = 0;
 

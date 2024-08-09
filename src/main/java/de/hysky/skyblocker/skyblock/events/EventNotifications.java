@@ -138,10 +138,11 @@ public class EventNotifications {
                 if (skyblockEvent == null) continue;
             }
             String eventName = entry.getKey();
+            // Cannot be changed to fast util due to casting issues
             List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, DEFAULT_REMINDERS);
             if (reminderTimes.isEmpty()) continue;
 
-            for (Integer reminderTime : reminderTimes) {
+            for (int reminderTime : reminderTimes) {
                 if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
                     MinecraftClient instance = MinecraftClient.getInstance();
                     if (eventName.equals(JACOBS)) {

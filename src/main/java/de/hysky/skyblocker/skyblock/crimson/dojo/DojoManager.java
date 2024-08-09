@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.booleans.BooleanPredicate;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -28,7 +29,6 @@ import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,9 +51,9 @@ public class DojoManager {
         TENACITY("Tenacity", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableTenacityHelper);
 
         private final String name;
-        private final Predicate<Boolean> enabled;
+        private final BooleanPredicate enabled;
 
-        DojoChallenges(String name, Predicate<Boolean> enabled) {
+        DojoChallenges(String name, BooleanPredicate enabled) {
             this.name = name;
             this.enabled = enabled;
         }
