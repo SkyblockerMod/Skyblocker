@@ -8,7 +8,6 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.*;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;
-import de.hysky.skyblocker.skyblock.chat.ChatRuleAnnouncementScreen;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
 import de.hysky.skyblocker.skyblock.chat.SkyblockXpMessages;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
@@ -142,7 +141,6 @@ public class SkyblockerMod implements ClientModInitializer {
         ChatMessageListener.init();
         Shortcuts.init();
         ChatRulesHandler.init();
-        ChatRuleAnnouncementScreen.init();
         SkyblockXpMessages.init();
         CalculatorCommand.init();
         DiscordRPCManager.init();
