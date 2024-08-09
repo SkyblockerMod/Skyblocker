@@ -41,7 +41,7 @@
     "java": ">=21"
   },
   "conflicts": {
-    "immediatelyfast": "<=1.2.18+1.21"
+    "immediatelyfast": "<=1.2.19+1.21.1"
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0"
