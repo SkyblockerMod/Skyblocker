@@ -241,6 +241,9 @@ public class GeneralConfig {
     public static class SpecialEffects {
         @SerialEntry
         public boolean rareDungeonDropEffects = true;
+
+        @SerialEntry
+        public boolean rareDyeDropEffects = true;
     }
 
     public static class Hitbox {

@@ -326,6 +326,14 @@ public class GeneralCategory {
                                         newValue -> config.general.specialEffects.rareDungeonDropEffects = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.specialEffects.rareDyeDropEffects"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip")))
+                                .binding(defaults.general.specialEffects.rareDyeDropEffects,
+                                        () -> config.general.specialEffects.rareDyeDropEffects,
+                                        newValue -> config.general.specialEffects.rareDyeDropEffects = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Hitboxes
