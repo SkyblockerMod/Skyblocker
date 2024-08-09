@@ -3,16 +3,13 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapDecoration;
 import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
@@ -148,6 +145,18 @@ public class DungeonMapUtils {
     }
 
     /**
+     * Gets the map pos for the room that could be the furthest north-west on the map
+     * (doesn't mean the room has to exist, it's just the furthest possible room)
+     *
+     * @param mapEntrancePos The map pos of the entrance room
+     * @param mapRoomSize    The size of a room on the map
+     * @return The map pos for the room that could be the furthest north-east on the map
+     */
+    public static Vector2i getMapPosForNWMostRoom(Vector2ic mapEntrancePos, int mapRoomSize) {
+        return new Vector2i(Math.floorMod(mapEntrancePos.x(), (mapRoomSize + 4)), Math.floorMod(mapEntrancePos.y(), (mapRoomSize + 4)));
+    }
+
+    /**
      * @see #getPhysicalRoomPos(double, double)
      */
     @NotNull
@@ -274,26 +283,5 @@ public class DungeonMapUtils {
         }
         DungeonManager.LOGGER.debug("[Skyblocker] Found dungeon room segments: {}", Arrays.toString(segments.toArray()));
         return segments.toArray(Vector2ic[]::new);
-    }
-
-    public static BlockPos getWitherBloodDoorPos(World world, Collection<Vector2ic> physicalPositions) {
-        BlockPos.Mutable doorPos = new BlockPos.Mutable();
-        for (Vector2ic pos : physicalPositions) {
-            if (hasWitherOrBloodDoor(world, pos, doorPos)) {
-                return doorPos;
-            }
-        }
-        return null;
-    }
-
-    private static boolean hasWitherOrBloodDoor(World world, Vector2ic pos, BlockPos.Mutable doorPos) {
-        return isWitherOrBloodDoor(world, doorPos.set(pos.x() + 1, 72, pos.y() + 17)) ||
-                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 17, 72, pos.y() + 1)) ||
-                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 17, 72, pos.y() + 33)) ||
-                isWitherOrBloodDoor(world, doorPos.set(pos.x() + 33, 72, pos.y() + 17));
-    }
-
-    private static boolean isWitherOrBloodDoor(World world, BlockPos.Mutable pos) {
-        return world.getStatesInBox(Box.enclosing(pos, pos.move(-3, -3, -3))).allMatch(state -> state.isOf(Blocks.COAL_BLOCK) || state.isOf(Blocks.RED_TERRACOTTA));
     }
 }

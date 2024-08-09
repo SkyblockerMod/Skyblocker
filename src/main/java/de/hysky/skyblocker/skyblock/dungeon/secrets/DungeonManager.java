@@ -22,6 +22,7 @@ import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteMaps;
@@ -41,7 +42,6 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AmbientEntity;
@@ -59,12 +59,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,11 +79,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.*;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -89,7 +91,11 @@ public class DungeonManager {
     protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonManager.class);
     private static final String DUNGEONS_PATH = "dungeons";
     private static Path CUSTOM_WAYPOINTS_DIR;
-    private static final Pattern KEY_FOUND = Pattern.compile("^(?:\\[.+] )?(?<name>\\w+) has obtained (?<type>Wither|Blood) Key!$");
+    private static final Pattern KEY_FOUND = Pattern.compile("^RIGHT CLICK on (?:the BLOOD DOOR|a WITHER door) to open it. This key can only be used to open 1 door!$");
+    private static final Pattern WITHER_DOOR_OPENED = Pattern.compile("^\\w+ opened a WITHER door!$");
+    private static final String BLOOD_DOOR_OPENED = "The BLOOD DOOR has been opened!";
+    protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
+    protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
     /**
      * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
      *
@@ -152,6 +158,10 @@ public class DungeonManager {
     private static Room currentRoom;
     @NotNull
     private static DungeonBoss boss = DungeonBoss.NONE;
+    @Nullable
+    private static Box bloodRushDoorBox;
+    private static boolean bloodOpened;
+    private static boolean hasKey;
 
     public static boolean isRoomsLoaded() {
         return roomsLoaded != null && roomsLoaded.isDone();
@@ -551,6 +561,8 @@ public class DungeonManager {
             LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
         }
 
+        getBloodRushDoorPos(map);
+
         Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(client.player.getPos());
         Vector2ic mapPos = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, physicalPos);
         Room room = rooms.get(physicalPos);
@@ -565,12 +577,6 @@ public class DungeonManager {
             }
         }
         if (room != null && currentRoom != room) {
-            if (currentRoom != null && room.getType() == Room.Type.FAIRY) {
-                currentRoom.nextRoom = room;
-                if (currentRoom.keyFound) {
-                    room.keyFound = true;
-                }
-            }
             currentRoom = room;
         }
         currentRoom.tick(client);
@@ -604,14 +610,24 @@ public class DungeonManager {
         if (shouldProcess() && currentRoom != null) {
             currentRoom.render(context);
         }
+
+        if (bloodRushDoorBox != null && !bloodOpened && SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight) {
+            float[] colorComponents = hasKey ? GREEN_COLOR_COMPONENTS : RED_COLOR_COMPONENTS;
+            switch (SkyblockerConfigManager.get().dungeons.doorHighlight.doorHighlightType) {
+                case HIGHLIGHT -> RenderHelper.renderFilled(context, bloodRushDoorBox, colorComponents, 0.5f, true);
+                case OUTLINED_HIGHLIGHT -> {
+                    RenderHelper.renderFilled(context, bloodRushDoorBox, colorComponents, 0.5f, true);
+                    RenderHelper.renderOutline(context, bloodRushDoorBox, colorComponents, 5, true);
+                }
+                case OUTLINE -> RenderHelper.renderOutline(context, bloodRushDoorBox, colorComponents, 5, true);
+            }
+        }
     }
 
     /**
      * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
      * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
      * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
-     * Then, it calls {@link Room#keyFound()} on {@link #currentRoom} if the client's player is the one who obtained the key.
-     * Otherwise, it calls {@link Room#keyFound()} on the room the player who obtained the key is in.
      */
     private static void onChatMessage(Text text, boolean overlay) {
         if (!shouldProcess()) {
@@ -625,30 +641,17 @@ public class DungeonManager {
         }
 
         // Process key found messages for door highlight
-        if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight) {
-            Matcher matcher = KEY_FOUND.matcher(message);
-            if (matcher.matches()) {
-                String name = matcher.group("name");
-                MinecraftClient client = MinecraftClient.getInstance();
-                if (client.player != null && client.player.getGameProfile().getName().equals(name)) {
-                    if (currentRoom != null) {
-                        currentRoom.keyFound();
-                    } else {
-                        LOGGER.warn("[Skyblocker Dungeon Door] The current room at the current player {} does not exist", name);
-                    }
-                } else if (client.world != null) {
-                    Optional<Vec3d> posOptional = client.world.getPlayers().stream().filter(player -> player.getGameProfile().getName().equals(name)).findAny().map(Entity::getPos);
-                    if (posOptional.isPresent()) {
-                        Room room = getRoomAtPhysical(posOptional.get());
-                        if (room != null) {
-                            room.keyFound();
-                        } else {
-                            LOGGER.warn("[Skyblocker Dungeon Door] Failed to find room at player {} with position {}", name, posOptional.get());
-                        }
-                    } else {
-                        LOGGER.warn("[Skyblocker Dungeon Door] Failed to find player {}", name);
-                    }
-                }
+        if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight && !bloodOpened) {
+            if (BLOOD_DOOR_OPENED.equals(message)) {
+                bloodOpened = true;
+            }
+
+            if (KEY_FOUND.matcher(message).matches()) {
+                hasKey = true;
+            }
+
+            if (WITHER_DOOR_OPENED.matcher(message).matches()) {
+                hasKey = false;
             }
         }
 
@@ -770,5 +773,49 @@ public class DungeonManager {
         rooms.clear();
         currentRoom = null;
         boss = DungeonBoss.NONE;
+        bloodRushDoorBox = null;
+        bloodOpened = false;
+        hasKey = false;
+    }
+
+    /**
+     * Determines where the current door of interest is
+     *
+     * @implNote Relies on the minimap to check for doors
+     */
+    private static void getBloodRushDoorPos(@NotNull MapState map) {
+        if (mapEntrancePos == null || mapRoomSize == 0) {
+            LOGGER.error("[Skyblocker Dungeon Secrets] Dungeon map info missing with map entrance pos {} and map room size {}", mapEntrancePos, mapRoomSize);
+            return;
+        }
+
+        Vector2i nWMostRoom = getMapPosForNWMostRoom(mapEntrancePos, mapRoomSize);
+
+        for (int x = nWMostRoom.x + mapRoomSize / 2; x < 128; x += mapRoomSize + 4) {
+            for (int y = nWMostRoom.y + mapRoomSize; y < 128; y += mapRoomSize + 4) {
+                byte color = getColor(map, x, y);
+
+                // 119 is the black found on wither doors on the map, 18 is the blood door red
+                if (color == 119 || color == 18) {
+                    Vector2ic doorPos = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, new Vector2i(x - mapRoomSize / 2, y - mapRoomSize));
+                    bloodRushDoorBox = new Box(doorPos.x() + 14, 69, doorPos.y() + 30, doorPos.x() + 17, 73, doorPos.y() + 33);
+
+                    return;
+                }
+            }
+        }
+
+        for (int x = nWMostRoom.x + mapRoomSize; x < 128; x += mapRoomSize + 4) {
+            for (int y = nWMostRoom.y + mapRoomSize / 2; y < 128; y += mapRoomSize + 4) {
+                byte color = getColor(map, x, y);
+
+                if (color == 119 || color == 18) {
+                    Vector2ic doorPos = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, new Vector2i(x - mapRoomSize, y - mapRoomSize / 2));
+                    bloodRushDoorBox = new Box(doorPos.x() + 30, 69, doorPos.y() + 14, doorPos.x() + 33, 73, doorPos.y() + 17);
+
+                    return;
+                }
+            }
+        }
     }
 }
