@@ -75,7 +75,7 @@ public class PlayerInventory implements ProfileViewerPage {
             context.drawItem(containerList.get(startIndex + i), x, y);
             context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
 
-            if (mouseX > x -1 && mouseX < x + 16 && mouseY > y - 1 && mouseY < y + 16) {
+            if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
                 tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
             }
         }
