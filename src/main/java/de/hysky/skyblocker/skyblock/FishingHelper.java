@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
@@ -73,6 +74,23 @@ public class FishingHelper {
                 reset();
             }
         }
+    }
+
+    // Sends a title notification if a fish is caught, the sound method is kept still in case the player doesn't have this skyblock option on
+    public static void checkIfFishWasCaught(ArmorStandEntity armorStand) {
+    	if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
+    	    if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible()) return;
+
+    	    ClientPlayerEntity player = MinecraftClient.getInstance().player;
+    	    if (player != null && player.fishHook != null) {
+    	        String name = armorStand.getCustomName().getString();
+
+    	        if (name.equals("!!!") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
+    	            RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
+    	            resetFish();
+    	        }
+    	    }
+    	}
     }
 
     public static void render(WorldRenderContext context) {
