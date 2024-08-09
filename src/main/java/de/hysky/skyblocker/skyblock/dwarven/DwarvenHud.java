@@ -89,11 +89,12 @@ public class DwarvenHud {
 
     /**
      * Renders hud to window without using the widget rendering
-     * @param context DrawContext to draw the hud to
-     * @param comHudX X coordinate of the commissions hud
-     * @param comHudY Y coordinate of the commissions hud
-     * @param powderHudX X coordinate of the powder hud
-     * @param powderHudY Y coordinate of the powder hud
+     *
+     * @param context     DrawContext to draw the hud to
+     * @param comHudX     X coordinate of the commissions hud
+     * @param comHudY     Y coordinate of the commissions hud
+     * @param powderHudX  X coordinate of the powder hud
+     * @param powderHudY  Y coordinate of the powder hud
      * @param commissions the commissions to render to the commissions hud
      */
     @Deprecated(since = "1.20.3+1.20.6", forRemoval = true)
