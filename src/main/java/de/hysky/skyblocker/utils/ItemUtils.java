@@ -329,9 +329,10 @@ public class ItemUtils {
         // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
         // TODO Cache the max durability and only update the current durability on inventory tick
 
-        int pickonimbusDurability = customData.getInt("pickonimbus_durability");
-        if (pickonimbusDurability > 0) {
-            return IntIntPair.of(pickonimbusDurability, 5000);
+        if (stack.getSkyblockId().equals("PICKONIMBUS")) {
+        	int pickonimbusDurability = customData.getInt("pickonimbus_durability");
+
+            return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 5000, 5000);
         }
 
         String drillFuel = Formatting.strip(getLoreLineIf(stack, FUEL_PREDICATE));
