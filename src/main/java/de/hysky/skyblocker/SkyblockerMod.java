@@ -2,6 +2,8 @@ package de.hysky.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.debug.Debug;
@@ -109,6 +111,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ConfigDataFixer.apply();
         Utils.init();
         SkyblockerConfigManager.init();
+        ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
         SkyblockerScreen.initClass();
         ProfileViewerScreen.initClass();
         Tips.init();
