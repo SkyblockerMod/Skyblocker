@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 
 public class AlignStage extends PipelineStage {
@@ -52,7 +52,7 @@ public class AlignStage extends PipelineStage {
 
     public void run(int screenW, int screenH) {
         int wHalf, hHalf;
-        for (Widget wid : primary) {
+        for (HudWidget wid : primary) {
             switch (this.reference) {
                 case HORICENT -> wid.setX((screenW - wid.getWidth()) / 2);
                 case VERTCENT -> wid.setY((screenH - wid.getHeight()) / 2);

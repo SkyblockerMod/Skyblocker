@@ -2,9 +2,10 @@ package de.hysky.skyblocker.skyblock.end;
 
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
 
-public class EndHudWidget extends Widget {
+public class EndHudWidget extends ComponentBasedWidget {
     private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
     public static final EndHudWidget INSTANCE = new EndHudWidget(TITLE, Formatting.DARK_PURPLE.getColorValue());
@@ -31,16 +32,15 @@ public class EndHudWidget extends Widget {
 
         ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
         POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
-
-        INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
-        INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);
     }
 
     public EndHudWidget(MutableText title, Integer colorValue) {
-        super(title, colorValue);
-        this.setX(5);
-        this.setY(5);
+        super(title, colorValue, "hud_end");
         this.update();
+    }
+    @Override
+    public boolean shouldRender(Location location) {
+        return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
     }
 
     @Override
@@ -69,4 +69,10 @@ public class EndHudWidget extends Widget {
             }
         }
     }
+
+    @Override
+    public String getNiceName() {
+        return "End Hud";
+    }
+
 }

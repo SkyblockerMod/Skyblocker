@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
@@ -19,9 +19,9 @@ import java.util.List;
  */
 public abstract class HudConfigScreen extends Screen {
     private final Screen parent;
-    private final List<Widget> widgets;
+    private final List<HudWidget> widgets;
 
-    private Widget draggingWidget;
+    private HudWidget draggingWidget;
     private double mouseClickRelativeX;
     private double mouseClickRelativeY;
 
@@ -31,7 +31,7 @@ public abstract class HudConfigScreen extends Screen {
      * @param parent the parent screen
      * @param widget the widget to configure
      */
-    public HudConfigScreen(Text title, Screen parent, Widget widget) {
+    public HudConfigScreen(Text title, Screen parent, HudWidget widget) {
         this(title, parent, List.of(widget));
     }
 
@@ -41,7 +41,7 @@ public abstract class HudConfigScreen extends Screen {
      * @param parent the parent screen
      * @param widgets the widgets to configure
      */
-    public HudConfigScreen(Text title, Screen parent, List<Widget> widgets) {
+    public HudConfigScreen(Text title, Screen parent, List<HudWidget> widgets) {
         super(title);
         this.parent = parent;
         this.widgets = widgets;
@@ -56,13 +56,13 @@ public abstract class HudConfigScreen extends Screen {
     }
 
     /**
-     * Renders the widgets using the default {@link Widget#render(DrawContext, boolean)} method. Override to change the behavior.
+     * Renders the widgets using the default {@link HudWidget#render(DrawContext)} method. Override to change the behavior.
      * @param context the context to render in
      * @param widgets the widgets to render
      */
-    protected void renderWidget(DrawContext context, List<Widget> widgets) {
-        for (Widget widget : widgets) {
-            widget.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
+    protected void renderWidget(DrawContext context, List<HudWidget> widgets) {
+        for (HudWidget widget : widgets) {
+            widget.render(context);
         }
     }
 
@@ -78,7 +78,7 @@ public abstract class HudConfigScreen extends Screen {
     @Override
     public final boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            for (Widget widget : widgets) {
+            for (HudWidget widget : widgets) {
                 if (RenderHelper.pointIsInArea(mouseX, mouseY, widget.getX(), widget.getY(), widget.getX() + widget.getWidth(), widget.getY() + widget.getHeight())) {
                     draggingWidget = widget;
                     mouseClickRelativeX = mouseX - widget.getX();
@@ -107,7 +107,7 @@ public abstract class HudConfigScreen extends Screen {
             throw new IllegalStateException("The number of positions (" + configPositions.size() + ") does not match the number of widgets (" + widgets.size() + ")");
         }
         for (int i = 0; i < widgets.size(); i++) {
-            Widget widget = widgets.get(i);
+            HudWidget widget = widgets.get(i);
             IntIntMutablePair configPos = configPositions.get(i);
             widget.setX(configPos.leftInt());
             widget.setY(configPos.rightInt());
@@ -137,5 +137,5 @@ public abstract class HudConfigScreen extends Screen {
      * @param configManager the config so you don't have to get it
      * @param widgets the widgets to save
      */
-    protected abstract void savePos(SkyblockerConfig configManager, List<Widget> widgets);
+    protected abstract void savePos(SkyblockerConfig configManager, List<HudWidget> widgets);
 }
