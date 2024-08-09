@@ -7,6 +7,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -192,7 +193,7 @@ public class ChestValue {
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
 
-					value += priceData.leftDouble() * stack.getCount();
+					value += NetworthCalculator.getItemNetworth(stack).price();
 				}
 			}
 
