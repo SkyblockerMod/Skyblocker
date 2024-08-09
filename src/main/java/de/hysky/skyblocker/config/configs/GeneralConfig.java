@@ -5,13 +5,16 @@ import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +55,9 @@ public class GeneralConfig {
     @SerialEntry
     public List<Integer> lockedSlots = new ArrayList<>();
 
+    @SerialEntry
+    public SlotSwap slotSwap = new SlotSwap();
+
     //maybe put this 5 somewhere else
     @SerialEntry
     public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
@@ -78,7 +84,6 @@ public class GeneralConfig {
         @SerialEntry
         public boolean enableCommandArgShortcuts = true;
     }
-
 
     public static class QuiverWarning {
         @SerialEntry
@@ -251,4 +256,14 @@ public class GeneralConfig {
         public boolean oldLeverHitbox = false;
     }
 
+    public static class SlotSwap {
+        @SerialEntry
+        public boolean enableSlotSwap = true;
+        @SerialEntry
+        public ObjectArrayList<IntIntImmutablePair> slotSquareMap = new ObjectArrayList<>(9); // Hotbar slot count
+        @SerialEntry
+        public Color sourceSlotColor = new Color(0xE86DFF);
+        @SerialEntry
+        public Color targetSlotColor = new Color(0xFFBB00);
+    }
 }
