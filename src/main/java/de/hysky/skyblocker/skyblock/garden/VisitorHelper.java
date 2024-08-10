@@ -46,17 +46,20 @@ public class VisitorHelper {
     private static final int ITEM_INDENT = 20;
     private static final int LINE_SPACING = 3;
 
+    private static boolean shouldProcessVisitorItems = true;
+
     public static void init() {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             String title = screen.getTitle().getString();
             if (SkyblockerConfigManager.get().farming.garden.visitorHelper && screen instanceof HandledScreen<?> handledScreen && (Utils.getLocationRaw().equals("garden") && !title.contains("Logbook") || title.startsWith("Bazaar"))) {
                 ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) -> renderScreen(title, context, client.textRenderer, handledScreen.getScreenHandler(), mouseX, mouseY));
+                ScreenEvents.remove(screen).register(screen_ -> shouldProcessVisitorItems = true);
             }
         });
     }
 
     public static void renderScreen(String title, DrawContext context, TextRenderer textRenderer, ScreenHandler handler, int mouseX, int mouseY) {
-        if (handler.getCursorStack() == ItemStack.EMPTY) processVisitorItem(title, handler);
+        if (handler.getCursorStack() == ItemStack.EMPTY && shouldProcessVisitorItems) processVisitorItem(title, handler);
         drawScreenItems(context, textRenderer, mouseX, mouseY);
     }
 
@@ -93,8 +96,9 @@ public class VisitorHelper {
     }
 
     public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
-        if (slotId == 29 || slotId == 13 || slotId == 33) {
+        if ((slotId == 29 || slotId == 13 || slotId == 33) && slot.hasStack() && ItemUtils.getLoreLineIf(slot.getStack(), s -> s.equals("Click to give!") || s.equals("Click to refuse!")) != null) {
             itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
+            shouldProcessVisitorItems = false;
         }
     }
 
