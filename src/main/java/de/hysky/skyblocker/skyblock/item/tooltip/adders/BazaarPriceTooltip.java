@@ -25,7 +25,7 @@ public class BazaarPriceTooltip extends TooltipAdder {
 		bazaarExist = false;
         String skyblockApiId = stack.getSkyblockApiId();
 
-		if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(name)) {
+		if (TooltipInfoType.BAZAAR.isTooltipEnabledAndHasOrNullWarning(skyblockApiId)) {
 			int amount;
 			if (lines.get(1).getString().endsWith("Sack")) {
 				//The amount is in the 2nd sibling of the 3rd line of the lore.                                              here V
