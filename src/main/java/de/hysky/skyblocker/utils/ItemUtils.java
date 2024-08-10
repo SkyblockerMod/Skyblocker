@@ -60,7 +60,7 @@ public class ItemUtils {
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
-            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
             return Command.SINGLE_SUCCESS;
         });
     }

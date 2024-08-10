@@ -52,7 +52,7 @@ public class Debug {
                     ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
                         Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
                         if (key == GLFW.GLFW_KEY_U && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
-                            client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow())));
+                            client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, focusedSlot.getStack()).getOrThrow())));
                         }
                     });
                 }
