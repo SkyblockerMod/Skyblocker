@@ -37,6 +37,6 @@ record SkyblockItemMetadataRetriever(IntList cakeBagCakeYears) implements ItemMe
 			} catch (Exception ignored) {}
 		}
 
-		return new IntArrayList();
+		return IntList.of();
 	}
 }

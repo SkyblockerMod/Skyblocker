@@ -13,7 +13,7 @@ import net.azureaaron.networth.data.SkyblockItemData;
 
 public class NetworthDataSuppliers {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static Object2ObjectMap<String, SkyblockItemData>  itemData = Object2ObjectMaps.emptyMap();
+	private static Object2ObjectMap<String, SkyblockItemData> itemData = Object2ObjectMaps.emptyMap();
 
 	public static void updateSkyblockItemData(JsonArray items) {
 		try {

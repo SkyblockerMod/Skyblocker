@@ -52,6 +52,7 @@ public class Debug {
 			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 					.then(dumpPlayersCommand())
 					.then(ItemUtils.dumpHeldItemCommand())
+					.then(ItemUtils.dumpHeldItemNetworthCalculationsCommand())
 					.then(toggleShowingInvisibleArmorStands())
 					.then(dumpArmorStandHeadTextures())
 					.then(toggleWebSocketDebug())
