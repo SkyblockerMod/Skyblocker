@@ -65,15 +65,20 @@ public class QuickNavigationConfig {
     public QuickNavItem button14 = new QuickNavItem(new ItemData(Items.CRAFTING_TABLE), "Craft Item", "/craft", "Crafting Table");
 
     public static class QuickNavItem {
+        /**
+         * Default constructor or else gson skips initialization.
+         */
+        private QuickNavItem() {}
+
+        public QuickNavItem(ItemData itemData, String clickEvent, String tooltip) {
+            this(itemData, "none", clickEvent, tooltip);
+        }
+
         public QuickNavItem(ItemData itemData, @Language("RegExp") String uiTitle, String clickEvent, String tooltip) {
             this.itemData = itemData;
             this.uiTitle = uiTitle;
             this.clickEvent = clickEvent;
             this.tooltip = tooltip;
-        }
-
-        public QuickNavItem(ItemData itemData, String clickEvent, String tooltip) {
-            this(itemData, "none", clickEvent, tooltip);
         }
 
         @SerialEntry
@@ -86,7 +91,7 @@ public class QuickNavigationConfig {
         public String uiTitle;
 
         @SerialEntry
-        public String tooltip;
+        public String tooltip = "";
 
         @SerialEntry
         public String clickEvent;
