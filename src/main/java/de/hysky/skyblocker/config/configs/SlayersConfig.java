@@ -33,32 +33,6 @@ public class SlayersConfig {
         public boolean highlightNukekubiHeads = true;
     }
 
-    public static class BlazeSlayer {
-        @SerialEntry
-        public FirePillar firePillarCountdown = FirePillar.SOUND_AND_VISUAL;
-
-        @SerialEntry
-        public Boolean attunementHighlights = true;
-
-        public enum FirePillar {
-            OFF("Off"),
-            VISUAL("Visual Indicator"),
-            SOUND_AND_VISUAL("Sound and Visual Indicator");
-
-            private final String description;
-
-            FirePillar(String description) {
-                this.description = description;
-            }
-
-            @Override
-            public String toString() {
-                return description;
-            }
-        }
-
-    }
-
     public static class VampireSlayer {
         @SerialEntry
         public boolean enableEffigyWaypoints = true;
@@ -95,5 +69,30 @@ public class SlayersConfig {
 
         @SerialEntry
         public int maniaUpdateFrequency = 5;
+    }
+
+    public static class BlazeSlayer {
+        @SerialEntry
+        public FirePillar firePillarCountdown = FirePillar.SOUND_AND_VISUAL;
+
+        @SerialEntry
+        public Boolean attunementHighlights = true;
+
+        public enum FirePillar {
+            OFF("Off"),
+            VISUAL("Visual Indicator"),
+            SOUND_AND_VISUAL("Sound and Visual Indicator");
+
+            private final String description;
+
+            FirePillar(String description) {
+                this.description = description;
+            }
+
+            @Override
+            public String toString() {
+                return description;
+            }
+        }
     }
 }

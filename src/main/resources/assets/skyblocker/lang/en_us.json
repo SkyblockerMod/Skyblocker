@@ -197,8 +197,7 @@
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
-  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nWARNING: This feature utilises ray casting on a lot of entities which may have an impact on performance.",
-
+  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nWARNING: This feature utilises ray casting on entities which may have an impact on performance.",
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
@@ -620,7 +619,7 @@
   "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "\nOFF: Do not highlight Slayer Bosses.",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Bosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX: Display a Hitbox around the Slayer Boss",
-  "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "This option is required for Blazeslayer Attunement Highlighting",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "\nThis option is required for Blazeslayer Attunement Highlighting",
 
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",

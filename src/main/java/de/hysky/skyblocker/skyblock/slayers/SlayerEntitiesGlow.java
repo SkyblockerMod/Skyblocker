@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SlayerUtils;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -36,7 +37,7 @@ public class SlayerEntitiesGlow {
     );
 
     public static void init() {
-        SkyblockEvents.LOCATION_CHANGE.register(SlayerEntitiesGlow::clearGlow);
+        ClientPlayConnectionEvents.JOIN.register((ignore, ignore2, ignore3) -> clearGlow());
     }
     private static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
             SlayerUtils.REVENANT, ZombieEntity.class,
@@ -60,22 +61,16 @@ public class SlayerEntitiesGlow {
     public static boolean isSlayerMiniMob(LivingEntity entity) {
         if (entity.getCustomName() == null) return false;
         String entityName = entity.getCustomName().getString();
-        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName ->
-                entityName.contains(slayerMobName) && SlayerUtils.isInSlayerQuestType(SLAYER_MINI_NAMES.get(slayerMobName)));
+        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName -> entityName.contains(slayerMobName) && SlayerUtils.isInSlayerQuestType(SLAYER_MINI_NAMES.get(slayerMobName)));
     }
 
     public static Box getSlayerMobBoundingBox(LivingEntity entity) {
         return switch (SlayerUtils.getSlayerType()) {
-            case SlayerUtils.REVENANT ->
-                    new Box(entity.getX() - 0.4, entity.getY() - 0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
-            case SlayerUtils.TARA ->
-                    new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
-            case SlayerUtils.VOIDGLOOM ->
-                    new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
-            case SlayerUtils.SVEN ->
-                    new Box(entity.getX() - 0.5, entity.getY() - 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 1, entity.getZ() + 0.5);
-            default ->
-                    new Box(entity.getX() - 0.5, entity.getY() + 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 2.2, entity.getZ() + 0.5);
+            case SlayerUtils.REVENANT -> new Box(entity.getX() - 0.4, entity.getY() - 0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
+            case SlayerUtils.TARA -> new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
+            case SlayerUtils.VOIDGLOOM -> new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
+            case SlayerUtils.SVEN -> new Box(entity.getX() - 0.5, entity.getY() - 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 1, entity.getZ() + 0.5);
+            default -> entity.getBoundingBox();
         };
     }
 
@@ -91,7 +86,6 @@ public class SlayerEntitiesGlow {
                         .getBoxAt(armorStand.getPos()).expand(1.5), entity ->
                         !entity.isDead() && entity.age > armorStand.age - 4 && entity.age < armorStand.age + 4)
                 .stream()
-                .filter(entity -> !(entity instanceof CaveSpiderEntity))
                 .filter(SlayerEntitiesGlow::isValidSlayerMob)
                 .min(Comparator.comparingDouble((MobEntity e) -> e.distanceTo(armorStand)))
                 .orElse(null);
@@ -123,7 +117,7 @@ public class SlayerEntitiesGlow {
         if (entity != null && entity.getUuid() != null) MOBS_TO_GLOW.remove(entity.getUuid());
     }
 
-    private static void clearGlow(Location location) {
+    private static void clearGlow() {
         MOBS_TO_GLOW.clear();
     }
 

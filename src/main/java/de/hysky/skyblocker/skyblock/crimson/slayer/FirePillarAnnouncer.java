@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.PlainTextContent;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +50,7 @@ public class FirePillarAnnouncer {
     }
 
     private static void announceFirePillarDetails(String entityName) {
-        Title title = new Title(MutableText.of(new PlainTextContent.Literal(entityName)).formatted(Formatting.BOLD, Formatting.DARK_PURPLE));
+        Title title = new Title(Text.literal(entityName).formatted(Formatting.BOLD, Formatting.DARK_PURPLE));
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown == SlayersConfig.BlazeSlayer.FirePillar.SOUND_AND_VISUAL) {
             RenderHelper.displayInTitleContainerAndPlaySound(title, 15);
