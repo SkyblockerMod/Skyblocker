@@ -24,6 +24,7 @@ public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(), // Applies before anything else
 			new TrueHexDisplay(),
+			new TrueHexDyeScreenDisplay(),
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
