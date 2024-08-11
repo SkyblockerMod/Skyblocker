@@ -182,6 +182,9 @@ dependencies {
 	// Networth Calculator (https://github.com/AzureAaron/networth-calculator)
 	include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
 
+	// Legacy Item DFU
+	include implementation("net.azureaaron:legacy-item-dfu:${project.legacy_item_dfu_version}")
+
 	// JGit used pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")
 
