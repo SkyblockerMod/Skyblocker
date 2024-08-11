@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
