@@ -43,10 +43,8 @@ public class ConfigNullFieldsFix {
 
 				if (targetValue == null && sourceValue != null) {
 					field.set(target, sourceValue);
-				} else if (isFixable(field.getType())) {
-					if (targetValue != null && sourceValue != null) {
-						fixNullFields(targetValue, sourceValue);
-					}
+				} else if (targetValue != null && sourceValue != null && isFixable(field.getType())) {
+					fixNullFields(targetValue, sourceValue);
 				}
 			}
 		}
