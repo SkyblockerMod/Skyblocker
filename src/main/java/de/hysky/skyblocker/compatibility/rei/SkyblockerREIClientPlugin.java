@@ -73,7 +73,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
         List<Text> lines
     ) {
         for (TooltipAdder adder : adders) {
-            adder.addToTooltip(EMPTY_SLOT, stack, lines);
+            if (adder.isEnabled()) adder.addToTooltip(EMPTY_SLOT, stack, lines);
         }
 
         return Tooltip.create(lines);

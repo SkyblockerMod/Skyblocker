@@ -33,7 +33,6 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
     @Override
     public void addToTooltip(@Nullable Slot focusedSloFt, ItemStack stack, List<Text> lines) {
-        if (SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == GeneralConfig.Craft.OFF) return;
         if (TooltipInfoType.LOWEST_BINS.getData() == null || TooltipInfoType.BAZAAR.getData() == null) {
             ItemTooltip.nullWarning();
             return;
