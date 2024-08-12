@@ -302,5 +302,11 @@
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "text.skyblocker.config": "Abrir configurações...",
     "skyblocker.skyblockerScreen": "Tela principal do Skyblocker",
-    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Se a quantidade de Veneno de Flecha Tóxica que você tem em seu inventário estiver abaixo do limite definido, você receberá um aviso.\n\n16 é o mínimo absoluto.\nVocê necessita 32 para uma fase 'DPS' suave com pré-disparo."
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Se a quantidade de Veneno de Flecha Tóxica que você tem em seu inventário estiver abaixo do limite definido, você receberá um aviso.\n\n16 é o mínimo absoluto.\nVocê necessita 32 para uma fase 'DPS' suave com pré-disparo.",
+    "argument.color.rgb.incomplete": "Incompleto (esperados 3 valores de cores).",
+    "argument.color.hex.invalidString": "Hex integer deve ter exatamente 6 caracteres, encontrados %d caracteres.",
+    "argument.color.hex.invalidChar": "Caractere inválido para hex integer: %s. Caracteres válidos: [0-9a-fA-F]",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Aviso de Perigo",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Exibe um aviso quando você está em perigo devido a um golpe de tentáculo ou de TNT. A cor do aviso adapta-se ao nível de perigo!",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Contorna Kuudra em um laranja escuro."
 }
