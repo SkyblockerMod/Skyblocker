@@ -862,5 +862,14 @@
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "宝箱和开锁器应使用的颜色。",
     "skyblocker.config.chat.skyblockXpMessages": "SkyBlock经验值消息",
     "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "获得SkyBlock经验值时，在聊天栏发送提示消息。",
-    "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "为%s在 %d %d %d 处添加了路径点。"
+    "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "为%s在 %d %d %d 处添加了路径点。",
+    "skyblocker.crimson.kuudra.danger": "危险！",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "启用物品估价",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "在工具提示中显示物品估计的总价值，§l并非总是100%准确。§r\n\n出售商品时，请务必手动检查商品价格！",
+    "skyblocker.config.quickNav.button.tooltip": "工具提示",
+    "skyblocker.config.quickNav.button.tooltip.@Tooltip": "将鼠标悬停在按钮上时显示工具提示。\n\n可以使用文本json格式。\n若不放置任何内容会使工具提示无法呈现。",
+    "skyblocker.tips.gardenMouseLock": "在Skyblocker设置→花园中可以设置在耕种时锁定鼠标。",
+    "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "如果物品没有任何可显示的信息，则隐藏该物品的工具提示。也可以阻止对玻璃板等占位物品的点击。",
+    "skyblocker.config.general.specialEffects.rareDyeDropEffects": "稀有染料掉落效果",
+    "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "掉落稀有染料时显示特殊视觉效果！"
 }
