@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -188,7 +189,7 @@ public class EditBarWidget extends ContainerWidget {
     public static class BooleanOption extends ClickableWidget {
 
         private boolean current = false;
-        private Consumer<Boolean> onChange = null;
+        private BooleanConsumer onChange = null;
 
         public BooleanOption(int x, int y, int width, Text message) {
             super(x, y, width, 11, message);
@@ -220,7 +221,7 @@ public class EditBarWidget extends ContainerWidget {
             this.current = current;
         }
 
-        public void setOnChange(Consumer<Boolean> onChange) {
+        public void setOnChange(BooleanConsumer onChange) {
             this.onChange = onChange;
         }
     }

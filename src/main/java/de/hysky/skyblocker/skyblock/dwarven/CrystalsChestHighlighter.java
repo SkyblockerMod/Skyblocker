@@ -154,7 +154,7 @@ public class CrystalsChestHighlighter {
                 Vec3d highlightSpot = Vec3d.ZERO;
 
                 //if to old remove particle
-                activeParticles.entrySet().removeIf(e -> System.currentTimeMillis() - e.getValue() > MAX_PARTICLE_LIFE_TIME);
+                activeParticles.object2LongEntrySet().removeIf(e -> System.currentTimeMillis() - e.getLongValue() > MAX_PARTICLE_LIFE_TIME);
 
                 //add up all particle within range of active block
                 for (Vec3d particlePos : activeParticles.keySet()) {

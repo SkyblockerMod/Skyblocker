@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.experiment;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
@@ -13,7 +15,7 @@ import java.util.*;
 public final class SuperpairsSolver extends ExperimentSolver {
     private int superpairsPrevClickedSlot;
     private ItemStack superpairsCurrentSlot;
-    private final Set<Integer> superpairsDuplicatedSlots = new HashSet<>();
+    private final IntSet superpairsDuplicatedSlots = new IntOpenHashSet();
 
     public SuperpairsSolver() {
         super("^Superpairs \\(\\w+\\)$");
@@ -50,7 +52,7 @@ public final class SuperpairsSolver extends ExperimentSolver {
             if (getState() == State.SHOW && getSlots().get(superpairsPrevClickedSlot) == null) {
                 ItemStack itemStack = genericContainerScreen.getScreenHandler().getInventory().getStack(superpairsPrevClickedSlot);
                 if (!(itemStack.isOf(Items.CYAN_STAINED_GLASS) || itemStack.isOf(Items.BLACK_STAINED_GLASS_PANE) || itemStack.isOf(Items.AIR))) {
-                    getSlots().entrySet().stream().filter((entry -> ItemStack.areEqual(entry.getValue(), itemStack))).findAny().ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getKey()));
+                    getSlots().int2ObjectEntrySet().stream().filter((entry -> ItemStack.areEqual(entry.getValue(), itemStack))).findAny().ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getIntKey()));
                     getSlots().put(superpairsPrevClickedSlot, itemStack);
                     superpairsCurrentSlot = itemStack;
                 }
