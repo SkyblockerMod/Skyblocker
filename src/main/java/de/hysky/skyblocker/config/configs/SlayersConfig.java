@@ -17,10 +17,10 @@ public class SlayersConfig {
     public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
     @SerialEntry
-    public BlazeSlayer blazeSlayer = new BlazeSlayer();
+    public VampireSlayer vampireSlayer = new VampireSlayer();
 
     @SerialEntry
-    public VampireSlayer vampireSlayer = new VampireSlayer();
+    public BlazeSlayer blazeSlayer = new BlazeSlayer();
 
     public static class EndermanSlayer {
         @SerialEntry

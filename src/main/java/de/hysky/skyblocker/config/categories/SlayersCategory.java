@@ -18,6 +18,7 @@ public class SlayersCategory {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("skyblocker.config.slayer"))
 
+                //General Slayers Options
                 .option(Option.<SlayersConfig.HighlightSlayerEntities>createBuilder()
                         .name(Text.translatable("skyblocker.config.slayer.highlightMinis"))
                         .description(OptionDescription.of(
@@ -163,6 +164,7 @@ public class SlayersCategory {
                                 .build())
                         .build())
 
+                //Blaze Slayer
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.slayer.blazeSlayer"))
                         .collapsed(true)
