@@ -63,20 +63,9 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
         entryRegistry.addEntries(stacks);
     }
 
-    private final TooltipAdder[] adders = new TooltipAdder[]{
-        new LineSmoothener(), // Applies before anything else
-        new TrueHexDisplay(),
-        new NpcPriceTooltip(0),
-        new BazaarPriceTooltip(1),
-        new LBinTooltip(2),
-        new AvgBinTooltip(3),
-        new CraftPriceTooltip(4),
-        new DungeonQualityTooltip(5),
-        new MotesTooltip(6),
-        new MuseumTooltip(7),
-        new ColorTooltip(8),
-        new AccessoryTooltip(9),
-    };
+    private final List<TooltipAdder> adders = Arrays.stream(TooltipManager.adders)
+        .filter(adder -> adder instanceof SimpleTooltipAdder && ((SimpleTooltipAdder) adder).titlePattern != null)
+        .toList();
     private final Slot EMPTY_SLOT = new Slot(null, 0, 0, 0);
 
     public Tooltip modifyTooltip(
