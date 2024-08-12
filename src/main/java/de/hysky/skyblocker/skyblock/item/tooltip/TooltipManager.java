@@ -34,12 +34,13 @@ public class TooltipManager {
 			new AvgBinTooltip(4),
 			new EssenceShopPrice(5),
 			new CraftPriceTooltip(6),
-			new DungeonQualityTooltip(7),
-			new MotesTooltip(8),
-			new ObtainedDateTooltip(9),
-			new MuseumTooltip(10),
-			new ColorTooltip(11),
-			new AccessoryTooltip(12),
+			new EstimatedItemValueTooltip(7),
+			new DungeonQualityTooltip(8),
+			new MotesTooltip(9),
+			new ObtainedDateTooltip(10),
+			new MuseumTooltip(11),
+			new ColorTooltip(12),
+			new AccessoryTooltip(13),
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
