@@ -136,7 +136,7 @@
     "skyblocker.config.dungeons.dungeonChestProfit.lossColor": "損失のときに使用される色",
     "skyblocker.config.dungeons.map.mapScreen": "ドンジョンの地図と得点の位置の設定…",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "はい",
-    "skyblocker.config.quickNav.button.item.itemName": "アイテムのID",
+    "skyblocker.config.quickNav.button.item.itemName": "アイテム",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.finish": "完成",
     "skyblocker.config.otherLocations.end.screen": "ジ・エンドのHUDの設定…",
     "skyblocker.config.dungeons.map.mapScaling": "地図の大きさ",
@@ -209,5 +209,13 @@
     "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Superboom TNTの使用ポイントを表示",
     "skyblocker.config.dungeons.secretWaypoints.enableWitherWaypoints": "Wither Essenceの位置を表示",
     "skyblocker.config.dungeons.starredMobGlow": "星付きモブを発光させる",
-    "skyblocker.config.foraging": "Foraging"
+    "skyblocker.config.foraging": "Foraging",
+    "skyblocker.dungeons.dungeonScore.scoreText": "得点：%s",
+    "skyblocker.config.helpers.chocolateFactory": "チョコレート工場",
+    "skyblocker.events.startsNow": "%sが始まる！",
+    "skyblocker.end.hud.protectorLocations.front": "前",
+    "skyblocker.end.hud.protectorLocations.left": "左",
+    "skyblocker.end.hud.protectorLocations.center": "中部",
+    "skyblocker.end.hud.protectorLocations.back": "後ろ",
+    "skyblocker.bars.config.explanationTitle": "これは何？"
 }
