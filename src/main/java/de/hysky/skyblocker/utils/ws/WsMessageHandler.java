@@ -23,23 +23,15 @@ public class WsMessageHandler {
 	/**
 	 * Used for sending messages to the current channel/server
 	 */
-	@SuppressWarnings("unchecked")
 	public static void sendMessage(Service service, Message<? extends Message<?>> message) {
-		try {
-			Codec<Message<?>> codec = (Codec<Message<?>>) message.getCodec();
-			Dynamic<JsonElement> dynamic = new Dynamic<>(JsonOps.INSTANCE, codec.encodeStart(JsonOps.INSTANCE, message).getOrThrow());
-
-			send(Type.PUBLISH, service, Utils.getServer(), Optional.of(dynamic));
-		} catch (Exception e) {
-			LOGGER.info("[Skyblocker WebSocket Message Handler] Failed to encode message! Message: {}", message, e);
-		}
+		send(Type.PUBLISH, service, Utils.getServer(), Optional.of(encodeMessage(message)));
 	}
 
 	/**
-	 * Useful for sending simple state updates
+	 * Useful for sending simple state updates with an optional message
 	 */
-	static void sendSimple(Type type, Service service, String serverId) {
-		send(type, service, serverId, Optional.empty());
+	static void sendSimple(Type type, Service service, String serverId, Optional<Message<? extends Message<?>>> message) {
+		send(type, service, serverId, message.isPresent() ? Optional.of(encodeMessage(message.get())) : Optional.empty());
 	}
 
 	private static void send(Type type, Service service, String serverId, Optional<Dynamic<?>> message) {
@@ -51,6 +43,20 @@ public class WsMessageHandler {
 		} catch (Exception e) {
 			LOGGER.info("[Skyblocker WebSocket Message Handler] Failed to send message! Type: {}, Service: {}, Message: {}", type, service, message, e);
 		}
+	}
+
+	private static Dynamic<?> encodeMessage(Message<? extends Message<?>> message) {
+		try {
+			@SuppressWarnings("unchecked")
+			Codec<Message<?>> codec = (Codec<Message<?>>) message.getCodec();
+			Dynamic<JsonElement> dynamic = new Dynamic<>(JsonOps.INSTANCE, codec.encodeStart(JsonOps.INSTANCE, message).getOrThrow());
+
+			return dynamic;
+		} catch (Exception e) {
+			LOGGER.info("[Skyblocker WebSocket Message Handler] Failed to encode message! Message: {}", message, e);
+		}
+
+		return new Dynamic<>(JsonOps.INSTANCE);
 	}
 
 	static void handleMessage(String message) {

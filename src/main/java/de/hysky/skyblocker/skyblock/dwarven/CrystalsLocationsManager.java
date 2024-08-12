@@ -18,6 +18,7 @@ import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.WsStateManager;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
+import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointSubscribeMessage;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -327,6 +328,7 @@ public class CrystalsLocationsManager {
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         waypointsSent2Socket.add(category);
         activeWaypoints.put(category.name(), waypoint);
+        CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", Text.literal(category.getName()).withColor(category.getColor()))));
     }
 
     protected static void addCustomWaypoint(String waypointName, BlockPos pos) {
@@ -362,7 +364,7 @@ public class CrystalsLocationsManager {
 
     private static void onLocationChange(Location newLocation) {
         if (newLocation == Location.CRYSTAL_HOLLOWS) {
-            WsStateManager.subscribe(Service.CRYSTAL_WAYPOINTS);
+            WsStateManager.subscribe(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.world)));
         }
     }
 
