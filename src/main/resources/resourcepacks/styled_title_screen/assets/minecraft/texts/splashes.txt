@@ -1,0 +1,4 @@
+Report bugs @ github.com/SkyblockerMod/Skyblocker!
+Beta versions are available on GitHub Actions!
+Get an items wiki page by pressing F4!
+github.com/SkyblockerMod/Skyblocker/wiki/contribute!

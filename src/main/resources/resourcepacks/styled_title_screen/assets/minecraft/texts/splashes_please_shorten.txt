@@ -1,0 +1,37 @@
+For each line shortened, delete it.
+
+Apply a custom dye color to your leather armor with /skyblocker custom dyeColor
+You can set custom armor trims on your armor using /skyblocker custom armorTrim.
+You can apply a custom animated dye to your leather armor with /skyblocker custom animatedDye!
+Did you know you can see extra info on our fancy tab menu when holding N or M?
+Use command /skyblocker help and you might find some more nifty features!
+Use Discord Rich Presence to show your friends how loaded you are!
+You can add custom secret waypoints to any dungeon room with /skyblocker dungeons secrets addWaypoint.
+Use /skyblocker shortcuts to create and edit command and message shortcuts.
+Check out https://hysky.de/skyblocker/gallery for pictures of the mod's features in action!
+See an item's rarity easily with Item Rarity Backgrounds in the config's Item Info Display section.
+ModMenu will let you know if there's an update available for Skyblocker for your game version.
+Submit bug reports and feature requests to https://github.com/SkyblockerMod/Skyblocker.
+Join our discord at https://discord.gg/aNNJHQykck to keep up with the latest news about Skyblocker!
+Find that the flame overlay takes up too much screen space? Check out the config to make it smaller
+Prevent accidentally dropping your items with /skyblocker protectItem.
+Don't know where to find Fairy Souls, Enigma Souls, or Relics? Enable the helpers to aid your exploration; they'll remember which souls you've already found.
+You can customize the QuickNav buttons in the config.
+You can import (including from skytils), add, remove, and toggle waypoints on any island with /skyblocker waypoints.
+You can import (including from coleweight), add, remove, and toggle ordered waypoints with /skyblocker waypoints ordered.
+Click on the item name in the visitor helper to buy from the bazaar or click on [Copy Amount] to copy the amount to your clipboard.
+Slot text shows you the attribute shard info, catacombs level, collection level, enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, skill level, skyblock level in the slot.
+You can view other players' profiles with /pv.
+You can search the entire config using the search bar on the bottom right of the config screen.
+Customize your damage value with Compact Damage in the config.
+You can access the Skyblocker screen to open the config or checkout helpful links for the mod with /skyblocker.
+Click on a tip chat message to run its suggestion!
+Check out the customizable event notifications in the config.
+Type an math expression in a sign to have the mod calculate it for you.
+Enter an expression after /skyblocker calculate to have the mod calculate it for you.
+Customize the look of your health, mana, defense, and experience bars with /skyblocker bars. You can snap and resize bars too!
+Share Crystal Hollows Waypoints with /skyblocker crystalWaypoints share.
+Lock your mouse while farming in the Skyblocker Garden config.
+Open your New Year Cake Bag and Skyblocker will remember them and highlight duplicate cakes red and missing cakes green.
+Open your accessory bag and Skyblocker will remember them. The accessory helper will tell you what accessories you have and what accessories are missing.
+Cheap BINs are highlighted in green in the Fancy Auction House.
