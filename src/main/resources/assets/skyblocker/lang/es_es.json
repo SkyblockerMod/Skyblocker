@@ -123,5 +123,6 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Advertencia de Peligro",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Muestra una advertencia cuando estás en riesgo de un tentaculazo o de la explosión de TNT. El color de la advertencia se adapta al nivel del peligro!",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Brillo de Kuudra",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Destaca a Kuudra con un naranja profundo."
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Destaca a Kuudra con un naranja profundo.",
+    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Destaca los cofres con las mayores ganancias en el UI del NPC Croesus.\n\n\nEl mejor cofre se destacará con verde.\nSi hay un cofre en el cual valga la pena usar una llave de mazmorra, se marcará amarillo"
 }
