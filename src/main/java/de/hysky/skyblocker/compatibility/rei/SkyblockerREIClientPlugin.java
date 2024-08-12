@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
@@ -18,14 +19,14 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * REI integration
  */
 public class SkyblockerREIClientPlugin implements REIClientPlugin {
-    public static final CategoryIdentifier<SkyblockCraftingDisplay> SKYBLOCK = CategoryIdentifier.of(
-        SkyblockerMod.NAMESPACE,
+    public static final CategoryIdentifier<SkyblockCraftingDisplay> SKYBLOCK = CategoryIdentifier.of(SkyblockerMod.NAMESPACE,
         "skyblock"
     );
 
@@ -45,16 +46,12 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
         List<EntryStack<ItemStack>> stacks = ItemRepository.getItemsStream()
             .map(item -> {
                 EntryStack<ItemStack> entry = EntryStacks.of(item);
-                ClientEntryStacks.setTooltipProcessor(
-                    entry,
-                    (_entry, tooltip) -> modifyTooltip(
-                        entry.getValue(),
-                        tooltip.entries()
-                            .stream()
-                            .map(Tooltip.Entry::getAsText)
-                            .toList()
-                    )
-                );
+                ClientEntryStacks.setTooltipProcessor(entry, (_entry, tooltip) -> modifyTooltip(entry.getValue(),
+                    tooltip.entries()
+                        .stream()
+                        .map(Tooltip.Entry::getAsText)
+                        .toList()
+                ));
                 return entry;
             })
             .toList();
