@@ -294,6 +294,8 @@
   "skyblocker.config.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "skyblocker.config.general.itemTooltip.enableObtainedDate": "Enable Obtained Date",
   "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",
+  "skyblocker.config.general.itemTooltip.showBitsCost": "Show Coins per Bit",
+  "skyblocker.config.general.itemTooltip.showBitsCost.@Tooltip": "Supposed to show amount of coins per bit. Instead just highlights best offer because I said so",
 
   "skyblocker.config.general.quiverWarning": "Quiver Warning",
   "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Enable Quiver Warning",

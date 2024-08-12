@@ -253,6 +253,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.enableEstimatedItemValue = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.showBitsCost"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.showBitsCost.@Tooltip")))
+                                .binding(defaults.general.itemTooltip.showBitsCost,
+                                        () -> config.general.itemTooltip.showBitsCost,
+                                        newValue -> config.general.itemTooltip.showBitsCost = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Item Info Display
