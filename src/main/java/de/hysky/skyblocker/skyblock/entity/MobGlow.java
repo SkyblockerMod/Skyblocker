@@ -40,7 +40,7 @@ public class MobGlow {
 	private static final ConcurrentHashMap<Entity, CacheEntry> canSeeCache = new ConcurrentHashMap<>();
 
 	public static void init() {
-		Scheduler.INSTANCE.scheduleCyclic(MobGlow::clearCache, 300*20);
+		Scheduler.INSTANCE.scheduleCyclic(MobGlow::clearCache, 300 * 20);
 	}
 
 	public static boolean shouldMobGlow(Entity entity) {
@@ -75,15 +75,6 @@ public class MobGlow {
 	}
 
 	private static boolean computeShouldMobGlow(Entity entity) {
-
-		if (entity.isInvisible()) {
-			return switch (entity) {
-				case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) ->
-						SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
-				default -> false;
-			};
-		}
-
 		String name = entity.getName().getString();
 
 		// Dungeons
@@ -122,6 +113,9 @@ public class MobGlow {
 			case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
 			case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN) -> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
 			case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
+
+			// Enderman Slayer's Nukekubi Skulls
+			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
 
 			// Blaze Slayer's Demonic minions
 			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
@@ -196,7 +190,7 @@ public class MobGlow {
 		return Streams.stream(entity.getArmorItems()).map(ItemUtils::getHeadTexture).anyMatch(headTexture -> headTexture.contains(NUKEKUBI_HEAD_TEXTURE));
 	}
 
-	private record CacheEntry(boolean value, long timestamp){}
+	private record CacheEntry(boolean value, long timestamp) {}
 
 	private static void clearCache() {
 		canSeeCache.clear();
