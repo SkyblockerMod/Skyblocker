@@ -861,5 +861,14 @@
     "skyblocker.config.general.minionValue.@Tooltip": "計算該Minion產生的物品價值。",
     "skyblocker.config.otherLocations.rift.mcGrubberStacks": "已有McGrubber數量",
     "skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "在物品槽位上顯示Attribute Ahard的等級及首字母縮寫。",
-    "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "為%s在 %d %d %d 處新增了路徑點。"
+    "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "為%s在 %d %d %d 處新增了路徑點。",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "啟用物品估價",
+    "skyblocker.crimson.kuudra.danger": "危險！",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "在工具提示中顯示物品估計的總價值，§l並非總是100%準確。 §r\n\n出售商品時，請務必手動檢查商品價格！",
+    "skyblocker.config.quickNav.button.tooltip": "工具提示",
+    "skyblocker.config.quickNav.button.tooltip.@Tooltip": "將滑鼠懸停在按鈕上時顯示工具提示。\n\n可以使用文本json格式。\n若不放置任何內容會使工具提示無法呈現。",
+    "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "如果物品沒有任何可顯示的訊息，則隱藏該物品的工具提示。也可以阻止對玻璃板等佔位物品的點擊。",
+    "skyblocker.tips.gardenMouseLock": "在Skyblocker設定→花園中可以設定在耕種時鎖定滑鼠。",
+    "skyblocker.config.general.specialEffects.rareDyeDropEffects": "稀有染料掉落效果",
+    "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "掉落稀有染料時顯示特殊視覺效果！"
 }
