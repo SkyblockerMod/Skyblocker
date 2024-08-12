@@ -26,16 +26,20 @@ public class MessageScheduler extends Scheduler {
      *
      * @param message the message to send
      */
-    public void sendMessageAfterCooldown(String message) {
+    public void sendMessageAfterCooldown(String message, boolean hide) {
         if (lastMessage + MIN_DELAY < System.currentTimeMillis()) {
-            sendMessage(message);
+            sendMessage(message,hide);
             lastMessage = System.currentTimeMillis();
         } else {
-            queueMessage(message, 0);
+            queueMessage(message, hide, 0);
         }
     }
 
-    private void sendMessage(String message) {
+    public void sendMessageAfterCooldown(String message) {
+        sendMessageAfterCooldown(message, false);
+    }
+
+    private void sendMessage(String message, boolean hide) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) {
             Scheduler.LOGGER.error("[Skyblocker Message Scheduler] Tried to send a message while player is null: {}", message);
@@ -45,7 +49,7 @@ public class MessageScheduler extends Scheduler {
         if (message.startsWith("/")) {
             client.player.networkHandler.sendCommand(message.substring(1));
         } else {
-            client.inGameHud.getChatHud().addToMessageHistory(message);
+            if (!hide) client.inGameHud.getChatHud().addToMessageHistory(message);
             client.player.networkHandler.sendChatMessage(message);
         }
     }
@@ -56,8 +60,8 @@ public class MessageScheduler extends Scheduler {
      * @param message the message to send
      * @param delay   the delay before sending the message in ticks
      */
-    public void queueMessage(String message, int delay) {
-        schedule(() -> sendMessage(message), delay);
+    public void queueMessage(String message, boolean hide, int delay) {
+        schedule(() -> sendMessage(message, hide), delay);
     }
 
     @Override
