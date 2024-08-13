@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 import java.util.Map;
 
 public class ItemFixerUpper {
@@ -173,7 +177,7 @@ public class ItemFixerUpper {
             "minecraft:fern"
     };
 
-    private final static Map<Integer, String> SPAWN_EGG_VARIANTS = Map.ofEntries(
+    private final static Int2ObjectMap<String> SPAWN_EGG_VARIANTS = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.ofEntries(
             //This entry 0 is technically not right but Hypixel decided to make it polar bear so well we use that
             Map.entry(0, "minecraft:polar_bear_spawn_egg"),
             Map.entry(50, "minecraft:creeper_spawn_egg"),
@@ -203,7 +207,7 @@ public class ItemFixerUpper {
             Map.entry(100, "minecraft:horse_spawn_egg"),
             Map.entry(101, "minecraft:rabbit_spawn_egg"),
             Map.entry(120, "minecraft:villager_spawn_egg")
-    );
+    )));
 
     private final static String[] SANDSTONE_VARIANTS = {
             ":",
