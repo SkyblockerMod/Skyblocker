@@ -202,14 +202,14 @@ public class BitsTooltip extends SimpleContainerSolver implements TooltipAdder {
 
     private final Map<String, Integer> catAbiphone = Util.make(new HashMap<>(), map -> {
         map.put("TRIO_CONTACTS_ADDON", 6450);
-        map.put("ABICASE_SUMSUNG_1", 15000); // NEU repo names. Original skibidiblock ID is all "ABICASE" with "Model" extra data. Admins why
-        map.put("ABICASE_SUMSUNG_2", 25000);
-        map.put("ABICASE_REZAR", 26000);
-        map.put("ABICASE_BLUE_AQUA", 17000);
-        map.put("ABICASE_BLUE_BLUE", 17000);
-        map.put("ABICASE_BLUE_GREEN", 17000);
-        map.put("ABICASE_BLUE_RED", 17000);
-        map.put("ABICASE_BLUE_YELLOW", 17000);
+        map.put("ABICASE", 15000);      // Original skibidiblock ID is all "ABICASE" with "Model" extra data. I don't see any good reason to do it like this. Admins why
+//        map.put("ABICASE_SUMSUNG_2", 25000);  // Luckily they all suck for bits to coins anyway
+//        map.put("ABICASE_REZAR", 26000);  // Speaking of which, out lbins for abicases are also cooked for same reason
+//        map.put("ABICASE_BLUE_AQUA", 17000);
+//        map.put("ABICASE_BLUE_BLUE", 17000);
+//        map.put("ABICASE_BLUE_GREEN", 17000);
+//        map.put("ABICASE_BLUE_RED", 17000);
+//        map.put("ABICASE_BLUE_YELLOW", 17000);
     });
 
     private final Map<String, Integer> catDyes = Util.make(new HashMap<>(), map -> {
