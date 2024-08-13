@@ -309,7 +309,12 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Aviso de Perigo",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Exibe um aviso quando você está em perigo devido a um golpe de tentáculo ou de TNT. A cor do aviso adapta-se ao nível de perigo!",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Contorna Kuudra em um laranja escuro.",
-    "key.bazaarLookup": "Olhar no Bazar",
+    "key.bazaarLookup": "Bazaar Pesquisa",
     "key.skyblocker.slottext": "Texto do Slot",
-    "key.bazaarRefresh": "Bazaar Atualizar"
+    "key.bazaarRefresh": "Bazaar Atualizar",
+    "skyblocker.config.dungeons.dungeonScore": "Pontuação da Dungeon",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Clique... (Abre Opções de Atalhos de Teclado)",
+    "skyblocker.config.shortcutToKeybindsSettings": "Editar Atalho de Teclado",
+    "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Pontos de Referência de Combustível",
+    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Destaca o botão correto para clicar em verde, e destaca o próximo em amarelo."
 }
