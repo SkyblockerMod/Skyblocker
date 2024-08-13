@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.time.Duration;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget;
 import net.minecraft.client.gui.DrawContext;
@@ -19,6 +17,8 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.time.Duration;
+
 public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingTableScreenHandler> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/crafting_table.png");
     protected static final ButtonTextures MORE_CRAFTS_TEXTURES = new ButtonTextures(
@@ -34,7 +34,6 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
 
     public SkyblockCraftingTableScreen(SkyblockCraftingTableScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
-        this.backgroundWidth += 22;
     }
 
     @Override
@@ -45,12 +44,12 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth) + 11;
         this.addDrawableChild(new TexturedButtonWidget(this.x + 5, this.height / 2 - 49, 20, 18, RecipeBookWidget.BUTTON_TEXTURES, button -> {
             this.recipeBook.toggleOpen();
-            this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth) + 11;
+            this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
             button.setPosition(this.x + 5, this.height / 2 - 49);
-            if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174, this.y + 62);
+            if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174 + 4, this.y + 62);
         }));
         if (!handler.mirrorverse) {
-            moreCraftsButton = new TexturedButtonWidget(this.x + 174, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
+            moreCraftsButton = new TexturedButtonWidget(this.x + 174 + 4, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
                     button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
             moreCraftsButton.setTooltipDelay(Duration.ofMillis(250L));
             moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More Crafts")));
@@ -96,8 +95,9 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
-        if (!handler.mirrorverse) context.drawGuiTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 173, j, 25, 84);
+        context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
+		//4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
+        if (!handler.mirrorverse) context.drawGuiTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 169, j - 3, 0, 37, 90);
     }
 
     @Override
