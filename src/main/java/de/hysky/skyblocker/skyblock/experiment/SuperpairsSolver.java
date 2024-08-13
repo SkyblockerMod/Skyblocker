@@ -79,8 +79,8 @@ public final class SuperpairsSolver extends ExperimentSolver {
 						                         .filter(entry -> entry.leftInt() == index || entry.rightInt() == index)
 						                         .findFirst()
 						                         .ifPresentOrElse(pair -> {
-							                         highlights.add(ColorHighlight.green(pair.leftInt()));
-							                         highlights.add(ColorHighlight.green(pair.rightInt()));
+							                         highlights.add(ColorHighlight.yellow(pair.leftInt()));
+							                         highlights.add(ColorHighlight.yellow(pair.rightInt()));
 						                         }, () -> highlights.add(ColorHighlight.red(index)));
 					}
 				}
