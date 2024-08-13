@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.experiment;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -15,7 +15,7 @@ import java.util.List;
 public final class SuperpairsSolver extends ExperimentSolver {
 	private int superpairsPrevClickedSlot = 0;
 	private ItemStack superpairsCurrentSlot = ItemStack.EMPTY;
-	private final List<IntIntImmutablePair> superpairsDuplicatedSlots = new ObjectArrayList<>(14);
+	private final IntSet superpairsDuplicatedSlots = new IntArraySet(14);
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
@@ -56,7 +56,7 @@ public final class SuperpairsSolver extends ExperimentSolver {
 				getSlots().int2ObjectEntrySet().stream()
 				          .filter(entry -> ItemStack.areEqual(entry.getValue(), itemStack))
 				          .findAny()
-				          .ifPresent(entry -> superpairsDuplicatedSlots.add(IntIntImmutablePair.of(entry.getIntKey(), superpairsPrevClickedSlot)));
+				          .ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getIntKey()));
 				getSlots().put(superpairsPrevClickedSlot, itemStack);
 				superpairsCurrentSlot = itemStack;
 			}
@@ -74,14 +74,10 @@ public final class SuperpairsSolver extends ExperimentSolver {
 				if (stack != null && !ItemStack.areEqual(stack, displayStack)) {
 					if (ItemStack.areEqual(superpairsCurrentSlot, stack) && displayStack.getName().getString().equals("Click a second button!")) {
 						highlights.add(ColorHighlight.green(index));
+					} else if (superpairsDuplicatedSlots.contains(index)) {
+						highlights.add(ColorHighlight.yellow(index));
 					} else {
-						superpairsDuplicatedSlots.stream()
-						                         .filter(entry -> entry.leftInt() == index || entry.rightInt() == index)
-						                         .findFirst()
-						                         .ifPresentOrElse(pair -> {
-							                         highlights.add(ColorHighlight.yellow(pair.leftInt()));
-							                         highlights.add(ColorHighlight.yellow(pair.rightInt()));
-						                         }, () -> highlights.add(ColorHighlight.red(index)));
+						highlights.add(ColorHighlight.red(index));
 					}
 				}
 			}
