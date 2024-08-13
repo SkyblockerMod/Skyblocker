@@ -15,7 +15,7 @@ import java.util.List;
 public final class SuperpairsSolver extends ExperimentSolver {
 	private int superpairsPrevClickedSlot = 0;
 	private ItemStack superpairsCurrentSlot = ItemStack.EMPTY;
-	private final IntSet superpairsDuplicatedSlots = new IntArraySet(14);
+	private final IntSet superpairsDuplicatedSlots = new IntArraySet(28);
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
@@ -56,7 +56,10 @@ public final class SuperpairsSolver extends ExperimentSolver {
 				getSlots().int2ObjectEntrySet().stream()
 				          .filter(entry -> ItemStack.areEqual(entry.getValue(), itemStack))
 				          .findAny()
-				          .ifPresent(entry -> superpairsDuplicatedSlots.add(entry.getIntKey()));
+				          .ifPresent(entry -> {
+					          superpairsDuplicatedSlots.add(entry.getIntKey());
+							  superpairsDuplicatedSlots.add(superpairsPrevClickedSlot);
+				          });
 				getSlots().put(superpairsPrevClickedSlot, itemStack);
 				superpairsCurrentSlot = itemStack;
 			}
