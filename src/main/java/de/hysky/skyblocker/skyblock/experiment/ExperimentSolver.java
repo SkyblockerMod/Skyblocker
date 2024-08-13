@@ -11,11 +11,10 @@ import net.minecraft.item.ItemStack;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The general class for all experiment solvers, implemented with a state machine.
+ */
 public abstract sealed class ExperimentSolver extends SimpleContainerSolver permits ChronomatronSolver, SuperpairsSolver, UltrasequencerSolver {
-    public enum State {
-        REMEMBER, WAIT, SHOW, END
-    }
-
     private State state = State.REMEMBER;
     private final Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
 
@@ -56,4 +55,23 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver perm
     }
 
     protected abstract void tick(GenericContainerScreen screen);
+
+    public enum State {
+        /**
+         * The state where the player has to remember the pattern.
+         */
+        REMEMBER,
+        /**
+         * The state where the solver has remembered the pattern and is waiting for the show state.
+         */
+        WAIT,
+        /**
+         * The state where the player has to recall the pattern and where the solver shows the player the pattern.
+         */
+        SHOW,
+        /**
+         * The state where the player has finished recalling the pattern and the current round is over.
+         */
+        END
+    }
 }

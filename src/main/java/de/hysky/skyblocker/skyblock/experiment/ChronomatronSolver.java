@@ -27,24 +27,25 @@ public final class ChronomatronSolver extends ExperimentSolver {
 			)
 	);
 
+	/**
+	 * The list of items to remember, in order.
+	 */
 	private final List<Item> chronomatronSlots = new ArrayList<>();
+	/**
+	 * The index of the current item shown in the chain, used for remembering.
+	 */
 	private int chronomatronChainLengthCount;
+	/**
+	 * The slot id of the current item shown, used for detecting when the experiment finishes showing the current item.
+	 */
 	private int chronomatronCurrentSlot;
+	/**
+	 * The next index in the chain to click.
+	 */
 	private int chronomatronCurrentOrdinal;
 
 	public ChronomatronSolver() {
 		super("^Chronomatron \\(\\w+\\)$");
-	}
-
-	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
-		if (getState() == State.SHOW) {
-			Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
-			if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && ++chronomatronCurrentOrdinal >= chronomatronSlots.size()) {
-				setState(ExperimentSolver.State.END);
-			}
-		}
-		return super.onClickSlot(slot, stack, screenId);
 	}
 
 	@Override
@@ -57,19 +58,24 @@ public final class ChronomatronSolver extends ExperimentSolver {
 		switch (getState()) {
 			case REMEMBER -> {
 				Inventory inventory = screen.getScreenHandler().getInventory();
+				// Only try to look for items with enchantment glint if there is no item being currently shown.
 				if (chronomatronCurrentSlot == 0) {
 					for (int index = 10; index < 43; index++) {
 						if (inventory.getStack(index).hasGlint()) {
+							// If the list of items is smaller than the index of the current item shown, add the item to the list and set the state to wait.
 							if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
 								chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(inventory.getStack(index).getItem()));
 								setState(State.WAIT);
 							} else {
+								// If the item is already in the list, increment the current item shown index.
 								chronomatronChainLengthCount++;
 							}
+							// Remember the slot shown to detect when the experiment finishes showing the current item.
 							chronomatronCurrentSlot = index;
 							return;
 						}
 					}
+					// If the current item shown no longer has enchantment glint, the experiment finished showing the current item.
 				} else if (!inventory.getStack(chronomatronCurrentSlot).hasGlint()) {
 					chronomatronCurrentSlot = 0;
 				}
@@ -82,6 +88,7 @@ public final class ChronomatronSolver extends ExperimentSolver {
 			case END -> {
 				String name = screen.getScreenHandler().getInventory().getStack(49).getName().getString();
 				if (!name.startsWith("Timer: ")) {
+					// Get ready for another round if the instructions say to remember the pattern.
 					if (name.equals("Remember the pattern!")) {
 						chronomatronChainLengthCount = 0;
 						chronomatronCurrentOrdinal = 0;
@@ -94,6 +101,9 @@ public final class ChronomatronSolver extends ExperimentSolver {
 		}
 	}
 
+	/**
+	 * Highlights the slots that contain the item at index {@link #chronomatronCurrentOrdinal} of {@link #chronomatronSlots} in the chain.
+	 */
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		List<ColorHighlight> highlights = new ArrayList<>();
@@ -108,6 +118,20 @@ public final class ChronomatronSolver extends ExperimentSolver {
 			}
 		}
 		return highlights;
+	}
+
+	/**
+	 * Increments {@link #chronomatronCurrentOrdinal} if the item clicked matches the item at {@link #chronomatronCurrentOrdinal the current index} in the chain.
+	 */
+	@Override
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+		if (getState() == State.SHOW) {
+			Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
+			if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && ++chronomatronCurrentOrdinal >= chronomatronSlots.size()) {
+				setState(ExperimentSolver.State.END);
+			}
+		}
+		return super.onClickSlot(slot, stack, screenId);
 	}
 
 	@Override
