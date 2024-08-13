@@ -118,7 +118,7 @@
     "skyblocker.config.uiAndVisuals.tabHud.plainPlayerNames.@Tooltip": "开启后在公共岛屿显示玩家名时不显示任何特殊效果。",
     "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "过滤来自 /show 命令的消息",
     "skyblocker.config.dungeons.starredMobGlow": "使星标怪物发光",
-    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "为玩家可见的星标怪物添加发光效果。\n\n注意：该功能是实验性的，玩家在使用时可能遇到一些问题。",
+    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "为玩家可见的星标怪物添加发光效果。\n\n注意：该功能在实体上绘制射线，这可能影响性能。",
     "skyblocker.config.dungeons.puzzle.solveTicTacToe": "井字棋谜题助手",
     "skyblocker.config.dungeons.secretWaypoints": "地牢秘密路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "启用地牢秘密路径点",
@@ -871,5 +871,16 @@
     "skyblocker.tips.gardenMouseLock": "在Skyblocker设置→花园中可以设置在耕种时锁定鼠标。",
     "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "如果物品没有任何可显示的信息，则隐藏该物品的工具提示。也可以阻止对玻璃板等占位物品的点击。",
     "skyblocker.config.general.specialEffects.rareDyeDropEffects": "稀有染料掉落效果",
-    "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "掉落稀有染料时显示特殊视觉效果！"
+    "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "掉落稀有染料时显示特殊视觉效果！",
+    "skyblocker.config.slayer.blazeSlayer": "烈焰人杀手",
+    "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer": "Fire Pillar倒计时通知",
+    "skyblocker.config.slayer.blazeSlayer.attunementHighlights": "Attunement高亮",
+    "skyblocker.config.slayer.highlightMinis": "高亮小型Boss",
+    "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nOFF：不高亮显示小型Boss。",
+    "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\nHITBOX：为小型Boss绘制判定箱",
+    "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX：为Boss绘制判定箱",
+    "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW：为Boss增加发光效果。由于技术限制，该选项在检测怪物时有较小概率出错",
+    "skyblocker.config.slayer.highlightMinis.@Tooltip[1]": "\nGLOW：为小型Boss增加发光效果。由于技术限制，该选项在检测怪物时有较小概率出错",
+    "skyblocker.config.slayer.highlightBosses": "高亮Boss",
+    "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "\nOFF：不高亮显示Boss。"
 }
