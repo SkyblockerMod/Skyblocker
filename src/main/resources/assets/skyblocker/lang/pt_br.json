@@ -262,7 +262,7 @@
     "skyblocker.customDyeColors.noItemUuid": "§cVocê tem que estar segurando um item que tenha um uuid para poder colocar uma tinta de cor customizada!",
     "skyblocker.itemProtection.removed": "§fSeu %s §nnão estar mais protegido§f :( - §lCuidado com os perigos de fazer isso!",
     "skyblocker.config.dungeons.dungeonChestProfit": "Calculador de lucro do baú da dungeon",
-    "skyblocker.config.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "Se ativado, o preço de uma Kismet usada será subtraído no cálculo da margem de lucro",
+    "skyblocker.config.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "Quando ativado, se você usou uma kismet, o preço de um será subtraído no cálculo da margem de lucro",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "Incluir essência",
     "skyblocker.config.dungeons.secretWaypoints.showSecretText": "Exibir texto secreto",
     "skyblocker.config.quickNav.button.clickEvent": "Evento ao clicar",
@@ -308,7 +308,7 @@
     "argument.color.hex.invalidChar": "Caractere inválido para hex integer: %s. Caracteres válidos: [0-9a-fA-F]",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Aviso de Perigo",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Exibe um aviso quando você está em perigo devido a um golpe de tentáculo ou de TNT. A cor do aviso adapta-se ao nível de perigo!",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Contorna Kuudra em um laranja escuro.",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Contorna Kuudra em um laranja-escuro.",
     "key.bazaarLookup": "Bazaar Pesquisa",
     "key.skyblocker.slottext": "Texto do Slot",
     "key.bazaarRefresh": "Bazaar Atualizar",
@@ -316,5 +316,14 @@
     "skyblocker.config.shortcutToKeybindsSettings.@Text": "Clique... (Abre Opções de Atalhos de Teclado)",
     "skyblocker.config.shortcutToKeybindsSettings": "Editar Atalho de Teclado",
     "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Pontos de Referência de Combustível",
-    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Destaca o botão correto para clicar em verde, e destaca o próximo em amarelo."
+    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Destaca o botão correto para clicar em verde, e destaca o próximo em amarelo.",
+    "skyblocker.config.crimsonIsle.extendNetherFog": "Estender Neblina do Nether",
+    "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Quando estiver na Ilha Carmesim, evita que a névoa apareça mais perto do jogador, como acontece nos biomas vanilla do nether.",
+    "skyblocker.config.dungeons.doorHighlight": "Destaque de Porta",
+    "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Ativar Destaque de Porta",
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNota: Waypoints Secreto da Dungeon tem que está ativa para isso funcionar.",
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Destaque: Apenas mostra um destaque.\n\nContorno + Destaque: Mostra tanto um destaque e um contorno.\n\nContorno: Apenas mostra um contorno.",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Sem Aviso de Flecha Venenosa",
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Tipo de Destaque de Porta",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Brilho de Kuudra"
 }
