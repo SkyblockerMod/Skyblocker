@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -62,6 +63,7 @@ public class SkyblockTime {
 	/**
 	 * Updates the time and schedules a cyclic scheduler which will update the time every hour, to be run on the next hour change.
 	 */
+	@Init
 	public static void init() {
 		updateTime();
 		//scheduleCyclic already runs the task upon scheduling, so there's no need to call updateTime() in the lambda as well

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.title;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.events.HudRenderEvents;
@@ -26,6 +27,7 @@ public class TitleContainer {
      */
     private static final Set<Title> titles = new LinkedHashSet<>();
 
+    @Init
     public static void init() {
         HudRenderEvents.BEFORE_CHAT.register(TitleContainer::render);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")

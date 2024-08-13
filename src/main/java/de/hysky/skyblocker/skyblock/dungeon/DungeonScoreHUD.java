@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.Utils;
@@ -13,6 +14,7 @@ public class DungeonScoreHUD {
 	private DungeonScoreHUD() {
 	}
 
+	@Init
 	public static void init() {
 		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> render(context));
 	}

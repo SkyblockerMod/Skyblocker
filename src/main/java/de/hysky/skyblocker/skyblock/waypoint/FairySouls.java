@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -63,6 +64,7 @@ public class FairySouls {
         return location == null ? maxSouls : fairySouls.get(location).size();
     }
 
+    @Init
     public static void init() {
         loadFairySouls();
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);

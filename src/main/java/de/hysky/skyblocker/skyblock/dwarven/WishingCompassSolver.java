@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Constants;
@@ -67,7 +68,7 @@ public class WishingCompassSolver {
     private static long particleLastUpdate = System.currentTimeMillis();
     private static Vec3d particleLastPos = Vec3d.ZERO;
 
-
+    @Init
     public static void init() {
         UseItemCallback.EVENT.register(WishingCompassSolver::onItemInteract);
         UseBlockCallback.EVENT.register(WishingCompassSolver::onBlockInteract);

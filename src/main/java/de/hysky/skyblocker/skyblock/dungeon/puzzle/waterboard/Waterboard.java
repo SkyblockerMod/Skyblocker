@@ -5,6 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
@@ -91,6 +92,7 @@ public class Waterboard extends DungeonPuzzle {
         super("waterboard", "water-puzzle");
     }
 
+    @Init
     public static void init() {
         UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
         if (Debug.debugEnabled()) {

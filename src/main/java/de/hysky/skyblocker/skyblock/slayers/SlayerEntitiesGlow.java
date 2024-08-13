@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -40,6 +41,7 @@ public class SlayerEntitiesGlow {
             Map.entry("Burningsoul Demon", SlayerUtils.DEMONLORD)
     );
 
+    @Init
     public static void init() {
         ClientPlayConnectionEvents.JOIN.register((ignore, ignore2, ignore3) -> clearGlow());
     }

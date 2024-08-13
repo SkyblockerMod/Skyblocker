@@ -32,9 +32,6 @@ public class TicTacToe extends DungeonPuzzle {
 		super("tic-tac-toe", "tic-tac-toe-1");
 	}
 
-	public static void init() {
-	}
-
 	@Override
 	public void tick(MinecraftClient client) {
 		if (!shouldSolve()) {

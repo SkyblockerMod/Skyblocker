@@ -193,6 +193,9 @@ dependencies {
 
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
+
+	// Annotation Processor
+	annotationProcessor project(":processor")
 }
 
 loom {

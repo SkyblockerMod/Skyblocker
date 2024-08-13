@@ -13,6 +13,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.debug.Debug;
@@ -236,6 +237,7 @@ public class DungeonManager {
      * Loads the dungeon secrets asynchronously from {@code /assets/skyblocker/dungeons}.
      * Use {@link #isRoomsLoaded()} to check for completion of loading.
      */
+    @Init
     public static void init() {
         CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
         if (!SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching) {

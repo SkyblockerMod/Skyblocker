@@ -33,9 +33,6 @@ public class Boulder extends DungeonPuzzle {
         super("boulder", "boxes-room");
     }
 
-    public static void init() {
-    }
-
     @Override
     public void tick(MinecraftClient client) {
 

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.events.HudRenderEvents;
@@ -53,6 +54,7 @@ public class DwarvenHud {
     private static final Pattern GEMSTONE_PATTERN = Pattern.compile("Gemstone: [0-9,]+");
     private static final Pattern GLACITE_PATTERN = Pattern.compile("Glacite: [0-9,]+");
 
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")

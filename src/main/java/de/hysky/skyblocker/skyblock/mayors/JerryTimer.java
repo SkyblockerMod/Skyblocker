@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.mayors;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -17,6 +18,7 @@ import net.minecraft.util.Formatting;
 public final class JerryTimer {
 	private JerryTimer() {
 	}
+	@Init
 	public static void init() {
 		//Example message: "§b ☺ §eThere is a §aGreen Jerry§e!"
 		//There are various formats, all of which start with the "§b ☺ " prefix and contain the word "<color> Jerry"

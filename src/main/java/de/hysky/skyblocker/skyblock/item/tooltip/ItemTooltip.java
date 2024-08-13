@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
@@ -66,6 +67,7 @@ public class ItemTooltip {
     // After then, it will only fetch the data if it is on Skyblock.
     public static int minute = 0;
 
+    @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(() -> {
             if (!Utils.isOnSkyblock() && 0 < minute) {

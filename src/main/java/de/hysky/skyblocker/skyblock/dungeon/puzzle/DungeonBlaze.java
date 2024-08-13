@@ -38,9 +38,6 @@ public class DungeonBlaze extends DungeonPuzzle {
         super("blaze", "blaze-room-1-high", "blaze-room-1-low");
     }
 
-    public static void init() {
-    }
-
     /**
      * Updates the state of Blaze entities and triggers the rendering process if necessary.
      */

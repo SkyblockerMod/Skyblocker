@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.SkullBlockEntityAccessor;
 import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
@@ -196,6 +197,7 @@ public class ProfileViewerScreen extends Screen {
         }
     }
 
+    @Init
     public static void initClass() {
         fetchCollectionsData(); // caching on launch
 

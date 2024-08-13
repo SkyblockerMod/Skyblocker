@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -14,6 +15,7 @@ import net.minecraft.util.Formatting;
 public class FireFreezeStaffTimer {
     private static long fireFreezeTimer;
 
+    @Init
     public static void init() {
         HudRenderEvents.BEFORE_CHAT.register(FireFreezeStaffTimer::onDraw);
         ClientReceiveMessageEvents.GAME.register(FireFreezeStaffTimer::onChatMessage);

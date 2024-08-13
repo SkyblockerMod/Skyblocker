@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -41,6 +42,7 @@ public class PetCache {
 	 */
 	private static boolean shouldLook4Pets;
 
+	@Init
 	public static void init() {
 		load();
 

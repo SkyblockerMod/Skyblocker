@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
@@ -49,6 +50,7 @@ public class VisitorHelper {
 
     private static boolean shouldProcessVisitorItems = true;
 
+    @Init
     public static void init() {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             String title = screen.getTitle().getString();

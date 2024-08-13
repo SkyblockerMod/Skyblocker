@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -69,6 +70,7 @@ public class SearchOverManager {
     /**
      * uses the skyblock api and Moulberry auction to load a list of items in bazaar and auction house
      */
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(SearchOverManager::registerSearchCommands);
         NEURepoManager.runAsyncAfterLoad(SearchOverManager::loadItems);

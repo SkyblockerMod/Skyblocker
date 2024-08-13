@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -104,6 +105,7 @@ public class PartyFinderScreen extends Screen {
     public static Map<String, PropertyMap> floorIconsNormal = null;
     public static Map<String, PropertyMap> floorIconsMaster = null;
 
+    @Init
     public static void initClass() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             //Checking when this is loaded probably isn't necessary as the maps are always null checked

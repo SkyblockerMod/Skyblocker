@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import com.google.common.collect.Streams;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
@@ -39,6 +40,7 @@ public class MobGlow {
 	private static final ConcurrentHashMap<Entity, CacheEntry> glowCache = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<Entity, CacheEntry> canSeeCache = new ConcurrentHashMap<>();
 
+	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(MobGlow::clearCache, 300 * 20);
 	}

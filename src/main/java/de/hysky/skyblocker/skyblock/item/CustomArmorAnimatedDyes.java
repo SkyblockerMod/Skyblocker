@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -31,6 +32,7 @@ public class CustomArmorAnimatedDyes {
 	private static final int DEFAULT_TICK_DELAY = 4;
 	private static int ticks;
 
+	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
 		ClientTickEvents.END_CLIENT_TICK.register(_client -> ++ticks);

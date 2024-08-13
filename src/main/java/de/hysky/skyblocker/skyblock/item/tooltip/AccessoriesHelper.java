@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
@@ -53,6 +54,7 @@ public class AccessoriesHelper {
 	//remove??
 	private static CompletableFuture<Void> loaded;
 
+	@Init
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register((_client) -> load());
 		ClientLifecycleEvents.CLIENT_STOPPING.register((_client) -> save());

@@ -1,14 +1,8 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -22,6 +16,11 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class ItemRarityBackgrounds {
 	private static final GeneralConfig.ItemInfoDisplay CONFIG = SkyblockerConfigManager.get().general.itemInfoDisplay;
@@ -40,6 +39,7 @@ public class ItemRarityBackgrounds {
 			Map.entry("COMMON", SkyblockItemRarity.COMMON));
 	private static final Int2ReferenceOpenHashMap<SkyblockItemRarity> CACHE = new Int2ReferenceOpenHashMap<>();
 
+	@Init
 	public static void init() {
 		//Clear the cache every 5 minutes, ints are very compact!
 		Scheduler.INSTANCE.scheduleCyclic(CACHE::clear, 4800);

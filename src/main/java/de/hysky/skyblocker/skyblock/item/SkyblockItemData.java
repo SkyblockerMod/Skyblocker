@@ -1,20 +1,20 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.util.concurrent.CompletableFuture;
-
-import org.slf4j.Logger;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.networth.NetworthDataSuppliers;
+import org.slf4j.Logger;
+
+import java.util.concurrent.CompletableFuture;
 
 public class SkyblockItemData {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
+	@Init
 	public static void init() {
 		updateItems().thenAcceptAsync(items -> {
 			PlayerHeadHashCache.loadSkins(items);

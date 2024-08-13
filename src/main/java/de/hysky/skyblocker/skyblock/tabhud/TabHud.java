@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud;
 
+import de.hysky.skyblocker.annotations.Init;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ public class TabHud {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Tab HUD");
 
+    @Init
     public static void init() {
 
         toggleB = KeyBindingHelper.registerKeyBinding(

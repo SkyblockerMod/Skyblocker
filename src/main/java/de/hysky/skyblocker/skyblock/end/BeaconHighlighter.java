@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.end;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -21,6 +22,7 @@ public class BeaconHighlighter {
      * Initializes the beacon highlighting system.
      * {@link BeaconHighlighter#render(WorldRenderContext)} is called after translucent rendering.
      */
+    @Init
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());

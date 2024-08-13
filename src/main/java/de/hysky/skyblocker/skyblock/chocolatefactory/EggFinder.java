@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
@@ -55,6 +56,7 @@ public class EggFinder {
 
 	private EggFinder() {}
 
+	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> {
 			isLocationCorrect = false;

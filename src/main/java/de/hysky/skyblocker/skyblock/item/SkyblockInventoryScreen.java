@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -88,8 +89,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         }));
     }
 
+    @Init
     public static void initEquipment() {
-
         SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
             if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
             else load(profileId);

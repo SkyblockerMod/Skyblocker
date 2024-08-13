@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -19,6 +20,7 @@ public class TeleportOverlay {
     private static final float[] COLOR_COMPONENTS = {118f / 255f, 21f / 255f, 148f / 255f};
     private static final MinecraftClient client = MinecraftClient.getInstance();
 
+    @Init
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TeleportOverlay::render);
     }

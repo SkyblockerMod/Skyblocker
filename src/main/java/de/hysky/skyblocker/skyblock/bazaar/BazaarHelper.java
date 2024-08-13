@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
@@ -50,6 +51,7 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 		super("(?:Co-op|Your) Bazaar Orders");
 	}
 
+	@Init
 	public static void init() {}
 
 	@Override

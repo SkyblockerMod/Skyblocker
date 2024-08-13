@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
@@ -69,6 +70,7 @@ public class CrystalsLocationsManager {
     protected static List<String> verifiedWaypoints = new ArrayList<>();
     private static List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
 
+    @Init
     public static void init() {
         // Crystal Hollows Waypoints
         Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);

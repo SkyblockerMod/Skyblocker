@@ -49,9 +49,6 @@ public class CreeperBeams extends DungeonPuzzle {
         super("creeper", "creeper-room");
     }
 
-    public static void init() {
-    }
-
     @Override
     public void reset() {
         super.reset();

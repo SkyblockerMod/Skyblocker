@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.chocolatefactory;
 
 import com.mojang.brigadier.Message;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
@@ -30,6 +31,7 @@ public class TimeTowerReminder {
 	private TimeTowerReminder() {
 	}
 
+	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(TimeTowerReminder::checkTempFile);
 		ClientReceiveMessageEvents.GAME.register(TimeTowerReminder::checkIfTimeTower);
