@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
+import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,5 +53,9 @@ public class SkyblockCraftingRecipe {
 
     public String getCraftText() {
         return craftText;
+    }
+
+    public Identifier getId() {
+        return Identifier.of("skyblock", ItemUtils.getItemId(getResult()).toLowerCase().replace(';', '_') + "_" + getResult().getCount());
     }
 }

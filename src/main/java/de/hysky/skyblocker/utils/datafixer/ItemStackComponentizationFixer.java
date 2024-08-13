@@ -10,6 +10,7 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.command.argument.ItemStringReader.ItemResult;
+import net.minecraft.component.Component;
 import net.minecraft.component.ComponentType;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.datafixer.TypeReferences;
@@ -48,15 +49,16 @@ public class ItemStackComponentizationFixer {
 		RegistryOps<NbtElement> nbtRegistryOps = getRegistryLookup().getOps(NbtOps.INSTANCE);
 
 		return Arrays.toString(stack.getComponentChanges().entrySet().stream().map(entry -> {
-			@SuppressWarnings("unchecked")
-			ComponentType<Object> dataComponentType = (ComponentType<Object>) entry.getKey();
-			Identifier componentId = Registries.DATA_COMPONENT_TYPE.getId(dataComponentType);
-			Optional<NbtElement> encodedComponent = dataComponentType.getCodec().encodeStart(nbtRegistryOps, entry.getValue().orElseThrow()).result();
+			ComponentType<?> componentType = entry.getKey();
+			Identifier componentId = Registries.DATA_COMPONENT_TYPE.getId(componentType);
+			if (componentId == null) return null;
 
-			if (componentId == null || encodedComponent.isEmpty()) {
-				return null;
-			}
+			Optional<?> component = entry.getValue();
+			if (component.isEmpty()) return "!" + componentId;
 
+			Optional<NbtElement> encodedComponent = Component.of(componentType, component.get()).encode(nbtRegistryOps).result();
+
+			if (encodedComponent.isEmpty()) return null;
 			return componentId + "=" + encodedComponent.orElseThrow();
 		}).filter(Objects::nonNull).toArray());
 	}
@@ -87,6 +89,6 @@ public class ItemStackComponentizationFixer {
 	 */
 	public static WrapperLookup getRegistryLookup() {
 		MinecraftClient client = MinecraftClient.getInstance();
-        return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
-    }
+		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+	}
 }
